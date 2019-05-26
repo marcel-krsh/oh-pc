@@ -172,7 +172,7 @@ class Project extends Model
             $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
         }else{
             $selected_audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
-            Session::put('project.'.$this->id.'.selectedaudit', $selected_audit);
+            Session::put('project.'.$this->id.'.selectedaudit', $selected_audit->audit_id);
         }
 
         return $selected_audit;
