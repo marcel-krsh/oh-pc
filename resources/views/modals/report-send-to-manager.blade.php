@@ -10,7 +10,7 @@
 				<div class="uk-width-1-1 uk-padding-small">
 					@if($project)
 					<h3>Report Message: <span id="current-file-id-dynamic-modal">{{ $project->project_number }}: {{ $project->project_name }}</span></h3>
-                    <input type="hidden" name="report" value="{{$report->id}}">
+          <input type="hidden" name="report" value="{{$report->id}}">
 					@else
 					<h3>New Message</h3>
 					@endif
@@ -58,9 +58,9 @@
 								</label>
 							</li>
 							@endforeach
-							<input type="hidden" name="notification_triggered_type" value="2">
+							<input type="hidden" name="notification_triggered_type" value="3">
 							<input type="hidden" name="notification_model_id" value="{{ $report_id }}">
-							<input type="hidden" name="report_approval_type" value="6">
+							<input type="hidden" name="report_approval_type" value="2">
 						</ul>
 					</div>
 					<div class="uk-form-row">
@@ -193,12 +193,6 @@
     	$('.recipient-list').slideToggle();
     	$('#add-recipients-button').toggle();
     	$('#done-adding-recipients-button').toggle();
-    }
-
-    function showDocuments() {
-    	$('.documents-list').slideToggle();
-    	$('#add-documents-button').toggle();
-    	$('#done-adding-documents-button').toggle();
     }
 
     function submitNewCommunication() {

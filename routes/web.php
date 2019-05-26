@@ -242,7 +242,7 @@
             Route::post('/findings/{findingid}/cancel', 'FindingController@cancelFinding');
             Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
             Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
-            Route::get('/modals/addreply/{id}/{fromtype}/{type}/{level?}','FindingController@replyFindingForm');
+
             Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{toplevel?}/{refresh}', 'FindingController@modalFindings');
 
             Route::get('/findings/modals/locations/{auditid}', 'FindingController@findingLocations');
@@ -393,6 +393,7 @@
 
             Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
 
+            Route::get('/modals/addreply/{id}/{fromtype}/{type}/{level?}','FindingController@replyFindingForm');
 
 
             //Route::get('/', function(){dd(\Auth::user(),session('brian'));});
@@ -449,6 +450,7 @@
             Route::get('notifications/view-message/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
             Route::get('notifications/report/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
             Route::get('/modals/report-ready/{report_id}/{project_id?}', 'CommunicationController@reportReadyNotification')->name('communication.report-ready');
+            Route::get('/modals/report-send-to-manager/{report_id}/{project_id?}', 'CommunicationController@reportSendToManagerNotification')->name('communication.report-send-to-manager');
 
 
             Route::get('/session/communication_switch_inbox', function()

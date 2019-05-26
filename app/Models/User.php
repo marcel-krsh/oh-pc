@@ -513,4 +513,11 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserNotificationPreferences::class, 'user_id', 'id');
     }
+
+    public static function allManagers()
+    {
+    	$user_ids = UserRole::whereIn('role_id', [3,4,5])->get()->pluck('user_id');
+    	$users = User::whereIn('id', $user_ids)->get();
+    	return $users;
+    }
 }

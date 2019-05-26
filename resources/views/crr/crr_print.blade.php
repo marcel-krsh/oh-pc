@@ -11,7 +11,7 @@
 <script src="/js/components/tooltip.js"></script> -->
 <style>
 	<?php // determin background type
-$background = "";
+$background = "none";
 if (1 == $report->crr_approval_type_id) {
   $background = '-draft';
 }

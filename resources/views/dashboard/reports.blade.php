@@ -12,7 +12,7 @@ $crrTypeSelection    = 'all';
 
         <input type="hidden" id="crr-newest" name="crr-newest">
                 <div uk-grid class="uk-width-1-5">
-                	
+
 
                     <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/dashboard/reports?crr_report_status_id='+this.value, '3','','','',1);">
                         <option value="all">
@@ -30,12 +30,12 @@ $crrTypeSelection    = 'all';
 
 
 
-                    
+
 
                 </div>
 
 
-                
+
                 <div class="uk-width-1-5" id="recipient-dropdown" style="vertical-align: top;">
                     <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/dashboard/reports?crr_report_project_id='+this.value, '3','','','',1);">
                         <option value="all" selected="">
@@ -98,7 +98,7 @@ $crrTypeSelection    = 'all';
 
         <div class="uk-width-1-1">
             <div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{$reports->total()}} @if($reports->total() == 1) REPORT @else REPORTS @endif</div>
-            @can('access_auditor')<div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter" style="background-color:#d8eefa"><a class=" " onclick="dynamicModalLoad('new-report')">
+            @can('access_auditor')<div id="crr-filter-mine" class="uk-button uk-text-right@s uk-margin-right" style="background-color:#1B9A56"><a class="  uk-contrast" onclick="dynamicModalLoad('new-report')">
                         <span class="a-file-plus"></span>
                         <span>NEW REPORT</span>
                     </a>
@@ -235,6 +235,20 @@ $crrTypeSelection    = 'all';
             //Here goes the notification code
             if(action == 6) {
             	dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
+            	$.get('/dashboard/reports', {
+                                            'id' : reportId,
+                                            'action' : action
+                                             }, function(data2) {
+
+                                         });
+            } else if(action == 2) {
+            	dynamicModalLoad('report-send-to-manager/' + reportId + '/' + project_id);
+            	$.get('/dashboard/reports', {
+                                            'id' : reportId,
+                                            'action' : action
+                                             }, function(data2) {
+
+                                         });
             } else if(action != 8){
                 $.get('/dashboard/reports', {
                                             'id' : reportId,

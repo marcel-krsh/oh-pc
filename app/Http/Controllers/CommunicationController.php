@@ -525,10 +525,12 @@ class CommunicationController extends Controller
     if (isset($forminputs['audit'])) {
       try {
         $audit_id = (int) $forminputs['audit'];
-        $audit    = CachedAudit::where('audit_id', $audit_id)->first();
+        $audit    = CachedAudit::where('id', $audit_id)->first();
+        // $audit    = CachedAudit::where('audit_id', $audit_id)->first();
       } catch (\Illuminate\Database\QueryException $ex) {
         dd($ex->getMessage());
       }
+      //dd($forminputs['audit'],$audit);
       $audit_id = $audit->id;
     } else {
       $audit_id = null;
@@ -719,7 +721,8 @@ class CommunicationController extends Controller
         if (!is_null($report_id)) {
           // we sent a notification about the report
           // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
-          $report->update(['crr_approval_type_id' => 6]);
+          //$report->update(['crr_approval_type_id' => 6]);
+        	//$report_status = $this->reportStatusUpdate($forminputs, $report);
         }
         return 1;
       } else {
@@ -1363,6 +1366,24 @@ class CommunicationController extends Controller
     }
   }
 
+  public function reportSendToManagerNotification($report_id, $project_id = null)
+  {
+    if (null !== $project_id) {
+      $project       = Project::where('id', '=', $project_id)->first();
+      $audit_details = $project->selected_audit();
+      $report        = CrrReport::find($report_id);
+      $user_keys     = $report->signators()->pluck('person_key')->toArray();
+      // $recipients    = User::whereIn('person_key', $user_keys)->with('person')
+      //   ->where('active', 1)
+      //   ->get();
+      $recipients = User::allManagers();
+      $audit = $audit_details->id;
+      return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'audit_details', 'report'));
+    } else {
+    	return 'No associated project was found';
+    }
+  }
+
   protected function notificationSessions($forminputs)
   {
     if (array_key_exists('notification_triggered_type', $forminputs)) {
@@ -1370,6 +1391,18 @@ class CommunicationController extends Controller
       session(['notification_model_id' => $forminputs['notification_model_id']]);
     }
     return 12;
+  }
+
+  protected function reportStatusUpdate($forminputs, $report)
+  {
+  	if (array_key_exists('notification_triggered_type', $forminputs) && array_key_exists('report_approval_type', $forminputs)) {
+  		if($report) {
+  			$report->crr_approval_type_id = $forminputs['report_approval_type'];
+  			$report->save();
+  			return $report;
+  		}
+    }
+    return false;
   }
 
   public function some()

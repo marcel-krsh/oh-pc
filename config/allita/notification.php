@@ -4,7 +4,8 @@ return [
 
   'type'      => [
     1 => 'Communications',
-    2 => 'Reports',
+    2 => 'Reports - Send to PM',
+    3 => 'Reports - To Manager Review',
   ],
 
   'frequency' => [
