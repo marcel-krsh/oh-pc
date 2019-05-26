@@ -1,7 +1,7 @@
 <?php $findings = $bladeData;?>
 @if(!is_null($findings))
-	
-	<?php 
+
+	<?php
 		// count them up...
 		$fileCount = 0;
 		$nltCount = 0;
@@ -30,29 +30,29 @@
 		<div class="uk-width-1-1">
 			<h2>Findings: </h2> <small>
 					@if($fileCount > 0)
-						<i class="a-folder"></i> : {{$fileCount}} FILE 
+						<i class="a-folder"></i> : {{$fileCount}} FILE
 							@if($fileCount != 1)
-							 FINDINGS 
+							 FINDINGS
 							@else
-							 FINDING 
-							@endIf 
+							 FINDING
+							@endIf
 						&nbsp;|  &nbsp;
-					@endIf 
+					@endIf
 					@if($nltCount > 0)
-						<i class="a-booboo"></i> : {{$nltCount}}  NON LIFE THREATENING 
-							@if($nltCount != 1) 
-								FINDINGS 
+						<i class="a-booboo"></i> : {{$nltCount}}  NON LIFE THREATENING
+							@if($nltCount != 1)
+								FINDINGS
 							@else
-							 FINDING 
-							@endIf  
-						&nbsp;|  &nbsp; 
-					@endIf 
-					@if($ltCount > 0) 
-						<i class="a-skull"></i> : {{$ltCount}} LIFE THREATENING 
+							 FINDING
+							@endIf
+						&nbsp;|  &nbsp;
+					@endIf
+					@if($ltCount > 0)
+						<i class="a-skull"></i> : {{$ltCount}} LIFE THREATENING
 						@if($ltCount != 1)
-						 FINDINGS 
+						 FINDINGS
 						@else
-						 FINDING 
+						 FINDING
 						@endIf
 					@endIf</small><hr class="dashed-hr">
 		</div>
@@ -67,8 +67,8 @@
 				}
 			?>
 			<div style="min-height: 105px;">
-			
-			
+
+
 
 				<div class="inspec-tools-tab-finding-top-actions" style="z-index:10">
 					@can('access_auditor') @if(!$print)<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
@@ -95,9 +95,9 @@
 									</div>
 
 				<hr />
-			
-			
-			
+
+
+
 
 			@if(!is_null($f->building_id))
 				<strong>{{$f->building->building_name}}</strong> <br />
@@ -143,7 +143,7 @@
 			   		{{$f->finding_type->three_description}}
 			   	@endIf
 			   	@if((is_null($f->level) || $f->level == 0) && $f->finding_type->type !== 'file')
-			   	<span style="color:red" class="attention">!!LEVEL NOT SET!!</span> 
+			   	<span style="color:red" class="attention">!!LEVEL NOT SET!!</span>
 			   	@endIf
 			   	@if(!is_null($f->comments))
 
@@ -169,7 +169,7 @@
 				@endIf
 			</div>
 			@endIf
-			
+
   		</a>
 
 		</div>

@@ -44,7 +44,7 @@
     				<p><small>tplDate: tplType#tplRef</small><br />
     					By tplName</p>
     				<p>tplContent</p>
-    				
+
     			</div>
     		</div>
     	</div>
@@ -78,7 +78,7 @@
 <template class="uk-hidden" id="inspec-tools-tab-finding-items-template">
 	<div class="inspec-tools-tab-finding-items uk-width-1-1 uk-margin-remove" style="    position: sticky; display:none">
 		<div class="inspec-tools-tab-finding-items-list" uk-grid>
-	    	
+
 	    </div>
 	</div>
 </template>
@@ -86,7 +86,7 @@
 <template class="uk-hidden" id="inspec-tools-tab-finding-item-replies-template">
 	<div class="inspec-tools-tab-finding-item-replies uk-width-1-1 uk-margin-remove" style="display:none">
 		<div class="inspec-tools-tab-finding-item-replies-list" uk-grid>
-	    	
+
 	    </div>
 	</div>
 </template>

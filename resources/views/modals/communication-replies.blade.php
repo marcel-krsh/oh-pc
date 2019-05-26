@@ -205,8 +205,8 @@
 	    function submitNewCommunication() {
 	    	var form = $('#newOutboundEmailForm');
 	    	var no_alert = 1;
-    	
-    	
+
+
     		$.post('{{ URL::route("communication.create") }}', {
     			'inputs' : form.serialize(),
     			'_token' : '{{ csrf_token() }}'
@@ -230,8 +230,8 @@
 	        @endif
 	        dynamicModalClose();
       	}
-    
-  
+
+
 
 		// function submitNewCommunication() {
 		// 	var form = $('#newOutboundEmailForm');

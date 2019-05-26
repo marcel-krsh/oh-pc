@@ -129,9 +129,11 @@ class CommunicationController extends Controller
   public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null)
   {
     $ohfa_id = SystemSetting::get('ohfa_organization_id');
+    $single_receipient = false;
 
     if (null !== $audit_id) {
-      $audit = Audit::where('id', intval($audit_id))->first();
+      // $audit = Audit::where('id', intval($audit_id))->first();
+      $audit   = Audit::find((int) $audit_id);
     } else {
       $audit = null;
     }
@@ -238,6 +240,8 @@ class CommunicationController extends Controller
 
       if (null !== $report_id) {
         $report = CrrReport::with('lead')->find($report_id);
+        $current_user = Auth::user();
+        $current_user = User::find($current_user->id);
         if ('CAR' == $report->template()->template_name) {
           $lead_id    = $report->lead->id;
           $recipients = User::where('users.id', $lead_id)
@@ -250,8 +254,11 @@ class CommunicationController extends Controller
             ->orderBy('last_name', 'asc')
             ->get();
         }
+        if($current_user->hasRole(1)) {
+        	$single_receipient = true;
+        }
       }
-      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings'));
+      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient'));
     } else {
       $project             = null;
       $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -300,7 +307,7 @@ class CommunicationController extends Controller
 
       $audit = null;
 
-      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project'));
+      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient'));
     }
   }
 
@@ -350,7 +357,8 @@ class CommunicationController extends Controller
       $audit   = $message->audit;
     } else {
       $noaudit = 0;
-      $audit   = CachedAudit::find((int) $audit_id);
+      // $audit   = CachedAudit::find((int) $audit_id);
+      $audit   = Audit::find((int) $audit_id);
     }
 
     // if(!$project) {
@@ -525,7 +533,7 @@ class CommunicationController extends Controller
     if (isset($forminputs['audit'])) {
       try {
         $audit_id = (int) $forminputs['audit'];
-        $audit    = CachedAudit::where('id', $audit_id)->first();
+        $audit   = Audit::find((int) $audit_id);
         // $audit    = CachedAudit::where('audit_id', $audit_id)->first();
       } catch (\Illuminate\Database\QueryException $ex) {
         dd($ex->getMessage());
@@ -1024,7 +1032,8 @@ class CommunicationController extends Controller
       if ($project) {
         $audit    = $project->selected_audit();
         $messages = $messages->where('project_id', $project->id)
-          ->where('audit_id', $audit->id);
+          //->where('audit_id', $audit->id); //Changed by Div, 20190526
+          ->where('audit_id', $audit->audit_id);
       }
 
       //return $messages->pluck('project_id');
@@ -1201,7 +1210,7 @@ class CommunicationController extends Controller
     //         ];
     //     }
     // }
-    //return $messages;
+    // return $messages;
     if (count($messages) > 0) {
       $owners_array   = $messages->pluck('owner')->unique();
       $projects_array = $messages->pluck('project')->filter()->unique();

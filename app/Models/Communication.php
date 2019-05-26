@@ -87,7 +87,8 @@ class Communication extends Model
    */
   public function audit(): HasOne
   {
-    return $this->hasOne(\App\Models\CachedAudit::class, 'id', 'audit_id');
+    // return $this->hasOne(\App\Models\CachedAudit::class, 'id', 'audit_id');
+    return $this->hasOne(\App\Models\Audit::class, 'id', 'audit_id');
   }
 
   /**
