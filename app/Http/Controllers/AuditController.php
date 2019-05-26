@@ -1518,7 +1518,8 @@ class AuditController extends Controller
         // which audit is selected (latest if no selection)
         // check if there is a session project.123.selectedaudit with a different audit_id
         if (Session::has('project.'.$project->id.'.selectedaudit') && Session::get('project.'.$project->id.'.selectedaudit') != '') {
-            $selected_audit = Session::get('project.'.$project->id.'.selectedaudit');
+            $selected_audit_id = Session::get('project.'.$project->id.'.selectedaudit');
+            $selected_audit = CachedAudit::where('id', '=', $selected_audit_id)->first();
         }else{
             $selected_audit = $project->selected_audit();
         }

@@ -82,7 +82,7 @@ class DataController extends Controller
             if($name_check[0] == "project" && $name_check[2] == "selectedaudit"){
                 $project_id = $name_check[1];
                 $audit = CachedAudit::where('id', '=', $value)->where('project_id','=',$project_id)->first();
-                Session::put($name, $audit);
+                Session::put($name, $value);
                 return Session::get($name);
             }else{
                 Session::put($name, $value);
