@@ -326,9 +326,13 @@ class FindingController extends Controller
                 
 
                 $document_categories = DocumentCategory::where('active', '=', 1)->get();
-                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'document_categories', 'auditors', 'owner_id', 'owner_name', 'pm_id', 'pm_name'));
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'document_categories', 'auditors', 'owner_id', 'owner_name', 'pm_id', 'pm_name', 'level'));
             }elseif($type == 'comment'){
-
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'level','type'));
+            }elseif($type == 'subcommentfromphoto'){
+                // tricky way to handle 3 different modals on top of eachother, closing the right one and reloading another while the first one stays open
+                
+                return view('modals.finding-reply-comment', compact('from', 'fromtype', 'level','type'));
             }elseif($type == 'photo'){
                 if($from->project_id){
                     $project = Project::where('id', '=', $from->project_id)->first();
@@ -386,7 +390,7 @@ class FindingController extends Controller
                     $requested_categories = '';
                 }
 
-                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories'));
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories', 'level'));
             }
 
             return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'level'));
@@ -996,6 +1000,8 @@ class FindingController extends Controller
                 ->get();
 
             $comments = Comment::where('finding_id', $findingid)
+                ->whereNULL('photo_id')
+                    ->whereNULL('comment_id')
                 ->get();
 
             //get documents that are only on the root of the project or attached to a communication - this is only for auditors to see and above.
@@ -1017,6 +1023,7 @@ class FindingController extends Controller
                 $followups = null;
 
                 $comments = Comment::where('finding_id', $findingid)
+                    ->whereNULL('photo_id')
                     ->where('comment_id', $typeid)
                     ->get();
 
@@ -1036,6 +1043,7 @@ class FindingController extends Controller
 
                 $comments = Comment::where('finding_id', $findingid)
                     ->where('photo_id', $typeid)
+                    ->whereNULL('comment_id')
                     ->get();
 
                 $documents = null;
@@ -1051,6 +1059,8 @@ class FindingController extends Controller
 
                 $comments = Comment::where('finding_id', $findingid)
                     ->where('document_id', $typeid)
+                    ->whereNULL('photo_id')
+                    ->whereNULL('comment_id')
                     ->get();
 
                 $documents = null;
@@ -1066,6 +1076,8 @@ class FindingController extends Controller
 
                 $comments = Comment::where('finding_id', $findingid)
                     ->where('followup_id', $typeid)
+                    ->whereNULL('photo_id')
+                    ->whereNULL('comment_id')
                     ->get();
 
                 $documents = Document::where('finding_id', $findingid)

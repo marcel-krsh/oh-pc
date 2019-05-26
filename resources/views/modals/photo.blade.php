@@ -23,7 +23,7 @@
 				</div>
 				<div class="uk-width-3-4 uk-padding-remove-right ">
 					<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
-	    				<p>{{$comment['date']}}: PIC#{{$comment['ref']}}<br />
+	    				<p style="color:#939598">{{$comment['date']}}: PIC#{{$comment['ref']}}<br />
 	    					By {{$comment['auditor']['name']}}</p>
 	    				<p>{{$comment['comment']}}</p>
 	    			</div>
@@ -32,7 +32,7 @@
 	    			
 					<div class="uk-width-1-1 uk-padding-remove-right " style="margin-top:10px">
 						<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
-		    				<p>{{formatDate($subcomment->created_at)}}<br />
+		    				<p style="color:#939598">{{formatDate($subcomment->created_at)}}<br />
 		    					By {{$subcomment->user->full_name()}}</p>
 		    				<p>{{$subcomment->comment}}</p>
 		    			</div>
@@ -42,7 +42,7 @@
 	    			@endif
 	    			<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description">
 	    				<div class="inspec-tools-tab-finding-actions">
-						    <button class="uk-button uk-link" onclick="addChildItem({{$comment['id']}}, 'comment','comment', 3)"><i class="a-comment-plus"></i> REPLY</button>
+						    <button class="uk-button uk-link" onclick="addChildItem({{$comment['id']}}, 'subcommentfromphoto','comment', 3)"><i class="a-comment-plus"></i> REPLY</button>
 	    				</div>
 	    			</div>
 	    		</div>

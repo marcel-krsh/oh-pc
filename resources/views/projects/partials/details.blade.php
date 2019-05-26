@@ -4,22 +4,8 @@
 			<div class="uk-grid-match" uk-grid>
 				<div class="uk-width-1-4 uk-padding-remove">
 					<div uk-grid>
-						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 10px;">
-							<a href="#modal-select-audit" uk-toggle><i class="a-square-right-2"></i></a>
-							<div id="modal-select-audit" uk-modal>
-							    <div class="uk-modal-dialog uk-modal-body">
-							        <h2 class="uk-modal-title">Select another audit</h2>
-							        <select name="audit-selection" id="audit-selection" class="uk-select">
-							        	@foreach($audits as $audit)
-							        	<option value="{{$audit->audit_id}}" @if($audit->audit_id == $selected_audit->audit_id) selected @endif>Audit {{$audit->audit_id}} @if($audit->completed_date) | Completed on {{formatDate($audit->completed_date)}}@endif</option>
-							        	@endforeach
-							        </select>
-							        <p class="uk-text-right">
-							            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
-							            <button class="uk-button uk-button-primary" onclick="changeAudit();" type="button">Select</button>
-							        </p>
-							    </div>
-							</div>
+						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 10px;" onclick="UIkit.modal('#modal-select-audit').show();">
+							<i class="a-square-right-2"></i>
 						</div>
 						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 7px;">
 							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$selected_audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$selected_audit->lead_json->color}} no-float uk-link">
@@ -194,6 +180,21 @@
 
 <div id="project-details-info-container"></div>
 
+<div id="modal-select-audit" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title">Select another audit</h2>
+        <select name="audit-selection" id="audit-selection" class="uk-select">
+        	@foreach($audits as $audit)
+        	<option value="{{$audit->audit_id}}" @if($audit->audit_id == $selected_audit->audit_id) selected @endif>Audit {{$audit->audit_id}} @if($audit->completed_date) | Completed on {{formatDate($audit->completed_date)}}@endif</option>
+        	@endforeach
+        </select>
+        <p class="uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+            <button class="uk-button uk-button-primary" onclick="changeAudit();" type="button">Select</button>
+        </p>
+    </div>
+</div>
+
 <script>
 	var chartColors = {
 		  required: '#191818',
@@ -267,6 +268,7 @@
 		$('#project-detail-tab-1-content').html(tempdiv);
 
     	UIkit.modal('#modal-select-audit').hide();
+    	$('#modal-select-audit').remove();
 
     	$.post("/session/project.{{$project->id}}.selectedaudit/"+nextAudit, {
             '_token' : '{{ csrf_token() }}'
