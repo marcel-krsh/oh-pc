@@ -268,6 +268,7 @@
 		$('#project-detail-tab-1-content').html(tempdiv);
 
     	UIkit.modal('#modal-select-audit').hide();
+    	$('#modal-select-audit').remove();
 
     	$.post("/session/project.{{$project->id}}.selectedaudit/"+nextAudit, {
             '_token' : '{{ csrf_token() }}'
