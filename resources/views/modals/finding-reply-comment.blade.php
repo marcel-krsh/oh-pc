@@ -54,9 +54,12 @@
             if(data!=1){ 
                 UIkit.modal.alert(data,{stack: true});
             } else {
-            	@if($fromtype == 'photo')
+            	@if($type == 'subcommentfromphoto')
+                openFindingPhoto({{$from->finding_id}},{{$from->photo_id}},{{$from->photo_id}},2); 
+                dynamicModalClose({{$level}});
+                @elseif($fromtype == 'photo')
                 openFindingPhoto({{$from->finding_id}},{{$from->id}},{{$from->id}},2); 
-                dynamicModalClose(3);
+                dynamicModalClose({{$level}});
                 @else
                 dynamicModalClose({{$level}});
                 @endif

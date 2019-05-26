@@ -28,7 +28,7 @@ class Finding extends Model
 
     public function comments() : HasMany 
     {
-        return $this->hasMany(\App\Models\Comment::class, 'finding_id', 'id')->orderBy('id','asc');
+        return $this->hasMany(\App\Models\Comment::class, 'finding_id', 'id')->whereNULL('photo_id')->orderBy('id','asc');
     }
 
     public function documents() : HasMany 
