@@ -92,7 +92,7 @@
 			    </div>
 
 				<div class="uk-form-row">
-					<ul id="added-photos"></ul>
+					<ul id="added-photos" style="list-style-type: none;"></ul>
 				</div>
         </div>
         @endif
