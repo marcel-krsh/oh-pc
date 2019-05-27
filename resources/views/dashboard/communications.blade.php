@@ -104,12 +104,13 @@
 	@foreach ($messages as $message)
 	<div class="filter_element uk-width-1-1 communication-list-item @if($message->owner)staff-{{ $message->owner->id }}@endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;">
 		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
-			@if($message->owner == $current_user)
+
+			@if($message->owner->id == $current_user->id)
 			<div class="uk-width-1-5@m uk-width-1-2@s communication-item-tt-to-from uk-margin-small-bottom" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small><br>
 					<span>
-						Me, @if(count($message->message_recipients))@foreach($message->message_recipients as $recipient)@if($recipient != $current_user){{ $recipient->full_name() }}@endif{{ !$loop->last ? ', ': '' }}@endforeach @endif
+						Me, @if(count($message->message_recipients))@foreach($message->message_recipients->where('id', '<>', $current_user->id) as $recipient){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}@endforeach @endif
 					</span>
 				</div>
 				@if($message->unseen > 0)
@@ -121,30 +122,31 @@
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small>
 				</div>
-				{{ $message->owner->full_name() }}@if(count($message->message_recipients))@foreach ($message->message_recipients as $recipient)@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != ''){{ $recipient->full_name() }}@elseif($recipient->id == $current_user->id), Me @endif @endforeach @endif
+				{{ $message->owner->full_name() }}, @if(count($message->message_recipients))@foreach ($message->message_recipients as $recipient)@if($recipient->id != $current_user->id && $message->owner->id != $recipient->id && $recipient->name != ''){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}@elseif($recipient->id == $current_user->id) Me{{ !$loop->last ? ', ': '' }} @endif @endforeach @endif
 				@if($message->unseen > 0)
 				<div class="uk-label no-text-shadow user-badge-{{ Auth::user()->badge_color }}" uk-tooltip="pos:top-left;title:{{ $message->unseen }} unread messages">{{ $message->unseen }}</div>
 				@endif
 			</div>
 			@endif
+
 			<div class="uk-width-1-5@s communication-type-and-who uk-hidden@m uk-text-right " >
 				<div class="uk-margin-right">
-					@if($message->audit_id && $message->audit)
+					@if($message->audit_id && $message->audit && $message->audit->cached_audit)
 					<p style="margin-bottom:0">{{ $message->audit_id }}</p>
-					<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left;title:{{ $message->audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
-						<small>{{ $message->audit->address }},
-							{{ $message->audit->city }}, @if($message->audit->state){{ $message->audit->state }} @endif {{ $message->audit->zip }}
+					<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left;title:{{ $message->audit->cached_audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
+						<small>{{ $message->audit->cached_audit->address }},
+							{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->cached_audit->zip }}
 						</small>
 					</p>
 					@endif
 				</div>
 			</div>
 			<div class="uk-width-1-5@m communication-item-parcel uk-visible@m">
-				@if($message->audit_id && $message->audit)
+				@if($message->audit_id && $message->audit && $message->audit->cached_audit)
 				<p style="margin-bottom:0"><a class="uk-link-muted">{{ $message->audit_id }}</a></p>
-				<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left" title="{{ $message->audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
-					<small>{{ $message->audit->address }},
-						{{ $message->audit->city }}, @if($message->audit->state){{ $message->audit->state }} @endif {{ $message->audit->zip }}
+				<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left" title="{{ $message->audit->cached_audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
+					<small>{{ $message->audit->cached_audit->address }},
+						{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->cached_audit->zip }}
 					</small>
 				</p>
 				@endif

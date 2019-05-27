@@ -38,9 +38,9 @@
 							            		@endif
 
 						            		</div>
-						            	</div> 
-						            	<div class="uk-width-1-6 iconpadding uk-text-right" uk-tooltip="title:{{$selected_audit->auditor_items()}} INSPECTABLE ITEMS;">{{$selected_audit->auditor_items()}}@if($selected_audit->lead == Auth::user()->id)*@endif /</div> 
-						            	<div class="uk-width-1-6 iconpadding uk-text-left">{{$selected_audit->total_items}}</div> 
+						            	</div>
+						            	<div class="uk-width-1-6 iconpadding uk-text-right" uk-tooltip="title:{{$selected_audit->auditor_items()}} INSPECTABLE ITEMS;">{{$selected_audit->auditor_items()}}@if($selected_audit->lead == Auth::user()->id)*@endif /</div>
+						            	<div class="uk-width-1-6 iconpadding uk-text-left">{{$selected_audit->total_items}}</div>
 						            	<div class="uk-width-1-6 iconpadding uk-text-left">
 						            		<i class="{{$selected_audit->audit_compliance_icon}} {{$selected_audit->audit_compliance_status}}"  uk-tooltip="title:{{$selected_audit->audit_compliance_status_text}};"></i>
 						            	</div>
@@ -51,7 +51,7 @@
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 						            	<div class="uk-width-1-3">
 						            		<i class="a-bell-2" uk-tooltip="title:{{$selected_audit->followup_status_text}};"></i>
-						            	</div> 
+						            	</div>
 						            	<div class="uk-width-2-3">
 						            		@if(is_null($selected_audit->followup_date))
 						            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
@@ -59,7 +59,7 @@
 						            		<h3 class="uk-link uk-margin-remove" uk-tooltip="title:{{$selected_audit->inspection_schedule_text}};">{{date('m/d',strtotime($selected_audit->followup_date))}}</h3>
 							            		<div class="dateyear">{{date('Y',strtotime($selected_audit->followup_date))}}</div>
 							            	@endif
-						            	</div> 
+						            	</div>
 						            </div>
 								</div>
 							</div>
@@ -82,16 +82,16 @@
 										@if(env('APP_ENV') == 'local')
 						            	<div class="uk-width-1-4">
 						            		<i class="a-avatar action-needed" uk-tooltip="title:Auditors / schedule conflicts / unasigned items;"></i>
-						            	</div> 
+						            	</div>
 						            	<div class="uk-width-1-4">
 						            		<i class="a-envelope-4 action-required" uk-tooltip="title:;"></i>
-						            	</div> 
+						            	</div>
 						            	<div class="uk-width-1-4">
 						            		<i class="a-files ok-actionable" uk-tooltip="title:Document status;"></i>
-						            	</div> 
+						            	</div>
 						            	<div class="uk-width-1-4">
 						            		<i class="a-person-clock" uk-tooltip="title:NO/VIEW HISTORY;"></i>
-						            	</div> 
+						            	</div>
 						            	@endIF
 						            </div>
 								</div>
@@ -274,10 +274,10 @@
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
             loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);
-    		
+
         } );
 
-    	
+
     }
 </script>
 
@@ -288,8 +288,7 @@
 $( document ).ready(function() {
 	if($('#project-details-info-container').html() == ''){
 		$('#project-details-button-1').trigger("click");
-	}	
+	}
 	loadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
 });
 </script>
-	    

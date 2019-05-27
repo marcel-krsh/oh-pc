@@ -151,12 +151,17 @@ class CommunicationController extends Controller
 
       if (!is_null($project)) {
         $audit_details = $project->selected_audit();
+        if(is_null($audit) && !is_null($audit_details)) {
+        	$audit = Audit::find($audit_details->audit_id);
+        }
       }
       if (local()) {
         $docuware_documents = Document::where('id', -100)->get();
       } else {
         $docuware_documents = $this->projectDocuwareDocumets($project);
       }
+
+
 
       $local_documents = Document::where('project_id', $project->id)
         ->with('assigned_categories')
@@ -713,20 +718,20 @@ class CommunicationController extends Controller
         }
 
         // send emails
-        if (env('APP_ENV') != 'local') {
-          try {
-            foreach ($message_recipients_array as $userToNotify) {
-              if ($userToNotify != $user->id) {
-                // don't send an email to sender
-                $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
-                $emailNotification = new EmailNotification($userToNotify, $message->id);
-                \Mail::to($current_recipient->email)->send($emailNotification);
-              }
-            }
-          } catch (\Illuminate\Database\QueryException $ex) {
-            $error = $ex->getMessage();
-          }
-        }
+        // if (env('APP_ENV') != 'local') {
+        //   try {
+        //     foreach ($message_recipients_array as $userToNotify) {
+        //       if ($userToNotify != $user->id) {
+        //         // don't send an email to sender
+        //         $current_recipient = User::where('id', '=', $userToNotify)->get()->first();
+        //         $emailNotification = new EmailNotification($userToNotify, $message->id);
+        //         \Mail::to($current_recipient->email)->send($emailNotification);
+        //       }
+        //     }
+        //   } catch (\Illuminate\Database\QueryException $ex) {
+        //     $error = $ex->getMessage();
+        //   }
+        // }
         if (!is_null($report_id)) {
           // we sent a notification about the report
           // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
@@ -884,7 +889,7 @@ class CommunicationController extends Controller
     //Search (in session)
     if (Session::has('communications-search') && Session::get('communications-search') != '') {
       $search          = Session::get('communications-search');
-      $search_messages = Communication::with('docuware_documents', 'local_documents', 'owner', 'project', 'audit', 'message_recipients')
+      $search_messages = Communication::with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')
         ->where(function ($query) use ($search, $project) {
           $query->where('message', 'LIKE', '%' . $search . '%');
           $query->orWhereHas('audit', function ($query) use ($search) {
@@ -967,7 +972,7 @@ class CommunicationController extends Controller
           $messages = Communication::where(function ($query) use ($current_user) {
             $query->where('owner_id', '=', $current_user->id);
           })
-            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit', 'message_recipients');
+            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
         } else {
           $messages = Communication::where(function ($query) use ($current_user) {
             $query->where('owner_id', '=', $current_user->id);
@@ -976,7 +981,7 @@ class CommunicationController extends Controller
             ->orWhereHas('recipients', function ($query) use ($current_user) {
               $query->where('user_id', '=', $current_user->id);
             })
-            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit', 'message_recipients');
+            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
         }
       } else {
         if (session('communication_sent') == 1) {
@@ -984,7 +989,7 @@ class CommunicationController extends Controller
             $query->where('owner_id', '=', $current_user->id);
           })
             ->whereNull('parent_id')
-            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit', 'message_recipients');
+            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
         } else {
           $messages = Communication::where(function ($query) use ($current_user, $project) {
             $query->where('owner_id', '=', $current_user->id);
@@ -996,7 +1001,7 @@ class CommunicationController extends Controller
               $query->where('user_id', '=', $current_user->id);
             })
             ->whereNull('parent_id')
-            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit', 'message_recipients');
+            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
           //$messages = $messages->whereHas('replies');
         }
       }
