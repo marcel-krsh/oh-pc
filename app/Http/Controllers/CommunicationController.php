@@ -1239,7 +1239,7 @@ class CommunicationController extends Controller
   public function messageNotification($user_id, $model_id = null, Request $request)
   {
     /**
-     * Check if user already logged in
+     * Check if user is already logged in
      *   If user is logged in, check if the message belongs to this user
      *     If yes, show the message. else, show WARNING
      *   If user is not logged in,
@@ -1261,7 +1261,7 @@ class CommunicationController extends Controller
         if (Auth::check()) {
           $user = Auth::user();
           if ($user->id == $notification->to_id) {
-            if (2 == $notification->type_id) {
+            if (2 == $notification->type_id || 3 == $notification->type_id) {
               return redirect('report/' . $notification->model_id);
             } else {
               return $this->showNotificationMessage($notification->type_id, $model_id);
@@ -1276,7 +1276,7 @@ class CommunicationController extends Controller
           if ($allowed_access_time > $now) {
             $user = User::find($user_id);
             $user = Auth::login($user);
-            if (2 == $notification->type_id) {
+            if (2 == $notification->type_id || 3 == $notification->type_id) {
               return redirect('report/' . $notification->model_id);
             } else {
               return $this->showNotificationMessage($notification->type_id, $model_id);

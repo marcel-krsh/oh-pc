@@ -283,7 +283,7 @@ if ($allowPageLoad) {
 							@endCan
 
 							<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
-								
+
 								<ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
 									@can('access_auditor')
 									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
@@ -315,7 +315,7 @@ if ($allowPageLoad) {
 									@endcan
 								@endcan
 								</ul>
-								
+
 							</div>
 
 							<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
@@ -506,11 +506,17 @@ if ($allowPageLoad) {
 			$("html, body").animate({ scrollTop: 0 }, "slow");
 		});
 
-	
+
+	@endif
+
+	@if(session()->has('notification_modal_source'))
+	notificationModelSource = "{{ (session()->pull('notification_modal_source', null)) }}";
+	setTimeout(function(){
+		dynamicModalLoad(notificationModelSource);
+	},400);
 	@endif
 
 	@if($tab !== null && Auth::user()->can('access_auditor'))
-	
 
 		setTimeout(function(){
 			$('#{{$tab}}').trigger("click");
@@ -518,16 +524,8 @@ if ($allowPageLoad) {
 
 		window.currentSite='allita_pc';
 
-		@if(session()->has('notification_modal_source'))
-		notificationModelSource = "{{ (session()->pull('notification_modal_source', null)) }}";
-		setTimeout(function(){
-			dynamicModalLoad(notificationModelSource);
-		},400);
-		@endif
-
-	
 	@else
-	
+
 		// Click on initial tab to load it:
 		setTimeout(function(){
 			@can('access_auditor')
@@ -541,12 +539,12 @@ if ($allowPageLoad) {
 
 		window.currentSite='allita_pc';
 
-	
+
 	@endif
 
-	
 
-	
+
+
 		new Vue({
 			el: '#top-tabs',
 			data: {
@@ -584,7 +582,7 @@ if ($allowPageLoad) {
 
 		      }
 		    });
-	
+
 	</script>
 
 	@if(session('disablePacer') != 1)
