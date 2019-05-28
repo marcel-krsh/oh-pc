@@ -535,6 +535,7 @@ class CommunicationController extends Controller
     $audit  = null;
     $report = null;
 
+
     if (isset($forminputs['audit'])) {
       try {
         $audit_id = (int) $forminputs['audit'];
@@ -553,7 +554,7 @@ class CommunicationController extends Controller
     if (isset($forminputs['report'])) {
       try {
         $report_id = (int) $forminputs['report'];
-        $report    = CrrReport::where('id', $report_id)->first();
+        $report    = CrrReport::find($report_id);
       } catch (\Illuminate\Database\QueryException $ex) {
         dd($ex->getMessage());
       }
@@ -735,8 +736,8 @@ class CommunicationController extends Controller
         if (!is_null($report_id)) {
           // we sent a notification about the report
           // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
-          //$report->update(['crr_approval_type_id' => 6]);
-          //$report_status = $this->reportStatusUpdate($forminputs, $report);
+          // $report->update(['crr_approval_type_id' => 6]);
+          $report_status = $this->reportStatusUpdate($forminputs, $report);
         }
         return 1;
       } else {
@@ -1417,7 +1418,7 @@ class CommunicationController extends Controller
         return $report;
       }
     }
-    return false;
+    return 'false';
   }
 
   public function some()

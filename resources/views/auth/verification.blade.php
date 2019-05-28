@@ -54,7 +54,20 @@
 	</div>
 </div>
 
+<script src="https://unpkg.com/imask"></script>
+
 <script>
+
+var codeMask = IMask(
+document.getElementById('verification_code'),
+{
+mask: '000-000-000'
+});
+</script>
+
+<script>
+
+
 
 	function phone_formatting(ele,restore) {
 		var new_number,
@@ -146,36 +159,5 @@
   	business_phone_number_check(this,e);
   }
 
-
-  function submitCompleteRegistration() {
-  	jQuery.ajaxSetup({
-  		headers: {
-  			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-  		}
-  	});
-  	var form = $('#registrationForm');
-  	var data = { };
-  	$.each($('form').serializeArray(), function() {
-  		data[this.name] = this.value;
-  	});
-  	jQuery.ajax({
-  		url: "{{ URL::route("user.complete-registration") }}",
-  		method: 'post',
-  		data: {
-  			email_token: $('#email_token').val(),
-  			user_id: $('#user_id').val(),
-  			password: data['password'],
-  			password_confirmation: data['password_confirmation'],
-  			'_token' : '{{ csrf_token() }}'
-  		},
-  		success: function(data){
-  			$('.alert-danger' ).empty();
-  			jQuery.each(data.errors, function(key, value){
-  				jQuery('.alert-danger').show();
-  				jQuery('.alert-danger').append('<p>'+value+'</p>');
-  			});
-  		}
-  	});
-  }
 </script>
 @endsection
