@@ -185,6 +185,8 @@ class LoginController extends Controller
   {
     $validator = \Validator::make($request->all(), [
       'verification_code' => 'required|exists:tokens,code',
+    ], [
+    	'verification_code.exists' => 'The verification code entered was not valid. Please check your code and try again.',
     ]);
     if ($validator->fails()) {
       $errors = $validator->errors()->all();
@@ -222,8 +224,10 @@ class LoginController extends Controller
 
       $token->save();
       return redirect()->intended('/')->withCookie($cookie);
+    } else {
+    	$validator->getMessageBag()->add('error', 'The verification code entered was expired or already used. Please login again to receive new code.');
+      return redirect('login')->withErrors($validator);
     }
-    flash('Token Expired')->error();
     return redirect()->back();
   }
 

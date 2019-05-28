@@ -31,7 +31,8 @@
     });
 
     Route::get('notifications/view-message/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
-            Route::get('notifications/report/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
+    Route::get('notifications/report/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
+    Route::post('resend-notification-link', 'Notifications\UserNotificationController@postResendNotificationsLink');
 
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
@@ -460,7 +461,6 @@
             // notifications trigger
 			Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
 			Route::get('send/notification', 'Notifications\UserNotificationController@communicationNotifications');
-			Route::post('resend-notification-link', 'Notifications\UserNotificationController@postResendNotificationsLink');
 
             Route::get('/modals/report-ready/{report_id}/{project_id?}', 'CommunicationController@reportReadyNotification')->name('communication.report-ready');
             Route::get('/modals/report-send-to-manager/{report_id}/{project_id?}', 'CommunicationController@reportSendToManagerNotification')->name('communication.report-send-to-manager');

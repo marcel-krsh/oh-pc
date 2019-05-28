@@ -18,11 +18,11 @@
 			{{ csrf_field() }}
 			<div class="uk-form-row" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
 				<input class="uk-input uk-width-1-1 uk-form-large" placeholder="Verification code*" id="verification_code" type="text" name="verification_code" required autofocus >
-				@if ($errors->has('verification_code'))
+				{{-- @if ($errors->has('verification_code'))
 				<span class="uk-block-primary">
 					<strong class="uk-dark uk-light">{{ $errors->first('verification_code') }}</strong>
 				</span>
-				@endif
+				@endif --}}
 			</div>
 			<div class="uk-form-row">
 				<input id="device_name" type="text" class="uk-input uk-width-1-1 uk-form-large {{ $errors->has('device_name') ? ' uk-form-danger uk-animation-shake' : '' }}" name="device_name" value="{{ old('device_name') }}" required autofocus placeholder="Device Name">

@@ -1254,10 +1254,9 @@ class CommunicationController extends Controller
      *       Show communication tab and modal of that message
      */
     $token        = $request->get('t');
-    $notification = NotificationsTriggered::where('token', $token)->where('model_id', $model_id)->inactive()->first();
-    if ($token) {
+    $notification = NotificationsTriggered::where('token', $token)->where('model_id', $model_id)->first();
+    if ($token && $notification) {
       //$notification = NotificationsTriggered::where('token', $token)->inactive()->first();
-      if ($notification) {
         if (Auth::check()) {
           $user = Auth::user();
           if ($user->id == $notification->to_id) {
@@ -1275,6 +1274,9 @@ class CommunicationController extends Controller
           $allowed_access_time = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($notification_time)));
           if ($allowed_access_time > $now) {
             $user = User::find($user_id);
+            if (count($user->roles) == 0) {
+			        return redirect('request-access');
+			      }
             $user = Auth::login($user);
             if (2 == $notification->type_id || 3 == $notification->type_id) {
               return redirect('report/' . $notification->model_id);
@@ -1287,12 +1289,10 @@ class CommunicationController extends Controller
             return view('notifications.expired-link', compact('user_id'));
           }
         }
-      } else {
-        // show warning message, looks like something went wrong
-      }
-
       //check if the token is valid, within 24 hours
     } else {
+    	return 'Something went wrong. Try again later or contact Technical Team';
+      return view('notifications.expired-link', compact('user_id'));
       // show warning message, looks like something went wrong, redirect to login
     }
   }
