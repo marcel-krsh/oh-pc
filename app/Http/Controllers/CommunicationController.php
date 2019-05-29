@@ -535,7 +535,6 @@ class CommunicationController extends Controller
     $audit  = null;
     $report = null;
 
-
     if (isset($forminputs['audit'])) {
       try {
         $audit_id = (int) $forminputs['audit'];
