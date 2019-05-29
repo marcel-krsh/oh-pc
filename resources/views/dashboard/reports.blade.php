@@ -230,26 +230,25 @@ $crrTypeSelection    = 'all';
             });
         });
         @can('access_auditor')
+
+        function updateStatus(report_id, action) {
+            	$.get('/dashboard/reports', {
+                                            'id' : report_id,
+                                            'action' : action
+                                             }, function(data2) {
+
+                                         });
+    				UIkit.modal.alert('Your message has been saved.',{stack: true});
+        }
+
         function reportAction(reportId,action,project_id = null){
             window.crrActionReportId = reportId;
             //Here goes the notification code
             if(action == 6) {
             	dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
-            	$.get('/dashboard/reports', {
-                                            'id' : reportId,
-                                            'action' : action
-                                             }, function(data2) {
-
-                                         });
             } else if(action == 2) {
             	dynamicModalLoad('report-send-to-manager/' + reportId + '/' + project_id);
-            	$.get('/dashboard/reports', {
-                                            'id' : reportId,
-                                            'action' : action
-                                             }, function(data2) {
-
-                                         });
-            } else if(action != 8){
+            }  else if(action != 8){
                 $.get('/dashboard/reports', {
                                             'id' : reportId,
                                             'action' : action

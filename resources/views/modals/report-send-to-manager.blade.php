@@ -214,7 +214,7 @@
     			if(data!=1){
     				UIkit.modal.alert(data,{stack: true});
     			} else {
-    				UIkit.modal.alert('Your message has been saved.',{stack: true});
+    				updateStatus({{ $report_id }}, 2);
     			}
     		} );
 

@@ -736,7 +736,7 @@ class CommunicationController extends Controller
           // we sent a notification about the report
           // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
           // $report->update(['crr_approval_type_id' => 6]);
-          $report_status = $this->reportStatusUpdate($forminputs, $report);
+          // $report_status = $this->reportStatusUpdate($forminputs, $report);
         }
         return 1;
       } else {
@@ -1266,7 +1266,8 @@ class CommunicationController extends Controller
               return $this->showNotificationMessage($notification->type_id, $model_id);
             }
           } else {
-            return 'you are now allowed to view this notification';
+				    $error   = "Looks like you are trying to access a message not sent to you.";
+				    abort(403, $error);
           }
         } else {
           $notification_time   = $notification->deliver_time;

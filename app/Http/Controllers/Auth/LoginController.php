@@ -134,9 +134,11 @@ class LoginController extends Controller
     $user_id = session()->get('user_id');
     $user    = User::with('person.allita_phone')->find($user_id);
     if (is_null($user) || !session()->has('login_success')) {
-      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
-      $error   = "Looks like the user doesn't exist with the provided information";
-      $type    = "danger";
+    	$error   = "Looks like the user doesn't exist with the provided information";
+	    abort(403, $error);
+      // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+      // $error   = "Looks like the user doesn't exist with the provided information";
+      // $type    = "danger";
       return view('errors.error', compact('error', 'message', 'type'));
     } else {
       if ($user->person->allita_phone) {
@@ -157,10 +159,12 @@ class LoginController extends Controller
     if ($user && session()->get('user_id_validation') == $user_id + $this->verification_number && session()->has('code_sent')) {
       return view('auth.verification', compact('user', 'user_id'));
     } else {
-      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
-      $error   = "Looks like the user doesn't exist with the provided information";
-      $type    = "danger";
-      return view('errors.error', compact('error', 'message', 'type'));
+    	$error   = "Looks like the user doesn't exist with the provided information";
+	    abort(403, $error);
+      // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+      // $error   = "Looks like the user doesn't exist with the provided information";
+      // $type    = "danger";
+      // return view('errors.error', compact('error', 'message', 'type'));
     }
   }
 
@@ -169,10 +173,12 @@ class LoginController extends Controller
     $user_id = session()->get('user_id');
     $user    = User::with('person.allita_phone')->find($user_id);
     if (is_null($user)) {
-      $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
-      $error   = "Looks like the user doesn't exist with the provided information";
-      $type    = "danger";
-      return view('errors.error', compact('error', 'message', 'type'));
+    	$error   = "Looks like the user doesn't exist with the provided information";
+	    abort(403, $error);
+      // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+      // $error   = "Looks like the user doesn't exist with the provided information";
+      // $type    = "danger";
+      // return view('errors.error', compact('error', 'message', 'type'));
     } else {
       if (count($user->roles) > 0) {
         return redirect()->intended('/');
@@ -337,15 +343,19 @@ class LoginController extends Controller
       //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
       $user = User::find($user_id);
       if (!$user) {
-        $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
-        $error   = "Looks like the user doesn't exist with the provided information";
-        $type    = "danger";
-        return view('errors.error', compact('error', 'message', 'type'));
+      	$error   = "Looks like the user doesn't exist with the provided information";
+	    	abort(403, $error);
+        // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+        // $error   = "Looks like the user doesn't exist with the provided information";
+        // $type    = "danger";
+        // return view('errors.error', compact('error', 'message', 'type'));
       } elseif (count($user->roles) > 0) {
-        $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
-        $error   = "Looks like the user has been already given access";
-        $type    = "message";
-        return view('errors.error', compact('error', 'message', 'type'));
+      	$error   = "Looks like the user has been already given access";
+	    	abort(403, $error);
+        // $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
+        // $error   = "Looks like the user has been already given access";
+        // $type    = "message";
+        // return view('errors.error', compact('error', 'message', 'type'));
       }
       session(["user_id" => $user->id]);
       $current_user_role_id = $current_user->roles->first()->role_id;
@@ -380,15 +390,19 @@ class LoginController extends Controller
       //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
       $user = User::find($user_id);
       if (!$user) {
-        $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
-        $error   = "Looks like the user doesn't exist with the provided information";
-        $type    = "danger";
-        return view('errors.error', compact('error', 'message', 'type'));
+      	$error   = "Looks like the user doesn't exist with the provided information";
+	    	abort(403, $error);
+        // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
+        // $error   = "Looks like the user doesn't exist with the provided information";
+        // $type    = "danger";
+        // return view('errors.error', compact('error', 'message', 'type'));
       } elseif (count($user->roles) > 0) {
-        $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
-        $error   = "Looks like the user has been already given access";
-        $type    = "message";
-        return view('errors.error', compact('error', 'message', 'type'));
+      	$error   = "Looks like the user has been already given access";
+	    	abort(403, $error);
+        // $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
+        // $error   = "Looks like the user has been already given access";
+        // $type    = "message";
+        // return view('errors.error', compact('error', 'message', 'type'));
       }
       $current_user_role_id = $current_user->roles->first()->role_id;
       if ($request->role >= $current_user_role_id) {
