@@ -83,7 +83,7 @@ class Project extends Model
                 if($pm){
                     $pm_id = $pm->id;
                 }else{
-                     $pm_id = null;
+                     $pm_id = '';
                 }
                 $pm_name = $pm_contact->person->first_name." ".$pm_contact->person->last_name;
                 $pm_phone = $pm_contact->person->phone->number();
