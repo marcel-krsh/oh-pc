@@ -234,7 +234,8 @@ $crrTypeSelection    = 'all';
         function updateStatus(report_id, action) {
             	$.get('/dashboard/reports', {
                                             'id' : report_id,
-                                            'action' : action
+                                            'action' : action,
+                                            'check' : 1
                                              }, function(data2) {
 
                                          });
@@ -248,7 +249,13 @@ $crrTypeSelection    = 'all';
             	dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
             } else if(action == 2) {
             	dynamicModalLoad('report-send-to-manager/' + reportId + '/' + project_id);
-            }  else if(action != 8){
+            } else if(action == 3) {
+            	dynamicModalLoad('report-decline/' + reportId + '/' + project_id);
+            } else if(action == 4) {
+            	dynamicModalLoad('report-approve-with-changes/' + reportId + '/' + project_id);
+            } else if(action == 5) {
+            	dynamicModalLoad('report-approve/' + reportId + '/' + project_id);
+            } else if(action != 8){
                 $.get('/dashboard/reports', {
                                             'id' : reportId,
                                             'action' : action

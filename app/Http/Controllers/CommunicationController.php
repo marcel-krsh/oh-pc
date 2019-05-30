@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\DocumentTrait;
-use App\Mail\EmailNotification;
 use App\Models\Audit;
 use App\Models\CachedAudit;
 use App\Models\Communication;
@@ -151,8 +150,8 @@ class CommunicationController extends Controller
 
       if (!is_null($project)) {
         $audit_details = $project->selected_audit();
-        if(is_null($audit) && !is_null($audit_details)) {
-        	$audit = Audit::find($audit_details->audit_id);
+        if (is_null($audit) && !is_null($audit_details)) {
+          $audit = Audit::find($audit_details->audit_id);
         }
       }
       if (local()) {
@@ -160,8 +159,6 @@ class CommunicationController extends Controller
       } else {
         $docuware_documents = $this->projectDocuwareDocumets($project);
       }
-
-
 
       $local_documents = Document::where('project_id', $project->id)
         ->with('assigned_categories')
@@ -1257,42 +1254,42 @@ class CommunicationController extends Controller
     $notification = NotificationsTriggered::where('token', $token)->where('model_id', $model_id)->first();
     if ($token && $notification) {
       //$notification = NotificationsTriggered::where('token', $token)->inactive()->first();
-        if (Auth::check()) {
-          $user = Auth::user();
-          if ($user->id == $notification->to_id) {
-            if (2 == $notification->type_id || 3 == $notification->type_id) {
-              return redirect('report/' . $notification->model_id);
-            } else {
-              return $this->showNotificationMessage($notification->type_id, $model_id);
-            }
+      if (Auth::check()) {
+        $user = Auth::user();
+        if ($user->id == $notification->to_id) {
+          if (2 == $notification->type_id || 3 == $notification->type_id) {
+            return redirect('report/' . $notification->model_id);
           } else {
-				    $error   = "Looks like you are trying to access a message not sent to you.";
-				    abort(403, $error);
+            return $this->showNotificationMessage($notification->type_id, $model_id);
           }
         } else {
-          $notification_time   = $notification->deliver_time;
-          $now                 = date("Y-m-d H:i:s");
-          $allowed_access_time = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($notification_time)));
-          if ($allowed_access_time > $now) {
-            $user = User::find($user_id);
-            if (count($user->roles) == 0) {
-			        return redirect('request-access');
-			      }
-            $user = Auth::login($user);
-            if (2 == $notification->type_id || 3 == $notification->type_id) {
-              return redirect('report/' . $notification->model_id);
-            } else {
-              return $this->showNotificationMessage($notification->type_id, $model_id);
-            }
-          } else {
-            //if not show WARNING and give a button to generate a new token and email again
-            session(["notification_token" => $token]);
-            return view('notifications.expired-link', compact('user_id'));
-          }
+          $error = "Looks like you are trying to access a message not sent to you.";
+          abort(403, $error);
         }
+      } else {
+        $notification_time   = $notification->deliver_time;
+        $now                 = date("Y-m-d H:i:s");
+        $allowed_access_time = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($notification_time)));
+        if ($allowed_access_time > $now) {
+          $user = User::find($user_id);
+          if (count($user->roles) == 0) {
+            return redirect('request-access');
+          }
+          $user = Auth::login($user);
+          if (2 == $notification->type_id || 3 == $notification->type_id) {
+            return redirect('report/' . $notification->model_id);
+          } else {
+            return $this->showNotificationMessage($notification->type_id, $model_id);
+          }
+        } else {
+          //if not show WARNING and give a button to generate a new token and email again
+          session(["notification_token" => $token]);
+          return view('notifications.expired-link', compact('user_id'));
+        }
+      }
       //check if the token is valid, within 24 hours
     } else {
-    	return 'Something went wrong. Try again later or contact Technical Team';
+      return 'Something went wrong. Try again later or contact Technical Team';
       return view('notifications.expired-link', compact('user_id'));
       // show warning message, looks like something went wrong, redirect to login
     }
@@ -1321,82 +1318,113 @@ class CommunicationController extends Controller
   public function reportReadyNotification($report_id, $project_id = null)
   {
     if (null !== $project_id) {
-      $project       = Project::where('id', '=', $project_id)->first();
-      $audit_details = $project->selected_audit();
-      $report        = CrrReport::find($report_id);
-      $user_keys     = $report->signators()->pluck('person_key')->toArray();
-      $recipients    = User::whereIn('person_key', $user_keys)->with('person')
+      $project    = Project::where('id', '=', $project_id)->first();
+      $report     = CrrReport::find($report_id);
+      $user_keys  = $report->signators()->pluck('person_key')->toArray();
+      $recipients = User::whereIn('person_key', $user_keys)->with('person')
         ->where('active', 1)
         ->get();
-      $audit = $audit_details->id;
-      return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'audit_details', 'report'));
+      $audit = $report->audit_id;
+      return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'report'));
     } else {
-      $project             = null;
-      $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
-
-      // build a list of all categories used for uploaded documents in this project
-      $categories_used = [];
-      // category keys for name reference ['id' => 'name']
-      $document_categories_key = [];
-      $documents               = [];
-
-      $recipients_from_hfa = User::where('organization_id', '=', $ohfa_id)
-        ->where('active', 1)
-        ->leftJoin('people', 'people.id', 'users.person_id')
-        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-        ->join('users_roles', 'users_roles.user_id', 'users.id')
-        ->select('users.*', 'last_name', 'first_name', 'organization_name')
-        ->where('active', 1)
-        ->orderBy('last_name', 'asc')
-        ->get();
-
-      // $recipients = User::where('organization_id', '!=', $ohfa_id)
-      //     ->orWhereNull('organization_id')
-      //     ->where('active', 1)
-      //     ->orderBy('name', 'asc')->get();
-
-      if (Auth::user()->pm_access()) {
-        $recipients = User::where('organization_id', '=', Auth::user()->organization_id)
-          ->leftJoin('people', 'people.id', 'users.person_id')
-          ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-          ->join('users_roles', 'users_roles.user_id', 'users.id')
-          ->select('users.*', 'last_name', 'first_name', 'organization_name')
-          ->where('active', 1)
-          ->orderBy('last_name', 'asc')
-          ->get();
-      } else {
-        $recipients = User::where('organization_id', '!=', $ohfa_id)
-          ->leftJoin('people', 'people.id', 'users.person_id')
-          ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-          ->join('users_roles', 'users_roles.user_id', 'users.id')
-          ->select('users.*', 'last_name', 'first_name', 'organization_name')
-          ->where('active', 1)
-          ->orderBy('organization_name', 'asc')
-          ->orderBy('last_name', 'asc')
-          ->get();
-      }
-
-      $audit = null;
-
-      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project'));
+      return abort(403,'No associated project was found');
     }
   }
 
   public function reportSendToManagerNotification($report_id, $project_id = null)
   {
     if (null !== $project_id) {
-      $project       = Project::where('id', '=', $project_id)->first();
-      $audit_details = $project->selected_audit();
-      $report        = CrrReport::find($report_id);
-      $user_keys     = $report->signators()->pluck('person_key')->toArray();
-      // $recipients    = User::whereIn('person_key', $user_keys)->with('person')
-      //   ->where('active', 1)
-      //   ->get();
+      $project    = Project::where('id', '=', $project_id)->first();
+      $report     = CrrReport::find($report_id);
+      $user_keys  = $report->signators()->pluck('person_key')->toArray();
+      $status = 2;
+      $single_receipient  = 0;
       $recipients = User::allManagers();
-      $audit      = $audit_details->id;
-      return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'audit_details', 'report'));
+      $audit      = $report->audit_id;
+      $data = ['subject' => 'Report ready for ' . $project->project_number . ' : ' .  $project->project_name,
+      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . 'to view your report.' ];
+      // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
+      return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {
-      return 'No associated project was found';
+      return abort(403,'No associated project was found');
+    }
+  }
+
+  public function reportDeclineNotification($report_id, $project_id = null)
+  {
+    if (null !== $project_id) {
+      $project    = Project::where('id', '=', $project_id)->first();
+      $report     = CrrReport::with('lead')->find($report_id);
+      $lead_id  = $report->lead->id;
+      $recipients = User::where('users.id', $lead_id)
+            ->leftJoin('people', 'people.id', 'users.person_id')
+            ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+            ->join('users_roles', 'users_roles.user_id', 'users.id')
+            ->select('users.*', 'last_name', 'first_name', 'organization_name')
+            ->where('active', 1)
+            ->orderBy('organization_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->get();
+      $audit      = $report->audit_id;
+      $status = 3;
+      $data = ['subject' => 'Report has been declined for ' . $project->project_number . ' : ' .  $project->project_name,
+      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . 'to view your report.' ];
+      $single_receipient = 1;
+      return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
+    } else {
+      return abort(403, 'No associated project was found');
+    }
+  }
+
+  public function reportApproveWithChangesNotification($report_id, $project_id = null)
+  {
+    if (null !== $project_id) {
+      $project    = Project::where('id', '=', $project_id)->first();
+      $report     = CrrReport::with('lead')->find($report_id);
+      $lead_id  = $report->lead->id;
+      $recipients = User::where('users.id', $lead_id)
+            ->leftJoin('people', 'people.id', 'users.person_id')
+            ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+            ->join('users_roles', 'users_roles.user_id', 'users.id')
+            ->select('users.*', 'last_name', 'first_name', 'organization_name')
+            ->where('active', 1)
+            ->orderBy('organization_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->get();
+      $audit      = $report->audit_id;
+      $status = 4;
+      $data = ['subject' => 'Report has been apporved with changes for ' . $project->project_number . ' : ' .  $project->project_name,
+      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . 'to view your report.' ];
+      $single_receipient = 1;
+      return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
+    } else {
+      return abort(403, 'No associated project was found');
+    }
+  }
+
+  public function reportApproveNotification($report_id, $project_id = null)
+  {
+    if (null !== $project_id) {
+      $project    = Project::where('id', '=', $project_id)->first();
+      $report     = CrrReport::with('lead')->find($report_id);
+      $lead_id  = $report->lead->id;
+      $recipients = User::where('users.id', $lead_id)
+            ->leftJoin('people', 'people.id', 'users.person_id')
+            ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+            ->join('users_roles', 'users_roles.user_id', 'users.id')
+            ->select('users.*', 'last_name', 'first_name', 'organization_name')
+            ->where('active', 1)
+            ->orderBy('organization_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->get();
+      $audit      = $report->audit_id;
+      $status = 5;
+      $data = ['subject' => 'Report has been apporved for ' . $project->project_number . ' : ' .  $project->project_name,
+      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . 'to view your report.' ];
+      $single_receipient = 1;
+      return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
+    } else {
+      return abort(403, 'No associated project was found');
     }
   }
 

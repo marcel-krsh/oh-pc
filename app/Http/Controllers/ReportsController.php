@@ -92,7 +92,7 @@ class ReportsController extends Controller
           $note = "Changed report status from " . $report->status_name() . " to Draft.";
           if (!is_null($report->manager_id)) {
             $report->update(['crr_approval_type_id' => 1, 'manager_id' => null]);
-            $note .= ' Removed prior manager approval, and refreshed report to reflect the change.';
+            $note = ' Removed prior manager approval, and refreshed report to reflect the change.';
             $this->generateReport($report, 0, 1);
           } else {
             $report->update(['crr_approval_type_id' => 1, 'manager_id' => null]);
