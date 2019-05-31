@@ -56,15 +56,12 @@ class assign_file_amenities extends Command
                     $amenity_id = null;
                     // $toplevel = $request->get('toplevel');
 
-                    $new_amenities = $amenities;
+                    
 
                     $user = null;
 
-                    if ($new_amenities !== null) {
-                        foreach ($new_amenities as $new_amenity) {
-
-                            // get amenity type
-                            $amenity_type = \App\Models\Amenity::where("id", "=", $new_amenity->amenity_id)->first();
+                    if ($amenities !== null) {
+                        foreach ($amenities as $amenity_type) {
 
                             $name = $amenity_type->amenity_description;
 
@@ -82,12 +79,11 @@ class assign_file_amenities extends Command
                                         'comment' => 'Added by system ' . \Auth::user()->id,
                                     ]);
                                     $unitamenity->save();
+                                } else {
+                                    $this->line('unit_id:'.$unit->id.' has one of '.$amenity_type->id.PHP_EOL);
                                 }
 
-                               
-
                             }
-
                             // project level amenities are handled through OrderingBuilding and CachedBuilding
                         }// end for each new amenity
                     }// end null check
