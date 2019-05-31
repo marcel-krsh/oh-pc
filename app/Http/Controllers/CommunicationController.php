@@ -125,7 +125,7 @@ class CommunicationController extends Controller
     return view('projects.pproject_communications', compact('project', 'messages', 'owners', 'owners_array'));
   }
 
-  public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null)
+  public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0)
   {
     $ohfa_id           = SystemSetting::get('ohfa_organization_id');
     $single_receipient = false;
@@ -260,7 +260,7 @@ class CommunicationController extends Controller
           $single_receipient = true;
         }
       }
-      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient'));
+      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings'));
     } else {
       $project             = null;
       $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -309,7 +309,7 @@ class CommunicationController extends Controller
 
       $audit = null;
 
-      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient'));
+      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'all_findings'));
     }
   }
 
@@ -571,6 +571,12 @@ class CommunicationController extends Controller
       $project_id = null;
     }
 
+    if (isset($forminputs['findings'])) {
+    	$finding_ids = json_encode($forminputs['findings']);
+    } else {
+      $finding_ids = null;
+    }
+
     if (!is_null($project_id) && Auth::user()->cannot('access_auditor')) {
       // check to see if the user is allowed to access this project
       $onProject = 0;
@@ -621,6 +627,7 @@ class CommunicationController extends Controller
             'parent_id'  => $originalMessageId,
             'message'    => $message_posted,
             'subject'    => 'RE: ' . $original_message->subject,
+            'finding_ids' => $finding_ids
           ]);
           //$lc = new LogConverter('communication', 'create');
           //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
@@ -632,6 +639,7 @@ class CommunicationController extends Controller
             'project_id' => $project_id,
             'message'    => $message_posted,
             'subject'    => $subject,
+            'finding_ids' => $finding_ids,
           ]);
           //$lc = new LogConverter('communication', 'create');
           //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
@@ -1349,7 +1357,7 @@ class CommunicationController extends Controller
       $recipients = User::allManagers();
       $audit      = $report->audit_id;
       $data = ['subject' => 'Report ready for ' . $project->project_number . ' : ' .  $project->project_name,
-      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . 'to view your report.' ];
+      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.' ];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {
@@ -1375,7 +1383,7 @@ class CommunicationController extends Controller
       $audit      = $report->audit_id;
       $status = 3;
       $data = ['subject' => 'Report has been declined for ' . $project->project_number . ' : ' .  $project->project_name,
-      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . 'to view your report.' ];
+      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.' ];
       $single_receipient = 1;
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {
@@ -1401,7 +1409,7 @@ class CommunicationController extends Controller
       $audit      = $report->audit_id;
       $status = 4;
       $data = ['subject' => 'Report has been apporved with changes for ' . $project->project_number . ' : ' .  $project->project_name,
-      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . 'to view your report.' ];
+      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.' ];
       $single_receipient = 1;
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {
@@ -1427,7 +1435,7 @@ class CommunicationController extends Controller
       $audit      = $report->audit_id;
       $status = 5;
       $data = ['subject' => 'Report has been apporved for ' . $project->project_number . ' : ' .  $project->project_name,
-      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . 'to view your report.' ];
+      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.' ];
       $single_receipient = 1;
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {

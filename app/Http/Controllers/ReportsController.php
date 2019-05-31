@@ -730,6 +730,7 @@ class ReportsController extends Controller
             $report->update(['crr_approval_type_id'=>7]);
           }
           $this->reportHistory($report, $history);
+          //return $data;
 
           if ($request->get('print') != 1) {
             return view('crr.crr', compact('report', 'data', 'version', 'print', 'users'));

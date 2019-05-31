@@ -111,6 +111,11 @@
           <!-- END RECIPIENT LISTING -->
         </div>
         @endif
+
+        @if($all_findings)
+        @include('modals.partials.communication-findings')
+        @endif
+
         @if(!is_null($project))
         @include('modals.partials.communication-documents')
         @endif

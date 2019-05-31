@@ -23,12 +23,14 @@ class Communication extends Model
     'message',
     'subject',
     'project_id',
+    'finding_ids'
   ];
 
   use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
   protected $casts = [
     'communication_id' => 'json',
+    'findings_ids' => 'json'
   ];
 
   public static function boot()
