@@ -50,7 +50,7 @@ class assign_file_amenities extends Command
                 
                 $unit_id = $unit->id;
                 
-                $amenities = Amenity::where("file", 1 )->where('default',1)->get();
+                $amenities = \App\Models\Amenity::where("file", 1 )->where('default',1)->get();
 
                 
                     $amenity_id = null;
@@ -64,7 +64,7 @@ class assign_file_amenities extends Command
                         foreach ($new_amenities as $new_amenity) {
 
                             // get amenity type
-                            $amenity_type = Amenity::where("id", "=", $new_amenity->amenity_id)->first();
+                            $amenity_type = \App\Models\Amenity::where("id", "=", $new_amenity->amenity_id)->first();
 
                             $name = $amenity_type->amenity_description;
 
@@ -73,13 +73,13 @@ class assign_file_amenities extends Command
 
                                 $check = 0;
 
-                                $check = UnitAmenity::where('unit_id',$unit_id)->where('amenity_id',$amenity_type->id)->count();
+                                $check = \App\Models\UnitAmenity::where('unit_id',$unit_id)->where('amenity_id',$amenity_type->id)->count();
 
                                 if(!$check){
-                                    $unitamenity = new UnitAmenity([
+                                    $unitamenity = new \App\Models\UnitAmenity([
                                         'unit_id' => $unit_id,
                                         'amenity_id' => $amenity_type->id,
-                                        'comment' => 'manually added by ' . Auth::user()->id,
+                                        'comment' => 'Added by system ' . \Auth::user()->id,
                                     ]);
                                     $unitamenity->save();
                                 }
