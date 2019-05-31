@@ -159,7 +159,7 @@
 
                             completeAll: function (response) {
                                 var data = jQuery.parseJSON(response.response);
-                                
+
                                 var documentids = data['document_ids'];
                                 var is_retainage = data['is_retainage'];
                                 var is_advance = data['is_advance'];
@@ -175,14 +175,14 @@
                                             'comment' : val,
                                             '_token' : '{{ csrf_token() }}'
                                             }, function(data) {
-                                                if(data!='1'){ 
+                                                if(data!='1'){
                                                     UIkit.modal.alert(data,{stack: true});
                                                 } else {
-                                                    UIkit.modal.alert('Your comment has been saved.',{stack: true});          
+                                                    UIkit.modal.alert('Your comment has been saved.',{stack: true});
                                                 }
                                     });
                                 });
-                                
+
                                 //update existing doc list
                                 // get document filename and categories
                                 var document_info_array = [];
@@ -191,11 +191,11 @@
                                             'categories' : categories,
                                             '_token' : '{{ csrf_token() }}'
                                             }, function(data) {
-                                                if(data=='0'){ 
+                                                if(data=='0'){
                                                     UIkit.modal.alert("There was a problem getting the documents' information.",{stack: true});
                                                 } else {
 
-                                                    document_info_array = data; 
+                                                    document_info_array = data;
                                                     documentids = documentids + '';
                                                     var documentid_array = documentids.split(',');
                                                     for (var i = 0; i < documentid_array.length; i++) {
@@ -209,18 +209,18 @@
                                                             '<br />'+
                                                             '<ul class="document-category-menu">';
                                                         for(var j = 0; j < document_info_array[did]['categories'].length; j++){
-                                                            newinput = newinput + 
+                                                            newinput = newinput +
                                                             '    <li>'+
                                                             '       '+document_info_array[did]['categories'][j]+
                                                             '    </li>';
                                                         }
-                                                            
 
-                                                        newinput = newinput +   
+
+                                                        newinput = newinput +
                                                             '</ul>'+
                                                             '</li>';
-                                                        $("#existing-documents").append(newinput); 
-                                                    } 
+                                                        $("#existing-documents").append(newinput);
+                                                    }
                                                 }
                                     });
                             }
@@ -228,11 +228,11 @@
                         };
 
                         var select = UIkit.upload('.js-upload', settings);
-                        
+
                     });
                     </script>
                 	</div>
-		        </div> 
+		        </div>
                 @endif
 			</div>
 
@@ -261,7 +261,7 @@
 					</div>
 				</div>
 			</div>
-		</div> 
+		</div>
 		<hr>
 		<div uk-grid>
 			<div class="uk-width-1-1">
@@ -293,13 +293,13 @@
             no_alert = 0;
             UIkit.modal.alert('You must select a recipient.',{stack: true});
         }
-	
+
         if(no_alert){
             $.post('{{ URL::route("communication.create") }}', {
                 'inputs' : form.serialize(),
                 '_token' : '{{ csrf_token() }}'
             }, function(data) {
-                if(data!='1'){ 
+                if(data!='1'){
                     UIkit.modal.alert(data,{stack: true});
                 } else {
                     UIkit.modal.alert('Your message has been saved.',{stack: true});
@@ -312,10 +312,10 @@
             @else
             loadDashBoardSubTab('dashboard','communications');
             @endif
-            
+
             dynamicModalClose();
         }
-		
-	}	
+
+	}
 	</script>
 </div>

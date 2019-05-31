@@ -100,7 +100,7 @@ class Audit extends Model
     }
     public function reportableFindings() : HasMany {
         return $this->hasMany('\App\Models\Finding')->whereNull('cancelled_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')
-                ->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->orderBy('building_id','desc')->orderBy('unit_id');
+                ->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->with('photos')->orderBy('building_id','desc')->orderBy('unit_id');
     }
     public function reportableLtFindings() : HasMany {
         return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
