@@ -964,6 +964,7 @@ class CommunicationController extends Controller
        */
 
       //List view
+      //return session()->all();
       if (session('communication_list') == 1) {
         if (session('communication_sent') == 1) {
           $messages = Communication::where(function ($query) use ($current_user) {
@@ -971,22 +972,25 @@ class CommunicationController extends Controller
           })
             ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
         } else {
+        	//return session()->all();
           $messages = Communication::where(function ($query) use ($current_user) {
             $query->where('owner_id', '=', $current_user->id);
             $query->whereHas('replies');
           })
-            ->orWhereHas('recipients', function ($query) use ($current_user) {
-              $query->where('user_id', '=', $current_user->id);
-            })
-            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
+          ->orWhereHas('recipients', function ($query) use ($current_user) {
+            $query->where('user_id', '=', $current_user->id);
+          })
+          ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
         }
       } else {
         if (session('communication_sent') == 1) {
           $messages = Communication::where(function ($query) use ($current_user) {
             $query->where('owner_id', '=', $current_user->id);
           })
-            ->whereNull('parent_id')
             ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
+          if (session('communication_list') == 1) {
+          	$messages->whereNull('parent_id');
+          }
         } else {
           $messages = Communication::where(function ($query) use ($current_user, $project) {
             $query->where('owner_id', '=', $current_user->id);
@@ -1028,6 +1032,7 @@ class CommunicationController extends Controller
       //         })->whereNull('parent_id');
 
       // }
+
       $messages = $messages
         ->orderBy('created_at', 'desc')
         ->skip($skip)->take($number_per_page)
@@ -1043,6 +1048,8 @@ class CommunicationController extends Controller
       //$messages = $messages->reverse();
       //return $messages->first()->message_recipients;
     }
+
+    //return $messages;
 
     $owners_array   = [];
     $projects_array = [];
