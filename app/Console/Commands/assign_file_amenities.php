@@ -60,7 +60,7 @@ class assign_file_amenities extends Command
 
                     $user = null;
 
-                    if (null !== $audit && $new_amenities !== null) {
+                    if ($new_amenities !== null) {
                         foreach ($new_amenities as $new_amenity) {
 
                             // get amenity type
