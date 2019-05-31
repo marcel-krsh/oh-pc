@@ -34,6 +34,15 @@
     Route::get('notifications/report/{user_id}/{model_id?}', 'CommunicationController@messageNotification');
     Route::post('resend-notification-link', 'Notifications\UserNotificationController@postResendNotificationsLink');
 
+    Route::get('tablet_login', function () {
+        //session(['brian'=>'test']);
+        if(Auth::user()->allowed_tablet){
+            return Auth::user()->api_token;
+        } else {
+            return 'No Tablet Access';
+        }
+    });
+
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
 
@@ -129,14 +138,7 @@
             Route::get('/sync', 'SyncController@sync');
             Route::get('/brian_test', 'SyncController@brianTest');
 
-            Route::get('tablet_login', function () {
-                //session(['brian'=>'test']);
-                if(Auth::user()->allowed_tablet){
-                    return Auth::user()->api_token;
-                } else {
-                    return 'No Tablet Access';
-                }
-            });
+
 
             Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
             Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
