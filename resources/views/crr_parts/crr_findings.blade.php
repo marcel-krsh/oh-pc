@@ -154,7 +154,7 @@ forEach($findings as $fc){
 				@endForEach
 				@endIf
 
-				@if(!is_null($f->photos))
+				@if(property_exists($f,'photos') && !is_null($f->photos))
 					@forEach($f->photos as $p)
 						@if(!$p->deleted)
 						<hr class="dashed-hr uk-margin-bottom">
