@@ -42,7 +42,7 @@ class assign_file_amenities extends Command
         forEach($projects as $project){
 
             $project_id = $project->id;
-            $units = $project->units();
+            $units = $project->units;
 
              $processBar = $this->output->createProgressBar(count($units));
            
@@ -91,7 +91,7 @@ class assign_file_amenities extends Command
                             // project level amenities are handled through OrderingBuilding and CachedBuilding
                         }// end for each new amenity
                     }// end null check
-                
+               $processBar->advance();  
             }// end for each unit
         }// end for each project
     }// end handle
