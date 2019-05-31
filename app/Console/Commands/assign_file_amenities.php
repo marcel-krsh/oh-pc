@@ -50,7 +50,7 @@ class assign_file_amenities extends Command
                 
                 $unit_id = $unit->id;
                 
-                $amenities = \App\Models\Amenity::where("file", 1 )->where('default',1)->get();
+                $amenities = \App\Models\Amenity::where("file", 1 )->where('unit_default',1)->get();
 
                 
                     $amenity_id = null;
