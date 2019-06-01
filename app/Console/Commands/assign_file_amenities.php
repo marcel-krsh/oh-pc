@@ -76,7 +76,7 @@ class assign_file_amenities extends Command
                                     $unitamenity = new \App\Models\UnitAmenity([
                                         'unit_id' => $unit_id,
                                         'amenity_id' => $amenity_type->id,
-                                        'comment' => 'Added by system ' . \Auth::user()->id,
+                                        'comment' => 'Added by system.',
                                     ]);
                                     $unitamenity->save();
                                 } else {
