@@ -1,7 +1,7 @@
 @extends('layouts.simplerAllita')
 @section('head')
 <title>{{ $report->template()->template_name }}: {{ date('y',strtotime($report->audit->scheduled_at)) }}-{{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
-
+	<link rel="stylesheet" href="/css/documents-tab.css">
 	<script type="text/javascript" src="/js/systems/system.js"></script>
 	<script type="text/javascript" src="/js/systems/audits.js"></script>
 	<script type="text/javascript" src="/js/systems/findings.js"></script>
@@ -55,6 +55,99 @@
 		}
 	}
 
+</script>
+<script type="text/javascript">
+	function markApproved(id,catid){
+		UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
+			$.post('{{ URL::route("documents.local-approve", 0) }}', {
+				'id' : id,
+				'catid' : catid,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data != 1 ) {
+					console.log("processing");
+					UIkit.modal.alert(data);
+			} else {
+				dynamicModalClose();
+			}
+			//documentsLocal('{{0}}');
+			let els = $('.doc-'+id);
+			let spanels = $('.doc-span-'+id);
+			let spancheck = $('.doc-span-check-'+id);
+			for (i = 0; i < els.length; i++) {
+			  els[i].className = '';
+			  els[i].className = 'approved-category doc-'+id;
+			}
+			for (i = 0; i < spanels.length; i++) {
+			  spanels[i].className = '';
+			  spanels[i].className = 'a-checkbox-checked received-yes uk-float-left doc-span-'+id;
+			}
+			for (i = 0; i < spancheck.length; i++) {
+			  spancheck[i].className = '';
+			  spancheck[i].className = 'a-checkbox  minus-received-yes received-yes doc-span-check-'+id;
+			}
+		}
+		);
+		});
+	}
+
+	function markUnreviewed(id,catid){
+		UIkit.modal.confirm("Are you sure you want to clear the review on this file?").then(function() {
+			$.post('{{ URL::route("documents.local-clearReview", 0) }}', {
+				'id' : id,
+				'catid' : catid,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data != 1){
+					console.log("processing");
+					UIkit.modal.alert(data);
+			} else {
+				dynamicModalClose();
+			}
+			documentsLocal('{{0}}');
+		}
+		);
+		});
+	}
+
+	function markNotApproved(id,catid){
+		UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
+			$.post('{{ URL::route("documents.local-notapprove", 0) }}', {
+				'id' : id,
+				'catid' : catid,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data != 1){
+					UIkit.modal.alert(data);
+				} else {
+					dynamicModalClose();
+				}
+				let els = $('.doc-'+id);
+				for (i = 0; i < els.length; i++) {
+				  els[i].className = '';
+				  els[i].className = 'declined-category s';
+				}
+			});
+		});
+	}
+
+	function deleteFile(id){
+		UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
+			$.post('{{ URL::route("documents.local-deleteDocument", 0) }}', {
+				'id' : id,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data!= 1){
+					UIkit.modal.alert(data);
+				} else {
+				}
+				let els = $('.doc-'+id);
+				for (i = 0; i < els.length; i++) {
+				  els[i].className = '';
+				}
+			});
+		});
+	}
 </script>
 @stop
 @section('content')

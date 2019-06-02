@@ -107,7 +107,6 @@
 									UIkit.modal.alert('You must select at least one category.');
 									return false;
 								}
-								debugger;
 							},
 							load: function () {
 							},
@@ -226,6 +225,7 @@
         	$("#document-id-"+formValue+"-holder").remove();
         }
       }
+
       function removeLocalDocument(id){
       	$("#document-id-"+id+"-holder").slideUp();
       	$("#document-id-"+id+"-holder").remove();

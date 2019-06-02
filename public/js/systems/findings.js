@@ -350,7 +350,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 						    		itemcontent = itemcontent + 'Requested Action: '+item.requested_action+'<br />';
 						    	}
 						    	itemcontent = itemcontent + item.description;
-						    	
+
 
 						        itemtype = 'FLWUP';
 						        break;

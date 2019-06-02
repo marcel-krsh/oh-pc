@@ -178,7 +178,7 @@ class DocumentController extends Controller
         }
     }
 
-    public function approveLocalDocument(Project $project, Request $request)
+    public function approveLocalDocument($project = null, Request $request)
     {
         if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';
@@ -202,7 +202,7 @@ class DocumentController extends Controller
         return 1;
     }
 
-    public function notApproveLocalDocument(Project $project, Request $request)
+    public function notApproveLocalDocument($project = null, Request $request)
     {
         if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';
@@ -226,7 +226,7 @@ class DocumentController extends Controller
         return 1;
     }
 
-    public function clearLocalReview(Project $project, Request $request)
+    public function clearLocalReview($project = null, Request $request)
     {
         if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';

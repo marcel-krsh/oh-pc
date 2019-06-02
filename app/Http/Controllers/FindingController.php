@@ -285,7 +285,7 @@ class FindingController extends Controller
         }
     }
 
-    public function replyFindingForm($id, $fromtype, $type, $level = 2)
+    public function replyFindingForm($id, $fromtype, $type, $level = 2, $all_findings = 0)
     {
 
         // $type: followup, photo, document, comment
@@ -326,13 +326,13 @@ class FindingController extends Controller
 
 
                 $document_categories = DocumentCategory::where('active', '=', 1)->get();
-                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'document_categories', 'auditors', 'owner_id', 'owner_name', 'pm_id', 'pm_name', 'level'));
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'document_categories', 'auditors', 'owner_id', 'owner_name', 'pm_id', 'pm_name', 'level', 'all_findings'));
             }elseif($type == 'comment'){
-                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'level','type'));
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'level','type', 'all_findings'));
             }elseif($type == 'subcommentfromphoto'){
                 // tricky way to handle 3 different modals on top of eachother, closing the right one and reloading another while the first one stays open
 
-                return view('modals.finding-reply-comment', compact('from', 'fromtype', 'level','type'));
+                return view('modals.finding-reply-comment', compact('from', 'fromtype', 'level','type', 'all_findings'));
             }elseif($type == 'photo'){
                 if($from->project_id){
                     $project = Project::where('id', '=', $from->project_id)->first();
@@ -345,7 +345,7 @@ class FindingController extends Controller
                     $project = null;
                 }
 
-                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'level'));
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'level', 'all_findings'));
 
             }elseif($type == 'document'){
                 if($from->project_id){
@@ -376,6 +376,7 @@ class FindingController extends Controller
 							          ->with('parent')
 							          ->get();
 							      }
+							      $all_findings = 1;
 
                     // build a list of all categories used for uploaded documents in this project
                     $categories_used = [];
@@ -399,10 +400,10 @@ class FindingController extends Controller
                     $requested_categories = '';
                 }
 
-                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories', 'level'));
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories', 'level', 'all_findings'));
             }
 
-            return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'level'));
+            return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'level', 'all_findings'));
         } else {
             return "Sorry, you do not have permission to access this page.";
         }
@@ -540,6 +541,7 @@ class FindingController extends Controller
                     $local_documents = null;
                 }
 
+
                 // foreach local document, save finding_id and followup_id
                 if($local_documents){
                     if($fromtype == 'followup'){
@@ -552,9 +554,15 @@ class FindingController extends Controller
 
                     }elseif($fromtype == 'finding'){
                         foreach($local_documents as $local_document_id){
-                            Document::where('id', '=', $local_document_id)->update([
+                        	if(array_key_exists('findings', $inputs)) {
+                        		Document::where('id', '=', $local_document_id)->update([
+                                'finding_ids' => json_encode($inputs['findings'])
+                            ]);
+                        	} else {
+                        		Document::where('id', '=', $local_document_id)->update([
                                 'finding_id' => $finding_id
                             ]);
+                        	}
                         }
 
                     }
