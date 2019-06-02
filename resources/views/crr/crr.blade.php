@@ -56,6 +56,7 @@
 	}
 
 </script>
+@can('access_auditor')
 <script type="text/javascript">
 	function markApproved(id,catid){
 		UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
@@ -104,7 +105,20 @@
 			} else {
 				dynamicModalClose();
 			}
-			documentsLocal('{{0}}');
+			let els = $('.doc-'+id);
+			let spanels = $('.doc-span-'+id);
+			let spancheck = $('.doc-span-check-'+id);
+			for (i = 0; i < els.length; i++) {
+			  els[i].className = 'doc-'+id;
+			}
+			for (i = 0; i < spanels.length; i++) {
+			  spanels[i].className = '';
+			  spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
+			}
+			for (i = 0; i < spancheck.length; i++) {
+			  spancheck[i].className = '';
+			  spancheck[i].className = 'a-checkbox received-no doc-span-check-'+id;
+			}
 		}
 		);
 		});
@@ -123,9 +137,19 @@
 					dynamicModalClose();
 				}
 				let els = $('.doc-'+id);
+				let spanels = $('.doc-span-'+id);
+				let spancheck = $('.doc-span-check-'+id);
 				for (i = 0; i < els.length; i++) {
 				  els[i].className = '';
-				  els[i].className = 'declined-category s';
+				  els[i].className = 'declined-category s doc-'+id;
+				}
+				for (i = 0; i < spanels.length; i++) {
+				  spanels[i].className = '';
+				  spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
+				}
+				for (i = 0; i < spancheck.length; i++) {
+				  spancheck[i].className = '';
+				  spancheck[i].className = 'a-circle-cross alert received-no doc-span-check-'+id;
 				}
 			});
 		});
@@ -141,14 +165,12 @@
 					UIkit.modal.alert(data);
 				} else {
 				}
-				let els = $('.doc-'+id);
-				for (i = 0; i < els.length; i++) {
-				  els[i].className = '';
-				}
+
 			});
 		});
 	}
 </script>
+@endCan
 @stop
 @section('content')
 

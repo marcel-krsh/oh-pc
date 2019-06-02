@@ -234,6 +234,7 @@ forEach($findings as $fc){
 						<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon-{{ $f->id }}" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }} doc-span-check-{{ $document->id }}"></span>
 						<span style="display: block; margin-left: 30px"></span>
 					</a>
+					@can('access_auditor')
 					<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
 						<ul class="uk-nav uk-nav-dropdown">
 							<li>
@@ -253,6 +254,7 @@ forEach($findings as $fc){
 							</li>
 						</ul>
 					</div>
+					@endCan
 					<label style="display: block; margin-left: 28px;" for="documents-{{ $document->id }}">
 						<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}">
 							<i class="a-paperclip-2"></i> {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}

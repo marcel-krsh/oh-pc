@@ -399,8 +399,7 @@ class FindingController extends Controller
                 }else{
                     $requested_categories = '';
                 }
-
-                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories', 'level', 'all_findings'));
+                return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories', 'level', 'all_findings', 'id'));
             }
 
             return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'level', 'all_findings'));
