@@ -79,7 +79,7 @@
 						</ul>
 					</div>
 					<div class="uk-form-row">
-						<input type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
+						<input style="width: 100%" type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
 					</div>
 					<script>
             // CLONE RECIPIENTS
@@ -112,7 +112,7 @@
         </div>
         @endif
 
-        @if($all_findings)
+        @if($all_findings > 0)
         @include('modals.partials.communication-findings')
         @endif
 

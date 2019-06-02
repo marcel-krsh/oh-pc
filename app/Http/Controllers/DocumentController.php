@@ -118,8 +118,8 @@ class DocumentController extends Controller
                 // store original file
                 Storage::put($filepath, File::get($file));
                 $data[] = $document->id;
+                $data['document_ids'] = [$document->id];
             }
-            
             return json_encode($data);
         } else {
             // shouldn't happen - UIKIT shouldn't send empty files
@@ -139,7 +139,7 @@ class DocumentController extends Controller
             $files = $request->file('files');
 
             foreach($files as $file){
-                
+
                 $selected_audit = $project->selected_audit();
 
                 $folderpath = 'photos/project_' . $project->project_number . '/audit_' . $selected_audit->audit_id . '/';
@@ -155,7 +155,7 @@ class DocumentController extends Controller
                     'finding_id' => $request->finding_id
                 ]);
                 $photo->save();
-                
+
                 // Sanitize filename and append document id to make it unique
                 $filename = snake_case(strtolower($filename)) . '_' . $photo->id . '.' . $file_extension;
                 $filepath = $folderpath . $filename;
@@ -163,7 +163,7 @@ class DocumentController extends Controller
                     'file_path' => $filepath,
                     'filename' => $filename,
                 ]);
-                
+
                 // store original file
                 Storage::put($filepath, File::get($file));
                 $data[] = [

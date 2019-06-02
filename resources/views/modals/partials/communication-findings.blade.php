@@ -1,5 +1,8 @@
+@php
+	$selected_icon = null;
+@endphp
 <link rel="stylesheet" href="/css/communications-tab.css">
-<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;FINDINGS: </div>
+<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;FINDINGS: {{ $all_findings }} </div>
 
 <div class="uk-width-4-5 "  id="findings-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 <div id="add-findings-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showFindings()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD FINDING</div><div id="done-adding-findings-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showFindings()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING FINDINGS</div>
@@ -12,13 +15,34 @@
 <div class="communication-selector uk-scrollable-box">
 	<ul class="uk-list document-menu">
 		@php
-		$findings = session()->get('selected_findings');
+			$findings = session()->get('selected_findings');
 		@endphp
 		@foreach ($findings as $f)
+		@if($f->finding_type->type == 'nlt')
+			@php
+				$f_icon = '<i class="a-booboo"></i>';
+			@endphp
+		@endIf
+		@if($f->finding_type->type == 'lt')
+			@php
+				$f_icon = '<i class="a-skull"></i>';
+			@endphp
+		@endIf
+		@if($f->finding_type->type == 'file')
+			@php
+				$f_icon = '<i class="a-folder"></i>';
+			@endphp
+		@endIf
 		<li class="findings-list-item finding-{{$f->id}}">
-			<input name="" id="finding-id-{{$f->id}}" value="{{$f->id}}" type="checkbox" class="uk-checkbox" onClick="addFinding(this.value,'Finding-{{ ucwords($f->id) }}')">
+			@php
+				if($f->id == $all_findings)
+					$selected_finding = $f;
+				else
+					$selected_finding = null;
+			@endphp
+			<input {{ $all_findings == $f->id ? 'checked=checked' : '' }} name="" id="list-finding-id-{{$f->id}}" value="{{$f->id}}" type="checkbox" class="uk-checkbox" onClick="addFinding(this.value,'{{ $f_icon }}Finding-{{ ($f->id) }}')">
 			<label for="finding-id-{{ $f->id }}">
-				Finding # {{$f->id}} - @if(!is_null($f->building_id)) <strong>{{$f->building->building_name}}</strong> @if(!is_null($f->building->address)) {{$f->building->address->line_1}} {{$f->building->address->line_2}} {{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}} @endIf @endif
+				{!! $f_icon !!}Finding # {{$f->id}} - @if(!is_null($f->building_id)) <strong>{{$f->building->building_name}}</strong> @if(!is_null($f->building->address)) {{$f->building->address->line_1}} {{$f->building->address->line_2}} {{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}} @endIf @endif
 				<span uk-tooltip title="@if(!is_null($f->building_id))
 					<strong>{{$f->building->building_name}}</strong> <br />
 					@if(!is_null($f->building->address))
@@ -46,14 +70,15 @@
 		@endforeach
 	</ul>
 </div>
-<div class="uk-form-row">
-	<input type="text" id="finding-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
-</div>
+{{-- <div class="uk-form-row">
+	<input type="text" id="finding-filter" class="uk-input uk-width-1-1" placeholder="Filter Findings">
+</div> --}}
 <script>
+	// addFinding({{ $all_findings }},'Finding-{{ $all_findings }}');
   // CLONE RECIPIENTS
   function addFinding(formValue,name){
     //alert(formValue+' '+name);
-    if($("#finding-id-"+formValue).is(':checked')){
+    if($("#list-finding-id-"+formValue).is(':checked')){
     	var recipientClone = $('#finding-template').clone();
     	recipientClone.attr("id", "finding-id-"+formValue+"-holder");
     	recipientClone.prependTo('#findings-box');
@@ -70,10 +95,11 @@
     	$("#finding-id-"+formValue+"-holder").remove();
     }
   }
+
   function removeFinding(id){
   	$("#finding-id-"+id+"-holder").slideUp();
   	$("#finding-id-"+id+"-holder").remove();
-  	$("#finding-id-"+id).prop("checked",false)
+  	$("#list-finding-id-"+id).prop("checked",false)
   }
 
    function showFindings() {
@@ -81,6 +107,32 @@
     	$('#add-findings-button').toggle();
     	$('#done-adding-findings-button').toggle();
     }
+
+    $("document").ready(function() {
+    	@if(!is_null($selected_finding))
+	    	@if($selected_finding->finding_type->type == 'nlt')
+					@php
+						$selected_icon = '<i class="a-booboo"></i>';
+					@endphp
+				@endIf
+				@if($selected_finding->finding_type->type == 'lt')
+					@php
+						$selected_icon = '<i class="a-skull"></i>';
+					@endphp
+				@endIf
+				@if($selected_finding->finding_type->type == 'file')
+					@php
+						$selected_icon = '<i class="a-folder"></i>';
+					@endphp
+				@endIf
+			@else
+				$selected_icon = '';
+			@endif
+    setTimeout(function() {
+    		addFinding('{{ $all_findings }}','{{ $selected_icon }}Finding-{{ $all_findings }}');
+        // $("list-finding-id-{{ $all_findings }}").trigger('click');
+    },2);
+});
 
 </script>
 <!-- END RECIPIENT LISTING -->

@@ -70,8 +70,6 @@ forEach($findings as $fc){
 		?>
 		<div style="min-height: 105px;">
 
-
-
 			<div class="inspec-tools-tab-finding-top-actions" style="z-index:10">
 				@can('access_auditor') @if(!$print)<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
 					<i class="a-pencil"></i>@endIf @endCan <strong>Finding # {{$f->id}}</strong>@can('access_auditor') @if(!$print)</a> @endIf @endCan
@@ -84,7 +82,7 @@ forEach($findings as $fc){
 								<div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $f->id }}, 'followup')"><i class="a-bell-plus"></i></div>
 								<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'comment')"><i class="a-comment-plus"></i></div>
 								@endCan
-								<div class="icon-circle use-hand-cursor" onclick="dynamicModalLoad('new-outbound-email-entry/{{$report->project_id}}/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}/1')" ><i class="a-envelope-4"></i>
+								<div class="icon-circle use-hand-cursor" onclick="dynamicModalLoad('new-outbound-email-entry/{{$report->project_id}}/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}/{{ $f->id }}')" ><i class="a-envelope-4"></i>
 								</div>
 								<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'document')"><i class="a-file-plus"></i></div>
 								@if(env('APP_ENV') == 'local')
@@ -145,14 +143,76 @@ forEach($findings as $fc){
 				<span style="color:red" class="attention">!!LEVEL NOT SET!!</span>
 				@endIf
 				@if(!is_null($f->comments))
-
 				@forEach($f->comments as $c)
-				@if(is_null($c->deleted))
-				<hr class="dashed-hr uk-margin-bottom">
-				<i class="a-comment"></i> : {{$c->comment}}
-				@endIf
+					@if(is_null($c->deleted_at))
+					<hr class="dashed-hr uk-margin-bottom">
+					<i class="a-comment"></i> : {{$c->comment}}
+					@endIf
 				@endForEach
 				@endIf
+
+				{{-- Communications section --}}
+				{{-- 38:40
+					* Envolope icon
+					* Datetime
+					* Person
+					* Subject,
+					* Body
+					* Attachment
+					*  --}}
+				@php
+					$communications = App\Models\Communication::whereJsonContains('finding_ids', "$f->id")
+																				->with('owner')
+																        ->with('recipients', 'docuware_documents', 'local_documents')
+																        ->orderBy('created_at', 'desc')
+																        ->get();
+				@endphp
+				@if(count($communications))
+					@foreach($communications as $message)
+						<hr class="dashed-hr uk-margin-bottom">
+						<strong class="a-envelope-4"></strong> : {{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }} <br>
+						<span {{-- style="margin-left: 20px" --}}>
+							<li>
+								<strong class="uk-text-small" style="float: left; margin-top: 2px;">TO:&nbsp;</strong>
+								<label style="display: block; margin-left: 28px;" for="message-{{ $message->id }}">
+									@if(count($message->message_recipients))@foreach ($message->message_recipients as $recipient)@if($recipient->id != $current_user->id && $message->owner->id != $recipient->id && $recipient->name != ''){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}@elseif($recipient->id == $current_user->id) Me{{ !$loop->last ? ', ': '' }} @endif @endforeach @endif
+								</label>
+							</li>
+							<li>
+								<strong class="uk-text-small" style="float: left; margin-top: 2px;">SUB:&nbsp;</strong>
+								<label style="display: block; margin-left: 28px;" for="message-sub-{{ $message->id }}">
+									{{ $message->subject }}
+								</label>
+							</li>
+							<li>
+								<strong class="uk-text-small" style="float: left; margin-top: 2px;">MSG:&nbsp;</strong>
+								<label style="display: block; margin-left: 28px;" for="message-msg-{{ $message->id }}">
+									{{ $message->message }}
+								</label>
+							</li>
+							<li>
+								<strong class="uk-text-small" style="float: left; margin-top: 2px;">DOC:&nbsp;</strong>
+								<label style="display: block; margin-left: 28px;" for="message-doc-{{ $message->id }}">
+									@foreach($message->local_documents as $document)
+										<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}">
+											<i class="a-paperclip-2"></i> {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
+										</a>
+										<br>
+										@endforeach
+										@foreach($message->docuware_documents as $document)
+										<a href="{{ url('/document', $document->docuware_doc_id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}">
+											<i class="a-paperclip-2"></i> {{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}
+										</a>
+										<br>
+									@endforeach
+								</label>
+							</li>
+						</span>
+
+					@endforeach
+				@endIf
+
+				 {{-- Documents --}}
 
 				@if(!is_null($f->photos))
 					@forEach($f->photos as $p)
@@ -189,6 +249,7 @@ forEach($findings as $fc){
 						@endIf
 					</div>
 					@endIf
+
 
 				</a>
 

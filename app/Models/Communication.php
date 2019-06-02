@@ -30,7 +30,7 @@ class Communication extends Model
 
   protected $casts = [
     'communication_id' => 'json',
-    'findings_ids' => 'json'
+    'findings_ids' => 'array'
   ];
 
   public static function boot()

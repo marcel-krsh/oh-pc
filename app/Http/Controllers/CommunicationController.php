@@ -130,6 +130,9 @@ class CommunicationController extends Controller
     $ohfa_id           = SystemSetting::get('ohfa_organization_id');
     $single_receipient = false;
 
+    $current_user = Auth::user();
+    $current_user = User::find($current_user->id);
+
     if (null !== $audit_id) {
       // $audit = Audit::where('id', intval($audit_id))->first();
       $audit = Audit::find((int) $audit_id);
@@ -164,11 +167,20 @@ class CommunicationController extends Controller
         ->with('assigned_categories')
         ->orderBy('created_at', 'desc')
         ->get();
-      $document_categories = DocumentCategory::where('parent_id', '<>', 0)
-        ->active()
-        ->orderby('document_category_name', 'asc')
-        ->with('parent')
-        ->get();
+      if ($current_user->hasRole(1)) {
+        $document_categories = DocumentCategory::where('parent_id', '<>', 0)
+          ->where('document_category_name', 'WORK ORDER')
+          ->active()
+          ->orderby('document_category_name', 'asc')
+          ->with('parent')
+          ->get();
+      } else {
+        $document_categories = DocumentCategory::where('parent_id', '<>', 0)
+          ->active()
+          ->orderby('document_category_name', 'asc')
+          ->with('parent')
+          ->get();
+      }
       $documents = $docuware_documents->merge($local_documents);
       // build a list of all categories used for uploaded documents in this project
       $categories_used = [];
@@ -241,9 +253,7 @@ class CommunicationController extends Controller
       }
 
       if (null !== $report_id) {
-        $report       = CrrReport::with('lead')->find($report_id);
-        $current_user = Auth::user();
-        $current_user = User::find($current_user->id);
+        $report = CrrReport::with('lead')->find($report_id);
         if ('CAR' == $report->template()->template_name) {
           $lead_id    = $report->lead->id;
           $recipients = User::where('users.id', $lead_id)
@@ -572,7 +582,7 @@ class CommunicationController extends Controller
     }
 
     if (isset($forminputs['findings'])) {
-    	$finding_ids = json_encode($forminputs['findings']);
+      $finding_ids = json_encode($forminputs['findings'], true);
     } else {
       $finding_ids = null;
     }
@@ -621,24 +631,24 @@ class CommunicationController extends Controller
             $originalMessageId = $original_message->id;
           }
           $message = new Communication([
-            'owner_id'   => $user->id,
-            'audit_id'   => $audit_id,
-            'project_id' => $project_id,
-            'parent_id'  => $originalMessageId,
-            'message'    => $message_posted,
-            'subject'    => 'RE: ' . $original_message->subject,
-            'finding_ids' => $finding_ids
+            'owner_id'    => $user->id,
+            'audit_id'    => $audit_id,
+            'project_id'  => $project_id,
+            'parent_id'   => $originalMessageId,
+            'message'     => $message_posted,
+            'subject'     => 'RE: ' . $original_message->subject,
+            'finding_ids' => $finding_ids,
           ]);
           //$lc = new LogConverter('communication', 'create');
           //$lc->setFrom(Auth::user())->setTo($message)->setDesc(Auth::user()->email . ' created a new communication')->save();
         } else {
           $subject = (string) $forminputs['subject'];
           $message = new Communication([
-            'owner_id'   => $user->id,
-            'audit_id'   => $audit_id,
-            'project_id' => $project_id,
-            'message'    => $message_posted,
-            'subject'    => $subject,
+            'owner_id'    => $user->id,
+            'audit_id'    => $audit_id,
+            'project_id'  => $project_id,
+            'message'     => $message_posted,
+            'subject'     => $subject,
             'finding_ids' => $finding_ids,
           ]);
           //$lc = new LogConverter('communication', 'create');
@@ -980,15 +990,15 @@ class CommunicationController extends Controller
           })
             ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
         } else {
-        	//return session()->all();
+          //return session()->all();
           $messages = Communication::where(function ($query) use ($current_user) {
             $query->where('owner_id', '=', $current_user->id);
             $query->whereHas('replies');
           })
-          ->orWhereHas('recipients', function ($query) use ($current_user) {
-            $query->where('user_id', '=', $current_user->id);
-          })
-          ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
+            ->orWhereHas('recipients', function ($query) use ($current_user) {
+              $query->where('user_id', '=', $current_user->id);
+            })
+            ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
         }
       } else {
         if (session('communication_sent') == 1) {
@@ -997,7 +1007,7 @@ class CommunicationController extends Controller
           })
             ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
           if (session('communication_list') == 1) {
-          	$messages->whereNull('parent_id');
+            $messages->whereNull('parent_id');
           }
         } else {
           $messages = Communication::where(function ($query) use ($current_user, $project) {
@@ -1342,26 +1352,26 @@ class CommunicationController extends Controller
       $audit = $report->audit_id;
       return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'report'));
     } else {
-      return abort(403,'No associated project was found');
+      return abort(403, 'No associated project was found');
     }
   }
 
   public function reportSendToManagerNotification($report_id, $project_id = null)
   {
     if (null !== $project_id) {
-      $project    = Project::where('id', '=', $project_id)->first();
-      $report     = CrrReport::find($report_id);
-      $user_keys  = $report->signators()->pluck('person_key')->toArray();
-      $status = 2;
-      $single_receipient  = 0;
-      $recipients = User::allManagers();
-      $audit      = $report->audit_id;
-      $data = ['subject' => 'Report ready for ' . $project->project_number . ' : ' .  $project->project_name,
-      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.' ];
+      $project           = Project::where('id', '=', $project_id)->first();
+      $report            = CrrReport::find($report_id);
+      $user_keys         = $report->signators()->pluck('person_key')->toArray();
+      $status            = 2;
+      $single_receipient = 0;
+      $recipients        = User::allManagers();
+      $audit             = $report->audit_id;
+      $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
+        'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {
-      return abort(403,'No associated project was found');
+      return abort(403, 'No associated project was found');
     }
   }
 
@@ -1370,20 +1380,20 @@ class CommunicationController extends Controller
     if (null !== $project_id) {
       $project    = Project::where('id', '=', $project_id)->first();
       $report     = CrrReport::with('lead')->find($report_id);
-      $lead_id  = $report->lead->id;
+      $lead_id    = $report->lead->id;
       $recipients = User::where('users.id', $lead_id)
-            ->leftJoin('people', 'people.id', 'users.person_id')
-            ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-            ->join('users_roles', 'users_roles.user_id', 'users.id')
-            ->select('users.*', 'last_name', 'first_name', 'organization_name')
-            ->where('active', 1)
-            ->orderBy('organization_name', 'asc')
-            ->orderBy('last_name', 'asc')
-            ->get();
-      $audit      = $report->audit_id;
+        ->leftJoin('people', 'people.id', 'users.person_id')
+        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+        ->join('users_roles', 'users_roles.user_id', 'users.id')
+        ->select('users.*', 'last_name', 'first_name', 'organization_name')
+        ->where('active', 1)
+        ->orderBy('organization_name', 'asc')
+        ->orderBy('last_name', 'asc')
+        ->get();
+      $audit  = $report->audit_id;
       $status = 3;
-      $data = ['subject' => 'Report has been declined for ' . $project->project_number . ' : ' .  $project->project_name,
-      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.' ];
+      $data   = ['subject' => 'Report has been declined for ' . $project->project_number . ' : ' . $project->project_name,
+        'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
       $single_receipient = 1;
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {
@@ -1396,20 +1406,20 @@ class CommunicationController extends Controller
     if (null !== $project_id) {
       $project    = Project::where('id', '=', $project_id)->first();
       $report     = CrrReport::with('lead')->find($report_id);
-      $lead_id  = $report->lead->id;
+      $lead_id    = $report->lead->id;
       $recipients = User::where('users.id', $lead_id)
-            ->leftJoin('people', 'people.id', 'users.person_id')
-            ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-            ->join('users_roles', 'users_roles.user_id', 'users.id')
-            ->select('users.*', 'last_name', 'first_name', 'organization_name')
-            ->where('active', 1)
-            ->orderBy('organization_name', 'asc')
-            ->orderBy('last_name', 'asc')
-            ->get();
-      $audit      = $report->audit_id;
+        ->leftJoin('people', 'people.id', 'users.person_id')
+        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+        ->join('users_roles', 'users_roles.user_id', 'users.id')
+        ->select('users.*', 'last_name', 'first_name', 'organization_name')
+        ->where('active', 1)
+        ->orderBy('organization_name', 'asc')
+        ->orderBy('last_name', 'asc')
+        ->get();
+      $audit  = $report->audit_id;
       $status = 4;
-      $data = ['subject' => 'Report has been apporved with changes for ' . $project->project_number . ' : ' .  $project->project_name,
-      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.' ];
+      $data   = ['subject' => 'Report has been apporved with changes for ' . $project->project_number . ' : ' . $project->project_name,
+        'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
       $single_receipient = 1;
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {
@@ -1422,20 +1432,20 @@ class CommunicationController extends Controller
     if (null !== $project_id) {
       $project    = Project::where('id', '=', $project_id)->first();
       $report     = CrrReport::with('lead')->find($report_id);
-      $lead_id  = $report->lead->id;
+      $lead_id    = $report->lead->id;
       $recipients = User::where('users.id', $lead_id)
-            ->leftJoin('people', 'people.id', 'users.person_id')
-            ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-            ->join('users_roles', 'users_roles.user_id', 'users.id')
-            ->select('users.*', 'last_name', 'first_name', 'organization_name')
-            ->where('active', 1)
-            ->orderBy('organization_name', 'asc')
-            ->orderBy('last_name', 'asc')
-            ->get();
-      $audit      = $report->audit_id;
+        ->leftJoin('people', 'people.id', 'users.person_id')
+        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+        ->join('users_roles', 'users_roles.user_id', 'users.id')
+        ->select('users.*', 'last_name', 'first_name', 'organization_name')
+        ->where('active', 1)
+        ->orderBy('organization_name', 'asc')
+        ->orderBy('last_name', 'asc')
+        ->get();
+      $audit  = $report->audit_id;
       $status = 5;
-      $data = ['subject' => 'Report has been apporved for ' . $project->project_number . ' : ' .  $project->project_name,
-      				 'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.' ];
+      $data   = ['subject' => 'Report has been apporved for ' . $project->project_number . ' : ' . $project->project_name,
+        'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
       $single_receipient = 1;
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {

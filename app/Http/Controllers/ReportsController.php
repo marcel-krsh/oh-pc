@@ -694,6 +694,7 @@ class ReportsController extends Controller
   public function getReport(CrrReport $report, Request $request)
   {
     if ($report) {
+    $current_user    = Auth::user();
       // check if logged in user has access to this report if they are not an auditor:
       $loadReport = 0;
       if(Auth::user()->cannot('access_auditor')){
@@ -733,9 +734,9 @@ class ReportsController extends Controller
           //return $data;
 
           if ($request->get('print') != 1) {
-            return view('crr.crr', compact('report', 'data', 'version', 'print', 'users'));
+            return view('crr.crr', compact('report', 'data', 'version', 'print', 'users', 'current_user'));
           } else {
-            return view('crr.crr_print', compact('report', 'data', 'version', 'print'));
+            return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'current_user'));
           }
         }
       } else {
