@@ -214,3 +214,12 @@ function local()
   }
   return false;
 }
+
+function asset_version()
+{
+	$version = '1.0';
+	if(env('ASSET_VERSION')) {
+		$version = env('ASSET_VERSION');
+	}
+	return '?v=' . $version;
+}

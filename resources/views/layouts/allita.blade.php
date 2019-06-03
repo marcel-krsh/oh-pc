@@ -38,19 +38,19 @@ if ($allowPageLoad) {
 
 		@if (Auth::guest())
 		@else
-		<link rel="stylesheet" href="/css/documents-tab.css">
-	<!-- <link rel="stylesheet" href="/css/cdfs-tab.css">
+		<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+	<!-- <link rel="stylesheet" href="/css/cdfs-tab.css{{ asset_version() }}">
 
-	<link rel="stylesheet" href="/css/documents-tab.css">
-	<link rel="stylesheet" href="/css/funding-tab.css">
-	<link rel="stylesheet" href="/css/history-tab.css">
-	<link rel="stylesheet" href="/css/notes-tab.css">
-	<link rel="stylesheet" href="/css/outcomes-tab.css">
-	<link rel="stylesheet" href="/css/processing-tab.css">
-	<link rel="stylesheet" href="/css/handsontable.full.min.css">
-	<link rel="stylesheet" href="/css/components/slideshow.css"> -->
-	<link rel="stylesheet" href="/css/communications-tab.css">
-	<link rel="stylesheet" href="/css/auto-complete.css">
+	<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/funding-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/history-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/notes-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/outcomes-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/processing-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/handsontable.full.min.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/components/slideshow.css{{ asset_version() }}"> -->
+	<link rel="stylesheet" href="/css/communications-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/auto-complete.css{{ asset_version() }}">
 
 	@endif
 
@@ -173,10 +173,10 @@ if ($allowPageLoad) {
   ]); ?>
 		</script>
 
-		<script src="/js/jquery.js"></script>
-		<script src="/js/uikit.js"></script>
-		<script src="/js/uikit-icons.min.js"></script>
-		<script src="/js/handsontable.full.min.js"></script>
+		<script src="/js/jquery.js{{ asset_version() }}"></script>
+		<script src="/js/uikit.js{{ asset_version() }}"></script>
+		<script src="/js/uikit-icons.min.js{{ asset_version() }}"></script>
+		<script src="/js/handsontable.full.min.js{{ asset_version() }}"></script>
 
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
@@ -192,15 +192,15 @@ if ($allowPageLoad) {
 
 	@if (Auth::guest())
 	@else
-	<script src="/js/taffy.js"></script>
+	<script src="/js/taffy.js{{ asset_version() }}"></script>
 	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
-	<script type="text/javascript" src="/js/Chart.bundle.js"></script>
+	<script type="text/javascript" src="/js/Chart.bundle.js{{ asset_version() }}"></script>
 	@endif
 
-	<link rel="stylesheet" href="/css/allita-font.css">
-	<link rel="stylesheet" href="/css/uikit.min.css">
-	<link rel="stylesheet" href="/css/allita-admin-419171046.css">
-	<link rel="stylesheet" href="/css/system-419171130.css">
+	<link rel="stylesheet" href="/css/allita-font.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/uikit.min.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/allita-admin-419171046.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/system-419171130.css{{ asset_version() }}">
 
 	@yield('head')
 
@@ -424,7 +424,7 @@ if ($allowPageLoad) {
 		</script>
 
 
-		<!-- <script src="/js/app.js"></script> -->
+		<!-- <script src="/js/app.js{{ asset_version() }}"></script> -->
 		@if (Auth::guest())
 		@else
 		<script type="text/javascript">
@@ -436,22 +436,22 @@ if ($allowPageLoad) {
 		//$('#detail-tab-5').slideToggle();
 
 	</script>
-	<script src="/js/auto-complete.js"></script>
-	<script type="text/javascript" src="/js/systems/system.js"></script>
-	<script type="text/javascript" src="/js/systems/audits.js"></script>
-	<script type="text/javascript" src="/js/systems/findings.js"></script>
-	<script type="text/javascript" src="/js/systems/communications.js"></script>
+	<script src="/js/auto-complete.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/findings.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
 
 
-	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
-	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/funding-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/history-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/notes-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script> -->
-	<script type="text/javascript" src="/js/systems/processing-tab.js"></script>
+	<script type="text/javascript" src="/js/systems/documents-tab.js{{ asset_version() }}"></script>
+	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/communications-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/documents-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/funding-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/history-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/notes-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/outcomes-tab.js{{ asset_version() }}"></script> -->
+	<script type="text/javascript" src="/js/systems/processing-tab.js{{ asset_version() }}"></script>
 	<script>
 		// single script tag
 		var quicklookupbox = new autoComplete({
@@ -544,7 +544,6 @@ if ($allowPageLoad) {
 
 
 
-
 		new Vue({
 			el: '#top-tabs',
 			data: {
@@ -624,8 +623,8 @@ if ($allowPageLoad) {
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" href="/css/allita-admin-419171046.css">
-	<link rel="stylesheet" href="/css/system-419171130.css">
+	<link rel="stylesheet" href="/css/allita-admin-419171046.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/system-419171130.css{{ asset_version() }}">
 
 	<script>
 		window.Laravel = <?php echo json_encode([
@@ -633,32 +632,32 @@ if ($allowPageLoad) {
   ]); ?>
 		</script>
 		@if(session('disablePacer') != 1)
-		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js">{{session('disablePacer')}}</script>
+		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}">{{session('disablePacer')}}</script>
 		@endif
-		<script src="/js/jquery.js"></script>
-		<script src="/js/uikit.min.js"></script>
-	<!-- <script src="/js/components/autocomplete.js"></script>
-	<script src="/js/core/modal.js"></script>
-	<script src="/js/components/lightbox.js"></script>
-	<script src="/js/components/sticky.js"></script>
-	<script src="/js/components/notify.js"></script>
-	<script src="/js/components/tooltip.js"></script>
-	<script src="/js/components/datepicker.js"></script>
-	<script src="/js/components/slideshow.js"></script>
-	<script src="/js/components/slideshow-fx.js"></script>
-	<script src="/js/components/upload.js"></script>
-	<script src="/js/components/lightbox.js"></script>
-	<script src="/js/components/form-select.js"></script>
-	<script src="/js/components/slider.js"></script>
-	<script src="/js/components/slideset.js"></script>
-	<script src="/js/components/accordion.js"></script>
-	<script src="/js/components/notify.js"></script>
-	<script src="/js/components/search.js"></script>
-	<script src="/js/components/timepicker.js"></script>
-	<script src="/js/components/nestable.js"></script>
-	<script src="/js/components/sortable.js"></script>
-	<script src="/js/components/grid.min.js"></script>
-	<script src="/js/handsontable.full.min.js"></script> -->
+		<script src="/js/jquery.js{{ asset_version() }}"></script>
+		<script src="/js/uikit.min.js{{ asset_version() }}"></script>
+	<!-- <script src="/js/components/autocomplete.js{{ asset_version() }}"></script>
+	<script src="/js/core/modal.js{{ asset_version() }}"></script>
+	<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+	<script src="/js/components/sticky.js{{ asset_version() }}"></script>
+	<script src="/js/components/notify.js{{ asset_version() }}"></script>
+	<script src="/js/components/tooltip.js{{ asset_version() }}"></script>
+	<script src="/js/components/datepicker.js{{ asset_version() }}"></script>
+	<script src="/js/components/slideshow.js{{ asset_version() }}"></script>
+	<script src="/js/components/slideshow-fx.js{{ asset_version() }}"></script>
+	<script src="/js/components/upload.js{{ asset_version() }}"></script>
+	<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+	<script src="/js/components/form-select.js{{ asset_version() }}"></script>
+	<script src="/js/components/slider.js{{ asset_version() }}"></script>
+	<script src="/js/components/slideset.js{{ asset_version() }}"></script>
+	<script src="/js/components/accordion.js{{ asset_version() }}"></script>
+	<script src="/js/components/notify.js{{ asset_version() }}"></script>
+	<script src="/js/components/search.js{{ asset_version() }}"></script>
+	<script src="/js/components/timepicker.js{{ asset_version() }}"></script>
+	<script src="/js/components/nestable.js{{ asset_version() }}"></script>
+	<script src="/js/components/sortable.js{{ asset_version() }}"></script>
+	<script src="/js/components/grid.min.js{{ asset_version() }}"></script>
+	<script src="/js/handsontable.full.min.js{{ asset_version() }}"></script> -->
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>

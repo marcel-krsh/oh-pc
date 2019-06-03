@@ -12,11 +12,11 @@
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" href="/css/allita-font.css">
-	<link rel="stylesheet" href="/css/allita-admin.css">
-	<link rel="stylesheet" href="/css/system.css">
-	<link rel="stylesheet" href="/css/uikit.min.css">
-	<link rel="stylesheet" href="/css/auto-complete.css">
+	<link rel="stylesheet" href="/css/allita-font.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/allita-admin.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/system.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/uikit.min.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/auto-complete.css{{ asset_version() }}">
 	<style type="text/css">
 		#plain-main-window {
 			max-width: 1450px;
@@ -39,10 +39,10 @@
   'csrfToken' => csrf_token(),
 ]); ?>
 		</script>
-		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js"></script>
-		<script src="/js/jquery.js"></script>
-		<script src="/js/uikit.min.js"></script>
-		<script src="/js/uikit-icons.min.js"></script>
+		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}"></script>
+		<script src="/js/jquery.js{{ asset_version() }}"></script>
+		<script src="/js/uikit.min.js{{ asset_version() }}"></script>
+		<script src="/js/uikit-icons.min.js{{ asset_version() }}"></script>
 		<style>
 			.hideImportnull {
 				display: none;
