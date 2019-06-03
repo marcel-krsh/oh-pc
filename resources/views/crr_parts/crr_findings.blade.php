@@ -88,7 +88,9 @@ forEach($findings as $fc){
 							@endCan
 							<div class="icon-circle use-hand-cursor" onclick="dynamicModalLoad('new-outbound-email-entry/{{$report->project_id}}/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}/{{ $f->id }}')" ><i class="a-envelope-4"></i>
 							</div>
+							@can('access_auditor')
 							<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'document')"><i class="a-file-plus"></i></div>
+							@endCan
 							@if(env('APP_ENV') == 'local')
 							<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'photo')"><i class="a-picture"></i></div>
 							@endIf
@@ -153,6 +155,46 @@ forEach($findings as $fc){
 		@endIf
 		@endForEach
 		@endIf
+
+		{{-- Photos --}}
+		@if(property_exists($f,'photos') && !is_null($f->photos))
+		@forEach($f->photos as $p)
+		@if(!$p->deleted)
+		<hr class="dashed-hr uk-margin-bottom">
+		<div class="photo-gallery uk-slider uk-slider-container" uk-slider="">
+			<div class="uk-position-relative uk-visible-toggle uk-light">
+				<ul class="uk-slider-items uk-child-width-1-1" style="transform: translateX(0px);">
+					<li class="findings-item-photo-4 use-hand-cursor uk-active">
+						<img src="{{ $p->file_path }}" alt="">
+					</li>
+				</ul>
+			</div>
+			<ul class="uk-slider-nav uk-dotnav uk-flex-center uk-hidden">
+				<li uk-slider-item="0" class="uk-hidden uk-active"><a href="#"></a></li>
+			</ul>
+		</div>
+		@endIf
+		@endForEach
+		@endIf
+
+		<hr class="dashed-hr uk-margin-bottom">
+		@if($f->amenity_inspection)
+		<div style="min-height: 80px;">
+			<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id',$report->audit_id);
+						//dd($piecePrograms);
+			?>
+			@if(count($piecePrograms)>0)
+			<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span>
+			<ul > @forEach($piecePrograms as $p)
+				<li>@if(!is_null($p->is_substitute))SUBSTITUTED FOR:@endIf
+					{{$p->program->program_name}}
+				</li>
+				@endForEach
+			</ul>
+			@endIf
+		</div>
+		@endIf
+
 		{{-- Communications section --}}
 		{{-- 38:40
 		* Envolope icon
@@ -165,14 +207,14 @@ forEach($findings as $fc){
 		--}}
 		@php
 		$communications = App\Models\Communication::whereJsonContains('finding_ids', "$f->id")
-		->with('owner')
-		->with('recipients', 'docuware_documents', 'local_documents')
-		->orderBy('created_at', 'desc')
-		->get();
+											->with('owner')
+											->with('recipients', 'docuware_documents', 'local_documents')
+											->orderBy('created_at', 'desc')
+											->get();
 		$documents = App\Models\Document::whereJsonContains('finding_ids', "$f->id")
-		->with('assigned_categories')
-		->orderBy('created_at', 'desc')
-		->get();
+											->with('assigned_categories')
+											->orderBy('created_at', 'desc')
+											->get();
 		@endphp
 		@if(count($communications))
 		@foreach($communications as $message)
@@ -180,40 +222,80 @@ forEach($findings as $fc){
 		<strong class="a-envelope-4"></strong> : {{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }} <br>
 		<span {{-- style="margin-left: 20px" --}}>
 			<li>
-				<strong class="uk-text-small" style="float: left; margin-top: 2px;">TO:&nbsp;</strong>
+				<strong class="uk-text-small" style="float: left; margin-top: 2px;">From:&nbsp;</strong>
+				<label style="display: block; margin-left: 28px;" for="message-{{ $message->id }}">
+					@if($message->owner->id == $current_user->id)Me @else {{ $message->owner->full_name() }} @endif
+				</label>
+			</li>
+			<li>
+				<strong class="uk-text-small" style="float: left; margin-top: 2px;">To:&nbsp;</strong>
 				<label style="display: block; margin-left: 28px;" for="message-{{ $message->id }}">
 					@if(count($message->message_recipients))@foreach ($message->message_recipients as $recipient)@if($recipient->id != $current_user->id && $message->owner->id != $recipient->id && $recipient->name != ''){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}@elseif($recipient->id == $current_user->id) Me{{ !$loop->last ? ', ': '' }} @endif @endforeach @endif
 				</label>
 			</li>
 			<li>
-				<strong class="uk-text-small" style="float: left; margin-top: 2px;">SUB:&nbsp;</strong>
-				<label style="display: block; margin-left: 28px;" for="message-sub-{{ $message->id }}">
-					{{ $message->subject }}
-				</label>
+				<strong>
+					<label style="display: block;" for="message-sub-{{ $message->id }}">
+						{{ $message->subject }}
+					</label>
+				</strong>
 			</li>
 			<li>
-				<strong class="uk-text-small" style="float: left; margin-top: 2px;">MSG:&nbsp;</strong>
-				<label style="display: block; margin-left: 28px;" for="message-msg-{{ $message->id }}">
+				<label style="display: block;" for="message-msg-{{ $message->id }}">
 					{{ $message->message }}
 				</label>
 			</li>
-			<li>
-				<strong class="uk-text-small" style="float: left; margin-top: 2px;">DOC:&nbsp;</strong>
-				<label style="display: block; margin-left: 28px;" for="message-doc-{{ $message->id }}">
+			@if(count($message->local_documents) > 0)
+			<li class="uk-margin-small-top">
+				{{-- <strong class="uk-text-small" style="float: left; margin-top: 2px;">DOC:&nbsp;</strong> --}}
+				{{-- <label style="display: block; margin-left: 28px;" for="message-doc-{{ $message->id }}"> --}}
 					@foreach($message->local_documents as $document)
-					<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}">
+					<span class="finding-documents-{{ $document->id }}">
+						@php
+						$document_category = $document->assigned_categories->first();
+						@endphp
+						<li class="doc-{{ $document->id }} {{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
+							<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}-{{ $f->id }}" class="">
+								<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }} doc-span-{{ $document->id }}"></span>
+								<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon-{{ $f->id }}" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }} doc-span-check-{{ $document->id }}"></span>
+								<span style="display: block; margin-left: 30px"></span>
+							</a>
+							@can('access_auditor')
+							<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
+								<ul class="uk-nav uk-nav-dropdown">
+									<li>
+										<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
+											Mark as approved
+										</a>
+									</li>
+									<li>
+										<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
+											Mark as declined
+										</a>
+									</li>
+									<li>
+										<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
+											Clear review status
+										</a>
+									</li>
+								</ul>
+							</div>
+							@endCan
+							<label style="display: block; margin-left: 15px;" for="documents-{{ $document->id }}">
+								<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
+									<i class="a-paperclip-2"></i> {{-- {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} --}}{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }}
+								</a>
+								<br>
+							</label>
+						</li>
+					</span>
+					{{-- <a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}">
 						<i class="a-paperclip-2"></i> {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
-					</a>
-					<br>
+					</a> --}}
 					@endforeach
-					@foreach($message->docuware_documents as $document)
-					<a href="{{ url('/document', $document->docuware_doc_id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}">
-						<i class="a-paperclip-2"></i> {{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}
-					</a>
-					<br>
-					@endforeach
-				</label>
+				{{-- </label> --}}
 			</li>
+			@endif
 		</span>
 
 		{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
@@ -255,9 +337,9 @@ forEach($findings as $fc){
 						</ul>
 					</div>
 					@endCan
-					<label style="display: block; margin-left: 28px;" for="documents-{{ $document->id }}">
-						<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}">
-							<i class="a-paperclip-2"></i> {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
+					<label style="display: block; margin-left: 15px;" for="documents-{{ $document->id }}">
+						<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
+							<i class="a-paperclip-2"></i> {{-- {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} --}}{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }}
 						</a>
 						<br>
 					</label>
@@ -266,44 +348,8 @@ forEach($findings as $fc){
 			@endforeach
 		@endIf
 
-		{{-- Photos --}}
-		@if(property_exists($f,'photos') && !is_null($f->photos))
-		@forEach($f->photos as $p)
-		@if(!$p->deleted)
-		<hr class="dashed-hr uk-margin-bottom">
-		<div class="photo-gallery uk-slider uk-slider-container" uk-slider="">
-			<div class="uk-position-relative uk-visible-toggle uk-light">
-				<ul class="uk-slider-items uk-child-width-1-1" style="transform: translateX(0px);">
-					<li class="findings-item-photo-4 use-hand-cursor uk-active">
-						<img src="{{ $p->file_path }}" alt="">
-					</li>
-				</ul>
-			</div>
-			<ul class="uk-slider-nav uk-dotnav uk-flex-center uk-hidden">
-				<li uk-slider-item="0" class="uk-hidden uk-active"><a href="#"></a></li>
-			</ul>
-		</div>
-		@endIf
-		@endForEach
-		@endIf
 
-		<hr class="dashed-hr uk-margin-bottom">
-		@if($f->amenity_inspection)
-		<div style="min-height: 80px;">
-			<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id',$report->audit_id);
-						//dd($piecePrograms);
-			?>
-			@if(count($piecePrograms)>0)
-			<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span>
-			<ul > @forEach($piecePrograms as $p)
-				<li>@if(!is_null($p->is_substitute))SUBSTITUTED FOR:@endIf
-					{{$p->program->program_name}}
-				</li>
-				@endForEach
-			</ul>
-			@endIf
-		</div>
-		@endIf
+
 	</div>
 	@endForEach
 </div>

@@ -33,7 +33,7 @@
 			@endphp
 			<input {{ $id == $f->id ? 'checked=checked' : '' }} name="findings[]" id="list-finding-id-{{$f->id}}" value="{{$f->id}}" type="checkbox" class="uk-checkbox" onClick="addFinding(this.value,'{{ $f_icon }}Finding-{{ ($f->id) }}')">
 			<label for="finding-id-{{ $f->id }}">
-				{!! $f_icon !!}Finding # {{$f->id}} - @if(!is_null($f->building_id)) <strong>{{$f->building->building_name}}</strong> @if(!is_null($f->building->address)) {{$f->building->address->line_1}} {{$f->building->address->line_2}} {{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}} @endIf @endif
+				{!! $f_icon !!} Finding # {{$f->id}} - @if(!is_null($f->building_id)) <strong>{{$f->building->building_name}}</strong> @if(!is_null($f->building->address)) {{$f->building->address->line_1}} {{$f->building->address->line_2}} {{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}} @endIf @endif
 				<span uk-tooltip title="@if(!is_null($f->building_id))
 					<strong>{{$f->building->building_name}}</strong> <br />
 					@if(!is_null($f->building->address))
