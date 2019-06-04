@@ -1,7 +1,7 @@
 @php
 	$selected_icon = null;
 @endphp
-<link rel="stylesheet" href="/css/communications-tab.css">
+<link rel="stylesheet" href="/css/communications-tab.css{{ asset_version() }}">
 <div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;FINDINGS: {{ $all_findings }} </div>
 
 <div class="uk-width-4-5 "  id="findings-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">

@@ -1,12 +1,12 @@
 @extends('layouts.simplerAllita')
 @section('head')
-<title>DISPOSITION {{$disposition->id ?? ''}}</title> 
+<title>DISPOSITION {{$disposition->id ?? ''}}</title>
 @stop
 @section('content')
-<?php setlocale(LC_MONETARY, 'en_US'); ?>
+<?php setlocale(LC_MONETARY, 'en_US');?>
 <script>window.notSigned = 0</script>
-<!-- <script src="/js/components/upload.js"></script>
-<script src="/js/components/tooltip.js"></script> -->
+<!-- <script src="/js/components/upload.js{{ asset_version() }}"></script>
+<script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 .uk-breadcrumb>li:nth-child(n+2):before {
     content: ">";
@@ -35,15 +35,15 @@
 </style>
 <div uk-grid>
 
-	@if(!$proceed || !$disposition) 
+	@if(!$proceed || !$disposition)
 	<div class="uk-width-1-1">
 		<div class="uk-alert uk-alert-warning uk-width-1-2 uk-container-center">Disposition is not available at this time.</div>
 	</div>
 	@else
 
 	<div id="disposition-form" class="uk-width-1-1 dispo-step">
-		
-		
+
+
 		<div id="releaseformpanel">
 			<form id="disposition-form-form">
 				<div class="uk-panel uk-panel-box uk-panel-box-white">
@@ -55,10 +55,10 @@
 						<div uk-grid>
 							<div class="uk-panel uk-width-1-2@m uk-width-1-1@s uk-container-center uk-margin-top uk-text-center">
 								<div class="uk-alert">
-									This disposition's status is "{{$step}}". 
-									@if($disposition->date_release_requested !== null && $disposition->release_date == null)	
+									This disposition's status is "{{$step}}".
+									@if($disposition->date_release_requested !== null && $disposition->release_date == null)
 									Release was requested on {{ Carbon\Carbon::parse($disposition->date_release_requested)->format('m/d/Y') }}.
-									@elseif($disposition->date_release_requested !== null && $disposition->release_date !== null)	
+									@elseif($disposition->date_release_requested !== null && $disposition->release_date !== null)
 									Released on {{ Carbon\Carbon::parse($disposition->release_date)->format('m/d/Y') }}.
 									@endif
 								</div>
@@ -95,7 +95,7 @@
 								</div>
 							</div>
 							<div class="uk-width-1-1 uk-width-2-3@l " uk-grid>
-								
+
 									<div class="uk-width-1-1 uk-width-1-3@l uk-margin-bottom">
 										<div class="uk-panel @if(guide_check_step(1, $disposition->id) && guide_check_step(6, $disposition->id)) active @endif">
 										    <h3 class="uk-panel-title uk-text-center">STEP 3 - (HFA)</h3>
@@ -115,11 +115,11 @@
 											</ul>
 										</div>
 									</div>
-								
 
-								
+
+
 									<div class="uk-width-1-1 uk-width-1-3@l uk-margin-bottom uk-first-column" >
-										
+
 											<div class="uk-width-1-1 uk-width-1-1@l">
 												<div class="uk-panel  @if(guide_check_step(1, $disposition->id) && guide_check_step(6, $disposition->id)  && guide_check_step(13, $disposition->id)) active @endif">
 												    <h3 class="uk-panel-title uk-text-center">STEP 3 - (LANDBANK)</h3>
@@ -129,10 +129,10 @@
 													</ul>
 												</div>
 											</div>
-										 
+
 									</div>
 									<div class="uk-width-1-1 uk-width-1-3@l uk-margin-bottom uk-first-column" >
-										
+
 											<div class="uk-width-1-1 uk-width-1-1@l">
 												<div class="uk-panel @if(guide_check_step(1, $disposition->id) && guide_check_step(6, $disposition->id) && guide_check_step(18, $disposition->id)) active @endif">
 												    <h3 class="uk-panel-title uk-text-center">STEP 4 - (HFA)</h3>
@@ -143,11 +143,11 @@
 													</ul>
 												</div>
 											</div>
-										
+
 									</div>
-									
+
 									<div class="uk-width-1-1 uk-width-1-3@l uk-margin-bottom" >
-										
+
 											<div class="uk-width-1-1 uk-width-1-1@l">
 												<div class="uk-panel @if(guide_check_step(1, $disposition->id) && guide_check_step(6, $disposition->id) && guide_check_step(13, $disposition->id) && guide_check_step(18, $disposition->id)) active @endif">
 												    <h3 class="uk-panel-title uk-text-center">STEP 5 - (HFA)</h3>
@@ -157,9 +157,9 @@
 													</ul>
 												</div>
 											</div>
-										
+
 									</div>
-								
+
 							</div>
 						</div>
 					</div>
@@ -188,7 +188,7 @@
 								<h3 class="uk-panel-title">Supporting Documents</h3>
 								<p class="no-print">You can upload copies of all your supporting documents in a single file here. It will be added to your parcel's documents under the supporting documents tab.</p>
 							</div>
-						
+
 							<div class="uk-width-1-1@s uk-width-1-1@m no-print">
 								<div class="uk-display-inline no-print" id="doc-upload-box">
 				                    <div id="upload-drop-disposition" class="js-upload uk-placeholder uk-text-center">
@@ -257,7 +257,7 @@
 
 				                            completeAll: function (response) {
 				                                var documentids = response.response;
-			                                    
+
 			                                    setTimeout(function () {
 				                                    bar.setAttribute('hidden', 'hidden');
 				                                }, 250);
@@ -270,10 +270,10 @@
 			                                                'comment' : val,
 			                                                '_token' : '{{ csrf_token() }}'
 			                                                }, function(data) {
-			                                                    if(data!='1'){ 
+			                                                    if(data!='1'){
 			                                                        UIkit.modal.alert(data,{stack: true});
 			                                                    } else {
-			                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});  
+			                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});
 			                                                        $.post('{{ URL::route("disposition.getUploadedDocuments", $parcel->id) }}', {
 							                                                '_token' : '{{ csrf_token() }}'
 							                                                }, function(data) {
@@ -286,7 +286,7 @@
 																				}else{
 																					UIkit.modal.alert('Something went wrong.',{stack: true});
 																				}
-							                                        });    
+							                                        });
 			                                                    }
 			                                        });
 			                                    });
@@ -295,11 +295,11 @@
 				                        };
 
 				                        var select = UIkit.upload('.js-upload', settings);
-				                        
+
 				                    });
 				                    </script>
 
-				                    <!-- <script>                         
+				                    <!-- <script>
 				                        $(function(){
 				                            var categories = [];
 				                            var progressbar = $("#progressbar-disposition"),
@@ -309,8 +309,8 @@
 				                                single: true,
 				                                filelimit: 1,
 				                                multiple: false,
-				                                action: '{{ URL::route("disposition.uploadSupportingDocuments", $parcel->id) }}', 
-				                                allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)', 
+				                                action: '{{ URL::route("disposition.uploadSupportingDocuments", $parcel->id) }}',
+				                                allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
 				                                params : {
 				                                    '_token' : '{{ csrf_token() }}'
 				                                },
@@ -338,10 +338,10 @@
 				                                                'comment' : val,
 				                                                '_token' : '{{ csrf_token() }}'
 				                                                }, function(data) {
-				                                                    if(data!='1'){ 
+				                                                    if(data!='1'){
 				                                                        UIkit.modal.alert(data);
 				                                                    } else {
-				                                                        UIkit.modal.alert('Your comment has been saved.');  
+				                                                        UIkit.modal.alert('Your comment has been saved.');
 				                                                        $.post('{{ URL::route("disposition.getUploadedDocuments", $parcel->id) }}', {
 								                                                '_token' : '{{ csrf_token() }}'
 								                                                }, function(data) {
@@ -354,7 +354,7 @@
 																					}else{
 																						UIkit.modal.alert('Something went wrong.');
 																					}
-								                                        });    
+								                                        });
 				                                                    }
 				                                        });
 				                                    });
@@ -366,7 +366,7 @@
 				                    </script>  -->
 				            	</div>
 							</div>
-							
+
 							<div class="uk-width-1-1@s uk-width-1-1@m">
 								<table class="uk-table uk-table-striped uk-table-condensed uk-table-hover gray-link-table" id="">
 							        <tbody id="sent-document-list">
@@ -378,13 +378,13 @@
 								            </td>
 								            <td>
 								            	@if($supporting_document['approved'])
-								            	<span class="a-circle-checked" uk-tooltip="Approved"></span> 
+								            	<span class="a-circle-checked" uk-tooltip="Approved"></span>
 								            	@elseif($supporting_document['notapproved'])
-								            	<span class="a-circle-cross" uk-tooltip="Not approved"></span> 
+								            	<span class="a-circle-cross" uk-tooltip="Not approved"></span>
 								            	@else
-								            	<span class="a-circle" uk-tooltip="Received - not yet reviewed"></span> 
+								            	<span class="a-circle" uk-tooltip="Received - not yet reviewed"></span>
 								            	@endif
-								            	
+
 								            	{{ $supporting_document['filename'] }}
 								            </td>
 								            <td>
@@ -403,11 +403,11 @@
 								            </td>
 							        	</tr>
 							        	@endforeach
-							        	@endif	
+							        	@endif
 							    	</tbody>
 								</table>
-							</div>						
-							
+							</div>
+
 						</div>
 					</div>
 
@@ -434,19 +434,19 @@
 		                            <dd><input type="text" name="transaction_cost" value="{{$calculation['transaction_cost']}}" style="margin-top: 10px;" class="uk-input"/> <span class="uk-text-small uk-text-muted" style="vertical-align: -webkit-baseline-middle;">min {{$calculation['rule_min_cost_formatted']}}</span></dd>
 		                            @endif
 		                            <dt style="margin-top: 15px;" >Permanent Parcel #</dt>
-		                            <dd><input type="text" name="permanentparcelid" @if($disposition)@if($disposition->permanent_parcel_id != '') value="{{$disposition->permanent_parcel_id}}" @else value="{{$parcel->parcel_id}}"@endif @endif style="margin-top: 10px;" class="uk-input" /> 
-		                            	<span class="uk-text-small uk-text-muted" style="vertical-align: -webkit-baseline-middle;"> 
+		                            <dd><input type="text" name="permanentparcelid" @if($disposition)@if($disposition->permanent_parcel_id != '') value="{{$disposition->permanent_parcel_id}}" @else value="{{$parcel->parcel_id}}"@endif @endif style="margin-top: 10px;" class="uk-input" />
+		                            	<span class="uk-text-small uk-text-muted" style="vertical-align: -webkit-baseline-middle;">
 		                            		<span class="a-info-circle" uk-tooltip="ORIGINAL PARCEL ID {{$parcel->parcel_id}}"></span>&nbsp;
 		                            		<a onclick="window.open('/viewparcel/{{$disposition->parcel_id}}', '_blank')" class="uk-link-muted" uk-tooltip="OPEN PARCEL IN NEW WINDOW"><span class="a-upload uk-text-muted"></span></a>
 		                            	</span>
 		                            </dd>
 		                        </dl>
 		                        <hr class="dashed-hr"/>
-		                        
+
 								<div class="uk-grid uk-form uk-margin-top">
 									<div class="uk-width-1-1@m uk-width-1-1@s">
 										<p>Please Paste in the Text of the Parcel's Legal Description. <br />
-										<input type="checkbox" name="legal_description_in_documents" value="1" id="legal_description_in_documents" class="uk-checkbox" @if($disposition) @if($disposition->legal_description_in_documents) checked @endif @endif> <small>PARCEL LEGAL DESCRIPTION INCLUDED IN SUPPORTING DOCUMENTS</small></p>	
+										<input type="checkbox" name="legal_description_in_documents" value="1" id="legal_description_in_documents" class="uk-checkbox" @if($disposition) @if($disposition->legal_description_in_documents) checked @endif @endif> <small>PARCEL LEGAL DESCRIPTION INCLUDED IN SUPPORTING DOCUMENTS</small></p>
 										<div class="uk-form-controls">
 											<textarea id="full_description" class="uk-textarea" name="full_description" style="width:100%; @if($disposition) @if($disposition->legal_description_in_documents) display:none; @endif @endif >" rows="6">@if($disposition) {{$disposition->full_description}} @endif</textarea>
 			                            </div>
@@ -493,7 +493,7 @@
 												<td class="uk-text-right">{{$calculation['transaction_cost_formatted']}}</td>
 												<td class="uk-text-right">
 													@if(Gate::check('hfa-review-disposition') || Gate::check('hfa-sign-disposition') || Gate::check('hfa-release-disposition'))
-													
+
 													@if($disposition->hfa_calc_trans_cost === null && $calculation['transaction_cost'] != null)
 														$<input type="text" name="hfa_calc_trans_cost" value="{{$calculation['transaction_cost']}}" id ="hfa_calc_trans_cost"  class="uk-input uk-form-small "/>
 													@elseif($disposition->hfa_calc_trans_cost === null && $calculation['transaction_cost'] == null)
@@ -513,7 +513,7 @@
 												@if($current_user->isFromEntity(1))
 												<td class="uk-text-right">{{$calculation['maintenance_total_formatted']}}</td>
 												<td class="uk-text-right">
-													@if(Gate::check('hfa-review-disposition') || Gate::check('hfa-sign-disposition') || Gate::check('hfa-release-disposition'))		
+													@if(Gate::check('hfa-review-disposition') || Gate::check('hfa-sign-disposition') || Gate::check('hfa-release-disposition'))
 													@if($disposition->hfa_calc_maintenance_total === null && $calculation['maintenance_total'] != null)
 														$<input type="text" name="hfa_calc_maintenance_total" value="{{$calculation['maintenance_total']}}" id ="hfa_calc_maintenance_total"  class="uk-input uk-form-small "/>
 													@elseif($disposition->hfa_calc_maintenance_total === null && $calculation['maintenance_total'] == null)
@@ -545,7 +545,7 @@
 													@else
 														<input type="text" name="hfa_calc_months_prepaid" value="{{$disposition->hfa_calc_months_prepaid}}" id ="hfa_calc_months_prepaid"  class="uk-input uk-form-small "/>
 													@endif
-													
+
 													@else
 													{{$disposition->hfa_calc_months_prepaid}}
 													@endif</td>
@@ -568,7 +568,7 @@
 													@else
 														$<input type="text" name="hfa_calc_monthly_rate" value="{{$disposition->hfa_calc_monthly_rate}}" id ="hfa_calc_monthly_rate"  class="uk-input uk-form-small "/>
 													@endif
-													
+
 													@else
 													{{$disposition->hfa_calc_monthly_rate}}
 													@endif</td>
@@ -610,7 +610,7 @@
 												<td class="uk-text-right">{{$calculation['maintenance_unused_formatted']}}</td>
 												<td class="uk-text-right">
 												@if(Gate::check('hfa-review-disposition') || Gate::check('hfa-sign-disposition') || Gate::check('hfa-release-disposition'))
-													
+
 													@if($disposition->hfa_calc_maintenance_due === null && $calculation['maintenance_unused'] != null)
 														$<input type="text" name="hfa_calc_maintenance_due" value="{{$calculation['maintenance_unused']}}" id ="hfa_calc_maintenance_due"  class="uk-input uk-form-small "/>
 													@elseif($disposition->hfa_calc_maintenance_due === null && $calculation['maintenance_unused'] == null)
@@ -662,7 +662,7 @@
 													@else
 														$<input type="text" name="hfa_calc_epi" value="{{$disposition->hfa_calc_epi}}" id ="hfa_calc_epi"  class="uk-input uk-form-small "/>
 													@endif
-														
+
 													@else
 													{{$disposition->hfa_calc_epi}}
 													@endif</td>
@@ -684,7 +684,7 @@
 													@else
 														$<input type="text" name="hfa_calc_gain" value="{{$disposition->hfa_calc_gain}}" id ="hfa_calc_gain"  class="uk-input uk-form-small " />
 													@endif
-												
+
 												@else
 													{{$disposition->hfa_calc_gain}}
 												@endif</td>
@@ -710,7 +710,7 @@
 													@else
 														$<input type="text" name="hfa_calc_payback" value="{{$disposition->hfa_calc_payback}}" id ="hfa_calc_payback"  class="uk-input uk-form-small "/>
 													@endif
-												
+
 												@else
 													{{$disposition->hfa_calc_payback}}
 													@endif</td>
@@ -754,8 +754,8 @@
 							</div>
 							<div class="uk-width-3-5@m uk-width-1-1@s">
 								<p>Description of Proposed New Use and “Special Circumstance”:<br />
-								<input type="checkbox" name="description_use_in_documents" value="1" id="description_use_in_documents" class="uk-checkbox" @if($disposition) @if($disposition->description_use_in_documents) checked @else class="no-print"  @endif @endif> <small>INCLUDED IN SUPPORTING DOCUMENTS</small></p>	
-										
+								<input type="checkbox" name="description_use_in_documents" value="1" id="description_use_in_documents" class="uk-checkbox" @if($disposition) @if($disposition->description_use_in_documents) checked @else class="no-print"  @endif @endif> <small>INCLUDED IN SUPPORTING DOCUMENTS</small></p>
+
 								<textarea name="special_circumstance" id="special_circumstance" class="uk-textarea" style="width:100%; @if($disposition) @if($disposition->description_use_in_documents) display:none; @endif @endif" rows="3">@if($disposition) {{$disposition->special_circumstance}} @endif</textarea>
 							</div>
 						</div>
@@ -775,9 +775,9 @@
 					</div>
 					@endif
 					@endif
-						
 
-					
+
+
 					@if($step == "Pending Landbank Approval" || $step == "Pending HFA Approval" || $step == "Pending Payment" || $step == "Paid" || $step == "Submitted to Fiscal Agent")
 					<div class="uk-panel uk-panel-header uk-panel-divider uk-margin-top">
 						<h6 class="uk-panel-title">LANDBANK SIGNATURES</h6>
@@ -787,14 +787,14 @@
 						<div class="uk-grid approvals">
 							<div class="uk-width-1-1@s uk-width-1-1@m">
 								<p>I am a duly authorized representative of the Partner with the authority to execute this certification on behalf of the Partner. I have read and understand the NIP Guidelines and other governing documents related to this program. I certify that the special circumstance listed above complies with all NIP guidelines and governing regulations. I agree that Partner will remit any and all Program Income or Net Proceeds as may be required by the guidelines in a timely manner as prescribed by OHFA.</p>
-							</div>	
+							</div>
 							<div class="uk-width-1-1">
 					            <table class="uk-table uk-overflow-container" id="hfa-approvers-list">
 									<thead>
 										<th><small>Name</small></th>
 										<th><small>Decision</small></th>
 										@if( $isApprover || Auth::user()->isHFAAdmin() || Auth::user()->isLandbankDispositionApprover())
-										
+
 										<th class="no-print">
 											@if($disposition->parcel->legacy != 1 && $step == "Pending Landbank Approval" && $step != "Pending HFA Approval")
 												<small>Action</small>
@@ -854,7 +854,7 @@
 									                                // console.log('beforeSend', arguments);
 									                            },
 									                            beforeAll: function (settings2) {
-									                                
+
 									                                var approverArray = [];
 							                                        $("input:checkbox[name=approvers-id-checkbox]:checked").each(function(){
 							                                                approverArray.push($(this).val());
@@ -915,25 +915,25 @@
 								                                                'comment' : val,
 								                                                '_token' : '{{ csrf_token() }}'
 								                                                }, function(data) {
-								                                                    if(data!='1'){ 
+								                                                    if(data!='1'){
 								                                                        UIkit.modal.alert(data,{stack: true});
 								                                                    } else {
-								                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});   
-								                                                            location.reload();   
+								                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});
+								                                                            location.reload();
 								                                                    }
 								                                        });
 								                                    });
-									                                
+
 									                            }
 
 									                        };
 
 									                        var select = UIkit.upload('.js-upload-2', settings2);
-									                        
+
 									                    });
 									                    </script>
 
-									                    
+
 									            	</div>
 									            <hr class="dashed-hr uk-margin-top uk-margin-bottom">
 									            	@endif
@@ -962,7 +962,7 @@
 												@endif
 												@endforeach
 											</td>
-											
+
 											<td class="uk-width-1-5 no-print">
 												@if( $isApprover || Auth::user()->isHFAAdmin())
 												@if(Auth::user()->isLandbankDispositionApprover() || Auth::user()->isHFAAdmin())
@@ -980,7 +980,7 @@
 						 						@endif
 						 						@endif
 						 					</td>
-						 					
+
 										</tr>
 										@endforeach
 										@if($disposition->parcel->legacy != 1 && $step == "Pending Landbank Approval" && $step != "Pending HFA Approval")
@@ -1010,13 +1010,13 @@
 										</tr>
 									@endif
 									</tbody>
-								</table>	
+								</table>
 					        </div>
-					        
+
 						</div>
 					</div>
 					@if((Auth::user()->isLandbankDispositionApprover()) || Auth::user()->isHFAAdmin())
-						@if($disposition->parcel->legacy != 1 && $step == "Pending Landbank Approval" && $step != "Pending HFA Approval") 
+						@if($disposition->parcel->legacy != 1 && $step == "Pending Landbank Approval" && $step != "Pending HFA Approval")
 							<div class="uk-panel uk-panel-header uk-panel-divider print-only">
 								<h6 class="uk-panel-title">SIGNATURES</h6>
 							</div>
@@ -1034,7 +1034,7 @@
 											<p>Name: {{$approval->approver->name}} <span style="float:right;margin-right:20%;">Date:</span>
 											</p>
 										</div>
-									</div>			
+									</div>
 								</div>
 								@endforeach
 							</div>
@@ -1048,7 +1048,7 @@
 								<button class="uk-button uk-width-1-1@m uk-button-success" type="button" onclick="processStep('disposition-form');"><span class="a-floppy"></span> Save Disposition</button>
 							</div>
 
-							<div class="uk-width-1-1@s uk-width-1-2@m">	
+							<div class="uk-width-1-1@s uk-width-1-2@m">
 								@if($isApproved)
 								<button class="uk-button uk-width-1-1@m uk-button-success" type="button" onclick="processStep('disposition-submit-to-hfa');"><span class="a-mail-out"></span> Save & Submit To HFA For Approval</button>
 								@endif
@@ -1136,7 +1136,7 @@
 										                                // console.log('beforeSend', arguments);
 										                            },
 										                            beforeAll: function (settings3) {
-										                                
+
 										                            	var approverArray = [];
 								                                        $("input:checkbox[name=approvers-hfa-id-checkbox]:checked").each(function(){
 								                                                approverArray.push($(this).val());
@@ -1197,21 +1197,21 @@
 									                                                'comment' : val,
 									                                                '_token' : '{{ csrf_token() }}'
 									                                                }, function(data) {
-									                                                    if(data!='1'){ 
+									                                                    if(data!='1'){
 									                                                        UIkit.modal.alert(data,{stack: true});
 									                                                    } else {
-									                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});   
-									                                                            location.reload();   
+									                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});
+									                                                            location.reload();
 									                                                    }
 									                                        });
 									                                    });
-										                                
+
 										                            }
 
 										                        };
 
 										                        var select = UIkit.upload('.js-upload-3', settings3);
-										                        
+
 										                    });
 										                    </script>
 										            	</div>
@@ -1241,7 +1241,7 @@
 												@endif
 												@endforeach
 											</td>
-											
+
 											<td class="uk-width-1-5 no-print">
 												@if( $isApprover_hfa || Auth::user()->isHFAAdmin())
 												@if(Auth::user()->isHFADispositionApprover() || Auth::user()->isHFAAdmin())
@@ -1259,7 +1259,7 @@
 						 						@endif
 						 						@endif
 						 					</td>
-						 					
+
 										</tr>
 										@endforeach
 										@if(Auth::user()->isHFADispositionApprover() || Auth::user()->isHFAAdmin())
@@ -1280,14 +1280,14 @@
 										@endif
 										@endif
 									</tbody>
-								</table>	
+								</table>
 					        </div>
-					        
+
 						</div>
 					@endif
 					</div>
 					@if((Auth::user()->isHFADispositionApprover()) || Auth::user()->isHFAAdmin())
-						@if($disposition->parcel->legacy != 1 && $disposition->hfa_calc_trans_cost !== null) 
+						@if($disposition->parcel->legacy != 1 && $disposition->hfa_calc_trans_cost !== null)
 							<div class="uk-panel uk-panel-header uk-panel-divider print-only">
 								<h6 class="uk-panel-title">SIGNATURES</h6>
 							</div>
@@ -1305,7 +1305,7 @@
 											<p>Name: {{$approval->approver->name}} <span style="float:right;margin-right:20%;">Date:</span>
 											</p>
 										</div>
-									</div>			
+									</div>
 								</div>
 								@endforeach
 							</div>
@@ -1354,8 +1354,8 @@
 				{{-- End if step Pending HFA Approval --}}
 
 
-					@if($disposition->invoice)	
-						@if($disposition->invoice->disposition_invoice_id)	
+					@if($disposition->invoice)
+						@if($disposition->invoice->disposition_invoice_id)
 						<div class="uk-panel uk-panel-divider no-print">
 							<div uk-grid>
 								<div class="uk-width-1-2@m uk-width-1-1@s uk-container-center ">
@@ -1369,19 +1369,19 @@
 					@can('hfa-review-disposition')
 						@if($isDeclined == 0)
 
-							@if($disposition->date_release_requested == null && $disposition->release_date == null)	
+							@if($disposition->date_release_requested == null && $disposition->release_date == null)
 								@if(Auth::user()->isHFAFiscalAgent() || Auth::user()->isHFAAdmin())
 								<div class="uk-panel uk-panel-divider">
 									<div uk-grid>
 										<div class="uk-panel uk-width-1-2@m uk-width-1-1@s  uk-text-center no-print uk-margin-top">
-											
+
 											<button class="uk-button uk-button-success uk-width-1-1@s" type="button" onclick="processStep('disposition-release-requested');"><span class="a-mail-out"></span> Release Lien</button>
 										</div>
 									</div>
 								</div>
 								@endif
 							@endif
-							@if($disposition->date_release_requested !== null && $disposition->release_date == null)	
+							@if($disposition->date_release_requested !== null && $disposition->release_date == null)
 								@if(Auth::user()->isHFAFiscalAgent() || Auth::user()->isHFAAdmin())
 								<div class="uk-panel uk-panel-divider">
 									<div uk-grid>
@@ -1400,7 +1400,7 @@
 							<div class="uk-panel uk-panel-divider">
 								<div uk-grid>
 									<div class="uk-panel uk-width-1-2@m uk-width-1-1@s  uk-text-center no-print uk-margin-top">
-										
+
 										<button class="uk-button uk-button-success uk-width-1-1@s" type="button" onclick="processStep('disposition-decline');"><span class="a-checkbox"></span> Confirm Disposition Declined</button>
 									</div>
 								</div>
@@ -1409,7 +1409,7 @@
 
 						@endif
 					@endcan
-					
+
 					@can('hfa-review-disposition')
 					<div class="uk-panel uk-panel-divider">
 						<div uk-grid>
@@ -1418,31 +1418,31 @@
 								<dl class="uk-description-list-horizontal uk-form">
 		                            <dt>Public Use:</dt>
 		                            <dd>
-		                            	<input type="checkbox" class="uk-checkbox" name="public_use_political" value="1" id="public_use_political" @if($disposition) @if($disposition->public_use_political) checked @endif @endif> Political Subdivision 
-		                            	<input type="checkbox" class="uk-checkbox"  class="uk-margin-left" name="public_use_community" value="1" id="public_use_community" @if($disposition)  @if($disposition->public_use_community) checked @endif @endif> Community Benefit 
-		                            	<input type="checkbox" class="uk-checkbox"  class="uk-margin-left" name="public_use_oneyear" value="1" id="public_use_oneyear" @if($disposition)  @if($disposition->public_use_oneyear) checked @endif @endif> Construction/Operation 1 Year 
+		                            	<input type="checkbox" class="uk-checkbox" name="public_use_political" value="1" id="public_use_political" @if($disposition) @if($disposition->public_use_political) checked @endif @endif> Political Subdivision
+		                            	<input type="checkbox" class="uk-checkbox"  class="uk-margin-left" name="public_use_community" value="1" id="public_use_community" @if($disposition)  @if($disposition->public_use_community) checked @endif @endif> Community Benefit
+		                            	<input type="checkbox" class="uk-checkbox"  class="uk-margin-left" name="public_use_oneyear" value="1" id="public_use_oneyear" @if($disposition)  @if($disposition->public_use_oneyear) checked @endif @endif> Construction/Operation 1 Year
 		                            	<input type="checkbox" class="uk-checkbox"  class="uk-margin-left" name="public_use_facility" value="1" id="public_use_facility" @if($disposition)  @if($disposition->public_use_facility) checked @endif @endif> Public Facility
 		                            </dd>
 		                            <hr class="dashed-hr uk-margin-bottom">
 		                            <dt>Nonprofit:</dt>
 		                            <dd>
-		                            	<input type="checkbox" class="uk-checkbox" name="nonprofit_taxexempt" value="1" id="nonprofit_taxexempt" @if($disposition)  @if($disposition->nonprofit_taxexempt) checked @endif @endif> Tax Exempt Status 
-		                            	<input type="checkbox" class="uk-checkbox"  class="uk-margin-left" name="nonprofit_community" value="1" id="nonprofit_community" @if($disposition)  @if($disposition->nonprofit_community) checked @endif @endif> Community Use 
-		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="nonprofit_oneyear" value="1" id="nonprofit_oneyear" @if($disposition)  @if($disposition->nonprofit_oneyear) checked @endif @endif> Construction/Operation 1 Year 
+		                            	<input type="checkbox" class="uk-checkbox" name="nonprofit_taxexempt" value="1" id="nonprofit_taxexempt" @if($disposition)  @if($disposition->nonprofit_taxexempt) checked @endif @endif> Tax Exempt Status
+		                            	<input type="checkbox" class="uk-checkbox"  class="uk-margin-left" name="nonprofit_community" value="1" id="nonprofit_community" @if($disposition)  @if($disposition->nonprofit_community) checked @endif @endif> Community Use
+		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="nonprofit_oneyear" value="1" id="nonprofit_oneyear" @if($disposition)  @if($disposition->nonprofit_oneyear) checked @endif @endif> Construction/Operation 1 Year
 		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="nonprofit_newuse" value="1" id="nonprofit_newuse" @if($disposition)  @if($disposition->nonprofit_newuse) checked @endif @endif> Zoned for New Use
 		                            </dd>
 		                            <hr class="dashed-hr uk-margin-bottom">
 		                            <dt>Bus/Res Development</dt>
 		                            <dd>
-		                            	<input type="checkbox" class="uk-checkbox" name="dev_fmv" value="1" id="dev_fmv" @if($disposition)  @if($disposition->dev_fmv) checked @else class="no-print" @endif @endif> FMV 
-		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="dev_oneyear" value="1" id="dev_oneyear" @if($disposition) @if($disposition->dev_oneyear) checked @else class="no-print" @endif @endif> Construction/Operation 1 Year 
-		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="dev_newuse" value="1" id="dev_newuse" @if($disposition) @if($disposition->dev_newuse) checked @else class="no-print"  @endif @endif> Zoned for New Use 
-		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="dev_purchaseag" value="1" id="dev_purchaseag" @if($disposition) @if($disposition->dev_purchaseag) checked @endif @endif> Purchase Ag 
-		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="dev_taxescurrent" value="1" id="dev_taxescurrent" @if($disposition) @if($disposition->dev_taxescurrent) checked @else class="no-print" @endif @endif> Taxes Current 
+		                            	<input type="checkbox" class="uk-checkbox" name="dev_fmv" value="1" id="dev_fmv" @if($disposition)  @if($disposition->dev_fmv) checked @else class="no-print" @endif @endif> FMV
+		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="dev_oneyear" value="1" id="dev_oneyear" @if($disposition) @if($disposition->dev_oneyear) checked @else class="no-print" @endif @endif> Construction/Operation 1 Year
+		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="dev_newuse" value="1" id="dev_newuse" @if($disposition) @if($disposition->dev_newuse) checked @else class="no-print"  @endif @endif> Zoned for New Use
+		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="dev_purchaseag" value="1" id="dev_purchaseag" @if($disposition) @if($disposition->dev_purchaseag) checked @endif @endif> Purchase Ag
+		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="dev_taxescurrent" value="1" id="dev_taxescurrent" @if($disposition) @if($disposition->dev_taxescurrent) checked @else class="no-print" @endif @endif> Taxes Current
 		                            	<input type="checkbox" class="uk-checkbox" class="uk-margin-left"  name="dev_nofc" value="1" id="dev_nofc" @if($disposition) @if($disposition->dev_nofc) checked @else class="no-print"  @endif @endif> No FC
 		                            </dd>
 		                        </dl>
-								
+
 							</div>
 
 						</div>
@@ -1465,10 +1465,10 @@
 	            'id' : id,
 	            '_token' : '{{ csrf_token() }}'
 	        }, function(data) {
-	            if(data!='1'){ 
+	            if(data!='1'){
 	                UIkit.modal.alert(data);
 	            } else {
-	                UIkit.modal.alert('The document has been deleted.'); 
+	                UIkit.modal.alert('The document has been deleted.');
 	                $.post('{{ URL::route("disposition.getUploadedDocuments", $parcel->id) }}', {
 								                                                '_token' : '{{ csrf_token() }}'
                             }, function(data) {
@@ -1481,7 +1481,7 @@
 								}else{
 									UIkit.modal.alert('Something went wrong.');
 								}
-                    });                                                                          
+                    });
 	            }
 	        });
 	    });
@@ -1624,7 +1624,7 @@
 					}else{
 						console.log('There are '+window.notSigned+' unsigned approvers left.');
 					}
-					
+
 				}
 			} );
 	    });

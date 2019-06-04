@@ -2,16 +2,16 @@
 /// protect against inactive users.
 $allowPageLoad = false;
 
-if(Auth::check()){
-	if(Auth::user()->active == 1){
-		$allowPageLoad = true;
-	}
-}else{
-	/// user is not logged in -- the auth middleware will protect against that access.
-	$allowPageLoad = true;
+if (Auth::check()) {
+  if (Auth::user()->active == 1) {
+    $allowPageLoad = true;
+  }
+} else {
+  /// user is not logged in -- the auth middleware will protect against that access.
+  $allowPageLoad = true;
 }
-	if($allowPageLoad){
-?>
+if ($allowPageLoad) {
+  ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
 <head>
@@ -39,8 +39,8 @@ if(Auth::check()){
 @endif
 <script>
         window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
     </script>
 
 <script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}"></script>
@@ -296,7 +296,8 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 </body>
 </html>
-<?php } else { /// show for inactive users ?>
+<?php } else {
+  /// show for inactive users ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
 <head>
@@ -316,8 +317,8 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 <script>
         window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
     </script>
 @if(session('disablePacer') != 1)
 <script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}">{{session('disablePacer')}}</script>
@@ -348,8 +349,8 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 <script src="/js/components/grid.min.js{{ asset_version() }}"></script>
 <script src="/js/handsontable.full.min.js{{ asset_version() }}"></script> -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css{{ asset_version() }}" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js{{ asset_version() }}"></script>
 
 	<script>
 		$('select').multipleSelect();
@@ -382,6 +383,5 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 </html>
 <?php
 
-Auth::logout();
-
-}  ?>
+  Auth::logout();
+}?>

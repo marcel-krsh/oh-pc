@@ -1,10 +1,10 @@
 @extends('layouts.simplerAllita')
 
 @section('head')
-<title>REQ: {{$request->id}} </title> 
+<title>REQ: {{$request->id}} </title>
 @stop
 @section('content')
-<!-- <script src="/js/components/upload.js"></script> -->
+<!-- <script src="/js/components/upload.js{{ asset_version() }}"></script> -->
 <style>
 #invoicepanel .uk-panel-box-white {background-color:#ffffff;}
 #invoicepanel .uk-panel-box .uk-panel-badge {}
@@ -28,18 +28,18 @@
 		<div class="uk-panel uk-panel-header uk-visible@m">
 			<div class="uk-panel-badge"><img src="/images/ni-program.jpg" alt="NIP Logo" style="height:70px" /></div>
 			<h6 class="uk-panel-title uk-text-center uk-text-left-small"><span class="blue uk-text-bold	">OHIO HOUSING FINANCE AGENCY</span><br /><span class="green">NEIGHBORHOOD INITIATIVE PROGRAM</span><br />REIMBURSEMENT REQUEST {{$request->id}}</h6>
-			
+
 		</div>
 
 		<div class="uk-panel no-padding-bottom">
 			<div uk-grid class="uk-grid-collapse">
 				<div class="uk-margin-top uk-width-1-2@m uk-width-3-4@l uk-width-1-1@s">
-					{{$request->entity->entity_name}} 
-					@if($request->legacy == 1) 
-					<div class=" uk-label uk-label-warning">Legacy</div> 
+					{{$request->entity->entity_name}}
+					@if($request->legacy == 1)
+					<div class=" uk-label uk-label-warning">Legacy</div>
 					@endif
-					@if($request->status != null) 
-					<div class=" uk-label">{{$request->status->invoice_status_name}}</div> 
+					@if($request->status != null)
+					<div class=" uk-label">{{$request->status->invoice_status_name}}</div>
 					@endif
 				</div>
 			</div>
@@ -67,7 +67,7 @@
 				            </tr>
 				            @endforeach
 				        </tbody>
-				        <tfoot>    
+				        <tfoot>
 				            <tr>
 				                <td>
 				                	<strong>Total</strong>
@@ -91,7 +91,7 @@
 							    	{{$request->program->program_name ?? 'n/a'}}
 							    </h3>
 								<hr class="dashed-hr" class="uk-margin-bottom">
-								
+
 								<!-- This is the container of the content items -->
 								<ul class="uk-list">
 								    <li>
@@ -99,7 +99,7 @@
 								    	<ul>
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span class="a-checkbox-plus"></span> Deposits: 
+								    				<span class="a-checkbox-plus"></span> Deposits:
 								    				<span class="parcel-district-format-number">
 								    					{{money_format('%(8n', $stat['Deposits_Made'])}}
 								    				</span>
@@ -107,7 +107,7 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span class="a-checkbox-plus"></span> Recaptures Received: 
+								    				<span class="a-checkbox-plus"></span> Recaptures Received:
 								    				<span class="parcel-district-format-number">
 								    					{{money_format('%(8n', $stat['Recaptures_Received'])}}
 								    				</span>
@@ -115,7 +115,7 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span class="a-checkbox-plus"></span> Dispositions Received: 
+								    				<span class="a-checkbox-plus"></span> Dispositions Received:
 								    				<span class="parcel-district-format-number">
 								    					{{money_format('%(8n', $stat['Dispositions_Received'])}}
 								    				</span>
@@ -123,16 +123,16 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span uk-icon="minus-square-o"></span> Reimbursments Paid: 
+								    				<span uk-icon="minus-square-o"></span> Reimbursments Paid:
 								    				<span class="parcel-district-format-number">
 								    					( {{money_format('%(8n', $stat['Reimbursements_Paid'])}} )
 								    				</span>
 								    			</span>
 								    		</li>
-								    		
+
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span uk-icon="minus-square-o"></span> Transfers: 
+								    				<span uk-icon="minus-square-o"></span> Transfers:
 								    				<span class="parcel-district-format-number">
 								    					( {{money_format('%(8n', $stat['Transfers_Made'])}} )
 								    				</span>
@@ -140,7 +140,7 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format" style="border-bottom:1px solid black;">
-								    				<span uk-icon="minus-square-o"></span> Line of Credit: 
+								    				<span uk-icon="minus-square-o"></span> Line of Credit:
 								    				<span class="parcel-district-format-number">
 								    					( {{money_format('%(8n', $stat['Line_Of_Credit'])}} )
 								    				</span>
@@ -148,18 +148,18 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format"  style="border-bottom:1px solid black;">
-								    				<span uk-icon="square-o"></span> <strong>BALANCE:</strong> 
+								    				<span uk-icon="square-o"></span> <strong>BALANCE:</strong>
 								    				<span class="parcel-district-format-number">
 								    					<?php
-								    					$accountingBalance = ($stat['Deposits_Made'] + $stat['Recaptures_Received'] + $stat['Dispositions_Received']) - ($stat['Transfers_Made'] + $stat['Reimbursements_Paid'] +$stat['Line_Of_Credit']);
-								    					?>
+$accountingBalance = ($stat['Deposits_Made'] + $stat['Recaptures_Received'] + $stat['Dispositions_Received']) - ($stat['Transfers_Made'] + $stat['Reimbursements_Paid'] + $stat['Line_Of_Credit']);
+?>
 								    					<strong>{{money_format('%(8n', $accountingBalance)}}</strong>
 								    				</span>
 								    			</span>
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format" style="border-bottom:1px solid black;">
-								    				&nbsp;&nbsp;&nbsp;<span uk-icon="minus-square-o"></span> Pending Reimbursements: 
+								    				&nbsp;&nbsp;&nbsp;<span uk-icon="minus-square-o"></span> Pending Reimbursements:
 								    				<span class="parcel-district-format-number">
 								    					( {{money_format('%(8n', ($stat['Total_Invoiced'] - $stat['Reimbursements_Paid']))}} )
 								    				</span>
@@ -167,11 +167,11 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format"  style="border-bottom:2px solid black;">
-								    				<span uk-icon="square-o"></span> <strong>AVAILABLE BALANCE:</strong> 
+								    				<span uk-icon="square-o"></span> <strong>AVAILABLE BALANCE:</strong>
 								    				<span class="parcel-district-format-number">
 								    					<?php
-								    					$accountingBalance = $accountingBalance - ($stat['Total_Invoiced'] - $stat['Reimbursements_Paid'])
-								    					?>
+$accountingBalance = $accountingBalance - ($stat['Total_Invoiced'] - $stat['Reimbursements_Paid']);
+?>
 								    					<strong>{{money_format('%(8n', $accountingBalance)}}</strong>
 								    				</span>
 								    			</span>
@@ -180,13 +180,13 @@
 								    	</ul>
 
 								    </li>
-								    
+
 
 								</ul>
 
 							</div>
 						</div>
-					
+
 					</div>
 					<div class="uk-panel uk-panel-header uk-panel-divider">
 						<h6 class="uk-panel-title">NOTES</h6>
@@ -218,7 +218,7 @@
 						</div>
 						<div class="uk-width-1-1" uk-grid>
 							<div class="uk-width-1-3@m uk-width-1-1@s"><a class="uk-button uk-width-1-1 uk-button-primary" onclick="submitRequestNote()"><span uk-icon="save"></span> SAVE</a></div>
-							
+
 							<div class="uk-width-1-3"></div>
 							<div class="uk-width-1-3"></div>
 						</div>
@@ -245,7 +245,7 @@
 					<span class="uk-text-bold uk-text-small">Contact Person</span><br />
 					{{$nip->user->name}}<br />
 					{{$nip->phone}}<br />
-					{{$nip->user->email}}<br />					
+					{{$nip->user->email}}<br />
 				</div>
 				<div class="uk-width-1-2@s">
 					<span class="uk-text-bold uk-text-small">Name and Address of NIP Partner</span><br />
@@ -391,7 +391,7 @@
 
 						                            completeAll: function (response) {
 						                                var documentids = response.response;
-						                                    
+
 						                                setTimeout(function () {
 						                                    bar.setAttribute('hidden', 'hidden');
 						                                }, 250);
@@ -403,11 +403,11 @@
 					                                                'comment' : val,
 					                                                '_token' : '{{ csrf_token() }}'
 					                                                }, function(data) {
-					                                                    if(data!='1'){ 
+					                                                    if(data!='1'){
 					                                                        UIkit.modal.alert(data,{stack: true});
 					                                                    } else {
-					                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});   
-					                                                            location.reload();   
+					                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});
+					                                                            location.reload();
 					                                                    }
 					                                        });
 					                                    });
@@ -416,7 +416,7 @@
 						                        };
 
 						                        var select = UIkit.upload('.js-upload', settings);
-						                        
+
 						                    });
 						                    </script>
 						            	</div>
@@ -455,7 +455,7 @@
 											<button style="margin-top:5px" class="uk-button uk-button-small uk-button-success" onclick="approveRequest();">Approve</button>
 											@endif
 
-											@if(!$approval->last_action() || ($approval->last_action() && $approval->last_action()->approval_action_type_id != 4)) 
+											@if(!$approval->last_action() || ($approval->last_action() && $approval->last_action()->approval_action_type_id != 4))
 											<button style="margin-top:5px" class="uk-button uk-button-small uk-button-warning" onclick="declineRequest();">Decline</button>
 											@endif
 											@endif
@@ -491,7 +491,7 @@
 							</tr>
 						@endif
 						</tbody>
-					</table>	
+					</table>
 		        </div>
 		        @if($isApproved && $request->status->id == 1)
 		        <div class="uk-panel uk-width-1-2@m uk-width-1-1@s uk-container-center uk-margin-top no-print">
@@ -505,7 +505,7 @@
 			</div>
 		</div>
 
-@if((Auth::user()->isLandbankRequestApprover()) || Auth::user()->isHFAAdmin()) 
+@if((Auth::user()->isLandbankRequestApprover()) || Auth::user()->isHFAAdmin())
 		<div class="uk-panel uk-panel-header uk-panel-divider print-only">
 			<h6 class="uk-panel-title">SIGNATURES</h6>
 		</div>
@@ -523,7 +523,7 @@
 						<p>Name: {{$approval->approver->name}} <span style="float:right;margin-right:20%;">Date:</span>
 						</p>
 					</div>
-				</div>			
+				</div>
 			</div>
 			@endforeach
 		</div>
@@ -531,7 +531,7 @@
 @endif
 	</div>
 </div>
-<div class="uk-width-1-1" hidden>	
+<div class="uk-width-1-1" hidden>
 	@if(Auth::user()->isLandbankAdmin()) isLandbankAdmin<br /> @endif
 	@if(Auth::user()->isLandbankParcelApprover()) isLandbankParcelApprover<br /> @endif
   	@if(Auth::user()->isLandbankRequestApprover()) isLandbankRequestApprover<br /> @endif
@@ -540,7 +540,7 @@
   	@if(Auth::user()->isLandbankDispositionReviewer()) isLandbankDispositionReviewer<br /> @endif
   	@if(Auth::user()->isLandbankDispositionApprover()) isLandbankDispositionApprover<br /> @endif
   	@if(Auth::user()->isLandbankDispositionManager()) isLandbankDispositionManager<br /> @endif
-  	
+
   	@if(Auth::user()->isHFAAdmin()) isHFAAdmin<br /> @endif
   	@if(Auth::user()->isHFAPOApprover()) isHFAPOApprover<br /> @endif
   	@if(Auth::user()->isHFAComplianceAuditor()) isHFAComplianceAuditor<br /> @endif
@@ -657,13 +657,13 @@
 	function submitRequestNote() {
 		var form = $('#newNoteForm');
 
-		data = form.serialize(); 
+		data = form.serialize();
 		$.post('{{ URL::route("requestnote.create", $request->id) }}', {
 	            'request-note' : form.find( "textarea[name='request-note']" ).val(),
 	            '_token' : '{{ csrf_token() }}'
 	            }, function(data) {
 
-	            	if(data['id']!='' && data['id']!=null){ 
+	            	if(data['id']!='' && data['id']!=null){
 	                    // add note to list
 	                	newinput = '<div class="uk-width-1-1 note-list-item" id="note-'+data['id']+'">'+
 					        '    <div class="uk-grid">'+
@@ -681,19 +681,19 @@
 					        '        </div>'+
 					        '    </div>'+
 					        '</div>';
-					  	$("#request_notes").append(newinput); 
+					  	$("#request_notes").append(newinput);
 					  	form.find( "textarea[name='request-note']" ).val('');
-				        UIkit.modal.alert('Your note has been saved.'); 
+				        UIkit.modal.alert('Your note has been saved.');
 	                } else {
-	                	UIkit.modal.alert(data);                                                                      
+	                	UIkit.modal.alert(data);
 	                }
 
-                    
 
-	                
+
+
 		} );
-		
-	}	
+
+	}
 
 	function remove(id){
 		UIkit.modal.confirm("Are you sure you want to remove this approver?").then(function() {

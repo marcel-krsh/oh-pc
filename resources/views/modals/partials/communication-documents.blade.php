@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/css/communications-tab.css">
+<link rel="stylesheet" href="/css/communications-tab.css{{ asset_version() }}">
 <div class="uk-width-1-5 " style="padding:18px;"><div style="width:20px;display: inline-block;" onClick="showDocuments"><i class="a-paperclip-2 "></i></div> DOCUMENTS:</div>
   <div class="uk-width-4-5" id="documents-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 		<div id="add-documents-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showDocuments()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD DOCUMENTS </div><div id="done-adding-documents-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showDocuments()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING DOCUMENTS</div>

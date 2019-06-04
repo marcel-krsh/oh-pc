@@ -1,11 +1,11 @@
 @extends('layouts.simplerAllita')
 @section('head')
 <title>{{ $report->template()->template_name }}: {{ date('y',strtotime($report->audit->scheduled_at)) }}-{{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
-	<link rel="stylesheet" href="/css/documents-tab.css">
-	<script type="text/javascript" src="/js/systems/system.js"></script>
-	<script type="text/javascript" src="/js/systems/audits.js"></script>
-	<script type="text/javascript" src="/js/systems/findings.js"></script>
-	<script type="text/javascript" src="/js/systems/communications.js"></script>
+	<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+	<script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/findings.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
 
 <script>
 	function showComments(partId){
@@ -179,26 +179,26 @@
 @endCan
 
 @if(Auth::user()->can('access_auditor') || $report->crr_approval_type_id > 5)
-<!-- <script src="/js/components/upload.js"></script>
-<script src="/js/components/form-select.js"></script>
-<script src="/js/components/datepicker.js"></script>
-<script src="/js/components/tooltip.js"></script> -->
+<!-- <script src="/js/components/upload.js{{ asset_version() }}"></script>
+<script src="/js/components/form-select.js{{ asset_version() }}"></script>
+<script src="/js/components/datepicker.js{{ asset_version() }}"></script>
+<script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 	<?php // determin background type
-	$background = "none";
-	if($report->crr_approval_type_id == 1){
-		$background = '-draft';
-	}
-	if($report->crr_approval_type_id == 2){
-		$background = '-pending';
-	}
-	if($report->crr_approval_type_id == 3){
-		$background = '-declined';
-	}
-	if($report->crr_approval_type_id == 4){
-		$background = '-revise';
-	}
-	?>
+$background = "none";
+if (1 == $report->crr_approval_type_id) {
+  $background = '-draft';
+}
+if (2 == $report->crr_approval_type_id) {
+  $background = '-pending';
+}
+if (3 == $report->crr_approval_type_id) {
+  $background = '-declined';
+}
+if (4 == $report->crr_approval_type_id) {
+  $background = '-revise';
+}
+?>
 	.crr-sections {
 		width:1142px; min-height: 1502px; margin-left:auto; margin-right:auto; border:1px black solid; background-image: url('/paginate-2x{{ $background }}.gif'); padding: 72px;
 
@@ -293,10 +293,10 @@
 	<div id="section-thumbnails" class="uk-panel-scrollable" style="background-color:lightgray; padding-top:30px; min-height: 100vh; max-width:130px;">
 		@forEach($report->sections as $section)
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-thumbs" style="width:85px; magin-left:auto; margin-right:auto; padding:15px; min-height: 110px;">
-			<?php $thumbNavPartCount = 1; ?>
+			<?php $thumbNavPartCount = 1;?>
 			@foreach($section->parts as $part)
 			<a href="#part-{{ $part->id }}" class="uk-link-mute" onmouseover="$('.crr-part-{{ $part->id }}').addClass('crr-part-commenting');" onmouseout="$('.crr-part-{{ $part->id }}').removeClass('crr-part-commenting');"><small>{{ $part->title }}</small></a><hr class="dashed-hr uk-margin-bottom">
-			<?php $thumbNavPartCount ++; ?>
+			<?php $thumbNavPartCount++;?>
 			@endForeach
 		</div>
 		<div align="center" class="uk-align-center uk-margin-large-bottom use-handcursor crr-thumbs" style="max-width: 85px;"><a href="#{{ str_replace(' ','',$section->id) }}" class="uk-link-mute">{{ strtoupper($section->title) }}</a>
@@ -316,46 +316,46 @@
 
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
 			@if(property_exists($section,'parts'))
-			<?php $pieceCount = 1; ?>
+			<?php $pieceCount = 1;?>
 			@forEach($section->parts as $part)
 
 			@forEach($part as $piece)
 
 			<?php
-	            				// collect comments for this part
-				if(Auth::user()->can('access_auditor')){
-					$comments = collect($report->comments)->where('part_id',$piece->part_id);
+// collect comments for this part
+if (Auth::user()->can('access_auditor')) {
+  $comments = collect($report->comments)->where('part_id', $piece->part_id);
 
-					if($comments){
-						$totalComments = count($comments);
-					}
-				} else {
-					$comments = [];
-					$totalComments = 0;
-				}
-			?>
+  if ($comments) {
+    $totalComments = count($comments);
+  }
+} else {
+  $comments      = [];
+  $totalComments = 0;
+}
+?>
 			@can('access_auditor')<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a>
 				<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>
 
 			</div>@endCan
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
-				<?php $pieceData = json_decode($piece->data); ?>
+				<?php $pieceData = json_decode($piece->data);?>
 				@if($pieceData[0]->type =='free-text')
 				{!! $piece->content !!}
 
 				@endIf
 				@if($pieceData[0]->type == 'blade')
 				<?php
-				if(array_key_exists(1,$pieceData)){
-					$bladeData = $pieceData[1];
-				}else{
-					$bladeData = null;
-				}
-				?>
+if (array_key_exists(1, $pieceData)) {
+  $bladeData = $pieceData[1];
+} else {
+  $bladeData = null;
+}
+?>
 				@include($piece->blade)
 				@endIf
 			</div>
-			<?php $pieceCount ++; ?>
+			<?php $pieceCount++;?>
 			@endForEach
 			@endForEach
 			@endIf

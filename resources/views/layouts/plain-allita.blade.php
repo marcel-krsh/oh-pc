@@ -50,7 +50,7 @@
 			.autocomplete-suggestions {max-height: none;}
 			.autocomplete-suggestion {border-bottom:1px solid #ddd; padding:15px 10px; cursor: pointer;}
 		</style>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}">
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 		@yield('head')
 	</head>
@@ -65,7 +65,7 @@
 				<div id="plain-main-window" class="uk-width-1-1" style="padding-top:20px">
 					<div class="uk-grid " >
 						<div class="uk-width-1-1">
-							
+
 						</div>
 					</div>
 					@yield('content')

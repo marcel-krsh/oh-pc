@@ -34,7 +34,7 @@ if ($allowPageLoad) {
 		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 		<meta name="theme-color" content="#ffffff">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css{{ asset_version() }}" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
 		@if (Auth::guest())
 		@else
@@ -54,7 +54,7 @@ if ($allowPageLoad) {
 
 	@endif
 
-	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}"> -->
 	@if(session('disablePacer')==1)
 	<style type="text/css">
 		body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
@@ -162,7 +162,7 @@ if ($allowPageLoad) {
 	</style>
 	<?php /* session(['disablePacer'=>0]); */?>
 	@endif
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}">
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script>
 		function openUserPreferences(){
@@ -178,12 +178,12 @@ if ($allowPageLoad) {
 		<script src="/js/uikit-icons.min.js{{ asset_version() }}"></script>
 		<script src="/js/handsontable.full.min.js{{ asset_version() }}"></script>
 
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css{{ asset_version() }}" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js{{ asset_version() }}"></script>
 
-		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script> -->
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-		<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>  -->
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js{{ asset_version() }}"></script> -->
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js{{ asset_version() }}"></script>
+		<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js{{ asset_version() }}"></script>  -->
 		<script src="{{ mix('js/app.js') }}"></script>
 
 		<script>
@@ -193,7 +193,7 @@ if ($allowPageLoad) {
 	@if (Auth::guest())
 	@else
 	<script src="/js/taffy.js{{ asset_version() }}"></script>
-	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
+	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js{{ asset_version() }}"></script> -->
 	<script type="text/javascript" src="/js/Chart.bundle.js{{ asset_version() }}"></script>
 	@endif
 
@@ -599,7 +599,7 @@ if ($allowPageLoad) {
 			}
 		}
 	</script>
-	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
+	<script src="/js/pace.min.js{{ asset_version() }}">{{session('disablePacer')}}</script>
 	@endif
 
 
@@ -659,8 +659,8 @@ if ($allowPageLoad) {
 	<script src="/js/components/grid.min.js{{ asset_version() }}"></script>
 	<script src="/js/handsontable.full.min.js{{ asset_version() }}"></script> -->
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css{{ asset_version() }}" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js{{ asset_version() }}"></script>
 
 	<script>
 		$('select').multipleSelect();

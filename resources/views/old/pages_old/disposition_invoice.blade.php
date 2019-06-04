@@ -1,12 +1,12 @@
 @extends('layouts.simplerAllita')
 @section('head')
-<title>DSPINV: {{$invoice->id}}</title> 
+<title>DSPINV: {{$invoice->id}}</title>
 @stop
 @section('content')
-<!-- <script src="/js/components/upload.js"></script>
-<script src="/js/components/form-select.js"></script>
-<script src="/js/components/datepicker.js"></script>
-<script src="/js/components/tooltip.js"></script> -->
+<!-- <script src="/js/components/upload.js{{ asset_version() }}"></script>
+<script src="/js/components/form-select.js{{ asset_version() }}"></script>
+<script src="/js/components/datepicker.js{{ asset_version() }}"></script>
+<script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 #invoicepanel .uk-panel-box-white {background-color:#ffffff;}
 #invoicepanel .uk-panel-box .uk-panel-badge {}
@@ -30,18 +30,18 @@
 		<div class="uk-panel uk-panel-header uk-visible@m">
 			<div class="uk-panel-badge"><img src="/images/ni-program.jpg" alt="NIP Logo" style="height:70px" /></div>
 			<h6 class="uk-panel-title uk-text-center uk-text-left-small"><span class="blue uk-text-bold	">OHIO HOUSING FINANCE AGENCY</span><br /><span class="green">NEIGHBORHOOD INITIATIVE PROGRAM</span><br />DISPOSITION INVOICE {{$invoice->id}}</h6>
-			
+
 		</div>
 
 		<div class="uk-panel no-padding-bottom">
 			<div uk-grid">
 				<div class="uk-width-1-1@s uk-width-1-2@m uk-width-3-4@l uk-margin-top">
 					{{$invoice->entity->entity_name}}
-					@if($legacy == 1) 
-					<div class=" uk-label uk-label-warning">Legacy</div> 
+					@if($legacy == 1)
+					<div class=" uk-label uk-label-warning">Legacy</div>
 					@endif
-					@if($invoice->status != null) 
-					<div class=" uk-label">{{$invoice->status->invoice_status_name}}</div> 
+					@if($invoice->status != null)
+					<div class=" uk-label">{{$invoice->status->invoice_status_name}}</div>
 					@endif
 				</div>
 			</div>
@@ -75,24 +75,24 @@
 				                <td>@if(!is_null($disposition->status->invoice_status_name)) {{$disposition->status->invoice_status_name}} @endif</td>
 				                @if(Auth::user()->isHFADispositionApprover() || Auth::user()->isHFAAdmin())
 				                <td>
-				                	@if($disposition->date_release_requested == null && $disposition->release_date == null)	
+				                	@if($disposition->date_release_requested == null && $disposition->release_date == null)
 									<a onclick="requestRelease({{$disposition->id}});" class="uk-link-muted" uk-tooltip="REQUEST RELEASE"><span class="a-envelope-4"></span></a>
 									@endif
-									@if($disposition->date_release_requested !== null && $disposition->release_date == null)	
+									@if($disposition->date_release_requested !== null && $disposition->release_date == null)
 									<span uk-tooltip="REQUESTED RELEASE ON {{ Carbon\Carbon::parse($disposition->date_release_requested)->format('m/d/Y') }}"><span class="a-envelope-4" class="uk-text-muted"></span></span> <a onclick="released({{$disposition->id}});" class="uk-link-muted" uk-tooltip="RELEASE"><span class="a-circle-checked"></span></a>
 									@endif
-									@if($disposition->date_release_requested !== null && $disposition->release_date !== null)	
+									@if($disposition->date_release_requested !== null && $disposition->release_date !== null)
 									<span uk-tooltip="REQUESTED RELEASE ON {{ Carbon\Carbon::parse($disposition->date_release_requested)->format('m/d/Y') }}, RELEASED ON {{ Carbon\Carbon::parse($disposition->release_date)->format('m/d/Y') }}">{{ Carbon\Carbon::parse($disposition->release_date)->format('m/d/Y') }}</span>
 									@endif
 				                </td>
 								@endif
 				                <td class="uk-text-right">{{$disposition->total()}}</td>
-				                
+
 
 				            @endforeach
 				        @endif
 				        </tbody>
-				        <tfoot>    
+				        <tfoot>
 				            <tr>
 				            	@if(Auth::user()->isHFADispositionApprover() || Auth::user()->isHFAAdmin())
 				                <td colspan="4">
@@ -120,7 +120,7 @@
 							    	{{$invoice->program->program_name ?? 'n/a'}}
 							    </h3>
 								<hr class="dashed-hr" class="uk-margin-bottom">
-								
+
 								<!-- This is the container of the content items -->
 								<ul class="uk-list">
 								    <li>
@@ -128,7 +128,7 @@
 								    	<ul>
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span class="a-circle-plus"></span> Deposits: 
+								    				<span class="a-circle-plus"></span> Deposits:
 								    				<span class="parcel-district-format-number">
 								    					{{money_format('%(8n', $stat['Deposits_Made'])}}
 								    				</span>
@@ -136,7 +136,7 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span class="a-circle-plus"></span> Recaptures Received: 
+								    				<span class="a-circle-plus"></span> Recaptures Received:
 								    				<span class="parcel-district-format-number">
 								    					{{money_format('%(8n', $stat['Recaptures_Received'])}}
 								    				</span>
@@ -144,7 +144,7 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span class="a-circle-plus"></span> Dispositions Received: 
+								    				<span class="a-circle-plus"></span> Dispositions Received:
 								    				<span class="parcel-district-format-number">
 								    					{{money_format('%(8n', $stat['Dispositions_Received'])}}
 								    				</span>
@@ -152,16 +152,16 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span class="a-circle-minus"></span> Reimbursments Paid: 
+								    				<span class="a-circle-minus"></span> Reimbursments Paid:
 								    				<span class="parcel-district-format-number">
 								    					( {{money_format('%(8n', $stat['Reimbursements_Paid'])}} )
 								    				</span>
 								    			</span>
 								    		</li>
-								    		
+
 								    		<li>
 								    			<span class="parcel-district-format">
-								    				<span class="a-circle-minus"></span> Transfers: 
+								    				<span class="a-circle-minus"></span> Transfers:
 								    				<span class="parcel-district-format-number">
 								    					( {{money_format('%(8n', $stat['Transfers_Made'])}} )
 								    				</span>
@@ -169,7 +169,7 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format" style="border-bottom:1px solid black;">
-								    				<span class="a-circle-minus"></span> Line of Credit: 
+								    				<span class="a-circle-minus"></span> Line of Credit:
 								    				<span class="parcel-district-format-number">
 								    					( {{money_format('%(8n', $stat['Line_Of_Credit'])}} )
 								    				</span>
@@ -177,18 +177,18 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format"  style="border-bottom:1px solid black;">
-								    				<span class="a-minus"></span> <strong>BALANCE:</strong> 
+								    				<span class="a-minus"></span> <strong>BALANCE:</strong>
 								    				<span class="parcel-district-format-number">
 								    					<?php
-								    					$accountingBalance = ($stat['Deposits_Made'] + $stat['Recaptures_Received'] + $stat['Dispositions_Received']) - ($stat['Transfers_Made'] + $stat['Reimbursements_Paid'] +$stat['Line_Of_Credit']);
-								    					?>
+$accountingBalance = ($stat['Deposits_Made'] + $stat['Recaptures_Received'] + $stat['Dispositions_Received']) - ($stat['Transfers_Made'] + $stat['Reimbursements_Paid'] + $stat['Line_Of_Credit']);
+?>
 								    					<strong>{{money_format('%(8n', $accountingBalance)}}</strong>
 								    				</span>
 								    			</span>
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format" style="border-bottom:1px solid black;">
-								    				&nbsp;&nbsp;&nbsp;<span class="a-circle-minus"></span> Pending Reimbursements: 
+								    				&nbsp;&nbsp;&nbsp;<span class="a-circle-minus"></span> Pending Reimbursements:
 								    				<span class="parcel-district-format-number">
 								    					( {{money_format('%(8n', ($stat['Total_Invoiced'] - $stat['Reimbursements_Paid']))}} )
 								    				</span>
@@ -196,11 +196,11 @@
 								    		</li>
 								    		<li>
 								    			<span class="parcel-district-format"  style="border-bottom:2px solid black;">
-								    				<span class="a-minus"></span> <strong>AVAILABLE BALANCE:</strong> 
+								    				<span class="a-minus"></span> <strong>AVAILABLE BALANCE:</strong>
 								    				<span class="parcel-district-format-number">
 								    					<?php
-								    					$accountingBalance = $accountingBalance - ($stat['Total_Invoiced'] - $stat['Reimbursements_Paid']);
-								    					?>
+$accountingBalance = $accountingBalance - ($stat['Total_Invoiced'] - $stat['Reimbursements_Paid']);
+?>
 								    					<strong>{{money_format('%(8n', $accountingBalance)}}</strong>
 								    				</span>
 								    			</span>
@@ -209,13 +209,13 @@
 								    	</ul>
 
 								    </li>
-								    
+
 
 								</ul>
 
 							</div>
 						</div>
-					
+
 					</div>
 					<div class="uk-panel uk-panel-header uk-panel-divider">
 						<h6 class="uk-panel-title">NOTES</h6>
@@ -247,7 +247,7 @@
 						</div>
 						<div class="uk-width-1-1 uk-grid no-print">
 							<div class="uk-width-1-3@m uk-width-1-1@s uk-margin-top"><a class="uk-button uk-width-1-1 uk-button-primary" onclick="submitDispositionInvoiceNote({{$invoice->id}})"><span class="a-floppy"></span> SAVE</a></div>
-							
+
 							<div class="uk-width-1-3"></div>
 							<div class="uk-width-1-3"></div>
 						</div>
@@ -347,7 +347,7 @@
 					<span class="uk-text-bold uk-text-small">Contact Person</span><br />
 					{{$nip->user->name}}<br />
 					{{$nip->phone}}<br />
-					{{$nip->user->email}}<br />					
+					{{$nip->user->email}}<br />
 				</div>
 				<div class="uk-width-1-1 uk-width-1-2@s">
 					<span class="uk-text-bold uk-text-small">Name and Address of NIP Partner</span><br />
@@ -405,7 +405,7 @@
 					                    </div>
 									</div>
 										<div class="uk-display-inline" id="list-item-upload-box">
-						                    
+
 					                        <div id="upload-drop-hfa" class="js-upload uk-placeholder uk-text-center">
 						                        <span class="a-higher"></span>
 						                        <span class="uk-text-middle"> Please upload your document by dropping it here or</span>
@@ -497,11 +497,11 @@
 					                                                'comment' : val,
 					                                                '_token' : '{{ csrf_token() }}'
 					                                                }, function(data) {
-					                                                    if(data!='1'){ 
+					                                                    if(data!='1'){
 					                                                        UIkit.modal.alert(data,{stack: true});
 					                                                    } else {
-					                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});   
-					                                                            location.reload();   
+					                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});
+					                                                            location.reload();
 					                                                    }
 					                                        });
 					                                    });
@@ -510,11 +510,11 @@
 						                        };
 
 						                        var select = UIkit.upload('.js-upload', settings);
-						                        
+
 						                    });
 						                    </script>
 
-						                    
+
 						            	</div>
 						            </div>
 						            	@endif
@@ -541,21 +541,21 @@
 									@endif
 									@endforeach
 								</td>
-								
+
 								<td class="uk-width-1-5 no-print">
 									@if( $isApprover || Auth::user()->isHFAAdmin())
 									@if(Auth::user()->isHFADispositionApprover() || Auth::user()->isHFAAdmin())
 
 										@if((Auth::user()->isHFASimpleApproval() && $approval->approver->id == Auth::user()->id) || !Auth::user()->isHFASimpleApproval())
-										
+
 											@if( Auth::user()->id == $approval->approver->id )
 											@php $user_is_in_approvers_list = 1; @endphp
-											
+
 											@if(!$approval->last_action() || ($approval->last_action() && $approval->last_action()->approval_action_type_id == 4))
 											<button style="margin-top:5px" class="uk-button uk-button-small uk-button-success" onclick="approve();">Approve</button>
 											@endif
 
-											@if(!$approval->last_action() || ($approval->last_action() && $approval->last_action()->approval_action_type_id != 4)) 
+											@if(!$approval->last_action() || ($approval->last_action() && $approval->last_action()->approval_action_type_id != 4))
 											<button style="margin-top:5px" class="uk-button uk-button-small uk-button-warning" onclick="decline();">Decline</button>
 											@endif
 
@@ -567,11 +567,11 @@
 			 						@endif
 			 						@endif
 			 					</td>
-			 					
+
 							</tr>
 							@endforeach
 							@if(Auth::user()->isHFADispositionApprover() || Auth::user()->isHFAAdmin())
-							
+
 								@if($pending_approvers)
 								@foreach($pending_approvers as $pending_approver)
 								<tr class="no-print">
@@ -586,11 +586,11 @@
 								@endforeach
 								@endif
 							@endif
-							
+
 						</tbody>
-					</table>	
+					</table>
 		        </div>
-		        
+
 			</div>
 		</div>
 		@if((Auth::user()->isHFADispositionApprover()) || Auth::user()->isHFAAdmin())
@@ -611,7 +611,7 @@
 							<p>Name: {{$approval->approver->name}} <span style="float:right;margin-right:20%;">Date:</span>
 							</p>
 						</div>
-					</div>			
+					</div>
 				</div>
 				@endforeach
 			</div>
@@ -647,7 +647,7 @@
 		</div>
 		@endif
 
-		
+
 	</div>
 </div>
 @endif
@@ -664,7 +664,7 @@
 </div>
 @endif
 
-@if($display_request_button)	
+@if($display_request_button)
 <div class="uk-panel uk-panel-divider uk-margin-bottom uk-margin-top uk-margin-left uk-margin-right">
 	<div uk-grid>
 		<div class="uk-panel uk-width-1-2@m uk-width-1-1@s uk-container-center uk-text-center no-print">
@@ -673,7 +673,7 @@
 	</div>
 </div>
 @endif
-@if($display_release_button)	
+@if($display_release_button)
 <div class="uk-panel uk-panel-divider uk-margin-bottom uk-margin-top uk-margin-left uk-margin-right">
 	<div uk-grid>
 		<div class="uk-panel uk-width-1-2@m uk-width-1-1@s uk-container-center uk-text-center no-print">
@@ -698,7 +698,7 @@ function submitForApproval(){
 				}else{
 					UIkit.modal.alert('Something went wrong.');
 				}
-			} 
+			}
 		);
 	});
 }
@@ -746,7 +746,7 @@ function released(disposition_id = 0){
 }
 
 
-@if((Auth::user()->isHFAAdmin() || Auth::user()->isHFADispositionApprover()) && $invoice->status->id == 3 && $isApproved == 1) 
+@if((Auth::user()->isHFAAdmin() || Auth::user()->isHFADispositionApprover()) && $invoice->status->id == 3 && $isApproved == 1)
 	function submitInvoice(){
 		UIkit.modal.confirm("Are you sure you want to submit the invoice?").then(function() {
 	        $.post('{{ URL::route("disposition_invoice.submitInvoice", [$invoice->id]) }}', {
@@ -829,10 +829,10 @@ function released(disposition_id = 0){
 					UIkit.modal.alert('Something went wrong.');
 				}
 			} );
-		});	
+		});
 		@endif
 	}
-	
+
 	function decline(approval_type = 12){
 		UIkit.modal.confirm("Are you sure you want to decline?").then(function() {
 	        $.post('{{ URL::route("invoice.decline", [$invoice->id]) }}', {
@@ -872,13 +872,13 @@ function released(disposition_id = 0){
 	function submitDispositionInvoiceNote(id) {
 		var form = $('#newNoteForm');
 
-		data = form.serialize(); 
+		data = form.serialize();
 		$.post('{{ URL::route("dispositioninvoicenote.create", $invoice->id) }}', {
 	            'invoice-note' : form.find( "textarea[name='invoice-note']" ).val(),
 	            '_token' : '{{ csrf_token() }}'
 	            }, function(data) {
 
-	            	if(data['id']!='' && data['id']!=null){ 
+	            	if(data['id']!='' && data['id']!=null){
 	                    // add note to list
 	                	newinput = '<div class="uk-width-1-1 note-list-item" id="note-'+data['id']+'">'+
 					        '    <div uk-grid>'+
@@ -896,14 +896,14 @@ function released(disposition_id = 0){
 					        '        </div>'+
 					        '    </div>'+
 					        '</div>';
-					  	$("#invoice_notes").append(newinput); 
+					  	$("#invoice_notes").append(newinput);
 					  	form.find( "textarea[name='invoice-note']" ).val('');
-				        UIkit.modal.alert('Your note has been saved.'); 
+				        UIkit.modal.alert('Your note has been saved.');
 	                } else {
-	                	UIkit.modal.alert(data);                                                                      
-	                }       
+	                	UIkit.modal.alert(data);
+	                }
 		} );
-	}	
+	}
 @endif
 </script>
 @stop

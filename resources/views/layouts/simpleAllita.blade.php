@@ -2,16 +2,16 @@
 /// protect against inactive users.
 $allowPageLoad = false;
 
-if(Auth::check()){
-	if(Auth::user()->active == 1){
-		$allowPageLoad = true;
-	}
-}else{
-	/// user is not logged in -- the auth middleware will protect against that access.
-	$allowPageLoad = true;
+if (Auth::check()) {
+  if (Auth::user()->active == 1) {
+    $allowPageLoad = true;
+  }
+} else {
+  /// user is not logged in -- the auth middleware will protect against that access.
+  $allowPageLoad = true;
 }
-	if($allowPageLoad){
-?>
+if ($allowPageLoad) {
+  ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
 <head>
@@ -45,8 +45,8 @@ if(Auth::check()){
 @endif
 <script>
         window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
     </script>
 
 <script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}"></script>
@@ -106,7 +106,7 @@ if(Auth::check()){
 						@if (Auth::guest())
 						<div class="uk-width-1-1">
                             <?php /*<span class="uk-text-right"><a href="{{ url('/login') }}" class="uk-dark uk-link-muted uk-light">Login</a> | <a href="{{ url('/register') }}" class="uk-dark uk-link-muted uk-light">Register</a></span>
-                            */?>
+   */?>
                             <p align="center"><img class="uk-margin-bottom" width="180" height="48" src="https://ohiohome.org/images/logo@2x.png" alt="Ohio Housing Finance Agency" style="margin-left:auto;margin-right:auto; width: 118px;"></p>
                             </div>
 
@@ -330,11 +330,11 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 		    output = output + 'Parcel ID: '+item[3]+'<br />';
 		    output = output + item[0]+'<br />';
 		    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
-		<?php if(Auth::user()->entity_type == "hfa"){ ?>
+		<?php if (Auth::user()->entity_type == "hfa") {?>
 			output = output + 'LB: '+ item[5] +'<br />HFA: '+ item[6]+'<br />';
-		<?php } else { ?>
+		<?php } else {?>
 			output = output + item[5]+'<br />';
-		<?php } ?>
+		<?php }?>
 			output = output + '<span class="hideImport'+item[7]+'">';
 			output = output + 'Import #'+item[7]+' on '+item[11]+'<br />By '+item[8]+'</span>';
 		    output = output + '</div>';
@@ -377,7 +377,8 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 </body>
 </html>
-<?php } else { /// show for inactive users ?>
+<?php } else {
+  /// show for inactive users ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
 <head>
@@ -397,8 +398,8 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 <script>
         window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
     </script>
 @if(session('disablePacer') != 1)
 <script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}">{{session('disablePacer')}}</script>
@@ -429,8 +430,8 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 <script src="/js/components/grid.min.js{{ asset_version() }}"></script>
 <script src="/js/handsontable.full.min.js{{ asset_version() }}"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css{{ asset_version() }}" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js{{ asset_version() }}"></script>
 
 	<script>
 		$('select').multipleSelect();
@@ -463,6 +464,5 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 </html>
 <?php
 
-Auth::logout();
-
-}  ?>
+  Auth::logout();
+}?>
