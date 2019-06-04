@@ -69,6 +69,7 @@ class Kernel extends ConsoleKernel
 
         Commands\MakeTestFriendlyCommand::class,
         Commands\SendNotificationsHourly::class,
+        Commands\AssetVersionUpdateCommand::class,
     ];
 
     protected $middleware = [
@@ -469,9 +470,9 @@ class Kernel extends ConsoleKernel
             // $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
             // if (is_null($test)) {
             //     $planning = Projection::where('run',0)->first();
-               
+
             //         $schedule->job(new ComplianceProjectionJob, 'compliance')->everyMinute();
-               
+
             // } else {
             //     //Log::info('Sync Job Already Started.');
             // }
