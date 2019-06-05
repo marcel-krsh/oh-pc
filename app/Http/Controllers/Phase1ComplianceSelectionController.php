@@ -2742,7 +2742,7 @@ class Phase1ComplianceSelection extends Controller
         $estimated_time_needed = null;
 
 
-        if ($audit->user_key) {
+        if ($this->audit->user_key) {
             $lead_user = User::where('devco_key', '=', $this->audit->user_key)->first();
             //$this->processes++;
         }else{
@@ -3224,46 +3224,46 @@ class Phase1ComplianceSelection extends Controller
                 $this->audit->comment_system = 'Audit process starting at '.date('m/d/Y h:i:s A',time());
                 //$this->audit->save();
                 //Remove all associated amenity inspections
-                \App\Models\AmenityInspection::where('audit_id',$audit->id)->delete();
+                \App\Models\AmenityInspection::where('audit_id',$this->audit->id)->delete();
                 $this->audit->comment_system = $this->audit->comment_system.' | Deleted AmenityInspections';
-                //$audit->save();
+                //$this->audit->save();
                 //$this->processes++;
                 //Remove Unit Inspections
-                \App\Models\UnitInspection::where('audit_id',$audit->id)->delete();
+                \App\Models\UnitInspection::where('audit_id',$this->audit->id)->delete();
                 $this->audit->comment_system = $this->audit->comment_system.' | Deleted Unit Inspections';
-                //$audit->save();
+                //$this->audit->save();
                 //$this->processes++;
                 //Remove Project Details for this Audit
-                \App\Models\ProjectDetail::where('audit_id',$audit->id)->delete();
+                \App\Models\ProjectDetail::where('audit_id',$this->audit->id)->delete();
                 $this->audit->comment_system = $this->audit->comment_system.' | Deleted Project Details';
-                //$audit->save();
+                //$this->audit->save();
                 //$this->processes++;
                 //Remove the Cached Audit
-                \App\Models\CachedAudit::where('audit_id', '=', $audit->id)->delete();
+                \App\Models\CachedAudit::where('audit_id', '=', $this->audit->id)->delete();
                 $this->audit->comment_system = $this->audit->comment_system.' | Removed the CachedAudit';
-                //$audit->save();
+                //$this->audit->save();
                 //$this->processes++;
 
                 //Remove the Ordering Building
-                \App\Models\OrderingBuilding::where('audit_id', '=', $audit->id)->delete();
+                \App\Models\OrderingBuilding::where('audit_id', '=', $this->audit->id)->delete();
                 $this->audit->comment_system = $this->audit->comment_system.' | Removed the OrderingBuilding';
-                //$audit->save();
+                //$this->audit->save();
                 //$this->processes++;
 
                 //Remove the Ordering Unit
-                \App\Models\OrderingUnit::where('audit_id', '=', $audit->id)->delete();
+                \App\Models\OrderingUnit::where('audit_id', '=', $this->audit->id)->delete();
                 $this->audit->comment_system = $this->audit->comment_system.' | Removed the OrderingUnit';
-                //$audit->save();
+                //$this->audit->save();
                 //$this->processes++;
 
                 // //get the current audit units:
                 $this->audit->comment = $this->audit->comment.' | Fetching Audit Units';
                 $this->audit->comment_system = $this->audit->comment_system.' | Running Fetch Audit Units, build UnitProgram';
-                //$audit->save();
+                //$this->audit->save();
                 //$this->processes++;
                 $this->fetchAuditUnits($audit);
                 $this->audit->comment_system = $this->audit->comment_system.' | Finished Fetch Units';
-                //$audit->save();
+                //$this->audit->save();
                 //$this->processes++;
 
                 
