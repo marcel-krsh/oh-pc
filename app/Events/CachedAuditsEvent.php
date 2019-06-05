@@ -350,7 +350,7 @@ class CachedAuditsEvent
                     $state = null;
                     $zip = null;
                 }
-                if($unit && is_object($unit->unit) && property_exists($unit->unit, 'id')){
+                if($unit){
                     $cached_unit = new CachedUnit([
                         'audit_id' => $cached_audit->audit_id,
                         'audit_key' => $cached_audit->audit_key,
@@ -385,8 +385,8 @@ class CachedAuditsEvent
                         'zip' => $zip,
                         'auditors_json' => null,
                         'amenities_json' => json_encode($uaJson),
-                        'unit_id'=>$unit->unit->id,
-                        'unit_key'=>$unit->unit->unit_key,
+                        'unit_id'=>$unit->unit_id,
+                        'unit_key'=>$unit->unit_key,
                         'unit_name'=>$unit->unit->unit_name
                     ]);
                     $cached_unit->save();
