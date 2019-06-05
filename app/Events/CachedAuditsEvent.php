@@ -305,6 +305,7 @@ class CachedAuditsEvent
                 // get the unit type (bedroom type)
                 //
                 //
+
                 $unit_amenities = AmenityInspection::where('unit_id',$unit->unit_id)->with('amenity')->get();
                 //dd($unit_amenities);
                 $uaCount = 0;
@@ -349,46 +350,49 @@ class CachedAuditsEvent
                     $state = null;
                     $zip = null;
                 }
-
-                $cached_unit = new CachedUnit([
-                    'audit_id' => $cached_audit->audit_id,
-                    'audit_key' => $cached_audit->audit_key,
-                    'project_id' => $unit->project_id,
-                    'project_key' => $unit->project_key,
-                    'amenity_id' => null,
-                    'building_id' => $unit->building_id,
-                    'building_key' => $unit->building_key,
-                    'status' => null,
-                    'type' => 'amenity',
-                    'type_total' => $uaCount,
-                    'type_text' => 'AMENITY',
-                    'type_text_plural' => 'AMENITIES',
-                    'program_total' => null,
-                    'finding_total' => 0,
-                    'finding_file_status' => '',
-                    'finding_nlt_status' => '',
-                    'finding_lt_status' => '',
-                    'finding_sd_status' => '',
-                    'finding_file_total' => '0',
-                    'finding_nlt_total' => '0',
-                    'finding_lt_total' => '0',
-                    'finding_sd_total' => '0',
-                    'finding_file_completed' => '0',
-                    'finding_nlt_completed' => '0',
-                    'finding_lt_completed' => '0',
-                    'finding_sd_completed' => '0',
-                  //  'followup_date' => '',
-                    'address' => $address,
-                    'city' => $city,
-                    'state' => $state,
-                    'zip' => $zip,
-                    'auditors_json' => null,
-                    'amenities_json' => json_encode($uaJson),
-                    'unit_id'=>$unit->unit->id,
-                    'unit_key'=>$unit->unit->unit_key,
-                    'unit_name'=>$unit->unit->unit_name
-                ]);
-                $cached_unit->save();
+                if($unit && is_object($unit->unit) && property_exists($unit->unit, 'id')){
+                    $cached_unit = new CachedUnit([
+                        'audit_id' => $cached_audit->audit_id,
+                        'audit_key' => $cached_audit->audit_key,
+                        'project_id' => $unit->project_id,
+                        'project_key' => $unit->project_key,
+                        'amenity_id' => null,
+                        'building_id' => $unit->building_id,
+                        'building_key' => $unit->building_key,
+                        'status' => null,
+                        'type' => 'amenity',
+                        'type_total' => $uaCount,
+                        'type_text' => 'AMENITY',
+                        'type_text_plural' => 'AMENITIES',
+                        'program_total' => null,
+                        'finding_total' => 0,
+                        'finding_file_status' => '',
+                        'finding_nlt_status' => '',
+                        'finding_lt_status' => '',
+                        'finding_sd_status' => '',
+                        'finding_file_total' => '0',
+                        'finding_nlt_total' => '0',
+                        'finding_lt_total' => '0',
+                        'finding_sd_total' => '0',
+                        'finding_file_completed' => '0',
+                        'finding_nlt_completed' => '0',
+                        'finding_lt_completed' => '0',
+                        'finding_sd_completed' => '0',
+                      //  'followup_date' => '',
+                        'address' => $address,
+                        'city' => $city,
+                        'state' => $state,
+                        'zip' => $zip,
+                        'auditors_json' => null,
+                        'amenities_json' => json_encode($uaJson),
+                        'unit_id'=>$unit->unit->id,
+                        'unit_key'=>$unit->unit->unit_key,
+                        'unit_name'=>$unit->unit->unit_name
+                    ]);
+                    $cached_unit->save();
+                }else{
+                    dd('Unit unit was not good:',$unit);
+                }
 
             //}
         }
