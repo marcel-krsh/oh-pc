@@ -2788,7 +2788,7 @@ class Phase1ComplianceSelection extends Controller
         //create inspection days if they are set in devco
 
         if(null !== $this->audit->start_date){
-            $auditInspectionDate = date('Y-m-d H:i:s', $this->audit->start_date);
+            $auditInspectionDate = date('Y-m-d H:i:s', strtotime($this->audit->start_date));
             //insert the date into the schedule
             $scheduleCheck = ScheduleDay::where('date', $auditInspectionDate)->count();
             if($scheduleCheck < 1){
