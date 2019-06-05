@@ -55,6 +55,11 @@
 		}
 	}
 
+	function resizeModal (setSize) {
+		$('#modal-size').css('width', setSize+'%');
+		console.log('Resized Modal to '+setSize+'%')
+	}
+
 </script>
 @can('access_auditor')
 <script type="text/javascript">

@@ -165,7 +165,7 @@ forEach($findings as $fc){
 			<div class="uk-position-relative uk-visible-toggle uk-light">
 				<ul class="uk-slider-items uk-child-width-1-1" style="transform: translateX(0px);">
 					<li class="findings-item-photo-4 use-hand-cursor uk-active">
-						<img src="{{ $p->file_path }}" alt="">
+						<img src="{{ url($p->file_path) }}" alt="">
 					</li>
 				</ul>
 			</div>
@@ -179,22 +179,21 @@ forEach($findings as $fc){
 
 		<hr class="dashed-hr uk-margin-bottom">
 		@if($f->amenity_inspection)
-		<div style="min-height: 80px;">
-			<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id',$report->audit_id);
-						//dd($piecePrograms);
-			?>
+		<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id',$report->audit_id); ?>
 			@if(count($piecePrograms)>0)
-			<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span>
-			<ul > @forEach($piecePrograms as $p)
-				<li>@if(!is_null($p->is_substitute))SUBSTITUTED FOR:@endIf
-					{{$p->program->program_name}}
-				</li>
-				@endForEach
-			</ul>
+			<div style="min-height: 80px;">
+				<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span>
+				<ul > @forEach($piecePrograms as $p)
+					<li>@if(!is_null($p->is_substitute))SUBSTITUTED FOR:@endIf
+						{{$p->program->program_name}}
+					</li>
+					@endForEach
+				</ul>
+			</div>
 			@endIf
-		</div>
 		@endIf
 
+		@if(!$print)
 		{{-- Communications section --}}
 		{{-- 38:40
 		* Envolope icon
@@ -297,7 +296,6 @@ forEach($findings as $fc){
 			</li>
 			@endif
 		</span>
-
 		{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
 		@endforeach
 		@endIf
@@ -347,6 +345,8 @@ forEach($findings as $fc){
 			</span>
 			@endforeach
 		@endIf
+
+		@endif
 
 
 

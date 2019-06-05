@@ -125,7 +125,11 @@
         	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
-        				<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
+        				@if($all_findings && $single_receipient)
+        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." value="{{ $finding->id }}">
+        				@else
+        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
+        				@endif
         			</div>
         		</div>
         	</fieldset>
@@ -136,7 +140,7 @@
         	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
-        				<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message."></textarea>
+        				<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message.">@if($all_findings && $single_receipient)Owner response for finding {{ $finding->id }} on audit # {{ $audit->id }} for {{ $project->project_number }} : {{ $project->project_name }}@endif</textarea>
         			</div>
         		</div>
         	</fieldset>

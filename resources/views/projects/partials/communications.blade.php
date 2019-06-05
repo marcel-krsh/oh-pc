@@ -59,7 +59,7 @@
 				<div class="uk-margin-small-left"><small><strong>RECIPIENTS</strong></small></div>
 			</div>
 			<div class="uk-width-1-5@m uk-width-1-1@s">
-				<div class="uk-margin-small-left"><small><strong>AUDIT</strong></small></div>
+				<div class="uk-margin-small-left"><small><strong>AUDIT | PROJECT</strong></small></div>
 			</div>
 			<div class="uk-width-2-5@m uk-width-1-1@s">
 				<div class="uk-margin-small-left"><small><strong>SUMMARY</strong></small></div>
@@ -104,7 +104,7 @@
 			<div class="uk-width-1-5@s communication-type-and-who uk-hidden@m uk-text-right " >
 				<div class="uk-margin-right">
 					@if($message->audit_id && $message->audit && $message->audit->cached_audit)
-					<p style="margin-bottom:0">{{ $message->audit_id }}</p>
+					<p style="margin-bottom:0">{{ $message->audit_id }} | {{ $message->project->project_number }} : {{ $message->project->project_name }}</p>
 					<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left;title:{{ $message->audit->cached_audit->title }}">
 						<small>{{ $message->audit->cached_audit->address }},
 							{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->zip }}
@@ -115,7 +115,7 @@
 			</div>
 			<div class="uk-width-1-5@m communication-item-parcel uk-visible@m">
 				@if($message->audit_id && $message->audit && $message->audit->cached_audit)
-				<p style="margin-bottom:0"><a class="uk-link-muted">{{ $message->audit_id }}</a></p>
+				<p style="margin-bottom:0"><a class="uk-link-muted">{{ $message->audit_id }} | {{ $message->project->project_number }} : {{ $message->project->project_name }}</a></p>
 				<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left" title="{{ $message->audit->cached_audit->title }}">
 					<small>{{ $message->audit->cached_audit->address }},
 						{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->cached_audit->zip }}
