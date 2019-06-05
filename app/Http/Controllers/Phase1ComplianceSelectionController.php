@@ -3433,7 +3433,7 @@ class Phase1ComplianceSelection extends Controller
                     }
                     //LOG::info('unit inspections should be there.');
                     $this->addAmenityInspections($this->audit);
-                    $this->updateProjection($best_run);    // finally create the audit
+                    $this->createNewCachedAudit($best_run);    // finally create the audit
                     $this->createNewProjectDetails($this->audit); // create the project details
                     
                     // LOG SUCCESS HERE
