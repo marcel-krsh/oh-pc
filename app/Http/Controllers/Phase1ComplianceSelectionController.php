@@ -3212,8 +3212,8 @@ class Phase1ComplianceSelection extends Controller
     public function runSimpleCompliance(Audit $audit)
     {
         //$this->projection = Projection::where('run',0)->first();
-        
-                
+            if(null !== $audit){
+                $this->audit = $audit;
                 $this->project = $this->audit->project;
                 $this->extended_use = 0;
                 
@@ -3451,8 +3451,11 @@ class Phase1ComplianceSelection extends Controller
                     $this->audit->rerun_compliance = 0;
                     //$this->audit->save();
                 }
-            
-             $this->audit->save();  
+                $this->audit->save();  
+            } else {
+                return 'No audit found.';
+             
+            }
           
     }
 }
