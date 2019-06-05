@@ -2791,7 +2791,7 @@ class Phase1ComplianceSelection extends Controller
         if(null !== $this->audit->start_date){
             $auditInspectionDate = date('Y-m-d H:i:s', strtotime($this->audit->start_date));
             //insert the date into the schedule
-            $scheduleCheck = ScheduleDay::where('date', $auditInspectionDate)->count();
+            $scheduleCheck = ScheduleDay::where('date', $auditInspectionDate)->where('audit_id',$audit->id)->count();
             if($scheduleCheck < 1){
                 $schedule = new ScheduleDay;
                 $schedule->audit_id = $this->audit->id;
