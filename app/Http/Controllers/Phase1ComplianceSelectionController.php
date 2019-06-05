@@ -2795,7 +2795,7 @@ class Phase1ComplianceSelection extends Controller
                 $schedule = new ScheduleDay;
                 $schedule->audit_id = $this->audit->id;
                 $schedule->date = $auditInspectionDate;
-                $shcedule->save();
+                $schedule->save();
             }
             $inspection_schedule_text = 'DATE SET FROM DEVCO';
             $inspection_status_text = 'CLICK TO RESCHEDULE';
