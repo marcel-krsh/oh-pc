@@ -3353,7 +3353,7 @@ class Phase1ComplianceSelection extends Controller
                                         $u = new UnitInspection([
                                             'group' => $program['name'],
                                             'group_id' => $program['group'],
-                                            'unit_id' => $unit->unit_id,
+                                            'unit_id' => $unit->id,
                                             'unit_key' => $unit->unit_key,
                                             'unit_name' => $unit->unit_name,
                                             'building_id' => $unit->building_id,
