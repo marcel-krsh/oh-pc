@@ -41,21 +41,21 @@ class Phase1ComplianceSelection extends Controller
     public $project;
     public $units;
     public $full_audit;
-    public $program_1_2016_site_count;
-    public $program_1_2016_file_count;
-    public $program_1_2016_percentage_used;
+    // public $program_1_2016_site_count;
+    // public $program_1_2016_file_count;
+    // public $program_1_2016_percentage_used;
 
-    public $program_2_2016_site_count;
-    public $program_2_2016_file_count;
-    public $program_2_2016_percentage_used;
+    // public $program_2_2016_site_count;
+    // public $program_2_2016_file_count;
+    // public $program_2_2016_percentage_used;
 
-    public $program_3_2016_site_count;
-    public $program_3_2016_file_count;
-    public $program_3_2016_percentage_used;
+    // public $program_3_2016_site_count;
+    // public $program_3_2016_file_count;
+    // public $program_3_2016_percentage_used;
 
-    public $program_4_2016_site_count;
-    public $program_4_2016_file_count;
-    public $program_4_2016_percentage_used;
+    // public $program_4_2016_site_count;
+    // public $program_4_2016_file_count;
+    // public $program_4_2016_percentage_used;
 
     
 
@@ -83,24 +83,24 @@ class Phase1ComplianceSelection extends Controller
             $this->units = null;
             $this->full_audit = 1; // set to 1 to run full audit
 
-            $this->program_1_2016_site_count = null;
-            $this->program_1_2016_file_count = null;
-            $this->program_1_2016_percentage_used = 'NA';
+            //$this->program_1_2016_site_count = null;
+            //$this->program_1_2016_file_count = null;
+            //$this->program_1_2016_percentage_used = 'NA';
             $this->program_1_2019_percentage_used = 'NA';
 
-            $this->program_2_2016_site_count = null;
-            $this->program_2_2016_file_count = null;
-            $this->program_2_2016_percentage_used = 'NA';
+            //$this->program_2_2016_site_count = null;
+            //$this->program_2_2016_file_count = null;
+            //$this->program_2_2016_percentage_used = 'NA';
             $this->program_2_2019_percentage_used = 'NA';
 
-            $this->program_3_2016_site_count = null;
-            $this->program_3_2016_file_count = null;
-            $this->program_3_2016_percentage_used = 'NA';
+            //$this->program_3_2016_site_count = null;
+            //$this->program_3_2016_file_count = null;
+            //$this->program_3_2016_percentage_used = 'NA';
             $this->program_3_2019_percentage_used = 'NA';
 
-            $this->program_4_2016_site_count = null;
-            $this->program_4_2016_file_count = null;
-            $this->program_4_2016_percentage_used = 'NA';
+            //$this->program_4_2016_site_count = null;
+            //$this->program_4_2016_file_count = null;
+            //$this->program_4_2016_percentage_used = 'NA';
             $this->program_4_2019_percentage_used = 'NA';
 
             $this->program_percentages = array();
@@ -924,7 +924,7 @@ class Phase1ComplianceSelection extends Controller
 
             ////dd('Line 767 - Ran and got program bundles - ',$program_bundle_names,$this->project->programs);
             $this->program_percentages['BUNDLE']['percent']='NA';
-            $this->program_percentages['BUNDLE']['_2016_count'] = null;
+            //$this->program_percentages['BUNDLE']['_2016_count'] = null;
             if($total){
                 $this->audit->comment = $this->audit->comment.' | Select Process starting Group 1 selection ';
                 ////$this->audit->save();
@@ -994,7 +994,7 @@ class Phase1ComplianceSelection extends Controller
                     $required_units = ceil($total/5);
 
                     $this->program_percentages['BUNDLE']['percent'] = '20% of Bundle Total';
-                    $this->program_percentages['BUNDLE']['_2016_count'] = $required_units;
+                    //$this->program_percentages['BUNDLE']['_2016_count'] = $required_units;
 
 
                     $comments[] = '20% of the pool is randomly selected. Total selected: '.count($units_selected);
@@ -1250,7 +1250,7 @@ class Phase1ComplianceSelection extends Controller
 
                         $required_units = ceil($total/10); // 10% of units
                         $this->program_percentages['BUNDLE']['percent'] = '10% of Bundle';
-                        $this->program_percentages['BUNDLE']['_2016_count'] = $required_units;
+                        //$this->program_percentages['BUNDLE']['_2016_count'] = $required_units;
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 10);
                         //dd('1096 Random Unit Selection output:',$units_selected);
@@ -1319,13 +1319,13 @@ class Phase1ComplianceSelection extends Controller
             // })->get();
             $units = $this->units->whereIn('program_key',$this->program_811_ids);
             $this->program_percentages['811']['percent']='NA';
-            $this->program_percentages['811']['_2016_count'] = null;
+            //$this->program_percentages['811']['_2016_count'] = null;
 
             if(count($units)){
 
                 $required_units = count($units);
                 $this->program_percentages['811']['percent']='100%';
-                $this->program_percentages['811']['_2016_count']=$required_units;
+                //$this->program_percentages['811']['_2016_count']=$required_units;
 
                 $this->audit->comment = $this->audit->comment.' | Select Process starting 811 selection ';
                 //$this->audit->save();
@@ -1393,7 +1393,7 @@ class Phase1ComplianceSelection extends Controller
             $units = $this->units->whereIn('program_key',$this->program_medicaid_ids);
             
             $this->program_percentages['MEDICAID']['percent']='NA';
-            $this->program_percentages['MEDICAID']['_2016_count'] = null;
+            //$this->program_percentages['MEDICAID']['_2016_count'] = null;
             if(count($units)){
                 $this->audit->comment = $this->audit->comment.' | Select Process starting Medicaid selection ';
                 //$this->audit->save();
@@ -1401,7 +1401,7 @@ class Phase1ComplianceSelection extends Controller
 
                 $required_units = count($units);
                 $this->program_percentages['MEDICAID']['percent']='100%';
-                $this->program_percentages['MEDICAID']['_2016_count']=$_2016_total;
+                //$this->program_percentages['MEDICAID']['_2016_count']=$_2016_total;
 
                 $units_selected = $units->pluck('unit_key')->toArray();
                 
@@ -1513,7 +1513,7 @@ class Phase1ComplianceSelection extends Controller
                 ////$this->audit->save();
                 ////dd('1336', $units);
                 $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='NA';
-                $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = null;
+                //$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = null;
                 //dd('HOME'.str_replace(' ','',str_replace('-', '', $home_award_number)),$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count']);
                 if((is_array($units) || is_object($units)) && count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process starting Home selection for award number '.$home_award_number;
@@ -1553,7 +1553,7 @@ class Phase1ComplianceSelection extends Controller
 
                         $required_units = count($units);
                         $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='100% of Home';
-                        $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
+                        //$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         //dd('1373 Random Unit Selection output:',$units_selected);
 
@@ -1569,7 +1569,7 @@ class Phase1ComplianceSelection extends Controller
 
                             $required_units = ceil($this->project->total_unit_count/2);
                             $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='50% of Home';
-                            $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
+                            //$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
 
                             $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
                             //dd('1386 Random Unit Selection output:',$units_selected);
@@ -1585,7 +1585,7 @@ class Phase1ComplianceSelection extends Controller
                             if(ceil($total_project_units/5) > $this->project->total_unit_count){
                                 $required_units = $this->project->total_unit_count;
                                 $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='100% of Home';
-                                $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
+                                //$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
                                 //dd('1399 Random Unit Selection output:',$units_selected);
                                 
@@ -1596,7 +1596,7 @@ class Phase1ComplianceSelection extends Controller
                             }else{
                                 $required_units = ceil($total_project_units/5);
                                 $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['percent']='20% of Project';
-                                $this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
+                                //$this->program_percentages['HOME'.str_replace(' ','',str_replace('-', '', $home_award_number))]['_2016_count'] = $required_units;
                                 //$units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 $units_selected = $units->random(ceil($total_project_units/5))->pluck('unit_key')->all();
                                 //dd('1408 Random Unit Selection output:',$units_selected);
@@ -1727,7 +1727,7 @@ class Phase1ComplianceSelection extends Controller
                 
 
                 $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['percent']='NA';
-                $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = null;
+                //$this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = null;
                 if((is_array($units) || is_object($units)) && count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process Starting OHTF for award number '.$ohtf_award_number;
                     ////$this->audit->save();
@@ -1766,7 +1766,7 @@ class Phase1ComplianceSelection extends Controller
 
                         $required_units = count($units);
                         $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['percent']='100% of OHTF';
-                        $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = $required_units;
+                        //$this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = $required_units;
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         //dd('1561 Random Unit Selection output:',$units_selected);
@@ -1783,7 +1783,7 @@ class Phase1ComplianceSelection extends Controller
                             $required_units = ceil($this->project->total_unit_count/2);
 
                             $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['percent']='50% of OHTF';
-                            $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = $required_units;
+                           // $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = $required_units;
 
                              $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
                              //dd('1574 Random Unit Selection output:',$units_selected);
@@ -1798,7 +1798,7 @@ class Phase1ComplianceSelection extends Controller
                             if(ceil($total_project_units/5) > $this->project->total_unit_count){
                                 $required_units = $this->project->total_unit_count;
                                 $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['percent']='100% of OHTF';
-                                $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = $required_units;
+                              //  $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = $required_units;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
                                 //dd('1587 Random Unit Selection output:',$units_selected);
                                 
@@ -1808,7 +1808,7 @@ class Phase1ComplianceSelection extends Controller
                             }else{
                                 $required_units = ceil($total_project_units/5);
                                 $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['percent']='20% of Project';
-                                $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = $required_units;
+                              //  $this->program_percentages['OHTF'.str_replace(' ','',str_replace('-', '', $ohtf_award_number))]['_2016_count'] = $required_units;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 //dd('1595 Random Unit Selection output:',$units_selected);
                                 
@@ -1937,7 +1937,7 @@ class Phase1ComplianceSelection extends Controller
                 
                 $units = $this->units->whereIn('program_key',$program_keys_with_award_number)->whereIn('program_key', $this->program_nhtf_ids);
                 $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['percent']='NA';
-                $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = null;
+                //$this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = null;
                 if((is_array($units) || is_object($units)) && count($units)){
                     $this->audit->comment = $this->audit->comment.' | Select Process Starting NHTF for award number '.$nhtf_award_number;
                     //$this->audit->save();
@@ -1971,7 +1971,7 @@ class Phase1ComplianceSelection extends Controller
                         $required_units = count($units); // 100%
 
                         $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['percent'] = '100% of NHTF';
-                        $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = $required_units;
+                       // $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = $required_units;
 
                         $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 100);
                         //dd('1746 Random Unit Selection output:',$units_selected);
@@ -1987,7 +1987,7 @@ class Phase1ComplianceSelection extends Controller
 
                             $required_units = ceil($this->project->total_unit_count/2);
                             $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['percent']='50% of NHTF';
-                            $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = $required_units;
+                           // $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = $required_units;
 
                              $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($this->project->total_unit_count/2));
                              //dd('1760 Random Unit Selection output:',$units_selected);
@@ -2002,7 +2002,7 @@ class Phase1ComplianceSelection extends Controller
                             if(ceil($total_project_units/5) > $this->project->total_unit_count){
                                 $required_units = $this->project->total_unit_count;
                                 $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['percent']='100% of NHTF';
-                                $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = $required_units;
+                               // $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = $required_units;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, $this->project->total_unit_count);
                                 //dd('1772 Random Unit Selection output:',$units_selected);
                                 
@@ -2012,7 +2012,7 @@ class Phase1ComplianceSelection extends Controller
                             }else{
                                 $required_units = ceil($total_project_units/5);
                                 $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['percent']='20% of Project';
-                                $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = $required_units;
+                               // $this->program_percentages['NHTF'.str_replace(' ','',str_replace('-', '', $nhtf_award_number))]['_2016_count'] = $required_units;
                                 $units_selected = $this->randomSelection($units->pluck('unit_key')->toArray(), 0, ceil($total_project_units/5));
                                 //dd('1780 Random Unit Selection output:',$units_selected);
                                 
@@ -2360,9 +2360,9 @@ class Phase1ComplianceSelection extends Controller
                         $number_of_htc_units_required = $this->adjustedLimit($total_htc_units);
                         $required_units = $number_of_htc_units_required;
                         //ceil($total_htc_units/10);
-                        $_2016_total = $total_htc_units/5;
+                        //$_2016_total = $total_htc_units/5;
                         $this->program_percentages['HTC']['percent']='20% of HTC';
-                        $this->program_percentages['HTC']['_2016_count'] = $_2016_total;
+                       // $this->program_percentages['HTC']['_2016_count'] = $_2016_total;
 
                         if($number_of_htc_units_required <= count($htc_units_subset)){
                             $number_of_htc_units_needed = 0;
@@ -2469,7 +2469,7 @@ class Phase1ComplianceSelection extends Controller
 
                                 //$_2016_total += (count($htc_units_for_building) / 5);
                                 $this->program_percentages['HTC']['percent']='20% of HTC Per Building';
-                                $this->program_percentages['HTC']['_2016_count'] = $_2016_total;
+                                //$this->program_percentages['HTC']['_2016_count'] = $_2016_total;
                                 
                                 $required_units = $required_units_for_that_building;
 
@@ -3099,14 +3099,14 @@ class Phase1ComplianceSelection extends Controller
             
             $program_keyed_in_count = 'program_'.$p.'_keyed_in_unit_count';
             $program_calculated_count = 'program_'.$p.'_calculated_unit_count';
-            $program_2016_percentage_used = 'program_'.$p.'_2016_percentage_used';
+            //$program_2016_percentage_used = 'program_'.$p.'_2016_percentage_used';
 
-            $program_2016_site_count = 'program_'.$p.'_2016_site_count';
+            //$program_2016_site_count = 'program_'.$p.'_2016_site_count';
             $program_2019_site_count = 'program_'.$p.'_2019_site_count';
             $program_2019_site_difference_percent = 'program_'.$p.'_2019_site_difference_percent';
             $program_2019_buildings_with_unit_inspections = 'program_'.$p.'_2019_buildings_with_unit_inspections';
 
-            $program_2016_file_count = 'program_'.$p.'_2016_file_count';
+            //$program_2016_file_count = 'program_'.$p.'_2016_file_count';
             $program_2019_file_count = 'program_'.$p.'_2019_file_count';
             $program_2019_file_difference_percent = 'program_'.$p.'_2019_file_difference_percent';
 
@@ -3115,11 +3115,11 @@ class Phase1ComplianceSelection extends Controller
             $this_program_calculated_count = $this->units->where('program_id',$program->program_id)->count();
             $this_program_site_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_site_visit',1)->count();
             $this_program_file_count = UnitInspection::where('audit_id',$this->audit->id)->where('program_id',$program->program_id)->where('is_file_audit',1)->count();
-            if(!is_null($this->program_percentages[$program_type]['_2016_count'])){
-                $percent_difference = ($this_program_site_count * 100) / $this->program_percentages[$program_type]['_2016_count'];
-            } else {
-                $percent_difference = "NA - NO UNITS";
-            }
+            // if(!is_null($this->program_percentages[$program_type]['_2016_count'])){
+            //     $percent_difference = ($this_program_site_count * 100) / $this->program_percentages[$program_type]['_2016_count'];
+            // } else {
+            //     $percent_difference = "NA - NO UNITS";
+            // }
             if(!is_null($program->multiple_building_status)){
                 $mbs = $program->multiple_building_status->election_description;
             }else{
@@ -3145,13 +3145,13 @@ class Phase1ComplianceSelection extends Controller
                 
                 $program_keyed_in_count =>  $program->total_unit_count,
                 $program_calculated_count => $this_program_calculated_count,
-                $program_2016_percentage_used => $this->program_percentages[$program_type]['percent'],
+                //$program_2016_percentage_used => $this->program_percentages[$program_type]['percent'],
 
-                $program_2016_site_count => $this->program_percentages[$program_type]['_2016_count'],
+                //$program_2016_site_count => $this->program_percentages[$program_type]['_2016_count'],
                 $program_2019_site_count => $this_program_site_count,
                 $program_2019_site_difference_percent =>  $percent_difference.'%',
 
-                $program_2016_file_count => $this->program_percentages[$program_type]['_2016_count'],
+                //$program_2016_file_count => $this->program_percentages[$program_type]['_2016_count'],
                 $program_2019_file_count => $this_program_file_count,
                 $program_2019_file_difference_percent => $percent_difference.'%'
 
