@@ -37,7 +37,7 @@
         
         Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
 
-        
+        Route::get('/compliance_rerun/{audit}', 'Phase1ComplianceSelection@runSimpleCompliance');
         // Route::get('/testProject/{project}', function($project){
         //     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
         //     //dd($project->programs);
