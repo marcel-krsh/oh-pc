@@ -1,14 +1,9 @@
 {
-	"name": "Allita Blight Manager",
+	"name": "Allita Program Compliance",
 	"icons": [
 		{
-			"src": "\/android-chrome-192x192.png",
-			"sizes": "192x192",
-			"type": "image\/png"
-		},
-		{
-			"src": "\/android-chrome-512x512.png",
-			"sizes": "512x512",
+			"src": "\/devco_favicon_160.png",
+			"sizes": "160x160",
 			"type": "image\/png"
 		}
 	],
