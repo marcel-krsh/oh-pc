@@ -121,6 +121,38 @@ forEach($findings as $fc){
 			@endIf
 		</div>
 		<hr class="dashed-hr">
+
+		@can('access_auditor')
+		<div class="inspec-tools-tab-finding-actions  uk-margin-small-top ">
+
+			@if($f->cancelled_at)
+			<button class="uk-button uk-link uk-width-1-2" style="width: 45%;" onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
+			@else
+			<button class="uk-button uk-link uk-width-1-2" style="width: 45%;" onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
+			@endif
+
+			<span id="inspec-tools-finding-resolve-{{ $f->id }}" >
+				@can('access_auditor')
+				@if(!$f->cancelled_at)
+				@if($f->auditor_approved_resolution != 1)
+				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" onclick="resolveFinding({{ $f->id }})"><span class="a-circle"></span> RESOLVE</button>
+				@else
+				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $f->id }})"><span class="a-circle-checked"></span> RESOLVED</button>
+				@endif
+				@endif
+				@else
+				@if($f->auditor_approved_resolution == 1)
+				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};"><span class="a-circle-checked"></span> RESOLVED</button>
+				@endif
+				@endcan
+			</span>
+		</div>
+		@endcan
+
+
+
+
+
 		<h2>@if($f->finding_type->type == 'nlt')
 			<i class="a-booboo"></i>
 			@endIf
@@ -180,17 +212,17 @@ forEach($findings as $fc){
 		<hr class="dashed-hr uk-margin-bottom">
 		@if($f->amenity_inspection)
 		<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id',$report->audit_id); ?>
-			@if(count($piecePrograms)>0)
-			<div style="min-height: 80px;">
-				<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span>
-				<ul > @forEach($piecePrograms as $p)
-					<li>@if(!is_null($p->is_substitute))SUBSTITUTED FOR:@endIf
-						{{$p->program->program_name}}
-					</li>
-					@endForEach
-				</ul>
-			</div>
-			@endIf
+		@if(count($piecePrograms)>0)
+		<div style="min-height: 80px;">
+			<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span>
+			<ul > @forEach($piecePrograms as $p)
+				<li>@if(!is_null($p->is_substitute))SUBSTITUTED FOR:@endIf
+					{{$p->program->program_name}}
+				</li>
+				@endForEach
+			</ul>
+		</div>
+		@endIf
 		@endIf
 
 		@if(!$print)
@@ -206,14 +238,14 @@ forEach($findings as $fc){
 		--}}
 		@php
 		$communications = App\Models\Communication::whereJsonContains('finding_ids', "$f->id")
-											->with('owner')
-											->with('recipients', 'docuware_documents', 'local_documents')
-											->orderBy('created_at', 'desc')
-											->get();
+		->with('owner')
+		->with('recipients', 'docuware_documents', 'local_documents')
+		->orderBy('created_at', 'desc')
+		->get();
 		$documents = App\Models\Document::whereJsonContains('finding_ids', "$f->id")
-											->with('assigned_categories')
-											->orderBy('created_at', 'desc')
-											->get();
+		->with('assigned_categories')
+		->orderBy('created_at', 'desc')
+		->get();
 		@endphp
 		@if(count($communications))
 		@foreach($communications as $message)
@@ -302,48 +334,48 @@ forEach($findings as $fc){
 
 		{{-- Documents --}}
 		@if(count($documents))
-			@foreach($documents as $document)
-			{!! $loop->first ? '<span class="uk-margin-top"><hr></span>':'' !!}
-			<span class="finding-documents-{{ $document->id }}">
-				@php
-				$document_category = $document->assigned_categories->first();
-				@endphp
-				<li class="doc-{{ $document->id }} {{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
-					<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}-{{ $f->id }}" class="">
-						<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }} doc-span-{{ $document->id }}"></span>
-						<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon-{{ $f->id }}" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }} doc-span-check-{{ $document->id }}"></span>
-						<span style="display: block; margin-left: 30px"></span>
+		@foreach($documents as $document)
+		{!! $loop->first ? '<span class="uk-margin-top"><hr></span>':'' !!}
+		<span class="finding-documents-{{ $document->id }}">
+			@php
+			$document_category = $document->assigned_categories->first();
+			@endphp
+			<li class="doc-{{ $document->id }} {{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
+				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}-{{ $f->id }}" class="">
+					<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }} doc-span-{{ $document->id }}"></span>
+					<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon-{{ $f->id }}" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }} doc-span-check-{{ $document->id }}"></span>
+					<span style="display: block; margin-left: 30px"></span>
+				</a>
+				@can('access_auditor')
+				<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
+					<ul class="uk-nav uk-nav-dropdown">
+						<li>
+							<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
+								Mark as approved
+							</a>
+						</li>
+						<li>
+							<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
+								Mark as declined
+							</a>
+						</li>
+						<li>
+							<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
+								Clear review status
+							</a>
+						</li>
+					</ul>
+				</div>
+				@endCan
+				<label style="display: block; margin-left: 15px;" for="documents-{{ $document->id }}">
+					<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
+						<i class="a-paperclip-2"></i> {{-- {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} --}}{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }}
 					</a>
-					@can('access_auditor')
-					<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
-						<ul class="uk-nav uk-nav-dropdown">
-							<li>
-								<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
-									Mark as approved
-								</a>
-							</li>
-							<li>
-								<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
-									Mark as declined
-								</a>
-							</li>
-							<li>
-								<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
-									Clear review status
-								</a>
-							</li>
-						</ul>
-					</div>
-					@endCan
-					<label style="display: block; margin-left: 15px;" for="documents-{{ $document->id }}">
-						<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
-							<i class="a-paperclip-2"></i> {{-- {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} --}}{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }}
-						</a>
-						<br>
-					</label>
-				</li>
-			</span>
-			@endforeach
+					<br>
+				</label>
+			</li>
+		</span>
+		@endforeach
 		@endIf
 
 		@endif
@@ -353,6 +385,44 @@ forEach($findings as $fc){
 	</div>
 	@endForEach
 </div>
+
+<script type="text/javascript">
+	@can('access_auditor')
+
+	function resolveFinding(findingid){
+		$.post('/findings/'+findingid+'/resolve', {
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			if(data != 0){
+				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+')"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
+			}else{
+				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" onclick="resolveFinding('+findingid+')"><span class="a-circle">&nbsp; </span>RESOLVE</button>');
+			}
+		});
+	}
+
+	function cancelFinding(findingid){
+
+		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3></div>', {stack:1}).then(function() {
+
+			$.post('/findings/'+findingid+'/cancel', {
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data==0){
+					UIkit.modal.alert(data,{stack: true});
+				} else {
+					UIkit.notification('<span uk-icon="icon: check"></span> Finding Canceled', {pos:'top-right', timeout:1000, status:'success'});
+					$('#finding-modal-audit-stream-refresh').trigger('click');
+				}
+			} );
+
+
+		}, function () {
+			console.log('Rejected.')
+		});
+	}
+	@endCan
+</script>
 
 @else
 <hr class="dashed-hr">

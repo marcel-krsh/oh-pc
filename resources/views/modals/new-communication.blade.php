@@ -126,7 +126,7 @@
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
         				@if($all_findings && $single_receipient)
-        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." value="{{ $finding->id }}">
+        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." value="Finding: {{ $finding->id }}">
         				@else
         					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
         				@endif

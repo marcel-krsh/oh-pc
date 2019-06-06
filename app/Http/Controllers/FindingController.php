@@ -148,9 +148,9 @@ class FindingController extends Controller
             if ($inputs['amenity_inspection_id'] == '') {
                 $error .= '<p>I am having trouble with the amenity you selected. Please refresh your page and try again.</p>';
             }
-            if ($inputs['level'] == '') {
-                $error .= '<p>Please select a level.</p>';
-            }
+            // if ($inputs['level'] == '') {
+            //     $error .= '<p>Please select a level.</p>';
+            // }
 
             if ($error != '') {
 
@@ -196,7 +196,7 @@ class FindingController extends Controller
                         'amenity_inspection_id' => $amenityInspection->id,
                         'weight' => $findingType->nominal_item_weight,
                         'criticality' => $findingType->criticality,
-                        'level' => $inputs['level'],
+                        'level' => array_key_exists('level', $inputs) ? $inputs['level'] : null,
                         'site' => $findingType->site,
                         'building_system' => $findingType->building_system,
                         'building_exterior' => $findingType->building_exterior,

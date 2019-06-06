@@ -313,12 +313,14 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 		console.log("no amenity found");
 		areas = "No amenity inspection area found.";
 	}else{
-
 		data.forEach(function(area) {
 			newarea = inspectionAreaTemplate;
 			newarea = newarea.replace(/areaContext/g, context);
 			newarea = newarea.replace(/areaRowId/g, area.id);
 			newarea = newarea.replace(/areaName/g, area.name); // missing
+			if(area.name == 'File') {
+				newarea = newarea.replace(/fileHiddenStatus/g, 'uk-hidden');
+			}
 			newarea = newarea.replace(/areaStatus/g, area.status);  // missing
 			newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
 			newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
@@ -346,7 +348,6 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 	}
 
 	inspectionMainTemplate = inspectionMainTemplate.replace(/areaContext/g, context);
-
 	$('#inspection-'+context+'-'+level+'main-'+id).html(inspectionMainTemplate);
 	$('#inspection-'+context+'-'+level+'main-'+id+' .inspection-areas').html(areas);
 	$('#inspection-'+context+'-'+level+'main-'+id+'-container').fadeIn( "slow", function() {

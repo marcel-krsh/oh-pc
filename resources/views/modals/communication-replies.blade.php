@@ -62,7 +62,7 @@
 				<span class="uk-text-muted">Your report is ready to review: </span>
 			</div>
 			<div class="uk-width-5-6 uk-text-left uk-margin-bottom">
-				<a href="{{ $report_notification->report_ready_link }}">{{ $report_notification->report_ready_link }}</a><br />
+				<a target="_blank" href="{{ $report_notification->report_ready_link }}">{{ $report_notification->report_ready_link }}</a><br />
 			</div>
 		</div>
 	</div>
