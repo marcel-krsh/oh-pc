@@ -11,6 +11,23 @@
 |
 */
     //Route::get('/reset_tokens','PagesController@resetTokens');
+    Route::get('unified_login', function () {
+                    //session(['brian'=>'test']);
+                    return redirect('/');
+            });
+
+    Route::get('/', 'DashboardController@index');
+    Route::get('/home', function () {
+            return redirect('/');
+    });
+
+    Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
+    Route::get('/code', 'Auth\LoginController@getCode');
+    Route::post('/code', 'Auth\LoginController@postCode');
+    Route::get('/verification', 'Auth\LoginController@getVerification');
+    Route::post('/verification', 'Auth\LoginController@postVerification');
+    Route::get('/request-access', 'Auth\LoginController@getRequestAccess');
+    Route::post('/request-access', 'Auth\LoginController@postRequestAccess');
 
     Route::get('/reset_tokens', function(){
         Auth::onceUsingId(286);
@@ -490,23 +507,7 @@
         });
 
         //Route::group(['middleware' => ['allita.auth']], function() {
-            Route::get('unified_login', function () {
-                    //session(['brian'=>'test']);
-                    return redirect('/');
-            });
-
-            Route::get('/', 'DashboardController@index');
-            Route::get('/home', function () {
-                    return redirect('/');
-            });
-
-            Route::get('/ip', 'Auth\LoginController@getUserIpAddr');
-            Route::get('/code', 'Auth\LoginController@getCode');
-            Route::post('/code', 'Auth\LoginController@postCode');
-            Route::get('/verification', 'Auth\LoginController@getVerification');
-            Route::post('/verification', 'Auth\LoginController@postVerification');
-            Route::get('/request-access', 'Auth\LoginController@getRequestAccess');
-            Route::post('/request-access', 'Auth\LoginController@postRequestAccess');
+            
 
 
         // });
