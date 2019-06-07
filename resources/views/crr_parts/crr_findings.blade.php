@@ -182,8 +182,8 @@ forEach($findings as $fc){
 		@if(!is_null($f->comments))
 		@forEach($f->comments as $c)
 		{!! $loop->first ? '<hr>': '' !!}
-		@if(is_null($c->deleted_at))
-		<i class="a-comment"></i> : {{$c->comment}}
+		@if(is_null($c->deleted_at) && !(isset($c->hide_on_reports) && $c->hide_on_reports == 1))
+		@can('access_auditor')@if(!$print)<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endif @endcan<i class="a-comment"></i> : {{$c->comment}}
 		{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
 		@endIf
 		@endForEach

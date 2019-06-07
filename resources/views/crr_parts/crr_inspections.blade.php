@@ -36,16 +36,16 @@
 						<?php //dd($thisUnitValues, $g); ?>
 						@if($g->is_site_visit == 1)
 							@if(!in_array($g->unit_id, $siteVisited))
-								 <i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')use-hand-cursor @endcan" @can('access_auditor') onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endcan></i> <?php $siteVisited[] =$g->unit_id;  ?>
+								 <i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> <?php $siteVisited[] =$g->unit_id;  ?>
 							@else
 								<?php $noShow = 1; ?>
 							@endIf
 
 						@elseIf(!in_array($g->unit_id, $fileVisited))
 							@if(!in_array($g->unit_id, $siteVisited))
-								 <i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')use-hand-cursor @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor') onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');"  @endcan></i>
+								 <i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i>
 							@endIf
-							 <i class="a-folder uk-text-large @can('access_auditor')use-hand-cursor @endcan" @can('access_auditor') onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');"  @endcan></i> <?php $fileVisited[]=$g->unit_id; ?>
+							 <i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> <?php $fileVisited[]=$g->unit_id; ?>
 
 					@else
 						<?php $noShow = 1; ?>

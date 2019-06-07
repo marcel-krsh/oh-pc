@@ -400,6 +400,8 @@ class FindingController extends Controller
                     $requested_categories = '';
                 }
                 return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories', 'level', 'all_findings', 'id'));
+            } elseif($type == 'comment-edit') {
+            	return view('modals.finding-reply-comment', compact('from', 'fromtype', 'level','type', 'all_findings'));
             }
 
             return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'level', 'all_findings'));
@@ -452,6 +454,13 @@ class FindingController extends Controller
                         $newcomment->document_id = $from->id;
                     } elseif ($fromtype == 'followup') {
                         $newcomment->followup_id = $from->id;
+                    }
+
+                    if($fromtype == 'comment') {
+                    	if(array_key_exists('hide_on_reports', $inputs)){
+		                		$newcomment->hide_on_reports = 1;
+		                	}
+                        $newcomment->comment_id = $from->id;
                     }
 
                     $newcomment->save();
@@ -568,6 +577,19 @@ class FindingController extends Controller
                 }
                 return 1;
 
+            } elseif ($inputs['type'] == 'comment-edit') {
+                if (strlen($inputs['comment']) > 0) {
+                	$from = Comment::where('id', '=', $inputs['id'])->first();
+                	$from->comment = $inputs['comment'];
+                	$from->user_id = Auth::user()->id;
+                	if(array_key_exists('hide_on_reports', $inputs)){
+                		$from->hide_on_reports = 1;
+                	}
+                  $from->save();
+                	return 1;
+                } else {
+                	return 'Comment cannot be empty';
+                }
             }
 
         } else {
