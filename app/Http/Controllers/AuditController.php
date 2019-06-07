@@ -905,6 +905,7 @@ class AuditController extends Controller
                 "finding_comment_status" => '',
                 "finding_copy_status" => '',
                 "finding_trash_status" => '',
+                "finding_file_status" => '',
                 "building_id" => $amenity->building_id,
                 "unit_id" => $amenity->unit_id,
                 "completed_icon" => $completed_icon,

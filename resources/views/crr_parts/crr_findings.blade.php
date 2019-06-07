@@ -60,7 +60,7 @@ forEach($findings as $fc){
 	</div>
 	<?php $columnCount = 1; ?>
 	@forEach($findings as $f)
-	<div class="uk-width-1-3 crr-blocks" style="border-bottom:1px dotted #3c3c3c; @if($columnCount < 3) border-right:1px dotted #3c3c3c; @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
+	<div id="cancelled-finding-{{$f->id}}" class="uk-width-1-3 crr-blocks" style="border-bottom:1px dotted #3c3c3c; @if($columnCount < 3) border-right:1px dotted #3c3c3c; @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
 		<?php
 				// using column count to put in center lines rather than rely on css which breaks.
 		$columnCount++;
@@ -69,13 +69,12 @@ forEach($findings as $fc){
 		}
 		?>
 		<div style="min-height: 105px;">
-
 			<div class="inspec-tools-tab-finding-top-actions" style="z-index:10">
 				@can('access_auditor') @if(!$print)
 				<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
 					<i class="a-pencil"></i>@endIf
 					@endCan
-					<strong>Finding # {{$f->id}}</strong>@can('access_auditor') @if(!$print)
+					<strong class="cancelled-{{$f->id}}">Finding # {{$f->id}}</strong>@can('access_auditor') @if(!$print)
 				</a> @endIf @endCan
 				@if(!$print)
 				<span class="use-hand-cursor" style="float: right;" aria-expanded="false"><i class="a-circle-plus  "></i> ADD RESPONSE</span>
@@ -123,6 +122,7 @@ forEach($findings as $fc){
 		<hr class="dashed-hr">
 
 		@can('access_auditor')
+		@if(!$print)
 		<div class="inspec-tools-tab-finding-actions  uk-margin-small-top ">
 
 			@if($f->cancelled_at)
@@ -147,6 +147,7 @@ forEach($findings as $fc){
 				@endcan
 			</span>
 		</div>
+		@endif
 		@endcan
 
 
@@ -386,7 +387,7 @@ forEach($findings as $fc){
 	@endForEach
 </div>
 
-<script type="text/javascript">
+<script>
 	@can('access_auditor')
 
 	function resolveFinding(findingid){
@@ -402,8 +403,7 @@ forEach($findings as $fc){
 	}
 
 	function cancelFinding(findingid){
-
-		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3></div>', {stack:1}).then(function() {
+		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3><h3>NOTE: Cancelled findings will not be displayed on a report. If you have cancelled a finding that was being displayed on a report, you will need to refresh that reports content for the change to be reflected.</h3></div>', {stack:1}).then(function() {
 
 			$.post('/findings/'+findingid+'/cancel', {
 				'_token' : '{{ csrf_token() }}'
@@ -413,6 +413,7 @@ forEach($findings as $fc){
 				} else {
 					UIkit.notification('<span uk-icon="icon: check"></span> Finding Canceled', {pos:'top-right', timeout:1000, status:'success'});
 					$('#finding-modal-audit-stream-refresh').trigger('click');
+					$('#cancelled-finding-'+findingid).css("text-decoration","line-through");
 				}
 			} );
 

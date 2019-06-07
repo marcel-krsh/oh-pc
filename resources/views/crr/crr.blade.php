@@ -1,11 +1,11 @@
 @extends('layouts.simplerAllita')
 @section('head')
 <title>{{ $report->template()->template_name }}: {{ date('y',strtotime($report->audit->scheduled_at)) }}-{{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
-	<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
-	<script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
-	<script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>
-	<script type="text/javascript" src="/js/systems/findings.js{{ asset_version() }}"></script>
-	<script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
+<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+<script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/findings.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
 
 <script>
 	function showComments(partId){
@@ -73,24 +73,24 @@
 				if(data != 1 ) {
 					console.log("processing");
 					UIkit.modal.alert(data);
-			} else {
-				dynamicModalClose();
-			}
+				} else {
+					dynamicModalClose();
+				}
 			//documentsLocal('{{0}}');
 			let els = $('.doc-'+id);
 			let spanels = $('.doc-span-'+id);
 			let spancheck = $('.doc-span-check-'+id);
 			for (i = 0; i < els.length; i++) {
-			  els[i].className = '';
-			  els[i].className = 'approved-category doc-'+id;
+				els[i].className = '';
+				els[i].className = 'approved-category doc-'+id;
 			}
 			for (i = 0; i < spanels.length; i++) {
-			  spanels[i].className = '';
-			  spanels[i].className = 'a-checkbox-checked received-yes uk-float-left doc-span-'+id;
+				spanels[i].className = '';
+				spanels[i].className = 'a-checkbox-checked received-yes uk-float-left doc-span-'+id;
 			}
 			for (i = 0; i < spancheck.length; i++) {
-			  spancheck[i].className = '';
-			  spancheck[i].className = 'a-checkbox  minus-received-yes received-yes doc-span-check-'+id;
+				spancheck[i].className = '';
+				spancheck[i].className = 'a-checkbox  minus-received-yes received-yes doc-span-check-'+id;
 			}
 		}
 		);
@@ -107,25 +107,25 @@
 				if(data != 1){
 					console.log("processing");
 					UIkit.modal.alert(data);
-			} else {
-				dynamicModalClose();
+				} else {
+					dynamicModalClose();
+				}
+				let els = $('.doc-'+id);
+				let spanels = $('.doc-span-'+id);
+				let spancheck = $('.doc-span-check-'+id);
+				for (i = 0; i < els.length; i++) {
+					els[i].className = 'doc-'+id;
+				}
+				for (i = 0; i < spanels.length; i++) {
+					spanels[i].className = '';
+					spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
+				}
+				for (i = 0; i < spancheck.length; i++) {
+					spancheck[i].className = '';
+					spancheck[i].className = 'a-checkbox received-no doc-span-check-'+id;
+				}
 			}
-			let els = $('.doc-'+id);
-			let spanels = $('.doc-span-'+id);
-			let spancheck = $('.doc-span-check-'+id);
-			for (i = 0; i < els.length; i++) {
-			  els[i].className = 'doc-'+id;
-			}
-			for (i = 0; i < spanels.length; i++) {
-			  spanels[i].className = '';
-			  spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
-			}
-			for (i = 0; i < spancheck.length; i++) {
-			  spancheck[i].className = '';
-			  spancheck[i].className = 'a-checkbox received-no doc-span-check-'+id;
-			}
-		}
-		);
+			);
 		});
 	}
 
@@ -145,16 +145,16 @@
 				let spanels = $('.doc-span-'+id);
 				let spancheck = $('.doc-span-check-'+id);
 				for (i = 0; i < els.length; i++) {
-				  els[i].className = '';
-				  els[i].className = 'declined-category s doc-'+id;
+					els[i].className = '';
+					els[i].className = 'declined-category s doc-'+id;
 				}
 				for (i = 0; i < spanels.length; i++) {
-				  spanels[i].className = '';
-				  spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
+					spanels[i].className = '';
+					spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
 				}
 				for (i = 0; i < spancheck.length; i++) {
-				  spancheck[i].className = '';
-				  spancheck[i].className = 'a-circle-cross alert received-no doc-span-check-'+id;
+					spancheck[i].className = '';
+					spancheck[i].className = 'a-circle-cross alert received-no doc-span-check-'+id;
 				}
 			});
 		});
@@ -180,7 +180,7 @@
 @section('content')
 
 @can('access_auditor')
-	@include('templates.modal-findings-items')
+@include('templates.modal-findings-items')
 @endCan
 
 @if(Auth::user()->can('access_auditor') || $report->crr_approval_type_id > 5)
@@ -190,20 +190,20 @@
 <script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 	<?php // determin background type
-$background = "none";
-if (1 == $report->crr_approval_type_id) {
-  $background = '-draft';
-}
-if (2 == $report->crr_approval_type_id) {
-  $background = '-pending';
-}
-if (3 == $report->crr_approval_type_id) {
-  $background = '-declined';
-}
-if (4 == $report->crr_approval_type_id) {
-  $background = '-revise';
-}
-?>
+	$background = "none";
+	if (1 == $report->crr_approval_type_id) {
+		$background = '-draft';
+	}
+	if (2 == $report->crr_approval_type_id) {
+		$background = '-pending';
+	}
+	if (3 == $report->crr_approval_type_id) {
+		$background = '-declined';
+	}
+	if (4 == $report->crr_approval_type_id) {
+		$background = '-revise';
+	}
+	?>
 	.crr-sections {
 		width:1142px; min-height: 1502px; margin-left:auto; margin-right:auto; border:1px black solid; background-image: url('/paginate-2x{{ $background }}.gif'); padding: 72px;
 
@@ -308,8 +308,8 @@ if (4 == $report->crr_approval_type_id) {
 		</div>
 		@endForEach
 		@can('access_auditor')
-			<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
-			<div id="comment-list" style="display: none;"></div>
+		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
+		<div id="comment-list" style="display: none;"></div>
 		@endCan
 	</div>
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
@@ -327,18 +327,18 @@ if (4 == $report->crr_approval_type_id) {
 			@forEach($part as $piece)
 
 			<?php
-// collect comments for this part
-if (Auth::user()->can('access_auditor')) {
-  $comments = collect($report->comments)->where('part_id', $piece->part_id);
+				// collect comments for this part
+			if (Auth::user()->can('access_auditor')) {
+				$comments = collect($report->comments)->where('part_id', $piece->part_id);
 
-  if ($comments) {
-    $totalComments = count($comments);
-  }
-} else {
-  $comments      = [];
-  $totalComments = 0;
-}
-?>
+				if ($comments) {
+					$totalComments = count($comments);
+				}
+			} else {
+				$comments      = [];
+				$totalComments = 0;
+			}
+			?>
 			@can('access_auditor')<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a>
 				<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>
 
@@ -351,12 +351,12 @@ if (Auth::user()->can('access_auditor')) {
 				@endIf
 				@if($pieceData[0]->type == 'blade')
 				<?php
-if (array_key_exists(1, $pieceData)) {
-  $bladeData = $pieceData[1];
-} else {
-  $bladeData = null;
-}
-?>
+				if (array_key_exists(1, $pieceData)) {
+					$bladeData = $pieceData[1];
+				} else {
+					$bladeData = null;
+				}
+				?>
 				@include($piece->blade)
 				@endIf
 			</div>

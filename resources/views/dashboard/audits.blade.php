@@ -90,6 +90,12 @@
 						<span class="uk-badge">+</span>
 					</div>
 				</div>
+				<div class="findings-icon uk-inline areaFILEStatus fileShowStatus uk-hidden" onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'file', areaDataAmenity);">
+					<i class="a-folder"></i>
+					<div class="findings-icon-status plus">
+						<span class="uk-badge">+</span>
+					</div>
+				</div>
 				<div class="findings-icon uk-inline areaSDStatus" style="display:none">
 					<i class="a-bell-2"></i>
 					<div class="findings-icon-status plus">

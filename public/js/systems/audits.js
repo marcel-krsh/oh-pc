@@ -318,8 +318,10 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 			newarea = newarea.replace(/areaContext/g, context);
 			newarea = newarea.replace(/areaRowId/g, area.id);
 			newarea = newarea.replace(/areaName/g, area.name); // missing
-			if(area.name == 'File') {
+			//debugger;
+			if(area.status == 'fileaudit' || area.status == ' fileaudit') {
 				newarea = newarea.replace(/fileHiddenStatus/g, 'uk-hidden');
+				newarea = newarea.replace(/fileShowStatus uk-hidden/g, 'show');
 			}
 			newarea = newarea.replace(/areaStatus/g, area.status);  // missing
 			newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
@@ -333,6 +335,7 @@ function loadInspectionMain(data, id, context='audits', level = '') {
 			newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
 			newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
 			newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
+			newarea = newarea.replace(/areaFILEStatus/g, area.finding_file_status);
 
 			newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
 			newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
