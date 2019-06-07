@@ -99,6 +99,9 @@ class AuthService
         $this->_client = new Client([
             'base_uri' => $this->_url,
             'timeout'  => 10.0,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
     }
 
@@ -139,6 +142,9 @@ class AuthService
         $this->_client = new Client([
             'base_uri' => $this->_url,
             'timeout'  => 10.0,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
 
         try {
