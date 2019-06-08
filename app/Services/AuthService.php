@@ -225,7 +225,7 @@ class AuthService
      */
     public function userAuthenticateToken(int $user_id, string $user_token, $ip_address = null, $useragent = null)
     {
-        $endpoint = "{$this->_base_directory}/devco/user/authenticate_token?devcotoken={$user_token}&token={$this->_pcapi_access_token}&ipaddress={$ip_address}&useragent={$useragent}";
+        $endpoint = "{$this->_base_directory}/devco/user/nekot_etacitnehtua?devcotoken={$user_token}&token={$this->_pcapi_access_token}&ipaddress={$ip_address}&useragent={$useragent}";
 
         try {
             $response = $this->_client->request('GET', $endpoint);
