@@ -58,8 +58,10 @@ class AllitaAuth
         		if(Auth::check()) {
         			return $next($request);
         		}
-            $this->_auth_service = new AuthService;
-            $this->_devco_service = new DevcoService;
+        		if(!local()) {
+        			$this->_auth_service = new AuthService;
+            	$this->_devco_service = new DevcoService;
+        		}
             $this->authenticate($request);
         } else {
             $this->auth->loginUsingId(env('USER_ID_IMPERSONATION'));

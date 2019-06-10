@@ -1,6 +1,6 @@
 @extends('layouts.simplerAllita')
 @section('head')
-<title>COMPLIANCE REVIEW {{$compliance->id}}</title> 
+<title>COMPLIANCE REVIEW {{$compliance->id}}</title>
 @stop
 @section('content')
 
@@ -13,8 +13,8 @@
         </ul>
     </div>
 @endif
-<!-- 
-<script src="/js/components/datepicker.js"></script> -->
+<!--
+<script src="/js/components/datepicker.js{{ asset_version() }}"></script> -->
 <style>
 #invoicepanel .uk-panel-box-white {background-color:#ffffff;}
 #invoicepanel .uk-panel-box .uk-panel-badge {top:0;}
@@ -39,7 +39,7 @@
 			<div class="uk-panel uk-panel-header uk-visible@m">
 				<div class="uk-panel-badge"><img src="/images/ni-program.jpg" alt="NIP Logo" style="height:70px" /></div>
 				<h6 class="uk-panel-title uk-text-center uk-text-left-small"><span class="blue uk-text-bold	">OHIO HOUSING FINANCE AGENCY</span><br /><span class="green">NEIGHBORHOOD INITIATIVE PROGRAM</span><br />COMPLIANCE REVIEW {{$compliance->id}} | PARCEL {{$compliance->parcel->parcel_id}}</h6>
-				
+
 			</div>
 			<div uk-grid>
 		        <div class="uk-width-1-2@m uk-width-1-1@s uk-margin-top">
@@ -440,7 +440,7 @@
 			'inputs' : form.serialize(),
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
-			if(data!='1'){ 
+			if(data!='1'){
 				UIkit.modal.alert(data);
 			} else {
 				UIkit.modal.alert('This compliance review has been saved.');
@@ -449,8 +449,8 @@
 		} );
 		//$('#compliance-tab-content').load('/compliance/{{$compliance->parcel->id}}');
 		//dynamicModalClose();
-		
-	}	
+
+	}
 </script>
 	<script>
 		flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;

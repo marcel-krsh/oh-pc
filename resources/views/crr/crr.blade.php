@@ -1,6 +1,11 @@
 @extends('layouts.simplerAllita')
 @section('head')
 <title>{{ $report->template()->template_name }}: {{ date('y',strtotime($report->audit->scheduled_at)) }}-{{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
+<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+<script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/findings.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
 
 <script>
 	function showComments(partId){
@@ -50,26 +55,152 @@
 		}
 	}
 
+	function resizeModal (setSize) {
+		$('#modal-size').css('width', setSize+'%');
+		console.log('Resized Modal to '+setSize+'%')
+	}
+
 </script>
+@can('access_auditor')
+<script type="text/javascript">
+	function markApproved(id,catid){
+		UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
+			$.post('{{ URL::route("documents.local-approve", 0) }}', {
+				'id' : id,
+				'catid' : catid,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data != 1 ) {
+					console.log("processing");
+					UIkit.modal.alert(data);
+				} else {
+					dynamicModalClose();
+				}
+			//documentsLocal('{{0}}');
+			let els = $('.doc-'+id);
+			let spanels = $('.doc-span-'+id);
+			let spancheck = $('.doc-span-check-'+id);
+			for (i = 0; i < els.length; i++) {
+				els[i].className = '';
+				els[i].className = 'approved-category doc-'+id;
+			}
+			for (i = 0; i < spanels.length; i++) {
+				spanels[i].className = '';
+				spanels[i].className = 'a-checkbox-checked received-yes uk-float-left doc-span-'+id;
+			}
+			for (i = 0; i < spancheck.length; i++) {
+				spancheck[i].className = '';
+				spancheck[i].className = 'a-checkbox  minus-received-yes received-yes doc-span-check-'+id;
+			}
+		}
+		);
+		});
+	}
+
+	function markUnreviewed(id,catid){
+		UIkit.modal.confirm("Are you sure you want to clear the review on this file?").then(function() {
+			$.post('{{ URL::route("documents.local-clearReview", 0) }}', {
+				'id' : id,
+				'catid' : catid,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data != 1){
+					console.log("processing");
+					UIkit.modal.alert(data);
+				} else {
+					dynamicModalClose();
+				}
+				let els = $('.doc-'+id);
+				let spanels = $('.doc-span-'+id);
+				let spancheck = $('.doc-span-check-'+id);
+				for (i = 0; i < els.length; i++) {
+					els[i].className = 'doc-'+id;
+				}
+				for (i = 0; i < spanels.length; i++) {
+					spanels[i].className = '';
+					spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
+				}
+				for (i = 0; i < spancheck.length; i++) {
+					spancheck[i].className = '';
+					spancheck[i].className = 'a-checkbox received-no doc-span-check-'+id;
+				}
+			}
+			);
+		});
+	}
+
+	function markNotApproved(id,catid){
+		UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
+			$.post('{{ URL::route("documents.local-notapprove", 0) }}', {
+				'id' : id,
+				'catid' : catid,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data != 1){
+					UIkit.modal.alert(data);
+				} else {
+					dynamicModalClose();
+				}
+				let els = $('.doc-'+id);
+				let spanels = $('.doc-span-'+id);
+				let spancheck = $('.doc-span-check-'+id);
+				for (i = 0; i < els.length; i++) {
+					els[i].className = '';
+					els[i].className = 'declined-category s doc-'+id;
+				}
+				for (i = 0; i < spanels.length; i++) {
+					spanels[i].className = '';
+					spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
+				}
+				for (i = 0; i < spancheck.length; i++) {
+					spancheck[i].className = '';
+					spancheck[i].className = 'a-circle-cross alert received-no doc-span-check-'+id;
+				}
+			});
+		});
+	}
+
+	function deleteFile(id){
+		UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
+			$.post('{{ URL::route("documents.local-deleteDocument", 0) }}', {
+				'id' : id,
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data!= 1){
+					UIkit.modal.alert(data);
+				} else {
+				}
+
+			});
+		});
+	}
+</script>
+@endCan
 @stop
 @section('content')
-<!-- <script src="/js/components/upload.js"></script>
-<script src="/js/components/form-select.js"></script>
-<script src="/js/components/datepicker.js"></script>
-<script src="/js/components/tooltip.js"></script> -->
+
+@can('access_auditor')
+@include('templates.modal-findings-items')
+@endCan
+
+@if(Auth::user()->can('access_auditor') || $report->crr_approval_type_id > 5)
+<!-- <script src="/js/components/upload.js{{ asset_version() }}"></script>
+<script src="/js/components/form-select.js{{ asset_version() }}"></script>
+<script src="/js/components/datepicker.js{{ asset_version() }}"></script>
+<script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 	<?php // determin background type
-	$background = "";
-	if($report->crr_approval_type_id == 1){
+	$background = "none";
+	if (1 == $report->crr_approval_type_id) {
 		$background = '-draft';
 	}
-	if($report->crr_approval_type_id == 2){
+	if (2 == $report->crr_approval_type_id) {
 		$background = '-pending';
 	}
-	if($report->crr_approval_type_id == 3){
+	if (3 == $report->crr_approval_type_id) {
 		$background = '-declined';
 	}
-	if($report->crr_approval_type_id == 4){
+	if (4 == $report->crr_approval_type_id) {
 		$background = '-revise';
 	}
 	?>
@@ -91,6 +222,7 @@
 		width: 996px;
 
 	}
+	@can('access_auditor')
 	.crr-part-comment-icons {
 		top:-74px;
 	}
@@ -101,6 +233,22 @@
 		-o-transition: background-color .5s ease-out;
 		transition: background-color .5s ease-out;
 	}
+	#close-comments {
+		background-color: black;
+		height: 67px;
+		padding: 8px;
+		padding-left: 15px;
+		width: 377px;
+		color:lightyellow;
+		position: fixed;
+
+	}
+	#comment-list {
+		margin-top:110px;
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+	@endCan
 	#section-thumbnails {
 		-webkit-transition: width 1s ease-out;
 		-moz-transition: width 1s ease-out;
@@ -122,20 +270,14 @@
 		transition: width 1s ease-out;
 
 	}
-	#close-comments {
-		background-color: black;
-		height: 67px;
-		padding: 8px;
-		padding-left: 15px;
-		width: 377px;
-		color:lightyellow;
-		position: fixed;
-
+	.crr-level-1 {
+		background-color: #222;
 	}
-	#comment-list {
-		margin-top:110px;
-		padding-left: 15px;
-		padding-right: 15px;
+	.crr-level-2 {
+		background-color: #555;
+	}
+	.crr-level-3 {
+		background-color: #999;
 	}
 	#crr-panel .uk-panel-box-white {background-color:#ffffff;}
 	#crr-panel .uk-panel-box .uk-panel-badge {}
@@ -156,17 +298,19 @@
 	<div id="section-thumbnails" class="uk-panel-scrollable" style="background-color:lightgray; padding-top:30px; min-height: 100vh; max-width:130px;">
 		@forEach($report->sections as $section)
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-thumbs" style="width:85px; magin-left:auto; margin-right:auto; padding:15px; min-height: 110px;">
-			<?php $thumbNavPartCount = 1; ?>
+			<?php $thumbNavPartCount = 1;?>
 			@foreach($section->parts as $part)
 			<a href="#part-{{ $part->id }}" class="uk-link-mute" onmouseover="$('.crr-part-{{ $part->id }}').addClass('crr-part-commenting');" onmouseout="$('.crr-part-{{ $part->id }}').removeClass('crr-part-commenting');"><small>{{ $part->title }}</small></a><hr class="dashed-hr uk-margin-bottom">
-			<?php $thumbNavPartCount ++; ?>
+			<?php $thumbNavPartCount++;?>
 			@endForeach
 		</div>
 		<div align="center" class="uk-align-center uk-margin-large-bottom use-handcursor crr-thumbs" style="max-width: 85px;"><a href="#{{ str_replace(' ','',$section->id) }}" class="uk-link-mute">{{ strtoupper($section->title) }}</a>
 		</div>
 		@endForEach
+		@can('access_auditor')
 		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
 		<div id="comment-list" style="display: none;"></div>
+		@endCan
 	</div>
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
 		@forEach($data as $section)
@@ -177,38 +321,46 @@
 
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
 			@if(property_exists($section,'parts'))
-			<?php $pieceCount = 1; ?>
+			<?php $pieceCount = 1;?>
 			@forEach($section->parts as $part)
 
 			@forEach($part as $piece)
-			<?php
-	            				// collect comments for this part
-			$comments = collect($report->comments)->where('part_id',$piece->part_id);
 
-			if($comments){
-				$totalComments = count($comments);
+			<?php
+				// collect comments for this part
+			if (Auth::user()->can('access_auditor')) {
+				$comments = collect($report->comments)->where('part_id', $piece->part_id);
+
+				if ($comments) {
+					$totalComments = count($comments);
+				}
+			} else {
+				$comments      = [];
+				$totalComments = 0;
 			}
 			?>
-			<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a> @can('access_auditor')<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>@endCan
-			</div>
+			@can('access_auditor')<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a>
+				<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>
+
+			</div>@endCan
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
-				<?php $pieceData = json_decode($piece->data); ?>
+				<?php $pieceData = json_decode($piece->data);?>
 				@if($pieceData[0]->type =='free-text')
 				{!! $piece->content !!}
 
 				@endIf
 				@if($pieceData[0]->type == 'blade')
 				<?php
-				if(array_key_exists(1,$pieceData)){
+				if (array_key_exists(1, $pieceData)) {
 					$bladeData = $pieceData[1];
-				}else{
+				} else {
 					$bladeData = null;
 				}
 				?>
 				@include($piece->blade)
 				@endIf
 			</div>
-			<?php $pieceCount ++; ?>
+			<?php $pieceCount++;?>
 			@endForEach
 			@endForEach
 			@endIf
@@ -220,7 +372,11 @@
 
 
 </div>
-<div id="comments" class="uk-panel-scrollable" style="display: none;">
+@can('access_auditor')<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
 
 </div>
+@else
+<h1>Sorry!</h1>
+<h2>The report you are trying to view has not been released for your review.</h2>
+@endIf
 @stop

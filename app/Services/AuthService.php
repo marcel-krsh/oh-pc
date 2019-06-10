@@ -99,6 +99,9 @@ class AuthService
         $this->_client = new Client([
             'base_uri' => $this->_url,
             'timeout'  => 10.0,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
     }
 
@@ -139,6 +142,9 @@ class AuthService
         $this->_client = new Client([
             'base_uri' => $this->_url,
             'timeout'  => 10.0,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
 
         try {
@@ -219,7 +225,7 @@ class AuthService
      */
     public function userAuthenticateToken(int $user_id, string $user_token, $ip_address = null, $useragent = null)
     {
-        $endpoint = "{$this->_base_directory}/devco/user/authenticate_token?devcotoken={$user_token}&token={$this->_pcapi_access_token}&ipaddress={$ip_address}&useragent={$useragent}";
+        $endpoint = "{$this->_base_directory}/devco/user/nekot_etacitnehtua?devcotoken={$user_token}&token={$this->_pcapi_access_token}&ipaddress={$ip_address}&useragent={$useragent}";
 
         try {
             $response = $this->_client->request('GET', $endpoint);
@@ -233,7 +239,7 @@ class AuthService
             }
         } catch (GuzzleException | \Exception $e) {
             // @todo: Throw PC-API Exception
-             return 'Line 229 Auth Service gave an exception from the API server: '.$e->getMessage();
+             return 'Line 242 Auth Service gave an exception from the API server: '.$e->getMessage();
             //return false;
         }
     }

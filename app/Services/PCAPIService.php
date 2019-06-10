@@ -33,6 +33,10 @@ class PCAPIService
             'base_uri' => $this->_auth->getUrl(),
             'timeout'  => 5.0,
             'verify' => false,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
+
         ]);
 
         $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));
@@ -54,6 +58,9 @@ class PCAPIService
             'base_uri' => $this->_auth->getUrl(),
             'timeout'  => 5.0,
             'verify' => false,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
 
         $response = $client->request('GET', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));
@@ -73,6 +80,9 @@ class PCAPIService
             'base_uri' => $this->_auth->getUrl(),
             'timeout'  => 5.0,
             'verify' => false,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
 
         $response = $client->request(
@@ -96,6 +106,9 @@ class PCAPIService
             'base_uri' => $this->_auth->getUrl(),
             'timeout'  => 5.0,
             'verify' => false,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
 
         $response = $client->request('POST', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),$payload);
@@ -115,6 +128,9 @@ class PCAPIService
             'base_uri' => $this->_auth->getUrl(),
             'timeout'  => 5.0,
             'verify' => false,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
 
         $response = $client->request('PUT', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'),['form_params'=>[$payload]]);
@@ -135,6 +151,9 @@ class PCAPIService
             'base_uri' => $this->_auth->getUrl(),
             'timeout'  => 5.0,
             'verify' => false,
+            'headers' => [
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
 
         $response = $client->request('DELETE', $this->_api_v.$url."&token=".SystemSetting::get('pcapi_access_token'));

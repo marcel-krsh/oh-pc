@@ -64,6 +64,11 @@ class DashboardController extends Controller
     $current_user = Auth::user();
 
     $tab = "detail-tab-1";
+    //$model_source = null;
+    if (session()->has('notification_main_tab')) {
+      $tab = session()->pull('notification_main_tab', $tab);
+      //$model_source = session()->pull('notification_modal_source', null);
+    }
 
     $stats_audits_total = CachedAudit::count(); // all?
 
@@ -433,9 +438,9 @@ class DashboardController extends Controller
 
     $data = [];
 
-    $audits_to_remove = array(); // ids of audits to remove after filtering by auditor
-    $auditors_array = array();
-    $auditor_ids = array(); // to prevent duplicates when building the auditors list
+    $audits_to_remove = []; // ids of audits to remove after filtering by auditor
+    $auditors_array   = [];
+    $auditor_ids      = []; // to prevent duplicates when building the auditors list
 
     foreach ($audits as $audit) {
         // list all auditors based on previous filters
@@ -468,7 +473,7 @@ class DashboardController extends Controller
     }
 
     $filtered_audits = $audits->reject(function ($value, $key) use ($audits_to_remove) {
-        return in_array($value->id, $audits_to_remove);
+      return in_array($value->id, $audits_to_remove);
     });
 
     $audits = $filtered_audits->all();
@@ -610,17 +615,16 @@ class DashboardController extends Controller
       ];
     }
 
-    $auditor_names = array();
-    foreach ($auditors_array as $key => $row)
-    {
-        $auditor_names[$key] = $row['name'];
+    $auditor_names = [];
+    foreach ($auditors_array as $key => $row) {
+      $auditor_names[$key] = $row['name'];
     }
     array_multisort($auditor_names, SORT_ASC, $auditors_array);
 
     if ($page > 0) {
       return response()->json($data);
     } else {
-      return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL','auditFilterComplianceRR','auditFilterComplianceNC','auditFilterComplianceC', 'auditFilterInspection', 'auditors_array', 'audits', 'sort_by', 'sort_order', 'steps'));
+      return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditors_array', 'audits', 'sort_by', 'sort_order', 'steps'));
     }
   }
 

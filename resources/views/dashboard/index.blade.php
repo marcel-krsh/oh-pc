@@ -3,5 +3,5 @@
 @section('content')
 
 	INDEX.BLADE
-		
+
 @stop

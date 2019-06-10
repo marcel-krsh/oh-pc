@@ -20,6 +20,10 @@ class Document extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+	    'findings_ids' => 'array'
+	  ];
+
     public function finding() : HasOne
     {
         return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
@@ -45,7 +49,7 @@ class Document extends Model
         return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
     }
 
-    public function photo() : HasOne 
+    public function photo() : HasOne
     {
         return $this->hasOne(\App\Models\Photo::class, 'id', 'photo_id');
     }
@@ -55,7 +59,7 @@ class Document extends Model
         return $this->hasMany(\App\Models\Comment::class, 'id', 'comment_id');
     }
 
-    public function document_categories() 
+    public function document_categories()
     {
         $local_categories = \App\Models\LocalDocumentCategory::where('document_id', '=', $this->id)->pluck('document_category_id')->toArray();
         if($local_categories){
@@ -63,7 +67,7 @@ class Document extends Model
         }else{
             return null;
         }
-        
+
     }
 
     // OLD METHODS.

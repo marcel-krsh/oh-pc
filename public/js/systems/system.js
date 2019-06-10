@@ -9,7 +9,7 @@ function autosave(selector, ref) {
         'ref' : ref,
         '_token' : $('meta[name="csrf-token"]').attr('content')
     }, function(data) {
-        if(data!=1){ 
+        if(data!=1){
             UIkit.modal.alert(data,{stack: true});
         } else {
             UIkit.notification('<span uk-icon="icon: check"></span> Saved', {pos:'top-right', timeout:1000, status:'success'});
@@ -22,7 +22,7 @@ function loadListTab(listURI,quickLookupURI,overrideSaveCheck,sortBy,refreshOnly
 	var continueToLoad = 1;
 	// set the variable for infinite scrolling to use
 	window.getContentForListId = listURI;
-	
+
 	if (window.saved !== 1  && overrideSaveCheck !== 1) {
 		continueToLoad = 0;
 		UIkit.modal.confirm("You have unsaved changes, are you sure you want to continue opening this group of items without saving?").then(function() {
@@ -30,9 +30,9 @@ function loadListTab(listURI,quickLookupURI,overrideSaveCheck,sortBy,refreshOnly
 			window.saved = 1;
 			loadListTab(listURI);
 			return;
-		}); 
+		});
 	} else {
-	
+
 		if(continueToLoad === 1) {
 			console.log('Loading '.listURI)
 			//close the offcanvas bar
@@ -45,7 +45,7 @@ function loadListTab(listURI,quickLookupURI,overrideSaveCheck,sortBy,refreshOnly
 			//hide the detail tab
 			$('#detail-tab').fadeOut();
 			}
-			//Load the selected list tab content - 
+			//Load the selected list tab content -
 			//We are only using get here so we can test that vars are being passed easily. You may want to convert this to a ajax post to your processor.
 			$('#list-tab-content').load(listURI, function(response, status, xhr) {
 				  if (status == "error") {
@@ -56,16 +56,16 @@ function loadListTab(listURI,quickLookupURI,overrideSaveCheck,sortBy,refreshOnly
 				  	} else {
 				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
 				  	}
-				    
+
 				    UIkit.modal.alert(msg);
 				  }
 				});
 			console.log('Requested List via ajax: '+listURI);
-			
+
 			//take back to top
 			$('#smoothscrollLink').trigger("click");
 			return;
-			
+
 		}
 	}
 }
@@ -78,9 +78,9 @@ function clickTab(){
 	var tabNumber = window.tabNumber;
 	$('#detail-tab-'+tabNumber+'-content').fadeIn();
 	// $('.detail-tab-'+tabNumber).fadeIn();
-	
+
 	//make the detail tab focused
-	
+
 	//reset style property of the thead of the list
 
 }
@@ -102,7 +102,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 
 	// check if tab has already been loaded
 	// if content is already there, just switch tab, do not reload
-	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').html().length == 0 || forceReload == 1){
+	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').length && $('#'+prefix+'detail-tab-'+tabNumber+'-content').html().length == 0 || forceReload == 1){
 		// display spinner
 		var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
 		$('#'+prefix+'detail-tab-'+tabNumber+'-content').html(tempdiv);
@@ -118,7 +118,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 				  	} else {
 				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
 				  	}
-				    
+
 				    UIkit.modal.alert(msg);
 				}
 			});
@@ -135,7 +135,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 			  	} else {
 			  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
 			  	}
-			    
+
 			    UIkit.modal.alert(msg);
 			}
 
@@ -155,7 +155,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 		$('#smoothscrollLink').trigger("click");
 	}
 
-	
+
 
 }
 
@@ -170,11 +170,11 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 // 			window.saved = 1;
 // 			loadDetailTab(typeId,detailId,tabNumber,overrideSaveCheck,refreshOnly);
 // 			return;
-// 		}); 
+// 		});
 // 	} else {
 // 		if(continueToLoad === 1) {
 // 			//take back to top
-// 			$('#smoothscrollLink').trigger("click");		
+// 			$('#smoothscrollLink').trigger("click");
 // 			//hide the detail tab
 // 			$('#detail-tab-'+tabNumber+'-content').html('').fadeOut();
 // 			$('.detail-tab-'+tabNumber).fadeOut();
@@ -191,7 +191,7 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 // 				  	} else {
 // 				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
 // 				  	}
-				    
+
 // 				    UIkit.modal.alert(msg);
 // 				  }
 // 				});
@@ -202,13 +202,13 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 // 			$('#list-tab').css("top", "");
 // 			$('#list-tab').css("width", "");
 // 			$('#list-tab').removeClass('uk-active');
-			
+
 // 			// store the subtab number to have it open when the page loads
 // 			window.subTabType = subTabType;
 
 // 			// STORE THE CURRENT DETAIL ID IN THE WINDOW PORTION OF THE DOM TO ACCESS IN OTHER SCRIPTS
 // 			window.currentDetailId = detailId;
-// 			return;	
+// 			return;
 // 		}
 // 	}
 // }
@@ -231,14 +231,14 @@ function disableField(fieldId) {
 // 		UIkit.modal.confirm("You have unsaved changes, are you sure you want to open this item without saving?").then(function() {
 //     		continueToLoad = 1;
 // 			window.saved = 1;
-			
+
 // 			loadListTab(16,encodeURI($('#quick-lookup-box').val()),1);
 // 			loadDetailTab(detailTypeId,detailItemId,1);
 // 			return;
-			
+
 // 		});
 // 	}else {
-		
+
 // 		loadListTab(16,encodeURI($('#quick-lookup-box').val()));
 // 		loadDetailTab(detailTypeId,detailItemId);
 // 	}
@@ -261,7 +261,7 @@ function logout() {
 			return;
 		},function(){
 			console.log('logout cancelled');
-		}); 
+		});
 	} else {
 		if(continueToLoad === 1) {
 			console.log('initiating logout confirmation');
@@ -282,12 +282,12 @@ function logout() {
 function dateExpireFilter() {
 	UIkit.modal('#dynamic-modal').hide();
 	$('#parentHTML').removeClass('uk-modal-page');
-	loadListTab(1,null,null,null,1,null,null,null,$('#date-expire-from').val(),$('#date-expire-through').val());	
+	loadListTab(1,null,null,null,1,null,null,null,$('#date-expire-from').val(),$('#date-expire-through').val());
 }
 function dateAgingFilter() {
 	UIkit.modal('#dynamic-modal').hide();
 	$('#parentHTML').removeClass('uk-modal-page');
-	loadListTab(1,null,null,null,1,$('#date-aging-from').val(),$('#date-aging-through').val());	
+	loadListTab(1,null,null,null,1,$('#date-aging-from').val(),$('#date-aging-through').val());
 }
 
 // reload messages
@@ -313,7 +313,7 @@ function reloadUnseenMessages(){
 				}
 				unseen_output = unseen_output + '</a></li>';
 	        });
-			
+
 	        unseen_output = unseen_output + '</ul>';
 	        unseen_output = unseen_output + '</div>';
 
@@ -335,13 +335,13 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight=0,inm
 			$('#dynamic-modal').after(newmodal);
 			var newmodalsize = $(newmodal).find('#modal-size').prop('id', 'modal-size-'+inmodallevel);
 			var newmodalcontent = $(newmodal).find('#dynamic-modal-content').prop('id', 'dynamic-modal-content-'+inmodallevel);
-		}		
+		}
 	}else{
 		var newmodal = $('#dynamic-modal');
 		var newmodalsize = $('#modal-size');
 		var newmodalcontent = $('#dynamic-modal-content');
 	}
-	
+
 	$(newmodalsize).removeAttr('style');
 
 	// UIkit.offcanvas.hide();
@@ -360,10 +360,10 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight=0,inm
 				  	} else {
 				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
 				  	}
-				    
+
 				    UIkit.modal.alert(msg);
 				  }
-				});	
+				});
 		console.log('loaded /modals/'+modalSource+' into #dynamic-modal-content');
 		if(fullscreen === 1) {
 			// add class to modal so it opens full screen.
@@ -371,7 +371,7 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight=0,inm
 			$(newmodal).addClass('fullscreen');
 			//$(newmodalcontent).addClass('uk-height-viewport');
 			$(newmodalsize).removeClass('modal-fixed-height');
-				
+
 		} else {
 
 			$(newmodal).removeClass('fullscreen');
@@ -385,7 +385,7 @@ function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight=0,inm
 				// $(newmodalcontent).removeClass('uk-height-viewport');
 			}
 		}
-		
+
 		UIkit.modal(newmodal, {center: true, bgclose: false, keyboard:false,  stack:true}).show();
 	}
 }
@@ -397,10 +397,10 @@ function dynamicModalClose(inmodallevel) {
 	}else{
 		UIkit.modal('#dynamic-modal').hide();
 	}
-	
+
 	//REMOVE CLASS FROM HTML TAG THAT BLOCKS THE MENU (workaround)
 	$('#parentHTML').removeClass('uk-modal-page');
-																						
+
 }
 
 function listItemFileUploadModalUpdate(fileId) {
@@ -414,16 +414,16 @@ function listItemFileUploadModalUpdate(fileId) {
 				  	} else {
 				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
 				  	}
-				    
+
 				    UIkit.modal.alert(msg);
 				  }
-				});		
+				});
 	UIkit.modal('#dynamic-modal').show();
 }
 
 function isACheckBoxChecked(className,idToShow)
 {
-    var checkboxes=document.getElementsByClassName(className); 
+    var checkboxes=document.getElementsByClassName(className);
     var okay=false;
     for(var i=0,l=checkboxes.length;i<l;i++)
     {
@@ -445,7 +445,7 @@ function checkTextArea(idOfTextArea,idToShow) {
 	} else {
 		$(idToShow).slideUp();
 	}
-	
+
 }
 
 
@@ -462,13 +462,13 @@ function resizeFrame() {
 	/*if($( window ).width() < 1480) {
 		window.warnedResize++;
 		if(window.warnedResize === 1) {
-			
+
 			UIkit.modal.alert('Uh oh - your window is getting a little tight for me to look my best for you. If things start to look weird, try making my window bigger.');
 		} else if(window.warnedResize > 100) {
 			window.warnedResize = 0;
 		}
 	}*/
-	
+
 }
 
 
@@ -503,7 +503,7 @@ $(document).ready(function() {
 				// console.log('Did not load infinite scroll: conditions window.gettingHtml ='+window.gettingHtml);
 			}
 		}
-		
+
 	});
 	$('#dynamic-modal').on({
 
@@ -521,7 +521,7 @@ $(document).ready(function() {
 
 // Require save if changes were made
 $(document).on("change", '.change-watch', function(){
-	if(window.saved === 1) {	
+	if(window.saved === 1) {
 		console.log('Change detected - turning on save notice');
 		window.saved = 0;
 	}
@@ -531,13 +531,13 @@ $(document).on("change", '.change-watch', function(){
 
 function addressField(addressFieldId,detailsReferenceId) {
 	// concept is that we pass the detailsReferenceId to the load request for the address field modal view - so it pulls the relevant address info into the fields.
-	
+
 	// setting a global so address update form knows which address field to update
 	window.addressToUpdate = addressFieldId;
-	
 
-	
-	
+
+
+
 }
 
 // Initial load items

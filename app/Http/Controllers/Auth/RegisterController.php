@@ -61,6 +61,8 @@ class RegisterController extends Controller
       'email'        => 'required|string|email|max:255|unique:users',
       'password'     => 'required|string|min:8|confirmed',
       'phone_number' => 'required|min:12',
+    ], [
+    	'email.unique' => 'This email has already been registered'
     ]);
   }
 

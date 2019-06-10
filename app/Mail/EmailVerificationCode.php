@@ -53,7 +53,7 @@ class EmailVerificationCode extends Mailable
     $level       = "success";
     $level2      = "error";
     $introLines[] = "Your verification code: " . $this->code;
-    $introLines[] = 'This code expired in 15 minutes.';
+    $introLines[] = 'This code expires in 15 minutes.';
     $outroLines = [];
     // save in database
     if ($owner) {

@@ -78,14 +78,20 @@
 				</div>
 			</div>
     		<div class="uk-inline uk-padding-remove">
-    			<div class="findings-icon uk-inline areaNLTStatus" onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'nlt', areaDataAmenity);">
+    			<div class="findings-icon uk-inline areaNLTStatus fileHiddenStatus"  onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'nlt', areaDataAmenity);">
 					<i class="a-booboo"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">+</span>
 					</div>
 				</div>
-				<div class="findings-icon uk-inline areaLTStatus" onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'lt', areaDataAmenity);">
+				<div class="findings-icon uk-inline areaLTStatus fileHiddenStatus" onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'lt', areaDataAmenity);">
 					<i class="a-skull"></i>
+					<div class="findings-icon-status plus">
+						<span class="uk-badge">+</span>
+					</div>
+				</div>
+				<div class="findings-icon uk-inline areaFILEStatus fileShowStatus uk-hidden" onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'file', areaDataAmenity);">
+					<i class="a-folder"></i>
 					<div class="findings-icon-status plus">
 						<span class="uk-badge">+</span>
 					</div>
@@ -111,7 +117,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="uk-inline uk-padding-remove">	
+			<div class="uk-inline uk-padding-remove">
 				<div class="findings-icon uk-inline areaCopyStatus" onclick="copyAmenity('inspection-areaContext-area-r-areaRowId', areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity);">
 					<i class="a-file-copy-2"></i>
 					<div class="findings-icon-status plus">
@@ -124,7 +130,7 @@
 						<span class="uk-badge">-</span>
 					</div>
 				</div>
-			</div> 
+			</div>
 	    </div>
 </template>
 
@@ -133,7 +139,7 @@
     	<div class="inspection-tools-top uk-width-1-1">
     		<div uk-grid>
     			<div class="uk-width-1-3">
-    				
+
     			</div>
     			<div class="uk-width-1-3 uk-text-right" hidden>
     				<i class="a-horizontal-expand"></i>
@@ -154,7 +160,7 @@
 	    	</div>
 
 	    	<img src="images/fpo_finding.png" style="width: 100%;">
-	
+
 
 			<ul class="uk-margin js-filter-comments inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-height-large uk-height-max-large">
 			</ul>
@@ -330,7 +336,7 @@
 				<a onClick="filterAudits('schedule_assignment_too_many', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH TOO MANY HOURS SCHEDULED</span></a>
 			</div>
 			@endif
-			
+
 
 			<div id="audit-filter-date" class="uk-badge uk-text-right@s badge-filter" hidden>
 				<a onClick="loadTab('{{ route('dashboard.audits', ['filter' => 'yes']) }}', '1');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>FILTER HERE</span></a>
@@ -339,7 +345,7 @@
 			@if(session('audit-message') != '')
 				<div class="uk-badge uk-text-right@s badge-filter">
 					<a onClick="applyFilter('audit-message',null);" class="uk-dark uk-light">
-						<i class="a-circle-cross"></i> 
+						<i class="a-circle-cross"></i>
 						@switch(session('audit-message'))
 						    @case(0)
 						        <span>ALL MESSAGES</span>
@@ -361,7 +367,7 @@
 			@if(session('audit-mymessage') == 1)
 				<div class="uk-badge uk-text-right@s badge-filter">
 					<a onClick="applyFilter('audit-mymessage',null);" class="uk-dark uk-light">
-						<i class="a-circle-cross"></i> 
+						<i class="a-circle-cross"></i>
 						<span>MESSAGES FOR ME</span>
 					</a>
 				</div>
@@ -431,7 +437,7 @@
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-project', 1, 'filter-search-project');"></a>
 			            		@endif
-							</span> 
+							</span>
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
@@ -446,14 +452,14 @@
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-project-name', 1, 'filter-search-pm-input');"></a>
 			            		@endif
-							</span> 
+							</span>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROPERTY MANAGER NAME">
 			            		@if($sort_by == 'audit-sort-pm')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-pm',  @php echo 1-$sort_order; @endphp, 'filter-search-pm-input');"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-pm', 1, 'filter-search-pm-input');"></a>
 			            		@endif
-							</span> 
+							</span>
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
@@ -468,27 +474,27 @@
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-address', 1, 'filter-search-address-input');"></a>
 			            		@endif
-							</span> 
+							</span>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY CITY">
 			            		@if($sort_by == 'audit-sort-city')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-city',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-city', 1, 'filter-search-address-input');"></a>
 			            		@endif
-							</span> 
+							</span>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY ZIP">
 			            		@if($sort_by == 'audit-sort-zip')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-zip',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-zip', 1, 'filter-search-address-input');"></a>
 			            		@endif
-							</span> 
+							</span>
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 		            </th>
 		            <th @can('access_auditor') style="min-width:190px;" @else style="max-width:50px;" @endcan>
 		            	<div uk-grid>
-			            	<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid> 
+			            	<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid>
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
 								<span class="@can('access_auditor') uk-width-1-2 @else uk-width-1-1 @endcan uk-text-center uk-padding-remove-top uk-margin-remove-top">
 									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
@@ -516,7 +522,7 @@
 				                            	</div>
 				            				</fieldset>
 				                        </form>
-				            			
+
 				                    </div> / <i id="totalinspectionbutton" class="a-home-2"></i>
 				                    <div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="total_inspection_filter" method="post">
@@ -527,7 +533,7 @@
 													<input id="total_inspection_less" class="totalinspectionfilter" type="checkbox" @if(session('total_inspection_filter') == 1) checked @endif/>
 													<label for="total_inspection_less">LESS THAN OR EQUAL TO</label>
 													<input id="total_inspection_amount" class="uk-input" value="{{session('total_inspection_amount')}}" type="number" min="0" >
-													
+
 										        </div>
 										        <div class="uk-margin-remove" uk-grid>
 				                            		<div class="uk-width-1-2">
@@ -539,7 +545,7 @@
 				                            	</div>
 				            				</fieldset>
 				                        </form>
-				            			
+
 				                    </div>
 								</span>
 								<span class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
@@ -551,16 +557,16 @@
 
 												<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
 												<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
-												
+
 												<input id="compliance-status-rr" class=" complianceselector" type="checkbox" @if(session('compliance-status-rr') == 1) checked @endif/>
 												<label for="compliance-status-rr"><i class="a-circle-ellipsis action-required"></i> <span class="action-required">UNITS REQUIRE REVIEW</span></label>
-												
+
 												<input id="compliance-status-nc" class=" complianceselector" type="checkbox" @if(session('compliance-status-nc') == 1) checked @endif/>
 												<label for="compliance-status-nc"><i class="a-circle-cross action-required"></i> <span class="action-required">NOT COMPLIANT</span></label>
-												
+
 												<input id="compliance-status-c" class=" complianceselector" type="checkbox" @if(session('compliance-status-c') == 1) checked @endif/>
 												<label for="compliance-status-c"><i class="a-circle-checked ok-actionable"></i><span class="ok-actionable">IS COMPLIANT</span></label>
-												
+
 										        </div>
 										        <div class="uk-margin-remove" uk-grid>
 				                            		<div class="uk-width-1-2">
@@ -572,7 +578,7 @@
 				                            	</div>
 				            				</fieldset>
 				                        </form>
-				            			
+
 				                    </div>
 								</span>
 								@endcan
@@ -611,7 +617,7 @@
 		            </th>
 		            <th style="@can('access_auditor') min-width: 80px @else max-width: 50px @endcan">
 		            	<div uk-grid>
-			            	<div class="filter-box filter-date-expire uk-vertical-align uk-width-1-1 uk-text-center"> 
+			            	<div class="filter-box filter-date-expire uk-vertical-align uk-width-1-1 uk-text-center">
 								<span>
 									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
 								</span>
@@ -627,7 +633,7 @@
 					</th>
 		            <th style="@can('access_auditor') min-width: 90px; @else max-width: 103px; @endcan ">
 		            	<div uk-grid>
-			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
+			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
 			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i id="file_audit_status_button" class="a-folder"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
@@ -635,25 +641,25 @@
 				            				<fieldset class="uk-fieldset">
 				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
-												
-												
+
+
 												<input id="file-audit-status-h" class="fileauditselector" type="checkbox" @if(session('file-audit-status-h') == 1) checked @endif/>
 												<label for="file-audit-status-h"><i class="a-folder "></i><span class="">HAS FILE AUDIT FINDINGS</span></label>
 
 												<input id="file-audit-status-r" class="fileauditselector" type="checkbox" @if(session('file-audit-status-r') == 1) checked @endif/>
 												<label for="file-audit-status-r"><i class="a-folder ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED FILE AUDIT FINDINGS</span></label>
 
-												
-												
+
+
 												<input id="file-audit-status-ar" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-ar') == 1) checked @endif/>
 												<label for="file-audit-status-ar"><i class="a-folder action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED FILE AUDIT FINDINGS</span></label>
-												
+
 												<input id="file-audit-status-c" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-c') == 1) checked @endif/>
 												<label for="file-audit-status-c"><i class="a-folder action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL FILE AUDIT FINDINGS</span></label>
-												
+
 												<input id="file-audit-status-nf" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-nf') == 1) checked @endif/>
 												<label for="file-audit-status-nf"><i class="a-folder"></i> <span class="">DOES NOT HAVE FILE AUDIT FINDINGS</span></label>
-												
+
 										        </div>
 										        <div class="uk-margin-remove" uk-grid>
 				                            		<div class="uk-width-1-2">
@@ -665,7 +671,7 @@
 				                            	</div>
 				            				</fieldset>
 				                        </form>
-				            			
+
 				                    </div>
 								</span>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -675,23 +681,23 @@
 				            				<fieldset class="uk-fieldset">
 				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
-												
-												
+
+
 												<input id="nlt-audit-status-h" class="nltauditselector" type="checkbox" @if(session('nlt-audit-status-h') == 1) checked @endif/>
 												<label for="nlt-audit-status-h"><i class="a-booboo  "></i><span class="">HAS NLT AUDIT FINDINGS</span></label>
 
 												<input id="nlt-audit-status-r" class="nltauditselector" type="checkbox" @if(session('nlt-audit-status-r') == 1) checked @endif/>
 												<label for="nlt-audit-status-r"><i class="a-booboo ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED NLT AUDIT FINDINGS</span></label>
-												
+
 												<input id="nlt-audit-status-ar" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-ar') == 1) checked @endif/>
 												<label for="nlt-audit-status-ar"><i class="a-booboo action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED NLT AUDIT FINDINGS</span></label>
-												
+
 												<input id="nlt-audit-status-c" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-c') == 1) checked @endif/>
 												<label for="nlt-audit-status-c"><i class="a-booboo action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL NLT AUDIT FINDINGS</span></label>
-												
+
 												<input id="nlt-audit-status-nf" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-nf') == 1) checked @endif/>
 												<label for="nlt-audit-status-nf"><i class="a-booboo"></i> <span class="">DOES NOT HAVE NLT AUDIT FINDINGS</span></label>
-												
+
 										        </div>
 										        <div class="uk-margin-remove" uk-grid>
 				                            		<div class="uk-width-1-2">
@@ -703,7 +709,7 @@
 				                            	</div>
 				            				</fieldset>
 				                        </form>
-				            			
+
 				                    </div>
 								</span>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -713,23 +719,23 @@
 				            				<fieldset class="uk-fieldset">
 				            					<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 
-												
-												
+
+
 												<input id="lt-audit-status-h" class="ltauditselector" type="checkbox" @if(session('lt-audit-status-h') == 1) checked @endif/>
 												<label for="lt-audit-status-h"><i class="a-skull "></i><span class="">HAS LT AUDIT FINDINGS</span></label>
 
 												<input id="lt-audit-status-r" class="ltauditselector" type="checkbox" @if(session('lt-audit-status-r') == 1) checked @endif/>
 												<label for="lt-audit-status-r"><i class="a-skull ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED LT AUDIT FINDINGS</span></label>
-												
+
 												<input id="lt-audit-status-ar" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-ar') == 1) checked @endif/>
 												<label for="lt-audit-status-ar"><i class="a-skull action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED LT AUDIT FINDINGS</span></label>
-												
+
 												<input id="lt-audit-status-c" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-c') == 1) checked @endif/>
 												<label for="lt-audit-status-c"><i class="a-skull action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL LT AUDIT FINDINGS</span></label>
-												
+
 												<input id="lt-audit-status-nf" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-nf') == 1) checked @endif/>
 												<label for="lt-audit-status-nf"><i class="a-skull"></i> <span class="">DOES NOT HAVE LT AUDIT FINDINGS</span></label>
-												
+
 										        </div>
 										        <div class="uk-margin-remove" uk-grid>
 				                            		<div class="uk-width-1-2">
@@ -741,7 +747,7 @@
 				                            	</div>
 				            				</fieldset>
 				                        </form>
-				            			
+
 				                    </div>
 								</span>
 							</div>
@@ -751,26 +757,26 @@
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-file', 1);"></a>
 			            		@endif
-							</span> 
+							</span>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY NLT FINDING COUNT">
 			            		@if($sort_by == 'audit-sort-finding-nlt')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-nlt',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-nlt', 1);"></a>
 			            		@endif
-							</span> 
+							</span>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LT FINDING COUNT">
 			            		@if($sort_by == 'audit-sort-finding-lt')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-lt',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-lt', 1);"></a>
 			            		@endif
-							</span> 
+							</span>
 						</div>
 					</th>
 		            <th  @can('access_auditor') style="min-width: 80px;" @else style="max-width: 70px;" @endcan >
 		            	<div uk-grid>
-			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid> 
+			            	<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
 			            		@can('access_auditor')
 			            		<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i id="scheduleassignmentfilterbutton" class="a-avatar"></i>
@@ -784,7 +790,7 @@
 													<label for="schedule_assignment_not_enough">NOT ENOUGH HOURS SCHEDULED</label>
 													<input id="schedule_assignment_too_many" class="" type="checkbox" @if(session('schedule_assignment_too_many') == 1) checked @endif/>
 													<label for="schedule_assignment_too_many">TOO MANY HOURS SCHEDULED</label>
-													
+
 										        </div>
 										        <div class="uk-margin-remove" uk-grid>
 				                            		<div class="uk-width-1-2">
@@ -796,7 +802,7 @@
 				                            	</div>
 				            				</fieldset>
 				                        </form>
-				            			
+
 				                    </div>
 								</span>
 								@endcan
@@ -810,20 +816,20 @@
 				                            <li>
 				                            	<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-message',0);">
 				                            		@if(session('audit-message') == 0)
-				                            		<span class="a-checkbox-checked"></span> 
+				                            		<span class="a-checkbox-checked"></span>
 				                            		@else
-				                            		<span class="a-checkbox"></span> 
+				                            		<span class="a-checkbox"></span>
 				                            		@endif
 				                            		All messages
 				                            	</button>
-				                            		
+
 				                            </li>
 				                            <li>
 				                            	<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-message',1);">
 				                            		@if(session('audit-message') == 1)
-				                            		<span class="a-checkbox-checked"></span> 
+				                            		<span class="a-checkbox-checked"></span>
 				                            		@else
-				                            		<span class="a-checkbox"></span> 
+				                            		<span class="a-checkbox"></span>
 				                            		@endif
 				                            		Unread messages
 				                            	</button>
@@ -831,9 +837,9 @@
 				                            <li>
 				                            	<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-message',2);">
 				                            		@if(session('audit-message') == 2)
-				                            		<span class="a-checkbox-checked"></span> 
+				                            		<span class="a-checkbox-checked"></span>
 				                            		@else
-				                            		<span class="a-checkbox"></span> 
+				                            		<span class="a-checkbox"></span>
 				                            		@endif
 				                            		Has no messages
 				                            	</button>
@@ -844,9 +850,9 @@
 				                            <li>
 				                            	<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-mymessage',1);">
 				                            		@if(session('audit-mymessage') == 1)
-				                            		<span class="a-checkbox-checked"></span> 
+				                            		<span class="a-checkbox-checked"></span>
 				                            		@else
-				                            		<span class="a-checkbox"></span> 
+				                            		<span class="a-checkbox"></span>
 				                            		@endif
 				                            		Only messages for me
 				                            	</button>
@@ -857,7 +863,7 @@
 								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-files"></i>
 								</span>
-								
+
 							</div>
 							@can('access_auditor')
 								<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
@@ -866,7 +872,7 @@
 				            		@else
 				            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor', 1);"></a>
 				            		@endif
-								</span> 
+								</span>
 							@endif
 							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
 			            		@if($sort_by == 'audit-sort-status-message')
@@ -874,18 +880,18 @@
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message', 1);"></a>
 			            		@endif
-							</span> 
+							</span>
 							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
 			            		@if($sort_by == 'audit-sort-status-document')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document', 1);"></a>
 			            		@endif
-							</span> 
-							
-							
+							</span>
+
+
 						</div>
-						
+
 		            </th>
 		            @can('access_auditor')
 		            <th >
@@ -918,17 +924,17 @@
 			                            	</div>
 			            				</fieldset>
 			                        </form>
-			            			
+
 			                    </div>
 			            	</div>
-			            	
+
 			            	<span data-uk-tooltip="{pos:'bottom'}" title="SORT BY NEXT TASK" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top">
 			            		@if($sort_by == 'audit-sort-next-task')
 			            		<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-next-task',  @php echo 1-$sort_order; @endphp);"></a>
 			            		@else
 			            		<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-next-task', 1);"></a>
 			            		@endif
-							</span> 
+							</span>
 
 			            </div>
 		            </th>@endcan
@@ -968,7 +974,7 @@
 			            <td class="audit-td-name">
 			            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
 			            		<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:View Contact Details;"></i>
-			            	</div> 
+			            	</div>
 			            	<div class="uk-vertical-align-top uk-display-inline-block fadetext">
 			            		<h3 class="uk-margin-bottom-remove filter-search-pm">{{$audit['title']}}</h3>
 				            	<small class="uk-text-muted faded filter-search-pm">{{$audit['pm']}}</small>
@@ -978,7 +984,7 @@
 			            	<div class="divider"></div>
 			            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
 			            		<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
-			            	</div> 
+			            	</div>
 			            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
 			            		<h3 class="uk-margin-bottom-remove filter-search-address">{{$audit['address']}}</h3>
 				            	<small class="uk-text-muted faded filter-search-address">{{$audit['city']}}, {{$audit['state']}} {{$audit['zip']}}</small>
@@ -995,9 +1001,9 @@
 					            		<h3 class="uk-link" uk-tooltip="title:{{$audit['inspection_schedule_text']}};">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('m/d')}}</h3>
 					            		<div class="dateyear">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('Y')}}</div>
 				            		</div>
-				            	</div> 
-				            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="title:{{$audit['inspectable_items']}} INSPECTABLE ITEMS;">{{$audit['inspectable_items']}} /</div> 
-				            	<div class="uk-width-1-6 uk-text-left uk-padding-remove">{{$audit['total_items']}}</div> 
+				            	</div>
+				            	<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="title:{{$audit['inspectable_items']}} INSPECTABLE ITEMS;">{{$audit['inspectable_items']}} /</div>
+				            	<div class="uk-width-1-6 uk-text-left uk-padding-remove">{{$audit['total_items']}}</div>
 				            	<div class="uk-width-1-6 uk-text-left">
 				            		<i class="{{$audit['audit_compliance_icon']}} {{$audit['audit_compliance_status']}}"  uk-tooltip="title:{{$audit['audit_compliance_status_text']}};"></i>
 				            	</div>
@@ -1008,7 +1014,7 @@
 			            	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
 				            	<div class="uk-width-1-3">
 				            		<i class="a-bell-2 {{$audit['followup_status']}}" uk-tooltip="title:{{$audit['followup_status_text']}};"></i>
-				            	</div> 
+				            	</div>
 				            	<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
 				            		@if($audit['followup_date'])
 				            		<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d')}}</h3>
@@ -1016,7 +1022,7 @@
 				            		@else
 				            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
 				            		@endif
-				            	</div> 
+				            	</div>
 				            </div>
 			            </td>
 			            <td class="hasdivider">
@@ -1024,16 +1030,16 @@
 			            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
 				            	<div class="uk-width-1-4 {{$audit['file_audit_status']}}" uk-tooltip="title:{{$audit['file_audit_status_text']}};">
 				            		<i class="{{$audit['file_audit_icon']}}"></i>
-				            	</div> 
+				            	</div>
 				            	<div class="uk-width-1-4 {{$audit['nlt_audit_status']}}" uk-tooltip="title:{{$audit['nlt_audit_status_text']}};">
 				            		<i class="{{$audit['nlt_audit_icon']}}"></i>
-				            	</div> 
+				            	</div>
 				            	<div class="uk-width-1-4 {{$audit['lt_audit_status']}}" uk-tooltip="title:{{$audit['lt_audit_status_text']}};">
 				            		<i class="{{$audit['lt_audit_icon']}}"></i>
-				            	</div> 
+				            	</div>
 				            	<div class="uk-width-1-4 {{$audit['smoke_audit_status']}}" uk-tooltip="title:{{$audit['smoke_audit_status_text']}};">
 				            		<i class="{{$audit['smoke_audit_icon']}}"></i>
-				            	</div> 
+				            	</div>
 				            </div>
 			            </td>
 			            <td class="hasdivider">
@@ -1041,16 +1047,16 @@
 			            	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
 				            	<div class="uk-width-1-4">
 				            		<i class="{{$audit['auditor_status_icon']}} {{$audit['auditor_status']}}" uk-tooltip="title:{{$audit['auditor_status_text']}};"></i>
-				            	</div> 
+				            	</div>
 				            	<div class="uk-width-1-4">
 				            		<i class="{{$audit['message_status_icon']}} {{$audit['message_status']}}" uk-tooltip="title:{{$audit['message_status_text']}};"></i>
-				            	</div> 
+				            	</div>
 				            	<div class="uk-width-1-4">
 				            		<i class="{{$audit['document_status_icon']}} {{$audit['document_status']}}" uk-tooltip="title:{{$audit['document_status_text']}};"></i>
-				            	</div> 
+				            	</div>
 				            	<div class="uk-width-1-4">
 				            		<i class="{{$audit['history_status_icon']}} {{$audit['history_status']}}" uk-tooltip="title:{{$audit['history_status_text']}};"></i>
-				            	</div> 
+				            	</div>
 				            </div>
 			            </td>
 			            <td>
@@ -1112,8 +1118,8 @@ The following div is defined in this particular tab and pushed to the main layou
 			}
 	    });
 
-	    $('.stepselector').click(function() { 
-	    	if($(this).prop('checked') && $('#step-all').prop('checked')){ 
+	    $('.stepselector').click(function() {
+	    	if($(this).prop('checked') && $('#step-all').prop('checked')){
 		    	$('#step-all').prop('checked', false);
 			}
 	    });
@@ -1158,7 +1164,7 @@ The following div is defined in this particular tab and pushed to the main layou
 	    });
 		$(".complianceselector").click(function() {
 			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
-			if($(this).prop('checked') && $('#compliance-status-all').prop('checked')){ 
+			if($(this).prop('checked') && $('#compliance-status-all').prop('checked')){
 		    	$('#compliance-status-all').prop('checked', false);
 			}
 		});
@@ -1171,7 +1177,7 @@ The following div is defined in this particular tab and pushed to the main layou
 	    });
 		$(".fileauditselector").click(function() {
 			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
-			if($(this).prop('checked') && $('#file-audit-status-all').prop('checked')){ 
+			if($(this).prop('checked') && $('#file-audit-status-all').prop('checked')){
 		    	$('#file-audit-status-all').prop('checked', false);
 			}
 		});
@@ -1182,7 +1188,7 @@ The following div is defined in this particular tab and pushed to the main layou
 	    });
 		$(".nltauditselector").click(function() {
 			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
-			if($(this).prop('checked') && $('#nlt-audit-status-all').prop('checked')){ 
+			if($(this).prop('checked') && $('#nlt-audit-status-all').prop('checked')){
 		    	$('#nlt-audit-status-all').prop('checked', false);
 			}
 		});
@@ -1193,7 +1199,7 @@ The following div is defined in this particular tab and pushed to the main layou
 	    });
 		$(".ltauditselector").click(function() {
 			// compliance-status-all, compliance-status-nc, compliance-status-c, compliance-status-rr
-			if($(this).prop('checked') && $('#lt-audit-status-all').prop('checked')){ 
+			if($(this).prop('checked') && $('#lt-audit-status-all').prop('checked')){
 		    	$('#lt-audit-status-all').prop('checked', false);
 			}
 		});
@@ -1203,7 +1209,7 @@ The following div is defined in this particular tab and pushed to the main layou
 			$(this).prop('checked', true);
 	    });
 
-		
+
     });
 
 	@can('access_auditor')
@@ -1246,11 +1252,11 @@ The following div is defined in this particular tab and pushed to the main layou
     		console.log('element '+element);
     		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/delete/'+element);
     	}
-    	
+
     }
     function copyAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel=0){
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>MAKE A DUPLICATE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to make a duplicate?</h3></div>').then(function() {
-		    	
+
 		    	var newAmenities = [];
 
 		    	$.post('/modals/amenities/save', {
@@ -1274,12 +1280,12 @@ The following div is defined in this particular tab and pushed to the main layou
 						// locate where to update data
 						var mainDivId = '';
 						if(unit_id != ''){
-							mainDivId = $('.inspection-detail-main-list .inspection-areas').parent().attr("id"); 
+							mainDivId = $('.inspection-detail-main-list .inspection-areas').parent().attr("id");
 						}else{
 							mainDivId = $('.inspection-areas').parent().attr("id");
 						}
-						
-						var mainDivContainerId = $('#'+mainDivId).parent().attr("id"); 
+
+						var mainDivContainerId = $('#'+mainDivId).parent().attr("id");
 
 						// also get context
 						var context = $('.inspection-areas').first().attr("data-context");
@@ -1287,7 +1293,7 @@ The following div is defined in this particular tab and pushed to the main layou
 						// show spinner
 						var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
 						$('#'+mainDivId).html(spinner);
-						
+
 						// add a row in .inspection-areas
 						var inspectionMainTemplate = $('#inspection-areas-template').html();
 						var inspectionAreaTemplate = $('#inspection-area-template').html();
@@ -1304,7 +1310,7 @@ The following div is defined in this particular tab and pushed to the main layou
 							newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
 							newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
 							newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
-							newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);  
+							newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);
 							newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);  // missing
 							newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
 							newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
@@ -1327,7 +1333,7 @@ The following div is defined in this particular tab and pushed to the main layou
 			                	console.log('updating building auditors ');
 
 			                	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
-			                		
+
 			                		// we don't know if/which unit is open
 				                	var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
 
@@ -1345,10 +1351,10 @@ The following div is defined in this particular tab and pushed to the main layou
 					                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
 					                	$(unitelement).append(newcontent);
 					                });
-			                	}       
+			                	}
 
 				                var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
-				               
+
 				                $(buildingelement).html('');
 				                $.each(data.auditor.building_auditors, function(index, value){
 				                	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
@@ -1386,12 +1392,12 @@ The following div is defined in this particular tab and pushed to the main layou
 				                		//$('#building-auditors-'+area.building_id).html(newcontent);
 				                		$(buildingelement).html(newcontent);
 				                	}
-				                	
+
 				                });
 
 				            }
 
-							
+
 						});
 
 						$('#unit-amenity-count-'+audit_id+building_id+unit_id).html(data.amenities.length + ' AMENITIES');
@@ -1403,12 +1409,12 @@ The following div is defined in this particular tab and pushed to the main layou
 						    console.log("Area list updated");
 						  });
 					}
-					
+
 
 
 		        } );
 
-		    	
+
 		}, function () {
 		    console.log('Rejected.')
 		});
@@ -1417,7 +1423,7 @@ The following div is defined in this particular tab and pushed to the main layou
 
 
     function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0){
-    	
+
     	if(element){
     		if($('#'+element).hasClass('a-circle-checked')){
 		    	var title = 'MARK THIS INCOMPLETE?';
@@ -1430,14 +1436,14 @@ The following div is defined in this particular tab and pushed to the main layou
     		var title = 'MARK THIS COMPLETE?';
 		    var message = 'Are you sure you want to mark this complete?';
     	}
-    	
-    	
+
+
     	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3></div>').then(function() {
-		    	
+
 		    	$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
 		            '_token' : '{{ csrf_token() }}'
 		        }, function(data) {
-		            if(data==0){ 
+		            if(data==0){
 		                UIkit.modal.alert(data,{stack: true});
 		            } else {console.log(data.status);
 		            	if(data.status == 'complete'){
@@ -1456,7 +1462,7 @@ The following div is defined in this particular tab and pushed to the main layou
 		            		}
 
 		            	}else{
-		            		
+
 		            		if(toplevel == 1){
 		            			UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
 			            		$('#'+element).toggleClass('a-circle');
@@ -1474,7 +1480,7 @@ The following div is defined in this particular tab and pushed to the main layou
 		            }
 		        } );
 
-		    	
+
 		}, function () {
 		    console.log('Rejected.')
 		});
@@ -1489,7 +1495,7 @@ The following div is defined in this particular tab and pushed to the main layou
     	}else{
     		var total_inspection_filter = 1;
     	}
-    	
+
     	var amount = $('#total_inspection_amount').val();
 
 		$.post("/session/", {
@@ -1698,11 +1704,11 @@ The following div is defined in this particular tab and pushed to the main layou
 
     new Vue({
         el: '#auditstable',
-        
+
         data: function() {
              return {
                 audits: {!! json_encode($data) !!},
-                
+
                 // page: 1,
                 // loading: 1,
                 // busy: false
@@ -1713,8 +1719,8 @@ The following div is defined in this particular tab and pushed to the main layou
             this.loading = 0;
         },
         methods: {
-        	
-            
+
+
         },
 
         mounted: function() {
@@ -1773,7 +1779,7 @@ The following div is defined in this particular tab and pushed to the main layou
 			                // }
 			            }
 			    });
-            
+
         }
     });
 

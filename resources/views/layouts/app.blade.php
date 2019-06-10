@@ -11,7 +11,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Styles -->
-    <link href="/css/app.css" rel="stylesheet">
+    <link href="/css/app.css{{ asset_version() }}" rel="stylesheet">
 
     <!-- resources/views/layouts/app.blade.php -->
     <style>
@@ -59,7 +59,7 @@
   'csrfToken' => csrf_token(),
 ]); ?>
     </script>
-    <script src="/js/app.js"></script>
+    <script src="/js/app.js{{ asset_version() }}"></script>
 </head>
 <body>
     <div id="ohfa-universal-header"><div id="apcsv-ul-bar">  <div id="apcsv-logo"><img src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/devco_logo_reversed.png" alt="Site Logo"></div>  <div id="apcsv-list-left"></div>  <div id="apcsv-avatar" title="AmeliaAtchinson (OSM Test)" onclick="openUserPreferences();">{{Auth::user()->initials()}}</div>  <div id="apcsv-menu-icon" class="hvr-grow"><a id="apcsv-toggle" class="pcsv-toggle" onclick="return false;" href="#apcsv-menu-items">APPS</a>    <div id="apcsv-menu-items" class="hidden">      <div class="apcsv-menu-item"> <a href="https://devco.ohiohome.org/AuthorityOnlineALT/">DEV|CO Compliance</a></div>      <div class="apcsv-menu-item"> <a href="https://pcinspectdev.ohiohome.org/">DEV|CO Inspection</a></div>    </div>  </div>  <div id="apcsv-list-right"></div></div></div>

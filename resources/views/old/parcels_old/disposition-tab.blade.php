@@ -1,5 +1,5 @@
-<?php setlocale(LC_MONETARY, 'en_US'); ?>
-<!-- <script src="/js/components/upload.js"></script> -->
+<?php setlocale(LC_MONETARY, 'en_US');?>
+<!-- <script src="/js/components/upload.js{{ asset_version() }}"></script> -->
 <style>
 .uk-breadcrumb>li:nth-child(n+2):before {
     content: ">";
@@ -53,20 +53,20 @@ margin-bottom: 0px;
 					    <li><button id="disposition-upload-button" onclick="step('disposition-upload');" class="uk-button uk-button-default uk-button-small button-step" @if(!$disposition) disabled @endif><span class="a-file-plus"></span> Supporting Documents</button></li>
 					    <li><button @if($disposition) onclick="window.open('/dispositions/{{$parcel->id}}/{{$disposition->id}}', '_blank')" @endif class="uk-button uk-button-default uk-button-small button-step" @if(!$disposition) disabled @endif>Open Disposition in New Window</button></li>
 
-					    
+
 					    @if($parcel->associatedDisposition)
 					    	@if($disposition->invoice)
 					    		@if($disposition->invoice->disposition_invoice_id)
 					                <li class="uk-margin-left">
-					                	<button class="uk-button uk-button-small uk-button-success uk-width-1-1@m" type="button" onclick="window.open('/disposition_invoice/{{$disposition->invoice->disposition_invoice_id}}', '_blank')">Invoice #{{$disposition->invoice->disposition_invoice_id}}</button> 
-					                </li>	
+					                	<button class="uk-button uk-button-small uk-button-success uk-width-1-1@m" type="button" onclick="window.open('/disposition_invoice/{{$disposition->invoice->disposition_invoice_id}}', '_blank')">Invoice #{{$disposition->invoice->disposition_invoice_id}}</button>
+					                </li>
 								@endif
 						@endif
 
 						@if($disposition->parcel->unpaidRetainages->count())
 							<li class="uk-margin-left">
-			                	<button class="uk-button uk-button-small uk-button-danger attention uk-width-1-1@m" type="button" disabled>Unpaid retainages</button> 
-			                </li>	
+			                	<button class="uk-button uk-button-small uk-button-danger attention uk-width-1-1@m" type="button" disabled>Unpaid retainages</button>
+			                </li>
 						@endif
 
 		                <li class="uk-margin-left">
@@ -79,31 +79,31 @@ margin-bottom: 0px;
 
 		                @if($latest_parcel_disposition->status_id == 1)
 			                <li class="uk-margin-left">
-			                	<div class="uk-badge uk-badge-success">Draft</div> 
+			                	<div class="uk-badge uk-badge-success">Draft</div>
 			                </li>
 		                @elseif($latest_parcel_disposition->status_id == 2)
 			                <li class="uk-margin-left">
-			                	<div class="uk-badge uk-badge-success">Pending Landbank Approval</div> 
+			                	<div class="uk-badge uk-badge-success">Pending Landbank Approval</div>
 			                </li>
 		                @elseif($latest_parcel_disposition->status_id == 3)
 			                <li class="uk-margin-left">
-			                	<div class="uk-badge uk-badge-success">Pending HFA Approval</div> 
+			                	<div class="uk-badge uk-badge-success">Pending HFA Approval</div>
 			                </li>
 		                @elseif($latest_parcel_disposition->status_id == 4)
 			                <li class="uk-margin-left">
-			                	<div class="uk-badge uk-badge-success">Pending Payment</div> 
+			                	<div class="uk-badge uk-badge-success">Pending Payment</div>
 			                </li>
 		                @elseif($latest_parcel_disposition->status_id == 5)
 			                <li class="uk-margin-left">
-			                	<div class="uk-badge uk-badge-warning">Declined</div> 
+			                	<div class="uk-badge uk-badge-warning">Declined</div>
 			                </li>
 		                @elseif($latest_parcel_disposition->status_id == 6)
 			                <li class="uk-margin-left">
-			                	<div class="uk-badge uk-badge-success">Paid</div> 
+			                	<div class="uk-badge uk-badge-success">Paid</div>
 			                </li>
 		                @elseif($latest_parcel_disposition->status_id == 7)
 			                <li class="uk-margin-left">
-			                	<div class="uk-badge uk-badge-success">Approved</div> 
+			                	<div class="uk-badge uk-badge-success">Approved</div>
 			                </li>
 		                @endif
 
@@ -111,18 +111,18 @@ margin-bottom: 0px;
 				@endif
             </ul>
 		</div>
-		
+
 
 
 	</div>
 
-	@if(!$proceed) 
+	@if(!$proceed)
 	<div class="uk-width-1-1">
-		<div class="uk-alert uk-alert-warning uk-width-1-2 uk-container-center">Disposition is not available at this time.</div> 
+		<div class="uk-alert uk-alert-warning uk-width-1-2 uk-container-center">Disposition is not available at this time.</div>
 	</div>
 	@else
 	<div id="disposition-start" class="uk-width-1-1 dispo-step">
-		
+
 
         @if(count($parcel->associatedDispositions))
 			<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed small-table-text" >
@@ -166,19 +166,19 @@ margin-bottom: 0px;
 						<td><small>@if($associated_disposition->status) {{$associated_disposition->status->invoice_status_name}} @endif</small></td>
 						<td>
 
-			 				<a class="a-file-copy-2" onclick="window.open('/dispositions/{{$parcel->id}}/{{$associated_disposition->id}}', '_blank')" uk-tooltip="View Disposition"></a> 
-						@if(Auth::user()->isHFAAdmin() && 0) 
+			 				<a class="a-file-copy-2" onclick="window.open('/dispositions/{{$parcel->id}}/{{$associated_disposition->id}}', '_blank')" uk-tooltip="View Disposition"></a>
+						@if(Auth::user()->isHFAAdmin() && 0)
 
-			 				<a class="a-trash-4" onclick="" title="Delete" uk-tooltip="Delete Disposition"></a> 
+			 				<a class="a-trash-4" onclick="" title="Delete" uk-tooltip="Delete Disposition"></a>
 			 			@endif
 						</td>
 					</tr>
 					@endforeach
 			 	</tbody>
 			</table>
-			
+
 			@endif
-	
+
 	@if(!$disposition)
 		<div id="disposition-start-1" class="uk-panel uk-panel-box uk-width-1-1@s uk-width-1-2@m uk-container-center">
             <h3 class="uk-panel-title"><span class="a-home-2"></span> Ready to start</h3>
@@ -193,7 +193,7 @@ margin-bottom: 0px;
 					    </select>
 					</div>
 					<div class="uk-form-row">
-						<button onclick="processStep('disposition-start');" class="uk-width-1-1 uk-button uk-button-success" type="button">Create New Disposition</button> 
+						<button onclick="processStep('disposition-start');" class="uk-width-1-1 uk-button uk-button-success" type="button">Create New Disposition</button>
 					</div>
             </form>
         </div>
@@ -216,9 +216,9 @@ margin-bottom: 0px;
 					    </select>
 					</div>
 					<div class="uk-form-row">
-						<button onclick="processStep('disposition-start');" class="uk-width-1-1 uk-button uk-button-success" type="button">Create New Disposition</button> 
+						<button onclick="processStep('disposition-start');" class="uk-width-1-1 uk-button uk-button-success" type="button">Create New Disposition</button>
 					</div>
-            </form> 
+            </form>
         </div>
         @else
         <div class="uk-panel uk-panel-box uk-width-1-2 uk-container-center">
@@ -232,12 +232,12 @@ margin-bottom: 0px;
 	<div id="disposition-upload" class="uk-width-1-1 dispo-step uk-hidden">
 		<div class="uk-container uk-margin-top">
 			<form id="uploadSupportingDocuments" >
-				<div class="uk-container uk-container-center"> 
+				<div class="uk-container uk-container-center">
 					<div class="uk-grid">
 
 				        <div class="uk-width-1-2@m uk-width-1-1@s">
 				        	@if($disposition)
-				        	<h4>Required Support Documents For Early Release 
+				        	<h4>Required Support Documents For Early Release
 				        	@if($disposition->disposition_type_id == 5)
 				        	<a onclick="resetDocTabCategoryListVars();selectCategory('22')" uk-tooltip="Select corresponding categories">
 			                    <span class="a-file-tool"></span></a><br />
@@ -337,7 +337,7 @@ margin-bottom: 0px;
 		                                        UIkit.modal.alert('You must select at least one category.',{stack: true});
 		                                        return false;
 		                                    }
-			                                
+
 			                            },
 			                            load: function () {
 			                                // console.log('load', arguments);
@@ -375,7 +375,7 @@ margin-bottom: 0px;
 
 			                                var data = jQuery.parseJSON(response.response);
                                         	var documentids = data['document_ids'];
-		                                    
+
 		                                    setTimeout(function () {
 			                                    bar.setAttribute('hidden', 'hidden');
 			                                }, 250);
@@ -387,30 +387,30 @@ margin-bottom: 0px;
 		                                                'comment' : val,
 		                                                '_token' : '{{ csrf_token() }}'
 		                                                }, function(data) {
-		                                                    if(data!='1'){ 
+		                                                    if(data!='1'){
 		                                                        UIkit.modal.alert(data,{stack: true});
 		                                                    } else {
-		                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});          
+		                                                        UIkit.modal.alert('Your comment has been saved.',{stack: true});
 		                                                    }
 		                                        });
 		                                    });
-			                                
+
 			                            }
 
 			                        };
 
 			                        var select = UIkit.upload('.js-upload', settings);
-			                        
+
 			                    });
 			                    </script>
 
 			            	</div>
-				        </div> 
+				        </div>
 
 					</div>
-				</div> 
+				</div>
 			</form>
-			
+
 		</div>
 	</div>
 	@endif
@@ -451,7 +451,7 @@ margin-bottom: 0px;
 			if(!data['next']){
 				UIkit.modal.alert(data['message']);
 			}else{
-				$('#disposition-tab-content').load('/dispositions/{{$parcel->id}}/all/tab'); 
+				$('#disposition-tab-content').load('/dispositions/{{$parcel->id}}/all/tab');
 				step(data['next']);
 				UIkit.modal.alert(data['message']);
 				if(data['next'] == "disposition-open"){
@@ -461,5 +461,5 @@ margin-bottom: 0px;
 			}
 		} );
 	}
-	
+
 </script>

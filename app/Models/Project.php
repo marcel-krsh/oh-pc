@@ -168,11 +168,11 @@ class Project extends Model
     public function selected_audit()
     {
         if (Session::has('project.'.$this->id.'.selectedaudit') && Session::get('project.'.$this->id.'.selectedaudit') != '') {
-            $audit = Session::get('project.'.$this->id.'.selectedaudit');
-            $selected_audit = CachedAudit::where('audit_id', '=', $audit->audit_id)->first();
+            $audit_id = Session::get('project.'.$this->id.'.selectedaudit');
+            $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
         }else{
             $selected_audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
-            Session::put('project.'.$this->id.'.selectedaudit', $selected_audit);
+            Session::put('project.'.$this->id.'.selectedaudit', $selected_audit->audit_id);
         }
 
         return $selected_audit;
@@ -430,5 +430,9 @@ class Project extends Model
 
         
         return $program_units;
+    }
+    public function is_project_contact($user_id = 1)
+    {
+        return count($this->contactRoles->where('user_id',$user_id));
     }
 }

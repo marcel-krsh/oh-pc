@@ -350,7 +350,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 						    		itemcontent = itemcontent + 'Requested Action: '+item.requested_action+'<br />';
 						    	}
 						    	itemcontent = itemcontent + item.description;
-						    	
+
 
 						        itemtype = 'FLWUP';
 						        break;
@@ -364,7 +364,11 @@ function expandFindingItems(element, type=null, typeid=null) {
 						        item.photos.forEach(function(pic) {
 						        	newimage = findingsPhotoGalleryItemTemplate;
 						        	newimage = newimage.replace(/tplUrl/g, pic.url);
-						        	newimage = newimage.replace(/tplComments/g, pic.commentscount);
+						        	if(pic.commentscount == 0){
+						        		newimage = newimage.replace(/tplComments/g, '');
+						        	}else{
+						        		newimage = newimage.replace(/tplComments/g, '<div class="uk-position-bottom-center uk-panel photo-caption use-hand-cursor"><i class="a-comment-text"></i> '+pic.commentscount+'</div>');
+						        	}
 						        	newimage = newimage.replace(/tplFindingId/g, item.findingid);
 						        	newimage = newimage.replace(/tplItemId/g, item.id);
 						        	newimage = newimage.replace(/tplPhotoId/g, pic.id);
@@ -397,7 +401,7 @@ function expandFindingItems(element, type=null, typeid=null) {
 						        	categories = categories + newcategory;
 						        });
 
-						        file = categories+"<br /><a href=\"download-local-document/"+item.file.id+"\" target=\"_blank\"  uk-tooltip=\"Download file.\" download class='finding-file use-hand-cursor'><i class='a-down-arrow-circle'></i> "+item.file.name+"<br />"+item.file.size+" MB "+item.file.type+"</a><br /><br />"+item.file.comment;
+						        file = categories+"<br /><a href=\"download-local-document/"+item.file.id+"\" target=\"_blank\"  uk-tooltip=\"Download file.\" download class='finding-file use-hand-cursor'><i class='a-down-arrow-circle'></i> "+item.file.name+"<br />"+item.file.size+" "+item.file.type+"</a><br /><br />"+item.file.comment;
 
 						        itemcontent = findingsFileTemplate.replace(/tplFileContent/g, file);
 						        break;
@@ -463,8 +467,8 @@ function expandFindingItems(element, type=null, typeid=null) {
 
 }
 
-function addChildItem(id, type, fromtype='finding') {
-	dynamicModalLoad('addreply/'+id+'/'+fromtype+'/'+type, 0, 0, 0, 2);
+function addChildItem(id, type, fromtype='finding', level=2) {
+	dynamicModalLoad('addreply/'+id+'/'+fromtype+'/'+type+'/'+level, 0, 0, 0, level);
 }
 
 function openFindingPhoto(findingid, itemid, id) {

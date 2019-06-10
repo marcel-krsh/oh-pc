@@ -1,17 +1,17 @@
-@extends('layouts.simplerAllita')
+   @extends('layouts.simplerAllita')
 @section('head')
 <title>{{$report->template()->template_name}}: {{date('y',strtotime($report->audit->scheduled_at))}}-{{$report->audit->id}}.{{str_pad($report->version, 3, '0', STR_PAD_LEFT)}}</title>
 
 
 @stop
 @section('content')
-<!-- <script src="/js/components/upload.js"></script>
-<script src="/js/components/form-select.js"></script>
-<script src="/js/components/datepicker.js"></script>
-<script src="/js/components/tooltip.js"></script> -->
+<!-- <script src="/js/components/upload.js{{ asset_version() }}"></script>
+<script src="/js/components/form-select.js{{ asset_version() }}"></script>
+<script src="/js/components/datepicker.js{{ asset_version() }}"></script>
+<script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 	<?php // determin background type
-$background = "";
+$background = "none";
 if (1 == $report->crr_approval_type_id) {
   $background = '-draft';
 }

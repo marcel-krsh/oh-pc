@@ -68,7 +68,7 @@
         @endforeach
       ]
     </script>
-    <script src="/js/components/markers.js">
+    <script src="/js/components/markers.js{{ asset_version() }}">
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMB5fHlZyAet2TnsuU3bBX7miYyDMBLSg&callback=initMap">

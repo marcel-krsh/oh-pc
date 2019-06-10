@@ -18,11 +18,11 @@
 			{{ csrf_field() }}
 			<div class="uk-form-row" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
 				<input class="uk-input uk-width-1-1 uk-form-large" placeholder="Verification code*" id="verification_code" type="text" name="verification_code" required autofocus >
-				@if ($errors->has('verification_code'))
+				{{-- @if ($errors->has('verification_code'))
 				<span class="uk-block-primary">
 					<strong class="uk-dark uk-light">{{ $errors->first('verification_code') }}</strong>
 				</span>
-				@endif
+				@endif --}}
 			</div>
 			<div class="uk-form-row">
 				<input id="device_name" type="text" class="uk-input uk-width-1-1 uk-form-large {{ $errors->has('device_name') ? ' uk-form-danger uk-animation-shake' : '' }}" name="device_name" value="{{ old('device_name') }}" required autofocus placeholder="Device Name">
@@ -40,7 +40,7 @@
 		<div class="uk-grid">
 			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
 				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
 				</div>
 			</div>
 			@if(env('USER_REGISTRATION'))
@@ -54,7 +54,20 @@
 	</div>
 </div>
 
+<script src="https://unpkg.com/imask"></script>
+
 <script>
+
+var codeMask = IMask(
+document.getElementById('verification_code'),
+{
+mask: '000-000-000'
+});
+</script>
+
+<script>
+
+
 
 	function phone_formatting(ele,restore) {
 		var new_number,
@@ -146,36 +159,5 @@
   	business_phone_number_check(this,e);
   }
 
-
-  function submitCompleteRegistration() {
-  	jQuery.ajaxSetup({
-  		headers: {
-  			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-  		}
-  	});
-  	var form = $('#registrationForm');
-  	var data = { };
-  	$.each($('form').serializeArray(), function() {
-  		data[this.name] = this.value;
-  	});
-  	jQuery.ajax({
-  		url: "{{ URL::route("user.complete-registration") }}",
-  		method: 'post',
-  		data: {
-  			email_token: $('#email_token').val(),
-  			user_id: $('#user_id').val(),
-  			password: data['password'],
-  			password_confirmation: data['password_confirmation'],
-  			'_token' : '{{ csrf_token() }}'
-  		},
-  		success: function(data){
-  			$('.alert-danger' ).empty();
-  			jQuery.each(data.errors, function(key, value){
-  				jQuery('.alert-danger').show();
-  				jQuery('.alert-danger').append('<p>'+value+'</p>');
-  			});
-  		}
-  	});
-  }
 </script>
 @endsection

@@ -1,18 +1,18 @@
-﻿<?php session(['disablePacer'=>1]); ?>
+﻿<?php session(['disablePacer' => 1]);?>
 <?php setlocale(LC_MONETARY, 'en_US');
 /// protect against inactive users.
 $allowPageLoad = false;
 
-if(Auth::check()){
-	if(Auth::user()->active == 1){
-		$allowPageLoad = true;
-	}
-}else{
-	/// user is not logged in -- the auth middleware will protect against that access.
-	$allowPageLoad = true;
+if (Auth::check()) {
+  if (Auth::user()->active == 1) {
+    $allowPageLoad = true;
+  }
+} else {
+  /// user is not logged in -- the auth middleware will protect against that access.
+  $allowPageLoad = true;
 }
-if($allowPageLoad){
-	?>
+if ($allowPageLoad) {
+  ?>
 	<!DOCTYPE html>
 	<html lang="en" dir="ltr" id="parentHTML" class="no-js">
 	<head>
@@ -20,11 +20,11 @@ if($allowPageLoad){
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<title>
-			@if(Auth::check() && Auth::user()->entity_type == 'hfa')
+			@can('access_auditor')
 			Allita Program Compliance
 			@else
-			Dev|Co Inspect
-			@endif
+			Dev|Co Inspection
+			@endCan
 		</title>
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -34,27 +34,27 @@ if($allowPageLoad){
 		<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 		<meta name="theme-color" content="#ffffff">
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css{{ asset_version() }}" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
 		@if (Auth::guest())
 		@else
-		<link rel="stylesheet" href="/css/documents-tab.css">
-	<!-- <link rel="stylesheet" href="/css/cdfs-tab.css">
+		<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+	<!-- <link rel="stylesheet" href="/css/cdfs-tab.css{{ asset_version() }}">
 
-	<link rel="stylesheet" href="/css/documents-tab.css">
-	<link rel="stylesheet" href="/css/funding-tab.css">
-	<link rel="stylesheet" href="/css/history-tab.css">
-	<link rel="stylesheet" href="/css/notes-tab.css">
-	<link rel="stylesheet" href="/css/outcomes-tab.css">
-	<link rel="stylesheet" href="/css/processing-tab.css">
-	<link rel="stylesheet" href="/css/handsontable.full.min.css">
-	<link rel="stylesheet" href="/css/components/slideshow.css"> -->
-	<link rel="stylesheet" href="/css/communications-tab.css">
-	<link rel="stylesheet" href="/css/auto-complete.css">
+	<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/funding-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/history-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/notes-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/outcomes-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/processing-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/handsontable.full.min.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/components/slideshow.css{{ asset_version() }}"> -->
+	<link rel="stylesheet" href="/css/communications-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/auto-complete.css{{ asset_version() }}">
 
 	@endif
 
-	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}"> -->
 	@if(session('disablePacer')==1)
 	<style type="text/css">
 		body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
@@ -160,30 +160,30 @@ if($allowPageLoad){
 		}
 
 	</style>
-	<?php /* session(['disablePacer'=>0]); */ ?>
+	<?php /* session(['disablePacer'=>0]); */?>
 	@endif
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}">
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	<script>
 		function openUserPreferences(){
 			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
 		}
 		window.Laravel = <?php echo json_encode([
-			'csrfToken' => csrf_token(),
-			]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
 		</script>
 
-		<script src="/js/jquery.js"></script>
-		<script src="/js/uikit.js"></script>
-		<script src="/js/uikit-icons.min.js"></script>
-		<script src="/js/handsontable.full.min.js"></script>
+		<script src="/js/jquery.js{{ asset_version() }}"></script>
+		<script src="/js/uikit.js{{ asset_version() }}"></script>
+		<script src="/js/uikit-icons.min.js{{ asset_version() }}"></script>
+		<script src="/js/handsontable.full.min.js{{ asset_version() }}"></script>
 
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css{{ asset_version() }}" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js{{ asset_version() }}"></script>
 
-		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js"></script> -->
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-		<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>  -->
+		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js{{ asset_version() }}"></script> -->
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js{{ asset_version() }}"></script>
+		<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js{{ asset_version() }}"></script>  -->
 		<script src="{{ mix('js/app.js') }}"></script>
 
 		<script>
@@ -192,15 +192,15 @@ if($allowPageLoad){
 
 	@if (Auth::guest())
 	@else
-	<script src="/js/taffy.js"></script>
-	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> -->
-	<script type="text/javascript" src="/js/Chart.bundle.js"></script> 
+	<script src="/js/taffy.js{{ asset_version() }}"></script>
+	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js{{ asset_version() }}"></script> -->
+	<script type="text/javascript" src="/js/Chart.bundle.js{{ asset_version() }}"></script>
 	@endif
 
-	<link rel="stylesheet" href="/css/allita-font.css">
-	<link rel="stylesheet" href="/css/uikit.min.css">
-	<link rel="stylesheet" href="/css/allita-admin-419171046.css">
-	<link rel="stylesheet" href="/css/system-419171130.css">
+	<link rel="stylesheet" href="/css/allita-font.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/uikit.min.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/allita-admin-419171046.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/system-419171130.css{{ asset_version() }}">
 
 	@yield('head')
 
@@ -252,9 +252,9 @@ if($allowPageLoad){
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
 
-			<h3>Use Your Phone Instead?</h3>
+			<h3>Using Your Phone Instead?</h3>
 
-			<p>If you want to access Allita's PC Inspect tools on your phone... tell your manager you found this easter egg, and want it to use it instead of a tablet.</p>
+			<p>If you want to access Allita's PC Inspect tools on your phone... tell your manager you found this easter egg, and you want to use it instead of a tablet.</p>
 
 		</div>
 	</div>
@@ -283,18 +283,19 @@ if($allowPageLoad){
 							@endCan
 
 							<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
-								@can('access_auditor')
+
 								<ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
+									@can('access_auditor')
 									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 										<a href="" style="">
 											<span class="list-tab-text">
-												
+
 												<i class="a-mobile-home"></i> AUDITS
 											</span>
 										</a>
 									</li>
-								@endCan
-								@can('access_pm')
+									@endCan
+									@can('access_pm')
 									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
@@ -302,18 +303,19 @@ if($allowPageLoad){
 											</span>
 										</a>
 									</li>
-									
+
 									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000"  onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
 										<a href=""><span class="list-tab-text"><i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
-									
+
 									@can('access_admin')
 									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
 										<a href=""><span class="list-tab-text">ADMIN</span></a>
 									</li>
 									@endcan
-								</ul>
 								@endcan
+								</ul>
+
 							</div>
 
 							<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
@@ -348,7 +350,7 @@ if($allowPageLoad){
 					<li>
 						<div id="detail-tab-2-content"></div>
 					</li>
-					
+
 					<li>
 						<div id="detail-tab-3-content" style=" margin-top: 70px;"></div>
 					</li>
@@ -367,6 +369,18 @@ if($allowPageLoad){
 						<div id="dynamic-modal-content"></div>
 					</div>
 				</div>
+				<div id="dynamic-modal-2" uk-modal>
+					<div id="modal-size-2" class="uk-modal-dialog uk-modal-body uk-modal-content">
+						<a class="uk-modal-close-default" uk-close></a>
+						<div id="dynamic-modal-content-2"></div>
+					</div>
+				</div>
+				<div id="dynamic-modal-3" uk-modal>
+					<div id="modal-size-3" class="uk-modal-dialog uk-modal-body uk-modal-content">
+						<a class="uk-modal-close-default" uk-close></a>
+						<div id="dynamic-modal-content-3"></div>
+					</div>
+				</div>
 			</div>
 
 		</div>
@@ -380,7 +394,10 @@ if($allowPageLoad){
 				@else
 				Dev|Co Inspect
 				@endif
-				&copy; 2018<?php if(date('Y',time()) != '2018') echo " — ".date('Y',time()); ?>: @include('git-version::version-comment')</a> </p>
+				&copy; 2018<?php if (date('Y', time()) != '2018') {
+    echo " — " . date('Y', time());
+  }
+  ?>: @include('git-version::version-comment')</a> </p>
 			</div>
 			<div id="footer-content" class="uk-width-1-3">
 				<div id="footer-actions-tpl"  class="uk-text-right"></div>
@@ -407,7 +424,7 @@ if($allowPageLoad){
 		</script>
 
 
-		<!-- <script src="/js/app.js"></script> -->
+		<!-- <script src="/js/app.js{{ asset_version() }}"></script> -->
 		@if (Auth::guest())
 		@else
 		<script type="text/javascript">
@@ -419,23 +436,24 @@ if($allowPageLoad){
 		//$('#detail-tab-5').slideToggle();
 
 	</script>
-	<script src="/js/auto-complete.js"></script>
-	<script type="text/javascript" src="/js/systems/system.js"></script>
-	<script type="text/javascript" src="/js/systems/audits.js"></script>
-	<script type="text/javascript" src="/js/systems/findings.js"></script>
-	<script type="text/javascript" src="/js/systems/communications.js"></script>
+	<script src="/js/auto-complete.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/findings.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
 
 
-	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
-	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/funding-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/history-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/notes-tab.js"></script>
-	<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script> -->
-	<script type="text/javascript" src="/js/systems/processing-tab.js"></script>
+	<script type="text/javascript" src="/js/systems/documents-tab.js{{ asset_version() }}"></script>
+	<!-- <script type="text/javascript" src="/js/systems/cdfs-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/communications-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/documents-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/funding-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/history-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/notes-tab.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/outcomes-tab.js{{ asset_version() }}"></script> -->
+	<script type="text/javascript" src="/js/systems/processing-tab.js{{ asset_version() }}"></script>
 	<script>
+		// single script tag
 		var quicklookupbox = new autoComplete({
 			selector: '#quick-lookup-box',
 			minChars: 3,
@@ -488,50 +506,44 @@ if($allowPageLoad){
 			$("html, body").animate({ scrollTop: 0 }, "slow");
 		});
 
-	</script>
+
 	@endif
 
-	@if($tab !== null)
-	<script>
+	@if(session()->has('notification_modal_source'))
+	notificationModelSource = "{{ (session()->pull('notification_modal_source', null)) }}";
+	setTimeout(function(){
+		dynamicModalLoad(notificationModelSource);
+	},400);
+	@endif
+
+	@if($tab !== null && Auth::user()->can('access_auditor'))
 
 		setTimeout(function(){
 			$('#{{$tab}}').trigger("click");
 		},100);
 
 		window.currentSite='allita_pc';
-	</script>
-	@else
-	<script >
 
+	@else
+
+		// Click on initial tab to load it:
 		setTimeout(function(){
-			$('#detail-tab-1').trigger("click");
+			@can('access_auditor')
+				// auditor default
+				$('#detail-tab-1').trigger("click");
+			@else
+				// property default
+				$('#detail-tab-2').trigger("click");
+			@endCan
 		},100);
 
 		window.currentSite='allita_pc';
 
-	</script>
+
 	@endif
 
-	@if(session('disablePacer') != 1)
-	<script>
-		window.paceOptions = { ajax: { trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'], ignoreURLs: ['https://pcinspectdev.ohiohome.org'] } }
 
-		// universal header:
 
-		function ToggleMenu() {
-			var menu = document.getElementById("apcsv-menu-items");
-			if ( menu.classList.contains('hidden') ) {
-				menu.classList.remove('hidden');
-			} else {
-				menu.classList.add('hidden');
-			}
-		}
-	</script>
-	<script src="/js/pace.min.js">{{session('disablePacer')}}</script>
-	@endif
-
-	<!-- <script type="text/javascript" src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/UnifiedHeader.aspx"></script> -->
-	<script>
 		new Vue({
 			el: '#top-tabs',
 			data: {
@@ -569,33 +581,33 @@ if($allowPageLoad){
 
 		      }
 		    });
-		  </script>
-	<!-- <script>
-    	function openWebsocket(url){
-		    try {
-		        socket = new WebSocket(url);
-		        socket.onopen = function(){
-		            console.log('Socket is now open.');
-		        };
-		        socket.onerror = function (error) {
-		            console.error('There was an un-identified Web Socket error');
-		        };
-		        socket.onmessage = function (message) {
-		            console.info("Message: %o", message.data);
-		        };
-		    } catch (e) {
-		        console.error('Sorry, the web socket at "%s" is un-available', url);
-		    }
-		}
 
-		openWebsocket("http://192.168.10.10:6001");
-	</script> -->
+	</script>
+
+	@if(session('disablePacer') != 1)
+	<script>
+		window.paceOptions = { ajax: { trackMethods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'], ignoreURLs: ['https://pcinspectdev.ohiohome.org'] } }
+
+		// universal header:
+
+		function ToggleMenu() {
+			var menu = document.getElementById("apcsv-menu-items");
+			if ( menu.classList.contains('hidden') ) {
+				menu.classList.remove('hidden');
+			} else {
+				menu.classList.add('hidden');
+			}
+		}
+	</script>
+	<script src="/js/pace.min.js{{ asset_version() }}">{{session('disablePacer')}}</script>
+	@endif
 
 
 </body>
 </html>
 
-<?php } else { /// show for inactive users ?>
+<?php } else {
+  /// show for inactive users ?>
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
@@ -611,44 +623,44 @@ if($allowPageLoad){
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" href="/css/allita-admin-419171046.css">
-	<link rel="stylesheet" href="/css/system-419171130.css">
+	<link rel="stylesheet" href="/css/allita-admin-419171046.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/system-419171130.css{{ asset_version() }}">
 
 	<script>
 		window.Laravel = <?php echo json_encode([
-			'csrfToken' => csrf_token(),
-			]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
 		</script>
 		@if(session('disablePacer') != 1)
-		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js">{{session('disablePacer')}}</script>
+		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}">{{session('disablePacer')}}</script>
 		@endif
-		<script src="/js/jquery.js"></script>
-		<script src="/js/uikit.min.js"></script>
-	<!-- <script src="/js/components/autocomplete.js"></script>
-	<script src="/js/core/modal.js"></script>
-	<script src="/js/components/lightbox.js"></script>
-	<script src="/js/components/sticky.js"></script>
-	<script src="/js/components/notify.js"></script>
-	<script src="/js/components/tooltip.js"></script>
-	<script src="/js/components/datepicker.js"></script>
-	<script src="/js/components/slideshow.js"></script>
-	<script src="/js/components/slideshow-fx.js"></script>
-	<script src="/js/components/upload.js"></script>
-	<script src="/js/components/lightbox.js"></script>
-	<script src="/js/components/form-select.js"></script>
-	<script src="/js/components/slider.js"></script>
-	<script src="/js/components/slideset.js"></script>
-	<script src="/js/components/accordion.js"></script>
-	<script src="/js/components/notify.js"></script>
-	<script src="/js/components/search.js"></script>
-	<script src="/js/components/timepicker.js"></script>
-	<script src="/js/components/nestable.js"></script>
-	<script src="/js/components/sortable.js"></script>
-	<script src="/js/components/grid.min.js"></script>
-	<script src="/js/handsontable.full.min.js"></script> -->
+		<script src="/js/jquery.js{{ asset_version() }}"></script>
+		<script src="/js/uikit.min.js{{ asset_version() }}"></script>
+	<!-- <script src="/js/components/autocomplete.js{{ asset_version() }}"></script>
+	<script src="/js/core/modal.js{{ asset_version() }}"></script>
+	<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+	<script src="/js/components/sticky.js{{ asset_version() }}"></script>
+	<script src="/js/components/notify.js{{ asset_version() }}"></script>
+	<script src="/js/components/tooltip.js{{ asset_version() }}"></script>
+	<script src="/js/components/datepicker.js{{ asset_version() }}"></script>
+	<script src="/js/components/slideshow.js{{ asset_version() }}"></script>
+	<script src="/js/components/slideshow-fx.js{{ asset_version() }}"></script>
+	<script src="/js/components/upload.js{{ asset_version() }}"></script>
+	<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+	<script src="/js/components/form-select.js{{ asset_version() }}"></script>
+	<script src="/js/components/slider.js{{ asset_version() }}"></script>
+	<script src="/js/components/slideset.js{{ asset_version() }}"></script>
+	<script src="/js/components/accordion.js{{ asset_version() }}"></script>
+	<script src="/js/components/notify.js{{ asset_version() }}"></script>
+	<script src="/js/components/search.js{{ asset_version() }}"></script>
+	<script src="/js/components/timepicker.js{{ asset_version() }}"></script>
+	<script src="/js/components/nestable.js{{ asset_version() }}"></script>
+	<script src="/js/components/sortable.js{{ asset_version() }}"></script>
+	<script src="/js/components/grid.min.js{{ asset_version() }}"></script>
+	<script src="/js/handsontable.full.min.js{{ asset_version() }}"></script> -->
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css{{ asset_version() }}" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js{{ asset_version() }}"></script>
 
 	<script>
 		$('select').multipleSelect();
@@ -682,4 +694,4 @@ if($allowPageLoad){
 </html>
 <?php
 Auth::logout();
-}  ?>
+}?>

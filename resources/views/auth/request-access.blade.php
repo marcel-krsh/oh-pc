@@ -22,7 +22,7 @@
 			@if(env('USER_REGISTRATION'))
 			<div class="uk-width-1-2">
 				<div uk-scrollspy="cls:uk-animation-fade;">
-					<p href="{{ url('/register') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Register</p>
+					<a href="{{ url('/register') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Register</a>
 				</div>
 			</div>
 			@endif
@@ -43,6 +43,8 @@
 		$.each($('form').serializeArray(), function() {
 			data[this.name] = this.value;
 		});
+		document.getElementById('request_access').style.display='none';
+		document.getElementById('success_message').style.display='block';
 		jQuery.ajax({
 			url: "{{ url('request-access') }}",
 			method: 'post',

@@ -65,7 +65,7 @@ $style = [
 					<tr>
 						<td style="{{ $style['email-masthead'] }}">
 							<a style="{{ $fontFamily }} {{ $style['email-masthead_name'] }}" href="{{ url('/') }}" target="_blank">
-								<img src="{{url('/Allita-Blight-Icon.png')}}" width="150"><br />{{ config('app.name') }}
+								PROGRAM COMPLIANCE
 							</a>
 						</td>
 					</tr>
@@ -100,17 +100,17 @@ $style = [
 											<tr>
 												<td align="center">
 													<?php
-switch ($level) {
-  case 'success':
-    $actionColor = 'button--green';
-    break;
-  case 'error':
-    $actionColor = 'button--red';
-    break;
-  default:
-    $actionColor = 'button--blue';
-}
-?>
+													switch ($level) {
+													  case 'success':
+													    $actionColor = 'button--green';
+													    break;
+													  case 'error':
+													    $actionColor = 'button--red';
+													    break;
+													  default:
+													    $actionColor = 'button--blue';
+													}
+													?>
 													<a href="{{ $action_url }}" style="{{ $fontFamily }} {{ $style['button'] }} {{ $style[$actionColor] }}" class="button" target="_blank"> {{ $action_text }}
 													</a>
 												</td>
@@ -127,7 +127,7 @@ switch ($level) {
 
 										<!-- Salutation -->
 										<p style="{{ $style['paragraph'] }}">
-											Regards,<br>{{ config('app.name') }}
+											Regards,<br>Program Compliance Staff
 										</p>
 
 										<!-- Sub Copy -->
@@ -163,7 +163,7 @@ switch ($level) {
 									<td style="{{ $fontFamily }} {{ $style['email-footer_cell'] }}">
 										<p style="{{ $style['paragraph-sub'] }}">
 											&copy; {{ date('Y') }}
-											<a style="{{ $style['anchor'] }}" href="{{ url('/') }}" target="_blank">{{ config('app.name') }}</a>.
+											<a style="{{ $style['anchor'] }}" href="{{ url('/') }}" target="_blank">Ohio Housing Finance Agency</a>.
 											All rights reserved.
 										</p>
 									</td>

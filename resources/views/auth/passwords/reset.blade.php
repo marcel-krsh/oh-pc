@@ -2,7 +2,7 @@
 @section('content')
 <div class="uk-vertical-align uk-text-center">
 	<div class="uk-vertical-align-middle login-panel" id="login-panel">
-		<a href="{{env('DEVCO_LOGIN_URL')}}"><img src="/images/Logo.jpg"> </a>
+		<a href="{{env('DEVCO_LOGIN_URL')}}"><img src="https://devco.ohiohome.org/AuthorityOnline/images/Logo.jpg"> </a>
 		<p>Program Compliance Inspection</p>
 		<p>RESET PASSWORD</p>
 		<form class="uk-panel uk-panel-box uk-form" role="registrationForm" method="POST" action="{{ url('/password/reset') }}">
@@ -19,7 +19,8 @@
 			@endif
 			{{ csrf_field() }}
 			<div class="uk-form-row {{ $errors->has('email') ? ' uk-form-danger' : '' }}" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
-				<input class="uk-input uk-width-1-1 uk-form-large" type="text" placeholder="Email" id="email" type="email" name="email" value="{{ old('email') }}" required autofocus >
+				<input class="uk-input uk-width-1-1 uk-form-large" type="text" placeholder="Email *" id="email" type="email" name="email" value="{{ old('email') }}" required autofocus >
+				<input type="hidden" name="token" value="{{ $token }}">
 				@if ($errors->has('email'))
 				<span class="uk-block-primary">
 					<strong class="uk-dark uk-light">{{ $errors->first('email') }}</strong>
@@ -27,7 +28,7 @@
 				@endif
 			</div>
 			<div class="uk-form-row" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
-				<input class="uk-input uk-width-1-1 uk-form-large" type="password" placeholder="Password" id="password" type="password" name="password" required autofocus >
+				<input class="uk-input uk-width-1-1 uk-form-large" type="password" placeholder="Password *" id="password" type="password" name="password" required autofocus >
 				@if ($errors->has('password'))
 				<span class="uk-block-primary">
 					<strong class="uk-dark uk-light">{{ $errors->first('password') }}</strong>
@@ -35,7 +36,7 @@
 				@endif
 			</div>
 			<div class="uk-form-row" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1550">
-				<input class="uk-input uk-width-1-1 uk-form-large" placeholder="Confirm Password" type="password" name="password_confirmation" required>
+				<input class="uk-input uk-width-1-1 uk-form-large" placeholder="Confirm Password *" type="password" name="password_confirmation" required>
 				@if ($errors->has('password_confirmation'))
 				<span class="uk-block-primary">
 					<strong class="uk-dark uk-light">{{ $errors->first('password_confirmation') }}</strong>
@@ -50,10 +51,18 @@
 				<a class="uk-float-right uk-link uk-link-muted next-items" href="{{ url('/login') }}">Go To Login</a>
 			</div>
 		</form>
-		<div uk-scrollspy="cls:uk-animation-fade; delay: 2200">
-			<a href="{{ url('/register') }}" class="uk-button uk-button-default uk-button-small uk-width-1-1 uk-margin-top">Not Registered?</a>
+		<div class="uk-grid">
+			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
+				<div uk-scrollspy="cls:uk-animation-fade;">
+					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+				</div>
+			</div>
+			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
+				<div uk-scrollspy="cls:uk-animation-fade;">
+					<a href="{{ url('/login') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Login</a>
+				</div>
+			</div>
 		</div>
-
 	</div>
 </div>
 

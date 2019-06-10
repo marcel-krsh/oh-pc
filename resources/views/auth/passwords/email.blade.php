@@ -5,18 +5,13 @@
 <div class="uk-vertical-align uk-text-center" uk-scrollspy="target:#login-panel;cls:uk-animation-slide-top-small uk-transform-origin-bottom; delay: 1300">
 	<div class="uk-vertical-align-middle login-panel"  id="login-panel">
 		<a href="{{env('DEVCO_LOGIN_URL')}}"><img src="https://devco.ohiohome.org/AuthorityOnline/images/Logo.jpg"> </a>
-		
-		
 		<p>Program Compliance Inspection</p>
 		<p>FORGOT PASSWORD</p>
-
 		@if(session('status'))
 			<hr class="dashed-hr">
 				<p>{{session('status')}}</p>
 			<hr class="dashed-hr">
-				
 		@endIf
-
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/password/email') }}">
 			@if (count($errors) > 0)
 			<div class="alert alert-danger uk-text-danger">
@@ -28,7 +23,7 @@
 			</div>
 			@endif
 			{{ csrf_field() }}
-			<div class="uk-form-row {{ $errors->has('email') ? ' uk-form-danger' : '' }}" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
+			<div id="reset-field" class="uk-form-row {{ $errors->has('email') ? ' uk-form-danger' : '' }}" uk-scrollspy="target:.uk-input;cls:uk-animation-slide-top-small; delay: 1500">
 				<input class="uk-input uk-width-1-1 uk-form-large" type="text" placeholder="Email" id="email" type="email" name="email" value="{{ old('email') }}" required autofocus >
 				@if ($errors->has('email'))
 				<span class="uk-block-primary">
@@ -37,7 +32,7 @@
 				@endif
 			</div>
 			<div class="uk-form-row" uk-scrollspy="target:.uk-button;cls:uk-animation-slide-top-small; delay: 1600">
-				<button type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large">Send Password Reset Link</button>
+				<button id="reset-button" type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large" onclick="$('#reset-field').slideUp(); $('#reset-button').html('Requesting Link...');">Send Password Reset Link</button>
 			</div>
 			<div class="uk-form-row uk-text-small" uk-scrollspy="target:.next-items;cls:uk-animation-fade; delay: 1400">
 				<a class="uk-float-right uk-link uk-link-muted next-items" href="{{ url('/login') }}">Back to Login</a>
@@ -46,16 +41,14 @@
 		<div class="uk-grid">
 			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
 				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="https://devco.ohiohome.org/AuthorityOnlineALTTEST/default.aspx?ReturnUrl=%2fAuthorityOnlineALTTest%3fredirect%3dhttps%253A%252F%252Fpcinspecttrain.ohiohome.org&redirect=https%3A%2F%2Fpcinspecttrain.ohiohome.org" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
+					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
 				</div>
 			</div>
-			@if(env('USER_REGISTRATION'))
-			<div class="uk-width-1-2">
+			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
 				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="{{ url('/register') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Register</a>
+					<a href="{{ url('/login') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Login</a>
 				</div>
 			</div>
-			@endif
 		</div>
 	</div>
 </div>

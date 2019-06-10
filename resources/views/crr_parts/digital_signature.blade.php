@@ -1,4 +1,4 @@
-<?php $signature = $bladeData ?>
+<?php $signature = $bladeData?>
 @if(!is_null($report->signature))
 <div uk-grid>
 	<div class="uk-width-1-1">
@@ -6,7 +6,7 @@
 		<hr >
 		<p>Signed: {{date('m/d/Y g:h a', strtotime($report->date_signed))}} By {{$report->signed_by}}</p>
 	</div>
-	
+
 	@can('access_root')<button onClick="jsFunctionToDelete"><i class="a-trash-can"></i> DELETE SIGNATURE </button>@endCan
 </div>
 @else
@@ -60,8 +60,8 @@
 		</form>
 	</div>
 </div>
-<script src="/js/signature/signature_pad.umd.js"></script>
-<script src="/js/signature/app.js"></script>
+<script src="/js/signature/signature_pad.umd.js{{ asset_version() }}"></script>
+<script src="/js/signature/app.js{{ asset_version() }}"></script>
 @endIf
 </div>
 @endIf

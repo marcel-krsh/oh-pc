@@ -2,7 +2,7 @@
 	resizeModal(85);
 	reloadUnseenMessages();
 </script>
-<?php if(!isset($project)){$project = null; } ?>
+<?php if (!isset($project)) {$project = null;}?>
 <div class="uk-container">
 	<div uk-grid class="uk-grid-collapse">
 		<div class="uk-width-1-1">
@@ -53,7 +53,22 @@
 			@endforeach
 		</div>
 	</div>
+
 	<!-- Start content of communication -->
+	@if($report_notification)
+	<div class="uk-width-1-1"><!--used to be uk-width-9-10, but Linda changed it-->
+		<div uk-grid class="uk-grid-collapse uk-grid">
+			<div class="uk-width-1-6 uk-margin-bottom">
+				<span class="uk-text-muted">Your report is ready to review: </span>
+			</div>
+			<div class="uk-width-5-6 uk-text-left uk-margin-bottom">
+				<a target="_blank" href="{{ $report_notification->report_ready_link }}">{{ $report_notification->report_ready_link }}</a><br />
+			</div>
+		</div>
+	</div>
+	@endif
+
+
 	<div class="uk-width-1-1"><!--used to be uk-width-9-10, but Linda changed it-->
 		<div uk-grid class="uk-grid-collapse uk-grid">
 			<div class="uk-width-1-6 uk-margin-bottom">
@@ -66,7 +81,7 @@
 				<span class="uk-text-muted">Message: </span>
 			</div>
 			<div class="uk-width-5-6">
-				<div>{{ $message->message }}</div>
+				<div><p>{!! str_replace('<br />','</p><p>',nl2br($message->message)) !!}</p></div>
 			</div>
 		</div>
 	</div>
@@ -90,7 +105,7 @@
 				</span>
 			</div>
 			<div class="uk-width-1-1 uk-width-2-5@s communication-item-excerpt">
-				{{ $reply->message }}
+				<pre>{{ $reply->message }}</pre>
 			</div>
 			<div class="uk-width-1-1 uk-width-2-5@s">
 				@foreach($reply->local_documents as $document)
@@ -164,36 +179,90 @@
 		<input type="submit" class="submit" value="Add comment" />
 	</div>
 	<script type="text/javascript">
-		function submitNewCommunication() {
-			var form = $('#newOutboundEmailForm');
+	    // filter recipients based on class
+	    $('#recipient-filter').on('keyup', function () {
+	    	var searchString = $(this).val().toLowerCase();
+	    	if(searchString.length > 0){
+	    		$('.recipient-list-item').hide();
+	    		$('.recipient-list-item[class*="' + searchString + '"]').show();
+	    	}else{
+	    		$('.recipient-list-item').show();
+	    	}
+	    });
 
-			$.post('{{ URL::route("communication.create") }}', {
-				'inputs' : form.serialize(),
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				if(data!=1){
-					UIkit.modal.alert(data);
-				} else {
-					UIkit.modal.alert('Your message has been saved.');
-				}
-			} );
+	    function showRecipients() {
+	    	$('.recipient-list').slideToggle();
+	    	$('#add-recipients-button').toggle();
+	    	$('#done-adding-recipients-button').toggle();
+	    }
 
+	    function showDocuments() {
+	    	$('.documents-list').slideToggle();
+	    	$('#add-documents-button').toggle();
+	    	$('#done-adding-documents-button').toggle();
+	    }
 
-				@if($audit)
-        // var id = {{ $audit->id }};
-        // if (typeof loadAuditSubTab === "function"){
-        // 	loadAuditSubTab('communications',id);
-        // }
-        debugger;
-        loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
-        @else
-        // $('#dash-subtab-10').trigger('click');
-        // loadDashBoardSubTab('dashboard','communications');
-        @endif
-
-        dynamicModalClose();
+	    function submitNewCommunication() {
+	    	var form = $('#newOutboundEmailForm');
+	    	var no_alert = 1;
 
 
-      }
+    		$.post('{{ URL::route("communication.create") }}', {
+    			'inputs' : form.serialize(),
+    			'_token' : '{{ csrf_token() }}'
+    		}, function(data) {
+    			if(data!=1){
+    				UIkit.modal.alert(data,{stack: true});
+    			} else {
+    				//UIkit.modal.alert('Your message has been saved.',{stack: true});
+                    @if(!$project || Auth::user()->cannot('access_auditor'))
+                    $('#detail-tab-2').trigger('click');
+                    @endIf
+    			}
+    		} );
+
+	    	@if($project && Auth::user()->can('access_auditor'))
+	    		var id = {{$project->id}};
+	        loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
+	        //loadParcelSubTab('communications',id);
+	        @else
+	        //loadDashBoardSubTab('dashboard','communications');
+	        @endif
+	        dynamicModalClose();
+      	}
+
+
+
+		// function submitNewCommunication() {
+		// 	var form = $('#newOutboundEmailForm');
+
+		// 	$.post('{{ URL::route("communication.create") }}', {
+		// 		'inputs' : form.serialize(),
+		// 		'_token' : '{{ csrf_token() }}'
+		// 	}, function(data) {
+		// 		if(data!=1){
+		// 			UIkit.modal.alert(data);
+		// 		} else {
+		// 			UIkit.modal.alert('Your message has been saved.');
+		// 		}
+		// 	} );
+
+
+		// 		@if($audit)
+		  //       // var id = {{ $audit->id }};
+		  //       // if (typeof loadAuditSubTab === "function"){
+		  //       // 	loadAuditSubTab('communications',id);
+		  //       // }
+		  //       //debugger;
+		  //       loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
+		  //       @else
+		  //       // $('#dash-subtab-10').trigger('click');
+		  //       // loadDashBoardSubTab('dashboard','communications');
+		  //       @endif
+
+		  //       dynamicModalClose();
+
+
+		  //     }
     </script>
   </div>

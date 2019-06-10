@@ -21,42 +21,42 @@
 	<meta name="msapplication-TileColor" content="#ffffff">
 	<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
 	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" href="/css/allita-admin.css">
-	<link rel="stylesheet" href="/css/system.css">
+	<link rel="stylesheet" href="/css/allita-admin.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/system.css{{ asset_version() }}">
 	<!-- only load style sheets for the tabs they have access to -no need to minify as speed of initial load is not an issue for the number of users. -->
-	<link rel="stylesheet" href="/css/cdfs-tab.css">
-	<link rel="stylesheet" href="/css/communications-tab.css">
-	<link rel="stylesheet" href="/css/documents-tab.css">
-	<link rel="stylesheet" href="/css/funding-tab.css">
-	<link rel="stylesheet" href="/css/history-tab.css">
-	<link rel="stylesheet" href="/css/notes-tab.css">
-	<link rel="stylesheet" href="/css/outcomes-tab.css">
-	<link rel="stylesheet" href="/css/processing-tab.css">
-	<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js"></script>
-	<script src="/js/jquery.js"></script>
-	<script src="/js/uikit.min.js"></script>
-	<!-- <script src="/js/components/autocomplete.js"></script>
-	<script src="/js/core/modal.js"></script>
-	<script src="/js/components/lightbox.js"></script>
-	<script src="/js/components/sticky.js"></script>
-	<script src="/js/components/notify.js"></script>
-	<script src="/js/components/tooltip.js"></script>
-	<script src="/js/components/datepicker.js"></script>
-	<script src="/js/components/slideshow.js"></script>
-	<script src="/js/components/slideshow-fx.js"></script>
-	<script src="/js/components/upload.js"></script>
-	<script src="/js/components/lightbox.js"></script>
-	<script src="/js/components/form-select.js"></script>
-	<script src="/js/components/slider.js"></script>
-	<script src="/js/components/slideset.js"></script>
-	<script src="/js/components/accordion.js"></script>
-	<script src="/js/components/notify.js"></script>
-	<script src="/js/components/search.js"></script>
-	<script src="/js/components/timepicker.js"></script>
-	<script src="/js/components/nestable.js"></script>
-	<script src="/js/components/sortable.js"></script>
-	<script src="/js/components/grid.min.js"></script> -->
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.js"></script>
+	<link rel="stylesheet" href="/css/cdfs-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/communications-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/funding-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/history-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/notes-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/outcomes-tab.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/processing-tab.css{{ asset_version() }}">
+	<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}"></script>
+	<script src="/js/jquery.js{{ asset_version() }}"></script>
+	<script src="/js/uikit.min.js{{ asset_version() }}"></script>
+	<!-- <script src="/js/components/autocomplete.js{{ asset_version() }}"></script>
+	<script src="/js/core/modal.js{{ asset_version() }}"></script>
+	<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+	<script src="/js/components/sticky.js{{ asset_version() }}"></script>
+	<script src="/js/components/notify.js{{ asset_version() }}"></script>
+	<script src="/js/components/tooltip.js{{ asset_version() }}"></script>
+	<script src="/js/components/datepicker.js{{ asset_version() }}"></script>
+	<script src="/js/components/slideshow.js{{ asset_version() }}"></script>
+	<script src="/js/components/slideshow-fx.js{{ asset_version() }}"></script>
+	<script src="/js/components/upload.js{{ asset_version() }}"></script>
+	<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+	<script src="/js/components/form-select.js{{ asset_version() }}"></script>
+	<script src="/js/components/slider.js{{ asset_version() }}"></script>
+	<script src="/js/components/slideset.js{{ asset_version() }}"></script>
+	<script src="/js/components/accordion.js{{ asset_version() }}"></script>
+	<script src="/js/components/notify.js{{ asset_version() }}"></script>
+	<script src="/js/components/search.js{{ asset_version() }}"></script>
+	<script src="/js/components/timepicker.js{{ asset_version() }}"></script>
+	<script src="/js/components/nestable.js{{ asset_version() }}"></script>
+	<script src="/js/components/sortable.js{{ asset_version() }}"></script>
+	<script src="/js/components/grid.min.js{{ asset_version() }}"></script> -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.js{{ asset_version() }}"></script>
 
 </head>
 <body class="  pace-done">
@@ -86,14 +86,14 @@
 	<h3 class="print-only">Parcel {{$parcel->id}} Notes</h3>
 
 	<div id="main-window" style="width:7.5in;">
-		
+
 		<div id="detail-subtabs-content">
 			<div class="uk-container uk-margin-top uk-grid-collapse" id="note-list" uk-grid style="position: relative;    margin-left: 0; ">
 				@foreach ($notes as $note)
 				<div class="uk-width-1-1 note-list-item" style="">
 					<div uk-grid>
 						<div class="uk-width-1-3 note-type-and-who ">
-							
+
 							<span >{{ $note->owner->name}}<br></span>
 							<span class=" note-item-date-time">{{ date('m/j/y', strtotime($note->created_at)) }}  <br>{{ date('h:i a', strtotime($note->created_at)) }}</span>
 						</div>
@@ -113,7 +113,7 @@
 		loadSupportInfo(window.currentDetailId);
 		</script>
 	</div>
-	
+
 </div>
 
 

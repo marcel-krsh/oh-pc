@@ -54,7 +54,7 @@ class EmailApproveUserAccess extends Mailable
     $action_url   = secure_url('/user/approve-access') . "/" . $new_user->id;
     $level        = "success";
     $level2       = "error";
-    $introLines[] = "User has been added to Allita system. Use below link to assign a role and provide Login access";
+    $introLines[] = "A user has been added to the Allita Program Compliance system, and they are requesting access. Please use the link below to assign a role to them and provide login access.";
     $introLines[] = 'User Name: <span class="mail-masthead_name">' . $new_user->name . '</span>';
     $introLines[] = 'User Email: <span class="mail-masthead_name">' . $new_user->email . '</span>';
     $introLines[] = 'User Created On: <span class="mail-masthead_name">' . $new_user->created_at . '</span>';

@@ -12,11 +12,11 @@
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" href="/css/allita-font.css">
-	<link rel="stylesheet" href="/css/allita-admin.css">
-	<link rel="stylesheet" href="/css/system.css">
-	<link rel="stylesheet" href="/css/uikit.min.css">
-	<link rel="stylesheet" href="/css/auto-complete.css">
+	<link rel="stylesheet" href="/css/allita-font.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/allita-admin.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/system.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/uikit.min.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/auto-complete.css{{ asset_version() }}">
 	<style type="text/css">
 		#plain-main-window {
 			max-width: 1450px;
@@ -39,10 +39,10 @@
   'csrfToken' => csrf_token(),
 ]); ?>
 		</script>
-		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js"></script>
-		<script src="/js/jquery.js"></script>
-		<script src="/js/uikit.min.js"></script>
-		<script src="/js/uikit-icons.min.js"></script>
+		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}"></script>
+		<script src="/js/jquery.js{{ asset_version() }}"></script>
+		<script src="/js/uikit.min.js{{ asset_version() }}"></script>
+		<script src="/js/uikit-icons.min.js{{ asset_version() }}"></script>
 		<style>
 			.hideImportnull {
 				display: none;
@@ -50,7 +50,7 @@
 			.autocomplete-suggestions {max-height: none;}
 			.autocomplete-suggestion {border-bottom:1px solid #ddd; padding:15px 10px; cursor: pointer;}
 		</style>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}">
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 		@yield('head')
 	</head>
@@ -65,14 +65,14 @@
 				<div id="plain-main-window" class="uk-width-1-1" style="padding-top:20px">
 					<div class="uk-grid " >
 						<div class="uk-width-1-1">
-							<a href="{{ url('/') }}"><img class="uk-align-center" src="{{url('/Allita-Blight-Icon.png')}}" width="70" height="48"></a>
+
 						</div>
 					</div>
 					@yield('content')
 				</div>
 			</div>
 		</div>
-		<div class="uk-width-1-1 uk-margin-large-bottom"><p class="uk-text-center uk-dark uk-text-small uk-light">Powered by <a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light">Allita</a> for <a href="http://ohiohome.org" class="uk-link-muted uk-dark uk-light" target="_blank">Allita Program Compliance:</a> &copy;2018 — 2019.</p></div>
+		<div class="uk-width-1-1 uk-margin-large-bottom"><p class="uk-text-center uk-dark uk-text-small uk-light">Powered by <a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light">Allita</a> for <a href="http://ohiohome.org" class="uk-link-muted uk-dark uk-light" target="_blank">Ohio Housing Finance Agency</a> &copy;2018 — {{date('Y',time())}}.</p></div>
 	</div>
 
 	<script>

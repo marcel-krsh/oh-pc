@@ -4,12 +4,20 @@
 <div id="dynamic-modal-content">
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{$project->id}}">@endif
-		@if(!is_null($audit))<input type="hidden" name="audit" value="{{$audit}}">@endif
+		@if(!is_null($audit))<input type="hidden" name="audit" value="{{$audit->id}}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
 			<div uk-grid class="uk-grid-small ">
 				<div class="uk-width-1-1 uk-padding-small">
-					@if($project)
-					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}}</span></h3>
+					@if(!is_null($project))
+					@if(!is_null($audit))
+					@if(!is_null($finding))
+					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}} | Audit: {{$audit->id}} Findings Response</span></h3>
+					@else
+					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}} | Audit: {{$audit->id}}</span></h3>
+					@endIf
+					@else
+					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}}</span></h3>
+					@endIf
 					@else
 					<h3>New Message</h3>
 					@endif
@@ -20,6 +28,17 @@
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
 				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{Auth::user()->full_name()}}</div>
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
+				@if($single_receipient)
+				<?php $recipient = $recipients->first(); ?>
+				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+					<li class="recipient-list-item {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
+						<input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" checked="checked" onclick="return false;">
+						<label for="recipient-id-{{ $recipient->id }}">
+							{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
+						</label>
+					</li>
+				</div>
+				@else
 				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
 					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
@@ -36,7 +55,7 @@
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 							@foreach ($recipients_from_hfa as $recipient_from_hfa)
 							<li class="recipient-list-item ohfa {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name)))))}} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
-								<input name="recipients[]" id="list-recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
+								<input name="" id="list-recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}')">
 								<label for="recipient-id-{{ $recipient_from_hfa->id }}">
 									{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}
 								</label>
@@ -60,7 +79,7 @@
 						</ul>
 					</div>
 					<div class="uk-form-row">
-						<input type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
+						<input style="width: 100%" type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
 					</div>
 					<script>
             // CLONE RECIPIENTS
@@ -91,8 +110,14 @@
           </script>
           <!-- END RECIPIENT LISTING -->
         </div>
+        @endif
+
+        @if($all_findings > 0)
+        @include('modals.partials.communication-findings')
+        @endif
+
         @if(!is_null($project))
-        	@include('modals.partials.communication-documents')
+        @include('modals.partials.communication-documents')
         @endif
 
         <div class="uk-width-1-5 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
@@ -100,7 +125,11 @@
         	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
-        				<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
+        				@if($all_findings && $single_receipient)
+        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." value="Finding: {{ $finding->id }}">
+        				@else
+        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
+        				@endif
         			</div>
         		</div>
         	</fieldset>
@@ -111,7 +140,7 @@
         	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
-        				<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message."></textarea>
+        				<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message.">@if($all_findings && $single_receipient)Owner response for finding {{ $finding->id }} on audit # {{ $audit->id }} for {{ $project->project_number }} : {{ $project->project_name }}@endif</textarea>
         			</div>
         		</div>
         	</fieldset>
@@ -172,13 +201,16 @@
     			if(data!=1){
     				UIkit.modal.alert(data,{stack: true});
     			} else {
+    				@if(!$project || Auth::user()->cannot('access_auditor'))
+    				$('#detail-tab-2').trigger('click');
+    				@endIf
     				UIkit.modal.alert('Your message has been saved.',{stack: true});
     			}
     		} );
 
-    		@if($project)
+    		@if($project && Auth::user()->can('access_auditor'))
     		var id = {{$project->id}};
-        loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
+    		loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
         //loadParcelSubTab('communications',id);
         @else
         //loadDashBoardSubTab('dashboard','communications');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Traits\DocumentTrait;
 use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Models\LocalDocumentCategory;
+use App\Models\Photo;
 use App\Models\Project;
 use App\Models\User;
 use Auth;
@@ -62,57 +63,63 @@ class DocumentController extends Controller
             app('debugbar')->disable();
         }
         if ($request->hasFile('files')) {
-            $file = $request->file('files')[0];
-            $user = Auth::user();
-            $selected_audit = $project->selected_audit();
-            $categories = DocumentCategory::with('parent')->find($request->categories);
-            //document_category_name
-            $parent_cat_folder = snake_case(strtolower($categories->parent->document_category_name));
-            $cat_folder = snake_case(strtolower($categories->document_category_name));
-            $folderpath = 'documents/project_' . $project->project_number . '/audit_' . $selected_audit->audit_id . '/class_' . $parent_cat_folder . '/description_' . $cat_folder . '/';
-            $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
-            $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
-            $file_extension = $file->getClientOriginalExtension();
-            $filename = pathinfo($original_filename, PATHINFO_FILENAME);
-            $document = new Document([
-                'user_id' => $user->id,
-                'project_id' => $project->id,
-                'audit_id' => $selected_audit->id,
-                'comment' => $request->comment,
-            ]);
-            $document->save();
-            //Parent
-            $document_categories = new LocalDocumentCategory;
-            $document_categories->document_id = $document->id;
-            $document_categories->document_category_id = $categories->parent->id;
-            $document_categories->project_id = $project->id;
-            $document_categories->save();
-            //Category
-            $document_categories = new LocalDocumentCategory;
-            $document_categories->document_id = $document->id;
-            $document_categories->document_category_id = $categories->id;
-            $document_categories->project_id = $project->id;
-            $document_categories->save();
-            // Sanitize filename and append document id to make it unique
-            $filename = snake_case(strtolower($filename)) . '_' . $document->id . '.' . $file_extension;
-            $filepath = $folderpath . $filename;
-            if ($request->has('ohfa_file')) {
-                $document->update([
-                    'file_path' => $filepath,
-                    'filename' => $filename,
-                    'ohfa_file_path' => $filepath,
-                ]);
-            } else {
-                $document->update([
-                    'file_path' => $filepath,
-                    'filename' => $filename,
-                ]);
-            }
 
-            // store original file
-            Storage::put($filepath, File::get($file));
-            $data = [];
-            $data['document_ids'] = [$document->id];
+            $data = array();
+            $user = Auth::user();
+            $files = $request->file('files');
+
+            foreach($files as $file){
+                // $file = $request->file('files')[0];
+                $selected_audit = $project->selected_audit();
+                $categories = DocumentCategory::with('parent')->find($request->categories);
+                //document_category_name
+                $parent_cat_folder = snake_case(strtolower($categories->parent->document_category_name));
+                $cat_folder = snake_case(strtolower($categories->document_category_name));
+                $folderpath = 'documents/project_' . $project->project_number . '/audit_' . $selected_audit->audit_id . '/class_' . $parent_cat_folder . '/description_' . $cat_folder . '/';
+                $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
+                $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
+                $file_extension = $file->getClientOriginalExtension();
+                $filename = pathinfo($original_filename, PATHINFO_FILENAME);
+                $document = new Document([
+                    'user_id' => $user->id,
+                    'project_id' => $project->id,
+                    'audit_id' => $selected_audit->id,
+                    'comment' => $request->comment,
+                ]);
+                $document->save();
+                //Parent
+                $document_categories = new LocalDocumentCategory;
+                $document_categories->document_id = $document->id;
+                $document_categories->document_category_id = $categories->parent->id;
+                $document_categories->project_id = $project->id;
+                $document_categories->save();
+                //Category
+                $document_categories = new LocalDocumentCategory;
+                $document_categories->document_id = $document->id;
+                $document_categories->document_category_id = $categories->id;
+                $document_categories->project_id = $project->id;
+                $document_categories->save();
+                // Sanitize filename and append document id to make it unique
+                $filename = snake_case(strtolower($filename)) . '_' . $document->id . '.' . $file_extension;
+                $filepath = $folderpath . $filename;
+                if ($request->has('ohfa_file')) {
+                    $document->update([
+                        'file_path' => $filepath,
+                        'filename' => $filename,
+                        'ohfa_file_path' => $filepath,
+                    ]);
+                } else {
+                    $document->update([
+                        'file_path' => $filepath,
+                        'filename' => $filename,
+                    ]);
+                }
+
+                // store original file
+                Storage::put($filepath, File::get($file));
+                $data[] = $document->id;
+                $data['document_ids'] = [$document->id];
+            }
             return json_encode($data);
         } else {
             // shouldn't happen - UIKIT shouldn't send empty files
@@ -126,54 +133,44 @@ class DocumentController extends Controller
             app('debugbar')->disable();
         }
         if ($request->hasFile('files')) {
-            $file = $request->file('files')[0];
+
+            $data = array();
             $user = Auth::user();
-            $selected_audit = $project->selected_audit();
+            $files = $request->file('files');
 
-            $folderpath = 'photos/project_' . $project->project_number . '/audit_' . $selected_audit->audit_id . '/class_' . $parent_cat_folder . '/description_' . $cat_folder . '/';
-            $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
-            $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
-            $file_extension = $file->getClientOriginalExtension();
-            $filename = pathinfo($original_filename, PATHINFO_FILENAME);
-            $document = new Document([
-                'user_id' => $user->id,
-                'project_id' => $project->id,
-                'audit_id' => $selected_audit->id,
-                'comment' => $request->comment,
-            ]);
-            $document->save();
-            //Parent
-            $document_categories = new LocalDocumentCategory;
-            $document_categories->document_id = $document->id;
-            $document_categories->document_category_id = $categories->parent->id;
-            $document_categories->project_id = $project->id;
-            $document_categories->save();
-            //Category
-            $document_categories = new LocalDocumentCategory;
-            $document_categories->document_id = $document->id;
-            $document_categories->document_category_id = $categories->id;
-            $document_categories->project_id = $project->id;
-            $document_categories->save();
-            // Sanitize filename and append document id to make it unique
-            $filename = snake_case(strtolower($filename)) . '_' . $document->id . '.' . $file_extension;
-            $filepath = $folderpath . $filename;
-            if ($request->has('ohfa_file')) {
-                $document->update([
-                    'file_path' => $filepath,
-                    'filename' => $filename,
-                    'ohfa_file_path' => $filepath,
+            foreach($files as $file){
+
+                $selected_audit = $project->selected_audit();
+
+                $folderpath = 'photos/project_' . $project->project_number . '/audit_' . $selected_audit->audit_id . '/';
+                $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
+                $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
+                $file_extension = $file->getClientOriginalExtension();
+                $filename = pathinfo($original_filename, PATHINFO_FILENAME);
+                $photo = new Photo([
+                    'user_id' => $user->id,
+                    'project_id' => $project->id,
+                    'audit_id' => $selected_audit->id,
+                    'notes' => $request->comment,
+                    'finding_id' => $request->finding_id
                 ]);
-            } else {
-                $document->update([
+                $photo->save();
+
+                // Sanitize filename and append document id to make it unique
+                $filename = snake_case(strtolower($filename)) . '_' . $photo->id . '.' . $file_extension;
+                $filepath = $folderpath . $filename;
+                $photo->update([
                     'file_path' => $filepath,
                     'filename' => $filename,
                 ]);
+
+                // store original file
+                Storage::put($filepath, File::get($file));
+                $data[] = [
+                    'id' => $photo->id,
+                    'filename' => $filename
+                ];
             }
-
-            // store original file
-            Storage::put($filepath, File::get($file));
-            $data = [];
-            $data['document_ids'] = [$document->id];
             return json_encode($data);
         } else {
             // shouldn't happen - UIKIT shouldn't send empty files
@@ -181,7 +178,7 @@ class DocumentController extends Controller
         }
     }
 
-    public function approveLocalDocument(Project $project, Request $request)
+    public function approveLocalDocument($project = null, Request $request)
     {
         if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';
@@ -205,7 +202,7 @@ class DocumentController extends Controller
         return 1;
     }
 
-    public function notApproveLocalDocument(Project $project, Request $request)
+    public function notApproveLocalDocument($project = null, Request $request)
     {
         if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';
@@ -229,7 +226,7 @@ class DocumentController extends Controller
         return 1;
     }
 
-    public function clearLocalReview(Project $project, Request $request)
+    public function clearLocalReview($project = null, Request $request)
     {
         if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';

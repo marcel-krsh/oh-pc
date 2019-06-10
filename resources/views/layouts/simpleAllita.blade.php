@@ -1,17 +1,17 @@
-<?php setlocale(LC_MONETARY, 'en_US'); 
+<?php setlocale(LC_MONETARY, 'en_US');
 /// protect against inactive users.
 $allowPageLoad = false;
 
-if(Auth::check()){
-	if(Auth::user()->active == 1){
-		$allowPageLoad = true;
-	}
-}else{
-	/// user is not logged in -- the auth middleware will protect against that access.
-	$allowPageLoad = true;
+if (Auth::check()) {
+  if (Auth::user()->active == 1) {
+    $allowPageLoad = true;
+  }
+} else {
+  /// user is not logged in -- the auth middleware will protect against that access.
+  $allowPageLoad = true;
 }
-	if($allowPageLoad){
-?>
+if ($allowPageLoad) {
+  ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
 <head>
@@ -26,60 +26,60 @@ if(Auth::check()){
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 <meta name="theme-color" content="#ffffff">
-<link rel="stylesheet" href="/css/allita-font.css">
-<link rel="stylesheet" href="/css/allita-admin.css">
-<link rel="stylesheet" href="/css/system.css">
-<link rel="stylesheet" href="/css/uikit.min.css">
-<link rel="stylesheet" href="/css/uikit-icons.min.css">
-<link rel="stylesheet" href="/css/auto-complete.css">
+<link rel="stylesheet" href="/css/allita-font.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/allita-admin.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/system.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/uikit.min.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/uikit-icons.min.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/auto-complete.css{{ asset_version() }}">
 @if (Auth::guest())
 @else
-<!-- <link rel="stylesheet" href="/css/cdfs-tab.css">
-<link rel="stylesheet" href="/css/communications-tab.css">
-<link rel="stylesheet" href="/css/documents-tab.css">
-<link rel="stylesheet" href="/css/funding-tab.css">
-<link rel="stylesheet" href="/css/history-tab.css">
-<link rel="stylesheet" href="/css/notes-tab.css">
-<link rel="stylesheet" href="/css/outcomes-tab.css">
-<link rel="stylesheet" href="/css/processing-tab.css"> -->
+<!-- <link rel="stylesheet" href="/css/cdfs-tab.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/communications-tab.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/funding-tab.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/history-tab.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/notes-tab.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/outcomes-tab.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/processing-tab.css{{ asset_version() }}"> -->
 @endif
 <script>
         window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
     </script>
 
-<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js"></script>
-<script src="/js/jquery.js"></script>
-<script src="/js/uikit.min.js"></script>
-<script src="/js/uikit-icons.min.js"></script>
-<!-- <script src="/js/components/autocomplete.js"></script>
-<script src="/js/core/modal.js"></script>
-<script src="/js/components/lightbox.js"></script>
-<script src="/js/components/sticky.js"></script>
-<script src="/js/components/notify.js"></script>
-<script src="/js/components/tooltip.js"></script>
-<script src="/js/components/datepicker.js"></script>
-<script src="/js/components/slideshow.js"></script>
-<script src="/js/components/slideshow-fx.js"></script>
-<script src="/js/components/upload.js"></script>
-<script src="/js/components/lightbox.js"></script>
-<script src="/js/components/form-select.js"></script>
-<script src="/js/components/slider.js"></script>
-<script src="/js/components/slideset.js"></script>
-<script src="/js/components/accordion.js"></script>
-<script src="/js/components/notify.js"></script>
-<script src="/js/components/search.js"></script>
-<script src="/js/components/timepicker.js"></script>
-<script src="/js/components/nestable.js"></script>
-<script src="/js/components/sortable.js"></script>
-<script src="/js/components/grid.min.js"></script> -->
+<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}"></script>
+<script src="/js/jquery.js{{ asset_version() }}"></script>
+<script src="/js/uikit.min.js{{ asset_version() }}"></script>
+<script src="/js/uikit-icons.min.js{{ asset_version() }}"></script>
+<!-- <script src="/js/components/autocomplete.js{{ asset_version() }}"></script>
+<script src="/js/core/modal.js{{ asset_version() }}"></script>
+<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+<script src="/js/components/sticky.js{{ asset_version() }}"></script>
+<script src="/js/components/notify.js{{ asset_version() }}"></script>
+<script src="/js/components/tooltip.js{{ asset_version() }}"></script>
+<script src="/js/components/datepicker.js{{ asset_version() }}"></script>
+<script src="/js/components/slideshow.js{{ asset_version() }}"></script>
+<script src="/js/components/slideshow-fx.js{{ asset_version() }}"></script>
+<script src="/js/components/upload.js{{ asset_version() }}"></script>
+<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+<script src="/js/components/form-select.js{{ asset_version() }}"></script>
+<script src="/js/components/slider.js{{ asset_version() }}"></script>
+<script src="/js/components/slideset.js{{ asset_version() }}"></script>
+<script src="/js/components/accordion.js{{ asset_version() }}"></script>
+<script src="/js/components/notify.js{{ asset_version() }}"></script>
+<script src="/js/components/search.js{{ asset_version() }}"></script>
+<script src="/js/components/timepicker.js{{ asset_version() }}"></script>
+<script src="/js/components/nestable.js{{ asset_version() }}"></script>
+<script src="/js/components/sortable.js{{ asset_version() }}"></script>
+<script src="/js/components/grid.min.js{{ asset_version() }}"></script> -->
 @if (Auth::guest())
 @else
-<!-- <script src="/js/taffy.js"></script>
+<!-- <script src="/js/taffy.js{{ asset_version() }}"></script>
 <script> window.continueToLoad = 1; window.saved = 1;
 </script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.js"></script> -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.5/Chart.bundle.js{{ asset_version() }}"></script> -->
 @endif
 <style>
 
@@ -89,7 +89,7 @@ if(Auth::check()){
 .autocomplete-suggestions {max-height: none;}
 .autocomplete-suggestion {border-bottom:1px solid #ddd; padding:15px 10px; cursor: pointer;}
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 @yield('head')
 </head>
@@ -97,16 +97,16 @@ if(Auth::check()){
 <!-- BEGIN STICKY HEADER -->
 <stickynav>
 		<div style="width:100%; max-width:1450px; margin:auto; padding:0,35px" class="no-print">
-				
+
 			<div style="margin-top:2px;">
 
 					<div class="uk-grid " >
 
-						
+
 						@if (Auth::guest())
 						<div class="uk-width-1-1">
                             <?php /*<span class="uk-text-right"><a href="{{ url('/login') }}" class="uk-dark uk-link-muted uk-light">Login</a> | <a href="{{ url('/register') }}" class="uk-dark uk-link-muted uk-light">Register</a></span>
-                            */?>
+   */?>
                             <p align="center"><img class="uk-margin-bottom" width="180" height="48" src="https://ohiohome.org/images/logo@2x.png" alt="Ohio Housing Finance Agency" style="margin-left:auto;margin-right:auto; width: 118px;"></p>
                             </div>
 
@@ -115,7 +115,7 @@ if(Auth::check()){
 							<div class="uk-grid uk-grid-collapse">
 								<div class="uk-width-1-1 ">
 									<a href="#filters" uk-toggle><span class="a-menu menu-toggle uk-margin-left allita-nav-bar-margin uk-margin-right" ></span></a>
-									
+
 										<div class="uk-autocomplete quick-lookup-box" >
 											<div >
 												<span onclick="dynamicModalLoad('/');" class="a-magnify-2" style="color:#fafafa;"></span>
@@ -123,11 +123,11 @@ if(Auth::check()){
 										</div>
 									</div>
 								</div>
-							</div>	
+							</div>
 						</div>
-						
-						
-						
+
+
+
 						<div class="uk-visible@m uk-width-1-3@m">
 							<div id="user-logged-in allita-nav-bar-margin">
 								<div id="logged-in-user-badge" class="user-badge-{{ Auth::user()->badge_color }}"> {{ userInitials(Auth::user()->name) }}</div>
@@ -139,30 +139,30 @@ if(Auth::check()){
 							</div>
 						</div>
 						@endif
-						
+
 					</div>
-				
+
 		</div>
 		</div>
 </stickynav>
-<!-- END STICKY HEADER --> 
+<!-- END STICKY HEADER -->
 <a name="top"></a>
 <!-- MAIN VIEW -->
 <div class="uk-container uk-align-center">
 <div class="uk-grid uk-grid-collapse">
 <div id="main-window" class="uk-width-1-1 ">
-		
-		
+
+
 		<div id="main-offcanvas" uk-offcanvas="overlay:true; flip:true">
 		    <div class="uk-offcanvas-bar">
 		    	<ul class="uk-nav uk-nav-default" uk-nav >
 					@if (Auth::guest())
     			<li class="list-tab" style="display: none"><a><span class="list-tab-text"> Welcome Back!</span></a></li>
-    			
+
 				@else
 				<li class="list-tab" onClick="$('#list-tab').trigger('click');$('#main-option-text').html($('.list-tab-text').html());$('#main-option-icon').attr('uk-icon','');
 $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="display: none"><a><span class="list-tab-text"><span class="a-home-2"></span>  My Dashboard</span></a></li>
-    			
+
 				<li class="detail-tab-1" onClick="$('#detail-tab-1').trigger('click');$('#main-option-text').html($('.detail-tab-1-text').html());UIkit.offcanvas.hide();" style="display: none"><a><span class="detail-tab-1-text"></span></a></li>
 				<li class="detail-tab-2" onClick="$('#detail-tab-2').trigger('click');$('#main-option-text').html($('.detail-tab-2-text').html());UIkit.offcanvas.hide();" style="display: none"><a><span class="detail-tab-2-text"></span></a></li>
 				<li class="detail-tab-3" onClick="$('#detail-tab-3').trigger('click');$('#main-option-text').html($('.detail-tab-3-text').html());UIkit.offcanvas.hide();" style="display: none"><a><span class="detail-tab-3-text"></span></a></li>
@@ -172,11 +172,11 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 				</ul>
 		    </div>
 		</div>
-		
+
 					@yield('content')
-			
-		
-		
+
+
+
 <div id="filters" uk-offcanvas="overlay:true">
 	<div class="uk-offcanvas-bar">
 			@if (Auth::guest())
@@ -187,7 +187,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 			<div id="user-logged-in ">
 				<div id="logged-in-user-badge" class="user-badge-green uk-margin-left" style="font-weight: 200">{{ userInitials(Auth::user()->name) }}</div>
 				<div id="logged-in-user-info" class="uk-visible@s" style="font-size: 1rem; line-height: 1.2rem; font-weight: 300"><span style="font-size: .8rem;">Why hello there,</span><br/>{{ Auth::user()->name }}</div>
-				
+
 				<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
                             {{ csrf_field() }}
                         </form>
@@ -195,12 +195,12 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 		</div>
 		<hr class="" style="margin-top:30px;clear:both;">
 
-		
+
 		<ul class="uk-nav uk-nav-default uk-nav-parent-icon" uk-nav="">
 			<li><a href="#" onClick="logout()" class="uk-dark uk-link-muted uk-light"><span class="a-locked-2 uk-icon-justify"></span> Logout</a>
 			</li>
 			<li><a class="uk-dark uk-link-muted uk-light" href="#" onclick="loadListTab('/lists/activity_log')"><span class="a-list uk-icon-justify"></span> View Activity Log</a></li>
-			
+
 			<li class="uk-parent">
 				<a href="#"><span class="a-tools-3 uk-icon-justify"></span> Tools</a>
 				<ul class="uk-nav uk-nav-sub">
@@ -216,12 +216,12 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
                     <li><a onclick="loadListTab('/lists/reimbursement_invoices')">Reimbursement Invoices</a></li>
                     <li class="uk-nav-divider"></li>
                     <li><a onclick="loadListTab('/lists/dispostion_invoices')">Disposition Invoices</a></li>
-                    
+
                     <li class="uk-nav-divider"></li>
                     <li><a onclick="loadListTab('/lists/accounting')">Full Accounting</a></li>
                     <li class="uk-nav-divider"></li>
                     <li><a onclick="loadListTab('lists/users')">User Management</a></li>
-                    
+
                 </ul>
              </li>
              <li class="uk-parent">
@@ -275,7 +275,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 	                                        <li id="filter6" class="" ><a href="#" onClick="loadListTab('/lists/parcels/disposition_released');"><span class="a-list"></span> Dispostion Released: <span id="parcels-diposition-released" class="uk-text-right">XXX</span></a></li>
 
-	                                        
+
 	                </ul>
 	            </li>
 	    	</ul>
@@ -284,21 +284,21 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 </div>
 
 
-<script src="/js/app.js"></script>
+<script src="/js/app.js{{ asset_version() }}"></script>
 @if (Auth::guest())
 @else
 
-<script type="text/javascript" src="/js/systems/system.js"></script><!-- 
-<script type="text/javascript" src="/js/systems/cdfs-tab.js"></script>
-<script type="text/javascript" src="/js/systems/communications-tab.js"></script>
-<script type="text/javascript" src="/js/systems/documents-tab.js"></script>
-<script type="text/javascript" src="/js/systems/funding-tab.js"></script>
-<script type="text/javascript" src="/js/systems/history-tab.js"></script>
-<script type="text/javascript" src="/js/systems/notes-tab.js"></script>
-<script type="text/javascript" src="/js/systems/outcomes-tab.js"></script>
-<script type="text/javascript" src="/js/systems/processing-tab.js"></script> -->
+<script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script><!--
+<script type="text/javascript" src="/js/systems/cdfs-tab.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/communications-tab.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/documents-tab.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/funding-tab.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/history-tab.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/notes-tab.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/outcomes-tab.js{{ asset_version() }}"></script>
+<script type="text/javascript" src="/js/systems/processing-tab.js{{ asset_version() }}"></script> -->
 
-<script src="/js/auto-complete.js"></script>
+<script src="/js/auto-complete.js{{ asset_version() }}"></script>
 <script>
     var quicklookupbox = new autoComplete({
         selector: '#quick-lookup-box',
@@ -318,7 +318,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 		            if (~(output[i][0]+' '+output[i][1]+' '+output[i][3]+' '+output[i][4]).toLowerCase().indexOf(term)) suggestions.push(output[i]);
 		        console.log(suggestions);
 		        suggest(suggestions);
-				
+
 			},
 			'json' );
         },
@@ -330,15 +330,15 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 		    output = output + 'Parcel ID: '+item[3]+'<br />';
 		    output = output + item[0]+'<br />';
 		    output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
-		<?php if(Auth::user()->entity_type == "hfa"){ ?>
+		<?php if (Auth::user()->entity_type == "hfa") {?>
 			output = output + 'LB: '+ item[5] +'<br />HFA: '+ item[6]+'<br />';
-		<?php } else { ?>
+		<?php } else {?>
 			output = output + item[5]+'<br />';
-		<?php } ?>
+		<?php }?>
 			output = output + '<span class="hideImport'+item[7]+'">';
 			output = output + 'Import #'+item[7]+' on '+item[11]+'<br />By '+item[8]+'</span>';
 		    output = output + '</div>';
-		    
+
 		    return output;
 		},
 	    onSelect: function(e, term, item){
@@ -352,7 +352,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 <a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
 	<div id="dynamic-modal" uk-modal>
-		<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content"> 
+		<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content">
 			<a class="uk-modal-close-default" uk-close></a>
 			<div id="dynamic-modal-content"></div>
 		</div>
@@ -377,7 +377,8 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 </body>
 </html>
-<?php } else { /// show for inactive users ?>
+<?php } else {
+  /// show for inactive users ?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
 <head>
@@ -392,45 +393,45 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 <meta name="theme-color" content="#ffffff">
-<link rel="stylesheet" href="/css/allita-admin-419171046.css">
-<link rel="stylesheet" href="/css/system-419171130.css">
+<link rel="stylesheet" href="/css/allita-admin-419171046.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/system-419171130.css{{ asset_version() }}">
 
 <script>
         window.Laravel = <?php echo json_encode([
-            'csrfToken' => csrf_token(),
-        ]); ?>
+    'csrfToken' => csrf_token(),
+  ]); ?>
     </script>
 @if(session('disablePacer') != 1)
-<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js">{{session('disablePacer')}}</script>
+<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}">{{session('disablePacer')}}</script>
 
 @endif
-<script src="/js/jquery.js"></script>
-<script src="/js/uikit.min.js"></script>
-<script src="/js/components/autocomplete.js"></script>
-<script src="/js/core/modal.js"></script>
-<script src="/js/components/lightbox.js"></script>
-<script src="/js/components/sticky.js"></script>
-<script src="/js/components/notify.js"></script>
-<script src="/js/components/tooltip.js"></script>
-<script src="/js/components/datepicker.js"></script>
-<script src="/js/components/slideshow.js"></script>
-<script src="/js/components/slideshow-fx.js"></script>
-<script src="/js/components/upload.js"></script>
-<script src="/js/components/lightbox.js"></script>
-<script src="/js/components/form-select.js"></script>
-<script src="/js/components/slider.js"></script>
-<script src="/js/components/slideset.js"></script>
-<script src="/js/components/accordion.js"></script>
-<script src="/js/components/notify.js"></script>
-<script src="/js/components/search.js"></script>
-<script src="/js/components/timepicker.js"></script>
-<script src="/js/components/nestable.js"></script>
-<script src="/js/components/sortable.js"></script>
-<script src="/js/components/grid.min.js"></script>
-<script src="/js/handsontable.full.min.js"></script>
+<script src="/js/jquery.js{{ asset_version() }}"></script>
+<script src="/js/uikit.min.js{{ asset_version() }}"></script>
+<script src="/js/components/autocomplete.js{{ asset_version() }}"></script>
+<script src="/js/core/modal.js{{ asset_version() }}"></script>
+<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+<script src="/js/components/sticky.js{{ asset_version() }}"></script>
+<script src="/js/components/notify.js{{ asset_version() }}"></script>
+<script src="/js/components/tooltip.js{{ asset_version() }}"></script>
+<script src="/js/components/datepicker.js{{ asset_version() }}"></script>
+<script src="/js/components/slideshow.js{{ asset_version() }}"></script>
+<script src="/js/components/slideshow-fx.js{{ asset_version() }}"></script>
+<script src="/js/components/upload.js{{ asset_version() }}"></script>
+<script src="/js/components/lightbox.js{{ asset_version() }}"></script>
+<script src="/js/components/form-select.js{{ asset_version() }}"></script>
+<script src="/js/components/slider.js{{ asset_version() }}"></script>
+<script src="/js/components/slideset.js{{ asset_version() }}"></script>
+<script src="/js/components/accordion.js{{ asset_version() }}"></script>
+<script src="/js/components/notify.js{{ asset_version() }}"></script>
+<script src="/js/components/search.js{{ asset_version() }}"></script>
+<script src="/js/components/timepicker.js{{ asset_version() }}"></script>
+<script src="/js/components/nestable.js{{ asset_version() }}"></script>
+<script src="/js/components/sortable.js{{ asset_version() }}"></script>
+<script src="/js/components/grid.min.js{{ asset_version() }}"></script>
+<script src="/js/handsontable.full.min.js{{ asset_version() }}"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css{{ asset_version() }}" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js{{ asset_version() }}"></script>
 
 	<script>
 		$('select').multipleSelect();
@@ -443,26 +444,25 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 <div class="uk-vertical-align uk-text-center uk-height-1-1">
             <div class="uk-vertical-align-middle uk-margin-top" style="width: 250px;">
 
-                
+
 
                 <form class="uk-panel uk-panel-box">
                     <div class="uk-form-row">
                         <h2 align="center">Inactive User</h2>
                         <p align="center">{{Auth::user()->name}}</p>
                     </div>
-                    
+
                     <div class="uk-form-row">
                         <a class="uk-width-1-1 uk-button uk-button-primary uk-button-large" href="/login">Return to Login</a>
                     </div>
-                    
+
                 </form>
 
             </div>
         </div>
 </body>
 </html>
-<?php  
+<?php
 
-Auth::logout();
-
-}  ?>
+  Auth::logout();
+}?>
