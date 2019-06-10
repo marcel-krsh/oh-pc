@@ -3216,12 +3216,12 @@ class Phase1ComplianceSelection extends Controller
     public function runSimpleCompliance(Audit $audit)
     {
         //$this->projection = Projection::where('run',0)->first();
-            if(null !== $audit){
+            if(null !== $audit and null !== $audit->project){
                 $this->audit = $audit;
                 $this->project = $this->audit->project;
                 $this->extended_use = 0;
 
-                dd($this->audit,$this->project);
+                //dd($this->audit,$this->project);
                 
                 //LOG HERE if it is a brand new audit run
                 //LOG HERE if it is a rerun audit and who asked for it
