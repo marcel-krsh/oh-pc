@@ -3213,8 +3213,9 @@ class Phase1ComplianceSelection extends Controller
      * @return void
      */
 
-    public function runSimpleCompliance(Audit $audit)
+    public function runSimpleCompliance($audit)
     {
+        dd($audit);
         //$this->projection = Projection::where('run',0)->first();
             if(null !== $audit and null !== $audit->project){
                 $this->audit = $audit;
