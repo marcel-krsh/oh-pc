@@ -134,7 +134,7 @@ class Phase1ComplianceSelection extends Controller
 
         // Get all the units we need to get programs for:
 
-        
+            if($this->project && count($this->project->units) > 0){
                     foreach ($this->project->units as $unit) {
                         
                         // Get the unit's current program designation from DevCo
@@ -255,6 +255,9 @@ class Phase1ComplianceSelection extends Controller
                     //$this->audit->save();
 
                     ////dd($this->units); //on 27 20.32 sec
+                }else{
+                    dd('Project definition:',$this->project,'Units',$this->project->units);
+                }
                                     
                 
             
