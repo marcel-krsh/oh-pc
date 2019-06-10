@@ -3220,6 +3220,8 @@ class Phase1ComplianceSelection extends Controller
                 $this->audit = $audit;
                 $this->project = $this->audit->project;
                 $this->extended_use = 0;
+
+                dd($this->audit,$this->project);
                 
                 //LOG HERE if it is a brand new audit run
                 //LOG HERE if it is a rerun audit and who asked for it
