@@ -43,9 +43,15 @@
 				</a>
 			</li>
 			@endforeach
-			<li>
-				<i class="a-circle-plus" uk-tooltip title="ADD A BUILDING AMENITY"><a onClick="addAmenity('{{$amenity->building_id}}', 'building')"> ADD AMENITY </a>
-			</li>
+			
+				
+			
 		</ul>
+
+	</div>
+	<div class="uk-width-1-1">
+		<a class="uk-button" onClick="addAmenity('{{$amenity->building_id}}', 'building')">
+			<i class="a-circle-plus" uk-tooltip title="ADD A BUILDING AMENITY"></i> ADD AMENITY 
+		</a>
 	</div>
 </div>
