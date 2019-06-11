@@ -1062,9 +1062,9 @@ function fillSpacers() {
 }
 
 // either building id or unit id is given
-function addAmenity(id, type) {
+function addAmenity(id, type, stack=1) {
 	console.log("adding an amenity for "+type+" "+id);
-	dynamicModalLoad('amenities/add/'+type+'/'+id, 0, 0, 0);
+	dynamicModalLoad('amenities/add/'+type+'/'+id, 0, 0, 0,stack);
 }
 
 //documents loading
