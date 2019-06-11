@@ -1349,6 +1349,7 @@ class CommunicationController extends Controller
       $recipients = User::whereIn('person_key', $user_keys)->with('person')
         ->where('active', 1)
         ->get();
+        dd($project,$report,$user_keys,$recipients);
       $audit = $report->audit_id;
       return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'report'));
     } else {
