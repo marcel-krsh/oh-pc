@@ -731,7 +731,8 @@ class ReportsController extends Controller
             $report->update(['crr_approval_type_id'=>7]);
           }
           $this->reportHistory($report, $history);
-          //return $data;
+          $x = json_decode($report->crr_data);
+          //return dd(collect($x)[48]);
 
           if ($request->get('print') != 1) {
             return view('crr.crr', compact('report', 'data', 'version', 'print', 'users', 'current_user'));
@@ -776,7 +777,9 @@ class ReportsController extends Controller
           //dd($part);
           //make magic happen.
           $method = $part->crr_part_type->method_name;
-
+          if($method == 'propertyInspections')
+           $partValue = $this->$method($report, $part);
+         else
           $partValue = $this->$method($report, $part);
           $data[$index]['version-' . $version]['section-' . $sectionOrder]['parts']['part-' . $partOrder] = [$partValue];
           $partOrder++;
@@ -860,6 +863,8 @@ class ReportsController extends Controller
     $originalData = json_decode($part->data);
     $data[]       = $originalData[0];
     $data[]       = $report->audit->unit_inspections;
+    $data[]       = $report->audit->project_amenity_inspections;
+    $data[]       = $report->audit->building_inspections;
     //dd($data);
     $response            = [];
     $response['content'] = '';
