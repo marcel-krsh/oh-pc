@@ -357,8 +357,8 @@
 
 				@endIf
 
-				{{-- @if($j > 2)
-				{{ dd($pieceData[2]) }}
+				{{-- @if($j > 3)
+				{{ dd($piece->blade) }}
 				@endif
 				@php
 					$j++;
@@ -371,8 +371,9 @@
 					$bladeData = null;
 				}
 				?>
+				@if($piece->blade != 'crr_parts.crr_findings')
 				@include($piece->blade, [$inspections_type = 'site'])
-
+				@endif
 				<?php
 				if (array_key_exists(3, $pieceData)) {
 					$bladeData = $pieceData[3];
@@ -380,7 +381,9 @@
 					$bladeData = null;
 				}
 				?>
+				@if($piece->blade != 'crr_parts.crr_findings')
 				@include($piece->blade, [$inspections_type = 'building'])
+				@endif
 
 
 				<?php
