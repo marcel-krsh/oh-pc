@@ -4825,8 +4825,8 @@ class AuditController extends Controller
                         ->where('audit_id', '=', $audit->audit_id)
                         ->orderBy('order', 'desc')
                         ->first();
-                        
-                        if(count($latest_ordering) > 0){
+
+                        if(is_object($latest_ordering)){
                             $latest_ordering = $latest_ordering->order;
                         } else {
                             $latest_ordering = 0;
@@ -4875,7 +4875,7 @@ class AuditController extends Controller
                             ->where('unit_id', '=', $unit_id)
                             ->orderBy('order', 'desc')
                             ->first();
-                        if(count($latest_ordering) > 0){
+                        if(is_object($latest_ordering)){
                             $latest_ordering = $latest_ordering->order;
                         } else {
                             $latest_ordering = 0;
@@ -4914,7 +4914,7 @@ class AuditController extends Controller
                             ->where('building_id', '=', $building_id)
                             ->orderBy('order', 'desc')
                             ->first();
-                        if(count($latest_ordering) > 0){
+                        if(is_object($latest_ordering)){
                             $latest_ordering = $latest_ordering->order;
                         } else {
                             $latest_ordering = 0;
