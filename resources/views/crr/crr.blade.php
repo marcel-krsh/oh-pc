@@ -307,12 +307,17 @@
 		<div align="center" class="uk-align-center uk-margin-large-bottom use-handcursor crr-thumbs" style="max-width: 85px;"><a href="#{{ str_replace(' ','',$section->id) }}" class="uk-link-mute">{{ strtoupper($section->title) }}</a>
 		</div>
 		@endForEach
+
 		@can('access_auditor')
 		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
 		<div id="comment-list" style="display: none;"></div>
 		@endCan
 	</div>
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
+		@php
+			$j = 0;
+		@endphp
+
 		@forEach($data as $section)
 
 		<a name="{{ str_replace(' ','',$section->crr_section_id) }}" ></a>
@@ -345,11 +350,42 @@
 			</div>@endCan
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
 				<?php $pieceData = json_decode($piece->data);?>
+
 				@if($pieceData[0]->type =='free-text')
+
 				{!! $piece->content !!}
 
 				@endIf
+
+				{{-- @if($j > 2)
+				{{ dd($pieceData) }}
+				@endif
+				@php
+					$j++;
+				@endphp --}}
 				@if($pieceData[0]->type == 'blade')
+				<?php
+				if (array_key_exists(2, $pieceData)) {
+					$bladeData = $pieceData[2];
+				} else {
+					$bladeData = null;
+				}
+				?>
+				@if($piece->blade != 'crr_parts.crr_findings')
+				@include($piece->blade, [$inspections_type = 'site'])
+				@endif
+				<?php
+				if (array_key_exists(3, $pieceData)) {
+					$bladeData = $pieceData[3];
+				} else {
+					$bladeData = null;
+				}
+				?>
+				@if($piece->blade != 'crr_parts.crr_findings')
+				@include($piece->blade, [$inspections_type = 'building'])
+				@endif
+
+
 				<?php
 				if (array_key_exists(1, $pieceData)) {
 					$bladeData = $pieceData[1];
@@ -357,8 +393,12 @@
 					$bladeData = null;
 				}
 				?>
-				@include($piece->blade)
+				@include($piece->blade, [$inspections_type = 'unit'])
+
+
 				@endIf
+
+
 			</div>
 			<?php $pieceCount++;?>
 			@endForEach

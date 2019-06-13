@@ -67,7 +67,11 @@ class Audit extends Model
        return $this->hasMany('\App\Models\AmenityInspection');
     }
     public function project_amenity_inspections() : HasMany {
-       return $this->hasMany('\App\Models\AmenityInspection')->whereNull('building_id')->whereNull('unit_id');
+       return $this->hasMany('\App\Models\AmenityInspection')->whereNull('building_id')->whereNull('unit_id')->with('amenity');
+    }
+
+    public function building_inspections() : HasMany {
+       return $this->hasMany('\App\Models\BuildingInspection')->with('building')->orderBy('building_id');
     }
     public function unit_inspections() : HasMany {
        return $this->hasMany('\App\Models\UnitInspection')->with('program')->with('building')->orderBy('building_id')->orderBy('unit_id');

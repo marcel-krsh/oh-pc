@@ -59,6 +59,10 @@ forEach($findings as $fc){
 		@endIf</small><hr class="dashed-hr">
 	</div>
 	<?php $columnCount = 1; ?>
+	@php
+		$findings = collect($findings)->sortByDesc('site');
+		// dd($findings);
+	@endphp
 	@forEach($findings as $f)
 	<div id="cancelled-finding-{{$f->id}}" class="uk-width-1-3 crr-blocks" style="border-bottom:1px dotted #3c3c3c; @if($columnCount < 3) border-right:1px dotted #3c3c3c; @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
 		<?php

@@ -28,9 +28,10 @@
                                         <option value="6">SEND TO PROPERTY CONTACT</option>
                                         <option value="7">PROPERTY VIEWED IN PERSON</option>
                                         @endIf
-                                        @if(!$report->audit->is_archived() || Auth::user()->can('access_manager'))
+                                        {{-- @if(!$report->audit->is_archived() || Auth::user()->can('access_manager'))
                                         <option value="8">REFRESH DYNAMIC DATA</option>
-                                        @endIf
+                                        @endIf --}}
+                                        {{-- Commented above code to have refresh reports only from rports page and link in reports -Div 20190610 --}}
 
                                     </select>
                                     @else
