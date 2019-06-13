@@ -15,7 +15,8 @@
 			$currentUnit = 0;
 		}
 		$inspections = collect($inspections);
-			//$inspections =$inspections->sortByDesc('unit_id');
+		$inspections =$inspections->sortBy('unit_name');
+		//dd($inspections);
 		?>
 		<div class="uk-column-1-3 uk-column-divider">
 			@forEach($inspections as $i)
@@ -25,7 +26,6 @@
 				<?php
 				$currentUnit = $i->unit_id;
 				$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
-
 				?>
 				@if(!in_array($i->unit_id, $nameOutput))
 				<div style="float: left;">

@@ -356,6 +356,7 @@
 						$('#type-selection-icon').addClass('a-grid');
 						$('#type-selection-icon').removeClass('a-arrow-small-up ok-actionable');
 					}
+					$('#type-list').load('https://www.google.com');
 					$('#type-list').slideToggle();
 				}
 

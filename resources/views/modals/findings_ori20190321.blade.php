@@ -562,6 +562,7 @@ $locationType = 'b-' . $passedBuilding->building_id;
 				$('#type-selection-icon').addClass('a-arrow-small-up');
 				$('#type-selection-icon').removeClass('a-arrow-small-down');
 			}
+			$('#type-list').load('https://www.google.com');
 			$('#type-list').slideToggle();
 		}
 		function selectAmenity(amenity_id,amenity_inspection_class,amenity_inspection_id,display='selected',amenity_increment=''){
