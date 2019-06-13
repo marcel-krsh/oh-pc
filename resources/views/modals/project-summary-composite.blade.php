@@ -1,5 +1,5 @@
 <script>
-	resizeModal(95);
+	//resizeModal(95);
 </script>
 <div id="modal-project-summary" class="uk-padding-remove uk-margin-bottom">
 	<div class="modal-project-summary-left" id="modal-left-summary">
