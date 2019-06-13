@@ -12,6 +12,7 @@
 		$('.show-all-findings-button').slideToggle();
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
+		UIkit.scroll('#findings-list');
 	}
 
 	function showOnlyInspectionsFor(className){
