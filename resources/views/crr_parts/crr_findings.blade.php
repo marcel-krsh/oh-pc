@@ -50,9 +50,6 @@ foreach($grouped_bf as $bk => $bf) {
 		unset($grouped_uf[$bk]);
 	}
 }
-//dd($grouped_bf);
-		// $grouped_bf = collect($grouped_bf);
-		// $grouped_uf = collect($grouped_uf);
 @endphp
 
 <div uk-grid>
