@@ -179,7 +179,9 @@
 								</div>
 								<div class="uk-margin-remove" uk-grid>
 									<div class="uk-width-1-1 uk-padding-remove">
+										<div uk-grid>
 										<button class="uk-button uk-button-primary button-finding-filter uk-width-1-4" onclick="dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary',0,0,0,2);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button> <button class="uk-button uk-button-primary button-finding-filter uk-width-3-4 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="dynamicModalClose()">DONE ADDING FINDINGS</button>
+										</div>
 									</div>
 								</div>
 						</div>
