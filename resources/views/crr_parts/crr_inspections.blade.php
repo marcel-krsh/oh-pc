@@ -1,6 +1,6 @@
 <?php $inspections = $bladeData ?>
 @if(!is_null($inspections))
-@if($inspections_type == 'unit')
+@if(isset($inspections_type) && $inspections_type == 'unit')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
 		<h2>Units Inspected: </h2>
@@ -65,7 +65,7 @@
 <hr class="dashed-hr uk-margin-large-bottom">
 @endif
 
-@if($inspections_type == 'site')
+@if(isset($inspections_type) && $inspections_type == 'site')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
 		<h2>Site Amenities Inspected: </h2><small><i class="a-mobile"></i> : SITE INSPECTION </small>
@@ -91,7 +91,7 @@
 <hr class="dashed-hr uk-margin-large-bottom">
 
 @endif
-@if($inspections_type == 'building')
+@if(isset($inspections_type) && $inspections_type == 'building')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
 		<h2>Buildings Inspected: </h2><small><i class="a-mobile"></i> : SITE INSPECTION </small>
