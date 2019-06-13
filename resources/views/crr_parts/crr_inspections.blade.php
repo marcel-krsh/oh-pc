@@ -46,7 +46,7 @@
 		?>
 		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInpsections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf &nbsp;| @if($homeSiteInspections > 0) &nbsp;| HOME SITE {{$homeSiteInpsections}} @endIf  @if($homeFileInspections > 0) &nbsp;| HOME FILE {{$homeFileInpsections}} @endIf 
 
-			<?php dd($homeKeys, $inpsections); ?>
+			<?php dd($homeKeys, $inspections); ?>
 
 		</small>
 		<hr class="dashed-hr uk-margin-bottom">
