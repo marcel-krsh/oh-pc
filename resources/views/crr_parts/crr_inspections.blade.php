@@ -15,6 +15,12 @@
 				.uk-column-divider {
    					 column-rule: 1px solid #939598;
     			}
+    			.on-folder {
+    				position: relative;
+    				left:-5px;
+    				top:5px;
+    				font-size: .5rem;
+    			}
 			</style>
 		@endCan
 
