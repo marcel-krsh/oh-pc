@@ -3,7 +3,13 @@
 @if(isset($inspections_type) && $inspections_type == 'unit')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2>Units Inspected: </h2> @can('access_auditor') || <button class="uk-button" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </button>@endCan
+		<h2>Units Inspected: </h2> @can('access_auditor') || <button class="uk-button" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </button>
+			<style>
+				#modal-size {
+					height: 85%;
+				}
+			</style>
+		@endCan
 		<small><i class="a-folder"></i> : FILE INSPECTION &nbsp;|  &nbsp;<i class="a-mobile"></i> : SITE INSPECTION </small>
 		<hr class="dashed-hr uk-margin-bottom">
 		<?php //dd($i);
