@@ -8,6 +8,11 @@
 <script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
 
 <script>
+	function showOnlyFindingsFor(className){
+		//unit-{{$f->unit_id}}-finding finding-group
+		$('.finding-group').hide();
+		$('.'+className).fadeIn();
+	}
 	function showComments(partId){
 		$('#section-thumbnails').css({'min-width':'400px','width':'400px','padding':'0px'});
 		$('#main-report-view').width('926px');

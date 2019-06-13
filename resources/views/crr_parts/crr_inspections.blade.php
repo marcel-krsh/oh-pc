@@ -79,7 +79,7 @@
 				$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
 				?>
 				@if(!in_array($i->unit_id, $nameOutput))
-				<div style="float: left;">
+				<div  style="float: left;" @if($print !== 1) class="use-hand-cursor" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding')" @endIf >
 					{{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] =$i->unit_id; ?> :
 				</div>
 
