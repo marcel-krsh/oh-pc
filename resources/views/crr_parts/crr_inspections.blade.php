@@ -27,8 +27,8 @@
 			$inspections =$inspections->sortBy('unit_name');
 			//dd($inspections);
 		
-			$fileInspections = count(collect($inspections)->where('is_site_visit',0));
-			$siteInspections = count(collect($inspections)->where('is_site_visit',1));
+			$fileInspections = count(collect($inspections)->where('is_site_visit',0)->groupBy('unit_id'));
+			$siteInspections = count(collect($inspections)->where('is_site_visit',1)->groupBy('unit_id'));
 
 		?>
 		<small><i class="a-folder"></i> : @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf &nbsp;|  &nbsp;<i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf </small>
