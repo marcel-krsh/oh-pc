@@ -12,6 +12,13 @@
 		
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
+		$('#show-all-findings-button').toggle();
+	}
+
+	function showOnlyFindingsFor(className){
+		
+		$('.finding-group').hide();
+		$('.'+className).fadeIn();
 	}
 	function showComments(partId){
 		$('#section-thumbnails').css({'min-width':'400px','width':'400px','padding':'0px'});
