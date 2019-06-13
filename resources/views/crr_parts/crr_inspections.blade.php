@@ -1,9 +1,13 @@
 <?php $inspections = $bladeData ?>
 @if(!is_null($inspections))
 @if(isset($inspections_type) && $inspections_type == 'unit')
+
+<?php
+	$totalUnits = count(collect($inspections)->groupBy('unit_id'));
+?>
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2>Units Inspected: </h2> @can('access_auditor') <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
+		<h2>@if($totalUnits >1 || $totalUnits < 1) {{$totalUnits}} Units @else 1 Unit @endIf Inspected: </h2> @can('access_auditor') <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
 			<style>
 				#modal-size {
 					height: 815px;
