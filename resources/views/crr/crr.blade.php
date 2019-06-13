@@ -357,8 +357,8 @@
 
 				@endIf
 
-				{{-- @if($j > 2)
-				{{ dd($pieceData) }}
+				{{-- @if($j > 3)
+				{{ dd($pieceData[1][1]) }}
 				@endif
 				@php
 					$j++;
