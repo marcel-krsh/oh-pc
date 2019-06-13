@@ -34,7 +34,7 @@ class EmailVerificationCode extends Mailable
   public function __construct(User $owner, $code)
   {
     $this->owner    = $owner;
-    $this->subject  = "Allita Verification Code";
+    $this->subject  = "DEVCO Inspection Verification Code";
     $this->code = $code;
   }
 

@@ -1,6 +1,6 @@
 @extends('layouts.simplerAllita')
 @section('head')
-<title>{{ $report->template()->template_name }}: {{ date('y',strtotime($report->audit->scheduled_at)) }}-{{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
+<title>{{ $report->template()->template_name }}: #{{ $report->id }} || {{ $report->project->project_number }} : {{ $report->project->project_name }} || AUDIT: {{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
 <link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
 <script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
 <script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>

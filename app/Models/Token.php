@@ -137,7 +137,7 @@ class Token extends Model
 
   public function sendCodeBySms($to_number, $code)
   {
-    $message = "Your Allita verification code is: " . $code;
+    $message = "Your verification code is: " . $code;
     try {
       Twilio::message($to_number, $message);
       return true;
