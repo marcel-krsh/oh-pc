@@ -97,7 +97,13 @@ body{ background-color: white; }
 	            					@if($pieceData[0]->type =='free-text')
 	            						{!!$piece->content!!}
 	            					@endIf
-	            					@if($pieceData[0]->type == 'blade')
+	            					{{-- @if($j > 3)
+									{{ dd($pieceData[1][1]) }}
+									@endif
+									@php
+										$j++;
+									@endphp --}}
+									@if($pieceData[0]->type == 'blade')
 		            						<?php
 												if (array_key_exists(2, $pieceData)) {
 													$bladeData = $pieceData[2];
@@ -129,9 +135,6 @@ body{ background-color: white; }
 												?>
 												@include($piece->blade, [$inspections_type = 'unit'])
 
-
-											
-	            						@include($piece->blade)
 	            					@endIf
 	            				</div>
 	            				<?php $pieceCount++;?>
