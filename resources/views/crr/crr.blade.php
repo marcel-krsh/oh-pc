@@ -14,7 +14,7 @@
 		$('.'+className).fadeIn();
 	}
 
-	function showOnlyFindingsFor(className){
+	function showOnlyInspectionsFor(className){
 		
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
