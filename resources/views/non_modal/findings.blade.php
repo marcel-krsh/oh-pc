@@ -32,8 +32,8 @@
 		margin: 3px 3px 3px 3px;
 	}
 	#modal-size {
-		height: 100%;
-		width:100%;
+		/*height: 100%;
+		width:100%;*/
 	}
 	.modal-findings-left {
 		width: auto;
