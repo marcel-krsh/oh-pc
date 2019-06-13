@@ -737,7 +737,7 @@ class ReportsController extends Controller
           if ($request->get('print') != 1) {
             return view('crr.crr', compact('report', 'data', 'version', 'print', 'users', 'current_user'));
           } else {
-            return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'current_user'));
+            return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user'));
           }
         }
       } else {

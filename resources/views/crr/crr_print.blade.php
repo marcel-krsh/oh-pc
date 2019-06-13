@@ -75,6 +75,9 @@ body{ background-color: white; }
 
 
             <div id="main-report-view" class="" style=" min-width: auto; padding:0px; background-color: currentColor;">
+            	@php
+					$j = 0;
+				@endphp
             	@forEach($data as $section)
 
 
@@ -96,12 +99,38 @@ body{ background-color: white; }
 	            					@endIf
 	            					@if($pieceData[0]->type == 'blade')
 	            						<?php
-if (array_key_exists(1, $pieceData)) {
-  $bladeData = $pieceData[1];
-} else {
-  $bladeData = null;
-}
-?>
+											if (array_key_exists(2, $pieceData)) {
+												$bladeData = $pieceData[2];
+											} else {
+												$bladeData = null;
+											}
+											?>
+											@if($piece->blade != 'crr_parts.crr_findings')
+											@include($piece->blade, [$inspections_type = 'site'])
+											@endif
+											<?php
+											if (array_key_exists(3, $pieceData)) {
+												$bladeData = $pieceData[3];
+											} else {
+												$bladeData = null;
+											}
+											?>
+											@if($piece->blade != 'crr_parts.crr_findings')
+											@include($piece->blade, [$inspections_type = 'building'])
+											@endif
+
+
+											<?php
+											if (array_key_exists(1, $pieceData)) {
+												$bladeData = $pieceData[1];
+											} else {
+												$bladeData = null;
+											}
+											?>
+											@include($piece->blade, [$inspections_type = 'unit'])
+
+
+											@endIf
 	            						@include($piece->blade)
 	            					@endIf
 	            				</div>
