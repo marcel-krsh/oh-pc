@@ -357,8 +357,8 @@
 
 				@endIf
 
-				{{-- @if($j > 3)
-				{{ dd($piece->blade) }}
+				{{-- @if($j > 2)
+				{{ dd($pieceData) }}
 				@endif
 				@php
 					$j++;

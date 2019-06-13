@@ -1,24 +1,24 @@
 <?php $inspections = $bladeData ?>
-
 @if(!is_null($inspections))
 @if($inspections_type == 'unit')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2>Units Inspected: </h2><small><i class="a-folder"></i> : FILE INSPECTION &nbsp;|  &nbsp;<i class="a-mobile"></i> : SITE INSPECTION </small><hr class="dashed-hr uk-margin-bottom">
+		<h2>Units Inspected: </h2>
+		<small><i class="a-folder"></i> : FILE INSPECTION &nbsp;|  &nbsp;<i class="a-mobile"></i> : SITE INSPECTION </small>
+		<hr class="dashed-hr uk-margin-bottom">
 		<?php //dd($i);
 		$siteVisited = array();
 		$fileVisited = array();
 		$nameOutput = array();
 		$loops = 0;
 		if(is_array($inspections) && count($inspections)> 0){
-			$currentUnit = $inspections[0]->unit_id;
+			$currentUnit = 0;
 		}
 		$inspections = collect($inspections);
 			//$inspections =$inspections->sortByDesc('unit_id');
 		?>
 		<div class="uk-column-1-3 uk-column-divider">
 			@forEach($inspections as $i)
-
 			<?php $noShow = 0 ; ?>
 			@if($currentUnit != $i->unit_id)
 			<div>
@@ -57,21 +57,14 @@
 				</div>
 				<hr class="dashed-hr uk-margin-small-bottom">
 			</div>
-
 			@endIf
-
 			@endForEach
-
-
-
-		</li></ul>
-		<?php //dd($siteVisited,$fileVisited); ?>
-	</p>
-</div>
-</div>
+		</div>
+	</div>
 </div>
 <hr class="dashed-hr uk-margin-large-bottom">
 @endif
+
 @if($inspections_type == 'site')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
@@ -95,6 +88,8 @@
 		</div>
 	</div>
 </div>
+<hr class="dashed-hr uk-margin-large-bottom">
+
 @endif
 @if($inspections_type == 'building')
 <div uk-grid class="uk-margin-bottom">
@@ -103,7 +98,6 @@
 		<hr class="dashed-hr uk-margin-bottom">
 		<?php //dd($i);
 		$inspections = collect($inspections);
-			//$inspections =$inspections->sortByDesc('unit_id');
 		?>
 		<div class="uk-column-1-3 uk-column-divider">
 			@forEach($inspections as $i)
@@ -114,12 +108,14 @@
 				<div style="float: right;">
 					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan"  @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, null, null,'0');" @endif  @endcan></i>
 				</div>
-				<hr class="dashed-hr uk-margin-small-bottom">
 			</div>
+				<hr class="dashed-hr uk-margin-small-bottom">
 			@endForEach
 		</div>
 	</div>
 </div>
+<hr class="dashed-hr uk-margin-large-bottom">
+
 @endif
 @else
 <hr class="dashed-hr">
