@@ -9,7 +9,7 @@
 
 <script>
 	function showOnlyFindingsFor(className){
-		//unit-{{$f->unit_id}}-finding finding-group
+		
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
 	}
