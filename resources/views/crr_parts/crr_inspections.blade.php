@@ -16,10 +16,27 @@
    					 column-rule: 1px solid #939598;
     			}
     			.on-folder {
+    				    position: relative;
+					    left: -4px;
+					    top: -8px;
+					    font-size: 0.75rem;
+					    font-weight: bolder;
+    			}
+    			.on-phone {
     				position: relative;
-    				left:-5px;
-    				top:5px;
-    				font-size: .5rem;
+				    left: -4px;
+				    top: -8px;
+				    font-size: 0.75rem;
+				    font-weight: bolder;
+    			}
+    			.no-findings {
+    				color:#45925e;
+    			}
+    			.has-findings {
+    				color:#d21b7c;
+    			}
+    			.has-home {
+    				font-weight: bolder;
     			}
 			</style>
 		@endCan
@@ -80,9 +97,9 @@
 
 					@elseIf(!in_array($g->unit_id, $fileVisited))
 						@if(!in_array($g->unit_id, $siteVisited))
-						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i>
+						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i> <i class="a-circle-cross on-phone has-findings"></i>
 						@endIf
-						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> <i class="a-circle-checked on-folder"></i><?php $fileVisited[]=$g->unit_id; ?>
+						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> <i class="a-circle-checked on-folder no-findings"></i><?php $fileVisited[]=$g->unit_id; ?>
 
 					@else
 					<?php $noShow = 1; ?>
