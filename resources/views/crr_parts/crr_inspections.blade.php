@@ -26,12 +26,19 @@
 			$inspections = collect($inspections);
 			$inspections =$inspections->sortBy('unit_name');
 			//dd($inspections);
+			$homeKeys = \App\Models\SystemSettings::select('value')->where('key','program_home')->first();
+			$homeKeys = explode($homeKeys->valuue,',');
 		
 			$fileInspections = count(collect($inspections)->where('is_site_visit',0)->groupBy('unit_id'));
 			$siteInspections = count(collect($inspections)->where('is_site_visit',1)->groupBy('unit_id'));
+			$homeSiteInspections = count(collect($inspections)->whereIn('program_key',$homeKeys)->where('is_site_visit',1)->groupBy('unit_id'));
+			$homeFileInspections = count(collect($inspections)->whereIn('program_key',$homeKeys)->where('is_site_visit',0)->groupBy('unit_id'));
+			
 
 		?>
-		<small><i class="a-folder"></i> : @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf &nbsp;|  &nbsp;<i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf </small>
+		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInpsections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf &nbsp;| @if($homeSiteInspections > 0) &nbsp;| HOME SITE {{$homeSiteInpsections}} @endIf  @if($homeFileInspections > 0) &nbsp;| HOME FILE {{$homeFileInpsections}} @endIf
+
+		</small>
 		<hr class="dashed-hr uk-margin-bottom">
 		
 		<div class="uk-column-1-3 uk-column-divider">
