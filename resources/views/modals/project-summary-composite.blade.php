@@ -1,6 +1,12 @@
 <script>
 	//resizeModal(95);
+
 </script>
+<style type="text/css">
+	#modal-size-3 {
+		height: 85%;
+	}
+</style>
 <div id="modal-project-summary" class="uk-padding-remove uk-margin-bottom">
 	<div class="modal-project-summary-left" id="modal-left-summary">
 		@include('dashboard.partials.project-summary-left')
