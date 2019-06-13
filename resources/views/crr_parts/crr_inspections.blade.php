@@ -8,6 +8,9 @@
 				#modal-size {
 					height: 815px;
 				}
+				.uk-column-divider {
+   					 column-rule: 1px solid #939598;
+    			}
 			</style>
 		@endCan
 
