@@ -1,3 +1,4 @@
+@if(!isset($loadingAjax))
 <script>
 	$('#type-list').scroll(function(){
 	    scrollPosType = $('#type-list').scrollTop();
@@ -5,6 +6,7 @@
 	});
 </script>
 <div id="type-list" class="uk-width-1-1 uk-panel">
+@endIf
 	<h3 class="uk-text-uppercase uk-text-emphasis uk-margin-top">Select Location</h3>
 	<div class="uk-column-1-3@m uk-column-1-2@s ">
 		<ul class="uk-list uk-list-divider uk-margin-left">
@@ -32,4 +34,6 @@
 			@endforeach
 		</ul>
 	</div>
+@if(!isset($loadingAjax))	
 </div>
+@endIf
