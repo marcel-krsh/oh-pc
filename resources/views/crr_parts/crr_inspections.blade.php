@@ -24,7 +24,7 @@
     			}
     			.on-phone {
     				position: relative;
-				    left: -4px;
+				    left: -10px;
 				    top: -8px;
 				    font-size: 0.75rem;
 				    font-weight: bolder;
