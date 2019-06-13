@@ -27,7 +27,11 @@
 			$inspections =$inspections->sortBy('unit_name');
 			//dd($inspections);
 			$homeKeys = \App\Models\SystemSetting::select('value')->where('key','program_home')->first();
-			$homeKeys = explode($homeKeys->valuue,',');
+			if(property_exists($homeKeys, 'value')){
+				$homeKeys = explode($homeKeys->value,',');
+			}else{
+				$homeKeys = [];
+			}
 		
 			$fileInspections = count(collect($inspections)->where('is_site_visit',0)->groupBy('unit_id'));
 			$siteInspections = count(collect($inspections)->where('is_site_visit',1)->groupBy('unit_id'));
