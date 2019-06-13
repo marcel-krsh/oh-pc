@@ -80,7 +80,7 @@ foreach($grouped_bf as $bk => $bf) {
 			@else
 			FINDING
 			@endIf
-		@endIf <br /><span id="show-all-findings-button" style="display: none;"> | <div class="uk-badge uk-text-right@s badge-filter">
+		@endIf <br /><span class="show-all-findings-button" style="display: none;"> | <div class="uk-badge uk-text-right@s badge-filter">
                 <a onclick="showOnlyFindingsFor('finding-group');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>REMOVE FINDINGS FILTER</span></a>
 
             </div>

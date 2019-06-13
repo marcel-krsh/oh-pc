@@ -9,7 +9,7 @@
 
 <script>
 	function showOnlyFindingsFor(className){
-		$('#show-all-findings-button').slideToggle();
+		$('.show-all-findings-button').slideToggle();
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
 	}
