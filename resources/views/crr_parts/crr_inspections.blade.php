@@ -1,8 +1,8 @@
 <?php 
 
 	$inspections = $bladeData;
-	$projectDetails = [];
-	$findingd = [];
+	$projectDetails = null;
+	$findings = null;
 	if(array_key_exists(4, $pieceData)){
 	  $projectDetails = $pieceData[4];
 	}
@@ -12,7 +12,7 @@
 
 	
 ?>
-@if(count($projectDetails)>0))
+@if(null !== $projectDetails)
 {{-- Display project details --}}
 	<?php  dd($projectDetails); ?>
 
