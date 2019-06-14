@@ -70,8 +70,8 @@ class CrrReport extends Model
     }
 
     public function signators() {
-
-        return $this->project->contactRoles;
+        $allowedRoles = [2,30006,27,30005,21,16,20,5,28,17,650012,37,38,39,40];
+        return $this->project->contactRoles->whereIn('project_role_key',$allowedRoles);
     }
 
 
