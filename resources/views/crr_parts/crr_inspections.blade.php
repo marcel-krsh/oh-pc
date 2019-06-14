@@ -40,7 +40,8 @@
     			}
 			</style>
 		@endCan
-
+		<a href="#findings-list" class="uk-link-mute findings-list-link" >Try Me</a>
+				
 		<?php 
 
 			$siteVisited = array();
@@ -79,7 +80,6 @@
 				$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
 				?>
 				@if(!in_array($i->unit_id, $nameOutput))
-				<a href="#findings-list" class="uk-link-mute findings-list-link" ></a>
 				<div  style="float: left;" @if($print !== 1) class="use-hand-cursor" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');
 		$('.findings-list-link').trigger('click');" @endIf >
 					{{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] =$i->unit_id; ?> :
