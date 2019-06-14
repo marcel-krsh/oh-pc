@@ -1237,8 +1237,11 @@ The following div is defined in this particular tab and pushed to the main layou
     @endcan
 
     @can('access_auditor')
-    function assignAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element){
-    	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element);
+    function assignAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element, fullscreen=null,warnAboutSave=null,fixedHeight=0,inmodallevel=0){
+    	if(inmodallevel)
+    	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element+'/1', fullscreen,warnAboutSave,fixedHeight,inmodallevel);
+    	else
+    	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element, fullscreen,warnAboutSave,fixedHeight,inmodallevel);
     }
 
     function swapAuditor(auditor_id, audit_id, building_id, unit_id, element, amenity_id=0){

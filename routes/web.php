@@ -309,7 +309,7 @@
 
             Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
             Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
-            Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign/{element}', 'AuditController@assignAuditorToAmenity')->name('amenities.assign.auditor');
+            Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign/{element}/{im_model?}', 'AuditController@assignAuditorToAmenity')->name('amenities.assign.auditor');
             Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign', 'AuditController@saveAssignAuditorToAmenity')->name('amenities.assign.auditor.save');
             Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete', 'AuditController@markCompleted')->name('amenities.mark.completed');
             Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}/{element}', 'AuditController@swapAuditorToAmenity')->name('amenities.swap.auditor');
@@ -508,7 +508,7 @@
         });
 
         //Route::group(['middleware' => ['allita.auth']], function() {
-            
+
 
 
         // });
