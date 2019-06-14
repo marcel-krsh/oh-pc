@@ -182,11 +182,11 @@
 					@else
 					<?php $noShow = 1; ?>
 					@endIf
-					!! {{$noShow}} !!
+					
 					@endForEach
-					@if($noShow == 1)
+					@if(!in_array($g->unit_id, $fileVisited))
 						<span style="opacity: 0"><i class="a-folder uk-text-large"></i> <i class="a-circle-checked on-folder no-findings"></i></span>
-						<?php $noShow = 0; ?>
+						
 					@endIf
 
 				</div>
