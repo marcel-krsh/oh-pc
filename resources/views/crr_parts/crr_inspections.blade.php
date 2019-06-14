@@ -14,7 +14,37 @@
 ?>
 @if(null !== $projectDetails)
 {{-- Display project details --}}
-	<?php  dd($projectDetails); ?>
+	<div id="project-details-stats" class="uk-width-1-1 uk-grid-margin uk-first-column" style="margin-top:20px;">
+		<div uk-grid="" class="uk-grid">
+			<div class="uk-width-2-3 uk-first-column">
+				<ul class="leaders" style="margin-right:30px;">
+					<li><span>Total Buildings</span> <span>{{$projectDetails->total_building}}</span></li>
+					<li><span>Total Units</span> <span>{{$projectDetails->total_units}}</span></li>
+					<li><span class="indented">• Market Rate Units</span> <span>{{$projectDetails->market_rate}}</span></li>
+					<li><span class="indented">• Program Units</span> <span>{{$projectDetails->subsidized}}</span></li>
+					<li><span>Programs</span> <span></span></li>
+										<?php $pdPrograms = json_decode($projectDetails->programs); ?>
+										@forEach($pdPrograms as $pdp)
+											<li><span class="indented">• {{$pdp->name}}</span> <span>{{$pdp->units}}</span></li>
+										@endForEach
+				</ul>
+			</div>
+			<div class="uk-width-1-3">
+				<h5 class="uk-margin-remove"><strong>OWNER: </strong></h5>
+				<div class="address" style="margin-bottom:20px;">
+					<i class="a-avatar"></i> <br>
+					<i class="a-phone-5"></i>  <br>
+					<i class="a-mail-send"></i> <br>
+									</div>
+				<h5 class="uk-margin-remove"><strong>Managed By: </strong></h5>
+				<div class="address">
+					<i class="a-avatar"></i> <br>
+					<i class="a-phone-5"></i>  <br>
+					<i class="a-mail-send"></i> <br>
+									</div>
+			</div>
+		</div>
+	</div>
 
 @endIf
 
