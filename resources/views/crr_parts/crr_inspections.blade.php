@@ -101,8 +101,8 @@
     			}
     			.finding-number {
     				font-size: 9px;
-				    background: black;
-				    padding: 0px 0px 0px;
+				    background: #666;
+				    padding: 0px 4px 0px;
 				    border: 0px;
 				    min-width: 13px;
 				    max-height: 13px;
