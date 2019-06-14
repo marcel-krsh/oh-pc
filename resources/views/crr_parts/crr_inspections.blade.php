@@ -14,7 +14,7 @@
 	
 ?>
 @if(null !== $projectDetails)
-	@if($projectDeatailsOutput !== 1)
+	@if($projectDeatailsOutput != 1)
 	{{-- Display project details --}}
 		<div id="project-details-stats" class="uk-width-1-1 uk-grid-margin uk-first-column" style="margin-top:20px;">
 			<div uk-grid="" class="uk-grid">
