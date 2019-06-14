@@ -274,6 +274,9 @@
 		padding-left: 15px;
 		padding-right: 15px;
 	}
+	ul.leaders, .leaders {
+		background-color: white;
+	}
 	@endCan
 	#section-thumbnails {
 		-webkit-transition: width 1s ease-out;
