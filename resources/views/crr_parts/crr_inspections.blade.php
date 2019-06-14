@@ -80,14 +80,14 @@
     				    position: relative;
 					    left: -4px;
 					    top: -8px;
-					    font-size: 0.75rem;
+					    font-size: 0.88rem;
 					    font-weight: bolder;
     			}
     			.on-phone {
     				position: relative;
 				    left: -10px;
 				    top: -8px;
-				    font-size: 0.75rem;
+				    font-size: 0.88rem;
 				    font-weight: bolder;
     			}
     			.no-findings {
@@ -100,12 +100,12 @@
     				font-weight: bolder;
     			}
     			.finding-number {
-    				font-size: 8px;
+    				font-size: 9px;
 				    background: black;
-				    padding: 0px 2px 0px;
+				    padding: 0px 0px 0px;
 				    border: 0px;
-				    min-width: 12px;
-				    max-height: 12px;
+				    min-width: 13px;
+				    max-height: 13px;
 				    line-height: 1.5;
     			}
 			</style>
