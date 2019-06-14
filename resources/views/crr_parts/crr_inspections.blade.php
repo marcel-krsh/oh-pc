@@ -1,4 +1,65 @@
-<?php $inspections = $bladeData ?>
+<?php
+
+	$inspections = $bladeData;
+	$projectDetails = null;
+	$findings = null;
+	if(array_key_exists(4, $pieceData)){
+	  $projectDetails = $pieceData[4];
+	}
+	if(array_key_exists(5, $pieceData)){
+	  $findings = $pieceData[5];
+	}
+
+
+
+?>
+@if(null !== $projectDetails)
+	@if(session('projectDetailsOutput') == 0)
+		<div id="project-details-stats" class="uk-width-1-1 uk-grid-margin uk-first-column" style="margin-top:20px;">
+			<div uk-grid="" class="uk-grid">
+				<div class="uk-width-1-1">
+					<h2>Project Details: </h2>
+				</div>
+				<div class="uk-width-2-3 uk-first-column">
+					<ul class="leaders" style="margin-right:30px;">
+						<li><span>Total Buildings</span> <span>{{$projectDetails->total_building}}</span></li>
+						<li><span>Total Units</span> <span>{{$projectDetails->total_units}}</span></li>
+						<li><span class="indented">• Market Rate Units</span> <span>{{$projectDetails->market_rate}}</span></li>
+						<li><span class="indented">• Program Units</span> <span>{{$projectDetails->subsidized}}</span></li>
+						<?php $pdPrograms = json_decode($projectDetails->programs); ?>
+						<li><span>Programs</span> <span>{{count($pdPrograms)}}</span></li>
+											<?php $pdpLoop = 1; ?>
+											@forEach($pdPrograms as $pdp)
+												<li><span class="indented">• [{{$pdpLoop}}] {{$pdp->name}}</span> <span>{{$pdp->units}}</span></li>
+												<?php $programReference[$pdp->program_id] = $pdpLoop; $pdpLoop ++; ?>
+											@endForEach
+					</ul>
+				</div>
+				<div class="uk-width-1-3">
+					<h5 class="uk-margin-remove"><strong>OWNER: </strong></h5>
+					<div class="address" style="margin-bottom:20px;">
+						<i class="a-building" style="font-weight: bolder;"></i> @if($projectDetails->owner_name != '') {{$projectDetails->owner_name}} @else NA @endIf<br>
+						<i class="a-avatar"></i> POC: @if($projectDetails->owner_poc != ''){{$projectDetails->owner_poc}}@else NA @endIf<br>
+						<i class="a-phone-5"></i>  @if($projectDetails->owner_phone != ''){{$projectDetails->owner_phone}}@else NA @endIf<br>
+						<i class="a-fax-2"></i>  @if($projectDetails->owner_fax != ''){{$projectDetails->owner_fax}}@else NA @endIf<br>
+						<i class="a-mail-send"></i> @if($projectDetails->owner_email != '')<a class="uk-link-mute" href="mailto:{{$projectDetails->owner_email}}">{{$projectDetails->owner_email}}</a>@else NA @endIf<br>
+										</div>
+					<h5 class="uk-margin-remove"><strong>Managed By: </strong></h5>
+					<div class="address">
+						<i class="a-building" style="font-weight: bolder;"></i> @if($projectDetails->manager_name != '') {{$projectDetails->manager_name}} @else NA @endIf<br>
+						<i class="a-avatar"></i> POC: @if($projectDetails->manager_poc != ''){{$projectDetails->manager_poc}}@else NA @endIf<br>
+						<i class="a-phone-5"></i>  @if($projectDetails->manager_phone != ''){{$projectDetails->manager_phone}}@else NA @endIf<br>
+						<i class="a-fax-2"></i>  @if($projectDetails->manager_fax != ''){{$projectDetails->manager_fax}}@else NA @endIf<br>
+						<i class="a-mail-send"></i> @if($projectDetails->manager_email != '')<a class="uk-link-mute" href="mailto:{{$projectDetails->manager_email}}">{{$projectDetails->manager_email}}</a>@else NA @endIf<br>
+										</div>
+				</div>
+			</div>
+		</div>
+		<hr class="dashed-hr uk-margin-bottom">
+		<?php session(['projectDetailsOutput'=>1]) ?>
+	@endIf
+@endIf
+
 @if(!is_null($inspections))
 @if(isset($inspections_type) && $inspections_type == 'unit')
 <?php
@@ -18,14 +79,14 @@
     				    position: relative;
 					    left: -4px;
 					    top: -8px;
-					    font-size: 0.75rem;
+					    font-size: 0.88rem;
 					    font-weight: bolder;
     			}
     			.on-phone {
     				position: relative;
 				    left: -10px;
 				    top: -8px;
-				    font-size: 0.75rem;
+				    font-size: 0.88rem;
 				    font-weight: bolder;
     			}
     			.no-findings {
@@ -37,8 +98,18 @@
     			.has-home {
     				font-weight: bolder;
     			}
+    			.finding-number {
+    				font-size: 9px;
+				    background: #666;
+				    padding: 0px 4px 0px;
+				    border: 0px;
+				    min-width: 13px;
+				    max-height: 13px;
+				    line-height: 1.5;
+    			}
 			</style>
 		@endCan
+
 
 		<?php
 
@@ -61,8 +132,8 @@
 
 
 		?>
-		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInspections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf &nbsp;| @if($homeSiteInspections > 0) &nbsp;| HOME SITE {{$homeSiteInspections}} @endIf  @if($homeFileInspections > 0) &nbsp;| HOME FILE {{$homeFileInspections}} @endIf
 
+		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInspections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp; @if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
 
 
 		</small>
@@ -73,13 +144,20 @@
 			<?php $noShow = 0 ; ?>
 			@if($currentUnit != $i->unit_id)
 			<div>
+
+				@if(!in_array($i->unit_id, $nameOutput))
 				<?php
 				$currentUnit = $i->unit_id;
 				$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
+				$thisUnitFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file'));
+				$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
 				?>
-				@if(!in_array($i->unit_id, $nameOutput))
-				<div  style="float: left;" @if($print !== 1) class="use-hand-cursor" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding')" @endIf >
-					{{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] =$i->unit_id; ?> :
+				<div  style="float: left;"  >
+
+					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');">
+
+					@endIf {{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] =$i->unit_id; ?> :
+				@if($print !== 1)</a>@endIf
 				</div>
 
 				@endIf
@@ -89,16 +167,17 @@
 					@if($g->is_site_visit == 1)
 						@if(!in_array($g->unit_id, $siteVisited))
 
-						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> <i class="a-circle-cross on-phone has-findings"></i> <?php $siteVisited[] =$g->unit_id;  ?>
+
+						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone">{{$thisUnitSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endIf <?php $siteVisited[] =$g->unit_id;  ?>
 						@else
 						<?php $noShow = 1; ?>
 						@endIf
 
 					@elseIf(!in_array($g->unit_id, $fileVisited))
 						@if(!in_array($g->unit_id, $siteVisited))
-						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i> <i class="a-circle-cross on-phone has-findings"></i>
+						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i>
 						@endIf
-						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> <i class="a-circle-checked on-folder no-findings"></i><?php $fileVisited[]=$g->unit_id; ?>
+						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf</i><?php $fileVisited[]=$g->unit_id; ?>
 
 					@else
 					<?php $noShow = 1; ?>

@@ -206,6 +206,33 @@ class Project extends Model
         return $details;
     }
 
+    public function auditSpecificProjectDetails($audit_id)
+    {
+        // details is a cache of the project's information at the time of the audit.
+        // details is updated whenever the respective sources are changed, as long as the most current audit is not archived
+        
+
+        if (!$audit_id) {
+            // no audit for this project yet, use default project default
+            // first check if there are default values and add them if not
+            $details = ProjectDetail::where('project_id', '=', $this->id)
+                    ->orderBy('id', 'desc')
+                    ->first();            
+        } else {
+            $details = ProjectDetail::where('project_id', '=', $this->id)
+                    ->where('audit_id', '=', $audit_id)
+                    ->orderBy('id', 'desc')
+                    ->first();
+        }
+
+        if(!$details){
+            // create a default record 
+            $details = $this->set_project_defaults();
+        }
+
+        return $details;
+    }
+
     public function set_project_defaults($audit_id=null)
     {
         // create a record in project_details table with the current stats, contact info

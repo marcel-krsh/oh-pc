@@ -1,5 +1,10 @@
 @extends('layouts.simplerAllita')
 @section('head')
+<?php
+	
+	session(['projectDetailsOutput' =>0]);
+	
+?>
 <title>{{ $report->template()->template_name }}: #{{ $report->id }} || {{ $report->project->project_number }} : {{ $report->project->project_name }} || AUDIT: {{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
 <link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
 <script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
@@ -9,16 +14,25 @@
 
 <script>
 	function showOnlyFindingsFor(className){
-		$('.show-all-findings-button').slideToggle();
+		if(className == 'finding-group'){
+			$('.show-all-findings-button').slideUp();
+		}else{
+			$('.show-all-findings-button').slideDown();
+		}
+		
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
-		UIkit.scroll('#findings-list');
 	}
 
 	function showOnlyInspectionsFor(className){
 
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
+	}
+
+	function scrollToAnchor(aid){
+	    var aTag = $("a[name='"+ aid +"']");
+	    $('html,body').animate({scrollTop: aTag.offset().top},'slow');
 	}
 	function showComments(partId){
 		$('#section-thumbnails').css({'min-width':'400px','width':'400px','padding':'0px'});
@@ -260,6 +274,9 @@
 		padding-left: 15px;
 		padding-right: 15px;
 	}
+	ul.leaders, .leaders {
+		background-color: white;
+	}
 	@endCan
 	#section-thumbnails {
 		-webkit-transition: width 1s ease-out;
@@ -328,6 +345,7 @@
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
 		@php
 			$j = 0;
+			
 		@endphp
 
 		@forEach($data as $section)
@@ -361,7 +379,9 @@
 
 			</div>@endCan
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
-				<?php $pieceData = json_decode($piece->data);?>
+				<?php $pieceData = json_decode($piece->data);
+					  // set this so we only output details once from the blade.
+				;?>
 
 				@if($pieceData[0]->type =='free-text')
 
@@ -377,13 +397,14 @@
 				@endphp --}}
 				@if($pieceData[0]->type == 'blade')
 				<?php
+
 				if (array_key_exists(2, $pieceData)) {
 					$bladeData = $pieceData[2];
 				} else {
 					$bladeData = null;
 				}
 				?>
-				@if($piece->blade != 'crr_parts.crr_findings')
+				@if($piece->blade == 'crr_parts.crr_inspections')
 				@include($piece->blade, [$inspections_type = 'site'])
 				@endif
 				<?php
@@ -393,7 +414,7 @@
 					$bladeData = null;
 				}
 				?>
-				@if($piece->blade != 'crr_parts.crr_findings')
+				@if($piece->blade == 'crr_parts.crr_inspections')
 				@include($piece->blade, [$inspections_type = 'building'])
 				@endif
 
@@ -421,7 +442,11 @@
 	</div>
 
 
-
+<?php
+	
+	session(['projectDetailsOutput' =>0]);
+	
+?>
 
 </div>
 @can('access_auditor')<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
