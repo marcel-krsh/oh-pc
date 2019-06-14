@@ -14,8 +14,8 @@
 	
 ?>
 @if(null !== $projectDetails)
-<span class="uk-button">{{$projectDetailsOutput}}</span>
-	@if($projectDetailsOutput == 0)
+<span class="uk-button">{{session('projectDetailsOutput')}}</span>
+	@if(session('projectDetailsOutput') == 0)
 		<div id="project-details-stats" class="uk-width-1-1 uk-grid-margin uk-first-column" style="margin-top:20px;">
 			<div uk-grid="" class="uk-grid">
 				<div class="uk-width-1-1">
@@ -52,10 +52,10 @@
 			</div>
 		</div>
 		<hr class="dashed-hr">
-		<?php $projectDetailsOutput = 1; ?>
+		<?php session(['projectDetailsOutput'=>1]) ?>
 	@endIf
 @endIf
-<span class="uk-button">{{$projectDetailsOutput}}</span>
+<span class="uk-button">{{session('projectDetailsOutput')}}</span>
 @if(!is_null($inspections))
 @if(isset($inspections_type) && $inspections_type == 'unit')
 

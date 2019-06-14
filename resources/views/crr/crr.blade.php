@@ -1,11 +1,9 @@
 @extends('layouts.simplerAllita')
 @section('head')
 <?php
-	if(!isset($projectDetailsOutput)){
-				$projectDetailsOutput = 0; 
-				echo "<script>alert('zero');</script>";
-
-			}
+	
+	session(['projectDetailsOutput' =>0]);
+	echo "<script>alert('".session('projectDetailsOutput')."');</script>";
 ?>
 <title>{{ $report->template()->template_name }}: #{{ $report->id }} || {{ $report->project->project_number }} : {{ $report->project->project_name }} || AUDIT: {{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
 <link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
@@ -441,7 +439,11 @@
 	</div>
 
 
-
+<?php
+	
+	session(['projectDetailsOutput' =>0]);
+	
+?>
 
 </div>
 @can('access_auditor')<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
