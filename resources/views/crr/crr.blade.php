@@ -3,7 +3,7 @@
 <?php
 	
 	session(['projectDetailsOutput' =>0]);
-	echo "<script>alert('".session('projectDetailsOutput')."');</script>";
+	
 ?>
 <title>{{ $report->template()->template_name }}: #{{ $report->id }} || {{ $report->project->project_number }} : {{ $report->project->project_name }} || AUDIT: {{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
 <link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
