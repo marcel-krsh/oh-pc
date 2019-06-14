@@ -15,7 +15,7 @@
 ?>
 @if(null !== $projectDetails)
 <span class="uk-button">{{$projectDetailsOutput}}</span>
-	@if($projectDeatailsOutput == 0)
+	@if($projectDetailsOutput == 0)
 		<div id="project-details-stats" class="uk-width-1-1 uk-grid-margin uk-first-column" style="margin-top:20px;">
 			<div uk-grid="" class="uk-grid">
 				<div class="uk-width-1-1">
@@ -52,7 +52,7 @@
 			</div>
 		</div>
 		<hr class="dashed-hr">
-		<?php $projectDeatailsOutput = 1; ?>
+		<?php $projectDetailsOutput = 1; ?>
 	@endIf
 @endIf
 <span class="uk-button">{{$projectDetailsOutput}}</span>

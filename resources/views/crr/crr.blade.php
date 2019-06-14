@@ -388,7 +388,7 @@
 				@endphp --}}
 				@if($pieceData[0]->type == 'blade')
 				<?php
-				$projectDeatailsOutput = 0; 
+				$projectDetailsOutput = 0; 
 				if (array_key_exists(2, $pieceData)) {
 					$bladeData = $pieceData[2];
 				} else {
