@@ -182,7 +182,7 @@
 					@else
 					<?php $noShow = 1; ?>
 					@endIf
-
+					!! {{$noShow}} !!
 					@endForEach
 					@if($noShow == 1)
 						<span style="opacity: 0"><i class="a-folder uk-text-large"></i> <i class="a-circle-checked on-folder no-findings"></i></span>
