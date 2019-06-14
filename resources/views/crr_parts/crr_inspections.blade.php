@@ -81,6 +81,9 @@
 				?>
 				@if(!in_array($i->unit_id, $nameOutput))
 				<div  style="float: left;"  >
+					<?php 
+						dd($report);
+					?>
 					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');">
 
 					@endIf {{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] =$i->unit_id; ?> :
