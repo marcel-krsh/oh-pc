@@ -78,15 +78,15 @@
     			.on-folder {
     				    position: relative;
 					    left: -4px;
-					    top: -8px;
-					    font-size: 0.88rem;
+					    top: -7.5px;
+					    font-size: 0.95rem;
 					    font-weight: bolder;
     			}
     			.on-phone {
     				position: relative;
 				    left: -10px;
-				    top: -8px;
-				    font-size: 0.88rem;
+				    top: -7px;
+				    font-size: 0.95rem;
 				    font-weight: bolder;
     			}
     			.no-findings {
@@ -106,6 +106,20 @@
 				    min-width: 13px;
 				    max-height: 13px;
 				    line-height: 1.5;
+    			}
+    			.home-folder {
+    				position: relative;
+				    left: -34px;
+				    top: 0px;
+				    font-size: 0.68rem;
+				    font-weight: bolder;
+    			}
+    			.home-folder-small {
+    				position: relative;
+				    left: -12px;
+				    top: 0px;
+				    font-size: 0.48rem;
+				    font-weight: bolder;
     			}
 			</style>
 		@endCan
@@ -133,7 +147,7 @@
 
 		?>
 
-		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInspections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp; @if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
+		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :&nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
 
 
 		</small>
@@ -151,6 +165,7 @@
 				$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
 				$thisUnitFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file'));
 				$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
+				$isHome = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','HOME'));
 				?>
 				<div  style="float: left;"  >
 
@@ -175,18 +190,18 @@
 
 					@elseIf(!in_array($g->unit_id, $fileVisited))
 						@if(!in_array($g->unit_id, $siteVisited))
-						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i>
+						<span style="color:#cecece"><i class="a-mobile uk-text-large uk-margin-small-right "  ></i> <i class="a-circle-minus on-phone"></i></span>
 						@endIf
-						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf<?php $fileVisited[]=$g->unit_id; ?>
+						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf @if($isHome) <i class="a-home-2 home-folder"></i> @endIf<?php $fileVisited[]=$g->unit_id; ?>
 
 					@else
 					<?php $noShow = 1; ?>
 					@endIf
 
 					@endForEach
-					@if($noShow == 1)
-						<span {{-- style="opacity: 0" --}} class="uk-hidden"><i class="a-folder uk-text-large"></i> <i class="a-circle-checked on-folder no-findings"></i></span>
-						<?php $noShow = 0; ?>
+					@if(!in_array($g->unit_id, $fileVisited))
+						<span style="color:#cecece"><i class="a-folder uk-text-large"></i> <i class="a-circle-minus on-folder"></i></span>
+
 					@endIf
 
 				</div>
