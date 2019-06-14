@@ -392,7 +392,7 @@
 					$bladeData = null;
 				}
 				?>
-				@if($piece->blade != 'crr_parts.crr_findings')
+				@if($piece->blade == 'crr_parts.crr_inspections')
 				@include($piece->blade, [$inspections_type = 'site'])
 				@endif
 				<?php
@@ -402,7 +402,7 @@
 					$bladeData = null;
 				}
 				?>
-				@if($piece->blade != 'crr_parts.crr_findings')
+				@if($piece->blade == 'crr_parts.crr_inspections')
 				@include($piece->blade, [$inspections_type = 'building'])
 				@endif
 

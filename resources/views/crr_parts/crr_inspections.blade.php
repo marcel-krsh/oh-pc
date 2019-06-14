@@ -1,4 +1,23 @@
-<?php $inspections = $bladeData ?>
+<?php 
+
+	$inspections = $bladeData;
+	$projectDetails = [];
+	$findingd = [];
+	if(array_key_exists(4, $pieceData)){
+	  $projectDetails = json_decode($pieceData[4]);
+	}
+	if(array_key_exists(5, $pieceData)){
+	  $findings = json_decode($pieceData[5]);
+	}
+
+	
+?>
+@if(count($projectDetails)>0))
+{{-- Display project details --}}
+	<?php $projectDetails = collect($projectDetails); dd($projectDetails); ?>
+
+@endIf
+
 @if(!is_null($inspections))
 @if(isset($inspections_type) && $inspections_type == 'unit')
 
