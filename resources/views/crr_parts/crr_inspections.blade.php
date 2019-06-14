@@ -14,10 +14,13 @@
 	
 ?>
 @if(null !== $projectDetails)
+<span class="uk-button">{{$projectDetailsOutput}}</span>
 	@if($projectDeatailsOutput == 0)
-	{{-- Display project details --}}
 		<div id="project-details-stats" class="uk-width-1-1 uk-grid-margin uk-first-column" style="margin-top:20px;">
 			<div uk-grid="" class="uk-grid">
+				<div class="uk-width-1-1">
+					<h2>Project Details: </h2> 
+				</div>
 				<div class="uk-width-2-3 uk-first-column">
 					<ul class="leaders" style="margin-right:30px;">
 						<li><span>Total Buildings</span> <span>{{$projectDetails->total_building}}</span></li>
@@ -48,10 +51,11 @@
 				</div>
 			</div>
 		</div>
+		<hr class="dashed-hr">
 		<?php $projectDeatailsOutput = 1; ?>
 	@endIf
 @endIf
-
+<span class="uk-button">{{$projectDetailsOutput}}</span>
 @if(!is_null($inspections))
 @if(isset($inspections_type) && $inspections_type == 'unit')
 
