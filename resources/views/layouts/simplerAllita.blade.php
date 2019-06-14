@@ -17,6 +17,8 @@ if ($allowPageLoad) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="csrf-token" content="{{ csrf_token() }}">
+
   <link rel="stylesheet" href="/css/signature-pad.css{{ asset_version() }}">
 
   <!--[if IE]>
@@ -34,6 +36,9 @@ if ($allowPageLoad) {
 <link rel="stylesheet" href="/css/uikit.min.css{{ asset_version() }}">
 <link rel="stylesheet" href="/css/allita-admin-419171046.css{{ asset_version() }}">
 <link rel="stylesheet" href="/css/system-419171130.css{{ asset_version() }}">
+<link rel="stylesheet" href="/css/auto-complete.css{{ asset_version() }}">
+
+<script src="/js/auto-complete.js{{ asset_version() }}"></script>
 @if (Auth::guest())
 @else
 @endif
@@ -112,6 +117,7 @@ if ($allowPageLoad) {
 			color: #fff;
 		}
 		.uk-input{width:inherit;}
+		#modal-amenity-form .uk-input {width: 100%}
 		</style>
 </head>
 <body class="simpler">
@@ -267,6 +273,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 <script type="text/javascript" src="/js/systems/notes-tab.js{{ asset_version() }}"></script>
 <script type="text/javascript" src="/js/systems/outcomes-tab.js{{ asset_version() }}"></script>
 <script type="text/javascript" src="/js/systems/processing-tab.js{{ asset_version() }}"></script> -->
+
 @endif
 
 <a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
