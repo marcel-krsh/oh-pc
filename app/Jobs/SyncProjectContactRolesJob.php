@@ -116,7 +116,6 @@ class SyncProjectContactRolesJob implements ShouldQueue
                                         'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                         'person_key'=>$v['attributes']['personKey'],
                                         'project_role_key'=>$v['attributes']['developmentRoleKey'],
-                                            
                                         'organization_key'=>$v['attributes']['organizationKey'],
                                     'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
@@ -124,11 +123,15 @@ class SyncProjectContactRolesJob implements ShouldQueue
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
                                         'project_key'=>$v['attributes']['developmentKey'],
+                                        'project_id'=>null,
                                         'project_program_key'=>$v['attributes']['developmentProgramKey'],
+                                        'project_program_id'=>null,
                                         'person_key'=>$v['attributes']['personKey'],
+                                        'person_id'=>null,
                                         'project_role_key'=>$v['attributes']['developmentRoleKey'],
-                                            
+                                        'project_role_id'=>null,
                                         'organization_key'=>$v['attributes']['organizationKey'],
+                                        'organization_id'=>null,
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
                                     //dd('inside.');
