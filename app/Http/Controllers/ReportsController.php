@@ -862,7 +862,8 @@ class ReportsController extends Controller
     //dd($part);
     //get findings
     $originalData = json_decode($part->data);
-    $data[]       = $originalData[0]; 
+    $data[]       = $originalData[0];
+    $data[]       = $report->audit->project->auditSpecificProjectDetails($report->audit_id); 
     $data[]       = $report->audit->reportableFindings; // need this to do counts :/
     $data[]       = $report->audit->unit_inspections;
     $data[]       = $report->audit->project_amenity_inspections;
