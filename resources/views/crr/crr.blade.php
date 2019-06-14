@@ -17,7 +17,6 @@
 		
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
-		scrollToAnchor('findings-list');
 	}
 
 	function showOnlyInspectionsFor(className){
