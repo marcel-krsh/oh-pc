@@ -567,6 +567,7 @@ class ReportsController extends Controller
         $report->from_template_id     = $template->id;
         $report->last_updated_by      = Auth::user()->id;
         $report->created_by           = Auth::user()->id;
+        $report->requires_approval = $template->requires_approval;
         $report->save();
         // record creation history:
         $history = ['date' => date('m-d-Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Created report using template ' . $template->template_name . '.'];
@@ -861,7 +862,8 @@ class ReportsController extends Controller
     //dd($part);
     //get findings
     $originalData = json_decode($part->data);
-    $data[]       = $originalData[0];
+    $data[]       = $originalData[0]; 
+    $data[]       = $report->audit->reportableFindings; // need this to do counts :/
     $data[]       = $report->audit->unit_inspections;
     $data[]       = $report->audit->project_amenity_inspections;
     $data[]       = $report->audit->building_inspections;
