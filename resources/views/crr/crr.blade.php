@@ -9,7 +9,12 @@
 
 <script>
 	function showOnlyFindingsFor(className){
-		$('.show-all-findings-button').slideToggle();
+		if(className == 'finding-group'){
+			$('.show-all-findings-button').slideUp();
+		}else{
+			$('.show-all-findings-button').slideDown();
+		}
+		
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
 		scrollToAnchor('findings-list');
