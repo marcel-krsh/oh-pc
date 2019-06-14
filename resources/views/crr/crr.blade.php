@@ -1,5 +1,12 @@
 @extends('layouts.simplerAllita')
 @section('head')
+<?php
+	if(!isset($projectDetailsOutput)){
+				$projectDetailsOutput = 0; 
+				echo "<script>alert('zero');</script>";
+
+			}
+?>
 <title>{{ $report->template()->template_name }}: #{{ $report->id }} || {{ $report->project->project_number }} : {{ $report->project->project_name }} || AUDIT: {{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
 <link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
 <script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
@@ -337,9 +344,7 @@
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
 		@php
 			$j = 0;
-			if(!isset($projectDetailsOutput)){
-				$projectDetailsOutput = 0; 
-			}
+			
 		@endphp
 
 		@forEach($data as $section)
