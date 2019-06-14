@@ -79,14 +79,14 @@
     				    position: relative;
 					    left: -4px;
 					    top: -8px;
-					    font-size: 0.88rem;
+					    font-size: 0.95rem;
 					    font-weight: bolder;
     			}
     			.on-phone {
     				position: relative;
 				    left: -10px;
 				    top: -8px;
-				    font-size: 0.88rem;
+				    font-size: 0.95rem;
 				    font-weight: bolder;
     			}
     			.no-findings {
