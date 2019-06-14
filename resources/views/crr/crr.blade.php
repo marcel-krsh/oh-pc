@@ -370,7 +370,7 @@
 
 			</div>@endCan
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
-				<?php $pieceData = json_decode($piece->data)
+				<?php $pieceData = json_decode($piece->data);
 					  $projectDeatailsOutput = 0; // set this so we only output details once from the blade.
 				;?>
 
