@@ -175,7 +175,7 @@
 
 					@elseIf(!in_array($g->unit_id, $fileVisited))
 						@if(!in_array($g->unit_id, $siteVisited))
-						<span style="opacity:.3;"><i class="a-mobile uk-text-large uk-margin-small-right "  ></i> <i class="a-circle-minus on-phone"></i></span>
+						<span style="color:#cecece"><i class="a-mobile uk-text-large uk-margin-small-right "  ></i> <i class="a-circle-minus on-phone"></i></span>
 						@endIf
 						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf<?php $fileVisited[]=$g->unit_id; ?>
 
@@ -185,7 +185,7 @@
 					
 					@endForEach
 					@if(!in_array($g->unit_id, $fileVisited))
-						<span style="opacity: .3"><i class="a-folder uk-text-large"></i> <i class="a-circle-minus on-folder"></i></span>
+						<span style="color:#cecece"><i class="a-folder uk-text-large"></i> <i class="a-circle-minus on-folder"></i></span>
 						
 					@endIf
 
