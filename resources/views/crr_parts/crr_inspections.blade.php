@@ -136,11 +136,14 @@
 			<?php $noShow = 0 ; ?>
 			@if($currentUnit != $i->unit_id)
 			<div>
+				
+				@if(!in_array($i->unit_id, $nameOutput))
 				<?php
 				$currentUnit = $i->unit_id;
 				$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
+				$thisUnitFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file'));
+				$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
 				?>
-				@if(!in_array($i->unit_id, $nameOutput))
 				<div  style="float: left;"  >
 					
 					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');">
@@ -156,16 +159,16 @@
 					@if($g->is_site_visit == 1)
 						@if(!in_array($g->unit_id, $siteVisited))
 						
-						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> <i class="a-circle-cross on-phone has-findings"></i> <?php $siteVisited[] =$g->unit_id;  ?>
+						!{{$thisUnitSiteFindings}}<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> <i class="a-circle-cross on-phone has-findings"></i> <?php $siteVisited[] =$g->unit_id;  ?>
 						@else
 						<?php $noShow = 1; ?>
 						@endIf
 
 					@elseIf(!in_array($g->unit_id, $fileVisited))
 						@if(!in_array($g->unit_id, $siteVisited))
-						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i> <i class="a-circle-cross on-phone has-findings"></i>
+						!{{$thisUnitSiteFindings}}<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i> <i class="a-circle-cross on-phone has-findings"></i>
 						@endIf
-						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> <i class="a-circle-checked on-folder no-findings"></i><?php $fileVisited[]=$g->unit_id; ?>
+						!{{$thisUnitFileFindings}}<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> <i class="a-circle-checked on-folder no-findings"></i><?php $fileVisited[]=$g->unit_id; ?>
 
 					@else
 					<?php $noShow = 1; ?>
