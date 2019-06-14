@@ -78,14 +78,14 @@
     			.on-folder {
     				    position: relative;
 					    left: -4px;
-					    top: -8.5px;
+					    top: -7.5px;
 					    font-size: 0.95rem;
 					    font-weight: bolder;
     			}
     			.on-phone {
     				position: relative;
 				    left: -10px;
-				    top: -8px;
+				    top: -7px;
 				    font-size: 0.95rem;
 				    font-weight: bolder;
     			}
