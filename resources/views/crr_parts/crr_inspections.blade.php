@@ -78,7 +78,7 @@
     			.on-folder {
     				    position: relative;
 					    left: -4px;
-					    top: -8px;
+					    top: -8.5px;
 					    font-size: 0.95rem;
 					    font-weight: bolder;
     			}
@@ -106,6 +106,13 @@
 				    min-width: 13px;
 				    max-height: 13px;
 				    line-height: 1.5;
+    			}
+    			.home-folder {
+    				position: relative;
+				    left: -20px;
+				    top: 2px;
+				    font-size: 0.55rem;
+				    font-weight: bolder;
     			}
 			</style>
 		@endCan
@@ -151,6 +158,7 @@
 				$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
 				$thisUnitFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file'));
 				$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
+				$isHome = count(collect($inspections)->where('unit_id',$i->unit_id)->where('group','HOME'));
 				?>
 				<div  style="float: left;"  >
 
@@ -177,7 +185,7 @@
 						@if(!in_array($g->unit_id, $siteVisited))
 						<span style="color:#cecece"><i class="a-mobile uk-text-large uk-margin-small-right "  ></i> <i class="a-circle-minus on-phone"></i></span>
 						@endIf
-						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf<?php $fileVisited[]=$g->unit_id; ?>
+						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf @if($isHome) <i class="a-home-2 home-folder"> @endIf<?php $fileVisited[]=$g->unit_id; ?>
 
 					@else
 					<?php $noShow = 1; ?>
