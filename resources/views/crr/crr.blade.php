@@ -337,6 +337,7 @@
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
 		@php
 			$j = 0;
+			$projectDetailsOutput = 0; 
 		@endphp
 
 		@forEach($data as $section)
@@ -388,7 +389,7 @@
 				@endphp --}}
 				@if($pieceData[0]->type == 'blade')
 				<?php
-				$projectDetailsOutput = 0; 
+
 				if (array_key_exists(2, $pieceData)) {
 					$bladeData = $pieceData[2];
 				} else {
