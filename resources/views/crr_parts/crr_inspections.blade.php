@@ -28,9 +28,10 @@
 						<li><span class="indented">• Program Units</span> <span>{{$projectDetails->subsidized}}</span></li>
 						<?php $pdPrograms = json_decode($projectDetails->programs); ?>
 						<li><span>Programs</span> <span>{{count($pdPrograms)}}</span></li>
-											
+											<?php $pdpLoop = 1; ?>
 											@forEach($pdPrograms as $pdp)
-												<li><span class="indented">• {{$pdp->name}}</span> <span>{{$pdp->units}}</span></li>
+												<li><span class="indented">• [{{$pdpLoop}}] {{$pdp->name}}</span> <span>{{$pdp->units}}</span></li>
+												<?php $programReference[$pdp->program_id] = $pdpLoop; $pdpLoop ++; ?>
 											@endForEach
 					</ul>
 				</div>
