@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 	$inspections = $bladeData;
 	$projectDetails = null;
@@ -11,14 +11,14 @@
 	}
 
 
-	
+
 ?>
 @if(null !== $projectDetails)
 	@if(session('projectDetailsOutput') == 0)
 		<div id="project-details-stats" class="uk-width-1-1 uk-grid-margin uk-first-column" style="margin-top:20px;">
 			<div uk-grid="" class="uk-grid">
 				<div class="uk-width-1-1">
-					<h2>Project Details: </h2> 
+					<h2>Project Details: </h2>
 				</div>
 				<div class="uk-width-2-3 uk-first-column">
 					<ul class="leaders" style="margin-right:30px;">
@@ -62,7 +62,6 @@
 
 @if(!is_null($inspections))
 @if(isset($inspections_type) && $inspections_type == 'unit')
-
 <?php
 	$totalUnits = count(collect($inspections)->groupBy('unit_id'));
 ?>
@@ -111,8 +110,8 @@
 			</style>
 		@endCan
 
-				
-		<?php 
+
+		<?php
 
 			$siteVisited = array();
 			$fileVisited = array();
@@ -124,28 +123,28 @@
 			$inspections = collect($inspections);
 			$inspections =$inspections->sortBy('unit_name');
 			//dd($inspections);
-			
-		
+
+
 			$fileInspections = count(collect($inspections)->where('is_site_visit',0)->groupBy('unit_id'));
 			$siteInspections = count(collect($inspections)->where('is_site_visit',1)->groupBy('unit_id'));
 			$homeSiteInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',1)->groupBy('unit_id'));
 			$homeFileInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',0)->groupBy('unit_id'));
-			
+
 
 		?>
+
 		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInspections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp; @if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
 
-			
 
 		</small>
 		<hr class="dashed-hr uk-margin-bottom">
-		
+
 		<div class="uk-column-1-3 uk-column-divider">
 			@forEach($inspections as $i)
 			<?php $noShow = 0 ; ?>
 			@if($currentUnit != $i->unit_id)
 			<div>
-				
+
 				@if(!in_array($i->unit_id, $nameOutput))
 				<?php
 				$currentUnit = $i->unit_id;
@@ -154,7 +153,7 @@
 				$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
 				?>
 				<div  style="float: left;"  >
-					
+
 					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');">
 
 					@endIf {{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] =$i->unit_id; ?> :
@@ -167,7 +166,8 @@
 					<?php //dd($thisUnitValues, $g); ?>
 					@if($g->is_site_visit == 1)
 						@if(!in_array($g->unit_id, $siteVisited))
-						
+
+
 						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone">{{$thisUnitSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endIf <?php $siteVisited[] =$g->unit_id;  ?>
 						@else
 						<?php $noShow = 1; ?>
@@ -175,7 +175,7 @@
 
 					@elseIf(!in_array($g->unit_id, $fileVisited))
 						@if(!in_array($g->unit_id, $siteVisited))
-						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i> 
+						<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" style="color:rgba(0,0,0,0);" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif  @endcan></i>
 						@endIf
 						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf<?php $fileVisited[]=$g->unit_id; ?>
 

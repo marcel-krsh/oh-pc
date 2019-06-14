@@ -81,7 +81,7 @@
 <div uk-grid>
 	<div class="uk-width-1-1">
 		<div id="modal-findings" class="uk-margin-top"  >
-			
+
 			<div uk-grid>
 				<div class="uk-width-1-2">
 					<div uk-grid >
@@ -132,22 +132,22 @@
 								</div>
 							</div>
 						</div>
-						<div class="uk-width-1-1" style="min-height:400px; max-height: 400px; overflow-y: scroll;">	
+						<div class="uk-width-1-1" style="min-height:400px; max-height: 400px; overflow-y: scroll;">
 
 							<!-- FINDING TYPE LISTS -->
-							
+
 									<div id="dynamic-data" class="uk-margin uk-child-width-auto uk-grid">
 										{{-- Locations --}}
 										{{-- @include('modals.partials.finding-locations') --}}
 										{{-- Amenities --}}
 										{{-- @include('modals.partials.finding-amenities') --}}
 									</div>
-								
+
 
 						</div>
 
 						<div class="uk-width-1-1" cuk-filter="target: .js-filter-findings">
-						
+
 								<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
 									<div class="uk-width-1-1 uk-padding-remove uk-inline">
 										<button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-grid"></i> <span id="select-amenity-text">Select Amenity</span></button>
@@ -178,19 +178,19 @@
 									</div>
 								</div>
 								<div class="uk-margin-remove" uk-grid>
-									
+
 										<button class="uk-button uk-width-1-4" onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button> <button class="uk-button uk-button-primary  uk-width-3-4 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="dynamicModalClose()">DONE ADDING FINDINGS</button>
-										
-									
+
+
 								</div>
 						</div>
 
 					</div>
 				</div>
 				<div id="modal-findings-items-container" class="uk-width-1-2">
-					
+
 						@include('audit_stream.audit_stream')
-					
+
 				</div>
 		</div>
 
@@ -551,41 +551,41 @@
 		@endif
 		toggleMine();
 
+	}
+
+	function toggleMine() {
+		window.findingModalSelectedAmenityDate = $('#finding-date').val();
+		//$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
+		console.log("select mine: "+window.findingModalSelectedMine);
+		if(window.findingModalSelectedMine == 'true'){
+			window.findingModalSelectedMine = 'false';
+			$('#mine-filter-button').addClass('uk-active');
+
+			// only already visible elements?
+
+			$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ Auth::user()->id }}').addClass('notmine');
+		} else {
+			window.findingModalSelectedMine = 'true';
+			$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ Auth::user()->id }}').removeClass('notmine');
+			$('#mine-filter-button').removeClass('uk-active');
 		}
-
-		function toggleMine() {
-			window.findingModalSelectedAmenityDate = $('#finding-date').val();
-  		//$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
-  		console.log("select mine: "+window.findingModalSelectedMine);
-  		if(window.findingModalSelectedMine == 'true'){
-  			window.findingModalSelectedMine = 'false';
-  			$('#mine-filter-button').addClass('uk-active');
-
-				// only already visible elements?
-
-				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ Auth::user()->id }}').addClass('notmine');
-			} else {
-				window.findingModalSelectedMine = 'true';
-				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ Auth::user()->id }}').removeClass('notmine');
-				$('#mine-filter-button').removeClass('uk-active');
-			}
-		}
+	}
 
 
-		// A $( document ).ready() block.
-		$( document ).ready(function() {
-			console.log( "Modal Loaded!" );
-			clickDefault();
-		});
+	// A $( document ).ready() block.
+	$( document ).ready(function() {
+		console.log( "Modal Loaded!" );
+		clickDefault();
+	});
 
-		// filter findings based on class
-    $('#finding-description').on('keyup', function () {
-    	if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
-    		filterFindingTypes();
-    	}else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
-    		filterFindingTypes();
-    	}
-    });
+	// filter findings based on class
+  $('#finding-description').on('keyup', function () {
+  	if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
+  		filterFindingTypes();
+  	}else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
+  		filterFindingTypes();
+  	}
+  });
 
 
 

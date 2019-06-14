@@ -25,7 +25,7 @@
 	}
 
 	function showOnlyInspectionsFor(className){
-		
+
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
 	}

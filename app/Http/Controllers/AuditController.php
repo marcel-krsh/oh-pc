@@ -1107,7 +1107,7 @@ class AuditController extends Controller
         return 0;
     }
 
-    public function assignAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $element)
+    public function assignAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $element, $in_model = null)
     {
         // check if we are mass assigning
         if ($amenity_id == 0) {
@@ -1145,7 +1145,7 @@ class AuditController extends Controller
         $auditors = CachedAudit::where('audit_id', '=', $audit_id)->first()->auditors;
         $current_auditor = null;
 
-        return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'current_auditor'));
+        return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'current_auditor', 'in_model'));
     }
 
     public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element)
@@ -1306,6 +1306,7 @@ class AuditController extends Controller
     {
         //dd($amenity_id, $audit_id, $building_id, $unit_id);
         // "395" "6659" "23058" "208307"
+        //return $request->all();
 
         // is it mass assignment
         if ($amenity_id == 0 && $unit_id != 0) {

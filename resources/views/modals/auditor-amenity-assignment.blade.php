@@ -6,7 +6,7 @@
 		<p>You are switching two auditors. This will replace all the assignments from {{$current_auditor->full_name()}} with your selection below.</p>
 		@endif
 		@if($auditors)
-		<select class="uk-select uk-grid-margin uk-first-column" id="auditor_id" name="auditor_id" onchange="saveAuditorToAmenity({{$amenity_id}}, {{$audit_id}}, {{$building_id}}, {{$unit_id}}, '{{$element}}')">
+		<select class="uk-select uk-grid-margin uk-first-column" id="auditor_id" name="auditor_id" onchange="saveAuditorToAmenity({{$amenity_id}}, {{$audit_id}}, {{$building_id}}, {{$unit_id}}, '{{$element}}', {{ $in_model }})">
 			<option value="">SELECT AUDITOR</option>
 			@foreach($auditors as $auditor)
             <option value="{{$auditor->user_id}}" @if($current_auditor) @if($current_auditor->id == $auditor->user_id) selected @endif @endif @if($amenity) @if($amenity->auditor_id == $auditor->user_id) selected @endif @endif>{{$auditor->user->full_name()}}</option>
@@ -24,7 +24,7 @@
 	</div>
 </div>
 <script>
-	function saveAuditorToAmenity(amenity_id, audit_id, building_id, unit_id, element){
+	function saveAuditorToAmenity(amenity_id, audit_id, building_id, unit_id, element, inmodel=0){
 		@if($current_auditor)
 		var url = 'amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/swap/{{$current_auditor->id}}';
 		@else
@@ -33,17 +33,17 @@
 		$.post(url, {
 			@if($current_auditor)
 			'new_auditor_id' : $('#auditor_id').val(),
-			@else 
+			@else
 			'auditor_id' : $('#auditor_id').val(),
 			@endif
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
-            if(data==0){ 
+            if(data==0){
                 UIkit.modal.alert(data,{stack: true});
             } else {
                 UIkit.notification('<span uk-icon="icon: check"></span> Auditor Assigned', {pos:'top-right', timeout:1000, status:'success'});
                 // reload inspection screen
-               
+
                 if(unit_id != 0 && amenity_id == 0){
                 	@if($current_auditor)
                 	console.log('1');
@@ -63,7 +63,7 @@
 	                });
 
 	                var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
-	    console.log(buildingelement);           
+	    console.log(buildingelement);
 	                $(buildingelement).html('');
 	                $.each(data.building_auditors, function(index, value){
 	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
@@ -92,7 +92,7 @@
 	                });
 
 	                var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
-	               
+
 	                $(buildingelement).html('');
 	                $.each(data.building_auditors, function(index, value){
 	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
@@ -106,7 +106,7 @@
                 	$('#{{$element}}').html(newcontent);
 
                 	if($('#building-auditors-'+building_id).hasClass('hasAuditors')){
-                		
+
                 		// we don't know if/which unit is open
 	                	var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
 
@@ -124,10 +124,10 @@
 		                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
 		                	$(unitelement).append(newcontent);
 		                });
-                	}                	
+                	}
 
 	                var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
-	               
+
 	                $(buildingelement).html('');
 	                $.each(data.building_auditors, function(index, value){
 	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
@@ -150,7 +150,7 @@
 	                $('#{{$element}}').replaceWith(newcontent);
 
 	                var unitelement = '#unit-auditors-'+data.unit_id+' .uk-slideshow-items li.uk-active > div';
-	   
+
 	                $(unitelement).html('');
 	                $.each(data.unit_auditors, function(index, value){
 	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
@@ -158,16 +158,19 @@
 	                });
 
 	                var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
-	               
+
 	                $(buildingelement).html('');
 	                $.each(data.building_auditors, function(index, value){
 	                	var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
 	                	$(buildingelement).append(newcontent);
 	                });
-	                
                 }
-
+                if(inmodel) {
+                	dynamicModalClose(2);
+                	filterBuildingAmenities(building_id);
+                } else {
                 dynamicModalClose();
+              }
             }
         } );
 	}
