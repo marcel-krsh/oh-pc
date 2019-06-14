@@ -1967,7 +1967,7 @@ class ComplianceSelectionJob implements ShouldQueue
                     }
                 }
 
-                if (idate("Y")-15 > $first_year && $first_year != null) {
+                if (idate("Y")-14 > $first_year && $first_year != null) {
                     $first_fifteen_years = 0;
                     $comments[] = 'Based on the year, we determined that the program is not within the first 15 years.';
                     $audit->comment = $audit->comment.' | Select Process Based on the year, we determined that the program is not within the first 15 years.';
