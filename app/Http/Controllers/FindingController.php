@@ -415,7 +415,6 @@ class FindingController extends Controller
         if (Auth::user()->auditor_access()) {
             $inputs = $request->input('inputs');
             parse_str($inputs, $inputs);
-
             $date = Carbon\Carbon::now()->format('Y-m-d H:i:s');
             $fromtype = $inputs['fromtype'];
 

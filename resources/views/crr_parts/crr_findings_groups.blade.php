@@ -1,5 +1,5 @@
 @forEach($findings as $f)
-	<div id="cancelled-finding-{{$f->id}}" class="uk-width-1-3 crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf finding-group" style="border-bottom:1px dotted #3c3c3c; @if(true) border-right:1px dotted #3c3c3c; @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
+	<div id="cancelled-finding-{{$f->id}}" class="uk-width-1-3 crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" style="border-bottom:1px dotted #3c3c3c; @if(true) border-right:1px dotted #3c3c3c; @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
 		<?php
 				// using column count to put in center lines rather than rely on css which breaks.
 		$columnCount++;
@@ -117,10 +117,13 @@
 		@if(!is_null($f->comments))
 		@forEach($f->comments as $c)
 		{!! $loop->first ? '<hr>': '' !!}
-		@if(is_null($c->deleted_at) && !(isset($c->hide_on_reports) && $c->hide_on_reports == 1))
+
+		@if(is_null($c->deleted_at))
+		@if($c->hide_on_reports != 1)
 		@can('access_auditor')@if(!$print)<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endif @endcan<i class="a-comment"></i> : {{$c->comment}}
 		{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
 		@endIf
+		@endif
 		@endForEach
 		@endIf
 

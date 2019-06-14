@@ -288,6 +288,7 @@
 
 
             Route::get('/findings/{findingid}/items/{type?}/{typeid?}', 'FindingController@findingItems');
+            Route::get('/report/findings/{findingid}/items/{type?}/{typeid?}', 'FindingController@findingItems');
             Route::get('/modals/findings_list/{type}/{amenityinspectionid}','FindingController@findingList');
             Route::get('/modals/findings/{id}/items/{itemid}/photos/{photoid}', 'FindingController@findingItemPhoto');
 

@@ -84,7 +84,7 @@ foreach($grouped_bf as $bk => $bf) {
                 <a onclick="showOnlyFindingsFor('finding-group');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>REMOVE FINDINGS FILTER</span></a>
 
             	</div>
-        	
+
         </small><hr class="dashed-hr">
 	</div>
 	{{-- Here was the foreach findings loop --}}
@@ -95,7 +95,7 @@ foreach($grouped_bf as $bk => $bf) {
 	@php
 	$findings = $site_findings;
 	@endphp
-	@include('crr_parts.crr_findings_groups')
+	@include('crr_parts.crr_findings_groups', ['site_finding' => 1])
 	@endif
 
 {{-- Building findings --}}
