@@ -48,7 +48,7 @@
 				</div>
 			</div>
 		</div>
-		@php $projectDeatailsOutput = 1; @endPhp
+		<?php $projectDeatailsOutput = 1; ?>
 	@endIf
 @endIf
 
