@@ -82,7 +82,7 @@
 				@if(!in_array($i->unit_id, $nameOutput))
 				<div  style="float: left;"  >
 					<?php 
-						dd($i);
+						dd($inpsections,$i);
 					?>
 					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');">
 
