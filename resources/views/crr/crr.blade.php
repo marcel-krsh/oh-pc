@@ -12,13 +12,18 @@
 		$('.show-all-findings-button').slideToggle();
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
-		UIkit.scroll('#findings-list');
+		scrollToAnchor('findings-list');
 	}
 
 	function showOnlyInspectionsFor(className){
 		
 		$('.finding-group').hide();
 		$('.'+className).fadeIn();
+	}
+
+	function scrollToAnchor(aid){
+	    var aTag = $("a[name='"+ aid +"']");
+	    $('html,body').animate({scrollTop: aTag.offset().top},'slow');
 	}
 	function showComments(partId){
 		$('#section-thumbnails').css({'min-width':'400px','width':'400px','padding':'0px'});
