@@ -109,9 +109,9 @@
     			}
     			.home-folder {
     				position: relative;
-				    left: -20px;
-				    top: 2px;
-				    font-size: 0.55rem;
+				    left: -34px;
+				    top: 0px;
+				    font-size: 0.68rem;
 				    font-weight: bolder;
     			}
 			</style>
@@ -140,7 +140,7 @@
 
 		?>
 
-		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInspections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp; @if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
+		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInspections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> @if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder"></i> @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
 
 
 		</small>
@@ -158,7 +158,7 @@
 				$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
 				$thisUnitFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file'));
 				$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
-				$isHome = count(collect($inspections)->where('unit_id',$i->unit_id)->where('group','HOME'));
+				$isHome = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','HOME'));
 				?>
 				<div  style="float: left;"  >
 
