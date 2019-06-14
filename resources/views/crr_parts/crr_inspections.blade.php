@@ -14,7 +14,6 @@
 	
 ?>
 @if(null !== $projectDetails)
-<span class="uk-button">{{session('projectDetailsOutput')}}</span>
 	@if(session('projectDetailsOutput') == 0)
 		<div id="project-details-stats" class="uk-width-1-1 uk-grid-margin uk-first-column" style="margin-top:20px;">
 			<div uk-grid="" class="uk-grid">
@@ -38,24 +37,28 @@
 				<div class="uk-width-1-3">
 					<h5 class="uk-margin-remove"><strong>OWNER: </strong></h5>
 					<div class="address" style="margin-bottom:20px;">
-						<i class="a-avatar"></i> <br>
-						<i class="a-phone-5"></i>  <br>
-						<i class="a-mail-send"></i> <br>
+						<i class="a-avatar"></i> @if($projectDetails->owner_name != '') {{$projectDetails->owner_name}} @else NA @endIf<br>
+						<i class="a-avatar"></i> POC: @if($projectDetails->owner_poc != ''){{$projectDetails->owner_poc}}@else NA @endIf<br>
+						<i class="a-phone-5"></i>  @if($projectDetails->owner_phone != ''){{$projectDetails->owner_phone}}@else NA @endIf<br>
+						<i class="a-fax-2"></i>  @if($projectDetails->owner_fax != ''){{$projectDetails->owner_fax}}@else NA @endIf<br>
+						<i class="a-mail-send"></i> @if($projectDetails->owner_email != '')<a class="uk-link-mute" href="mailto:{{$projectDetails->owner_email}}">{{$projectDetails->owner_email}}</a>@else NA @endIf<br>
 										</div>
 					<h5 class="uk-margin-remove"><strong>Managed By: </strong></h5>
 					<div class="address">
-						<i class="a-avatar"></i> <br>
-						<i class="a-phone-5"></i>  <br>
-						<i class="a-mail-send"></i> <br>
+						<i class="a-avatar"></i> @if($projectDetails->manager_name != '') {{$projectDetails->manager_name}} @else NA @endIf<br>
+						<i class="a-avatar"></i> POC: @if($projectDetails->manager_poc != ''){{$projectDetails->manager_poc}}@else NA @endIf<br>
+						<i class="a-phone-5"></i>  @if($projectDetails->manager_phone != ''){{$projectDetails->manager_phone}}@else NA @endIf<br>
+						<i class="a-fax-2"></i>  @if($projectDetails->manager_fax != ''){{$projectDetails->manager_fax}}@else NA @endIf<br>
+						<i class="a-mail-send"></i> @if($projectDetails->manager_email != '')<a class="uk-link-mute" href="mailto:{{$projectDetails->manager_email}}">{{$projectDetails->manager_email}}</a>@else NA @endIf<br>
 										</div>
 				</div>
 			</div>
 		</div>
-		<hr class="dashed-hr">
+		<hr class="dashed-hr uk-margin-bottom">
 		<?php session(['projectDetailsOutput'=>1]) ?>
 	@endIf
 @endIf
-<span class="uk-button">{{session('projectDetailsOutput')}}</span>
+
 @if(!is_null($inspections))
 @if(isset($inspections_type) && $inspections_type == 'unit')
 
