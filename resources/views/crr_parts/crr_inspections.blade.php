@@ -124,7 +124,7 @@
 			
 
 		?>
-		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInspections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp; @if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @if($homeFileInspections > 0) &nbsp;|&nbsp; @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf 
+		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf @if($homeSiteInspections > 0) {{$homeSiteInspections}} @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :   &nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp; @if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
 
 			
 
