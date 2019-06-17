@@ -106,10 +106,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				line-height: 1.5;
 			}
 			.home-folder {
-				position: relative;
-				left: -34px;
-				top: 0px;
-				font-size: 0.68rem;
+				
 				font-weight: bolder;
 			}
 			.home-folder-small {
