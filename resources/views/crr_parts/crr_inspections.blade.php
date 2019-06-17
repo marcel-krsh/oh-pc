@@ -76,14 +76,14 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 			.on-folder {
 				position: relative;
 				left: -4px;
-				top: -7.5px;
+				top: -6.5px;
 				font-size: 0.95rem;
 				font-weight: bolder;
 			}
 			.on-phone {
 				position: relative;
 				left: -10px;
-				top: -7px;
+				top: -6px;
 				font-size: 0.95rem;
 				font-weight: bolder;
 			}
@@ -123,7 +123,8 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				float: right;
 			}
 			.inspection-data-row {
-				height: 20px;
+				height: 40px;
+				    clear: both;
 			}
 		</style>
 		@endCan
