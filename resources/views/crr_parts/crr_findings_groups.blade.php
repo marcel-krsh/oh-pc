@@ -13,7 +13,7 @@
 				<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
 					<i class="a-pencil"></i>@endIf
 					@endCan
-					<strong class="cancelled-{{$f->id}}">Finding # {{$f->id}}</strong>@can('access_auditor') @if(!$print)
+					<strong class="cancelled-{{$f->id}}"># {{$f->id}}</strong>@can('access_auditor') @if(!$print)
 				</a> @endIf @endCan
 				@if(!$print)
 				<span class="use-hand-cursor" style="float: right;" aria-expanded="false"><i class="a-circle-plus  "></i> ADD RESPONSE</span>
