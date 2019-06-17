@@ -223,7 +223,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 		<?php
 		$inspections = collect($inspections);
 		?>
-		<h2>{{count($inpsections)}} @if(count($inpsections) > 1 || count($inpsections) < 1) Site Amenities @else Site Amenity @endIf Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
+		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Site Amenities @else Site Amenity @endIf Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 		<hr class="dashed-hr uk-margin-bottom">
 		
 		<div class="uk-column-1-3 uk-column-divider">
@@ -260,7 +260,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 		<?php //dd($i);
 		$inspections = collect($inspections);
 		?>
-		<h2>{{count($inpsections)}} @if(count($inpsections) > 1 || count($inpsections) < 1) Buildings @else Building @endIf Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
+		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Buildings @else Building @endIf Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 		<hr class="dashed-hr uk-margin-bottom">
 		
 		<div class="uk-column-1-3 uk-column-divider">
