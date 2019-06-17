@@ -10,8 +10,6 @@ if(array_key_exists(5, $pieceData)){
 	$findings = $pieceData[5];
 }
 
-
-
 ?>
 @if(null !== $projectDetails)
 @if(session('projectDetailsOutput') == 0)
@@ -127,27 +125,21 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 		</style>
 		@endCan
 
-
 		<?php
-
-		$siteVisited = array();
-		$fileVisited = array();
-		$nameOutput = array();
-		$loops = 0;
-		if(is_array($inspections) && count($inspections)> 0){
-			$currentUnit = 0;
-		}
-		$inspections = collect($inspections);
-		$inspections =$inspections->sortBy('unit_name');
-			//dd($inspections);
-
-
-		$fileInspections = count(collect($inspections)->where('is_site_visit',0)->groupBy('unit_id'));
-		$siteInspections = count(collect($inspections)->where('is_site_visit',1)->groupBy('unit_id'));
-		$homeSiteInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',1)->groupBy('unit_id'));
-		$homeFileInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',0)->groupBy('unit_id'));
-
-
+			$siteVisited = array();
+			$fileVisited = array();
+			$nameOutput = array();
+			$loops = 0;
+			if(is_array($inspections) && count($inspections)> 0){
+				$currentUnit = 0;
+			}
+			$inspections = collect($inspections);
+			$inspections =$inspections->sortBy('unit_name');
+				//dd($inspections);
+			$fileInspections = count(collect($inspections)->where('is_site_visit',0)->groupBy('unit_id'));
+			$siteInspections = count(collect($inspections)->where('is_site_visit',1)->groupBy('unit_id'));
+			$homeSiteInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',1)->groupBy('unit_id'));
+			$homeFileInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',0)->groupBy('unit_id'));
 		?>
 
 		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :&nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
@@ -164,11 +156,12 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 
 				@if(!in_array($i->unit_id, $nameOutput))
 				<?php
-				$currentUnit = $i->unit_id;
-				$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
-				$thisUnitFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file'));
-				$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
-				$isHome = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','HOME'));
+					$currentUnit = $i->unit_id;
+					$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
+					$thisUnitFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file'));
+					$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
+					$isHome = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','HOME'));
+
 				?>
 				<div  style="float: left;"  >
 					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');">
@@ -226,14 +219,22 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 		?>
 		<div class="uk-column-1-3 uk-column-divider">
 			@forEach($inspections as $i)
+			<?php
+				$currentSite = $i->amenity_id;
+				$thisAmenityValues = collect($inspections)->where('amenity_id',$i->amenity_id);
+				$thisAmenityFindings = count(collect($findings)->where('amenity_id',$i->amenity_id));
+			?>
 			<div>
 				<div  style="float: left;"  >
 					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('site-{{$i->amenity->amenity_type_key }}-finding');">
 						@endIf <strong><i class="{{ $i->amenity->icon }}"></i></strong> {{ $i->amenity->amenity_description }}
 					@if($print !== 1)</a>@endIf
 				</div>
-				<div style="float: right;">
+				{{-- <div style="float: right;">
 					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endcan></i>
+				</div> --}}
+				<div style="float: right;">
+					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endcan></i> @if($thisAmenityFindings > 0) <span class="uk-badge finding-number on-phone">{{$thisAmenityFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
 				</div>
 				<hr class="dashed-hr uk-margin-small-bottom">
 			</div>

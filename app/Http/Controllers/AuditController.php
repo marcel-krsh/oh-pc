@@ -927,6 +927,12 @@ class AuditController extends Controller
         return view('modals.amenity-delete', compact('amenity_id', 'audit_id', 'building_id', 'unit_id', 'element'));
     }
 
+    public function deleteFindingAmenity($amenity_id, $audit_id, $building_id, $unit_id, $element='')
+    {
+        // deleteAmenity('building-audits-r-1', 6816, 0, 0, 13726, 0, 1);
+        return view('modals.findings-amenity-delete', compact('amenity_id', 'audit_id', 'building_id', 'unit_id', 'element'));
+    }
+
     public function saveDeleteAmenity(Request $request)
     {
         $comment = ($request->get('comment') !== null) ? $request->get('comment') : '';
@@ -1120,20 +1126,34 @@ class AuditController extends Controller
             }
         } else {
             if ($unit_id != "null" && $unit_id != 0) {
-                $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                // $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                //     ->where('audit_id', '=', $audit_id)
+                //     ->where('unit_id', '=', $unit_id)
+                //     ->first();
+                $amenity = AmenityInspection::where('id', '=', $amenity_id)
                     ->where('audit_id', '=', $audit_id)
                     ->where('unit_id', '=', $unit_id)
                     ->first();
                 $name = "Unit " . Unit::where('id', '=', $unit_id)->first()->unit_name;
             } elseif ($building_id === null || $building_id == 0) {
-                $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                // $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                //     ->where('audit_id', '=', $audit_id)
+                //     ->whereNull('building_id')
+                //     ->whereNull('unit_id')
+                //     ->first();
+                $amenity = AmenityInspection::where('id', '=', $amenity_id)
                     ->where('audit_id', '=', $audit_id)
                     ->whereNull('building_id')
                     ->whereNull('unit_id')
                     ->first();
                 $name = "Building " . CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first()->building_name;
             } else {
-                $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                // $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                //     ->where('audit_id', '=', $audit_id)
+                //     ->where('building_id', '=', $building_id)
+                //     ->whereNull('unit_id')
+                //     ->first();
+                $amenity = AmenityInspection::where('id', '=', $amenity_id)
                     ->where('audit_id', '=', $audit_id)
                     ->where('building_id', '=', $building_id)
                     ->whereNull('unit_id')
@@ -1391,7 +1411,8 @@ class AuditController extends Controller
 
                     // if $building_id = 0 we are working with an amenity at the building level like parking lot
                     if ($building_id == 0 && $unit_id == 0) {
-                        $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->first(); // TBD this may not work. might be a flaw in the selection...
+                        //$amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->first(); // TBD this may not work. might be a flaw in the selection...
+                        $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->whereNull('building_id')->first();
                         $building = CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first();
                     } else {
                         $building = CachedBuilding::where('building_id', '=', $building_id)->first();
@@ -1400,7 +1421,8 @@ class AuditController extends Controller
                     //dd($building_id, $amenity_id, $unit_id, $building);
 
                     if ($unit_id != "null" && $unit_id != 0) {
-                        $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
+                        // $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
+                        $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
 
                         $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
                         $cached_unit_id = $unit_id;
@@ -1413,10 +1435,12 @@ class AuditController extends Controller
                         //->auditors();
                     } else {
                         if ($building_id == 0 && $unit_id == 0) {
-                            $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->whereNull('unit_id')->first();
+                            // $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->whereNull('unit_id')->first();
+                            $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->whereNull('building_id')->whereNull('unit_id')->first();
                             $cached_unit_id = 0;
                         } else {
-                            $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
+                            // $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
+                            $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
                             $cached_unit_id = 0;
                         }
                     }
@@ -5116,6 +5140,12 @@ class AuditController extends Controller
                     ->orderBy('order', 'desc')
                     ->first()
                     ->order;
+
+                        // if(is_object($latest_ordering)){
+                        //     $latest_ordering = $latest_ordering->order;
+                        // } else {
+                        //     $latest_ordering = 0;
+                        // }
                 // save the ordering
                 $ordering = new OrderingAmenity([
                     'user_id' => Auth::user()->id,
