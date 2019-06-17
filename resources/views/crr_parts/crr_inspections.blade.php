@@ -120,10 +120,15 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				float: right;
 			}
 			.inspection-data-row {
-				height: 40px;
+				min-height: 40px;
 				clear: both;
 				display: inline-block;
     			width: 100%;
+			}
+			.unit-name {
+				float: left;
+			    max-width: 212px;
+			    margin-bottom: 8px;
 			}
 		</style>
 		@endCan
@@ -145,7 +150,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 			$homeFileInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',0)->groupBy('unit_id'));
 		?>
 
-		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} SITE INSPECTIONS @else {{$siteInspections}} SITE INSPECTION @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :&nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME SITE INSPECTIONS @else 1 HOME SITE INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
+		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} PHYSICAL INSPECTIONS @else {{$siteInspections}} PHYSICAL INSPECTION @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :&nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME PHYSICAL INSPECTIONS @else 1 HOME PHYSICAL INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
 
 
 		</small>
@@ -166,7 +171,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					$isHome = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','HOME'));
 
 				?>
-				<div  style="float: left;"  >
+				<div  class="unit-name"  >
 					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');">
 						@endIf {{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] =$i->unit_id; ?> :
 					@if($print !== 1)</a>@endIf
@@ -215,7 +220,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 @if(isset($inspections_type) && $inspections_type == 'site')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2>Site Amenities Inspected: </h2><small><i class="a-mobile"></i> : SITE INSPECTION </small>
+		<h2>Site Amenities Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 		<hr class="dashed-hr uk-margin-bottom">
 		<?php
 		$inspections = collect($inspections);
@@ -251,7 +256,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 @if(isset($inspections_type) && $inspections_type == 'building')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2>Buildings Inspected: </h2><small><i class="a-mobile"></i> : SITE INSPECTION </small>
+		<h2>Buildings Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 		<hr class="dashed-hr uk-margin-bottom">
 		<?php //dd($i);
 		$inspections = collect($inspections);
