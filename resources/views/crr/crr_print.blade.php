@@ -25,6 +25,22 @@ if (4 == $report->crr_approval_type_id) {
   $background = '-revise';
 }
 ?>
+	p {
+		font-size: 13pt;
+	}
+	h1 {
+		font-size: 24pt;
+
+	}
+	h2 {
+		font-size: 20pt;
+	}
+	h3 {
+		font-size: 16pt
+	}
+	h4,h5 {
+		font-size: 14pt;
+	}
 	.crr-sections {
 		width:1142px; min-height: 1502px; margin-left:auto; margin-right:auto; background-image: url('/paginate-2x{{$background}}.gif'); padding: 72px;
 
