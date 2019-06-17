@@ -220,11 +220,12 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 @if(isset($inspections_type) && $inspections_type == 'site')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2>Site Amenities Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
-		<hr class="dashed-hr uk-margin-bottom">
 		<?php
 		$inspections = collect($inspections);
 		?>
+		<h2>{{count($inpsections)}} @if(count($inpsections) > 1 || < 1) Site Amenities @else Site Amenity @endIf Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
+		<hr class="dashed-hr uk-margin-bottom">
+		
 		<div class="uk-column-1-3 uk-column-divider">
 			@forEach($inspections as $i)
 			<?php
@@ -256,11 +257,12 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 @if(isset($inspections_type) && $inspections_type == 'building')
 <div uk-grid class="uk-margin-bottom">
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2>Buildings Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
-		<hr class="dashed-hr uk-margin-bottom">
 		<?php //dd($i);
 		$inspections = collect($inspections);
 		?>
+		<h2>{{count($inpsections)}} @if(count($inpsections) > 1 || < 1) Buildings @else Building @endIf Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
+		<hr class="dashed-hr uk-margin-bottom">
+		
 		<div class="uk-column-1-3 uk-column-divider">
 			@forEach($inspections as $i)
 			<?php
@@ -281,8 +283,9 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				<div style="float: right;">
 					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan"  @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, null, null,'0');" @endif  @endcan></i> @if($thisBuildingSiteFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{$thisBuildingSiteFindings}}">{{$thisBuildingSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
 				</div>
+				<hr class="dashed-hr uk-margin-small-bottom">
 			</div>
-			<hr class="dashed-hr uk-margin-small-bottom">
+			
 			@endForEach
 		</div>
 	</div>
