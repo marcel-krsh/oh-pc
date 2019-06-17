@@ -181,7 +181,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					@if(!in_array($g->unit_id, $siteVisited))
 
 
-					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone">{{$thisUnitSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endIf <?php $siteVisited[] =$g->unit_id;  ?>
+					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{$thisUnitSiteFindings}}">{{$thisUnitSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endIf <?php $siteVisited[] =$g->unit_id;  ?>
 					@else
 					<?php $noShow = 1; ?>
 					@endIf
@@ -238,7 +238,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endcan></i>
 				</div> --}}
 				<div style="float: right;">
-					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endcan></i> @if($thisAmenityFindings > 0) <span class="uk-badge finding-number on-phone">{{$thisAmenityFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
+					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endcan></i> @if($thisAmenityFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{$thisAmenityFindings}}">{{$thisAmenityFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
 				</div>
 				<hr class="dashed-hr uk-margin-small-bottom">
 			</div>
@@ -275,7 +275,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					{{ $i->building_name }}
 				</div> --}}
 				<div style="float: right;">
-					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan"  @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, null, null,'0');" @endif  @endcan></i> @if($thisBuildingSiteFindings > 0) <span class="uk-badge finding-number on-phone">{{$thisBuildingSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
+					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan"  @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, null, null,'0');" @endif  @endcan></i> @if($thisBuildingSiteFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{$thisBuildingSiteFindings}}">{{$thisBuildingSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
 				</div>
 			</div>
 			<hr class="dashed-hr uk-margin-small-bottom">
