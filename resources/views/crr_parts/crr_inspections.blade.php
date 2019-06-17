@@ -127,7 +127,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 			}
 			.unit-name {
 				float: left;
-			    max-width: 212px;
+			    max-width: 200px;
 			    margin-bottom: 8px;
 			}
 		</style>
@@ -234,7 +234,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				$thisAmenityFindings = count(collect($findings)->where('amenity_id',$i->amenity_id));
 			?>
 			<div class="inspection-data-row">
-				<div  style="float: left;"  >
+				<div  class="unit-name" >
 					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('site-{{$i->amenity->amenity_type_key }}-finding');">
 						@endIf <strong><i class="{{ $i->amenity->icon }}"></i></strong> {{ $i->amenity->amenity_description }}
 					@if($print !== 1)</a>@endIf
@@ -271,7 +271,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				$thisBuildingSiteFindings = count(collect($findings)->where('building_id',$i->building_id)->where('finding_type.type','!=','file'));
 			?>
 			<div  class="inspection-data-row">
-				<div  style="float: left;"  >
+				<div  class="unit-name"  >
 					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('building-{{$i->building_id}}-finding');">
 						@endIf {{ $i->building_name }}
 					@if($print !== 1)</a>@endIf
