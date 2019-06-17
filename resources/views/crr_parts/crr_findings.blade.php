@@ -54,7 +54,7 @@ foreach($grouped_bf as $bk => $bf) {
 
 <div uk-grid>
 	<div class="uk-width-1-1">
-		<a name="findings-list"></a><h2 id="findings-list">Findings: </h2> <small>
+		<a name="findings-list"></a><h2 id="findings-list">Findings &amp; Notes: </h2> <small>
 			@if($fileCount > 0)
 			<i class="a-folder"></i> : {{$fileCount}} FILE
 			@if($fileCount != 1)
