@@ -25,7 +25,7 @@ if (4 == $report->crr_approval_type_id) {
   $background = '-revise';
 }
 ?>
-	p {
+	body, div, p {
 		font-size: 13pt;
 	}
 	h1 {
