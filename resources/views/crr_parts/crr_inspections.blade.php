@@ -124,7 +124,9 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 			}
 			.inspection-data-row {
 				height: 40px;
-				    clear: both;
+				clear: both;
+				display: inline-block;
+    			width: 100%;
 			}
 		</style>
 		@endCan
