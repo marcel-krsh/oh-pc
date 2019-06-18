@@ -29,19 +29,23 @@
 
 	function saveDeleteAmenity() {
 		event.preventDefault();
+		element = "{{ $element }}";
 		var comment = $('#delete-comment').val();
 		console.log("deleting amenity");
 		$.post('/modals/amenities/delete', {
 			'comment' : comment,
-			'audit_id' : '{{$audit_id}}',
-			'building_id' : '{{$building_id}}',
-			'unit_id' : '{{$unit_id}}',
-			'amenity_id' : '{{$amenity_id}}',
-			'element' : '{{$element}}',
+			'audit_id' : '{{ $audit_id }}',
+			'building_id' : '{{ $building_id }}',
+			'unit_id' : '{{ $unit_id }}',
+			'amenity_id' : '{{ $amenity_id }}',
+			'element' : '{{ $element }}',
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
 			dynamicModalClose(2);
-			filterBuildingAmenities({{$building_id}});
+			if(element == 'site')
+				filterSiteAmenities({{ $audit_id }});
+			else
+			filterBuildingAmenities({{ $building_id }});
 		});
 	}
 

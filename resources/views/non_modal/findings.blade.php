@@ -235,18 +235,18 @@
 	{{-- This is to open locations and if amenities are open make the icon to close --}}
 	function typeList(){
 		// If amenity is open close this.
-		if($('#amenity-selection-icon').hasClass('a-arrow-small-up ok-actionable')){
+		if($('#amenity-selection-icon').hasClass('a-arrow-small-up ')){
 			$('#amenity-selection-icon').addClass('a-grid');
-			$('#amenity-selection-icon').removeClass('a-arrow-small-up ok-actionable');
+			$('#amenity-selection-icon').removeClass('a-arrow-small-up ');
 		}
 		// Toggle locations
 		if($('#type-selection-icon').hasClass('a-grid')){
 			$('#type-selection-icon').removeClass('a-grid');
-			$('#type-selection-icon').addClass('a-arrow-small-up ok-actionable');
+			$('#type-selection-icon').addClass('a-arrow-small-up ');
 			loadTypes();
 		} else {
 			$('#type-selection-icon').addClass('a-grid');
-			$('#type-selection-icon').removeClass('a-arrow-small-up ok-actionable');
+			$('#type-selection-icon').removeClass('a-arrow-small-up');
 			removeDynamicData();
 		}
 		// $('#select-type-text').text('Select Location From Above');
@@ -260,13 +260,13 @@
 		}
 		// If locations is active, make it inactive
 		if($('#type-selection-icon').hasClass('a-arrow-small-up ok-actionable')){
-			$('#type-selection-icon').removeClass('a-arrow-small-up ok-actionable');
+			$('#type-selection-icon').removeClass('a-arrow-small-up ');
 			$('#type-selection-icon').addClass('a-grid');
 		}
 		// toggle amenities
 		if($('#amenity-selection-icon').hasClass('a-grid')){
 			$('#amenity-selection-icon').removeClass('a-grid');
-			$('#amenity-selection-icon').addClass('a-arrow-small-up ok-actionable');
+			$('#amenity-selection-icon').addClass('a-arrow-small-up');
 			$('#select-amenity-text').text('Select Amenity');
 			if($('#type_selected').val() == 'site' || locationType == 'site') {
 				filterSiteAmenities($('#type_selected_value').val());
@@ -282,16 +282,16 @@
 			}
 		} else {
 			$('#amenity-selection-icon').addClass('a-grid');
-			$('#amenity-selection-icon').removeClass('a-arrow-small-up ok-actionable');
+			$('#amenity-selection-icon').removeClass('a-arrow-small-up');
 			$('#dynamic-data').empty();
 		}
 	}
 
 	function updateAmenitiesIcon(locationType = '') {
 		$('#amenity-selection-icon').removeClass('a-grid');
-		$('#amenity-selection-icon').addClass('a-arrow-small-up ok-actionable');
+		$('#amenity-selection-icon').addClass('a-arrow-small-up ');
 		$('#select-amenity-text').text('Select Amenity'); // Replace the text in Select Amenity button to default text
-		$('#type-selection-icon').removeClass('a-arrow-small-up ok-actionable');
+		$('#type-selection-icon').removeClass('a-arrow-small-up ');
 		$('#type-selection-icon').addClass('a-grid');
 		window.findingModalSelectedLocationType = locationType; //Used to determine the type of location chosen
 	}

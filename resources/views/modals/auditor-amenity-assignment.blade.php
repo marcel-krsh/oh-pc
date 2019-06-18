@@ -19,7 +19,7 @@
 
 	<div class="project-details-info-assignment-summary uk-margin-top uk-flex-middle" uk-grid>
 		<div class="uk-width-1-1 uk-padding-remove uk-text-right">
-			<button class="uk-button uk-button-primary" onclick="dynamicModalClose();" type="button">CLOSE WINDOW</button>
+			<button class="uk-button uk-button-primary" onclick="dynamicModalClose({{ $in_model ? 2:'' }});" type="button">CLOSE WINDOW</button>
 		</div>
 	</div>
 </div>
@@ -165,9 +165,12 @@
 	                	$(buildingelement).append(newcontent);
 	                });
                 }
-                if(inmodel) {
+                if(inmodel == 1) {
                 	dynamicModalClose(2);
                 	filterBuildingAmenities(building_id);
+                } else if(inmodel == 2) {
+                	dynamicModalClose(2);
+                	filterSiteAmenities(audit_id);
                 } else {
                 dynamicModalClose();
               }

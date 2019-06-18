@@ -18,27 +18,34 @@
 			<li class="b-{{ $amenity->building_id }} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned($amenity->building_id)) uid-{{ Auth::user()->id }} @endif"><strong>Building BIN: {{ $amenity->building_key }}</strong></li>
 			@endif
 			@php
-				array_push($currentAmenityIds, $amenity->amenity_id);
-				$amenityIncrements = array_count_values($currentAmenityIds);
-				$amenityIncrement = $amenityIncrements[$amenity->amenity_id] - 1;
-				if($amenityIncrement == 0)
-					$amenityIncrement = '';
+			array_push($currentAmenityIds, $amenity->amenity_id);
+			$amenityIncrements = array_count_values($currentAmenityIds);
+			$amenityIncrement = $amenityIncrements[$amenity->amenity_id] - 1;
+			if($amenityIncrement == 0)
+				$amenityIncrement = '';
 			@endphp
-			<li id="amenity-inspection-{{ $amenity->id }}" class="b-{{ $amenity->building_id }} aa-{{ $amenity->amenity_id }} amenity-inspection-{{ $amenity->id }} amenity-list-item finding-modal-list-items  uid-{{ $amenity->auditor_id }} building" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">@if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf @if($amenity->auditor_id)
-				<div class="amenity-auditor uk-margin-remove">
-					<div class="amenity-auditor uk-margin-remove">
-						<div uk-tooltip="pos:top-left;title:{{ $amenity->user->full_name() }};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float" onclick="assignBuildingAuditor({{ $audit->audit_id }}, {{ $amenity->building_id }}, 0, {{ $amenity->id }}, 'building-auditor-{{ $amenity->user->id }}', 0, 0, 0, 2);">
-							{{ $amenity->user->initials() }}
-						</div>
+			<li id="amenity-inspection-{{ $amenity->id }}" class="b-{{ $amenity->building_id }} aa-{{ $amenity->amenity_id }} amenity-inspection-{{ $amenity->id }} amenity-list-item finding-modal-list-items  uid-{{ $amenity->auditor_id }} building" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
+				<div class="uk-inline uk-padding-remove" style="margin-top:9px; flex:140px;">
+					<i onclick="markBuildingAmenityComplete({{ $audit->audit_id }}, {{ $amenity->building_id }}, 0, {{ $amenity->id }},'markcomplete')" class="{{ is_null($amenity->completed_date_time) ? 'a-circle completion-icon use-hand-cursor' : 'a-circle-checked ok-actionable completion-icon use-hand-cursor'}} " style="font-size: 26px;">
+					</i>
+				</div>
+				@if($amenity->auditor_id)
+				<div class="amenity-auditor uk-margin-remove" >
+					<div uk-tooltip="pos:top-left;title:{{ $amenity->user->full_name() }};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float" onclick="assignBuildingAuditor({{ $audit->audit_id }}, {{ $amenity->building_id }}, 0, {{ $amenity->id }}, 'building-auditor-{{ $amenity->user->id }}', 0, 0, 0, 2);">
+						{{ $amenity->user->initials() }}
 					</div>
 				</div>
 				@else
-				<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignBuildingAuditor({{ $audit->audit_id }}, {{ $amenity->building_id }}, 0, {{ $amenity->id }}, 'building-auditor', 0, 0, 0, 2);"></i>  @endif
-				<a onClick="selectAmenity('{{ $amenity->amenity_id }}','amenity-inspection-{{ $amenity->id }}','{{ $amenity->id }}','@if($amenity->auditor_id) {{ $amenity->user->initials() }} @else NA @endIf :{{ $amenity->amenity->amenity_description }} {{ $amenityIncrement }}', {{ $amenityIncrement }})" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">{{ $amenity->amenity->amenity_description }} {{ $amenityIncrement }}
-				</a>
+				<div class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
+				<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignBuildingAuditor({{ $audit->audit_id }}, {{ $amenity->building_id }}, 0, {{ $amenity->id }}, 'building-auditor', 0, 0, 0, 2);"></i>
+				</div>
+				@endif
+				<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
+					<a style="margin-top:3px;" onClick="selectAmenity('{{ $amenity->amenity_id }}','amenity-inspection-{{ $amenity->id }}','{{ $amenity->id }}','@if($amenity->auditor_id) {{ $amenity->user->initials() }} @else NA @endIf :{{ $amenity->amenity->amenity_description }} {{ $amenityIncrement }}', {{ $amenityIncrement }})" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">{{ $amenity->amenity->amenity_description }} {{ $amenityIncrement }}
+					</a>
+				</div>
 
 				<span class="uk-inline uk-padding-remove uk-float-right inspection-area" style="max-height: 30px">
-
 					<span class="findings-icon toplevel uk-inline" onclick="copyBuildingAmenity('', {{ $audit->audit_id }}, {{ $amenity->building_id }}, 0, {{ $amenity->id }}, 0, 1);" style="margin:-10px 3px 2px 3px">
 						<i class="a-file-copy-2" style="font-size: 18px"></i>
 						<div class="findings-icon-status plus">
@@ -52,10 +59,10 @@
 						</div>
 					</span>
 				</span>
+
 			</li>
 			@endforeach
 		</ul>
-
 	</div>
 	<div class="uk-width-1-1">
 		<a class="uk-button" onClick="addAmenity('{{ $building_id }}', 'building',2)">
@@ -85,11 +92,11 @@
 	}
 
 	function assignBuildingAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element, fullscreen=null,warnAboutSave=null,fixedHeight=0,inmodallevel=0){
-    	if(inmodallevel)
-    	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element+'/1', fullscreen,warnAboutSave,fixedHeight,inmodallevel);
-    	else
-    	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element, fullscreen,warnAboutSave,fixedHeight,inmodallevel);
-    }
+		if(inmodallevel)
+			dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element+'/1', fullscreen,warnAboutSave,fixedHeight,inmodallevel);
+		else
+			dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element, fullscreen,warnAboutSave,fixedHeight,inmodallevel);
+	}
 
 	function deleteBuildingAmenity(element, audit_id, building_id, unit_id, amenity_id, has_findings = 0, toplevel=0){
 		if(has_findings){
@@ -97,5 +104,63 @@
 		}else{
 			dynamicModalLoad('findings-amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/delete/'+element, 0,0,0,2);
 		}
+	}
+
+	function markBuildingAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0) {
+		if(element){
+			if($('#'+element).hasClass('a-circle-checked')){
+				var title = 'MARK THIS INCOMPLETE?';
+				var message = 'Are you sure you want to mark this incomplete?';
+			}else{
+				var title = 'MARK THIS COMPLETE?';
+				var message = 'Are you sure you want to mark this complete?';
+			}
+		}else{
+			var title = 'MARK THIS COMPLETE?';
+			var message = 'Are you sure you want to mark this complete?';
+		}
+		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3></div>', {stack: true}).then(function() {
+			$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data==0){
+					UIkit.modal.alert(data,{stack: true});
+				} else {
+					console.log(data.status);
+					if(data.status == 'complete'){
+						if(toplevel == 1){
+							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+							$('#'+element).toggleClass('a-circle');
+							$('#'+element).toggleClass('a-circle-checked');
+						}else if(amenity_id == 0){
+							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+							$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle');
+							$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle-checked');
+						}else{
+							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+							$('#'+element).toggleClass('a-circle');
+							$('#'+element).toggleClass('a-circle-checked');
+						}
+					} else{
+						if(toplevel == 1){
+							UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+							$('#'+element).toggleClass('a-circle');
+							$('#'+element).toggleClass('a-circle-checked');
+						}else if(amenity_id == 0){
+							UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+							$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle-checked');
+							$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle');
+						}else{
+							UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+							$('#'+element).toggleClass('a-circle-checked');
+							$('#'+element).toggleClass('a-circle');
+						}
+					}
+				}
+				filterBuildingAmenities(building_id);
+			});
+		}, function () {
+			console.log('Rejected.')
+		});
 	}
 </script>

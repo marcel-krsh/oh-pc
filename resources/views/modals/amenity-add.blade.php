@@ -81,7 +81,7 @@
             minChars: 0,
             source: function(term, suggest){
                 term = term.toLowerCase();
-                var choices = {!!$auditors!!};
+                var choices = {!! $auditors !!};
                 var suggestions = [];
                 for (i=0;i<choices.length;i++)
                     if (~(choices[i][0]+' '+choices[i][1]).toLowerCase().indexOf(term)) suggestions.push(choices[i]);
@@ -108,7 +108,7 @@
             source: function(term, suggest){
                 term = term.toLowerCase();
                 // var choices = [['Bedroom', '1'], ['Stairs', '2'], ['Living Room', '3']];
-                var choices = {!!$amenities!!};
+                var choices = {!! $amenities !!};
                 var suggestions = [];
                 for (i=0;i<choices.length;i++)
                     if (~(choices[i][0]+' '+choices[i][1]).toLowerCase().indexOf(term)) suggestions.push(choices[i]);
@@ -176,13 +176,14 @@
 
 			var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
 	        $('.modal-amenity-add').html(spinner);
-	    building_id = "{{$data['building_id']}}";
-	    unit_id = "{{$data['unit_id']}}";
+	    building_id = "{{ $data['building_id'] }}";
+	    unit_id = "{{ $data['unit_id'] }}";
+	    audit_id = "{{ $data['audit_id'] }}";
 			$.post('/modals/amenities/save', {
-					'project_id' : '{{$data['project_id']}}',
-					'audit_id' : '{{$data['audit_id']}}',
-					'building_id' : '{{$data['building_id']}}',
-					'unit_id' : '{{$data['unit_id']}}',
+					'project_id' : '{{ $data['project_id'] }}',
+					'audit_id' : '{{ $data['audit_id'] }}',
+					'building_id' : '{{ $data['building_id'] }}',
+					'unit_id' : '{{ $data['unit_id'] }}',
 					'new_amenities' : newAmenities,
 					'amenity_id' : 0,
 					'_token' : '{{ csrf_token() }}'
@@ -192,6 +193,8 @@
 					filterBuildingAmenities(building_id);
 				else if(unit_id != '')
 					filterUnitAmenities(unit_id);
+				else if(unit_id == '' && building_id == '')
+				filterSiteAmenities(audit_id)
 				}
 			);
 		}

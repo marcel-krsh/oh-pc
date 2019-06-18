@@ -1,20 +1,20 @@
 	<div class="uk-modal-header">
-		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> {{$findingtypeid->name}}<small><i class="uk-margin-left a-info-circle" uk-tooltip="title:Tied to HUD Areas<br > @foreach($findingtypeid->huds() as $hud) {{$hud->name}} @endforeach <br >Nominal Item Weight {{$findingtypeid->nominal_item_weight}} <br >Criticality {{$findingtypeid->criticality}}; pos:bottom"></i></small><h4 style="line-height: 0px; margin-top: 10px; margin-left: 35px;">ON {{strtoupper($amenityinspectionid->amenity->amenity_description)}}  {{$amenityincrement}}</h4></div>
-
+		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> {{ $findingtypeid->name }}<small><i class="uk-margin-left a-info-circle" uk-tooltip="title:Tied to HUD Areas<br > @foreach($findingtypeid->huds() as $hud) {{ $hud->name }} @endforeach <br >Nominal Item Weight {{ $findingtypeid->nominal_item_weight }} <br >Criticality {{ $findingtypeid->criticality }}; pos:bottom"></i></small><h4 style="line-height: 0px; margin-top: 10px; margin-left: 35px;">ON {{ strtoupper($amenityinspectionid->amenity->amenity_description) }}  {{ $amenityincrement }}</h4>
+		</div>
 	</div>
 	<form id="add-finding-form" method="post">
-		<input type="hidden" name="amenity_inspection_id" value="{{$amenityinspectionid->id}}">
-		<input type="hidden" name="finding_type_id" value="{{$findingtypeid->id}}">
+		<input type="hidden" name="amenity_inspection_id" value="{{ $amenityinspectionid->id }}">
+		<input type="hidden" name="finding_type_id" value="{{ $findingtypeid->id }}">
 	<hr class="dashed-hr uk-margin-bottom">
 	<div class="uk-form">
 		<div class="uk-form-row">
 			@if($findingtypeid->one) <label class="use-hand-cursor"><input id="level-radio-one" type="radio" name="level" class="uk-radio" value="1" @if(!$findingtypeid->two && !$findingtypeid->three)  @endif onClick="$('#finding-comment').focus();"> LEVEL 1 </label>
-			<span class=" uk-margin-small-top">{{$findingtypeid->one_description}}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
+			<span class=" uk-margin-small-top">{{ $findingtypeid->one_description }}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
 			</span> &nbsp; &nbsp;@endif
 
-			@if($findingtypeid->two) <label class="use-hand-cursor"><input id="level-radio-two" type="radio" name="level" class="uk-radio" value="2" @if(!$findingtypeid->one && !$findingtypeid->three)  @endif onClick="$('#finding-comment').focus();"> LEVEL 2  </label>  &nbsp; &nbsp;<span class=" uk-margin-small-top">{{$findingtypeid->two_description}}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top"></span>@endif
+			@if($findingtypeid->two) <label class="use-hand-cursor"><input id="level-radio-two" type="radio" name="level" class="uk-radio" value="2" @if(!$findingtypeid->one && !$findingtypeid->three)  @endif onClick="$('#finding-comment').focus();"> LEVEL 2  </label>  &nbsp; &nbsp;<span class=" uk-margin-small-top">{{ $findingtypeid->two_description }}  <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top"></span>@endif
 
-			@if($findingtypeid->three) <label class="use-hand-cursor" ><input id="level-radio-three" type="radio" name="level" class="uk-radio" value="3" @if(!$findingtypeid->two && !$findingtypeid->one)  @endif onClick="$('#finding-comment').focus();"> LEVEL 3   </label>  &nbsp; &nbsp;<span class=" uk-margin-small-top">{{$findingtypeid->three_description}} </span>@endif
+			@if($findingtypeid->three) <label class="use-hand-cursor" ><input id="level-radio-three" type="radio" name="level" class="uk-radio" value="3" @if(!$findingtypeid->two && !$findingtypeid->one)  @endif onClick="$('#finding-comment').focus();"> LEVEL 3   </label>  &nbsp; &nbsp;<span class=" uk-margin-small-top">{{ $findingtypeid->three_description }} </span>@endif
 		</div>
 	</div>
 	<hr class="dashed-hr uk-margin-bottom">
