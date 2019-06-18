@@ -26,7 +26,7 @@ use App\Models\UnitProgram;
 use Illuminate\Support\Facades\Redis;
 use Auth;
 
-use App\Jobs\ComplianceSelectionJob;
+use App\Jobs\ComplianceSelectionJobJune19Optimized;
 
 class AuditsEvent 
 {
@@ -63,7 +63,7 @@ class AuditsEvent
                 $check = \DB::table('jobs')->where('payload','LIKE',"%".$audit->id."%")->where('queue','compliance')->count();
 
                 if($check<1){
-                    ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
+                    ComplianceSelectionJobJune19Optimized::dispatch($audit)->onQueue('compliance');
                 }
                        
             }
@@ -81,7 +81,7 @@ class AuditsEvent
                 $check = \DB::table('jobs')->where('payload','LIKE',"%".$audit->id."%")->where('queue','compliance')->count();
 
                 if($check<1){
-                    ComplianceSelectionJob::dispatch($audit)->onQueue('compliance');
+                    ComplianceSelectionJobJune19Optimized::dispatch($audit)->onQueue('compliance');
                 }
                        
             }
