@@ -79,7 +79,7 @@
 		</ul>
 	</div>
 	<div class="uk-width-1-1">
-		<a class="uk-button" onClick="addAmenity('{{ $audit->audit_id }}', 'project', 2)">
+		<a class="uk-button" onClick="addAmenity('{{ $audit->audit_id }}', 'project', 2, 1)">
 			<i class="a-circle-plus" uk-tooltip title="ADD A BUILDING AMENITY"></i> ADD AMENITY
 		</a>
 	</div>

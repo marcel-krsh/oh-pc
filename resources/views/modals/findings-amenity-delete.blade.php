@@ -42,10 +42,13 @@
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
 			dynamicModalClose(2);
-			if(element == 'site')
+			if(element == 'site') {
 				filterSiteAmenities({{ $audit_id }});
-			else
+			} else if(element == 'unit'){
+				filterUnitAmenities({{ $unit_id }});
+			} else {
 			filterBuildingAmenities({{ $building_id }});
+		}
 		});
 	}
 

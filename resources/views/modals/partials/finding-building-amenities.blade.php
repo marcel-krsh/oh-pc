@@ -20,9 +20,13 @@
 			@php
 			array_push($currentAmenityIds, $amenity->amenity_id);
 			$amenityIncrements = array_count_values($currentAmenityIds);
-			$amenityIncrement = $amenityIncrements[$amenity->amenity_id] - 1;
-			if($amenityIncrement == 0)
+			$amenityIncrement = $amenityIncrements[$amenity->amenity_id];
+			$exists_more = count($amenities->where('amenity_id', $amenity->amenity_id)) - 1;
+			if($amenityIncrement == 1 && $exists_more){
+				$amenityIncrement = 1;
+			} elseif($amenityIncrement == 1) {
 				$amenityIncrement = '';
+			}
 			@endphp
 			<li id="amenity-inspection-{{ $amenity->id }}" class="b-{{ $amenity->building_id }} aa-{{ $amenity->amenity_id }} amenity-inspection-{{ $amenity->id }} amenity-list-item finding-modal-list-items  uid-{{ $amenity->auditor_id }} building" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
 				<div class="uk-inline uk-padding-remove" style="margin-top:9px; flex:140px;">
@@ -65,7 +69,7 @@
 		</ul>
 	</div>
 	<div class="uk-width-1-1">
-		<a class="uk-button" onClick="addAmenity('{{ $building_id }}', 'building',2)">
+		<a class="uk-button" onClick="addAmenity('{{ $building_id }}', 'building', 2, 1)">
 			<i class="a-circle-plus" uk-tooltip title="ADD A BUILDING AMENITY"></i> ADD AMENITY
 		</a>
 	</div>

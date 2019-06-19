@@ -29,7 +29,7 @@
 				<button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter"  onclick="refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});">REFRESH</button>
 			</div>
 		</div>
-	
+
 		<div class="uk-width-1-1 mmodal-findings-right-bottom">
 			<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-padding-remove js-findings" style="    height: 400px;">
 				@if(count($findings))
@@ -74,7 +74,7 @@
 								<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
 									<i class="a-bell"></i> <span id="inspec-tools-tab-finding-stat-reminders">{{ count($finding->followups) }}</span><br />
 									<i class="a-comment"></i> {{ count($finding->comments) }}<br />
-									
+
 									<i class="a-file"></i> {{ count($finding->documents) }}<br />
 									<i class="a-picture"></i> {{ count($finding->photos) }}<br />
 									@if(env('APP_ENV') == 'local')
@@ -93,9 +93,9 @@
 											<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
 												<div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $finding->id }}, 'followup')"><i class="a-bell-plus"></i></div>
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'comment')"><i class="a-comment-plus"></i></div>
-												
+
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'document')"><i class="a-file-plus"></i></div>
-												
+
 												<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $finding->id }}, 'photo')"><i class="a-picture"></i></div>
 												@if(env('APP_ENV') == 'local')@endIf
 											</div>
@@ -116,7 +116,30 @@
 										@endIf
 									</p>
 									<p>@if($finding->amenity_inspection)
-										{{ $finding->amenity_inspection->building_unit_amenity_names() }}<br />
+										@php
+											$check_existing = $amenities->where('id', $finding->amenity_inspection_id)->first();
+											$existing_records = null;
+											$index = 0;
+											if(!is_null($check_existing->unit_id)) {
+												$existing_records = $amenities->where('unit_id', $check_existing->unit_id)->where('amenity_id', $check_existing->amenity_id)->pluck('id')->toArray();
+											} elseif(!is_null($check_existing->building_id)) {
+												$existing_records = $amenities->where('building_id', $check_existing->building_id)->where('amenity_id', $check_existing->amenity_id)->pluck('id')->toArray();
+											} else {
+												$existing_records = $amenities->where('amenity_id', $check_existing->amenity_id)->pluck('id')->toArray();
+											}
+											if(!is_null($existing_records)) {
+												$index = array_search($finding->amenity_inspection_id, $existing_records);
+												if($index == 0 && count($existing_records) <= 1) {
+													$index = '';
+												} else {
+													$index = $index + 1;
+												}
+											}
+											if($index == 0) {
+												$index = '';
+											}
+										@endphp
+										{{ $finding->amenity_inspection->building_unit_amenity_names() }} {{ $index }}<br />
 										@endIf
 										@if($finding->finding_type)
 										{{ $finding->finding_type->name }}

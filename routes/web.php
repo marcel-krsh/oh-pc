@@ -284,7 +284,7 @@
             Route::get('/findings/modals/amenities/{auditid}', 'FindingController@findingAmenities');
             Route::get('/findings/modals/site-amenities/{auditid}/{siteid?}', 'FindingController@findingSiteAmenities');
             Route::get('/findings/modals/building-amenities/{auditid}/{buildingid?}', 'FindingController@findingBuildingAmenities');
-            Route::get('/findings/modals/unit-amenities/{auditid}/{buildingid?}', 'FindingController@findingUnitAmenities');
+            Route::get('/findings/modals/unit-amenities/{auditid}/{unitid?}', 'FindingController@findingUnitAmenities');
 
 
             Route::get('/findings/{findingid}/items/{type?}/{typeid?}', 'FindingController@findingItems');
@@ -308,7 +308,7 @@
             Route::post('auditors/{userid}/addtoaudit/{auditid}', 'AuditController@addAuditorToAudit')->name('auditor.addtoaudit');
             Route::post('auditors/{userid}/removefromaudit/{auditid}', 'AuditController@removeAuditorFromAudit')->name('auditor.removefromaudit');
 
-            Route::get('/modals/amenities/add/{type}/{id}', 'AuditController@addAmenity')->name('amenities.add');
+            Route::get('/modals/amenities/add/{type}/{id}/{findingmodal?}', 'AuditController@addAmenity')->name('amenities.add');
             Route::post('/modals/amenities/save', 'AuditController@saveAmenity')->name('amenities.save');
             Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign/{element}/{im_model?}', 'AuditController@assignAuditorToAmenity')->name('amenities.assign.auditor');
             Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign', 'AuditController@saveAssignAuditorToAmenity')->name('amenities.assign.auditor.save');

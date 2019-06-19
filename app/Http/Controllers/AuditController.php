@@ -4647,9 +4647,8 @@ class AuditController extends Controller
         return view('projects.partials.details-assignment-auditor-calendar', compact('data'));
     }
 
-    public function addAmenity($type, $id)
+    public function addAmenity($type, $id, $finding_modal = 0)
     {
-
         switch ($type) {
             case 'project':
                 $project_id = $id;
@@ -4730,7 +4729,9 @@ class AuditController extends Controller
             $amenities = $amenities . '["' . $amenity->amenity_description . '","' . $amenity->id . '"],';
         }
         $amenities = $amenities . ']';
-
+        if($finding_modal) {
+        	return view('modals.findings-amenity-add', compact('data', 'auditors', 'amenities'));
+        }
         return view('modals.amenity-add', compact('data', 'auditors', 'amenities'));
     }
 

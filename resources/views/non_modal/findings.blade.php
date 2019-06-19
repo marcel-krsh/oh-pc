@@ -103,25 +103,25 @@
 										<div class="uk-inline uk-width-1-2">
 											<div uk-grid>
 												<div class="uk-width-1-4">
-													<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter uk-active"  title="Show All Findings (Unfiltered)" onclick="window.findingModalSelectedType='all'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#all-filter-button').addClass('uk-active');"><i class="uk-icon-asterisk"></i></button>
+													<button id="all-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter "  title="Show All Findings (Unfiltered)" onclick="window.findingModalSelectedType='all'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } $('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#all-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#all-filter-button').addClass('uk-active');"><i class="uk-icon-asterisk"></i></button>
 													<span id="all-findings-filter"  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false" @if($type != 'all') style="display: none;" @endIf>
 														<a  class="sort-desc"></a>
 													</span>
 												</div>
 												<div class="uk-width-1-4">
-													<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show File Findings Only" onclick="window.findingModalSelectedType='file'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#file-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#file-filter-button').addClass('uk-active');},.85);"><i class="a-folder"></i></button>
+													<button id="file-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter {{ $type == 'file' ? 'uk-active':'' }}" title="Show File Findings Only" onclick="window.findingModalSelectedType='file'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#file-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#file-filter-button').addClass('uk-active');},.85);"><i class="a-folder"></i></button>
 													<span id="file-findings-filter" @if($type != 'file') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 														<a  class="sort-desc"></a>
 													</span>
 												</div>
 												<div class="uk-width-1-4">
-													<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Non-life Threatning Findings Only" onclick="window.findingModalSelectedType='nlt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut();  $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#nlt-filter-button').addClass('uk-active');},.85);"><i class="a-booboo"></i></button>
+													<button id="nlt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter {{ $type == 'nlt' ? 'uk-active':'' }}" title="Show Non-life Threatning Findings Only" onclick="window.findingModalSelectedType='nlt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut();  $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#nlt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#nlt-filter-button').addClass('uk-active');},.85);"><i class="a-booboo"></i></button>
 													<span id="nlt-findings-filter" @if($type != 'nlt') style="display: none;" @endIf class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 														<a  class="sort-desc"></a>
 													</span>
 												</div>
 												<div class="uk-width-1-4">
-													<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter" title="Show Life Threatning Findings Only" onclick="window.findingModalSelectedType='lt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#lt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#lt-filter-button').addClass('uk-active');},.85);"><i class="a-skull"></i></button>
+													<button id="lt-filter-button" data-uk-tooltip="{pos:'bottom'}" class="uk-button uk-button-default button-filter {{ $type == 'lt' ? 'uk-active':'' }}" title="Show Life Threatning Findings Only" onclick="window.findingModalSelectedType='lt'; if(window.findingModalSelectedAmenity != ''){ filterFindingTypes(); } setTimeout(function(){$('#all-findings-filter').fadeOut(); $('#lt-findings-filter').fadeOut();$('#nlt-findings-filter').fadeOut();$('#file-findings-filter').fadeOut();$('#lt-findings-filter').fadeIn(); $('#lt-filter-button').removeClass('uk-active'); $('#nlt-filter-button').removeClass('uk-active'); $('#file-filter-button').removeClass('uk-active'); $('#all-filter-button').removeClass('uk-active'); $('#lt-filter-button').addClass('uk-active');},.85);"><i class="a-skull"></i></button>
 													<span id="lt-findings-filter" @if($type != 'lt') style="display: none;" @endIf  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
 														<a  class="sort-desc"></a>
 													</span>
@@ -444,6 +444,7 @@
 
 	function filterFindingTypes(){
 		var searchString = $('#finding-description').val();
+		//debugger;
 		// load into the div
 		console.log('loading /modals/findings_list/'+window.findingModalSelectedType+'/'+window.selectedAmenityInspection+'?search='+searchString);
 		removeDynamicData();
@@ -499,11 +500,27 @@
 			?>
 			// load the findings of selected amenities
 			@if(!is_null($passedUnit))
-				filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_key }}');
+			$.ajax({
+			   url:filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_key }}'),
+			   success:function(){
+				   selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
+				}
+			})
+
 			@elseif(!is_null($passedBuilding))
-				filterBuildingAmenities('{{ $passedBuilding->building_id }}','Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+			$.ajax({
+			   url:filterBuildingAmenities('{{ $passedBuilding->building_id }}','Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf'),
+			   success:function(){
+				   selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
+				}
+			})
+
 			@endif
-			selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '')
+
+
+
+
+
 			// Set the building name in selected type button
 			console.log('Filtering to amenity id:a-{{ $passedAmenity->amenity_id }} ({{ $passedAmenity->amenity->amenity_description }}) for amenity inspection {{ $passedAmenity->id }} with a location type target of '+window.findingModalSelectedLocationType+' further filtered to show '+window.findingModalSelectedType+' findings.');
 		@elseif(!is_null($passedUnit))
