@@ -1,6 +1,7 @@
 <script>
 	$('#amenity-list').scroll(function(){
 		scrollPosAmenity = $('#amenity-list').scrollTop();
+		scrollPosAmenityBottom = $('#amenity-list').scrollBottom();
 		console.log(scrollPosAmenity);
 	});
 </script>
@@ -110,9 +111,12 @@
 				'toplevel': toplevel,
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
-				filterUnitAmenities(unit_id);
+				$('#amenity-list').scroll(function(){
+					scrollPosAmenity = $('#amenity-list').scrollBottom();
+					console.log(scrollPosAmenity);
+				});
+				filterUnitAmenities(unit_id, null, 1);
 			});
-
 		});
 	}
 

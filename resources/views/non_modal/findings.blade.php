@@ -352,7 +352,7 @@
 		updateAmenitiesIcon('building');
 	}
 
-	function filterUnitAmenities(unit_id, display = null) {
+	function filterUnitAmenities(unit_id, display = null, bottom = null) {
 		loadAnimation();
 		var url = '/findings/modals/unit-amenities/{{ $audit->audit_id }}/'+unit_id;
 		$.get(url, {
@@ -404,7 +404,7 @@
 		}
 	}
 
-	function scrollTo(element = null) {
+	function scrollTo(element = null, bottom = null) {
 		if(element == 'type') {
 			$('#type-list').scrollTop(scrollPosType);
 		} else {

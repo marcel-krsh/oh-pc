@@ -31,17 +31,59 @@ forEach($findings as $fc){
 
 $columnCount = 1;
 $findings = collect($findings)->sortByDesc('site');
-$site_findings = $findings->where('site', 1)->where('unit_id', null);
+$current_audit = $findings->first()->audit_id;
+$site_findings = $findings->where('unit_id', null)->where('building_id', null);//->where('site', 1)
 $building_findings = $findings->where('building_id', '<>', null);
 $unit_findings = $findings->where('unit_id', '<>', null);
-$unit_findings->map(function ($o) {
+
+$site_findings->map(function ($s) use($current_audit) {
+	$existing_records = App\Models\AmenityInspection::where('audit_id', $current_audit)->where('amenity_id', $s->amenity_id)->pluck('id')->toArray();
+	$index = 0;
+	$index = array_search($s->amenity_inspection_id, $existing_records);
+	if($index == 0 && count($existing_records) <= 1) {
+		$index = '';
+	} else {
+		$index = $index + 1;
+	}
+	if($index == 0) {
+		$index = '';
+	}
+	$s->amenity_index = $index;
+	return $s;
+});
+$unit_findings->map(function ($o) use($current_audit) {
 	$o->u_building_key = $o->unit->building_key;
+	$existing_records = App\Models\AmenityInspection::where('audit_id', $current_audit)->where('unit_id', $o->unit_id)->where('amenity_id', $o->amenity_id)->pluck('id')->toArray();
+	$index = 0;
+	$index = array_search($o->amenity_inspection_id, $existing_records);
+	if($index == 0 && count($existing_records) <= 1) {
+		$index = '';
+	} else {
+		$index = $index + 1;
+	}
+	if($index == 0) {
+		$index = '';
+	}
+	$o->amenity_index = $index;
 	return $o;
 });
-$building_findings->map(function ($b) {
+$building_findings->map(function ($b) use($current_audit) {
 	$b->u_building_key = $b->building->building_key;
+	$existing_records = App\Models\AmenityInspection::where('audit_id', $current_audit)->where('building_id', $b->building_id)->where('amenity_id', $b->amenity_id)->pluck('id')->toArray();
+	$index = 0;
+	$index = array_search($b->amenity_inspection_id, $existing_records);
+	if($index == 0 && count($existing_records) <= 1) {
+		$index = '';
+	} else {
+		$index = $index + 1;
+	}
+	if($index == 0) {
+		$index = '';
+	}
+	$b->amenity_index = $index;
 	return $b;
 });
+
 $grouped_bf = $building_findings->groupBy('u_building_key')->toArray();
 $grouped_uf = $unit_findings->groupBy('u_building_key')->toArray();
 foreach($grouped_bf as $bk => $bf) {
@@ -50,6 +92,8 @@ foreach($grouped_bf as $bk => $bf) {
 		unset($grouped_uf[$bk]);
 	}
 }
+//dd($unit_findings->where('id', 2479));
+
 @endphp
 
 <div uk-grid>

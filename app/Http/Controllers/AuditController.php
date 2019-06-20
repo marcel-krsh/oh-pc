@@ -4744,6 +4744,7 @@ class AuditController extends Controller
         $amenity_id = $request->get('amenity_id');
         $toplevel = $request->get('toplevel');
 
+
         $new_amenities = $request->get('new_amenities');
 
         //dd($project_id, $building_id, $unit_id, $amenity_id, $audit_id, $toplevel);
@@ -5104,8 +5105,13 @@ class AuditController extends Controller
                     ->where('audit_id', '=', $audit->audit_id)
                     ->where('unit_id', '=', $unit_id)
                     ->orderBy('order', 'desc')
-                    ->first()
-                    ->order;
+                    ->first();
+                if(is_object($latest_ordering)){
+                    $latest_ordering = $latest_ordering->order;
+                } else {
+                    $latest_ordering = 0;
+                }
+
                 // save the ordering
                 $ordering = new OrderingAmenity([
                     'user_id' => Auth::user()->id,

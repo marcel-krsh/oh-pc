@@ -97,7 +97,8 @@
 			@endIf
 			@if($f->finding_type->type == 'file')
 			<i class="a-folder"></i>
-			@endIf  {{$f->amenity->amenity_description}}
+			@endIf
+			{{$f->amenity->amenity_description}}  {{ $f->amenity_index ?? '' }}
 		</h2>
 		<strong> {{$f->finding_type->name}}</strong><br>
 		@if($f->level == 1)
