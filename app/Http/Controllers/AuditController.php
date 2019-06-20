@@ -966,7 +966,9 @@ class AuditController extends Controller
                 $unit_amenity = UnitAmenity::where('unit_id', '=', $unit_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
 
                 $amenity_inspection->delete();
-                $ordering_amenities->delete();
+                if($ordering_amenities){
+                	$ordering_amenities->delete();
+                }
                 $unit_amenity->delete();
 
                 $new_comment = new Comment([
