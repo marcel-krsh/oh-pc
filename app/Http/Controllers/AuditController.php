@@ -1070,6 +1070,7 @@ class AuditController extends Controller
 
     public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $toplevel)
     {
+    		modal_confirm($request);
         if ($amenity_id == 0) {
             if ($unit_id != "null" && $unit_id != 0) {
                 // the complete button was clicked at the unit level
@@ -1086,7 +1087,6 @@ class AuditController extends Controller
                     $amenity_inspection->save();
                 }
             }
-
             return ['status' => 'complete'];
         } else {
             if ($unit_id != "null" && $unit_id != 0) {
@@ -4745,8 +4745,10 @@ class AuditController extends Controller
         $audit_id = $request->get('audit_id');
         $amenity_id = $request->get('amenity_id');
         $toplevel = $request->get('toplevel');
-
-
+        modal_confirm($request);
+        // $request->session()->forget('hide_confirm_modal');
+        // Session::save();
+        //dd(session()->all());
         $new_amenities = $request->get('new_amenities');
 
         //dd($project_id, $building_id, $unit_id, $amenity_id, $audit_id, $toplevel);
@@ -5335,6 +5337,7 @@ class AuditController extends Controller
             $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id];
 
         }
+        $data['hide_confirm_modal_js'] = session()->has('hide_confirm_modal');
         return $data;
     }
 
