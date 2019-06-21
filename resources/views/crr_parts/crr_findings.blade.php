@@ -31,7 +31,7 @@ forEach($findings as $fc){
 
 $columnCount = 1;
 $findings = collect($findings)->sortByDesc('site');
-$current_audit = $findings->first()->audit_id;
+$current_audit = $report->audit_id;
 $site_findings = $findings->where('unit_id', null)->where('building_id', null);//->where('site', 1)
 $building_findings = $findings->where('building_id', '<>', null);
 $unit_findings = $findings->where('unit_id', '<>', null);
