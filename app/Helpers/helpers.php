@@ -4,7 +4,6 @@
 use App\DocumentCategory;
 use App\Mail\EmailSystemAdmin;
 use Carbon\Carbon;
-use Session;
 
 function formatDate($date, $format = "F d, Y", $from_format = "Y-m-d H:i:s")
 {
@@ -229,7 +228,7 @@ function modal_confirm($request) {
 	$hide_confirm_modal = $request->hide_confirm_modal;
   if($hide_confirm_modal == 'true') {
   	$request->session()->put('hide_confirm_modal', true);
-  	Session::save();
+  	\Session::save();
       //session(['hide_confirm_modal' => true]);
   }
 }
