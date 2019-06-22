@@ -157,6 +157,7 @@ return [
         'Chumper\Zipper\ZipperServiceProvider',
         Barryvdh\DomPDF\ServiceProvider::class,
         Tremby\LaravelGitVersion\GitVersionServiceProvider::class,
+        Barryvdh\Snappy\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -226,6 +227,7 @@ return [
         'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
         'Agent' => Soumen\Agent\Facades\Agent::class,
 
+        'SPDF' => Barryvdh\Snappy\Facades\SnappyPdf::class,
     ],
 
 ];
