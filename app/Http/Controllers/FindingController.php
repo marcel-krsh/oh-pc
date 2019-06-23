@@ -955,14 +955,14 @@ class FindingController extends Controller
         $buildings = BuildingInspection::where('audit_id', $auditid)->get();
         $units = UnitInspection::select('unit_id', 'unit_key', 'unit_name', 'building_id', 'building_key', 'audit_id', 'complete')
             ->where('audit_id', $auditid)
-            ->where('complete', 0)
-            ->orWhereNull('complete')
+            //->where('complete', 0)
+            //->orWhereNull('complete')
             ->groupBy('unit_id')
             ->get();
         $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
         $amenities = $amenities_query->get();
         $site = $amenities_query->whereNotNull('project_id')->whereNull('completed_date_time')->get();
-        return view('modals.partials.finding-locations', compact('audit', 'buildings', 'units', 'site'));
+        return view('modals.partials.finding-locations', compact('audit', 'buildings', 'units', 'site', 'amenities'));
     }
 
     /**

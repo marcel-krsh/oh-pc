@@ -57,6 +57,18 @@ class EventServiceProvider extends ServiceProvider
         'communication.created' => [
             'App\Events\CommunicationReceipientEvent@communicationCreated',
         ],
+        'amenity.created' => [
+            'App\Events\AmenityEvent@amenityUpdated',
+        ],
+        'amenity.deleted' => [
+            'App\Events\AmenityEvent@amenityUpdated',
+        ],
+        'amenity.created' => [
+            'App\Events\AmenityEvent@amenityUpdated',
+        ],
+        'amenity.updated' => [
+            'App\Events\AmenityEvent@amenityUpdated',
+        ],
 
     ];
 
