@@ -866,7 +866,7 @@ class ReportsController extends Controller
     $data[]       = $report->audit->unit_inspections;
     $data[]       = $report->audit->project_amenity_inspections;
     $data[]       = $report->audit->building_inspections;
-    $data[]       = $report->audit->project->auditSpecificProjectDetails($report->audit_id); 
+    $data[]       = $report->audit->project->auditSpecificProjectDetails($report->audit_id);
     $data[]       = $report->audit->reportableFindings; // need this to do counts :/
     //dd($data);
     $response            = [];

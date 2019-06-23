@@ -42,6 +42,8 @@ use App\Models\Group;
 use App\Models\Program;
 use App\Models\ProgramGroup;
 use View;
+use App\Models\BuildingInspection;
+
 
 class AuditController extends Controller
 {
@@ -1068,25 +1070,45 @@ class AuditController extends Controller
         return 0;
     }
 
-    public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $toplevel)
+    public function propertyMarkComplete($amenity_id, $audit_id, $building_id, $unit_id, $toplevel, $building_option = 0)
     {
+        return view('modals.property-amenities-complete', compact('amenity_id', 'audit_id', 'building_id', 'unit_id', 'toplevel', 'building_option'));
+    }
+
+    public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $toplevel, $building_option = 0)
+    {
+    		modal_confirm($request);
         if ($amenity_id == 0) {
             if ($unit_id != "null" && $unit_id != 0) {
                 // the complete button was clicked at the unit level
                 $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->get();
             } else {
                 // the complete button was clicked at the building level
-                $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->get();
+            		if($building_option == 1) {
+            			$units = UnitInspection::where('audit_id', $audit_id)->where('building_id', '=', $building_id)
+								            ->pluck('unit_id');
+            		  $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->whereIn('unit_id', $units)->orWhere('building_id', '=', $building_id)->get();
+            		} else {
+            			$amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->get();
+            		}
             }
-            //dd($amenity_id, $audit_id, $building_id, $unit_id, $amenity_inspections);
             foreach ($amenity_inspections as $amenity_inspection) {
-                // if an amenity has already been completed, do not update the date
-                if ($amenity_inspection->completed_date_time === null) {
-                    $amenity_inspection->completed_date_time = date('Y-m-d H:i:s', time());
-                    $amenity_inspection->save();
-                }
-            }
-
+			          // if an amenity has already been completed, do not update the date
+			          if ($amenity_inspection->completed_date_time === null) {
+			              $amenity_inspection->completed_date_time = date('Y-m-d H:i:s', time());
+			              $amenity_inspection->save();
+			          }
+			      }
+			      // Already completed amenites in buliding and unit level are not marked complete, below code make it complete
+			      if($building_option == 1) {
+	      	      $buildings = BuildingInspection::where('audit_id', $audit_id)->where('building_id', $building_id)->get();
+	      	      foreach ($buildings as $key => $building) {
+					        $building->complete = 1;
+					        $building->save();
+					      }
+			      }
+            //$this->markCompleted($amenity_inspections);
+            //dd($amenity_id, $audit_id, $building_id, $unit_id, $amenity_inspections);
             return ['status' => 'complete'];
         } else {
             if ($unit_id != "null" && $unit_id != 0) {
@@ -4745,8 +4767,10 @@ class AuditController extends Controller
         $audit_id = $request->get('audit_id');
         $amenity_id = $request->get('amenity_id');
         $toplevel = $request->get('toplevel');
-
-
+        modal_confirm($request);
+        // $request->session()->forget('hide_confirm_modal');
+        // Session::save();
+        //dd(session()->all());
         $new_amenities = $request->get('new_amenities');
 
         //dd($project_id, $building_id, $unit_id, $amenity_id, $audit_id, $toplevel);
@@ -5335,6 +5359,7 @@ class AuditController extends Controller
             $data['auditor'] = ["unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => $unit_id, "building_id" => $building_id];
 
         }
+        $data['hide_confirm_modal_js'] = session()->has('hide_confirm_modal');
         return $data;
     }
 

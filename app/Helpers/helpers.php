@@ -223,3 +223,12 @@ function asset_version()
 	}
 	return '?v=' . $version;
 }
+
+function modal_confirm($request) {
+	$hide_confirm_modal = $request->hide_confirm_modal;
+  if($hide_confirm_modal == 'true') {
+  	$request->session()->put('hide_confirm_modal', true);
+  	\Session::save();
+      //session(['hide_confirm_modal' => true]);
+  }
+}
