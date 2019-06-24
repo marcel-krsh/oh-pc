@@ -2626,19 +2626,22 @@ class AuditController extends Controller
         // get units filterd in programs
         if(empty($programs))
         	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-            ->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-            ->orderBy('unit_id', 'asc')
+            ->with('unit', 'program.relatedGroups', 'unit.building','unit.building.address', 'unitInspected')
+            ->orderBy('unit.building.building_name', 'asc')
+            ->orderBy('unit.unit_name','asc')
             ->get();
         else {
         	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
             ->whereIn('program_key', $programs)
-            ->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-            ->orderBy('unit_id', 'asc')
+            ->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
+            ->orderBy('unit.building.building_name', 'asc')
+            ->orderBy('unit.unit_name','asc')
             ->get();
         }
         $all_unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-        							->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-        							->orderBy('unit_id', 'asc')
+        							->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
+        							->orderBy('unit.building.building_name', 'asc')
+                                    ->orderBy('unit.unit_name','asc')
         							->get();
         $actual_programs = $all_unitprograms->pluck('program')->unique()->toArray();
         $unitprograms = $unitprograms->groupBy('unit_id');
@@ -2825,8 +2828,9 @@ class AuditController extends Controller
           $programs = $get_project_details['programs'];
           $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
           														//->where('unit_id', 151063)
-          														->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-          														->orderBy('unit_id', 'asc')
+          														->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
+          														->orderBy('unit.building.building_name', 'asc')
+                                                                ->orderBy('unit.unit_name','asc')
           														->get();
           $actual_programs = $unitprograms->pluck('program')->unique()->toArray();
           $unitprograms = $unitprograms->groupBy('unit_id');
