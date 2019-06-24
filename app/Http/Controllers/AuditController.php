@@ -5656,10 +5656,14 @@ class AuditController extends Controller
         } else {
             $programGroup = $program->groups();
             $programGroup = $programGroup[0];
-            $program = collect($data['programs'])->where('id',$programGroup)->first();
+            $program = collect($data['programs'])->where('id',$programGroup);
+            if(count($program) > 1) {
+            	$program = collect($data['programs'])->where('building_key',$building_key)->first();
+            } else {
+            	$program = $program->first();
+            }
             //dd($program, $unitprogram->project_program->multiple_building_election_key);
         }
-
 
         return view('dashboard.partials.project-summary-left-row', compact('data', 'project', 'audit', 'program', 'datasets'));
     }
