@@ -2827,7 +2827,7 @@ class AuditController extends Controller
           $project = $get_project_details['project'];
           $programs = $get_project_details['programs'];
           $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-                ->join('buildings','buildings.id','unit_programs.building_id')
+                ->join('buildings','buildings.id','units.building_id')
                 ->join('units','units.id','unit_programs.unit_id')
           														//->where('unit_id', 151063)
           														->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
