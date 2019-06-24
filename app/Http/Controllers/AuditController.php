@@ -2829,8 +2829,8 @@ class AuditController extends Controller
           $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
           														//->where('unit_id', 151063)
           														->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
-          														->sortBy('unit.building.building_name', 'asc')
-                                                                ->sortBy('unit.unit_name','asc')
+          														->orderBy('units.buildings.building_name', 'asc')
+                                                                ->orderBy('units.unit_name','asc')
           														->get();
           $actual_programs = $unitprograms->pluck('program')->unique()->toArray();
           $unitprograms = $unitprograms->groupBy('unit_id');
