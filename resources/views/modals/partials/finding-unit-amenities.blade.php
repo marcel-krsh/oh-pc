@@ -99,6 +99,7 @@
 <script>
 
 	function copyUnitAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel=0, fromfinding=0){
+		loadTypeView = '';
 		@if(!session()->has('hide_confirm_modal'))
 		var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
 		UIkit.modal.confirm('<div uk-modal-dialog class="uk-grid"><div class="uk-width-1-1"><h2>MAKE A DUPLICATE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to make a duplicate?</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
@@ -130,6 +131,7 @@
 	}
 
 	function assignUnitAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element, fullscreen=null,warnAboutSave=null,fixedHeight=0,inmodallevel=0){
+		loadTypeView = '';
 		if(inmodallevel)
 			dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element+'/3', fullscreen,warnAboutSave,fixedHeight,inmodallevel);
 		else
@@ -137,6 +139,7 @@
 	}
 
 	function deleteUnitAmenity(element, audit_id, building_id, unit_id, amenity_id, has_findings = 0, toplevel=0){
+		loadTypeView = '';
 		if(has_findings){
 			UIkit.modal.alert('<p class="uk-modal-body">This amenity has some findings and cannot be deleted.</p>', {modal: false}).then(function () {  });
 		}else{
@@ -145,6 +148,7 @@
 	}
 
 	function markUnitAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0) {
+		loadTypeView = '';
 		@if(!session()->has('hide_confirm_modal'))
 		if(element){
 			if($('#'+element).hasClass('a-circle-checked')){

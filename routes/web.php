@@ -313,8 +313,9 @@
             Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign/{element}/{im_model?}', 'AuditController@assignAuditorToAmenity')->name('amenities.assign.auditor');
             Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign', 'AuditController@saveAssignAuditorToAmenity')->name('amenities.assign.auditor.save');
             Route::post('/report/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/assign', 'AuditController@saveAssignAuditorToAmenity')->name('report-amenities.assign.auditor.save');
-            Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete', 'AuditController@markCompleted')->name('amenities.mark.completed');
-            Route::post('/report/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete', 'AuditController@markCompleted')->name('report-amenities.mark.completed');
+            Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete/{building_option?}', 'AuditController@markCompleted')->name('amenities.mark.completed');
+            Route::post('/report/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete/{building_option?}', 'AuditController@markCompleted')->name('report-amenities.mark.completed');
+            Route::get('/modals/property-amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete/{building_option?}', 'AuditController@propertyMarkComplete')->name('property-amenities.mark.completed');
             Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}/{element}', 'AuditController@swapAuditorToAmenity')->name('amenities.swap.auditor');
             Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}', 'AuditController@saveSwapAuditorToAmenity')->name('amenities.swap.auditor.save');
 
