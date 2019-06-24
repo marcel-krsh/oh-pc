@@ -2627,21 +2627,30 @@ class AuditController extends Controller
         if(empty($programs))
         	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
             ->with('unit', 'program.relatedGroups', 'unit.building','unit.building.address', 'unitInspected')
-            ->orderBy('unit.building.building_name', 'asc')
-            ->orderBy('unit.unit_name','asc')
+
+                ->join('units','units.id','unit_programs.unit_id')
+                ->join('buildings','buildings.id','units.building_id')
+                ->orderBy('buildings.building_name', 'asc')
+                ->orderBy('units.unit_name','asc')
             ->get();
         else {
         	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
             ->whereIn('program_key', $programs)
             ->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
-            ->orderBy('unit.building.building_name', 'asc')
-            ->orderBy('unit.unit_name','asc')
+
+                ->join('units','units.id','unit_programs.unit_id')
+                ->join('buildings','buildings.id','units.building_id')
+                ->orderBy('buildings.building_name', 'asc')
+                ->orderBy('units.unit_name','asc')
             ->get();
         }
         $all_unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
         							->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
-        							->orderBy('unit.building.building_name', 'asc')
-                                    ->orderBy('unit.unit_name','asc')
+
+                                    ->join('units','units.id','unit_programs.unit_id')
+                                    ->join('buildings','buildings.id','units.building_id')
+                                    ->orderBy('buildings.building_name', 'asc')
+                                    ->orderBy('units.unit_name','asc')
         							->get();
         $actual_programs = $all_unitprograms->pluck('program')->unique()->toArray();
         $unitprograms = $unitprograms->groupBy('unit_id');
