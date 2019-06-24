@@ -27,7 +27,7 @@
 						<select name="audit_id" class="uk-select filter-drops uk-width-4-5 audit-list" style="display: none;" onChange="$('#new-report-errors').html('');">
 							<option>PLEASE SELECT AN AUDIT</option>
 							@forEach($audits->sortBy('project.project_name') as $audit)
-								<option value="{{$audit->audit_id}}">{{$audit->project->project_name}} : {{$audit->audit_id}} | @if($audit->lead_user_id)LEAD: {{$audit->audit->lead->person->first_name}} {{$audit->audit->lead->person->last_name}} @endIf | LAST MODIFIED: {{ ucfirst($audit->updated_at->diffForHumans()) }} @if($audit->audit->reports) 
+								<option value="{{$audit->audit_id}}">{{$audit->project->project_name}} : {{$audit->audit_id}} @if($audit->audit->lead)| LEAD: {{$audit->audit->lead->person->first_name}} {{$audit->audit->lead->person->last_name}} @endIf | LAST MODIFIED: {{ ucfirst($audit->updated_at->diffForHumans()) }} @if($audit->audit->reports) 
 									@forEach($audit->audit->reports as $report) | 
 									 #{{$report->id}} : {{$report->template()->template_name}}
 									@endForEach
