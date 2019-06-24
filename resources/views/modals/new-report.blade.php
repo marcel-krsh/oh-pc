@@ -25,7 +25,7 @@
 						
 							<label class="uk-width-1-5 audit-list" style="display: none;">FOR AUDIT</label>
 						<select name="audit_id" class="uk-select filter-drops uk-width-4-5 audit-list" style="display: none;" onChange="$('#new-report-errors').html('');">
-							<option>PLEASE SELECT AN AUDIT (ORDERED BY MODIFICATION DATE)</option>
+							<option>PLEASE SELECT AN AUDIT</option>
 							@forEach($audits as $audit)
 								<option value="{{$audit->audit_id}}">{{$audit->project->project_name}} : {{$audit->audit_id}} | @if($audit->lead_user_id)LEAD: {{$audit->lead->person->first_name}} {{$audit->lead->person->last_name}} @endIf | LAST MODIFIED: {{ ucfirst($audit->updated_at->diffForHumans()) }}</option>
 							@endForEach
