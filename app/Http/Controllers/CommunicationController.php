@@ -1454,6 +1454,32 @@ class CommunicationController extends Controller
     }
   }
 
+  public function reportResolvedNotification($report_id, $project_id = null)
+  {
+    if (null !== $project_id) {
+      $project    = Project::where('id', '=', $project_id)->first();
+      $report     = CrrReport::with('lead')->find($report_id);
+      $lead_id    = $report->lead->id;
+      $recipients = User::where('users.id', $lead_id)
+        ->leftJoin('people', 'people.id', 'users.person_id')
+        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+        ->join('users_roles', 'users_roles.user_id', 'users.id')
+        ->select('users.*', 'last_name', 'first_name', 'organization_name')
+        ->where('active', 1)
+        ->orderBy('organization_name', 'asc')
+        ->orderBy('last_name', 'asc')
+        ->get();
+      $audit  = $report->audit_id;
+      $status = 9;
+      $data   = ['subject' => 'All items for ' . $project->project_number . ' : ' . $project->project_name . ' on report '.$report->id.' have been resolved.',
+        'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your resolved report.'];
+      $single_receipient = 1;
+      return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
+    } else {
+      return abort(403, 'No associated project was found');
+    }
+  }
+
   protected function notificationSessions($forminputs)
   {
     if (array_key_exists('notification_triggered_type', $forminputs)) {

@@ -493,6 +493,8 @@
             Route::get('/modals/report-approve-with-changes/{report_id}/{project_id?}', 'CommunicationController@reportApproveWithChangesNotification')->name('communication.report-approve-with-changes');
             Route::get('/modals/report-approve/{report_id}/{project_id?}', 'CommunicationController@reportApproveNotification')->name('communication.report-approve');
 
+            Route::get('/modals/report-resolved/{report_id}/{project_id?}', 'CommunicationController@reportResolvedNotification')->name('communication.report-resolved');
+
 
             Route::get('/session/communication_switch_inbox', function()
     				{

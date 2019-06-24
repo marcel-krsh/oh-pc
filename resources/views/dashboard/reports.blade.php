@@ -255,6 +255,8 @@ $crrTypeSelection    = 'all';
             	dynamicModalLoad('report-approve-with-changes/' + reportId + '/' + project_id);
             } else if(action == 5) {
             	dynamicModalLoad('report-approve/' + reportId + '/' + project_id);
+            } else if(action == 9) {
+                dynamicModalLoad('report-resolved/' + reportId + '/' + project_id);
             } else if(action != 8){
                 $.get('/dashboard/reports', {
                                             'id' : reportId,
