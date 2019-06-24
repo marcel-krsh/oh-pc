@@ -418,7 +418,7 @@ class ReportsController extends Controller
   {
    if(Auth::user()->can('access_auditor')){
     // list out templates
-    $audits    = CachedAudit::where('step_id','>', 59)->where('step_id','<',67)->join('projects','project_id','project_id')->orderBy('projects.project_name', 'asc')->get();
+    $audits    = CachedAudit::where('step_id','>', 59)->where('step_id','<',67)->leftJoin('projects','project_id','project_id')->orderBy('projects.project_name', 'asc')->groupBy('audit_id')->get();
     $templates = CrrReport::where('template', 1)->where('active_template', 1)->get();
 
     return view('modals.new-report', compact('templates', 'audits'));
