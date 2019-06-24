@@ -146,12 +146,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				//dd($inspections);
 			$fileInspections = count(collect($inspections)->where('is_site_visit',0)->groupBy('unit_id'));
 			$siteInspections = count(collect($inspections)->where('is_site_visit',1)->groupBy('unit_id'));
-			$homeSiteInspections = count(collect($inspections)->where(
-				function($q){
-					$q->whereIn('group','HOME');
-					$q->orWhereIn('group','NHTF');
-					$q->orWhereIn('group','OHFTF');
-				})->where('is_site_visit',1)->groupBy('unit_id'));
+			$homeSiteInspections = count(collect($inspections)->whereIn('group','HOME')->orWhereIn('group','NHTF')->orWhereIn('group','OHTF')->where('is_site_visit',1)->groupBy('unit_id'));
 			$homeFileInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',0)->groupBy('unit_id'));
 		?>
 
