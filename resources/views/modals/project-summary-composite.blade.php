@@ -140,6 +140,7 @@
 			$(targetRow).fadeOut( "slow", function() {
 				$(targetRow).replaceWith(data).fadeIn();
 			});
+			loadTypes(1);
 			//filterProgramSummary();
 		}
 		);

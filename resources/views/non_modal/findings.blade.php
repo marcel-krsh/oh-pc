@@ -384,7 +384,10 @@
 		$('#dynamic-data').html(tempdiv);
 	}
 
-	function loadTypes() {
+	function loadTypes(refresh = 0) {
+		if(refresh = 1) {
+			loadTypeView = '';
+		}
 		if(loadTypeView == '') {
 			loadAnimation();
 			var url = '/findings/modals/locations/{{ $audit->audit_id }}';
