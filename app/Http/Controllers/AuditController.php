@@ -1084,7 +1084,7 @@ class AuditController extends Controller
                 $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->get();
             } else {
                 // the complete button was clicked at the building level
-            		if($building_option == 1) {
+            		if($building_option == 2) {
             			$units = UnitInspection::where('audit_id', $audit_id)->where('building_id', '=', $building_id)
 								            ->pluck('unit_id');
             		  $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->whereIn('unit_id', $units)->orWhere('building_id', '=', $building_id)->get();
@@ -1100,12 +1100,23 @@ class AuditController extends Controller
 			          }
 			      }
 			      // Already completed amenites in buliding and unit level are not marked complete, below code make it complete
-			      if($building_option == 1) {
+			      if($building_option == 2) {
 	      	      $buildings = BuildingInspection::where('audit_id', $audit_id)->where('building_id', $building_id)->get();
 	      	      foreach ($buildings as $key => $building) {
 					        $building->complete = 1;
 					        $building->save();
 					      }
+			      } elseif($building_option == 1) {
+			      	// Check if building has units
+			      	$units = UnitInspection::where('audit_id', $audit_id)->where('building_id', '=', $building_id)
+								            ->count();
+							if($units == 0) {
+								$buildings = BuildingInspection::where('audit_id', $audit_id)->where('building_id', $building_id)->get();
+	      	      foreach ($buildings as $key => $building) {
+					        $building->complete = 1;
+					        $building->save();
+					      }
+							}
 			      }
             //$this->markCompleted($amenity_inspections);
             //dd($amenity_id, $audit_id, $building_id, $unit_id, $amenity_inspections);
