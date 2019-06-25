@@ -146,11 +146,23 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				//dd($inspections);
 			$fileInspections = count(collect($inspections)->where('is_site_visit',0)->groupBy('unit_id'));
 			$siteInspections = count(collect($inspections)->where('is_site_visit',1)->groupBy('unit_id'));
-			$homeSiteInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',1)->groupBy('unit_id'));
+			$homeSiteInspections = count(collect($inspections)->where('group','HOME')->where('is_site_visit',1)->groupBy('unit_id'));
 			$homeFileInspections = count(collect($inspections)->whereIn('group','HOME')->where('is_site_visit',0)->groupBy('unit_id'));
+
+			$ohtfSiteInspections = count(collect($inspections)->where('group','OHTF')->where('is_site_visit',1)->groupBy('unit_id'));
+			$ohtfFileInspections = count(collect($inspections)->whereIn('group','OHTF')->where('is_site_visit',0)->groupBy('unit_id'));
+
+			$nhtfSiteInspections = count(collect($inspections)->where('group','NHTF')->where('is_site_visit',1)->groupBy('unit_id'));
+			$nhtfFileInspections = count(collect($inspections)->whereIn('group','NHTF')->where('is_site_visit',0)->groupBy('unit_id'));
 		?>
 
-		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} PHYSICAL INSPECTIONS @else {{$siteInspections}} PHYSICAL INSPECTION @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :&nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf @if($homeSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME PHYSICAL INSPECTIONS @else 1 HOME PHYSICAL INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
+		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} PHYSICAL INSPECTIONS @else {{$siteInspections}} PHYSICAL INSPECTION @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :&nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf 
+
+			@if($homeSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME PHYSICAL INSPECTIONS @else 1 HOME PHYSICAL INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
+
+			@if($ohtfSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($ohtfSiteInspections > 1 || $ohtfSiteInspections < 1) {{$ohtfSiteInspections}} OHTF PHYSICAL INSPECTIONS @else 1 OHTF PHYSICAL INSPECTION @endIf  @endIf @if($ohtfFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($ohtfFileInspections > 1 || $ohtfFileInspections < 1) {{$ohtfFileInspections}} OHTF FILE INSPECTIONS @else 1 OHTF FILE INSPECTION @endIf @endIf
+
+			@if($nhtfSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($nhtfSiteInspections > 1 || $nhtfSiteInspections < 1) {{$nhtfSiteInspections}} NHTF PHYSICAL INSPECTIONS @else 1 NHTF PHYSICAL INSPECTION @endIf  @endIf @if($nhtfFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($nhtfFileInspections > 1 || $nhtfFileInspections < 1) {{$nhtfFileInspections}} NHTF FILE INSPECTIONS @else 1 NHTF FILE INSPECTION @endIf @endIf
 
 
 		</small>
@@ -169,6 +181,10 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					$thisUnitFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file'));
 					$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
 					$isHome = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','HOME'));
+
+					$isOhtf = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','OHTF'));
+
+					$isNhtf = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','NHTF'));
 
 				?>
 				<div  class="unit-name"  >
@@ -194,7 +210,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					@if(!in_array($g->unit_id, $siteVisited))
 					<span style="color:#cecece"><i class="a-mobile uk-text-large uk-margin-small-right "  ></i> <i class="a-circle-minus on-phone"></i></span>
 					@endIf
-					<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf @if($isHome) <i class="a-home-2 home-folder"></i> @endIf<?php $fileVisited[]=$g->unit_id; ?>
+					<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf @if($isHome || $isOhtf || $isNhtf) <i class="a-home-2 home-folder"></i> @endIf<?php $fileVisited[]=$g->unit_id; ?>
 
 					@else
 					<?php $noShow = 1; ?>

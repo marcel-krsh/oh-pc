@@ -1084,7 +1084,7 @@ class AuditController extends Controller
                 $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->get();
             } else {
                 // the complete button was clicked at the building level
-            		if($building_option == 1) {
+            		if($building_option == 2) {
             			$units = UnitInspection::where('audit_id', $audit_id)->where('building_id', '=', $building_id)
 								            ->pluck('unit_id');
             		  $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->whereIn('unit_id', $units)->orWhere('building_id', '=', $building_id)->get();
@@ -1100,12 +1100,23 @@ class AuditController extends Controller
 			          }
 			      }
 			      // Already completed amenites in buliding and unit level are not marked complete, below code make it complete
-			      if($building_option == 1) {
+			      if($building_option == 2) {
 	      	      $buildings = BuildingInspection::where('audit_id', $audit_id)->where('building_id', $building_id)->get();
 	      	      foreach ($buildings as $key => $building) {
 					        $building->complete = 1;
 					        $building->save();
 					      }
+			      } elseif($building_option == 1) {
+			      	// Check if building has units
+			      	$units = UnitInspection::where('audit_id', $audit_id)->where('building_id', '=', $building_id)
+								            ->count();
+							if($units == 0) {
+								$buildings = BuildingInspection::where('audit_id', $audit_id)->where('building_id', $building_id)->get();
+	      	      foreach ($buildings as $key => $building) {
+					        $building->complete = 1;
+					        $building->save();
+					      }
+							}
 			      }
             //$this->markCompleted($amenity_inspections);
             //dd($amenity_id, $audit_id, $building_id, $unit_id, $amenity_inspections);
@@ -1194,7 +1205,7 @@ class AuditController extends Controller
 
     public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element)
     {
-
+        $in_model = null; // we do not use this feature here.
         //dd($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element);
         if ($amenity_id != 0) {
             $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
@@ -1215,12 +1226,13 @@ class AuditController extends Controller
 
         $auditors = CachedAudit::where('audit_id', '=', $audit_id)->first()->auditors;
 
-        return view('modals.auditor-amenity-assignment', compact('auditors', 'current_auditor', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'auditor_id'));
+        return view('modals.auditor-amenity-assignment', compact('auditors', 'current_auditor', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'auditor_id','in_model'));
     }
 
     public function saveSwapAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $auditor_id)
     {
 
+        
         $new_auditor_id = $request->get('new_auditor_id');
 
         if ($amenity_id == 0 && $unit_id != 0) {
@@ -2626,19 +2638,31 @@ class AuditController extends Controller
         // get units filterd in programs
         if(empty($programs))
         	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-            ->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-            ->orderBy('unit_id', 'asc')
+            ->with('unit', 'program.relatedGroups', 'unit.building','unit.building.address', 'unitInspected')
+
+                ->join('units','units.id','unit_programs.unit_id')
+                ->join('buildings','buildings.id','units.building_id')
+                ->orderBy('buildings.building_name', 'asc')
+                ->orderBy('units.unit_name','asc')
             ->get();
         else {
         	$unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
             ->whereIn('program_key', $programs)
-            ->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-            ->orderBy('unit_id', 'asc')
+            ->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
+
+                ->join('units','units.id','unit_programs.unit_id')
+                ->join('buildings','buildings.id','units.building_id')
+                ->orderBy('buildings.building_name', 'asc')
+                ->orderBy('units.unit_name','asc')
             ->get();
         }
         $all_unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
-        							->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-        							->orderBy('unit_id', 'asc')
+        							->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
+
+                                    ->join('units','units.id','unit_programs.unit_id')
+                                    ->join('buildings','buildings.id','units.building_id')
+                                    ->orderBy('buildings.building_name', 'asc')
+                                    ->orderBy('units.unit_name','asc')
         							->get();
         $actual_programs = $all_unitprograms->pluck('program')->unique()->toArray();
         $unitprograms = $unitprograms->groupBy('unit_id');
@@ -2824,9 +2848,12 @@ class AuditController extends Controller
           $project = $get_project_details['project'];
           $programs = $get_project_details['programs'];
           $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
+                ->join('units','units.id','unit_programs.unit_id')
+                ->join('buildings','buildings.id','units.building_id')
           														//->where('unit_id', 151063)
-          														->with('unit', 'program.relatedGroups', 'unit.building.address', 'unitInspected')
-          														->orderBy('unit_id', 'asc')
+          														->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
+          														->orderBy('buildings.building_name', 'asc')
+                                                                ->orderBy('units.unit_name','asc')
           														->get();
           $actual_programs = $unitprograms->pluck('program')->unique()->toArray();
           $unitprograms = $unitprograms->groupBy('unit_id');
@@ -5652,6 +5679,9 @@ class AuditController extends Controller
             //dd($building_key,$unit->building_key);
 
             $program = collect($data['programs'])->where('building_key',$building_key)->first();
+            if(!$program && $group_ids) {
+            	$program = collect($data['programs'])->where('id',$group_ids[0])->first();
+            }
 
         } else {
             $programGroup = $program->groups();

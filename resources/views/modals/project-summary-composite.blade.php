@@ -54,7 +54,6 @@
 
 	<script>
 
-
 		function filterAll(){
 			$('[id^=summary-btn-]').removeClass('button-filter-selected');
 			$('#summary-btn-all').addClass('button-filter-selected');
@@ -121,6 +120,10 @@
 			var targetRow = '#program-selection-'+grouptypes+'-'+buildingkey;
 			var targetClass = '.program-selection-'+grouptypes+'-'+buildingkey;
 		} else {
+			var targetRow = '#program-selection-'+grouptypes;
+			var targetClass = '.program-selection-'+grouptypes;
+		}
+		if($(targetRow).length == 0) {
 			var targetRow = '#program-selection-'+grouptypes;
 			var targetClass = '.program-selection-'+grouptypes;
 		}
