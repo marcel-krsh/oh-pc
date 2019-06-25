@@ -177,6 +177,21 @@ class ReportsController extends Controller
         case 8:
           # code...
           break;
+        case 9:
+          # All items resolved ...
+          if (Auth::user()->can('access_manager')) {
+            $note = Auth::user()->name ." updated the status to " . $report->status_name();
+            if (!is_null($report->manager_id)) {
+              $report->update(['crr_approval_type_id' => 9, 'manager_id' => null]);
+              $note .= 'Removed prior status, and refreshed report to reflect the change.';
+              $this->generateReport($report, 0, 1);
+            } else {
+              $report->update(['crr_approval_type_id' => 9, 'manager_id' => null]);
+            }
+          } else {
+            $note = "Attempted change to All Items Resolved but something went wrong.";
+          }
+          break;
 
         default:
           # code...
@@ -421,7 +436,9 @@ class ReportsController extends Controller
   {
    if(Auth::user()->can('access_auditor')){
     // list out templates
-    $audits    = CachedAudit::where('step_id','>', 59)->where('step_id','<',67)->orderBy('updated_at', 'asc')->get();
+    $audits    = CachedAudit::where('step_id','>', 59)->where('step_id','<',67)->with('project')->with('audit.reports')
+    //->orderBy('projects.project_name', 'asc')
+    ->get();
     $templates = CrrReport::where('template', 1)->where('active_template', 1)->get();
 
     return view('modals.new-report', compact('templates', 'audits'));

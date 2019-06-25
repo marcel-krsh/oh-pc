@@ -6,9 +6,9 @@
 	  			<form id="modal-amenity-form" class="uk-margin-medium-top" onsubmit="markUnitAmenityComplete()">
 					<div class="uk-margin-remove uk-grid" uk-grid="">
 						<input type="hidden" name="building-complete-baseLink" id="building-complete-baseLink">
-						<button class="uk-button uk-button-primary uk-width-1-1" onclick="markBuildingComplete(0);">Mark Building Amenities as Completed
+						<button class="uk-button uk-button-primary uk-width-1-1" onclick="markBuildingComplete(1);">Mark Building Amenities as Completed
 						</button>
-						<button class="uk-button uk-button-primary  uk-width-1-1 " onclick="markBuildingComplete(1)">Mark Building Amenities and its Units as Completed</button>
+						<button class="uk-button uk-button-primary  uk-width-1-1 " onclick="markBuildingComplete(2)">Mark Building Amenities and its Units as Completed</button>
 					</div>
 				</form>
 	  		</div>

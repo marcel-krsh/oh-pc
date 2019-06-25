@@ -27,6 +27,7 @@
                                         @if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
                                         <option value="6">SEND TO PROPERTY CONTACT</option>
                                         <option value="7">PROPERTY VIEWED IN PERSON</option>
+                                        <option value="9">ALL ITEMS RESOLVED</option>
                                         @endIf
                                         {{-- @if(!$report->audit->is_archived() || Auth::user()->can('access_manager'))
                                         <option value="8">REFRESH DYNAMIC DATA</option>
