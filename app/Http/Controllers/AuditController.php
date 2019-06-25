@@ -5678,6 +5678,9 @@ class AuditController extends Controller
             //dd($building_key,$unit->building_key);
 
             $program = collect($data['programs'])->where('building_key',$building_key)->first();
+            if(!$program && $group_ids) {
+            	$program = collect($data['programs'])->where('id',$group_ids[0])->first();
+            }
 
         } else {
             $programGroup = $program->groups();
