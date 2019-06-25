@@ -1205,7 +1205,7 @@ class AuditController extends Controller
 
     public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element)
     {
-        $is_model = null; // we do not use this feature here.
+        $in_model = null; // we do not use this feature here.
         //dd($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element);
         if ($amenity_id != 0) {
             $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
@@ -1226,12 +1226,13 @@ class AuditController extends Controller
 
         $auditors = CachedAudit::where('audit_id', '=', $audit_id)->first()->auditors;
 
-        return view('modals.auditor-amenity-assignment', compact('auditors', 'current_auditor', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'auditor_id','is_model'));
+        return view('modals.auditor-amenity-assignment', compact('auditors', 'current_auditor', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'auditor_id','in_model'));
     }
 
     public function saveSwapAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $auditor_id)
     {
 
+        
         $new_auditor_id = $request->get('new_auditor_id');
 
         if ($amenity_id == 0 && $unit_id != 0) {
