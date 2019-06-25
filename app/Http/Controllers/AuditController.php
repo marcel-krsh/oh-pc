@@ -1203,7 +1203,7 @@ class AuditController extends Controller
         return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'current_auditor', 'in_model'));
     }
 
-    public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element)
+    public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element, $in_model = null)
     {
         $in_model = null; // we do not use this feature here.
         //dd($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element);
@@ -1232,7 +1232,7 @@ class AuditController extends Controller
     public function saveSwapAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $auditor_id)
     {
 
-        
+
         $new_auditor_id = $request->get('new_auditor_id');
 
         if ($amenity_id == 0 && $unit_id != 0) {
