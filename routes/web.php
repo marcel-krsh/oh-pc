@@ -316,7 +316,7 @@
             Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete/{building_option?}', 'AuditController@markCompleted')->name('amenities.mark.completed');
             Route::post('/report/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete/{building_option?}', 'AuditController@markCompleted')->name('report-amenities.mark.completed');
             Route::get('/modals/property-amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete/{building_option?}', 'AuditController@propertyMarkComplete')->name('property-amenities.mark.completed');
-            Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}/{element}', 'AuditController@swapAuditorToAmenity')->name('amenities.swap.auditor');
+            Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}/{element}/{im_model?}', 'AuditController@swapAuditorToAmenity')->name('amenities.swap.auditor');
             Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}', 'AuditController@saveSwapAuditorToAmenity')->name('amenities.swap.auditor.save');
 
             Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/delete/{element?}', 'AuditController@deleteAmenity')->name('amenities.delete');

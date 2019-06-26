@@ -10,7 +10,20 @@
 	<h3 class="uk-text-uppercase uk-text-emphasis uk-margin-top">Select Location</h3>
 	<div class="uk-column-1-3@m uk-column-1-2@s ">
 		<ul class="uk-list uk-list-divider uk-margin-left">
-			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')" style="color : @if(count($site) == 0) #000 @else #50b8ec @endIf " >@if(count($site) == 0) <i class="a-circle-checked"></i> @else <i class="a-circle"></i>@endIf Site: {{ $audit->project->address->basic_address() }}
+			{{-- Site Here --}}
+			@php
+			$site_status = $site->where('completed_date_time', null)->count();
+			@endphp
+			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf " >
+				<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
+					<i @if($site_status != 0) onclick="markSiteComplete({{ $audit->audit_id }}, 0, 0, 0,'markcomplete', 1)" @endif class="{{ ($site_status == 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
+					</i>
+				</div>
+
+				<div class="uk-inline uk-padding-remove" style="flex:140px;">
+					<a onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address->basic_address() }}')" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf "> <strong style="color : @if($site_status == 0) #000 @else #50b8ec @endIf "> Site: {{ $audit->project->address->basic_address() }}</strong>
+					</a>
+				</div>
 			</li>
 			{{-- <hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top"> --}}
 			{{-- Buildings here --}}
@@ -18,10 +31,25 @@
 			@if(!is_null($type->building_id))
 			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf ">
 				<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
-					<i @if($type->complete == 0 || is_null($type->complete)) onclick="markBuildingCompleteModal({{ $audit->audit_id }}, {{ $type->building_id }}, 0, 0,'markcomplete', 1)" @endif class="{{ ($type->complete)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor'}} " style="font-size: 26px;">
+					<i @if($type->complete == 0 || is_null($type->complete)) onclick="markBuildingCompleteModal({{ $audit->audit_id }}, {{ $type->building_id }}, 0, 0,'markcomplete', 0)" @endif class="{{ ($type->complete)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 					</i>
 				</div>
-				<input type="hidden" name="building-complete-baseLink-{{ $type->building_id }}" id="building-complete-baseLink-{{ $type->building_id }}" value="'amenities/0/audit/{{ $audit->audit_id }}/building/{{ $type->building_id }}/unit/0/1/complete'">
+
+				@if(count($type->order_building->auditors()) > 0)
+				@foreach($type->order_building->auditors() as $auditor)
+				<div class="amenity-auditor uk-margin-remove">
+					<div id="building-{{ $type->building_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $audit->audit_id }}, {{ $type->building_id }}, 0, 'building-auditors-{{ $type->building_id }}')">
+						{{ $auditor->initials() }}
+					</div>
+				</div>
+				@endforeach
+				@else
+				<div class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
+					<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignFindingAuditor({{ $audit->audit_id }}, {{ $type->building_id }}, 0, 0, 'building-auditor-0', 0, 0, 0, 2);">
+					</i>
+				</div>
+				@endif
+				{{-- <input type="hidden" name="building-complete-baseLink-{{ $type->building_id }}" id="building-complete-baseLink-{{ $type->building_id }}" value="'amenities/0/audit/{{ $audit->audit_id }}/building/{{ $type->building_id }}/unit/0/1/complete'"> --}}
 				<div class="uk-inline uk-padding-remove" style="flex:140px;">
 					<a onclick="filterBuildingAmenities({{ $type->building_id }},'Building BIN: {{ $type->building_key }}, NAME: {{ $type->building_name }}, ADDRESS: @if($type->building->address){{ $type->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf')" style="color : @if($type->complete) #000 @else #50b8ec @endIf "> <strong style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf "> Building BIN:{{ $type->building_key }} NAME: {{ $type->building_name }} ADDRESS: {{ $type->address }}</strong>
 					</a>
@@ -38,18 +66,35 @@
 				Delete: saveDeleteAmenity
 				Complete: markCompleted
 				Add modal trigger
-				--}}
+				 --}}
 				@if($buildingUnits)
 				<ul class="uk-margin-left">
 					@forEach($buildingUnits as $bu)
 					@php
-						$unit_am_status = $amenities->where('unit_id', $bu->unit_id)->where('completed_date_time', null)->count();
+					$unit_am_status = $amenities->where('unit_id', $bu->unit_id)->where('completed_date_time', null)->count();
 					@endphp
 					<li class="uk-margin-left use-hand-cursor uk-column-span uk-margin"  style="color : @if($bu->complete == 1 || ($unit_am_status == 0)) #000 @else #50b8ec @endIf ">
 						<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
-							<i @if($bu->complete == 0 || is_null($bu->complete)) onclick="markUnitComplete({{ $audit->audit_id }}, 0, {{ $bu->unit_id }}, 0,'markcomplete', 1)" @endif class="{{ ($bu->complete) || ($unit_am_status == 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor'}} " style="font-size: 26px;">
+							<i @if($bu->complete == 0 || is_null($bu->complete)) onclick="markUnitComplete({{ $audit->audit_id }}, 0, {{ $bu->unit_id }}, 0,'markcomplete', 0)" @endif class="{{ ($bu->complete) || ($unit_am_status == 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 							</i>
 						</div>
+
+						@if(count($bu->auditors($audit->audit_id)) > 0)
+						@foreach($bu->auditors($audit->audit_id) as $auditor)
+						<div class="amenity-auditor uk-margin-remove">
+							<div id="unit-{{ $bu->unit_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $audit->audit_id }}, {{ $bu->building_id }}, {{ $bu->unit_id }}, 'unit-auditors-{{ $bu->unit_id }}')">
+								{{ $auditor->initials() }}
+							</div>
+						</div>
+						@endforeach
+						@else
+						<div class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
+							<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignFindingAuditor({{ $audit->audit_id }}, {{ $bu->building_id }}, {{ $bu->unit_id }}, 0, 'building-auditor-0', 0, 0, 0, 2);">
+							</i>
+						</div>
+						@endif
+
+
 						<div class="uk-inline uk-padding-remove" style="flex:140px;">
 							<a onclick="filterUnitAmenities({{ $bu->unit_id }} ,'Unit {{ $bu->unit_name }} in BIN:{{ $bu->building_key }} ')" style="color : @if($bu->complete || ($unit_am_status == 0)) #000 @else #50b8ec @endIf "> Unit {{ $bu->unit_name }}
 							</a>
@@ -72,9 +117,17 @@
 	@endIf
 	<script>
 
+		function swapFindingsAuditor(auditor_id, audit_id, building_id, unit_id, element, amenity_id=0, inmodallevel=4){
+			dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/swap/'+auditor_id+'/'+element+'/'+inmodallevel, 0,0,0,2);
+		}
+
+		function assignFindingAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element, fullscreen=null,warnAboutSave=null,fixedHeight=0,inmodallevel=0){
+			dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element+'/4', fullscreen,warnAboutSave,fixedHeight,inmodallevel);
+		}
+
 		function markBuildingCompleteModal(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0){
 			loadTypeView = '';
-				dynamicModalLoad('property-amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', 0,0,0,2);
+			dynamicModalLoad('property-amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', 0,0,0,2);
 		}
 
 		function markUnitComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0) {
@@ -133,4 +186,59 @@
 			@endif
 		}
 
+		function markSiteComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0) {
+			@if(!session()->has('hide_confirm_modal'))
+			if(element){
+				if($('#'+element).hasClass('a-circle-checked')){
+					var title = 'MARK THIS INCOMPLETE?';
+					var message = 'Are you sure you want to mark this incomplete?';
+				}else{
+					var title = 'MARK THIS COMPLETE?';
+					var message = 'Are you sure you want to mark this complete?';
+				}
+			}else{
+				var title = 'MARK THIS COMPLETE?';
+				var message = 'Are you sure you want to mark this complete?';
+			}
+			var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
+			UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
+				var hide_confirm_modal = $("#hide_confirm_modal").is(':checked');
+				@endif
+				$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
+					@if(!session()->has('hide_confirm_modal'))
+					'hide_confirm_modal': hide_confirm_modal,
+					@endif
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					if(data==0){
+						UIkit.modal.alert(data,{stack: true});
+					} else {
+						console.log(data.status);
+						if(data.status == 'complete'){
+							if(toplevel == 1){
+								UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+							}else if(amenity_id == 0){
+								UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+							}else{
+								UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+							}
+						} else{
+							if(toplevel == 1){
+								UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+							}else if(amenity_id == 0){
+								UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+							}else{
+								UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+							}
+						}
+					}
+					loadTypeView = '';
+					loadTypes();
+				});
+				@if(!session()->has('hide_confirm_modal'))
+			}, function () {
+				console.log('Rejected.')
+			});
+			@endif
+		}
 	</script>

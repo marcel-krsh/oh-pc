@@ -162,6 +162,9 @@
                 } else if(inmodel == 3) {
                 	dynamicModalClose(2);
                 	filterUnitAmenities(unit_id);
+                } else if(inmodel == 4) {
+                	dynamicModalClose(2);
+                	loadTypes(1);
                 } else {
                 	dynamicModalClose();
                 }

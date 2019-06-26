@@ -23,6 +23,11 @@ class BuildingInspection extends Model
     	return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
     }
 
+    public function order_building()
+    {
+    	return $this->hasOne(\App\Models\OrderingBuilding::class, 'building_id', 'building_id')->orderBy('id', 'desc');
+    }
+
     //
     protected $guarded = ['id'];
 
