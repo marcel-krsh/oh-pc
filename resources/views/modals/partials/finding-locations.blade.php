@@ -35,7 +35,7 @@
 					</i>
 				</div>
 
-				@if(count($type->order_building->auditors()) > 0)
+				@if($type->order_building->auditors() && count($type->order_building->auditors()) > 0)
 				@foreach($type->order_building->auditors() as $auditor)
 				<div class="amenity-auditor uk-margin-remove">
 					<div id="building-{{ $type->building_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $audit->audit_id }}, {{ $type->building_id }}, 0, 'building-auditors-{{ $type->building_id }}')">
@@ -79,7 +79,7 @@
 							</i>
 						</div>
 
-						@if(count($bu->auditors($audit->audit_id)) > 0)
+						@if($bu->auditors($audit->audit_id) && count($bu->auditors($audit->audit_id)) > 0)
 						@foreach($bu->auditors($audit->audit_id) as $auditor)
 						<div class="amenity-auditor uk-margin-remove">
 							<div id="unit-{{ $bu->unit_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $audit->audit_id }}, {{ $bu->building_id }}, {{ $bu->unit_id }}, 'unit-auditors-{{ $bu->unit_id }}')">
