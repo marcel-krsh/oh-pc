@@ -1077,12 +1077,16 @@ class AuditController extends Controller
 
     public function markCompleted(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $toplevel, $building_option = 0)
     {
+    		// This is the helper method to store a session for hiding confirmation in findings modals
     		modal_confirm($request);
         if ($amenity_id == 0) {
             if ($unit_id != "null" && $unit_id != 0) {
                 // the complete button was clicked at the unit level
                 $amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->get();
             } else {
+            	if($toplevel == 1){
+            		$amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->whereNull('unit_id')->whereNull('building_id')->get();
+            	} else {
                 // the complete button was clicked at the building level
             		if($building_option == 2) {
             			$units = UnitInspection::where('audit_id', $audit_id)->where('building_id', '=', $building_id)
@@ -1091,6 +1095,7 @@ class AuditController extends Controller
             		} else {
             			$amenity_inspections = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->get();
             		}
+            	}
             }
             foreach ($amenity_inspections as $amenity_inspection) {
 			          // if an amenity has already been completed, do not update the date
@@ -1205,7 +1210,7 @@ class AuditController extends Controller
 
     public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element, $in_model = null)
     {
-        $in_model = null; // we do not use this feature here.
+        //$in_model = null; // we do not use this feature here.
         //dd($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element);
         if ($amenity_id != 0) {
             $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)

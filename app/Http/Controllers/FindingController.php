@@ -952,16 +952,21 @@ class FindingController extends Controller
         if (is_null($audit)) {
             return "alert('No audit found for ID:" . $auditid . "');";
         }
-        $buildings = BuildingInspection::where('audit_id', $auditid)->get();
+        $buildings = BuildingInspection::where('audit_id', $auditid)->with('order_building')->get();
+        // return $buildings->first()->order_building->auditors();
         $units = UnitInspection::select('unit_id', 'unit_key', 'unit_name', 'building_id', 'building_key', 'audit_id', 'complete')
             ->where('audit_id', $auditid)
             //->where('complete', 0)
             //->orWhereNull('complete')
             ->groupBy('unit_id')
             ->get();
+            // return $units->first()->auditors($auditid);
         $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
         $amenities = $amenities_query->get();
-        $site = $amenities_query->whereNotNull('project_id')->whereNull('completed_date_time')->get();
+        $site = $amenities_query->whereNotNull('project_id')->get();
+        // $unit_auditors = AmenityInspection::where('audit_id', $auditid)->where('unit_id','=',$units->first()->unit_id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+        // $auditors = User::whereIn('id', $unit_auditors)->get();
+        // return $site->where('completed_date_time', null)->count();
         return view('modals.partials.finding-locations', compact('audit', 'buildings', 'units', 'site', 'amenities'));
     }
 

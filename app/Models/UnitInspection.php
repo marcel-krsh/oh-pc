@@ -31,6 +31,11 @@ class UnitInspection extends Model
         return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
     }
 
+    public function cached_unit() : HasOne
+    {
+        return $this->hasOne(\App\Models\CachedUnit::class, 'unit_id', 'unit_id');
+    }
+
     public function building() : HasOne
     {
         return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
@@ -74,7 +79,7 @@ class UnitInspection extends Model
 
         if($check_if_not_last_one == 0){
             $cached_unit = CachedUnit::where('audit_id','=',$audit->id)->where('unit_id','=',$this->unit_id)->first();
-            
+
             $cached_building = CachedBuilding::where('audit_id','=',$audit->id)->where('building_id','=',$cached_unit->building_id)->first();
 
             // unit_id in OrderingUnit is cached_unit_id...
@@ -129,7 +134,7 @@ class UnitInspection extends Model
 
                     $uaJson[] = [
                         "id" => $ua->amenity_id,
-                        "qty" => "0", 
+                        "qty" => "0",
                         "type" => addslashes($ua->amenity->amenity_description),
                         "status" => "",
                         "common_area" => $ua->common_area,
@@ -139,10 +144,10 @@ class UnitInspection extends Model
                         "unit" => $ua->unit,
                         "file" => $ua->file
                     ];
-                    
+
                 }
             }
-            
+
             $jsonRun = 0;
 
             $cached_unit = new CachedUnit([
@@ -193,6 +198,18 @@ class UnitInspection extends Model
                 'type_total' => $new_type_total
             ]);
         }
+    }
+
+    public function auditors($audit)
+    {
+          $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$audit)->where('unit_id','=',$this->unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+          if($auditor_ids)
+          $auditors = User::whereIn('id', $auditor_ids)->get();
+          else
+          $auditors = null;
+
+      return $auditors;
+    	return $this->hasOne(\App\Models\OrderingUnit::class, 'unit_id', 'unit_id')->orderBy('id', 'desc');
     }
 
 
