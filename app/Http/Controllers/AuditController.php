@@ -371,9 +371,13 @@ class AuditController extends Controller
 
 
         }
+        //return $buildings;
+        $amenities_query = AmenityInspection::where('audit_id', $audit)->with('amenity', 'user', 'building.units');
+        $amenities = $amenities_query->get();
+        // echo 'ets';
+        // return 12;
 
-
-        return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context'));
+        return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context', 'amenities'));
     }
 
     public function reorderBuildingsFromAudit($audit, Request $request)
@@ -1180,7 +1184,8 @@ class AuditController extends Controller
                 //     ->where('audit_id', '=', $audit_id)
                 //     ->whereNull('building_id')
                 //     ->whereNull('unit_id')
-                //     ->first();
+                // //     ->first();
+                // dd($amenity_id, $audit_id);
                 $amenity = AmenityInspection::where('id', '=', $amenity_id)
                     ->where('audit_id', '=', $audit_id)
                     ->whereNull('building_id')
@@ -1213,7 +1218,12 @@ class AuditController extends Controller
         //$in_model = null; // we do not use this feature here.
         //dd($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element);
         if ($amenity_id != 0) {
-            $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+            // $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+            //     ->where('audit_id', '=', $audit_id)
+            //     ->whereNull('building_id')
+            //     ->whereNull('unit_id')
+            //     ->first();
+            $amenity = AmenityInspection::where('id', $amenity_id)
                 ->where('audit_id', '=', $audit_id)
                 ->whereNull('building_id')
                 ->whereNull('unit_id')
@@ -1327,7 +1337,7 @@ class AuditController extends Controller
         } elseif ($amenity_id != 0 && $building_id == 0) {
             if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $new_auditor_id)->first()) {
 
-                $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                $amenity = AmenityInspection::where('id', '=', $amenity_id)
                     ->where('audit_id', '=', $audit_id)
                     ->whereNull('building_id')
                     ->whereNull('unit_id')

@@ -5,7 +5,6 @@
 					@foreach($buildings as $key => $building)
 					@if($building->building)
 					@php
-							$auditor_exists = true;
 							// $building_auditors = $type->auditors($audit->audit_id);
 					if(!is_null($building->building_id)) {
 						$building_auditors = $amenities->where('building_id', '=', $building->building_id)->where('auditor_id', '<>', null);
@@ -17,14 +16,7 @@
 							$building_auditors = $combined_auditors->pluck('user')->unique();
 						}
 					} else {
-						$check_auditor = $amenities->where('id', $building->amenity_inspection_id)->first();
-						if($check_auditor) {
-							$auditor_exists = is_null($check_auditor->auditor_id) ? false : true;
-						} else {
-							$auditor_exists = false;
-						}
-						$building_auditors = $amenities->where('auditor_id', '<>', null)->where('building_id', null)->where('amenity_id', $building->amenity_id)->pluck('user')->unique();
-						//dd($building_auditors);
+						$building_auditors = $amenities->where('auditor_id', '<>', null)->where('building_id', null)->pluck('user')->unique();
 					}
 					$b_findings_total = $building->building->findingstotal();
 					if(!$building->building_id) {
@@ -35,6 +27,7 @@
 					$b_amenity_findings = $building->building->amenities_and_findings();
 					@endphp
 					<div id="building-{{ $context }}-r-{{ $key }}" class="uk-margin-remove building @if($building->building) building-{{ $building->building->status }} {{ $building->building->status }} @endif @if($building->building->status != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building->building->status != 'critical') display:none; @endif " data-audit="{{ $building->building->audit_id }}" data-project="{{ $building->project_id }}" data-building="{{ $building->building->building_id }}" data-amenity="{{ $building->building->amenity_id }}" data-amenityinspection="{{ $building->building->amenity_inspection_id }}" uk-grid>
+
 						{{-- block 1 --}}
 						<div class="uk-width-1-6 uk-padding-remove">
 							<div class="uk-padding-remove uk-flex">
@@ -50,7 +43,7 @@
 												<div class="uk-width-1-1 uk-padding-remove">
 													<div uk-grid style="padding-top:10px;">
 														<div id="building-auditors-{{ $building->building->building_id }}" class="building-auditors uk-width-1-2 @if($building_auditors && count($building_auditors)) hasAuditors @endif">
-															@if($building_auditors && count($building_auditors) && $auditor_exists)
+															@if($building_auditors && count($building_auditors))
 															<div uk-slideshow="animation: slide; min-height:90;">
 																<div class="uk-position-relative uk-visible-toggle">
 																	<ul class="uk-slideshow-items" style="min-height: 90px;">
@@ -59,11 +52,11 @@
 																				@foreach($building_auditors as $auditor)
 																				<div class="building-auditor uk-width-1-2 uk-margin-remove">
 																					@if($building->building->building_id === NULL)
-																					<div id="building-{{ $context }}-{{ $auditor->id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapAuditor({{ $auditor->id }}, {{ $audit }}, 0, 0, 'building-audits-{{ $auditor->id }}-avatar-1', {{ $building->amenity_inspection_id }})">
+																					<div id="building-{{ $context }}-{{ $auditor->id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapAuditor({{ $auditor->id }}, {{ $audit }}, 0, 0, 'building-audits-{{ $auditor->id }}-avatar-1', {{ $building->building->amenity_id }})">
 																						{{ $auditor->initials() }}
 																					</div>
 																					@else
-																					<div id="building-{{ $context }}-{{ $target }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapAuditor({{ $auditor->id }}, {{ $audit }}, {{ $building->building->building_id }}, 0, 'building-auditors-{{ $building->amenity_inspection_id }}')">
+																					<div id="building-{{ $context }}-{{ $target }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapAuditor({{ $auditor->id }}, {{ $audit }}, {{ $building->building->building_id }}, 0, 'building-auditors-{{ $building->building->building_id }}')">
 																						{{ $auditor->initials() }}
 																					</div>
 																					@endif
@@ -96,7 +89,7 @@
 																				<div class="building-auditor uk-width-1-2 uk-margin-remove">
 																					<div id="building-auditor-{{ $rand }}" class="building-auditor uk-width-1-2 uk-margin-remove">
 																						@if($building->building->building_id === NULL)
-																						<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{ $audit }}, 0, 0, {{ $building->amenity_inspection_id }}, 'building-auditor-{{ $rand }}');"></i>
+																						<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{ $audit }}, 0, 0, {{ $building->building->amenity_id }}, 'building-auditor-{{ $rand }}');"></i>
 																						@else
 																						<i class="a-avatar-plus_1 use-hand-cursor" uk-tooltip="pos:top-left;title:ASSIGN AUDITOR;" onclick="assignAuditor({{ $audit }}, {{ $building->building->building_id }}, 0, 0, 'building-auditor-{{ $rand }}');"></i>
 																						@endif
