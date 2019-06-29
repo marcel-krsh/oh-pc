@@ -13,12 +13,32 @@
 			{{-- Site Here --}}
 			@php
 			$site_status = $site->where('completed_date_time', null)->count();
+					// $building_auditors = $type->auditors($audit->audit_id);
+			$site_auditors = $site->where('building_id', null)->where('unit_id', null)->where('auditor_id', '<>', null);
+			if(count($site_auditors)) {
+				$site_auditors = $site_auditors->pluck('user')->unique();
+			}
 			@endphp
 			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf " >
 				<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
 					<i @if($site_status != 0) onclick="markSiteComplete({{ $audit->audit_id }}, 0, 0, 0,'markcomplete', 1)" @endif class="{{ ($site_status == 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 					</i>
 				</div>
+
+				@if($site_auditors && count($site_auditors) > 0)
+				@foreach($site_auditors as $auditor)
+				<div class="amenity-auditor uk-margin-remove">
+					<div id="site-{{ $audit->audit_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $audit->audit_id }}, 0, 0, 'site-auditors-{{ $audit->audit_id }}')">
+						{{ $auditor->initials() }}
+					</div>
+				</div>
+				@endforeach
+				@else
+				<div class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
+					<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignFindingAuditor({{ $audit->audit_id }}, 0, 0, 0, 'site-auditor-0', 0, 0, 0, 2);">
+					</i>
+				</div>
+				@endif
 
 				<div class="uk-inline uk-padding-remove" style="flex:140px;">
 					<a onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address->basic_address() }}')" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf "> <strong style="color : @if($site_status == 0) #000 @else #50b8ec @endIf "> Site: {{ $audit->project->address->basic_address() }}</strong>

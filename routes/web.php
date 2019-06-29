@@ -464,7 +464,7 @@
             Route::get('/projects/{project}/followups/title', 'AuditController@getProjectFollowupsTitle')->name('project.followups.title');
 
             Route::post('/report/sendfax','ReportsController@sendfax');
-            Route::get('/report/{report}', 'ReportsController@getReport');           
+            Route::get('/report/{report}', 'ReportsController@getReport');
             Route::get('/report/{report}/{section}','ReportsController@getSection');
             Route::get('/report/{report}/download/{type}','ReportsController@download');
 
