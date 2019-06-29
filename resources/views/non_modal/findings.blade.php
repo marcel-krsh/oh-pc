@@ -384,12 +384,15 @@
 		$('#dynamic-data').html(tempdiv);
 	}
 
-	function loadTypes(refresh = 0) {
-		if(refresh = 1) {
+	function loadTypes(refresh = 0, justFetch = 0) {
+		// debugger;
+		if(refresh == 1 || justFetch == 1) {
 			loadTypeView = '';
 		}
 		if(loadTypeView == '') {
-			loadAnimation();
+			if(justFetch == 0) {
+				loadAnimation();
+			}
 			var url = '/findings/modals/locations/{{ $audit->audit_id }}';
 			$.get(url, {
 			}, function(data) {
@@ -397,8 +400,10 @@
 					UIkit.modal.alert("There was a problem getting the project information.");
 				} else {
 					loadTypeView = data;
-					$('#dynamic-data').html(data);
-					scrollTo('type');
+					if(justFetch == 0) {
+						$('#dynamic-data').html(data);
+						scrollTo('type');
+					}
 				}
 			});
 		} else {

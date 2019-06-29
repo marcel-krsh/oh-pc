@@ -51,14 +51,14 @@
 					</i>
 				</div>
 				@if($amenity->auditor_id)
-				<div class="amenity-auditor uk-margin-remove">
-					<div uk-tooltip="pos:top-left;title:{{ $amenity->user->full_name() }};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float" onclick="assignUnitAuditor({{ $audit->audit_id }}, {{ $amenity->cached_unit()->building_id }}, {{ $amenity->unit_id }}, {{ $amenity->id }}, 'unit-auditor-{{ $amenity->user->id }}', 0, 0, 0, 2);">
+				<div class="amenity-auditor uk-margin-remove" id="unit-auditor-{{ $amenity->id }}-avatar-1">
+					<div uk-tooltip="pos:top-left;title:{{ $amenity->user->full_name() }};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float" onclick="assignUnitAuditor({{ $audit->audit_id }}, {{ $amenity->cached_unit()->building_id }}, {{ $amenity->unit_id }}, {{ $amenity->id }}, 'unit-auditor-{{ $amenity->id }}-avatar-1', 0, 0, 0, 2);">
 						{{ $amenity->user->initials() }}
 					</div>
 				</div>
 				@else
-				<div class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
-					<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignUnitAuditor({{ $audit->audit_id }}, {{ $amenity->cached_unit()->building_id }}, {{ $amenity->unit_id }}, {{ $amenity->id }}, 'unit-auditor-0', 0, 0, 0, 2);">
+				<div class="uk-inline uk-padding-remove" id="unit-auditor-{{ $amenity->id }}-avatar-1" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
+					<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignUnitAuditor({{ $audit->audit_id }}, {{ $amenity->cached_unit()->building_id }}, {{ $amenity->unit_id }}, {{ $amenity->id }}, 'unit-auditor-{{ $amenity->id }}-avatar-1', 0, 0, 0, 2);">
 					</i>
 				</div>
 				@endif
