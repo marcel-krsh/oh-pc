@@ -1,3 +1,4 @@
+@if(null !== $program)
 <tr style="border-top: 1px solid" @if($program['building_name'])id="program-selection-{{ $program['id'] }}-{{ $program['building_key'] }}" @else id="program-selection-{{ $program['id'] }}" @endIf>
 <td style="padding-top:10px;">
 	<div uk-leader>
@@ -28,4 +29,5 @@
 	<td class="uk-text-center border-right">{{$program['selected_units']}}</td>
 	<td class="uk-text-center" style="padding-bottom:20px;">{{$program['selected_units_file']}}</td>
 </tr>
+@endIf
 

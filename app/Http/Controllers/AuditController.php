@@ -5697,11 +5697,17 @@ class AuditController extends Controller
         } else {
             $programGroup = $program->groups();
             $programGroup = $programGroup[0];
-            $program = collect($data['programs'])->where('id',$programGroup);
+            if(array_key_exists('programs', $data)){
+                $program = collect($data['programs'])->where('id',$programGroup);
+            } else {
+                $program = [];
+            }
             if(count($program) > 1) {
             	$program = collect($data['programs'])->where('building_key',$building_key)->first();
-            } else {
+            } elseif(count($program) > 0) {
             	$program = $program->first();
+            } else {
+                $program = null;
             }
             //dd($program, $unitprogram->project_program->multiple_building_election_key);
         }
