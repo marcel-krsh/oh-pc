@@ -106,149 +106,153 @@
 
 		<div class="project-details-info-compliance-programs uk-position-relative uk-visible-toggle uk-margin-top"  >
     		<ul class="uk-list uk-margin-top">
-        		@foreach($data['programs'] as $program)
-        		@if($program['required_units'] != 0)
-		        <li>
-					<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
-						<div class="uk-width-1-5 uk-padding-remove" style="min-height:165px;">
-							<canvas id="chartjs-{{$program['id']}}{{$program['building_key']}}" class="chartjs" ></canvas>
+    			@if(array_key_exists($data,'programs'))
+	        		@foreach($data['programs'] as $program)
+	        		@if($program['required_units'] != 0)
+			        <li>
+						<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
+							<div class="uk-width-1-5 uk-padding-remove" style="min-height:165px;">
+								<canvas id="chartjs-{{$program['id']}}{{$program['building_key']}}" class="chartjs" ></canvas>
+							</div>
+							<div class="uk-width-2-5">
+								<table class="uk-table uk-table-small noline small-padding">
+									<tbody>
+										<tr>
+											<td><strong>{{$program['name']}} INSPECTION @if($program['building_name']!='') | BUILDING {{$program['building_name']}}@endif</strong></td>
+											<td class="uk-text-center" style="min-width: 30px;"><i class="a-mobile-home iheader"></i></td>
+											<td class="uk-text-center" style="min-width: 30px;"><i class="a-folder iheader"></i></td>
+										</tr>
+										<tr>
+											<td>
+												<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
+											</td>
+											<td class="uk-text-center border-right">{{$program['required_units']}}</td>
+											<td class="uk-text-center">{{$program['required_units_file']}}</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
+											</td>
+											<td class="uk-text-center border-right">{{$program['selected_units']}}</td>
+											<td class="uk-text-center">{{$program['selected_units_file']}}</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
+											</td>
+											<td class="uk-text-center border-right">{{$program['needed_units']}}</td>
+											<td class="uk-text-center">{{$program['needed_units_file']}}</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
+											</td>
+											<td class="uk-text-center border-right">{{$program['inspected_units']}}</td>
+											<td class="uk-text-center">{{$program['inspected_units_file']}}</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
+											</td>
+											<td class="uk-text-center border-right">{{$program['to_be_inspected_units']}}</td>
+											<td class="uk-text-center">{{$program['to_be_inspected_units_file']}}</td>
+										</tr>
+									</tbody>
+								</table>
+								<button class="uk-button uk-button-default expandcomment" onclick="$(this).find( 'span' ).toggleClass('a-arrow-small-down a-arrow-small-up'); $('#comment-{{$program['id']}}{{$program['building_key']}}').toggleClass('uk-hidden');"><span class="a-arrow-small-down uk-text-small uk-vertical-align-middle"></span> VIEW COMPLIANCE SELECTION PROCESS</button>
+							</div>
+							<div class="uk-width-2-5">
+							</div>
 						</div>
-						<div class="uk-width-2-5">
-							<table class="uk-table uk-table-small noline small-padding">
-								<tbody>
-									<tr>
-										<td><strong>{{$program['name']}} INSPECTION @if($program['building_name']!='') | BUILDING {{$program['building_name']}}@endif</strong></td>
-										<td class="uk-text-center" style="min-width: 30px;"><i class="a-mobile-home iheader"></i></td>
-										<td class="uk-text-center" style="min-width: 30px;"><i class="a-folder iheader"></i></td>
-									</tr>
-									<tr>
-										<td>
-											<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
-										</td>
-										<td class="uk-text-center border-right">{{$program['required_units']}}</td>
-										<td class="uk-text-center">{{$program['required_units_file']}}</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="indented" uk-leader><i class="fas fa-square chart-color-selected"></i> Selected Units</div>
-										</td>
-										<td class="uk-text-center border-right">{{$program['selected_units']}}</td>
-										<td class="uk-text-center">{{$program['selected_units_file']}}</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="indented" uk-leader><i class="fas fa-square chart-color-needed"></i> Needed Units</div>
-										</td>
-										<td class="uk-text-center border-right">{{$program['needed_units']}}</td>
-										<td class="uk-text-center">{{$program['needed_units_file']}}</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="indented" uk-leader><i class="fas fa-square chart-color-inspected"></i> Inspected Units</div>
-										</td>
-										<td class="uk-text-center border-right">{{$program['inspected_units']}}</td>
-										<td class="uk-text-center">{{$program['inspected_units_file']}}</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="indented" uk-leader><i class="fas fa-square chart-color-to-be-inspected"></i> To Be Inspected Units</div>
-										</td>
-										<td class="uk-text-center border-right">{{$program['to_be_inspected_units']}}</td>
-										<td class="uk-text-center">{{$program['to_be_inspected_units_file']}}</td>
-									</tr>
-								</tbody>
-							</table>
-							<button class="uk-button uk-button-default expandcomment" onclick="$(this).find( 'span' ).toggleClass('a-arrow-small-down a-arrow-small-up'); $('#comment-{{$program['id']}}{{$program['building_key']}}').toggleClass('uk-hidden');"><span class="a-arrow-small-down uk-text-small uk-vertical-align-middle"></span> VIEW COMPLIANCE SELECTION PROCESS</button>
-						</div>
-						<div class="uk-width-2-5">
-						</div>
-					</div>
-					<div id="comment-{{$program['id']}}{{$program['building_key']}}" class="uk-column-1-2 uk-padding uk-hidden">
+						<div id="comment-{{$program['id']}}{{$program['building_key']}}" class="uk-column-1-2 uk-padding uk-hidden">
 
-						<p><strong>{{$program['name']}} COMPLIANCE SELECTION NOTES:</strong></p>
+							<p><strong>{{$program['name']}} COMPLIANCE SELECTION NOTES:</strong></p>
 
-						@foreach($program['comments'] as $comment)
-						<p>{{$comment}}</p>
-						@endforeach
-					</div>
-					<script>
-						new Chart(document.getElementById("chartjs-{{$program['id']}}{{$program['building_key']}}"),{
-							"type":"doughnut",
-							"options": summaryOptions,
-							"data":{
-								"labels": ["Required","Selected","Needed","Inspected", "To Be Inspected"],
-								"datasets":[
-									{
-										"label":"Inspected",
-										"data":[0,0,0,{{$program['inspected_units_file'] + $program['inspected_units']}},{{$program['to_be_inspected_units_file'] + $program['to_be_inspected_units']}}],
-										"backgroundColor":[
-											chartColors.required,
-											chartColors.selected,
-											chartColors.needed,
-											chartColors.inspected,
-											chartColors.tobeinspected
-										],
-										"borderWidth": 1
-									},
-									{
-										"label":"Selected/Needed",
-										"data":[0,{{$program['selected_units_file'] + $program['selected_units']}},{{$program['needed_units_file'] + $program['needed_units']}},0,0],
-										"backgroundColor":[
-											chartColors.required,
-											chartColors.selected,
-											chartColors.needed,
-											chartColors.inspected,
-											chartColors.tobeinspected
-										],
-										"borderWidth": 1
-									},
-									{
-										"label":"Required",
-										"data":[{{$program['required_units_file'] + $program['required_units']}},0,0,0,0],
-										"backgroundColor":[
-											chartColors.required,
-											chartColors.selected,
-											chartColors.needed,
-											chartColors.inspected,
-											chartColors.tobeinspected
-										],
-										"borderWidth": 1
-									}
-								]
+							@foreach($program['comments'] as $comment)
+							<p>{{$comment}}</p>
+							@endforeach
+						</div>
+						<script>
+							new Chart(document.getElementById("chartjs-{{$program['id']}}{{$program['building_key']}}"),{
+								"type":"doughnut",
+								"options": summaryOptions,
+								"data":{
+									"labels": ["Required","Selected","Needed","Inspected", "To Be Inspected"],
+									"datasets":[
+										{
+											"label":"Inspected",
+											"data":[0,0,0,{{$program['inspected_units_file'] + $program['inspected_units']}},{{$program['to_be_inspected_units_file'] + $program['to_be_inspected_units']}}],
+											"backgroundColor":[
+												chartColors.required,
+												chartColors.selected,
+												chartColors.needed,
+												chartColors.inspected,
+												chartColors.tobeinspected
+											],
+											"borderWidth": 1
+										},
+										{
+											"label":"Selected/Needed",
+											"data":[0,{{$program['selected_units_file'] + $program['selected_units']}},{{$program['needed_units_file'] + $program['needed_units']}},0,0],
+											"backgroundColor":[
+												chartColors.required,
+												chartColors.selected,
+												chartColors.needed,
+												chartColors.inspected,
+												chartColors.tobeinspected
+											],
+											"borderWidth": 1
+										},
+										{
+											"label":"Required",
+											"data":[{{$program['required_units_file'] + $program['required_units']}},0,0,0,0],
+											"backgroundColor":[
+												chartColors.required,
+												chartColors.selected,
+												chartColors.needed,
+												chartColors.inspected,
+												chartColors.tobeinspected
+											],
+											"borderWidth": 1
+										}
+									]
+								}
+							});
+
+							document.getElementById("chartjs-{{$program['id']}}").onclick = function(e) {
+							   var slice = mainSummaryChart.getElementAtEvent(e);
+							   if (!slice.length) return; // return if not clicked on slice
+							   var label = slice[0]._model.label;
+							   var color = slice[0]._view.backgroundColor;
+							   console.log(slice[0]._view.backgroundColor);
+							   var programName = label;
+
+							   switch (color) {
+							   		case '#191818':
+							         // alert(label + ' / required');
+							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+							         break;
+							   		case '#0099d5':
+							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+							         break;
+							   		case '#d31373':
+							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+							         break;
+							   		case '#21a26e':
+							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+							         break;
+							   		case '#e0e0df':
+							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
+							         break;
+							   }
 							}
-						});
-
-						document.getElementById("chartjs-{{$program['id']}}").onclick = function(e) {
-						   var slice = mainSummaryChart.getElementAtEvent(e);
-						   if (!slice.length) return; // return if not clicked on slice
-						   var label = slice[0]._model.label;
-						   var color = slice[0]._view.backgroundColor;
-						   console.log(slice[0]._view.backgroundColor);
-						   var programName = label;
-
-						   switch (color) {
-						   		case '#191818':
-						         // alert(label + ' / required');
-						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-						         break;
-						   		case '#0099d5':
-						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-						         break;
-						   		case '#d31373':
-						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-						         break;
-						   		case '#21a26e':
-						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-						         break;
-						   		case '#e0e0df':
-						         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-						         break;
-						   }
-						}
-					</script>
-				</li>
-				@endif
-		        @endforeach
+						</script>
+					</li>
+					@endif
+			        @endforeach
+			    @else
+			    	<li>It appears your compliance run did not fully complete its run. Please rerun to avoid potential issues.</li>
+			    @endIf
     		</ul>
     	</div>
 
