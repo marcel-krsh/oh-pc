@@ -129,7 +129,7 @@ class Project extends Model
             if ($owner_contact->organization) {
                 $owner_organization_id = $owner_contact->organization_id;
                 $owner_organization = $owner_contact->organization->organization_name;
-                if($owner_contact->orgnaization->address){
+                if($owner_contact->orgnanization->address){
                     $owner_address = $owner_contact->organization->address->formatted_address();
                     $owner_line_1 = $owner_contact->organization->address->line_1;
                     $owner_line_2 = $owner_contact->organization->address->line_2;
