@@ -1613,7 +1613,7 @@ class SyncIdsJob implements ShouldQueue
         $associate[] = [
             'null_field' => 'default_email_address_id',
             'look_up_reference' => 'default_email_address_key',
-            'lookup_field' => 'default_email_address_key',
+            'lookup_field' => 'email_address_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
@@ -1630,7 +1630,7 @@ class SyncIdsJob implements ShouldQueue
         $associate[] = [
             'null_field' => 'default_phone_number_id',
             'look_up_reference' => 'default_phone_number_key',
-            'lookup_field' => 'default_phone_number_key',
+            'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
@@ -1647,7 +1647,7 @@ class SyncIdsJob implements ShouldQueue
         $associate[] = [
             'null_field' => 'default_fax_number_id',
             'look_up_reference' => 'default_fax_number_key',
-            'lookup_field' => 'default_fax_number_key',
+            'lookup_field' => 'phone_number_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'
