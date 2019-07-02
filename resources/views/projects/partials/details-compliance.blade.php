@@ -106,7 +106,7 @@
 
 		<div class="project-details-info-compliance-programs uk-position-relative uk-visible-toggle uk-margin-top"  >
     		<ul class="uk-list uk-margin-top">
-    			@if(array_key_exists($data,'programs'))
+    			@if(array_key_exists('programs',$data))
 	        		@foreach($data['programs'] as $program)
 	        		@if($program['required_units'] != 0)
 			        <li>
