@@ -12,6 +12,7 @@
 							<td class="uk-text-center"><i class="a-mobile-home iheader"></i></td>
 							<td class="uk-text-center" style="padding-bottom:15px;"><i class="a-folder iheader"></i></td>
 						</tr>
+            @if(array_key_exists('programs',$data))
 						@foreach($data['programs'] as $prog)
 
 						<tr style="border-top: 1px solid" @if($prog['building_name'])id="program-selection-{{ $prog['id'] }}-{{ $prog['building_key'] }}" @else id="program-selection-{{ $prog['id'] }}" @endIf>
@@ -45,6 +46,9 @@
 							<td class="uk-text-center" style="padding-bottom:20px;">{{$prog['selected_units_file']}}</td>
 						</tr>
 						@endforeach
+            @else
+            <tr><td colspan="3">It appears your compliance run did not fully run. Please rerun to avoid potential issues.</td></tr>
+            @endIf
 					</tbody>
 				</table>
 			</div>
