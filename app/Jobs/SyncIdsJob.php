@@ -1621,7 +1621,7 @@ class SyncIdsJob implements ShouldQueue
         try {
             $this->associate($model, $lookUpModel, $associate);
         } catch (Exception $e) {
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
@@ -1638,7 +1638,7 @@ class SyncIdsJob implements ShouldQueue
         try {
             $this->associate($model, $lookUpModel, $associate);
         } catch (Exception $e) {
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
@@ -1655,7 +1655,7 @@ class SyncIdsJob implements ShouldQueue
         try {
             $this->associate($model, $lookUpModel, $associate);
         } catch (Exception $e) {
-            //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
             echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
