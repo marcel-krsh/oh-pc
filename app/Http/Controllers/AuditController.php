@@ -2695,18 +2695,20 @@ class AuditController extends Controller
       session(['audit-' . $audit->id . '-selection_summary' => $selection_summary]);
       $programs = array();
       $program_keys_list = '';
-      foreach ($selection_summary['programs'] as $p) {
-          if ($p['pool'] > 0) {
-              $programs[] = [
-                  "id" => $p['group'],
-                  "name" => $p['name'],
-              ];
-              if ($program_keys_list != '') {
-                  $program_keys_list = $program_keys_list . ",";
+      if(null !== $selection_summary){
+          foreach ($selection_summary['programs'] as $p) {
+              if ($p['pool'] > 0) {
+                  $programs[] = [
+                      "id" => $p['group'],
+                      "name" => $p['name'],
+                  ];
+                  if ($program_keys_list != '') {
+                      $program_keys_list = $program_keys_list . ",";
+                  }
+                  $program_keys_list = $program_keys_list . $p['program_keys'];
               }
-              $program_keys_list = $program_keys_list . $p['program_keys'];
           }
-      }
+        }
           // get all the programs
         $data = [
             "project" => [
