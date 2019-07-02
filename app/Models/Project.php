@@ -70,12 +70,14 @@ class Project extends Model
             if ($pm_contact->organization) {
                 $pm_organization_id = $pm_contact->organization_id;
                 $pm_organization = $pm_contact->organization->organization_name;
-                $pm_address = $pm_contact->organization->address->formatted_address();
-                $pm_line_1 = $pm_contact->organization->address->line_1;
-                $pm_line_2 = $pm_contact->organization->address->line_2;
-                $pm_city = $pm_contact->organization->address->city;
-                $pm_state = $pm_contact->organization->address->state;
-                $pm_zip = $pm_contact->organization->address->zip;
+                if($pm_contact->organization->address){
+                    $pm_address = $pm_contact->organization->address->formatted_address();
+                    $pm_line_1 = $pm_contact->organization->address->line_1;
+                    $pm_line_2 = $pm_contact->organization->address->line_2;
+                    $pm_city = $pm_contact->organization->address->city;
+                    $pm_state = $pm_contact->organization->address->state;
+                    $pm_zip = $pm_contact->organization->address->zip;
+                }
             }
             if ($pm_contact->person) {
                 $pm_person_id = $pm_contact->person->id;
@@ -85,10 +87,17 @@ class Project extends Model
                 }else{
                      $pm_id = '';
                 }
+
                 $pm_name = $pm_contact->person->first_name." ".$pm_contact->person->last_name;
-                $pm_phone = $pm_contact->person->phone->number();
-                $pm_fax = $pm_contact->person->fax->number();
-                $pm_email = $pm_contact->person->email->email_address;
+                if($pm_contact->person->phone){
+                    $pm_phone = $pm_contact->person->phone->number();
+                }
+                if($pm_contact->person->fax){
+                    $pm_fax = $pm_contact->person->fax->number();
+                }
+                if($pm_contact->person->email){
+                    $pm_email = $pm_contact->person->email->email_address;
+                }
             }
             
         }
@@ -120,25 +129,31 @@ class Project extends Model
             if ($owner_contact->organization) {
                 $owner_organization_id = $owner_contact->organization_id;
                 $owner_organization = $owner_contact->organization->organization_name;
-                $owner_address = $owner_contact->organization->address->formatted_address();
-                $owner_line_1 = $owner_contact->organization->address->line_1;
-                $owner_line_2 = $owner_contact->organization->address->line_2;
-                $owner_city = $owner_contact->organization->address->city;
-                $owner_state = $owner_contact->organization->address->state;
-                $owner_zip = $owner_contact->organization->address->zip;
+                if($owner_contact->orgnaization->address){
+                    $owner_address = $owner_contact->organization->address->formatted_address();
+                    $owner_line_1 = $owner_contact->organization->address->line_1;
+                    $owner_line_2 = $owner_contact->organization->address->line_2;
+                    $owner_city = $owner_contact->organization->address->city;
+                    $owner_state = $owner_contact->organization->address->state;
+                    $owner_zip = $owner_contact->organization->address->zip;
+                } 
             }
             if ($owner_contact->person) {
                 $owner_person_id = $owner_contact->person->id; 
                 $owner = User::where('person_id', '=', $owner_person_id)->first();
                 if($owner){
                     $owner_id = $owner->id;
-                }else{
-                    $owner_id = null;
                 }
                 $owner_name = $owner_contact->person->first_name." ".$owner_contact->person->last_name;
-                $owner_phone = $owner_contact->person->phone->number();
-                $owner_fax = $owner_contact->person->fax->number();
-                $owner_email = $owner_contact->person->email->email_address;
+                if($owner_contact->person->phone){
+                    $owner_phone = $owner_contact->person->phone->number();
+                } 
+                if($owner_contact->person->fax){
+                    $owner_fax = $owner_contact->person->fax->number();
+                } 
+                if($owner_contact->person->email){
+                    $owner_email = $owner_contact->person->email->email_address;
+                }
             }
             
         }
