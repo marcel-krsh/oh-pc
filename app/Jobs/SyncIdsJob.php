@@ -1625,7 +1625,7 @@ class SyncIdsJob implements ShouldQueue
             echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
-        $lookUpModel = new \App\Models\Phone;
+        $lookUpModel = new \App\Models\PhoneNumber;
         $associate = [];
         $associate[] = [
             'null_field' => 'default_phone_number_id',
@@ -1642,7 +1642,7 @@ class SyncIdsJob implements ShouldQueue
             echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
         }
 
-        $lookUpModel = new \App\Models\Phone;
+        $lookUpModel = new \App\Models\PhoneNumber;
         $associate = [];
         $associate[] = [
             'null_field' => 'default_fax_number_id',
