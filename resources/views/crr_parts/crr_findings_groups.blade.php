@@ -57,7 +57,7 @@
 			{{$f->project->address->line_1}} {{$f->project->address->line_2}}<br />
 			{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
 			@endIf
-		@if(!$print) </div> <hr class="dashed-hr" /> @else </div> <div class="uk-width-2-5"> @endIf
+		@if(!$print) </div> <hr class="dashed-hr" /> @else </div> <div class="uk-width-4-5"> @endIf
 
 		
 			
@@ -134,7 +134,7 @@
 		@if(property_exists($f,'photos') && !is_null($f->photos))
 		@forEach($f->photos as $p)
 		@if(!$p->deleted)
-		@if($print) </div> <div class="uk-width-2-5"> @else <hr class="dashed-hr uk-margin-bottom"> @endIf
+		 <hr class="dashed-hr uk-margin-bottom"> 
 			
 		<div class="photo-gallery uk-slider uk-slider-container" uk-slider="">
 			<div class="uk-position-relative uk-visible-toggle uk-light">
