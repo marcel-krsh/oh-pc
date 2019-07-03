@@ -57,8 +57,9 @@
 			{{$f->project->address->line_1}} {{$f->project->address->line_2}}<br />
 			{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
 			@endIf
-		</div>
-		@if($print) </div> <div class="uk-width-2-5"> @else <hr class="dashed-hr" /> @endIf
+		@if(!$print) </div> <hr class="dashed-hr" /> @else </div> <div class="uk-width-2-5"> @endIf
+
+		
 			
 
 		@can('access_auditor')
