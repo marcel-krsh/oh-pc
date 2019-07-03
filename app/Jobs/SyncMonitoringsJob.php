@@ -161,21 +161,24 @@ class SyncMonitoringsJob implements ShouldQueue
                                         'development_key'=>$v['attributes']['developmentKey'],
                                             
                                         'development_program_key'=>$v['attributes']['developmentProgramKey'],
+                                        'project_program_id'=>null,
                                         'monitoring_type_key'=>$v['attributes']['monitoringTypeKey'],
+                                        'monditoring_type_id'=>null,
                                         'start_date'=>$v['attributes']['startDate'],
                                         'completed_date'=>$v['attributes']['completedDate'],
                                         'contact_person_key'=>$v['attributes']['contactPersonKey'],
+                                        'person_id'=>null,
                                         'contact_title'=>$v['attributes']['contactTitle'],
                                         'confirmed_date'=>$v['attributes']['confirmedDate'],
                                         'monitoring_status_type_key'=>$v['attributes']['monitoringStatusTypeKey'],
+
                                         'comment'=>$v['attributes']['comment'],
                                         'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
+                                        'entered_by_user_id'=>null,
                                         'user_key'=>$v['attributes']['userKey'],
+                                        'user_id'=>null,
                                         'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
                                         'status_results'=>$v['attributes']['statusResults'],
-                                            
-                                            
-                                            
                                             
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
@@ -206,11 +209,7 @@ class SyncMonitoringsJob implements ShouldQueue
                                         'entered_by_user_key'=>$v['attributes']['enteredByUserKey'],
                                         'user_key'=>$v['attributes']['userKey'],
                                         'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
-                                        'status_results'=>$v['attributes']['statusResults'],
-                                            
-                                            
-                                            
-                                            
+                                        'status_results'=>$v['attributes']['statusResults'],                                            
                                         'monitoring_key'=>$v['attributes']['monitoringKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
@@ -235,10 +234,6 @@ class SyncMonitoringsJob implements ShouldQueue
                                         'user_key'=>$v['attributes']['userKey'],
                                         'on_site_monitor_end_date'=>$v['attributes']['onSiteMonitorEndDate'],
                                         'status_results'=>$v['attributes']['statusResults'],
-                                            
-                                            
-                                            
-                                            
                                         'monitoring_key'=>$v['attributes']['monitoringKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,

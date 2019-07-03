@@ -128,11 +128,16 @@ class SyncOrganizationsJob implements ShouldQueue
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
                                         'default_address_key'=>$v['attributes']['defaultAddressKey'],
+                                        'default_address_id'=>null,
                                         'is_active'=>$v['attributes']['isActive'],
                                         'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                        'default_phone_number_id'=>null,
                                         'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                        'default_fax_number_key'=>null,
                                         'default_contact_person_key'=>$v['attributes']['defaultContactPersonKey'],
+                                        'default_contact_person_id'=>null,
                                         'parent_organization_key'=>$v['attributes']['parentOrganizationKey'],
+                                        'parent_organization_id'=>null,
                                         'organization_name'=>$v['attributes']['organizationName'],
                                         'fed_id_number'=>$v['attributes']['fedIDNumber'],
                                             

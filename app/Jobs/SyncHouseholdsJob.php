@@ -138,13 +138,18 @@ class SyncHouseholdsJob implements ShouldQueue
                                             
                                             
                                         'development_key'=>$v['attributes']['developmentKey'],
+                                        'project_id'=>null,
                                         'unit_key'=>$v['attributes']['unitKey'],
+                                        'unit_id'=>null,
                                         'household_size_key'=>$v['attributes']['householdSizeKey'],
+                                        'household_size_id'=>null,
                                         'household_size_move_in_key'=>$v['attributes']['householdSizeMoveInKey'],
+                                        'household_size_move_in_id'=>null,
                                         'household_income_move_in'=>$v['attributes']['householdIncomeMoveIn'],
                                         'initial_move_in_date'=>$v['attributes']['initialMoveInDate'],
                                             
                                         'special_needs_key'=>$v['attributes']['specialNeedsKey'],
+                                        'special_needs_id'=>null,
                                         'head_of_household_name'=>$v['attributes']['headOfHouseholdName'],
                                             
                                             

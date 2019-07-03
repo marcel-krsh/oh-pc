@@ -125,6 +125,7 @@ class SyncProgramsJob implements ShouldQueue
                                         'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
                                         'program_name'=>$v['attributes']['programName'],
                                         'funding_program_key'=>$v['attributes']['fundingProgramKey'],
+                                        'funding_program_id'=>null,
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
                                     //dd('inside.');

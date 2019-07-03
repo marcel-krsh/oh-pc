@@ -125,10 +125,13 @@ class SyncPeopleJob implements ShouldQueue
                                     $allitaTableRecord->update([
                                         'is_active'=>$v['attributes']['isActive'],
                                         'last_name'=>$v['attributes']['lastName'],
-                                    'first_name'=>$v['attributes']['firstName'],
-                                    'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
-                                    'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
-                                    'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
+                                        'first_name'=>$v['attributes']['firstName'],
+                                        'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                        'default_phone_number_id'=>null,
+                                        'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                        'default_fax_number_id'=>null,
+                                        'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
+                                        'default_email_address_id'=>null,
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
                                     //dd('inside.');

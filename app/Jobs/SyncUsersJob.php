@@ -157,11 +157,14 @@ class SyncUsersJob implements ShouldQueue
                                             
                                             
                                         'organization_key'=>$v['attributes']['organizationKey'],
+                                        'organization_id'=>null,
                                         'user_status_key'=>$v['attributes']['userStatusKey'],
+                                        'user_status_id'=>null,
                                         'person_key'=>$v['attributes']['personKey'],
-                                        'organization_key'=>$v['attributes']['organizationKey'],
+                                        'person_id'=>null,
                                             
                                         'organization'=>$v['attributes']['organization'],
+                                        'entity_type'=>'devco',
 
                                             
                                             
@@ -195,7 +198,7 @@ class SyncUsersJob implements ShouldQueue
                                         'active'=>$active,
 
                                             
-                                            
+                                        'entity_type'=>'devco',
                                             
                                             
                                             
