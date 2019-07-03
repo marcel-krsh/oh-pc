@@ -1,5 +1,5 @@
 @forEach($findings as $f)
-	<div id="cancelled-finding-{{$f->id}}" class="uk-width-1-3 crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" style="border-bottom:1px dotted #3c3c3c; @if(true) border-right:1px dotted #3c3c3c; @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
+	<div id="cancelled-finding-{{$f->id}}" class="@if($print) uk-width-1-1 @else uk-width-1-3 @endIf crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" style="border-bottom:1px dotted #3c3c3c; @if(true) border-right:1px dotted #3c3c3c; @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid;">
 		<?php
 				// using column count to put in center lines rather than rely on css which breaks.
 		$columnCount++;
@@ -7,8 +7,8 @@
 			$columnCount = 1;
 		}
 		?>
-		<div style="min-height: 105px;">
-			<div class="inspec-tools-tab-finding-top-actions" style="z-index:10">
+		<div style="min-height: 105px;" @if($print) uk-grid @endIf>
+			<div class="inspec-tools-tab-finding-top-actions @if($print) uk-width-1-5 @endIf" style="z-index:10">
 				@can('access_auditor') @if(!$print)
 				<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
 					<i class="a-pencil"></i>@endIf
@@ -37,7 +37,7 @@
 				</div>
 				@endIf
 			</div>
-			<hr />
+			 <hr />
 			@if(!is_null($f->building_id))
 			<strong>{{$f->building->building_name}}</strong> <br />
 			@if(!is_null($f->building->address))
@@ -58,7 +58,8 @@
 			{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
 			@endIf
 		</div>
-		<hr class="dashed-hr">
+		@if($print) </div> <div class="uk-width-2-5"> @else <hr class="dashed-hr" /> @endIf
+			
 
 		@can('access_auditor')
 		@if(!$print)
@@ -132,7 +133,8 @@
 		@if(property_exists($f,'photos') && !is_null($f->photos))
 		@forEach($f->photos as $p)
 		@if(!$p->deleted)
-		<hr class="dashed-hr uk-margin-bottom">
+		@if($print) </div> <div class="uk-width-2-5"> @else <hr class="dashed-hr uk-margin-bottom"> @endIf
+			
 		<div class="photo-gallery uk-slider uk-slider-container" uk-slider="">
 			<div class="uk-position-relative uk-visible-toggle uk-light">
 				<ul class="uk-slider-items uk-child-width-1-1" style="transform: translateX(0px);">
@@ -163,6 +165,11 @@
 			</ul>
 		</div>
 		@endIf
+		@endIf
+
+		@if($print)
+				</div>
+			</div>
 		@endIf
 
 		@if(!$print)
