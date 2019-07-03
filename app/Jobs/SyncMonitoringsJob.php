@@ -126,7 +126,7 @@ class SyncMonitoringsJob implements ShouldQueue
                                 if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
-                                    \Log::info('Syncing Monitoring: Update');
+                                    
 
                                     SyncMonitoring::where('id', $updateRecord['id'])
                                     ->update([
@@ -185,7 +185,7 @@ class SyncMonitoringsJob implements ShouldQueue
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
                                     //dd('inside.');
-                                    \Log::info('Sync Monitoring: Updated the Allita record');
+                                    
                                 } elseif (is_null($allitaTableRecord)) {
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
