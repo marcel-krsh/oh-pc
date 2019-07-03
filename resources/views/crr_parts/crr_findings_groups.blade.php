@@ -36,7 +36,7 @@
 					</div>
 				</div>
 				@endIf
-			@if(!print) </div> @endIf
+			@if(!$print) </div> @endIf
 			 <hr />
 			@if(!is_null($f->building_id))
 			<strong>{{$f->building->building_name}}</strong> <br />
