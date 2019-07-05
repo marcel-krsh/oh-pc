@@ -123,7 +123,7 @@
 
 		@if(is_null($c->deleted_at))
 		@if($c->hide_on_reports != 1)
-		@can('access_auditor')@if(!$print)<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endif @endcan<i class="a-comment"></i> : <div style="display: inline-block;"><pre>{{$c->comment}}</pre>
+		@can('access_auditor')@if(!$print)<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endif @endcan<i class="a-comment"></i> : <div style="display: inline-block;"><pre>{{$c->comment}}</pre></div>
 		{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
 		@endIf
 		@endif
