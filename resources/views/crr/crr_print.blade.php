@@ -87,7 +87,8 @@ ul.leaders li:before, .leaders > div:before {
 }
 ul.leaders li {
 	border-bottom: 1px dotted black;
-	padding-bottome:3px;
+    padding-bottom: 9px;
+    padding-top: 7px;
 }
 </style>
 
