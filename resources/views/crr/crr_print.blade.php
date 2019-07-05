@@ -81,6 +81,14 @@ body{ background-color: white; }
    margin: .5in;
    size: portrait;
 }
+
+ul.leaders li:before, .leaders > div:before {
+	content:"";
+}
+ul.leaders li {
+	border-bottom: 1px dotted black;
+	padding-bottome:3px;
+}
 </style>
 
 
