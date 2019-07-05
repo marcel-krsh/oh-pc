@@ -78,7 +78,7 @@ body{ background-color: white; }
 .crr-blocks { page-break-inside: avoid; }
 
 @page {
-   margin: 0cm;
+   margin: .5in;
    size: portrait;
 }
 </style>
