@@ -8,7 +8,7 @@
 		}
 		?>
 		<div style="min-height: 105px; break-inside:avoid" @if($print) uk-grid @endIf>
-			<div class="inspec-tools-tab-finding-top-actions @if($print) uk-width-1-5 @endIf" style="z-index:10">
+			<div class="inspec-tools-tab-finding-top-actions @if($print) uk-width-1-5 @endIf" style="z-index:10; break-inside: avoid; page-break-inside: avoid;">
 				@can('access_auditor') @if(!$print)
 				<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
 					<i class="a-pencil"></i>@endIf
