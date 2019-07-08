@@ -475,7 +475,7 @@ class ReportsController extends Controller
       if ($audit->project->owner()['line_1']) {
         $address = $audit->project->owner()['line_1'];
         if ($audit->project->owner()['line_2']) {
-          $address .= '<br /> ' . $audit->project->owner()['line_2'].' ';
+          $address .= '<br /> ' . $audit->project->owner()['line_2'].'<br />';
         } else {
           $address .= '<br />';
         }
