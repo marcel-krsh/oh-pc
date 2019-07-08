@@ -163,9 +163,12 @@ class SyncProjectProgramsJob implements ShouldQueue
                                             
                                             
                                         'project_key'=>$v['attributes']['developmentKey'],
+                                        'project_id'=>null,
                                             
                                         'program_key'=>$v['attributes']['programKey'],
+                                        'program_id'=>null,
                                         'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
+                                        'program_status_type_id'=>null,
                                         'award_number'=>$v['attributes']['awardNumber'],
                                         'application_number'=>$v['attributes']['applicationNumber'],
                                         'assisted_units_anticipated'=>$v['attributes']['assistedUnitsAnticipated'],
@@ -175,9 +178,11 @@ class SyncProjectProgramsJob implements ShouldQueue
                                         'total_unit_count'=>$v['attributes']['totalUnitCount'],
                                         'first_year_award_claimed'=>$v['attributes']['firstYearAwardClaimed'],
                                         'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
+                                        'federal_minimum_set_aside_id'=>null,
                                         'special_needs_units'=>$v['attributes']['specialNeedsUnits'],
                                         'non_special_needs_units'=>$v['attributes']['nonSpecialNeedsUnits'],
                                         'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
+                                        'multiple_building_election_id'=>null,
                                         'employee_unit_count'=>$v['attributes']['employeeUnitCount'],
                                         'guide_l_year'=>$v['attributes']['guideLYear'],
                                             

@@ -128,8 +128,11 @@ class SyncProjectsJob implements ShouldQueue
                                     $allitaTableRecord->update([
                                         'project_name'=>$v['attributes']['developmentName'],
                                         'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'physical_address_id'=>null,
                                         'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],
+                                        'default_phone_number_id'=>null,
                                         'default_fax_number_key'=>$v['attributes']['defaultFaxNumberKey'],
+                                        'default_fax_number_id'=>null,
                                         'total_unit_count'=>$v['attributes']['totalUnitCount'],
                                         'total_building_count'=>$v['attributes']['totalBuildingCount'],
                                         'project_number'=>$v['attributes']['projectNumber'],

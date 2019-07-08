@@ -152,7 +152,7 @@ class SyncComplianceContactJob implements ShouldQueue
                                             
                                         'address'=>$v['attributes']['address'],
                                         'project_key'=>$v['attributes']['developmentKey'],
-                                            
+                                        'project_id'=>null,
                                         'city'=>$v['attributes']['city'],
                                         'zip'=>$v['attributes']['zip'],
                                         'review_cycle'=>$v['attributes']['reviewCycle'],

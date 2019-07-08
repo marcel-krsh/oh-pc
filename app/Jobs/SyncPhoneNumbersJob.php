@@ -149,6 +149,7 @@ class SyncPhoneNumbersJob implements ShouldQueue
                                             
                                             
                                         'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
+                                        'phone_number_type_id'=>null,
                                         'area_code'=>$v['attributes']['areaCode'],
                                         'phone_number'=>$v['attributes']['phoneNumber'],
                                         'extension'=>$v['attributes']['extension'],

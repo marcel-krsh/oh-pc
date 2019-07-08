@@ -153,9 +153,12 @@ class SyncBuildingsJob implements ShouldQueue
                                             
                                             
                                         'development_key'=>$v['attributes']['developmentKey'],
+                                        'project_id'=>null,
                                         'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                        'building_status_id'=>null,
                                         'building_name'=>$v['attributes']['buildingName'],
                                         'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'physical_address_id'=>null,
                                         'in_service_date'=>$v['attributes']['inServiceDate'],
                                         'applicable_fraction'=>$v['attributes']['applicableFraction'],
                                         'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],

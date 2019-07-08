@@ -1701,52 +1701,74 @@ class AuditController extends Controller
 
                 // create stats for each group
                 // we may have multiple buildings for a group (group 1 or HTC group 7...)
-                foreach ($selection_summary['programs'] as $program) {
+                if(null !== $selection_summary){
+                    foreach ($selection_summary['programs'] as $program) {
 
-                    // count selected units using the list of program ids
-                    $program_keys = explode(',', $program['program_keys']);
-                    $all_program_keys = array_merge($all_program_keys, $program_keys);
+                        // count selected units using the list of program ids
+                        $program_keys = explode(',', $program['program_keys']);
+                        $all_program_keys = array_merge($all_program_keys, $program_keys);
 
-                    // are we working with a building?
-                    if(array_key_exists('building_key', $program)){
-                        if($program['building_key'] != ''){
+                        // are we working with a building?
+                        if(array_key_exists('building_key', $program)){
+                            if($program['building_key'] != ''){
 
-                            $selected_units_site = UnitInspection::where('group_id', '=', $program['group'])
-                                ->where('building_key', '=', $program['building_key'])
-                                ->where('audit_id', '=', $audit->id)
-                                ->where('is_site_visit', '=', 1)
-                                ->count();
+                                $selected_units_site = UnitInspection::where('group_id', '=', $program['group'])
+                                    ->where('building_key', '=', $program['building_key'])
+                                    ->where('audit_id', '=', $audit->id)
+                                    ->where('is_site_visit', '=', 1)
+                                    ->count();
 
-                            $selected_units_file = UnitInspection::where('group_id', '=', $program['group'])
-                                ->where('building_key', '=', $program['building_key'])
-                                ->where('audit_id', '=', $audit->id)
-                                ->where('is_file_audit', '=', 1)
-                                ->count();
+                                $selected_units_file = UnitInspection::where('group_id', '=', $program['group'])
+                                    ->where('building_key', '=', $program['building_key'])
+                                    ->where('audit_id', '=', $audit->id)
+                                    ->where('is_file_audit', '=', 1)
+                                    ->count();
 
-                            $building = Building::where('building_key','=',$program['building_key'])->first();
-                            if($building){
-                                $building_name = $building->building_name;
+                                $building = Building::where('building_key','=',$program['building_key'])->first();
+                                if($building){
+                                    $building_name = $building->building_name;
+                                }else{
+                                    $building_name = '';
+                                }
+
+                                $inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
+                                    ->where('group_id', '=', $program['group'])
+                                    ->where('building_key', '=', $program['building_key'])
+                                    ->where('is_site_visit', '=', 1)
+                                    ->where('complete', '!=', null)
+                                    ->get()
+                                    ->count();
+
+                                $inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
+                                    ->where('group_id', '=', $program['group'])
+                                    ->where('building_key', '=', $program['building_key'])
+                                    ->where('is_file_audit', '=', 1)
+                                    ->where('complete', '!=', null)
+                                    ->get()
+                                    ->count();
                             }else{
+
+                                $selected_units_site = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_site_visit', '=', 1)->count();
+                                $selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_file_audit', '=', 1)->count();
+
                                 $building_name = '';
+
+                                $inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
+                                    ->where('group_id', '=', $program['group'])
+                                    ->where('is_site_visit', '=', 1)
+                                    ->where('complete', '!=', null)
+                                    ->get()
+                                    ->count();
+
+                                $inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
+                                    ->where('group_id', '=', $program['group'])
+                                    ->where('is_file_audit', '=', 1)
+                                    ->where('complete', '!=', null)
+                                    ->get()
+                                    ->count();
                             }
 
-                            $inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
-                                ->where('group_id', '=', $program['group'])
-                                ->where('building_key', '=', $program['building_key'])
-                                ->where('is_site_visit', '=', 1)
-                                ->where('complete', '!=', null)
-                                ->get()
-                                ->count();
-
-                            $inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
-                                ->where('group_id', '=', $program['group'])
-                                ->where('building_key', '=', $program['building_key'])
-                                ->where('is_file_audit', '=', 1)
-                                ->where('complete', '!=', null)
-                                ->get()
-                                ->count();
                         }else{
-
                             $selected_units_site = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_site_visit', '=', 1)->count();
                             $selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_file_audit', '=', 1)->count();
 
@@ -1767,72 +1789,52 @@ class AuditController extends Controller
                                 ->count();
                         }
 
-                    }else{
-                        $selected_units_site = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_site_visit', '=', 1)->count();
-                        $selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_file_audit', '=', 1)->count();
+                        $needed_units_site = max($program['required_units'] - $selected_units_site, 0);
+                        $needed_units_file = max($program['required_units_file'] - $selected_units_file, 0);
 
-                        $building_name = '';
+                        $unit_keys = $program['units_before_optimization'];
 
-                        $inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
-                            ->where('group_id', '=', $program['group'])
-                            ->where('is_site_visit', '=', 1)
-                            ->where('complete', '!=', null)
-                            ->get()
-                            ->count();
+                        $summary_unit_ids = array_merge($summary_unit_ids, $program['units_before_optimization']);
+                        $summary_optimized_unit_ids = array_merge($summary_optimized_unit_ids, $program['units_after_optimization']);
 
-                        $inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
-                            ->where('group_id', '=', $program['group'])
-                            ->where('is_file_audit', '=', 1)
-                            ->where('complete', '!=', null)
-                            ->get()
-                            ->count();
+                        $to_be_inspected_units_site = $selected_units_site - $inspected_units_site;
+                        $to_be_inspected_units_file = $selected_units_file - $inspected_units_file;
+
+                        $summary_required = $summary_required + $program['required_units'];
+                        $summary_required_file = $summary_required_file + $program['required_units_file'];
+
+                        $data['programs'][] = [
+                            'id' => $program['group'],
+                            'name' => $program['name'],
+                            'pool' => $program['pool'],
+                            'building_key' => $program['building_key'],
+                            'building_name' => $building_name,
+                            'comments' => $program['comments'],
+                            'user_limiter' => $program['use_limiter'],
+                            // 'totals_after_optimization' => $program['totals_after_optimization_not_merged'],
+                            // 'units_before_optimization' => $program['units_before_optimization'],
+                            // 'totals_before_optimization' => $program['totals_before_optimization'],
+                            'required_units' => $program['required_units'],
+                            'selected_units' => $selected_units_site,
+                            'needed_units' => $needed_units_site,
+                            'inspected_units' => $inspected_units_site,
+                            'to_be_inspected_units' => $to_be_inspected_units_site,
+
+                            'required_units_file' => $program['required_units_file'],
+                            'selected_units_file' => $selected_units_file,
+                            'needed_units_file' => $needed_units_file,
+                            'inspected_units_file' => $inspected_units_file,
+                            'to_be_inspected_units_file' => $to_be_inspected_units_file,
+                        ];
+
+
+
+
+                        // if($program['group'] == 3){
+                        //     dd($data['programs']);
+                        // }
+
                     }
-
-                    $needed_units_site = max($program['required_units'] - $selected_units_site, 0);
-                    $needed_units_file = max($program['required_units_file'] - $selected_units_file, 0);
-
-                    $unit_keys = $program['units_before_optimization'];
-
-                    $summary_unit_ids = array_merge($summary_unit_ids, $program['units_before_optimization']);
-                    $summary_optimized_unit_ids = array_merge($summary_optimized_unit_ids, $program['units_after_optimization']);
-
-                    $to_be_inspected_units_site = $selected_units_site - $inspected_units_site;
-                    $to_be_inspected_units_file = $selected_units_file - $inspected_units_file;
-
-                    $summary_required = $summary_required + $program['required_units'];
-                    $summary_required_file = $summary_required_file + $program['required_units_file'];
-
-                    $data['programs'][] = [
-                        'id' => $program['group'],
-                        'name' => $program['name'],
-                        'pool' => $program['pool'],
-                        'building_key' => $program['building_key'],
-                        'building_name' => $building_name,
-                        'comments' => $program['comments'],
-                        'user_limiter' => $program['use_limiter'],
-                        // 'totals_after_optimization' => $program['totals_after_optimization_not_merged'],
-                        // 'units_before_optimization' => $program['units_before_optimization'],
-                        // 'totals_before_optimization' => $program['totals_before_optimization'],
-                        'required_units' => $program['required_units'],
-                        'selected_units' => $selected_units_site,
-                        'needed_units' => $needed_units_site,
-                        'inspected_units' => $inspected_units_site,
-                        'to_be_inspected_units' => $to_be_inspected_units_site,
-
-                        'required_units_file' => $program['required_units_file'],
-                        'selected_units_file' => $selected_units_file,
-                        'needed_units_file' => $needed_units_file,
-                        'inspected_units_file' => $inspected_units_file,
-                        'to_be_inspected_units_file' => $to_be_inspected_units_file,
-                    ];
-
-
-
-
-                    // if($program['group'] == 3){
-                    //     dd($data['programs']);
-                    // }
-
                 }
 
                 $summary_optimized_unit_ids = array_unique($summary_optimized_unit_ids);
@@ -2717,18 +2719,20 @@ class AuditController extends Controller
       session(['audit-' . $audit->id . '-selection_summary' => $selection_summary]);
       $programs = array();
       $program_keys_list = '';
-      foreach ($selection_summary['programs'] as $p) {
-          if ($p['pool'] > 0) {
-              $programs[] = [
-                  "id" => $p['group'],
-                  "name" => $p['name'],
-              ];
-              if ($program_keys_list != '') {
-                  $program_keys_list = $program_keys_list . ",";
+      if(null !== $selection_summary){
+          foreach ($selection_summary['programs'] as $p) {
+              if ($p['pool'] > 0) {
+                  $programs[] = [
+                      "id" => $p['group'],
+                      "name" => $p['name'],
+                  ];
+                  if ($program_keys_list != '') {
+                      $program_keys_list = $program_keys_list . ",";
+                  }
+                  $program_keys_list = $program_keys_list . $p['program_keys'];
               }
-              $program_keys_list = $program_keys_list . $p['program_keys'];
           }
-      }
+        }
           // get all the programs
         $data = [
             "project" => [
@@ -2756,75 +2760,77 @@ class AuditController extends Controller
         // build the dataset for the chart
         $datasets = array();
         $all_program_keys = [];
-        foreach ($selection_summary['programs'] as $program) { //this is actually groups not programs!
-            // count selected units using the list of program ids
-            $program_keys = explode(',', $program['program_keys']);
-            $all_program_keys[] =  $program_keys;
-            $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
-            $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
-            $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
-            $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
-            $unit_keys = $program['units_after_optimization'];
-            $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
-                ->where('audit_id', '=', $audit->id)
-                ->where('group_id', '=', $program['group'])
-            // ->whereHas('amenity_inspections', function($query) {
-            //     $query->where('completed_date_time', '!=', null);
-            // })
-                ->where('is_site_visit', '=', 1)
-                ->where('complete', '!=', null)
-                ->count();
-            $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
-                ->where('audit_id', '=', $audit->id)
-                ->where('group_id', '=', $program['group'])
-                ->where('is_file_audit', '=', 1)
-                ->where('complete', '!=', null)
-                ->count();
-            $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
-            $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
-            // $data['programs'][] = [
-            //     'id' => $program['group'],
-            //     'name' => $program['name'],
-            //     'pool' => $program['pool'],
-            //     'comments' => $program['comments'],
-            //     'user_limiter' => $program['use_limiter'],
-            //     'totals_after_optimization' => $program['totals_after_optimization'],
-            //     'units_before_optimization' => $program['units_before_optimization'],
-            //     'totals_before_optimization' => $program['totals_before_optimization'],
-            //     'required_units' => $program['totals_after_optimization'],
-            //     'selected_units' => $selected_units_site,
-            //     'needed_units' => $needed_units_site,
-            //     'inspected_units' => $inspected_units_site,
-            //     'to_be_inspected_units' => $to_be_inspected_units_site,
-            //     'required_units_file' => $program['totals_after_optimization'],
-            //     'selected_units_file' => $selected_units_file,
-            //     'needed_units_file' => $needed_units_file,
-            //     'inspected_units_file' => $inspected_units_file,
-            //     'to_be_inspected_units_file' => $to_be_inspected_units_file,
-            // ];
-            //chartjs data
-            $datasets[] = [
-                "program_name" => $program['name'],
-                "required" => $program['totals_after_optimization'],
-                "selected" => $selected_units_site + $selected_units_file,
-                "needed" => $needed_units_site + $needed_units_file,
-            ];
-            // $summary_required = $summary_required + $program['totals_before_optimization'];
-            // $summary_selected = $summary_selected + $selected_units_site;
-            // $summary_needed = $summary_needed + $needed_units_site;
-            // $summary_inspected = $summary_inspected + $inspected_units_site;
-            // $summary_to_be_inspected = $summary_to_be_inspected + $to_be_inspected_units_site;
-            // $summary_optimized_sample_size = $summary_optimized_sample_size + $program['totals_after_optimization'];
-            // $summary_optimized_completed_inspections = $summary_optimized_completed_inspections + $inspected_units_site;
-            // $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
-            // $summary_required_file = $summary_required_file + $program['totals_before_optimization'];
-            // $summary_selected_file = $summary_selected_file + $selected_units_file;
-            // $summary_needed_file = $summary_needed_file + $needed_units_file;
-            // $summary_inspected_file = $summary_inspected_file + $inspected_units_file;
-            // $summary_to_be_inspected_file = $summary_to_be_inspected_file + $to_be_inspected_units_file;
-            // $summary_optimized_sample_size_file = $summary_optimized_sample_size_file + $program['totals_after_optimization'];
-            // $summary_optimized_completed_inspections_file = $summary_optimized_completed_inspections_file + $inspected_units_file;
-            // $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
+        if(null !== $selection_summary){
+            foreach ($selection_summary['programs'] as $program) { //this is actually groups not programs!
+                // count selected units using the list of program ids
+                $program_keys = explode(',', $program['program_keys']);
+                $all_program_keys[] =  $program_keys;
+                $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
+                $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
+                $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
+                $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
+                $unit_keys = $program['units_after_optimization'];
+                $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('group_id', '=', $program['group'])
+                // ->whereHas('amenity_inspections', function($query) {
+                //     $query->where('completed_date_time', '!=', null);
+                // })
+                    ->where('is_site_visit', '=', 1)
+                    ->where('complete', '!=', null)
+                    ->count();
+                $inspected_units_file = UnitInspection::whereIn('unit_key', $unit_keys)
+                    ->where('audit_id', '=', $audit->id)
+                    ->where('group_id', '=', $program['group'])
+                    ->where('is_file_audit', '=', 1)
+                    ->where('complete', '!=', null)
+                    ->count();
+                $to_be_inspected_units_site = $program['totals_after_optimization'] - $inspected_units_site;
+                $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
+                // $data['programs'][] = [
+                //     'id' => $program['group'],
+                //     'name' => $program['name'],
+                //     'pool' => $program['pool'],
+                //     'comments' => $program['comments'],
+                //     'user_limiter' => $program['use_limiter'],
+                //     'totals_after_optimization' => $program['totals_after_optimization'],
+                //     'units_before_optimization' => $program['units_before_optimization'],
+                //     'totals_before_optimization' => $program['totals_before_optimization'],
+                //     'required_units' => $program['totals_after_optimization'],
+                //     'selected_units' => $selected_units_site,
+                //     'needed_units' => $needed_units_site,
+                //     'inspected_units' => $inspected_units_site,
+                //     'to_be_inspected_units' => $to_be_inspected_units_site,
+                //     'required_units_file' => $program['totals_after_optimization'],
+                //     'selected_units_file' => $selected_units_file,
+                //     'needed_units_file' => $needed_units_file,
+                //     'inspected_units_file' => $inspected_units_file,
+                //     'to_be_inspected_units_file' => $to_be_inspected_units_file,
+                // ];
+                //chartjs data
+                $datasets[] = [
+                    "program_name" => $program['name'],
+                    "required" => $program['totals_after_optimization'],
+                    "selected" => $selected_units_site + $selected_units_file,
+                    "needed" => $needed_units_site + $needed_units_file,
+                ];
+                // $summary_required = $summary_required + $program['totals_before_optimization'];
+                // $summary_selected = $summary_selected + $selected_units_site;
+                // $summary_needed = $summary_needed + $needed_units_site;
+                // $summary_inspected = $summary_inspected + $inspected_units_site;
+                // $summary_to_be_inspected = $summary_to_be_inspected + $to_be_inspected_units_site;
+                // $summary_optimized_sample_size = $summary_optimized_sample_size + $program['totals_after_optimization'];
+                // $summary_optimized_completed_inspections = $summary_optimized_completed_inspections + $inspected_units_site;
+                // $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
+                // $summary_required_file = $summary_required_file + $program['totals_before_optimization'];
+                // $summary_selected_file = $summary_selected_file + $selected_units_file;
+                // $summary_needed_file = $summary_needed_file + $needed_units_file;
+                // $summary_inspected_file = $summary_inspected_file + $inspected_units_file;
+                // $summary_to_be_inspected_file = $summary_to_be_inspected_file + $to_be_inspected_units_file;
+                // $summary_optimized_sample_size_file = $summary_optimized_sample_size_file + $program['totals_after_optimization'];
+                // $summary_optimized_completed_inspections_file = $summary_optimized_completed_inspections_file + $inspected_units_file;
+                // $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
+            }
         }
         /*
         $data['summary'] = [
@@ -5715,11 +5721,17 @@ class AuditController extends Controller
         } else {
             $programGroup = $program->groups();
             $programGroup = $programGroup[0];
-            $program = collect($data['programs'])->where('id',$programGroup);
+            if(array_key_exists('programs', $data)){
+                $program = collect($data['programs'])->where('id',$programGroup);
+            } else {
+                $program = [];
+            }
             if(count($program) > 1) {
             	$program = collect($data['programs'])->where('building_key',$building_key)->first();
-            } else {
+            } elseif(count($program) > 0) {
             	$program = $program->first();
+            } else {
+                $program = null;
             }
             //dd($program, $unitprogram->project_program->multiple_building_election_key);
         }

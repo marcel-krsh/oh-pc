@@ -149,7 +149,7 @@ class SyncEmailAddressesJob implements ShouldQueue
                                             
                                             
                                         'email_address_type_key'=>$v['attributes']['emailAddressTypeKey'],
-                                            
+                                        'email_address_type_id'=>null,
                                         'email_address'=>$v['attributes']['emailAddress'],
                                             
                                             

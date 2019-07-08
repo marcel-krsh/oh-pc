@@ -149,6 +149,7 @@ class SyncMonitoringMonitorsJob implements ShouldQueue
                                             
                                         'monitoring_key'=>$v['attributes']['monitoringKey'],
                                         'user_key'=>$v['attributes']['userKey'],
+                                        'user_id'=>null,
                                             
                                             
                                             
@@ -189,6 +190,7 @@ class SyncMonitoringMonitorsJob implements ShouldQueue
                                             
                                         'monitoring_key'=>$v['attributes']['monitoringKey'],
                                         'user_key'=>$v['attributes']['userKey'],
+                                        'user_id'=>null,
                                             
                                             
                                             

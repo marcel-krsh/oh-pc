@@ -134,12 +134,17 @@ class SyncUnitsJob implements ShouldQueue
                                     $allitaTableRecord->update([
                                             
                                         'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
+                                        'unit_bedroom_id'=>null,
                                         'building_key'=>$v['attributes']['buildingKey'],
+                                        'building_id'=>null,
                                         'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
                                         'unit_status_key'=>$v['attributes']['unitStatusKey'],
+                                        'unit_status_id'=>null,
                                         'ami_percentage_key'=>$v['attributes']['amiPercentageKey'],
+                                        'ami_percentage_id'=>null,
                                         'unit_name'=>$v['attributes']['unitName'],
                                         'unit_identity_key'=>$v['attributes']['unitIdentityKey'],
+                                        'unit_identity_id'=>null,
                                         'status_date'=>$v['attributes']['statusDate'],
                                         'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                         'is_active'=>$v['attributes']['isActive'],

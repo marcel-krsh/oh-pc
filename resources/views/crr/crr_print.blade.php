@@ -78,8 +78,17 @@ body{ background-color: white; }
 .crr-blocks { page-break-inside: avoid; }
 
 @page {
-   margin: 0cm;
+   margin: .5in;
    size: portrait;
+}
+
+ul.leaders li:before, .leaders > div:before {
+	content:"";
+}
+ul.leaders li {
+	border-bottom: 1px dotted black;
+    padding-bottom: 9px;
+    padding-top: 7px;
 }
 </style>
 

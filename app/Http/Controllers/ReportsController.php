@@ -492,7 +492,7 @@ class ReportsController extends Controller
         }
       }
       if ($audit->project->owner()['zip']) {
-        $address .= $audit->project->owner()['zip'];
+        $address .= ' '.$audit->project->owner()['zip'];
       }
       $address .= '<br />';
       $string = str_replace("||OWNER FORMATTED ADDRESS||", $address, $string);
