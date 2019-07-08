@@ -336,8 +336,8 @@
 		<div align="center" class="uk-align-center uk-margin-large-bottom use-handcursor crr-thumbs" style="max-width: 85px;"><a href="#{{ str_replace(' ','',$section->id) }}" class="uk-link-mute">{{ strtoupper($section->title) }}</a>
 		</div>
 		@endForEach
-		<hr>
-		<small><a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
+		<hr class="dashed-hr uk-margin-bottom">
+		<small><a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute"> <i class="a-print" style="font-weight: bolder;"></i> PRINT</a></small>
 		@can('access_auditor')
 		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
 		<div id="comment-list" style="display: none;"></div>
