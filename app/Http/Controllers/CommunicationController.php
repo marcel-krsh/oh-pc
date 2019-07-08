@@ -1419,7 +1419,7 @@ class CommunicationController extends Controller
         ->get();
       $audit  = $report->audit_id;
       $status = 4;
-      $data   = ['subject' => 'Report has been apporved with changes for ' . $project->project_number . ' : ' . $project->project_name,
+      $data   = ['subject' => 'Report has been approved with changes for ' . $project->project_number . ' : ' . $project->project_name,
         'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
       $single_receipient = 1;
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
@@ -1445,7 +1445,7 @@ class CommunicationController extends Controller
         ->get();
       $audit  = $report->audit_id;
       $status = 5;
-      $data   = ['subject' => 'Report has been apporved for ' . $project->project_number . ' : ' . $project->project_name,
+      $data   = ['subject' => 'Report has been approved for ' . $project->project_number . ' : ' . $project->project_name,
         'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
       $single_receipient = 1;
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
