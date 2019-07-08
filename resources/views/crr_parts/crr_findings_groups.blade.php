@@ -62,8 +62,10 @@
 			<br /><strong>Unit {{$f->unit->unit_name}}</strong>
 			@else
 			<strong>Site Finding</strong><br />
-			{{$f->project->address->line_1}} {{$f->project->address->line_2}}<br />
-			{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
+			@if($f->project->address)
+				{{$f->project->address->line_1}} {{$f->project->address->line_2}}<br />
+				{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
+			@endIf
 			@endIf
 		@if(!$print) </div> <hr class="dashed-hr" /> @else </div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
 
