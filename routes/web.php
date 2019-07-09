@@ -344,7 +344,7 @@
 
             Route::group(['prefix'=>'tabs','middleware'=>'can:access_admin'], function ()  {
 
-                Route::get('/audit/delete/{audit}', 'AdminOnlyActionsController@deleteAllitaAudit');
+                Route::get('audit/delete/{audit}', 'AdminOnlyActionsController@deleteAllitaAudit');
                 Route::get('organization', 'AdminToolController@organizationIndex');
                 Route::post('organization', 'AdminToolController@searchOrganizations')->name('organizations.search');
                 Route::get('amenity', 'AdminToolController@amenityIndex');
