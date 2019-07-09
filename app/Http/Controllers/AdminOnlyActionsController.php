@@ -9,7 +9,7 @@ class AdminOnlyActionsController extends Controller
 {
     //
     public function deleteAllitaAudit(Audit $audit){
-    	if(Auth::user()->can('access_admin')){
+    	if(\Auth::user()->can('access_admin')){
     		if(is_object($audit)){
     			/// change the audit status so compliance doesn't rerun
     			if($audit->findings->count() < 1){
