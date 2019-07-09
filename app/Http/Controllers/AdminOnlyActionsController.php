@@ -74,6 +74,6 @@ class AdminOnlyActionsController extends Controller
 	    		}else{
 	    			return '<h2>Sorry, your user has insufficient priveledges to do this action.<h2>';
 	    		}
-	    		return '<p>Successfully deleted the report.</p>'
+	    		return '<p>Successfully deleted the report.</p>';
     }
 }
