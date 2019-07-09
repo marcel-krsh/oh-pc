@@ -453,7 +453,7 @@ class ReportsController extends Controller
     $string = str_replace("||AUDIT ID||", $audit->id, $string);
     $string = str_replace("||PROJECT NUMBER||", $audit->project->project_number, $string);
     if ($audit->start_date) {
-      $string = str_replace("||REVIEW DATE||", date('m/d/Y', strtotime($audit->start_date)), $string);
+      $string = str_replace("||REVIEW DATE||", date('m/d/Y', strtotime($audit->completed_date)), $string);
     } else {
       $string = str_replace("||REVIEW DATE||", 'START DATE NOT SET', $string);
     }
