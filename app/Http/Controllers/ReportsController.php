@@ -453,12 +453,12 @@ class ReportsController extends Controller
     $string = str_replace("||AUDIT ID||", $audit->id, $string);
     $string = str_replace("||PROJECT NUMBER||", $audit->project->project_number, $string);
     if ($audit->start_date) {
-      $string = str_replace("||REVIEW DATE||", date('m/d/Y', strtotime($audit->completed_date)), $string);
+      $string = str_replace("||REVIEW DATE||", "<strong>".date('m/d/Y', strtotime($audit->completed_date)), $string)."</strong>";
     } else {
       $string = str_replace("||REVIEW DATE||", 'START DATE NOT SET', $string);
     }
     if ($report->response_due_date) {
-      $string = str_replace("||RESPONSE DUE||", date('m/d/Y', strtotime($report->response_due_date)), $string);
+      $string = str_replace("||RESPONSE DUE||", "<strong>".date('m/d/Y', strtotime($report->response_due_date)), $string)."</strong>";
     } else {
       $string = str_replace("||RESPONSE DUE||", '<span style="color:red;" class="attention">DATE NOT SET</span>', $string);
     }
