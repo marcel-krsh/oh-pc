@@ -17,7 +17,7 @@ class AdminOnlyActionsController extends Controller
 	    			$audit->save();
 	    			/// remove all the parts of the audit allita has:
 	    			\App\Models\UnitInspection::where('audit_id',$audit->id)->delete();
-	    			\App\Models\SiteInspection::where('audit_id',$audit->id)->delete();
+	    			//\App\Models\SiteInspection::where('audit_id',$audit->id)->delete();
 	    			\App\Models\BuildingInspection::where('audit_id',$audit->id)->delete();
 	    			\App\Models\UnitProgram::where('audit_id',$audit->id)->delete();
 	    			\App\Models\AmenityInspection::where('audit_id',$audit->id)->delete();
