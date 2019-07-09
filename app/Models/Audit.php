@@ -47,7 +47,7 @@ class Audit extends Model
     }
 
     public function total_inspection_units(){
-        return \App\UnitInspection::where('audit_id',$this->id)->groupBy('unit_id')->count();
+        return \App\Models\UnitInspection::where('audit_id',$this->id)->groupBy('unit_id')->count();
     }
 
     public function project_details() : HasOne
