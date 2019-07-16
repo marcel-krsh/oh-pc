@@ -211,9 +211,11 @@
             Route::get('/modals/audits/{id}/updateStep', 'AuditController@updateStep')->name('audits.updatestep');
             Route::post('audits/{id}/saveStep', 'AuditController@saveStep')->name('audits.savestep');
 
+            Route::post('/projects/refreshdetails', 'AuditController@getProjectDetailsAjax')->name('project.refreshdetails');
             Route::get('/projects/{id}', 'AuditController@getProject')->name('project');
             Route::get('/projects/{id}/title', 'AuditController@getProjectTitle')->name('project.title');
             Route::get('/projects/{id}/details', 'AuditController@getProjectDetails')->name('project.details');
+
             // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
              Route::get('/projects/{id}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
              Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');

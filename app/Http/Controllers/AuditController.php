@@ -1622,6 +1622,14 @@ class AuditController extends Controller
         return view('projects.partials.details', compact('details', 'audits', 'project', 'selected_audit'));
     }
 
+    public function getProjectDetailsAjax(Request $request)
+    {
+        $id = $request->id;
+        $details = Project::find($id)->details();
+        $returnHTML = view('projects.partials.details-project-details')->with('details', $details)->render();
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
+    }
+
     public function getProjectDetailsInfo($id, $type, $return_raw = 0)
     {
         // types: compliance, assignment, findings, followups, reports, documents, comments, photos
