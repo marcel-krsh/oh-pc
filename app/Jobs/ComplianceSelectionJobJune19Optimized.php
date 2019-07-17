@@ -1116,14 +1116,21 @@ class ComplianceSelectionJobJune19Optimized implements ShouldQueue
                             
 
                         foreach ($this->project->programs as $program) {
-                            
+                            $comments[] = 'Checking program '.$program->program->program_name.' if it is a member of the program bundle: ';
+                            foreach($this->program_bundle_ids as $pid){
+                                $comments[] = ' • '.$pid.' ';
+                            }
+                           
                             if (in_array($program->program_key, $this->program_bundle_ids)) {
+                                 $comments[] = 'The program: '.$program->program->program_name.' is a member of the program bundle.';
                                 if ($program->multiple_building_election_key == 2) {
                                     $is_multi_building_project = 1;
-                                    $comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                    $this->audit->comment = $this->audit->comment.' | Program key '.$program->program_key.' showed that the project is a multi building project.';
-                                    ////$this->audit->save();
+                                    //$comments[] = 'Program key '.$program->program_key.' showed that the project is a multi building project.';
+                                    $comments[] = $program->program->program_name.' with program key '.$program->program_key.' and project_program_key '.$program->project_program_key.' showed that the project is a multi building project.';
+                                  //  $this->audit->save();
                                     
+                                } else {
+                                    $comments[] = $program->program->program_name.' with program key '.$program->program_key.' and project_program_key '.$program->project_program_key.' showed that the project is NOT a multi building project.';
                                 }
                             }
                         }
@@ -2325,18 +2332,23 @@ class ComplianceSelectionJobJune19Optimized implements ShouldQueue
                     $this->audit->comment = $this->audit->comment.' | Select Process Going through each program to determine if the project is a multi building project by looking for multiple_building_election_key=2.';
                     ////$this->audit->save();
                     
+                    $comments[] = 'Checking for multiple building election on programs with HTC IDS:';
+                    foreach($this->program_htc_ids as $pid){
+                                $comments[] = ' • '.$pid.' ';
+                            }
 
                     foreach ($this->project->programs->whereIn('project_key',$this->program_htc_ids) as $program) {
-                        
+                            
+                            $comments[] = 'Checking '.$program->program->program_name.' with project program key: '.$program->project_program_key;
                         
                             if ($program->multiple_building_election_key == 2) {
                                 $is_multi_building_project = 1;
-                                $comments[] = 'Program key '.$program->program_key.' showed that the project IS a multi building project.';
+                                $comments[] = $program->program->program_name.' with program key '.$program->program_key.' showed that the project IS a multi building project.';
                                 $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project IS a multi building project.';
                                 ////$this->audit->save();
                                 
                             } else {
-                                $comments[] = 'Program key '.$program->program_key.' showed that the project is NOT a multi building project.';
+                                $comments[] = $program->program->program_name.' with program key '.$program->program_key.' showed that the project is NOT a multi building project.';
                                 $this->audit->comment = $this->audit->comment.' | Select Process Program key '.$program->program_key.' showed that the project is NOT a multi building project.';
                             }
                         
