@@ -200,9 +200,9 @@ class UnitInspection extends Model
         }
     }
 
-    public function auditors($audit)
+    public function auditors($audit_id)
     {
-          $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$audit)->where('unit_id','=',$this->unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+          $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$audit_id)->where('unit_id','=', $this->unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
           if($auditor_ids)
           $auditors = User::whereIn('id', $auditor_ids)->get();
           else

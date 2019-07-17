@@ -15,8 +15,11 @@ use App\Models\Project;
 use App\Models\ProjectProgram;
 use App\Models\User;
 use Auth;
+use Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Barryvdh\Snappy\Facades\SnappyPdf as SPDF;
+use Twilio\Rest\Client;
 
 class ReportsController extends Controller
 {
@@ -1013,6 +1016,55 @@ class ReportsController extends Controller
   	//signed_by
   	//signed_by_id
   	//How should this be shown? to user if already signed!
+  }
+
+  public function sendfax(Request $request){
+    if(!empty(trim(str_replace("-","",$request->faxnumber)))){
+      $snappy = \App::make('snappy.pdf');
+      $public_path = base_path().'/public/pdf/';
+      $url=\URL::to('/report/'.$request->report.'?print=1');
+      $pdf_file='test_'.time().'.pdf';
+      $pdf_url=\URL::to('/pdf/'.$pdf_file);
+      $snappy->generate($url, $public_path.$pdf_file);
+
+      $sid=env('TWILIO_SID');
+      $token=env('TWILIO_TOKEN');
+      $twilio = new Client($sid, $token);
+      $to_fax_number=env('TWILIO_FAX_COUNTRY_CODE','+1').str_replace("-","",$request->faxnumber);
+      $from_fax_number=env('TWILIO_FROM');
+      $fax = $twilio->fax->v1->faxes->create($to_fax_number,$pdf_url,array("from" => $from_fax_number));
+      $fax_status = [
+        'queued' => 'The fax is queued, waiting for processing',
+        'processing' => 'The fax is being downloaded, uploaded, or transcoded into a different format',
+        'sending' => 'The fax is in the process of being sent',
+        'delivered' => 'The fax has been successfuly delivered',
+        'receiving' => 'The fax is in the process of being received',
+        'received' => 'The fax has been successfully received',
+        'no-answer' => 'The outbound fax failed because the other end did not pick up',
+        'busy' => 'The outbound fax failed because the other side sent back a busy signal',
+        'failed' => 'The fax failed to send or receive',
+        'canceled' => 'The fax was canceled, either by using the REST API, or rejected by TwiML',
+      ];
+
+      return response()->json(
+        [
+          'fax_status' => @$fax_status[$fax->status],
+          'fax_media' => $fax->links['media'],
+          'status'=>1,
+          'faxnumber'=>$request->faxnumber,
+          'from_number'=>$from_fax_number,
+          'message'=>'Fax Status: '.@$fax_status[$fax->status],
+        ]
+      );
+    }else{
+      return response()->json(
+        [
+          'status'=>0,
+          'message'=>'Invalid Fax Number',
+        ]
+      );
+    }
+    
   }
 
 

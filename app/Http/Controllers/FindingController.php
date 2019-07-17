@@ -961,7 +961,7 @@ class FindingController extends Controller
             ->groupBy('unit_id')
             ->get();
             // return $units->first()->auditors($auditid);
-        $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
+        $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity', 'user', 'building.units');
         $amenities = $amenities_query->get();
         $site = $amenities_query->whereNotNull('project_id')->get();
         // $unit_auditors = AmenityInspection::where('audit_id', $auditid)->where('unit_id','=',$units->first()->unit_id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();

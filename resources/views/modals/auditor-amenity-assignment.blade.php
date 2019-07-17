@@ -43,6 +43,7 @@
 			} else {
 				UIkit.notification('<span uk-icon="icon: check"></span> Auditor Assigned', {pos:'top-right', timeout:1000, status:'success'});
                 // reload inspection screen
+                // debugger;
 
                 if(unit_id != 0 && amenity_id == 0){
                 	@if($current_auditor)
@@ -130,12 +131,12 @@
                 		var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
                 		$(buildingelement).append(newcontent);
                 	});
-                }else if(unit_id == 0 && building_id == 0 && amenity_id != 0){
+                }else if(unit_id == 0 && building_id == 0 && amenity_id != 0 && inmodel == 0){
                 	console.log('4');
                 	console.log('element {{$element}}');
                 	var newcontent = '<div id="building-audits-'+data.id+'-avatar-1" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="swapAuditor('+data.id+', {{$audit_id}}, 0, 0, \'building-audits-'+data.id+'-avatar-1\', '+amenity_id+')">'+data.initials+'</div>';
                 	$('#{{$element}}').replaceWith(newcontent);
-                } else {
+                }else if(inmodel == 0) {
                 	console.log('5');
                 	console.log("element "+element);
                 	var newcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
@@ -155,13 +156,22 @@
                 }
                 if(inmodel == 1) {
                 	dynamicModalClose(2);
-                	filterBuildingAmenities(building_id);
+                	var newcontent = '<div class="amenity-auditor uk-margin-remove"  id="building-auditor-'+amenity_id+'-avatar-1"><div uk-tooltip="pos:top-left;title:'+data.name+';" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="assignSiteAuditor({{ $audit_id }}, '+building_id+', 0, '+amenity_id+', \'building-auditor-'+amenity_id+'-avatar-1\', 0, 0, 0, 2);">'+data.initials+'</div></div>';
+                	$('#{{$element}}').replaceWith(newcontent);
+                	loadTypes(0,1);
+                	// filterBuildingAmenities(building_id);
                 } else if(inmodel == 2) {
                 	dynamicModalClose(2);
-                	filterSiteAmenities(audit_id);
+                	var newcontent = '<div class="amenity-auditor uk-margin-remove"  id="site-auditor-'+amenity_id+'-avatar-1"><div uk-tooltip="pos:top-left;title:'+data.name+';" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="assignSiteAuditor({{ $audit_id }}, 0, 0, '+amenity_id+', \'site-auditor-'+amenity_id+'-avatar-1\', 0, 0, 0, 2);">'+data.initials+'</div></div>';
+                	$('#{{$element}}').replaceWith(newcontent);
+                	loadTypes(0,1);
+                	//filterSiteAmenities(audit_id);
                 } else if(inmodel == 3) {
                 	dynamicModalClose(2);
-                	filterUnitAmenities(unit_id);
+                	var newcontent = '<div class="amenity-auditor uk-margin-remove"  id="unit-auditor-'+amenity_id+'-avatar-1"><div uk-tooltip="pos:top-left;title:'+data.name+';" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="assignSiteAuditor({{ $audit_id }}, '+building_id+', '+unit_id+', '+amenity_id+', \'unit-auditor-'+amenity_id+'-avatar-1\', 0, 0, 0, 2);">'+data.initials+'</div></div>';
+                	$('#{{$element}}').replaceWith(newcontent);
+                	loadTypes(0,1);
+                	// filterUnitAmenities(unit_id);
                 } else if(inmodel == 4) {
                 	dynamicModalClose(2);
                 	loadTypes(1);

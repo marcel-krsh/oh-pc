@@ -371,9 +371,13 @@ class AuditController extends Controller
 
 
         }
+        //return $buildings;
+        $amenities_query = AmenityInspection::where('audit_id', $audit)->with('amenity', 'user', 'building.units');
+        $amenities = $amenities_query->get();
+        // echo 'ets';
+        // return 12;
 
-
-        return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context'));
+        return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context', 'amenities'));
     }
 
     public function reorderBuildingsFromAudit($audit, Request $request)
@@ -1180,7 +1184,8 @@ class AuditController extends Controller
                 //     ->where('audit_id', '=', $audit_id)
                 //     ->whereNull('building_id')
                 //     ->whereNull('unit_id')
-                //     ->first();
+                // //     ->first();
+                // dd($amenity_id, $audit_id);
                 $amenity = AmenityInspection::where('id', '=', $amenity_id)
                     ->where('audit_id', '=', $audit_id)
                     ->whereNull('building_id')
@@ -1213,7 +1218,12 @@ class AuditController extends Controller
         //$in_model = null; // we do not use this feature here.
         //dd($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element);
         if ($amenity_id != 0) {
-            $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+            // $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+            //     ->where('audit_id', '=', $audit_id)
+            //     ->whereNull('building_id')
+            //     ->whereNull('unit_id')
+            //     ->first();
+            $amenity = AmenityInspection::where('id', $amenity_id)
                 ->where('audit_id', '=', $audit_id)
                 ->whereNull('building_id')
                 ->whereNull('unit_id')
@@ -1225,6 +1235,10 @@ class AuditController extends Controller
         } elseif ($building_id != 0) {
             $amenity = 0;
             $name = "Building " . CachedBuilding::where('building_id', '=', $building_id)->first()->building_name . " (swap)";
+        } else {
+        	$amenity = 0;
+        	$audit = CachedAudit::where('audit_id', $audit_id)->with('inspection_items')->first();
+        	$name = "Site " . $audit->project->address->basic_address() . " (swap)";
         }
 
         $current_auditor = User::where('id', '=', $auditor_id)->first();
@@ -1236,7 +1250,6 @@ class AuditController extends Controller
 
     public function saveSwapAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $auditor_id)
     {
-
 
         $new_auditor_id = $request->get('new_auditor_id');
 
@@ -1327,7 +1340,7 @@ class AuditController extends Controller
         } elseif ($amenity_id != 0 && $building_id == 0) {
             if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $new_auditor_id)->first()) {
 
-                $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
+                $amenity = AmenityInspection::where('id', '=', $amenity_id)
                     ->where('audit_id', '=', $audit_id)
                     ->whereNull('building_id')
                     ->whereNull('unit_id')
@@ -1358,6 +1371,17 @@ class AuditController extends Controller
                 $color = "auditor-badge-" . $user->badge_color;
                 return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => 0, "building_id" => $building->building_id];
             }
+        } elseif($amenity_id == 0 && $building_id == 0 && $unit_id == 0) {
+        	if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $new_auditor_id)->first()) {
+
+        		$amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id', '=', $auditor_id)->whereNull('building_id')->whereNull('unit_id')->update([
+                "auditor_id" => $new_auditor_id,
+            ]);
+        		$user = User::where('id', '=', $new_auditor_id)->first();
+            $initials = $user->initials();
+            $color = "auditor-badge-" . $user->badge_color;
+            return ["initials" => $initials, "color" => $color, "name" => $user->full_name(), "unit_auditors" => [], "building_auditors" => [], "unit_id" => 0, "building_id" => 0];
+        	}
         }
 
         return 0;
@@ -1596,6 +1620,14 @@ class AuditController extends Controller
         //dd($selected_audit->checkStatus('schedules'));
 
         return view('projects.partials.details', compact('details', 'audits', 'project', 'selected_audit'));
+    }
+
+    public function getProjectDetailsAjax(Request $request)
+    {
+        $id = $request->id;
+        $details = Project::find($id)->details();
+        $returnHTML = view('projects.partials.details-project-details')->with('details', $details)->render();
+        return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 
     public function getProjectDetailsInfo($id, $type, $return_raw = 0)
