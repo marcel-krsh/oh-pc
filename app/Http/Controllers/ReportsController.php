@@ -719,11 +719,11 @@ class ReportsController extends Controller
       $loadReport = 0;
       if(Auth::user()->cannot('access_auditor')){
          $userProjects = \App\Models\ProjectContactRole::where('project_id',$report->project_id)->where('person_id',Auth::user()->person_id)->count();
-         if($userProjects && $report->crr_approval_type_id > 5){
+         if($userProjects && $report->crr_approval_type_id > 5 && $current_user->pm_access()){
           $loadReport = 1;
          } else {
             $user_access = ReportAccess::where('project_id', $report->project_id)->where('user_id', $current_user->id)->first();
-            if($user_access) {
+            if($user_access && $report->crr_approval_type_id > 5 && $current_user->pm_access()) {
             	$loadReport = 1;
             }
          }

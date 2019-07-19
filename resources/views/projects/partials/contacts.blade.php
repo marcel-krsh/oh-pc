@@ -54,10 +54,24 @@
 						</small>
 					</td>
 					<td><small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->email }}">{{ $user->email }}</a></small></td>
-					<td class="use-hand-cursor">
-						<span data-uk-tooltip title="Allow access to report <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><i class="a-file-approve"></i>
+					{{-- Check if user has project access and pm_access : yes show approve icon, no onclick
+							 Check if user has project access and pm_access: no, show a-file-fail icon, no onclick
+							 Check if user has report_access and pm_access: show approve icon, yes onclick
+							 Check if user has report_access and pm_access: show a-file-fail, yes onclick but show tooltip --}}
+					@php
+						$pm_access = $user->pm_access();
+					@endphp
+					@if(in_array($user->id, $project_user_ids))
+						<td>
+							<span data-uk-tooltip title="{{ $pm_access ? 'User has access to report' : 'No access to report' }} <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}"><i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
+							</span>
+						</td>
+					@else
+						<td class="use-hand-cursor">
+						<span data-uk-tooltip title="{{ $pm_access ? 'Remove access to report' : 'No access to report' }} <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="editUser({{ $user->id }})"><i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
 						</span>
 					</td>
+					@endif
 				</tr>
 				@endforeach
 			</tbody>
