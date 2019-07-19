@@ -239,6 +239,13 @@
             Route::post('/report/{report}/section/{section}/part/{part}/order','ReportsController@modifySectionPartOrder');
             Route::get('/projects/{project}/reports', 'AuditController@getProjectReports')->name('project.reports');
             Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
+            Route::get('project/{project}/contacts', 'ProjectContactsController@contacts')->name('project.contacts');
+            Route::get('/modals/{project}/add-user-to-project', 'ProjectContactsController@addUserToProject');
+            Route::post('/modals/{project}/add-user-to-project', 'ProjectContactsController@saveAddUserToProject')->name('project.add-user');
+            Route::get('/modals/remove-user-from-project/{project}/{user}', 'ProjectContactsController@removeUserFromProject');
+            Route::post('/modals/{project}/remove-user-from-project', 'ProjectContactsController@deleteAddUserToProject')->name('project.remove-user');
+
+
 
             //documents
             Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
