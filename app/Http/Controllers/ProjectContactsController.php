@@ -20,28 +20,30 @@ class ProjectContactsController extends Controller
 
   public function contacts($project)
   {
-    $project = Project::with('contactRoles.person')->find($project);
-    $user_ids = ReportAccess::where('project_id', $project->id)->get()->pluck('user_id');
+    $user_ids = $this->allUserIdsInProject($project);
+    $project  = Project::with('contactRoles.person')->find($project); //DEVCO
+    // Check if they have Devco, else check allita -
+    // Test with Charlene Wray
 
     // REmove this code later
-    if(count($user_ids) == 0) {
-	    $cr         = $project->contactRoles;
-	    $person_ids = $cr->pluck('person_id');
-	    $project_id = $project->id;
-	    foreach ($person_ids as $key => $recipient) {
-	    	$user = User::where('person_id', $recipient)->first();
-	      $check_user = ReportAccess::where('project_id', $project_id)->where('user_id', $user->id)->get();
-	      if (count($check_user) == 0) {
-	        $report_user             = new ReportAccess;
-	        $report_user->project_id = $project_id;
-	        $report_user->user_id    = $user->id;
-	        $report_user->save();
-	      }
-	    }
-	  }
+    /*if(count($user_ids) == 0) {
+    $cr         = $project->contactRoles;
+    $person_ids = $cr->pluck('person_id');
+    $project_id = $project->id;
+    foreach ($person_ids as $key => $recipient) {
+    $user = User::where('person_id', $recipient)->first();
+    $check_user = ReportAccess::where('project_id', $project_id)->where('user_id', $user->id)->get();
+    if (count($check_user) == 0) {
+    $report_user             = new ReportAccess;
+    $report_user->project_id = $project_id;
+    $report_user->user_id    = $user->id;
+    $report_user->save();
+    }
+    }
+    }*/
     //end remove
 
-    $users      = User::whereIn('users.id', $user_ids)->
+    $users = User::whereIn('users.id', $user_ids)->
       join('people', 'users.person_id', '=', 'people.id')->
       leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')->
       leftJoin('roles', 'users_roles.role_id', '=', 'roles.id')->
@@ -54,14 +56,30 @@ class ProjectContactsController extends Controller
     return view('projects.partials.contacts', compact('users', 'user_role', 'project'));
   }
 
+  protected function allUserIdsInProject($project_id)
+  {
+    $project = Project::with('contactRoles.person')->find($project_id); //DEVCO
+    // Check if they have Devco, else check allita -
+    // Test with Charlene Wray
+    if ($project->contactRoles) {
+      $project_person_ids = $project->contactRoles->pluck('person_id');
+      $project_user_ids   = User::whereIn('person_id', $project_person_ids)->pluck('id')->toArray();
+    } else {
+      $project_user_ids = [];
+    }
+    $report_user_ids = ReportAccess::where('project_id', $project->id)->get()->pluck('user_id')->toArray(); //Allita
+    $user_ids        = array_merge($project_user_ids, $report_user_ids);
+    return $user_ids;
+  }
+
   public function addUserToProject($project_id)
   {
     if (Auth::user()->manager_access()) {
       $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
       $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
       $states        = State::get();
-      $project_users = ReportAccess::where('project_id', $project_id)->get()->pluck('user_id');
-      $recipients    = User::whereNotIn('users.id', $project_users)
+      $user_ids      = $this->allUserIdsInProject($project_id);
+      $recipients    = User::whereNotIn('users.id', $user_ids)
         ->join('people', 'people.id', 'users.person_id')
         ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
         ->join('users_roles', 'users_roles.user_id', 'users.id')
@@ -107,22 +125,22 @@ class ProjectContactsController extends Controller
 
   public function removeUserFromProject($project_id, $user_id)
   {
-  	$user_access = ReportAccess::where('project_id', $project_id)->where('user_id', $user_id)->first();
-  	if($user_access) {
-  		$message = 'Are you sure you want to remove access';
-  		$status = 1;
-  	} else {
-  		$message = 'Something went wrong, contact admin';
-  		$status = 0;
-  	}
-  	return view('modals.remove-user-from-project', compact('project_id', 'user_id', 'message', 'status'));
+    $user_access = ReportAccess::where('project_id', $project_id)->where('user_id', $user_id)->first();
+    if ($user_access) {
+      $message = 'Are you sure you want to remove access';
+      $status  = 1;
+    } else {
+      $message = 'Something went wrong, contact admin';
+      $status  = 0;
+    }
+    return view('modals.remove-user-from-project', compact('project_id', 'user_id', 'message', 'status'));
   }
 
   public function deleteAddUserToProject($project_id, Request $request)
   {
-  	$validator = \Validator::make($request->all(), [
+    $validator = \Validator::make($request->all(), [
       'project_id' => 'required',
-      'user_id' => 'required',
+      'user_id'    => 'required',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => ['Something went wrong, contact admin']]);
@@ -130,7 +148,4 @@ class ProjectContactsController extends Controller
     $user_access = ReportAccess::where('project_id', $request->project_id)->where('user_id', $request->user_id)->delete();
     return 1;
   }
-
-
-
 }

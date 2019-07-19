@@ -17,6 +17,8 @@ use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use App\Models\ReportAccess;
+
 
 class ReportsController extends Controller
 {
@@ -720,9 +722,11 @@ class ReportsController extends Controller
          if($userProjects && $report->crr_approval_type_id > 5){
           $loadReport = 1;
          } else {
-          //dd($userProjects, $report->project_id);
+            $user_access = ReportAccess::where('project_id', $report->project_id)->where('user_id', $current_user->id)->first();
+            if($user_access) {
+            	$loadReport = 1;
+            }
          }
-
       } else {
         $loadReport = 1;
       }

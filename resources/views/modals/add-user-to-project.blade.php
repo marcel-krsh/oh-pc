@@ -15,7 +15,7 @@
 		<input type="hidden" name="_token" value="{{ csrf_token() }}">
 		<div class="uk-grid">
 			<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;SELECT USERS</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
+				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;SELECT USERS</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING USERS</div>
 				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
 					'recipient-name'></span>
 				</div>
@@ -42,7 +42,7 @@
 					</ul>
 				</div>
 				<div class="uk-form-row">
-					<input style="width: 100%" type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
+					<input style="width: 100%" type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Users">
 				</div>
 				<script>
           // CLONE RECIPIENTS
@@ -132,8 +132,6 @@
   		if(recipients_array.length === 0){
   			no_alert = 0;
   			UIkit.modal.alert('You must select a user.',{stack: true});
-  		}
-  		if(no_alert){
   		}
   		jQuery.ajax({
   			url: "{{ URL::route("project.add-user", $project_id) }}",
