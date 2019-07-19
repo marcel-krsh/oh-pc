@@ -22,6 +22,7 @@ class ProjectContactsController extends Controller
   {
     $user_ids = $this->allUserIdsInProject($project);
     $project_user_ids = $this->projectUserIds($project);
+    $report_user_ids = $this->allitaUserIds($project);
     $project  = Project::with('contactRoles.person')->find($project); //DEVCO
     // Check if they have Devco, else check allita -
     // Test with Charlene Wray
@@ -44,7 +45,7 @@ class ProjectContactsController extends Controller
     }*/
     //end remove
 
-    $users = User::whereIn('users.id', $user_ids)->
+   $users = User::whereIn('users.id', $user_ids)->
       join('people', 'users.person_id', '=', 'people.id')->
       leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')->
       leftJoin('roles', 'users_roles.role_id', '=', 'roles.id')->
@@ -54,7 +55,7 @@ class ProjectContactsController extends Controller
       select('users.*', 'line_1', 'line_2', 'city', 'state', 'zip', 'organization_name', 'role_id', 'role_name', 'area_code', 'phone_number', 'extension', 'last_name', 'first_name')->
       orderBy('last_name', 'asc')->
       paginate(25);
-    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids'));
+    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'report_user_ids'));
   }
 
   protected function projectUserIds($project_id)
@@ -71,10 +72,16 @@ class ProjectContactsController extends Controller
     return $project_user_ids;
   }
 
+  protected function allitaUserIds($project_id)
+  {
+  	$report_user_ids = ReportAccess::where('project_id', $project_id)->get()->pluck('user_id')->toArray(); //Allita
+  	return $report_user_ids;
+  }
+
   protected function allUserIdsInProject($project_id)
   {
     $project_user_ids = $this->projectUserIds($project_id);
-    $report_user_ids = ReportAccess::where('project_id', $project_id)->get()->pluck('user_id')->toArray(); //Allita
+    $report_user_ids = $this->allitaUserIds($project_id);
     $user_ids        = array_merge($project_user_ids, $report_user_ids);
     return $user_ids;
   }

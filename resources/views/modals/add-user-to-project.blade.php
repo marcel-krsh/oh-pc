@@ -143,7 +143,7 @@
   			success: function(data){
   				$('.alert-danger' ).empty();
   				if(data == 1) {
-  					UIkit.modal.alert('User has been added.',{stack: true});
+  					UIkit.modal.alert('I added the user(s) to the project',{stack: true});
   					dynamicModalClose();
 		    		loadTab('/project/'+{{$project_id}}+'/contacts/', '7', 0, 0, 'project-', 1);
   				}

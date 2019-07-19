@@ -52,7 +52,7 @@
   			success: function(data){
   				$('.alert-danger' ).empty();
   				if(data == 1) {
-  					UIkit.modal.alert('User has been removed from project.',{stack: true});
+  					UIkit.modal.alert('I removed the user from project.',{stack: true});
   					dynamicModalClose();
 		    		loadTab('/project/'+{{$project_id}}+'/contacts/', '7', 0, 0, 'project-', 1);
   				}
