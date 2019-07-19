@@ -24,26 +24,6 @@ class ProjectContactsController extends Controller
     $project_user_ids = $this->projectUserIds($project);
     $report_user_ids = $this->allitaUserIds($project);
     $project  = Project::with('contactRoles.person')->find($project); //DEVCO
-    // Check if they have Devco, else check allita -
-    // Test with Charlene Wray
-
-    // REmove this code later
-    /*if(count($user_ids) == 0) {
-    $cr         = $project->contactRoles;
-    $person_ids = $cr->pluck('person_id');
-    $project_id = $project->id;
-    foreach ($person_ids as $key => $recipient) {
-    $user = User::where('person_id', $recipient)->first();
-    $check_user = ReportAccess::where('project_id', $project_id)->where('user_id', $user->id)->get();
-    if (count($check_user) == 0) {
-    $report_user             = new ReportAccess;
-    $report_user->project_id = $project_id;
-    $report_user->user_id    = $user->id;
-    $report_user->save();
-    }
-    }
-    }*/
-    //end remove
 
    $users = User::whereIn('users.id', $user_ids)->
       join('people', 'users.person_id', '=', 'people.id')->
