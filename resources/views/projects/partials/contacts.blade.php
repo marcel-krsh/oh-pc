@@ -62,7 +62,6 @@
 						@if(in_array($user->id, $project_user_ids))
 						@php
 						$project_roles = \App\Models\ProjectContactRole::with('projectRole')->where('person_id', $user->person_id)->where('project_id', $project->id)->get();
-						// dd($project_roles);
 						$roles = [];
 						foreach ($project_roles as $key => $pj) {
 							if($pj->projectRole) {
@@ -74,13 +73,13 @@
 						@endphp
 						<td>
 							<span><i class="use-hand-cursor a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles)}}"></i>  | </span>
-							<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ACCESS TO REPORT' : 'USER HAS NO ACCESS TO REPORT' }}"> <i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
+							<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ACCESS TO REPORTS' : 'USER HAS NO ACCESS TO REPORTS' }}"> <i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
 							</span>
 						</td>
 						@else
 						<td>
 							<span><i class="uk-text-muted a-file-gear_1"></i> | </span>
-							<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'CLICK TO REMOVE REPORT ACCESS' : 'USER HAS NO ACCESS TO REPORT' }}" onclick="editUser({{ $user->id }})"><i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
+							<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'CLICK TO REMOVE REPORTS ACCESS' : 'USER HAS NO ACCESS TO REPORTS' }}" onclick="editUser({{ $user->id }})"><i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
 							</span>
 						</td>
 						@endif
