@@ -98,7 +98,7 @@ class AmenityEvent
       }else{
         $building_id = null;
       }
-      if($building){
+      if(!is_null($building_id)){
         $unit_ids = UnitInspection::where('audit_id', $amenity->audit_id)->where('building_id', '=', $building_id)->pluck('unit_id');
   		  $amenity_inspections_unit = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->whereIn('unit_id', $unit_ids)->whereNull('completed_date_time')->get();
   		  $amenity_inspections_build = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->whereNull('completed_date_time')->get();
