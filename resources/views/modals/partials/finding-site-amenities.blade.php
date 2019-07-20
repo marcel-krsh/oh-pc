@@ -42,14 +42,14 @@
 				</div>
 				{{-- @if(is_null($amenity->completed_date_time)) <i class="a-circle"></i> @else <i class="a-circle-checked"></i> @endIf --}}
 				@if($amenity->auditor_id)
-				<div class="amenity-auditor uk-margin-remove">
-					<div uk-tooltip="pos:top-left;title:{{ $amenity->user->full_name() }};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float" onclick="assignSiteAuditor({{ $audit->audit_id }}, 0, 0, {{ $amenity->id }}, 'building-auditor-{{ $amenity->user->id }}', 0, 0, 0, 2);">
+				<div class="amenity-auditor uk-margin-remove" id="site-auditor-{{ $amenity->id }}-avatar-1">
+					<div  uk-tooltip="pos:top-left;title:{{ $amenity->user->full_name() }};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float" onclick="assignSiteAuditor({{ $audit->audit_id }}, 0, 0, {{ $amenity->id }}, 'site-auditor-{{ $amenity->id }}-avatar-1', 0, 0, 0, 2);">
 						{{ $amenity->user->initials() }}
 					</div>
 				</div>
 				@else
-				<div class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
-					<i onclick="assignSiteAuditor({{ $audit->audit_id }}, 0, 0, {{ $amenity->id }}, 'building-auditor-0', 0, 0, 0, 2);" class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>
+				<div id="site-auditor-{{ $amenity->id }}-avatar-1" class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
+					<i onclick="assignSiteAuditor({{ $audit->audit_id }}, 0, 0, {{ $amenity->id }}, 'site-auditor-{{ $amenity->id }}-avatar-1', 0, 0, 0, 2);" class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED"></i>
 				</div>
 				@endif
 

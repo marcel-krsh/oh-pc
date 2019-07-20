@@ -93,16 +93,24 @@ class AmenityEvent
   		$units = UnitInspection::where('audit_id', $amenity->audit_id)
       	->where('unit_id', $amenity->unit_id)
       	->get();
-      $building_id = $units->first()->building_id;
-      $unit_ids = UnitInspection::where('audit_id', $amenity->audit_id)->where('building_id', '=', $building_id)->pluck('unit_id');
-		  $amenity_inspections_unit = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->whereIn('unit_id', $unit_ids)->whereNull('completed_date_time')->get();
-		  $amenity_inspections_build = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->whereNull('completed_date_time')->get();
-		  $amenity_inspections = $amenity_inspections_build->merge($amenity_inspections_unit);
-    	$amenity_inspections = $amenity_inspections->count();
-      $buildings = BuildingInspection::where('audit_id', $amenity->audit_id)->where('building_id', $building_id)->get();
-      Log::info('unit - ' . $amenity_inspections_unit->count());
-      Log::info('building - ' . $amenity_inspections_build->count());
-      Log::info('ins - ' . $amenity_inspections);
+      if(!is_null($units)){
+        $building_id = $units->first()->building_id;
+      }else{
+        $building_id = null;
+      }
+      if(!is_null($building_id)){
+        $unit_ids = UnitInspection::where('audit_id', $amenity->audit_id)->where('building_id', '=', $building_id)->pluck('unit_id');
+  		  $amenity_inspections_unit = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->whereIn('unit_id', $unit_ids)->whereNull('completed_date_time')->get();
+  		  $amenity_inspections_build = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->whereNull('completed_date_time')->get();
+  		  $amenity_inspections = $amenity_inspections_build->merge($amenity_inspections_unit);
+      	$amenity_inspections = $amenity_inspections->count();
+        $buildings = BuildingInspection::where('audit_id', $amenity->audit_id)->where('building_id', $building_id)->get();
+        Log::info('unit - ' . $amenity_inspections_unit->count());
+        Log::info('building - ' . $amenity_inspections_build->count());
+        Log::info('ins - ' . $amenity_inspections);
+      }else{
+        Log::info('Building was not able to be determined - no update possible.');
+      }
     	if($unit_inspections > 0) {
 	      foreach ($units as $key => $unit) {
 	        $unit->complete = 0;
@@ -125,26 +133,31 @@ class AmenityEvent
 	        $building->save();
 	      }
     	}
-    } elseif (!is_null($amenity->building_id)) {
+    } elseif (!is_null($amenity) && !is_null($amenity->building_id)) {
     	$building_id = $amenity->building_id;
       $unit_ids = UnitInspection::where('audit_id', $amenity->audit_id)->where('building_id', '=', $amenity->building_id)->pluck('unit_id');
-      $amenity_inspections_unit = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->whereIn('unit_id', $unit_ids)->whereNull('completed_date_time')->get();
-		  $amenity_inspections_build = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->whereNull('completed_date_time')->get();
-		  $amenity_inspections = $amenity_inspections_build->merge($amenity_inspections_unit);
-    	$amenity_inspections = $amenity_inspections->count();
+      if(!is_null($unit_ids)){
+        $amenity_inspections_unit = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->whereIn('unit_id', $unit_ids)->whereNull('completed_date_time')->get();
+  		  $amenity_inspections_build = AmenityInspection::where('audit_id', '=', $amenity->audit_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->whereNull('completed_date_time')->get();
+  		  $amenity_inspections = $amenity_inspections_build->merge($amenity_inspections_unit);
+      	$amenity_inspections = $amenity_inspections->count();
 
-    	// $units = UnitInspection::where('audit_id', $amenity->audit_id)
-     //  	->whereIn('unit_id', $unit_ids)
-     //  	->get();
-      $buildings = BuildingInspection::where('audit_id', $amenity->audit_id)->where('building_id', $amenity->building_id)->get();
-      Log::info('building - ' . $buildings->first()->building_id);
-      Log::info('count = ' . $amenity_inspections);
+      	// $units = UnitInspection::where('audit_id', $amenity->audit_id)
+       //  	->whereIn('unit_id', $unit_ids)
+       //  	->get();
+        $buildings = BuildingInspection::where('audit_id', $amenity->audit_id)->where('building_id', $amenity->building_id)->get();
+        Log::info('building - ' . $buildings->first()->building_id);
+        Log::info('count = ' . $amenity_inspections);
+      } else {
+        Log::info('No unit ids for building id '.$building_id);
+        $buildings = [];
+      }
 
 		  // Log::info('unit_ids' . $unit_ids);
 		  // Log::info('build' .$amenity->building_id);
 		  // Log::info('ins' .$amenity_inspections);
 		  // Log::info('sql: ' . $amenity_inspections->toSql());
-      if($amenity_inspections > 0) {
+      if(isset($amenity_inspections) && $amenity_inspections > 0) {
 	      foreach ($buildings as $key => $building) {
 	        $building->complete = 0;
 	        $building->save();
