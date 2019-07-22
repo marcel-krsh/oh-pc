@@ -3,7 +3,8 @@
 			<div class="buildings uk-overflow-auto" style="">
 				<div class="sortablebuildings sortable" uk-sortable="handle: .uk-sortable-handle-{{$context}}">
 					@foreach($buildings as $key=>$building)
-					@if($building->building)
+					@if($building->building && ($building->building->building_id || $building->building->amenity_inspection_id))
+
 					<div id="building-{{$context}}-r-{{$key}}" class="uk-margin-remove building @if($building->building) building-{{$building->building->status}} {{$building->building->status}} @endif @if($building->building->status != 'critical') notcritical @endif uk-grid-match" style=" @if(session('audit-hidenoncritical') == 1 && $building->building->status != 'critical') display:none; @endif " data-audit="{{$building->building->audit_id}}" data-project="{{$building->project_id}}" data-building="{{$building->building->building_id}}" data-amenity="{{$building->building->amenity_id}}" data-amenityinspection="{{$building->building->amenity_inspection_id}}" uk-grid>
 						<div class="uk-width-1-6 uk-padding-remove">
 							<div class="uk-padding-remove uk-flex">
@@ -181,7 +182,8 @@
 																		@endif
 																	</div>
 																</div>
-																@else
+																@elseIf($building->building->amenity())
+
 																<i id="completed-building-amenity-{{$audit}}{{$building->building->amenity()->id}}" class="@if($building->building->amenity()->completed_date_time) a-circle-checked @else a-circle @endif completion-icon completion-icon-big use-hand-cursor" uk-tooltip="title:CLICK TO COMPLETE" onclick="markAmenityComplete({{$audit}}, null, null, {{$building->building->amenity()->id}}, 'completed-building-amenity-{{$audit}}{{$building->building->amenity()->id}}',1)" title="" aria-expanded="false"></i>
 																@endif
 															</div>
