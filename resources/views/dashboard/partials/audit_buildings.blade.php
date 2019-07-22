@@ -181,7 +181,8 @@
 																		@endif
 																	</div>
 																</div>
-																@else
+																@elseIf($building->building->amenity())
+
 																<i id="completed-building-amenity-{{$audit}}{{$building->building->amenity()->id}}" class="@if($building->building->amenity()->completed_date_time) a-circle-checked @else a-circle @endif completion-icon completion-icon-big use-hand-cursor" uk-tooltip="title:CLICK TO COMPLETE" onclick="markAmenityComplete({{$audit}}, null, null, {{$building->building->amenity()->id}}, 'completed-building-amenity-{{$audit}}{{$building->building->amenity()->id}}',1)" title="" aria-expanded="false"></i>
 																@endif
 															</div>
