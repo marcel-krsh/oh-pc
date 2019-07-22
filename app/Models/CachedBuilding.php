@@ -163,8 +163,9 @@ class CachedBuilding extends Model
             // it is an amenity
             if($this->amenity() === null) {
                 //dd($this);
+            } else {
+                $total = $this->amenity()->findings_total();
             }
-            $total = $this->amenity()->findings_total();
         }
 
         // fix the count
