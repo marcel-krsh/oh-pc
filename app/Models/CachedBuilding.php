@@ -162,7 +162,8 @@ class CachedBuilding extends Model
         }else{
             // it is an amenity
             if($this->amenity() === null) {
-                //dd($this);
+                dd($this);
+                $total = 0;
             } else {
                 $total = $this->amenity()->findings_total();
             }
