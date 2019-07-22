@@ -38,11 +38,10 @@
 					</tr>
 				</thead>
 				<tbody>
-					@foreach($users as $user)
-					<tr class="{{ !$user->active ? 'uk-text-muted' : '' }}">
+					<tr class="">
 						<td>
-							<input type="radio" uk-tooltip="" title="" aria-expanded="false"> {{ $user->first_name }} {{ $user->last_name }}<i class="a-pencil" uk-tooltip="" title="" aria-expanded="false"></i><br>
-							<small>@if($user->role){{strtoupper($user->role->role->role_name)}}@else NO ACCESS @endIf</small>
+							<input type="radio" uk-tooltip="" title="" aria-expanded="false"> Robert Hellmuth <i class="a-pencil" uk-tooltip="" title="" aria-expanded="false"></i><br>
+							<small>PROPERTY MANAGER</small>
 						</td>
 						<td>
 							<input name="org" type="radio" uk-tooltip="" title="" aria-expanded="false">
@@ -109,7 +108,6 @@
 							</span>
 						</td>
 					</tr>
-					@endforeach
 				</tbody>
 			</table>
 			{{-- <a name="userbottom"></a> --}}
