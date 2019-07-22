@@ -95,52 +95,54 @@ class CachedBuilding extends Model
     public function recount_findings()
     {
         // fix total
-        $this->findingstotal();
+        if(null !== $this){
+            $this->findingstotal();
 
-        $unit_ids = $this->units()->pluck('units.id')->toArray();
-        $building_id = $this->building_id;
+            $unit_ids = $this->units()->pluck('units.id')->toArray();
+            $building_id = $this->building_id;
 
-        // fix finding type totals
-        $total_nlt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
-                                            ->where(function ($query) use ($building_id, $unit_ids) {
-                                                $query->where('building_id','=',$building_id)
-                                                        ->orwhereIn('unit_id', $unit_ids);
-                                            })
-                                            ->whereHas('finding_type', function($query) {
-                                                $query->where('type', '=', 'nlt');
-                                            })->count();
-        // fix the count
-        if($this->finding_nlt_total != $total_nlt){
-            $this->finding_nlt_total = $total_nlt;
-            $this->save();
-        }
+            // fix finding type totals
+            $total_nlt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                                ->where(function ($query) use ($building_id, $unit_ids) {
+                                                    $query->where('building_id','=',$building_id)
+                                                            ->orwhereIn('unit_id', $unit_ids);
+                                                })
+                                                ->whereHas('finding_type', function($query) {
+                                                    $query->where('type', '=', 'nlt');
+                                                })->count();
+            // fix the count
+            if($this->finding_nlt_total != $total_nlt){
+                $this->finding_nlt_total = $total_nlt;
+                $this->save();
+            }
 
-        $total_file = \App\Models\Finding::where('audit_id','=',$this->audit_id)
-                                            ->where(function ($query) use ($building_id, $unit_ids) {
-                                                $query->where('building_id','=',$building_id)
-                                                        ->orwhereIn('unit_id', $unit_ids);
-                                            })
-                                            ->whereHas('finding_type', function($query) {
-                                                $query->where('type', '=', 'file');
-                                            })->count();
+            $total_file = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                                ->where(function ($query) use ($building_id, $unit_ids) {
+                                                    $query->where('building_id','=',$building_id)
+                                                            ->orwhereIn('unit_id', $unit_ids);
+                                                })
+                                                ->whereHas('finding_type', function($query) {
+                                                    $query->where('type', '=', 'file');
+                                                })->count();
 
-        if($this->finding_file_total != $total_file){
-            $this->finding_file_total = $total_file;
-            $this->save();
-        }
+            if($this->finding_file_total != $total_file){
+                $this->finding_file_total = $total_file;
+                $this->save();
+            }
 
-        $total_lt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
-                                            ->where(function ($query) use ($building_id, $unit_ids) {
-                                                $query->where('building_id','=',$building_id)
-                                                        ->orwhereIn('unit_id', $unit_ids);
-                                            })
-                                            ->whereHas('finding_type', function($query) {
-                                                $query->where('type', '=', 'lt');
-                                            })->count();
+            $total_lt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                                ->where(function ($query) use ($building_id, $unit_ids) {
+                                                    $query->where('building_id','=',$building_id)
+                                                            ->orwhereIn('unit_id', $unit_ids);
+                                                })
+                                                ->whereHas('finding_type', function($query) {
+                                                    $query->where('type', '=', 'lt');
+                                                })->count();
 
-        if($this->finding_lt_total != $total_lt){
-            $this->finding_lt_total = $total_lt;
-            $this->save();
+            if($this->finding_lt_total != $total_lt){
+                $this->finding_lt_total = $total_lt;
+                $this->save();
+            }
         }
     }
 
