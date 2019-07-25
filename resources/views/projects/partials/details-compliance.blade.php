@@ -29,8 +29,17 @@
 							<td>
 								<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 							</td>
-							<td class="uk-text-center border-right">{{$data['summary']['required_units']}}</td>
-							<td class="uk-text-center">{{$data['summary']['required_units_file']}}</td>
+							<td class="uk-text-center ru border-right">{{$data['summary']['required_units']}}
+									{{-- <div>
+										<input ondblclick="enableEditField('#summary_required_units');" name="summary_required_units" id="summary_required_units" type="text" value="{{$data['summary']['required_units']}}" class="change-watch" onblur="disableEditField('#summary_required_units');" style="text-align: center;background: transparent;border: none;color: #333;width: 50px;" readonly="">
+									</div> --}}
+							</td>
+							<td class="uk-text-center">
+								{{$data['summary']['required_units_file']}}
+								{{-- <div>
+									<input ondblclick="enableEditField('#summary_required_units_file');" name="summary_required_units_file" id="summary_required_units_file" type="text" value="{{$data['summary']['required_units_file']}}" class="change-watch" onblur="disableEditField('#summary_required_units_file');" style="text-align: center;background: transparent;border: none;color: #333;width: 50px;" readonly="">
+								</div> --}}
+							</td>
 						</tr>
 						<tr>
 							<td>
@@ -115,6 +124,9 @@
 								<canvas id="chartjs-{{$program['id']}}{{$program['building_key']}}" class="chartjs" ></canvas>
 							</div>
 							<div class="uk-width-2-5">
+								<?php
+								$program_id=$program['id'];
+								?>
 								<table class="uk-table uk-table-small noline small-padding">
 									<tbody>
 										<tr>
@@ -126,8 +138,18 @@
 											<td>
 												<div class="indented" uk-leader><i class="fas fa-square chart-color-required"></i> Required Units</div>
 											</td>
-											<td class="uk-text-center border-right">{{$program['required_units']}}</td>
-											<td class="uk-text-center">{{$program['required_units_file']}}</td>
+											<td class="uk-text-center border-right">
+												{{-- {{$program['required_units']}} --}}
+												<div>
+													<input ondblclick="enableEditField('#required_units_{{$program_id}}');" name="required_units[{{$program_id}}]" id="required_units_{{$program_id}}" type="text" value="{{$program['required_units']}}" class="change-watch" onblur="disableEditField('#required_units_{{$program_id}}');" style="text-align: center;background: transparent;border: none;color: #333;width: 50px;" readonly="">
+												</div>
+											</td>
+											<td class="uk-text-center">
+												{{-- {{$program['required_units_file']}} --}}
+												<div>
+													<input ondblclick="enableEditField('#required_units_file_{{$program_id}}');" name="required_units_file[{{$program_id}}]" id="required_units_file_{{$program_id}}" type="text" value="{{$program['required_units_file']}}" class="change-watch" onblur="disableEditField('#required_units_file_{{$program_id}}');" style="text-align: center;background: transparent;border: none;color: #333;width: 50px;" readonly="">
+												</div>
+											</td>
 										</tr>
 										<tr>
 											<td>
@@ -431,4 +453,16 @@
 	         break;
 	   }
 	}
+
+function enableEditField(fieldId){
+$(fieldId).prop('readonly', false);
+$(fieldId).addClass('editing');
+$(fieldId).focus();
+console.log('Enabled field '+fieldId);
+}
+function disableEditField(fieldId) {
+$(fieldId).prop('readonly', true);
+$(fieldId).removeClass('editing');
+console.log('Readonly field '+fieldId);
+}
 </script>
