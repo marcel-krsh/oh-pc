@@ -10,7 +10,7 @@ class ProjectContactRole extends Model
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
-    
+
 
     //
     protected $guarded = ['id'];
@@ -27,5 +27,10 @@ class ProjectContactRole extends Model
     }
     public function personsProjects($person_id){
         return $this->select('project_id')->where('person_id',$person_id)->get()->all();
+    }
+
+    public function projectRole()
+    {
+    	return $this->hasOne(\App\Models\ProjectRole::class, 'id', 'project_role_id');
     }
 }

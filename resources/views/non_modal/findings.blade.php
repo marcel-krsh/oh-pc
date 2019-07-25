@@ -588,10 +588,10 @@
 
 			// only already visible elements?
 
-			$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ Auth::user()->id }}').addClass('notmine');
+			$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
 		} else {
 			window.findingModalSelectedMine = 'true';
-			$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ Auth::user()->id }}').removeClass('notmine');
+			$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
 			$('#mine-filter-button').removeClass('uk-active');
 		}
 	}
