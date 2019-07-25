@@ -208,8 +208,9 @@
 																		@endif
 																	</div>
 																</div>
-																@else
-																<i id="completed-building-amenity-{{ $audit }}{{ $b_amenity->id }}" class="@if($b_amenity->completed_date_time) a-circle-checked @else a-circle @endif completion-icon completion-icon-big use-hand-cursor" uk-tooltip="title:CLICK TO COMPLETE" onclick="markAmenityComplete({{ $audit }}, null, null, {{ $b_amenity->id }}, 'completed-building-amenity-{{ $audit }}{{ $b_amenity->id }}',1)" title="" aria-expanded="false"></i>
+																@elseIf($building->building->amenity())
+
+																<i id="completed-building-amenity-{{$audit}}{{$building->building->amenity()->id}}" class="@if($building->building->amenity()->completed_date_time) a-circle-checked @else a-circle @endif completion-icon completion-icon-big use-hand-cursor" uk-tooltip="title:CLICK TO COMPLETE" onclick="markAmenityComplete({{$audit}}, null, null, {{$building->building->amenity()->id}}, 'completed-building-amenity-{{$audit}}{{$building->building->amenity()->id}}',1)" title="" aria-expanded="false"></i>
 																@endif
 															</div>
 															<div class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-center {{ $building->building->finding_nlt_status }}">

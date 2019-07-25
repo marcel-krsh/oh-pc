@@ -46,10 +46,12 @@
 			}
 			@endphp --}}
 			<li id="amenity-inspection-{{ $amenity->id }}" class="u-{{ $amenity->unit_id }} amenity-list-item finding-modal-list-items aa-{{ $amenity->amenity_id }} uid-{{ $amenity->auditor_id }} building" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
+
 				<div class="uk-inline uk-padding-remove" style="margin-top:9px; flex:140px;">
-					<i onclick="markUnitAmenityComplete({{ $audit->audit_id }}, 0, {{ $amenity->unit_id }}, {{ $amenity->id }},'markcomplete')" class="{{ is_null($amenity->completed_date_time) ? 'a-circle completion-icon use-hand-cursor' : 'a-circle-checked ok-actionable completion-icon use-hand-cursor' }} " style="font-size: 26px;">
+					<i id="unit-{{ $amenity->id }}-markcomplete" onclick="markUnitAmenityComplete({{ $audit->audit_id }}, 0, {{ $amenity->unit_id }}, {{ $amenity->id }},'unit-{{ $amenity->id }}-markcomplete')" class="{{ is_null($amenity->completed_date_time) ? 'a-circle completion-icon use-hand-cursor' : 'a-circle-checked ok-actionable completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 					</i>
 				</div>
+
 				@if($amenity->auditor_id)
 				<div class="amenity-auditor uk-margin-remove" id="unit-auditor-{{ $amenity->id }}-avatar-1">
 					<div uk-tooltip="pos:top-left;title:{{ $amenity->user->full_name() }};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float" onclick="assignUnitAuditor({{ $audit->audit_id }}, {{ $amenity->cached_unit()->building_id }}, {{ $amenity->unit_id }}, {{ $amenity->id }}, 'unit-auditor-{{ $amenity->id }}-avatar-1', 0, 0, 0, 2);">
@@ -68,7 +70,6 @@
 					</a>
 				</div>
 
-
 				<span class="uk-inline uk-padding-remove uk-float-right inspection-area" style="max-height: 30px">
 					<span class="findings-icon toplevel uk-inline" onclick="copyUnitAmenity('', {{ $audit->audit_id }}, 0, {{ $amenity->unit_id }}, {{ $amenity->id }}, 0, 1);" style="margin:-10px 3px 2px 3px">
 						<i class="a-file-copy-2" style="font-size: 18px"></i>
@@ -83,8 +84,6 @@
 						</div>
 					</span>
 				</span>
-
-
 
 			</li>
 			@endforeach
@@ -189,6 +188,8 @@
 							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
 							$('#'+element).toggleClass('a-circle');
 							$('#'+element).toggleClass('a-circle-checked');
+							// $('#'+element).removeAttr("style");
+
 						}
 					} else{
 						if(toplevel == 1){
@@ -206,7 +207,7 @@
 						}
 					}
 				}
-				filterUnitAmenities(unit_id);
+				//filterUnitAmenities(unit_id);
 			});
 		@if(!session()->has('hide_confirm_modal'))
 		}, function () {
