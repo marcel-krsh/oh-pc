@@ -8,7 +8,10 @@
 		</div>
 		<div class="project-details-info-compliance-summary uk-margin-top uk-margin-left uk-margin-right uk-grid-match" uk-grid>
 			<div class="uk-width-1-5">
+				<div>
 					<canvas id="chartjs-summary" class="chartjs" style="display: block;"></canvas>
+				</div>
+				<a onclick="dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);" class="uk-button uk-button-small uk-button-success " style="margin-top: 18px; height: 25px;"><i class="a-arrow-diagonal-both use-hand-cursor" ></i> SWAP UNITS</a>
 			</div>
 			<div class="uk-width-2-5">
 				<table class="uk-table uk-table-small noline small-padding">
@@ -111,8 +114,11 @@
 	        		@if($program['required_units'] != 0)
 			        <li>
 						<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
-							<div class="uk-width-1-5 uk-padding-remove" style="min-height:165px;">
-								<canvas id="chartjs-{{$program['id']}}{{$program['building_key']}}" class="chartjs" ></canvas>
+							<div class="uk-width-1-5">
+								<div class="uk-padding-remove" style="min-height:165px;">
+									<canvas id="chartjs-{{$program['id']}}{{$program['building_key']}}" class="chartjs" ></canvas>
+								</div>
+								<a onclick="dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);" class="uk-button uk-link proj_details proj_details_1" style="margin-top: 18px;"><i class="a-arrow-diagonal-both use-hand-cursor" ></i> SWAP UNITS</a>
 							</div>
 							<div class="uk-width-2-5">
 								<table class="uk-table uk-table-small noline small-padding">
@@ -219,33 +225,33 @@
 								}
 							});
 
-							document.getElementById("chartjs-{{$program['id']}}").onclick = function(e) {
-							   var slice = mainSummaryChart.getElementAtEvent(e);
-							   if (!slice.length) return; // return if not clicked on slice
-							   var label = slice[0]._model.label;
-							   var color = slice[0]._view.backgroundColor;
-							   console.log(slice[0]._view.backgroundColor);
-							   var programName = label;
+							{{--document.getElementById("chartjs-{{$program['id']}}").onclick = function(e) {--}}
+							   {{--var slice = mainSummaryChart.getElementAtEvent(e);--}}
+							   {{--if (!slice.length) return; // return if not clicked on slice--}}
+							   {{--var label = slice[0]._model.label;--}}
+							   {{--var color = slice[0]._view.backgroundColor;--}}
+							   {{--console.log(slice[0]._view.backgroundColor);--}}
+							   {{--var programName = label;--}}
 
-							   switch (color) {
-							   		case '#191818':
-							         // alert(label + ' / required');
-							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-							         break;
-							   		case '#0099d5':
-							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-							         break;
-							   		case '#d31373':
-							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-							         break;
-							   		case '#21a26e':
-							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-							         break;
-							   		case '#e0e0df':
-							         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);
-							         break;
-							   }
-							}
+							   {{--switch (color) {--}}
+							   		{{--case '#191818':--}}
+							         {{--// alert(label + ' / required');--}}
+							         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);--}}
+							         {{--break;--}}
+							   		{{--case '#0099d5':--}}
+							         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);--}}
+							         {{--break;--}}
+							   		{{--case '#d31373':--}}
+							         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);--}}
+							         {{--break;--}}
+							   		{{--case '#21a26e':--}}
+							         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);--}}
+							         {{--break;--}}
+							   		{{--case '#e0e0df':--}}
+							         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/{{$program["id"]}}/summary',0,0,1);--}}
+							         {{--break;--}}
+							   {{--}--}}
+							{{--}--}}
 						</script>
 					</li>
 					@endif
@@ -393,42 +399,30 @@
 		}
 	});
 
-	document.getElementById("chartjs-summary").onclick = function(e) {
-	   var slice = mainSummaryChart.getElementAtEvent(e);
-	   if (!slice.length) return; // return if not clicked on slice
-	   var label = slice[0]._model.label;
-	   var color = slice[0]._view.backgroundColor;
-	   console.log(slice[0]._view.backgroundColor);
-	   var programName = label;
-	   // switch (label) {
-	   //    // add case for each label/slice
-	   //    case 'Program 1':
-	   //       alert('clicked on Prorgam 1');
-	   //       break;
-	   //    case 'Program 2':
-	   //       alert('clicked on program 2');
-	   //       break;
-	   //    case 'Program 3':
-	   //       alert('clicked on program 3');
-	   //       break;
-	   // }
-	   switch (color) {
-	   		case 'rgb(24, 22, 22)':
-	         // alert(label + ' / required');
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
-	         break;
-	   		case 'rgb(0, 139, 194)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
-	         break;
-	   		case 'rgb(209, 0, 105)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
-	         break;
-	   		case 'rgb(1, 173, 104)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
-	         break;
-	   		case 'rgb(203, 203, 200)':
-	         dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);
-	         break;
-	   }
-	}
+	{{--document.getElementById("chartjs-summary").onclick = function(e) {--}}
+	   {{--var slice = mainSummaryChart.getElementAtEvent(e);--}}
+	   {{--if (!slice.length) return; // return if not clicked on slice--}}
+	   {{--var label = slice[0]._model.label;--}}
+	   {{--var color = slice[0]._view.backgroundColor;--}}
+	   {{--console.log(slice[0]._view.backgroundColor);--}}
+	   {{--var programName = label;--}}
+	   {{--switch (color) {--}}
+	   		{{--case 'rgb(24, 22, 22)':--}}
+	         {{--// alert(label + ' / required');--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   		{{--case 'rgb(0, 139, 194)':--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   		{{--case 'rgb(209, 0, 105)':--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   		{{--case 'rgb(1, 173, 104)':--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   		{{--case 'rgb(203, 203, 200)':--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   {{--}--}}
+	{{--}--}}
 </script>
