@@ -8,8 +8,10 @@
 </div>
 @endif
 <div id="dynamic-modal-content">
-	<h2 class="uk-text-uppercase uk-text-emphasis">Edit/Remove User Address</h2>
+	<h2 class="uk-text-uppercase uk-text-emphasis">Edit/Remove User Address <a class="uk-button uk-button-danger uk-margin-large-left" onclick="submitRemoveAddress()"><span uk-icon="save"></span> CLICK TO REMOVE</a>
+	</h2>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+	<p>Click the remove address button above to remove this address from the user OR edit the information below </p>
 		<div class="alert alert-danger uk-text-danger" style="display:none"></div>
 	<form id="userForm" action="{{ route('user.edit-address-of-user', $ua->address_id) }}" method="post" role="userForm">
 		<input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -52,7 +54,7 @@
 			</div>
 		</div>
 	</form>
-	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+	{{-- <hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 	<h2 class="uk-text-uppercase uk-text-emphasis">Remove User Address</h2>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top"> <br>
 	<div class="uk-grid">
@@ -62,7 +64,7 @@
 		<div class="uk-width-1-4 ">
 			<a class="uk-button uk-width-1-1 uk-button uk-button-danger" onclick="submitRemoveAddress()"><span uk-icon="save"></span> REMOVE</a>
 		</div>
-	</div>
+	</div> --}}
 
 </div>
 <script type="text/javascript">

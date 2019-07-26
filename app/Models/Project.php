@@ -48,6 +48,7 @@ class Project extends Model
 
     public function pm()
     {
+    		//$ra = ReportAccess::where('project_id', $this->id)->where('default', 1)->first();
         $pm_contact = $this->contactRoles()->where('project_role_key', '=', 21)
                                 ->with('organization.address')
                                 ->first();
@@ -66,7 +67,7 @@ class Project extends Model
         $pm_phone = '';
         $pm_fax = '';
 
-        if ($pm_contact) { 
+        if ($pm_contact) {
             if ($pm_contact->organization) {
                 $pm_organization_id = $pm_contact->organization_id;
                 $pm_organization = $pm_contact->organization->organization_name;
@@ -99,7 +100,7 @@ class Project extends Model
                     $pm_email = $pm_contact->person->email->email_address;
                 }
             }
-            
+
         }
 
         return ['organization_id' => $pm_organization_id , 'pm_id' => $pm_id, 'organization'=> $pm_organization, 'name'=>$pm_name, 'email'=>$pm_email, 'phone'=>$pm_phone, 'fax'=>$pm_fax, 'address'=>$pm_address, 'line_1'=>$pm_line_1, 'line_2'=>$pm_line_2, 'city'=>$pm_city, 'state'=>$pm_state, 'zip'=>$pm_zip ];
@@ -125,7 +126,7 @@ class Project extends Model
         $owner_zip = '';
         $owner_id = '';
 
-        if ($owner_contact) { 
+        if ($owner_contact) {
             if ($owner_contact->organization) {
                 $owner_organization_id = $owner_contact->organization_id;
                 $owner_organization = $owner_contact->organization->organization_name;
@@ -136,10 +137,10 @@ class Project extends Model
                     $owner_city = $owner_contact->organization->address->city;
                     $owner_state = $owner_contact->organization->address->state;
                     $owner_zip = $owner_contact->organization->address->zip;
-                } 
+                }
             }
             if ($owner_contact->person) {
-                $owner_person_id = $owner_contact->person->id; 
+                $owner_person_id = $owner_contact->person->id;
                 $owner = User::where('person_id', '=', $owner_person_id)->first();
                 if($owner){
                     $owner_id = $owner->id;
@@ -147,15 +148,15 @@ class Project extends Model
                 $owner_name = $owner_contact->person->first_name." ".$owner_contact->person->last_name;
                 if($owner_contact->person->phone){
                     $owner_phone = $owner_contact->person->phone->number();
-                } 
+                }
                 if($owner_contact->person->fax){
                     $owner_fax = $owner_contact->person->fax->number();
-                } 
+                }
                 if($owner_contact->person->email){
                     $owner_email = $owner_contact->person->email->email_address;
                 }
             }
-            
+
         }
 
         return ['organization_id'=> $owner_organization_id,'owner_id'=> $owner_id,'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
@@ -173,7 +174,7 @@ class Project extends Model
             return 'N/A';
         }
         $next_inspection = $compliance_contacts->next_inspection;
-        if($next_inspection == null){ 
+        if($next_inspection == null){
             return 'N/A';
         }else{
             return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $next_inspection)->format('F j, Y');
@@ -197,7 +198,7 @@ class Project extends Model
     {
         // details is a cache of the project's information at the time of the audit.
         // details is updated whenever the respective sources are changed, as long as the most current audit is not archived
-        
+
         $selected_audit = $this->selected_audit();
 
         if (!$selected_audit) {
@@ -205,7 +206,7 @@ class Project extends Model
             // first check if there are default values and add them if not
             $details = ProjectDetail::where('project_id', '=', $this->id)
                     ->orderBy('id', 'desc')
-                    ->first();            
+                    ->first();
         } else {
             $details = ProjectDetail::where('project_id', '=', $this->id)
                     ->where('audit_id', '=', $selected_audit->audit_id)
@@ -214,7 +215,7 @@ class Project extends Model
         }
 
         if(!$details){
-            // create a default record 
+            // create a default record
             $details = $this->set_project_defaults();
         }
 
@@ -225,14 +226,14 @@ class Project extends Model
     {
         // details is a cache of the project's information at the time of the audit.
         // details is updated whenever the respective sources are changed, as long as the most current audit is not archived
-        
+
 
         if (!$audit_id) {
             // no audit for this project yet, use default project default
             // first check if there are default values and add them if not
             $details = ProjectDetail::where('project_id', '=', $this->id)
                     ->orderBy('id', 'desc')
-                    ->first();            
+                    ->first();
         } else {
             $details = ProjectDetail::where('project_id', '=', $this->id)
                     ->where('audit_id', '=', $audit_id)
@@ -241,7 +242,7 @@ class Project extends Model
         }
 
         if(!$details){
-            // create a default record 
+            // create a default record
             $details = $this->set_project_defaults();
         }
 
@@ -251,7 +252,7 @@ class Project extends Model
     public function set_project_defaults($audit_id=null)
     {
         // create a record in project_details table with the current stats, contact info
-        
+
         //$programs = $this->programs->get(['program_id','total_unit_count'])->toJson();
         $programs = array();
         foreach($this->programs as $program){
@@ -302,6 +303,7 @@ class Project extends Model
                 'owner_city' => $this->owner()['city'],
                 'owner_state' => $this->owner()['state'],
                 'owner_zip' => $this->owner()['zip'],
+
                 'manager_name' => $this->pm()['organization'],
                 'manager_poc' => $this->pm()['name'],
                 'manager_phone' => $this->pm()['phone'],
@@ -325,7 +327,7 @@ class Project extends Model
     }
 
     public function lastAuditCompleted()
-    { 
+    {
         $audit = $this->lastAudit();
         if($audit){
             if($audit->completed_date){
@@ -333,7 +335,7 @@ class Project extends Model
                 return $date;
             }
         }
-        
+
         return "N/A";
     }
 
@@ -342,11 +344,11 @@ class Project extends Model
         return $this->hasOne(\App\Models\Address::class, 'id', 'physical_address_id');
     }
 
-    
+
 
     public function programs() : HasMany
     {
-       
+
         $programKeys = array();
         $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_htc')));
         $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_bundle')));
@@ -365,7 +367,7 @@ class Project extends Model
         // dd($test,$programKeys);
         // need to make this read from system settings (not hard code) for program statuses
         return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')
-                
+
                 ->whereIn('program_key',$programKeys)
                 ->where(function ($query) {
                     $query->orWhere('project_program_status_type_key', 30012);
@@ -377,7 +379,7 @@ class Project extends Model
     }
     public function all_other_programs() : HasMany
     {
-       
+
         $programKeys = array();
         $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_htc')));
         $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_bundle')));
@@ -391,7 +393,7 @@ class Project extends Model
         $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_ohtf')));
         $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_nhtf')));
         $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('lease_purchase')));
-        
+
         // we don't exclude non active programs as we may still get back program funding
         return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')
                 ->whereNotIn('program_key',$programKeys);
@@ -417,7 +419,7 @@ class Project extends Model
         $units = UnitProgram::select('unit_id')
                             ->where('audit_id', $this->currentAudit()->audit_id)
                             ->groupBy('unit_id')
-                            ->get(); 
+                            ->get();
 
         $total = $total + count($units);
 
@@ -458,19 +460,19 @@ class Project extends Model
     public function stat_program_units()
     {
 
-        $programs = $this->programs; 
+        $programs = $this->programs;
         $program_units = [];
-        foreach ($programs as $program) { 
+        foreach ($programs as $program) {
             // $count = UnitProgram::where('audit_id', $this->currentAudit()->audit_id)
             //                                 ->where('program_id', '=', $program->program_id)
-            //                                 ->count(); 
-            
+            //                                 ->count();
+
             $count = $program->total_unit_count;
 
-            $program_units[] = ["name" => $program->program->program_name." ".$program->program_id." ".$this->currentAudit()->audit_id, "units" => $count, "program_id" => $program->program_id]; 
+            $program_units[] = ["name" => $program->program->program_name." ".$program->program_id." ".$this->currentAudit()->audit_id, "units" => $count, "program_id" => $program->program_id];
         }
 
-        
+
         return $program_units;
     }
     public function is_project_contact($user_id = 1)

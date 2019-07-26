@@ -27,16 +27,24 @@ class ProjectContactsController extends Controller
     $project_user_ids = $this->projectUserIds($project);
     $report_user_ids  = $this->allitaUserIds($project);
     $default_user_id  = ReportAccess::where('project_id', $project)->where('default', 1)->first();
-    $project          = Project::with('contactRoles.person')->find($project); //DEVCO
+    $project          = Project::with('contactRoles.person.user')->find($project); //DEVCO
+    // return $project->details();
     if ($default_user_id) {
       $default_user_id = $default_user_id->user_id;
     } else {
-      $default_user_id == 0;
+      $default_user = $project->contactRoles->where('project_role_key', 21)->first();
+      if ($default_user) {
+        $default_user_id = $default_user->person->user->id;
+      } else {
+        $default_user_id == 0;
+      }
     }
 
     // replace joins with relationship
-    $users = User::whereIn('id', $user_ids)->with('role', 'person', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access')->orderBy('name')->paginate(25);
-    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'report_user_ids', 'default_user_id'));
+    $users        = User::whereIn('id', $user_ids)->with('role', 'person', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access')->orderBy('name')->get(); //->paginate(25);
+    $default_org  = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->count();
+    $default_addr = $users->pluck('user_addresses')->filter()->flatten()->where('default', 1)->count();
+    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'report_user_ids', 'default_user_id', 'default_org', 'default_addr'));
 
     $users = User::whereIn('users.id', $user_ids)->
       join('people', 'users.person_id', '=', 'people.id')->
@@ -423,7 +431,7 @@ class ProjectContactsController extends Controller
 
   public function editAddressOfUser($address_id, $project_id)
   {
-    $ua = UserAddresses::with('address', 'user')->find($address_id);
+    $ua     = UserAddresses::with('address', 'user')->find($address_id);
     $states = State::get();
     return view('modals.edit-address-of-user', compact('ua', 'project_id', 'states'));
   }

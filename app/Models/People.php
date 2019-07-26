@@ -48,4 +48,9 @@ class People extends Model
     {
         return $this->hasOne(\App\Models\PhoneNumber::class, 'id', 'default_phone_number_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id', 'person_id');
+    }
 }

@@ -8,7 +8,7 @@
 </div>
 @endif
 <div id="dynamic-modal-content">
-	<h2 class="uk-text-uppercase uk-text-emphasis">Add Another Organization</h2>
+	<h2 class="uk-text-uppercase uk-text-emphasis">Add Another Address</h2>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 	<div class="alert alert-danger uk-text-danger" style="display:none"></div>
 	<form id="userForm" action="{{ route('user.add-address-to-user', $user->id) }}" method="post" role="userForm">
@@ -54,9 +54,6 @@
 	</form>
 </div>
 <script type="text/javascript">
-	$(document).ready(function() {
-		$('#organization').select2();
-	});
 	function submitNewAddress() {
 		jQuery.ajaxSetup({
 			headers: {
@@ -85,7 +82,7 @@
 			success: function(data){
 				$('.alert-danger' ).empty();
 				if(data == 1) {
-					UIkit.modal.alert('I have added organization to user',{stack: true});
+					UIkit.modal.alert('I have added address to user',{stack: true});
 					dynamicModalClose();
 					loadTab('/project/'+{{ $project_id }}+'/contacts/', '7', 0, 0, 'project-', 1);
 				}
