@@ -721,7 +721,7 @@ class ReportsController extends Controller
       if (Auth::user()->cannot('access_auditor')) {
         $userProjects = \App\Models\ProjectContactRole::where('project_id', $report->project_id)->where('person_id', Auth::user()->person_id)->count();
         if ($userProjects && $report->crr_approval_type_id > 5) {
-          //&& $current_user->pm_access()
+          //&& $current_user->pm_access() removed this check
           $loadReport = 1;
         } else {
           $user_access = ReportAccess::where('project_id', $report->project_id)->where('user_id', $current_user->id)->allita()->first();
