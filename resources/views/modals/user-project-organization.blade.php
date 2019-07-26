@@ -1,6 +1,5 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-
 @if (count($errors) > 0)
 <div class="uk-panel uk-margin-top uk-margin-bottom">
   <ul>
@@ -43,7 +42,6 @@
 	$(document).ready(function() {
     $('#organization').select2();
 	});
-
   function submitNewOrganization() {
    jQuery.ajaxSetup({
 	    headers: {
