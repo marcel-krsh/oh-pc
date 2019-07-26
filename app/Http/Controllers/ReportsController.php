@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Audit;
-use App\Models\People;
 use App\Models\CachedAudit;
 use App\Models\CrrApprovalType;
 use App\Models\CrrPart;
@@ -11,16 +10,15 @@ use App\Models\CrrPartOrder;
 use App\Models\CrrReport;
 use App\Models\CrrSection;
 use App\Models\CrrSectionOrder;
+use App\Models\People;
 use App\Models\Project;
 use App\Models\ProjectProgram;
+use App\Models\ReportAccess;
 use App\Models\User;
 use Auth;
-use Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use App\Models\ReportAccess;
-
-use Barryvdh\Snappy\Facades\SnappyPdf as SPDF;
+use Response;
 use Twilio\Rest\Client;
 
 class ReportsController extends Controller
@@ -182,7 +180,7 @@ class ReportsController extends Controller
         case 9:
           # All items resolved ...
           if (Auth::user()->can('access_manager')) {
-            $note = Auth::user()->name ." updated the status to " . $report->status_name();
+            $note = Auth::user()->name . " updated the status to " . $report->status_name();
             if (!is_null($report->manager_id)) {
               $report->update(['crr_approval_type_id' => 9, 'manager_id' => null]);
               $note .= 'Removed prior status, and refreshed report to reflect the change.';
@@ -238,7 +236,7 @@ class ReportsController extends Controller
 
     // Set default filters for first view of page:
     if (session('crr_first_load') !== 1) {
-        session(['crr_report_status_id' => 1]);
+      session(['crr_report_status_id' => 1]);
       // set some default parameters
       if (Auth::user()->can('access_manager')) {
         session(['crr_report_status_id' => 2]);
@@ -289,7 +287,7 @@ class ReportsController extends Controller
     } elseif (is_null(session('crr_report_status_id'))) {
       session(['crr_report_status_id' => 'all']);
     }
-    if(Auth::user()->can('access_auditor')){
+    if (Auth::user()->can('access_auditor')) {
       if (session('crr_report_status_id') !== 'all') {
         $approvalTypeEval = '=';
         $approvalTypeVal  = intval(session('crr_report_status_id'));
@@ -298,9 +296,9 @@ class ReportsController extends Controller
         $approvalTypeEval = '>';
         $approvalTypeVal  = 0;
       }
-    }else{
+    } else {
       if (session('crr_report_status_id') !== 'all') {
-        if(intval(session('crr_report_status_id'))<6){
+        if (intval(session('crr_report_status_id')) < 6) {
           //user is trying to get a status they cannot access
           session(['crr_report_status_id' => 6]); // default them to the sent
         }
@@ -360,17 +358,16 @@ class ReportsController extends Controller
         $hfa_users_array = [];
         $projects_array  = [];
       } else {
-        $auditLeads      = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
-        $auditProjects   = CrrReport::select('*')->when(Auth::user()->cannot('access_auditor'), function ($query) {
-              $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();
+        $auditLeads    = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+        $auditProjects = CrrReport::select('*')->when(Auth::user()->cannot('access_auditor'), function ($query) {
+          $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', Auth::user()->person_id)->get()->toArray();
 
-              //dd(Auth::user()->person_id,$userProjects);
-              return $query->whereIn('project_id', $userProjects);
-      })->with('project')->groupBy('project_id')->get();
-        $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id','>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
+          //dd(Auth::user()->person_id,$userProjects);
+          return $query->whereIn('project_id', $userProjects);
+        })->with('project')->groupBy('project_id')->get();
+        $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id', '>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
         $hfa_users_array = [];
         $projects_array  = [];
-
       }
       foreach ($auditLeads as $hfa) {
         if ($hfa->lead_user_id) {
@@ -388,10 +385,10 @@ class ReportsController extends Controller
       $projects_array = array_values(Arr::sort($projects_array, function ($value) {
         return $value['project_name'];
       }));
-      if(Auth::user()->can('access_auditor')){
+      if (Auth::user()->can('access_auditor')) {
         $crrApprovalTypes = CrrApprovalType::orderBy('order')->get();
       } else {
-        $crrApprovalTypes = CrrApprovalType::where('id','>',5)->orderBy('order')->get();
+        $crrApprovalTypes = CrrApprovalType::where('id', '>', 5)->orderBy('order')->get();
       }
     }
     //dd($hfa_users_array);
@@ -404,10 +401,10 @@ class ReportsController extends Controller
       ->where('from_template_id', $typeEval, $typeVal)
       ->where('id', $searchEval, $searchVal)
       ->when(Auth::user()->cannot('access_auditor'), function ($query) {
-              $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();
+        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', Auth::user()->person_id)->get()->toArray();
 
-              //dd(Auth::user()->person_id,$userProjects);
-              return $query->whereIn('project_id', $userProjects);
+        //dd(Auth::user()->person_id,$userProjects);
+        return $query->whereIn('project_id', $userProjects);
       })
       ->orderBy('updated_at', 'desc')
       ->paginate(10);
@@ -436,15 +433,15 @@ class ReportsController extends Controller
 
   public function newReportForm()
   {
-   if(Auth::user()->can('access_auditor')){
-    // list out templates
-    $audits    = CachedAudit::where('step_id','>', 59)->where('step_id','<',67)->with('project')->with('audit.reports')
-    //->orderBy('projects.project_name', 'asc')
-    ->get();
-    $templates = CrrReport::where('template', 1)->where('active_template', 1)->get();
+    if (Auth::user()->can('access_auditor')) {
+      // list out templates
+      $audits = CachedAudit::where('step_id', '>', 59)->where('step_id', '<', 67)->with('project')->with('audit.reports')
+      //->orderBy('projects.project_name', 'asc')
+        ->get();
+      $templates = CrrReport::where('template', 1)->where('active_template', 1)->get();
 
-    return view('modals.new-report', compact('templates', 'audits'));
-    }else{
+      return view('modals.new-report', compact('templates', 'audits'));
+    } else {
       return 'Sorry, you are not allowed to access this page.';
     }
   }
@@ -452,18 +449,18 @@ class ReportsController extends Controller
   public function freeTextPlaceHolders(Audit $audit, $string, CrrReport $report)
   {
     //replace string value with current audit values.
-     $string = str_replace("||REPORT ID||", $report->id, $string);
-      $string = str_replace("||VERSION||", ($report->version + 1), $string);
+    $string = str_replace("||REPORT ID||", $report->id, $string);
+    $string = str_replace("||VERSION||", ($report->version + 1), $string);
     $string = str_replace("||PROJECT NAME||", $audit->project->project_name, $string);
     $string = str_replace("||AUDIT ID||", $audit->id, $string);
     $string = str_replace("||PROJECT NUMBER||", $audit->project->project_number, $string);
     if ($audit->start_date) {
-      $string = str_replace("||REVIEW DATE||", "<strong>".date('m/d/Y', strtotime($audit->completed_date))."</strong>", $string);
+      $string = str_replace("||REVIEW DATE||", "<strong>" . date('m/d/Y', strtotime($audit->completed_date)) . "</strong>", $string);
     } else {
       $string = str_replace("||REVIEW DATE||", 'START DATE NOT SET', $string);
     }
     if ($report->response_due_date) {
-      $string = str_replace("||RESPONSE DUE||", "<strong>".date('m/d/Y', strtotime($report->response_due_date))."</strong>", $string);
+      $string = str_replace("||RESPONSE DUE||", "<strong>" . date('m/d/Y', strtotime($report->response_due_date)) . "</strong>", $string);
     } else {
       $string = str_replace("||RESPONSE DUE||", '<span style="color:red;" class="attention">DATE NOT SET</span>', $string);
     }
@@ -480,7 +477,7 @@ class ReportsController extends Controller
       if ($audit->project->owner()['line_1']) {
         $address = $audit->project->owner()['line_1'];
         if ($audit->project->owner()['line_2']) {
-          $address .= '<br /> ' . $audit->project->owner()['line_2'].'<br />';
+          $address .= '<br /> ' . $audit->project->owner()['line_2'] . '<br />';
         } else {
           $address .= '<br />';
         }
@@ -494,7 +491,7 @@ class ReportsController extends Controller
         }
       }
       if ($audit->project->owner()['zip']) {
-        $address .= ' '.$audit->project->owner()['zip'];
+        $address .= ' ' . $audit->project->owner()['zip'];
       }
       $address .= '<br />';
       $string = str_replace("||OWNER FORMATTED ADDRESS||", $address, $string);
@@ -571,7 +568,8 @@ class ReportsController extends Controller
     return view('crr_parts.crr_comments', compact('report', 'part', 'comments'));
   }
 
-  public function setCrrData(CrrReport $template, $reportId = null, $audit = null){
+  public function setCrrData(CrrReport $template, $reportId = null, $audit = null)
+  {
     //get the report parts
     $audit  = Audit::find($audit);
     $report = CrrReport::find($reportId);
@@ -589,7 +587,7 @@ class ReportsController extends Controller
         $report->from_template_id     = $template->id;
         $report->last_updated_by      = Auth::user()->id;
         $report->created_by           = Auth::user()->id;
-        $report->requires_approval = $template->requires_approval;
+        $report->requires_approval    = $template->requires_approval;
         $report->save();
         // record creation history:
         $history = ['date' => date('m-d-Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Created report using template ' . $template->template_name . '.'];
@@ -717,29 +715,31 @@ class ReportsController extends Controller
   public function getReport(CrrReport $report, Request $request)
   {
     if ($report) {
-    $current_user    = Auth::user();
+      $current_user = Auth::user();
       // check if logged in user has access to this report if they are not an auditor:
       $loadReport = 0;
-      if(Auth::user()->cannot('access_auditor')){
-         $userProjects = \App\Models\ProjectContactRole::where('project_id',$report->project_id)->where('person_id',Auth::user()->person_id)->count();
-         if($userProjects && $report->crr_approval_type_id > 5 && $current_user->pm_access()){
+      if (Auth::user()->cannot('access_auditor')) {
+        $userProjects = \App\Models\ProjectContactRole::where('project_id', $report->project_id)->where('person_id', Auth::user()->person_id)->count();
+        if ($userProjects && $report->crr_approval_type_id > 5) {
+          //&& $current_user->pm_access()
           $loadReport = 1;
-         } else {
-            $user_access = ReportAccess::where('project_id', $report->project_id)->where('user_id', $current_user->id)->first();
-            if($user_access && $report->crr_approval_type_id > 5 && $current_user->pm_access()) {
-            	$loadReport = 1;
-            }
-         }
+        } else {
+          $user_access = ReportAccess::where('project_id', $report->project_id)->where('user_id', $current_user->id)->allita()->first();
+          if ($user_access && $report->crr_approval_type_id > 5) {
+            //&& $current_user->pm_access()
+            $loadReport = 1;
+          }
+        }
       } else {
         $loadReport = 1;
       }
-     // $cr = CrrReport::with('audit', 'project.contactRoles','sections.parts.crr_part_type')->find($report->id);
-      if($loadReport){
-      	$users = $report->signators(); //change this to actual audit users (auditors, owner, pm, and all managers)
+      // $cr = CrrReport::with('audit', 'project.contactRoles','sections.parts.crr_part_type')->find($report->id);
+      if ($loadReport) {
+        $users = $report->signators(); //change this to actual audit users (auditors, owner, pm, and all managers)
         if (is_null($report->crr_data)) {
           //return 'This report has no data.';
           $this->generateReport($report, 1);
-          return '<meta http-equiv="refresh" content="0;url=/report/'.$report->id.'" />';
+          return '<meta http-equiv="refresh" content="0;url=/report/' . $report->id . '" />';
         } else {
           $data    = json_decode($report->crr_data);
           $version = $report->version;
@@ -751,9 +751,9 @@ class ReportsController extends Controller
           $print       = $request->get('print');
 
           $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Opened and viewed report'];
-          if(Auth::user()->cannot('access_auditor')){
+          if (Auth::user()->cannot('access_auditor')) {
             //user is a PM
-            $report->update(['crr_approval_type_id'=>7]);
+            $report->update(['crr_approval_type_id' => 7]);
           }
           $this->reportHistory($report, $history);
           $x = json_decode($report->crr_data);
@@ -766,11 +766,10 @@ class ReportsController extends Controller
           }
         }
       } else {
-        if($report->crr_approval_type_id < 6){
+        if ($report->crr_approval_type_id < 6) {
           return '<script>alert("Sorry! This report has not been released for review.");</script>';
-
-        }else{
-        return '<script>alert("Sorry! It does not appear you have access to this report. Please notify your partner to add you to the project\'s contacts.");</script>';
+        } else {
+          return '<script>alert("Sorry! It does not appear you have access to this report. Please notify your partner to add you to the project\'s contacts.");</script>';
         }
       }
     } else {
@@ -802,10 +801,12 @@ class ReportsController extends Controller
           //dd($part);
           //make magic happen.
           $method = $part->crr_part_type->method_name;
-          if($method == 'propertyInspections')
-           $partValue = $this->$method($report, $part);
-         else
-          $partValue = $this->$method($report, $part);
+          if ('propertyInspections' == $method) {
+            $partValue = $this->$method($report, $part);
+          } else {
+            $partValue = $this->$method($report, $part);
+          }
+
           $data[$index]['version-' . $version]['section-' . $sectionOrder]['parts']['part-' . $partOrder] = [$partValue];
           $partOrder++;
         }
@@ -819,13 +820,13 @@ class ReportsController extends Controller
       }
 
       $report->update(['crr_data' => json_encode($data), 'version' => $version, 'crr_approval_type_id' => $approvalId, 'signature' => null]);
-      $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Generated version '.$version.' of the report'];
-        $this->reportHistory($report, $history);
+      $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Generated version ' . $version . ' of the report'];
+      $this->reportHistory($report, $history);
       //dd($data);
       //if ($goToView) {
-        //dd($goToView);
+      //dd($goToView);
 
-        return redirect('/report/' . $report->id);
+      return redirect('/report/' . $report->id);
       //}
     } else {
       return 'I was unable to find the requested report to process. Did it get deleted?';
@@ -977,99 +978,97 @@ class ReportsController extends Controller
 
   public function postDigitalSignature(CrrReport $report, Request $request)
   {
-  	//validations -  Done on frontend side
-  	$validator = \Validator::make($request->all(), [
-      'signature' => 'required',
-      'other_name'   => 'required_if:signing_user,other'
+    //validations -  Done on frontend side
+    $validator = \Validator::make($request->all(), [
+      'signature'  => 'required',
+      'other_name' => 'required_if:signing_user,other',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
     }
-  	//Data insert in crr reports
-  	if($report) {
-  		$user = Auth::user();
+    //Data insert in crr reports
+    if ($report) {
+      $user = Auth::user();
 
-  		$report->last_updated_by = $user->id;
-  		$report->signature = $request->signature;
-        $report->signed_version = $report->version;
-        $report->date_signed = date('Y-m-d H:i:s',time());
-        $report->response_due_date = date('Y-m-d H:i:s', time()+86400);
-        $report->crr_approval_type_id = 7;
-  		if($request->signing_user == 'other') {
-  			$report->signed_by = $request->other_name;
-  			$report->signed_by_id = null;
-            $name = $request->other_name;
-  		} else {
-            $signing_user = People::where('id',$request->signing_user)->first();
-            //dd($signing_user);
-  			$report->signed_by_id = $request->signing_user;
-  			$report->signed_by = $signing_user->first_name.' '.$signing_user->last_name;
-            $name = $signing_user->first_name.' '.$signing_user->last_name;
-  		}
-  		$report->save();
-  		$history = ['date' => date('m-d-Y g:i a'), 'user_id' => $user->id, 'user_name' => $user->full_name(), 'note' => $name.' signed the report and their response is due '.date('m-d-Y g:i a', strtotime($report->response_due_date)).'.'];
-  		 $this->reportHistory($report, $history);
-  		 return 1;
-  	} else{
-  		$validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Technical Team');
-    	return response()->json(['errors' => $validator->errors()->all()]);
-  	}
-  	//last_updated_by
-  	//report_history
-  	//signature
-  	//signed_by
-  	//signed_by_id
-  	//How should this be shown? to user if already signed!
+      $report->last_updated_by      = $user->id;
+      $report->signature            = $request->signature;
+      $report->signed_version       = $report->version;
+      $report->date_signed          = date('Y-m-d H:i:s', time());
+      $report->response_due_date    = date('Y-m-d H:i:s', time() + 86400);
+      $report->crr_approval_type_id = 7;
+      if ('other' == $request->signing_user) {
+        $report->signed_by    = $request->other_name;
+        $report->signed_by_id = null;
+        $name                 = $request->other_name;
+      } else {
+        $signing_user = People::where('id', $request->signing_user)->first();
+        //dd($signing_user);
+        $report->signed_by_id = $request->signing_user;
+        $report->signed_by    = $signing_user->first_name . ' ' . $signing_user->last_name;
+        $name                 = $signing_user->first_name . ' ' . $signing_user->last_name;
+      }
+      $report->save();
+      $history = ['date' => date('m-d-Y g:i a'), 'user_id' => $user->id, 'user_name' => $user->full_name(), 'note' => $name . ' signed the report and their response is due ' . date('m-d-Y g:i a', strtotime($report->response_due_date)) . '.'];
+      $this->reportHistory($report, $history);
+      return 1;
+    } else {
+      $validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Technical Team');
+      return response()->json(['errors' => $validator->errors()->all()]);
+    }
+    //last_updated_by
+    //report_history
+    //signature
+    //signed_by
+    //signed_by_id
+    //How should this be shown? to user if already signed!
   }
 
-  public function sendfax(Request $request){
-    if(!empty(trim(str_replace("-","",$request->faxnumber)))){
-      $snappy = \App::make('snappy.pdf');
-      $public_path = base_path().'/public/pdf/';
-      $url=\URL::to('/report/'.$request->report.'?print=1');
-      $pdf_file='test_'.time().'.pdf';
-      $pdf_url=\URL::to('/pdf/'.$pdf_file);
-      $snappy->generate($url, $public_path.$pdf_file);
+  public function sendfax(Request $request)
+  {
+    if (!empty(trim(str_replace("-", "", $request->faxnumber)))) {
+      $snappy      = \App::make('snappy.pdf');
+      $public_path = base_path() . '/public/pdf/';
+      $url         = \URL::to('/report/' . $request->report . '?print=1');
+      $pdf_file    = 'test_' . time() . '.pdf';
+      $pdf_url     = \URL::to('/pdf/' . $pdf_file);
+      $snappy->generate($url, $public_path . $pdf_file);
 
-      $sid=env('TWILIO_SID');
-      $token=env('TWILIO_TOKEN');
-      $twilio = new Client($sid, $token);
-      $to_fax_number=env('TWILIO_FAX_COUNTRY_CODE','+1').str_replace("-","",$request->faxnumber);
-      $from_fax_number=env('TWILIO_FROM');
-      $fax = $twilio->fax->v1->faxes->create($to_fax_number,$pdf_url,array("from" => $from_fax_number));
-      $fax_status = [
-        'queued' => 'The fax is queued, waiting for processing',
+      $sid             = env('TWILIO_SID');
+      $token           = env('TWILIO_TOKEN');
+      $twilio          = new Client($sid, $token);
+      $to_fax_number   = env('TWILIO_FAX_COUNTRY_CODE', '+1') . str_replace("-", "", $request->faxnumber);
+      $from_fax_number = env('TWILIO_FROM');
+      $fax             = $twilio->fax->v1->faxes->create($to_fax_number, $pdf_url, ["from" => $from_fax_number]);
+      $fax_status      = [
+        'queued'     => 'The fax is queued, waiting for processing',
         'processing' => 'The fax is being downloaded, uploaded, or transcoded into a different format',
-        'sending' => 'The fax is in the process of being sent',
-        'delivered' => 'The fax has been successfuly delivered',
-        'receiving' => 'The fax is in the process of being received',
-        'received' => 'The fax has been successfully received',
-        'no-answer' => 'The outbound fax failed because the other end did not pick up',
-        'busy' => 'The outbound fax failed because the other side sent back a busy signal',
-        'failed' => 'The fax failed to send or receive',
-        'canceled' => 'The fax was canceled, either by using the REST API, or rejected by TwiML',
+        'sending'    => 'The fax is in the process of being sent',
+        'delivered'  => 'The fax has been successfuly delivered',
+        'receiving'  => 'The fax is in the process of being received',
+        'received'   => 'The fax has been successfully received',
+        'no-answer'  => 'The outbound fax failed because the other end did not pick up',
+        'busy'       => 'The outbound fax failed because the other side sent back a busy signal',
+        'failed'     => 'The fax failed to send or receive',
+        'canceled'   => 'The fax was canceled, either by using the REST API, or rejected by TwiML',
       ];
 
       return response()->json(
         [
-          'fax_status' => @$fax_status[$fax->status],
-          'fax_media' => $fax->links['media'],
-          'status'=>1,
-          'faxnumber'=>$request->faxnumber,
-          'from_number'=>$from_fax_number,
-          'message'=>'Fax Status: '.@$fax_status[$fax->status],
+          'fax_status'  => @$fax_status[$fax->status],
+          'fax_media'   => $fax->links['media'],
+          'status'      => 1,
+          'faxnumber'   => $request->faxnumber,
+          'from_number' => $from_fax_number,
+          'message'     => 'Fax Status: ' . @$fax_status[$fax->status],
         ]
       );
-    }else{
+    } else {
       return response()->json(
         [
-          'status'=>0,
-          'message'=>'Invalid Fax Number',
+          'status'  => 0,
+          'message' => 'Invalid Fax Number',
         ]
       );
     }
-    
   }
-
-
 }

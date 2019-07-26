@@ -11,7 +11,7 @@ class ReportAccess extends Model
   //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
   protected $guarded = ['id'];
-  protected $table = 'report_access';
+  protected $table   = 'report_access';
 
   public function project()
   {
@@ -21,5 +21,10 @@ class ReportAccess extends Model
   public function user()
   {
     return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
+  }
+
+  public function scopeAllita($query)
+  {
+    return $query->where('devco', 0)->orWhereNull('devco');
   }
 }
