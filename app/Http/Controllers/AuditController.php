@@ -2877,7 +2877,7 @@ class AuditController extends Controller
 
     public function modalProjectProgramSummary($project_id, $program_id = 0)
     {
-  			if ($program_id == 0) {
+  		if ($program_id == 0) {
 	        // if program_id == 0 we display all the programs (Here these are actually gorups not programs!)
 	        // units are automatically selected using the selection process
 	        // then randomize all units before displaying them on the modal
@@ -2916,7 +2916,7 @@ class AuditController extends Controller
         } else {
             //dd($selection_summary['programs'][$program_id-1]);
             //
-            //$project = Project::where('id', '=', $project_id)->first();
+            $project = Project::where('id', '=', $project_id)->first();
 			      $audit = $project->selected_audit()->audit;
 			      $selection_summary = json_decode($audit->selection_summary, 1);
 			      session(['audit-' . $audit->id . '-selection_summary' => $selection_summary]);
