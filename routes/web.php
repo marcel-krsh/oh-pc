@@ -215,6 +215,9 @@
             Route::get('/projects/{id}', 'AuditController@getProject')->name('project');
             Route::get('/projects/{id}/title', 'AuditController@getProjectTitle')->name('project.title');
             Route::get('/projects/{id}/details', 'AuditController@getProjectDetails')->name('project.details');
+            Route::get('/projects/{id}/audit-details/{audit_id?}', 'AuditController@getProjectDetails')->name('project.details-with-audit');
+            Route::get('/projects/view/{id}/{audit_id?}', 'AuditController@getProject')->name('project-view');
+            Route::get('/projects/view/{id}/{audit_id}/title', 'AuditController@getProjectTitle')->name('project.title-with-audit');
 
             // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
              Route::get('/projects/{id}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');

@@ -15,6 +15,9 @@ use App\Models\CachedBuilding;
 use App\Models\CachedComment;
 use App\Models\CachedInspection;
 use App\Models\CachedUnit;
+use App\Models\ReportAccess;
+use App\Models\UserAddresses;
+use App\Models\UserOrganization;
 use App\Models\Comment;
 use App\Models\Finding;
 use App\Models\GuideProgress;
@@ -31,6 +34,7 @@ use App\Models\SystemSetting;
 use App\Models\Unit;
 use App\Models\UnitAmenity;
 use App\Models\UnitInspection;
+use App\Models\ProjectDetail;
 use App\Models\UnitProgram;
 use App\Models\User;
 use DB;
@@ -1562,7 +1566,7 @@ class AuditController extends Controller
         return 0;
     }
 
-    public function getProject($id = null)
+    public function getProject($id = null, $audit_id = 0)
     {
         $project = Project::where('project_key', '=', $id)->first();
         $projectId = $project->id;
@@ -1570,7 +1574,7 @@ class AuditController extends Controller
         // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
 
         $projectTabs = collect([
-            ['title' => 'Details', 'icon' => 'a-clipboard', 'status' => '', 'badge' => '', 'action' => 'project.details'],
+            ['title' => 'Details', 'icon' => 'a-clipboard', 'status' => '', 'badge' => '', 'action' => 'project.details-with-audit'],
             ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.communications'],
             ['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
             ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
@@ -1584,7 +1588,7 @@ class AuditController extends Controller
         ]);
         $tab = 'project-detail-tab-1';
 
-        return view('projects.project', compact('tab', 'projectTabs', 'projectId'));
+        return view('projects.project', compact('tab', 'projectTabs', 'projectId', 'audit_id'));
     }
 
     public function getProjectTitle($id = null)
@@ -1601,15 +1605,20 @@ class AuditController extends Controller
         return '<i class="a-mobile-repeat"></i><i class="' . $step_icon . '"></i> <span class="list-tab-text"> PROJECT ' . $project_number . '</span>';
     }
 
-    public function getProjectDetails($id = null)
+    public function getProjectDetails($id = null, $audit_id = 0)
     {
         // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
 
         $project = Project::where('id', '=', $id)->first();
 
         //return Session::get('project.'.$id.'.selectedaudit');
+        // if($audit_id) {
+        //   $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
+        // } else {
+	       //  $selected_audit = $project->selected_audit();
+        // }
+        $selected_audit = $project->selected_audit($audit_id);
 
-        $selected_audit = $project->selected_audit();
 
         //dd($id, $project, $selected_audit);
 
@@ -1626,7 +1635,50 @@ class AuditController extends Controller
     public function getProjectDetailsAjax(Request $request)
     {
         $id = $request->id;
-        $details = Project::find($id)->details();
+        $audit_id = $request->audit_id;
+        $project = Project::find($id);
+        $details = $project->details($audit_id);
+        $details_new = $details->replicate();
+        $pm = $project->pm();
+        //Check if the project has default
+        $default_user  = ReportAccess::with('user')->where('project_id', $id)->where('default', 1)->first();
+        if($default_user && $default_user->user->name != $details_new->manager_poc) {
+        	$details_new->manager_poc = $default_user->user->name;
+        	$details_new->save();
+        }
+        $default_address  = UserAddresses::with('user', 'address')->where('project_id', $id)->where('default', 1)->first();
+        if($default_address && $default_address->address->line_1 != $details_new->manager_address) {
+        	$details_new->manager_address = $default_address->address->line_1;
+        	$details_new->manager_address2 = $default_address->address->line_2;
+        	$details_new->manager_city = $default_address->address->city;
+        	$details_new->manager_state = $default_address->address->state;
+        	$details_new->manager_zip = $default_address->address->zip;
+        	$details_new->save();
+        }
+        $default_org  = UserOrganization::with('user', 'organization')->where('project_id', $id)->where('default', 1)->first();
+        if($default_org && $default_org->organization->organization_name != $details_new->manager_name) {
+        	$details_new->manager_name = $default_org->organization->organization_name;
+        	$details_new->save();
+        }
+        $details = $details_new;
+
+
+        // $details_new-> =
+
+        // 				'manager_name' => $this->pm()['organization'],
+        //         'manager_poc' => $this->pm()['name'],
+        //         'manager_phone' => $this->pm()['phone'],
+        //         'manager_fax' => $this->pm()['fax'],
+        //         'manager_email' => $this->pm()['email'],
+        //         'manager_address' => $this->pm()['line_1'],
+        //         'manager_address2' => $this->pm()['line_2'],
+        //         'manager_city' => $this->pm()['city'],
+        //         'manager_state' => $this->pm()['state'],
+        //         'manager_zip' => $this->pm()['zip']
+       // $details_new = ProjectDetail::where('project_id', '=', $id)
+       //              ->where('audit_id', '=', $audit_id)
+       //              ->orderBy('id', 'desc')
+       //              ->first();
         $returnHTML = view('projects.partials.details-project-details')->with('details', $details)->render();
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }

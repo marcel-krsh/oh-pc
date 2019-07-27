@@ -122,7 +122,7 @@
 				Current Project Score : N/A
 				</div>
 				<div class="audit-refresh">
-					<a onclick="refresh_details({{ $project->id }});" style="background: #ecebeb;padding: 10px;border-radius: 5px;width: 25px;float: left;height: 25px;" href="javascript:void(0);" class="btn btn-refresh"><i class="a-refresh iheader" style="font-size: 25px;color: #000;"></i></a>
+					<a onclick="refresh_details({{ $project->id }}, {{ $selected_audit->audit_id }});" style="padding: 10px;border-radius: 5px;width: 25px;float: left;height: 25px;" href="javascript:void(0);" class="btn btn-refresh"><i class="a-rotate-right-2 iheader" style="font-size: 25px;color: #000;"></i></a>
 				</div>
 			</div>
 		</div>
@@ -252,10 +252,11 @@
 
     }
 
-    function refresh_details(id) {
+    function refresh_details(id, auditId) {
         UIkit.modal.confirm("Are you sure want to refresh the details?").then(function() {
             $.post('{{ URL::route("project.refreshdetails") }}', {
                 'id' : id,
+                'audit_id': auditId,
                 '_token' : '{{ csrf_token() }}'
             }, function(data) {
                 console.log(data.success);

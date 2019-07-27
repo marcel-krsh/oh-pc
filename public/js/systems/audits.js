@@ -1018,7 +1018,6 @@ function projectDetailsInfo(id, type, target) {
 	// remove active buttons
 	$('#project-details-buttons').find('.uk-button').removeClass('active');
 	$(target).addClass('active');
-
 	var url = '/projects/'+id+'/details/'+type;
     $.get(url, {
         }, function(data) {

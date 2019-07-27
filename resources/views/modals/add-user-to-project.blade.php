@@ -103,14 +103,6 @@
     	$('#add-recipients-button').toggle();
     	$('#done-adding-recipients-button').toggle();
     }
-
-    function showDocuments() {
-    	$('.documents-list').slideToggle();
-    	$('#add-documents-button').toggle();
-    	$('#done-adding-documents-button').toggle();
-    }
-
-
   </script>
   <script type="text/javascript">
 

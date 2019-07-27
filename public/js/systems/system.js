@@ -86,7 +86,7 @@ function clickTab(){
 }
 
 // works for main tabs and also sub tabs using prefix
-function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceReload=0) {
+function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceReload=0, audit=0) {
 	// check if tab already exist, if not create it
 	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').length == 0){
 		var newTabContent = '<li><div id="'+prefix+'detail-tab-'+tabNumber+'-content"></div></li>';

@@ -181,9 +181,11 @@ class Project extends Model
         }
     }
 
-    public function selected_audit()
+    public function selected_audit($audit_id = 0)
     {
-        if (Session::has('project.'.$this->id.'.selectedaudit') && Session::get('project.'.$this->id.'.selectedaudit') != '') {
+    		if($audit_id) {
+          $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
+    		} else if (Session::has('project.'.$this->id.'.selectedaudit') && Session::get('project.'.$this->id.'.selectedaudit') != '') {
             $audit_id = Session::get('project.'.$this->id.'.selectedaudit');
             $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
         }else{
@@ -194,12 +196,12 @@ class Project extends Model
         return $selected_audit;
     }
 
-    public function details()
+    public function details($audit_id = 0)
     {
         // details is a cache of the project's information at the time of the audit.
         // details is updated whenever the respective sources are changed, as long as the most current audit is not archived
 
-        $selected_audit = $this->selected_audit();
+        $selected_audit = $this->selected_audit($audit_id);
 
         if (!$selected_audit) {
             // no audit for this project yet, use default project default
@@ -249,7 +251,7 @@ class Project extends Model
         return $details;
     }
 
-    public function set_project_defaults($audit_id=null)
+    public function set_project_defaults($audit_id = null)
     {
         // create a record in project_details table with the current stats, contact info
 
