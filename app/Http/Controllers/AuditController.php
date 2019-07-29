@@ -33,10 +33,13 @@ use App\Models\UnitAmenity;
 use App\Models\UnitInspection;
 use App\Models\UnitProgram;
 use App\Models\User;
+use App\Models\CrrApprovalType;
+use App\Models\CrrReport;
 use DB;
 use Auth;
 use Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Session;
 use App\Models\Group;
 use App\Models\Program;
@@ -2643,9 +2646,175 @@ class AuditController extends Controller
         return view('projects.partials.stream', compact('type','findings','auditid', 'buildingid', 'unitid', 'amenityid'));
     }
 
-    public function getProjectReports($project = null)
+    public function getProjectReports(Request $request, $project = null)
     {
-        return view('projects.partials.reports');
+        $id = $project;
+        $project = Project::find($project);
+
+        // Perform Actions First.
+        if (!is_null($request->get('due'))) {
+            $data        = [];
+            $data['due'] = $request->get('due');
+            $data['id']  = $request->get('report_id');
+            //dd($data);
+            $messages[] = $this->dueDate($data);
+            //dd($messages);
+        }
+
+        // Set default filters for first view of page:
+        if (session('crr_first_load') !== 1) {
+            session(['crr_report_status_id' => 1]);
+        // set some default parameters
+        if (Auth::user()->can('access_manager')) {
+            session(['crr_report_status_id' => 2]);
+            // pending manager review
+        } elseif (Auth::user()->can('access_auditor')) {
+            session(['crr_report_lead_id' => Auth::user()->id]);
+            // show this auditors reports
+        } elseif (Auth::user()->can('access_pm')) {
+            session(['crr_report_status_id' => 6]);
+            // @todo
+        }
+        session(['crr_first_load' => 1]);
+        // makes sure if they override or clear the default filter it doesn't get overrideen.
+        }
+
+        // Search Number
+        if ($request->get('search')) {
+            session(['crr_search' => $request->get('search')]);
+        } elseif (is_null(session('crr_search'))) {
+            session(['crr_search' => 'all']);
+        }
+        if (session('crr_search') !== 'all') {
+            $searchEval = '=';
+            $searchVal  = intval(session('crr_search'));
+        } else {
+            session(['crr_search' => 'all']);
+            $searchEval = '>';
+            $searchVal  = '0';
+        }
+
+        // Report Type
+        if ($request->get('crr_report_type')) {
+            session(['crr_report_type' => $request->get('crr_report_type')]);
+        } elseif (is_null(session('crr_report_type'))) {
+            session(['crr_report_type' => 'all']);
+        }
+        if (session('crr_report_type') !== 'all') {
+            $typeEval = '=';
+            $typeVal  = intval(session('crr_report_type'));
+        } else {
+            session(['crr_report_type' => 'all']);
+            $typeEval = '>';
+            $typeVal  = '0';
+        }
+        
+        // Report Status
+        if ($request->get('crr_report_status_id')) {
+            session(['crr_report_status_id' => $request->get('crr_report_status_id')]);
+        } elseif (is_null(session('crr_report_status_id'))) {
+            session(['crr_report_status_id' => 'all']);
+        }
+        if(Auth::user()->can('access_auditor')){
+            if (session('crr_report_status_id') !== 'all') {
+            $approvalTypeEval = '=';
+            $approvalTypeVal  = intval(session('crr_report_status_id'));
+            } else {
+            session(['crr_report_status_id' => 'all']);
+            $approvalTypeEval = '>';
+            $approvalTypeVal  = 0;
+            }
+        }else{
+            if (session('crr_report_status_id') !== 'all') {
+            if(intval(session('crr_report_status_id'))<6){
+                //user is trying to get a status they cannot access
+                session(['crr_report_status_id' => 6]); // default them to the sent
+            }
+            $approvalTypeEval = '=';
+            $approvalTypeVal  = intval(session('crr_report_status_id'));
+            } else {
+            session(['crr_report_status_id' => 'all']);
+            $approvalTypeEval = '>';
+            $approvalTypeVal  = 5;
+            }
+        }
+
+        // Lead Selection
+        if ($request->get('crr_report_lead_id')) {
+            session(['crr_report_lead_id' => $request->get('crr_report_lead_id')]);
+        } elseif (is_null(session('crr_report_lead_id'))) {
+            session(['crr_report_lead_id' => 'all']);
+        }
+        if (session('crr_report_lead_id') !== 'all') {
+            $leadEval = '=';
+            $leadVal  = intval(session('crr_report_lead_id'));
+        } else {
+            session(['crr_report_lead_id' => 'all']);
+            $leadEval = '>';
+            $leadVal  = 0;
+        }
+
+        // Check For Newer Than Selection
+        if ($request->get('newer_than')) {
+            // this is only used for checking for updated records
+            $newerThan = $request->get('newer_than');
+        } else {
+            $newerThan = '1900-01-01 00:00:01';
+        }
+
+        if (Auth::user()->can('access_auditor')) {
+            $auditLeads      = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+            $auditProjects   = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
+            $crr_types_array = CrrReport::select('id', 'template_name')->groupBy('template_name')->whereNotNull('template')->get()->all();
+            $hfa_users_array = [];
+            $projects_array  = [];
+        } else {
+            $auditLeads      = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+            $auditProjects   = CrrReport::select('*')->when(Auth::user()->cannot('access_auditor'), function ($query) {
+                  $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();                  
+                  return $query->whereIn('project_id', $userProjects);
+        })->with('project')->groupBy('project_id')->get();
+            $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id','>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
+            $hfa_users_array = [];
+            $projects_array  = [];
+    
+        }
+        foreach ($auditLeads as $hfa) {
+            if ($hfa->lead_user_id) {
+              $hfa_users_array[] = $hfa->lead;
+            }
+        }
+        foreach ($auditProjects as $hfa) {
+            if ($hfa->project) {
+              $projects_array[] = $hfa->project;
+            }
+        }
+        $hfa_users_array = array_values(Arr::sort($hfa_users_array, function ($value) {
+            return $value['name'];
+        }));
+        $projects_array = array_values(Arr::sort($projects_array, function ($value) {
+            return $value['project_name'];
+        }));
+        if(Auth::user()->can('access_auditor')){
+            $crrApprovalTypes = CrrApprovalType::orderBy('order')->get();
+        } else {
+            $crrApprovalTypes = CrrApprovalType::where('id','>',5)->orderBy('order')->get();
+        }
+
+        $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
+        ->whereNull('template')
+        ->where('project_id', '=', $id)
+        ->where('lead_id', $leadEval, $leadVal)
+        ->where('updated_at', '>', $newerThan)
+        ->where('from_template_id', $typeEval, $typeVal)
+        ->where('id', $searchEval, $searchVal)
+        ->when(Auth::user()->cannot('access_auditor'), function ($query) {
+                $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();        
+                return $query->whereIn('project_id', $userProjects);
+        })
+        ->orderBy('updated_at', 'desc')
+        ->paginate(10);        
+        return view('projects.partials.reports',compact('reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'crr_types_array', 'messages', 'newest'));
     }
 
     public function modalProjectProgramSummaryFilterProgram($project_id, $program_id, Request $request)
