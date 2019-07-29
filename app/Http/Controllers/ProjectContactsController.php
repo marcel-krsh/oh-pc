@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Address;
 use App\Models\Organization;
+use App\Models\PhoneNumber;
+use App\Models\PhoneNumberType;
 use App\Models\Project;
 use App\Models\ReportAccess;
 use App\Models\Role;
@@ -11,6 +13,7 @@ use App\Models\State;
 use App\Models\User;
 use App\Models\UserAddresses;
 use App\Models\UserOrganization;
+use App\Models\UserPhoneNumber;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -25,38 +28,43 @@ class ProjectContactsController extends Controller
   {
     $user_ids         = $this->allUserIdsInProject($project);
     $project_user_ids = $this->projectUserIds($project);
-    $report_user_ids  = $this->allitaUserIds($project);
-    $default_user_id  = ReportAccess::where('project_id', $project)->where('default', 1)->first();
+    $allita_user_ids  = $this->allitaUserIds($project);
+    $default_report_user = ReportAccess::where('project_id', $project)->where('default', 1)->first();
     $project          = Project::with('contactRoles.person.user')->find($project); //DEVCO
     // return $project->details();
-    if ($default_user_id) {
-      $default_user_id = $default_user_id->user_id;
-    } else {
-      $default_user = $project->contactRoles->where('project_role_key', 21)->first();
-      if ($default_user) {
-        $default_user_id = $default_user->person->user->id;
-      } else {
-        $default_user_id == 0;
-      }
+    $default_user = $project->contactRoles->where('project_role_key', 21)->first();
+    $default_devco_user_id = 0;
+    $default_user_id = 0;
+    if($default_report_user && $default_report_user->devco && $default_user) {
+        $default_devco_user_id = $default_user->person->user->id;
+    }
+    if ($default_report_user) {
+      $default_user_id = $default_report_user->user_id;
+    } elseif ($default_user) {
+        $default_user_id = $default_devco_user_id = $default_user->person->user->id;
     }
 
-    // replace joins with relationship
-    $users        = User::whereIn('id', $user_ids)->with('role', 'person', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access')->orderBy('name')->get(); //->paginate(25);
-    $default_org  = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->count();
-    $default_addr = $users->pluck('user_addresses')->filter()->flatten()->where('default', 1)->count();
-    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'report_user_ids', 'default_user_id', 'default_org', 'default_addr'));
 
-    $users = User::whereIn('users.id', $user_ids)->
-      join('people', 'users.person_id', '=', 'people.id')->
-      leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')->
-      leftJoin('roles', 'users_roles.role_id', '=', 'roles.id')->
-      leftJoin('organizations', 'users.organization_id', 'organizations.id')->
-      leftJoin('addresses', 'organizations.default_address_id', 'addresses.id')->
-      leftJoin('phone_numbers', 'organizations.default_phone_number_id', 'phone_numbers.id')->
-      select('users.*', 'line_1', 'line_2', 'city', 'state', 'zip', 'organization_name', 'role_id', 'role_name', 'area_code', 'phone_number', 'extension', 'last_name', 'first_name')->
-      orderBy('last_name', 'asc')->
-      paginate(25);
-    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'report_user_ids'));
+   // return $default_user_id;
+
+    // replace joins with relationship
+    $users         = User::whereIn('id', $user_ids)->with('role', 'person', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access', 'user_phone_numbers.phone')->orderBy('name')->get(); //->paginate(25);
+    $default_org   = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->count();
+    $default_addr  = $users->pluck('user_addresses')->filter()->flatten()->where('default', 1)->count();
+    $default_phone = $users->pluck('user_phone_numbers')->filter()->flatten()->where('default', 1)->count();
+    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id'));
+
+    /*$users = User::whereIn('users.id', $user_ids)->
+  join('people', 'users.person_id', '=', 'people.id')->
+  leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')->
+  leftJoin('roles', 'users_roles.role_id', '=', 'roles.id')->
+  leftJoin('organizations', 'users.organization_id', 'organizations.id')->
+  leftJoin('addresses', 'organizations.default_address_id', 'addresses.id')->
+  leftJoin('phone_numbers', 'organizations.default_phone_number_id', 'phone_numbers.id')->
+  select('users.*', 'line_1', 'line_2', 'city', 'state', 'zip', 'organization_name', 'role_id', 'role_name', 'area_code', 'phone_number', 'extension', 'last_name', 'first_name')->
+  orderBy('last_name', 'asc')->
+  paginate(25);
+  return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'report_user_ids'));*/
   }
 
   protected function projectUserIds($project_id)
@@ -73,16 +81,22 @@ class ProjectContactsController extends Controller
     return $project_user_ids;
   }
 
-  protected function allitaUserIds($project_id)
+  protected function allitaOnlyUserIds($project_id)
   {
     $report_user_ids = ReportAccess::where('project_id', $project_id)->where('devco', '!=', 1)->get()->pluck('user_id')->toArray(); //Allita
+    return $report_user_ids;
+  }
+
+  protected function allitaUserIds($project_id)
+  {
+    $report_user_ids = ReportAccess::where('project_id', $project_id)->get()->pluck('user_id')->toArray(); //Allita
     return $report_user_ids;
   }
 
   protected function allUserIdsInProject($project_id)
   {
     $project_user_ids = $this->projectUserIds($project_id);
-    $report_user_ids  = $this->allitaUserIds($project_id);
+    $report_user_ids  = $this->allitaOnlyUserIds($project_id);
     $user_ids         = array_merge($project_user_ids, $report_user_ids);
     return $user_ids;
   }
@@ -134,6 +148,31 @@ class ProjectContactsController extends Controller
         $report_user->user_id    = $recipient;
         $report_user->save();
       }
+    }
+    return 1;
+  }
+
+  public function saveAllitaAccessToUser(Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'user_id'    => 'required',
+      'project_id' => 'required',
+    ], [
+      'project_id.required' => 'Something went wrong, please contact admin',
+      'user_id.required'    => 'Something went wrong, please contact admin',
+    ]);
+    if ($validator->fails()) {
+      return response()->json(['errors' => $validator->errors()->all()]);
+    }
+    $check_user = ReportAccess::where('project_id', $request->project_id)->where('user_id', $request->user_id)->first();
+    if ($check_user) {
+    	$check_user->delete();
+    } else {
+      $report_user             = new ReportAccess;
+      $report_user->project_id = $request->project_id;
+      $report_user->user_id    = $request->user_id;
+      $report_user->devco    = 1;
+      $report_user->save();
     }
     return 1;
   }
@@ -361,9 +400,11 @@ class ProjectContactsController extends Controller
       'city'           => 'required',
       'state_id'       => 'required',
       'zip'            => 'required',
+      'project_id'     => 'required',
     ], [
-      'user_id.required'  => 'Something went wrong, please contact admin',
-      'state_id.required' => 'State field is required',
+      'user_id.required'    => 'Something went wrong, please contact admin',
+      'state_id.required'   => 'State field is required',
+      'project_id.required' => 'Something went wrong, please contact admin',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -436,7 +477,7 @@ class ProjectContactsController extends Controller
     return view('modals.edit-address-of-user', compact('ua', 'project_id', 'states'));
   }
 
-  public function saveAddressOfUser($address_id, Request $request)
+  public function saveEditAddressOfUser($address_id, Request $request)
   {
     $validator = \Validator::make($request->all(), [
       'address_id'     => 'required',
@@ -478,6 +519,118 @@ class ProjectContactsController extends Controller
     }
     $org = UserAddresses::find($request->address_id);
     $org->delete();
+    return 1;
+  }
+
+  public function addPhoneToUser($user_id, $project_id)
+  {
+    $user   = User::with('role', 'person', 'organization_details', 'addresses', 'user_organizations.organization')->find($user_id);
+    $states = State::get();
+    return view('modals.user-project-phone', compact('user', 'project_id', 'states'));
+  }
+
+  public function savePhoneToUser($user_id, Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'user_id'               => 'required',
+      'business_phone_number' => 'required',
+      'project_id'            => 'required',
+      'business_phone_number' => 'required|min:12',
+    ], [
+      'user_id.required'          => 'Something went wrong, please contact admin',
+      'project_id.required'       => 'Something went wrong, please contact admin',
+      'business_phone_number.min' => 'Enter a valid phone number',
+    ]);
+    if ($validator->fails()) {
+      return response()->json(['errors' => $validator->errors()->all()]);
+    }
+    $input_phone_number                 = $request->business_phone_number;
+    $split_number                       = explode('-', $input_phone_number);
+    $phone_number_type                  = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
+    $phone_number                       = new PhoneNumber;
+    $phone_number->phone_number_type_id = $phone_number_type->id;
+    $phone_number->area_code            = $split_number[0];
+    $phone_number->phone_number         = $split_number[1] . $split_number[2];
+    $phone_number->extension            = $request->phone_extension;
+    $phone_number->save();
+    $ua                  = new UserPhoneNumber;
+    $ua->user_id         = $request->user_id;
+    $ua->project_id      = $request->project_id;
+    $ua->phone_number_id = $phone_number->id;
+    $ua->save();
+    return 1;
+  }
+
+  public function defaultPhoneOfUserForProject(Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'project_id'      => 'required',
+      'phone_number_id' => 'required',
+      'user_id'         => 'required',
+    ]);
+    if ($validator->fails()) {
+      return 'Something went wrong, please contact admin';
+    }
+    $selected = $request->phone_number_id;
+    // Check if it is devco user and exists in project phones
+    if ($request->devco) {
+      $devco = UserPhoneNumber::where('project_id', $request->project_id)
+        ->where('phone_number_id', $request->phone_number_id)
+        ->where('user_id', $request->user_id)
+        ->where('devco', 1)
+        ->first();
+      if ($devco) {
+        $selected = $devco->id;
+      } else {
+        $uo                  = new UserPhoneNumber;
+        $uo->phone_number_id = $request->phone_number_id;
+        $uo->user_id         = $request->user_id;
+        $uo->project_id      = $request->project_id;
+        $uo->devco           = $request->devco;
+        $uo->save();
+        $selected = $uo->id;
+      }
+    }
+    $defaults = UserPhoneNumber::where('project_id', $request->project_id)->get();
+    foreach ($defaults as $key => $default) {
+      if ($default->id == $selected) {
+        $default->default = 1;
+      } else {
+        $default->default = 0;
+      }
+      $default->save();
+    }
+    return 1;
+  }
+
+  public function editPhoneOfUser($phone_number_id, $project_id)
+  {
+    $up = UserPhoneNumber::with('phone', 'user')->find($phone_number_id);
+    return view('modals.edit-user-project-phone', compact('up', 'project_id'));
+  }
+
+  public function saveEditPhoneOfUser($address_id, Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'user_id'               => 'required',
+      'business_phone_number' => 'required',
+      'business_phone_number' => 'required|min:12',
+      'project_id'            => 'required',
+      'phone_number_id'       => 'required',
+    ], [
+      'user_id.required'         => 'Something went wrong, please contact admin',
+      'project_id.required'      => 'Something went wrong, please contact admin',
+      'phone_number_id.required' => 'Something went wrong, please contact admin',
+    ]);
+    $phone_number                       = PhoneNumber::find($request->phone_number_id);
+    $input_phone_number                 = $request->business_phone_number;
+    $split_number                       = explode('-', $input_phone_number);
+    $phone_number_type                  = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
+    $phone_number->phone_number_type_id = $phone_number_type->id;
+    $phone_number->area_code            = $split_number[0];
+    $phone_number->phone_number         = $split_number[1] . $split_number[2];
+    $phone_number->extension            = $request->phone_extension;
+    $phone_number->save();
     return 1;
   }
 }

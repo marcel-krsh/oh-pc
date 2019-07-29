@@ -535,4 +535,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserAddresses::class, 'user_id', 'id');
     }
+
+    public function user_phone_numbers()
+    {
+        return $this->hasMany(UserPhoneNumber::class, 'user_id', 'id');
+    }
 }

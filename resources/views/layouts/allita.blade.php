@@ -185,6 +185,8 @@ if ($allowPageLoad) {
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js{{ asset_version() }}"></script>
 		<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js{{ asset_version() }}"></script>  -->
 		<script src="{{ mix('js/app.js') }}"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+		{{-- <script src="/HemantNegi-jquery.sumoselect-a1d8d68/jquery.sumoselect.min.js"><script> --}}
 
 		<script>
 		// $('select').multipleSelect();
