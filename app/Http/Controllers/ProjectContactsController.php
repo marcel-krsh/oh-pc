@@ -48,7 +48,7 @@ class ProjectContactsController extends Controller
    // return $default_user_id;
 
     // replace joins with relationship
-    $users         = User::whereIn('id', $user_ids)->with('role', 'person', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access', 'user_phone_numbers.phone')->orderBy('name')->get(); //->paginate(25);
+    $users         = User::whereIn('id', $user_ids)->with('role', 'person.email', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access', 'user_phone_numbers.phone')->orderBy('name')->get(); //->paginate(25);
     $default_org   = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->count();
     $default_addr  = $users->pluck('user_addresses')->filter()->flatten()->where('default', 1)->count();
     $default_phone = $users->pluck('user_phone_numbers')->filter()->flatten()->where('default', 1)->count();

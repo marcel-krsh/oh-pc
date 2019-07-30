@@ -114,19 +114,22 @@
 							@endforeach
 							<small class="use-hand-cursor" id="add-address-{{ $user->id }}" onclick="addAddress({{ $user->id }})"  uk-tooltip="" title="ADD NEW ADDRESS" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> ADD ANOTHER ADDRESS</small>
 						</td>
+						{{-- PHONE NUMBER --}}
 						@php
+						// check if this project has entries in user phone numbers
 						$user_phones = $user->user_phone_numbers->where('project_id', $project->id);
 						@endphp
 						<td>
 							<small>
+								{{-- This was from code in user tab, show org phone as default phone, chec if exists - DEVCO --}}
 								@if($user->organization_details && $user->organization_details->phone_number_formatted() != '')
 								@php
+								// Check if this user phone number exists in user phone number
 								$exists_in_up = $user_phones->where('devco', 1)->where('phone_number_id', $user->organization_details->default_phone_number_id)->first();
 								@endphp
-								{{-- @if($user->area_code && $user->phone_number) --}}
+								{{-- Ie none of the phone number is marked as default, we mark default devco contact phone number as default --}}
 								<input class="uk-radio" onchange="makeDefaultPhonenumber({{ $user->organization_details->default_phone_number_id }}, {{ $user->id }},  1)" name="phone_number" id="phone_number-{{ $user->organization_details->default_phone_number_id }}" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT PHONE NUMBER FOR REPORT" aria-expanded="false" {{ (($exists_in_up && $exists_in_up->default) || (!$default_phone && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
 									{{ $user->organization_details->phone_number_formatted() }}
-								{{-- @endif --}}
 								<hr class="dashed-hr  uk-margin-small-bottom">
 								@else
 								<div class="uk-text-muted uk-align-left">NA</div>
@@ -134,6 +137,7 @@
 								@endif
 							</small>
 								@php
+								// Non devco phone numbers
 								$user_phones = $user_phones->where('devco', '!=', 1);
 								@endphp
 								@foreach($user_phones as $phone)
@@ -146,7 +150,18 @@
 								@endforeach
 							<small class="use-hand-cursor" id="add-phone-{{ $user->id }}" onclick="addPhoneNumber({{ $user->id }})"  uk-tooltip="" title="ADD ANOTHER PHONE NUMBER" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> ADD ANOTHER PHONE NUMBER</small>
 						</td>
-						<td><small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->email }}">{{ $user->email }}</a></small></td>
+						{{-- EMAIL ADDRESS --}}
+						<td>
+							{{-- {{ dd($user->person->email) }} --}}
+							@if($user->person && $user->person->email)
+							<input class="uk-radio" onchange="makeDefaultEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="email" id="email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT EMAIL FOR REPORT" aria-expanded="false" {{ (($exists_in_up && $exists_in_up->default) || (!$default_phone && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							<small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->person->email->email_address }}">{{ $user->person->email->email_address }}</a>
+							</small>
+							@else
+								<div class="uk-text-muted uk-align-left">NA</div>
+								<hr class="dashed-hr  uk-margin-small-bottom">
+							@endif
+						</td>
 						@php
 						$pm_access = $user->pm_access();
 						@endphp
@@ -160,8 +175,6 @@
 							}
 						}
 						$user_roles = implode(',', $roles);
-						// dd($project_roles->pluck('projectRole')->pluck('role_name'));
-						// dd( in_array($user->id, $report_user_ids));
 						@endphp
 						<td>
 							<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles)}}"></i>  | </span>
