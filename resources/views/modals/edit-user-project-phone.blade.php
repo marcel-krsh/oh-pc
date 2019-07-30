@@ -8,8 +8,9 @@
 </div>
 @endif
 <div id="dynamic-modal-content">
-	<h2 class="uk-text-uppercase uk-text-emphasis">Edit User Phone Number</h2>
+	<h2 class="uk-text-uppercase uk-text-emphasis">Edit User Phone Number <a class="uk-button uk-button-danger uk-margin-large-left" onclick="submitRemovePhone()"><span uk-icon="save"></span> CLICK TO REMOVE PHONE</a></h2>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+		<p>Click the remove phone button above to remove this phone from the user OR edit the phone below </p>
 	<div class="alert alert-danger uk-text-danger" style="display:none"></div>
 	<form id="userForm" action="{{ route('user.edit-phone-of-user', $up->user->id) }}" method="post" role="userForm">
 		<input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -60,6 +61,40 @@
 				$('.alert-danger' ).empty();
 				if(data == 1) {
 					UIkit.modal.alert('I have edited phone number of user',{stack: true});
+					dynamicModalClose();
+					loadTab('/project/'+{{ $project_id }}+'/contacts/', '7', 0, 0, 'project-', 1);
+				}
+				jQuery.each(data.errors, function(key, value){
+					jQuery('.alert-danger').show();
+					jQuery('.alert-danger').append('<p>'+value+'</p>');
+				});
+			}
+		});
+	}
+
+	function submitRemovePhone() {
+		jQuery.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+			}
+		});
+		var form = $('#userForm');
+		var data = { };
+		$.each($('form').serializeArray(), function() {
+			data[this.name] = this.value;
+		});
+		jQuery.ajax({
+			url: "{{ URL::route("user.remove-phone-of-user", $up->id) }}",
+			method: 'post',
+			data: {
+				project_id: {{ $project_id }},
+				phone_number_id : {{ $up->id }},
+				'_token' : '{{ csrf_token() }}'
+			},
+			success: function(data){
+				$('.alert-danger' ).empty();
+				if(data == 1) {
+					UIkit.modal.alert('I have removed phone from user',{stack: true});
 					dynamicModalClose();
 					loadTab('/project/'+{{ $project_id }}+'/contacts/', '7', 0, 0, 'project-', 1);
 				}

@@ -26,9 +26,9 @@
 		<h5 class="uk-margin-remove"><strong>Managed By: {{ $details->manager_name }}</strong></h5>
 		<div class="address">
 			<i class="a-avatar"></i> {{ $details->manager_poc }}<br />
-			<i class="a-phone-5"></i> {{ $details->manager_phone }} @if($details->manager_fax != '')<i class="a-fax-2" style="margin-left:10px"></i> {{ $details->manager_fax }} @endif<br />
-			<i class="a-mail-send"></i> {{ $details->manager_email }}<br />
-			@if($details->manager_address)<i class="a-mailbox"></i> {{ $details->manager_address }}, {{ $details->manager_address2 }}, {{ $details->manager_city }}, {{ $details->manager_state }} - {{ $details->manager_zip }} @endif
+			@if($details->manager_phone)<i class="a-phone-5"></i> {{ $details->manager_phone }} @if($details->manager_fax != '')<i class="a-fax-2" style="margin-left:10px"></i> {{ $details->manager_fax }} @endif<br />@endif
+			@if($details->manager_email)<i class="a-mail-send"></i> {{ $details->manager_email }}<br /> @endif
+			@if($details->manager_address)<i class="a-mailbox"></i> {{ $details->manager_address ? $details->manager_address . ', ' : '' }} {{ $details->manager_address2 ? $details->manager_address2 . ', ' : '' }} {{ $details->manager_city ? $details->manager_city . ', ' : '' }} {{ $details->manager_state ? $details->manager_state : '' }} {{ $details->manager_zip ? ' - ' . $details->manager_zip : '' }} @endif
 		</div>
 	</div>
 </div>

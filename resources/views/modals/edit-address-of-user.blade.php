@@ -8,7 +8,7 @@
 </div>
 @endif
 <div id="dynamic-modal-content">
-	<h2 class="uk-text-uppercase uk-text-emphasis">Edit/Remove User Address <a class="uk-button uk-button-danger uk-margin-large-left" onclick="submitRemoveAddress()"><span uk-icon="save"></span> CLICK TO REMOVE</a>
+	<h2 class="uk-text-uppercase uk-text-emphasis">Edit/Remove User Address <a class="uk-button uk-button-danger uk-margin-large-left" onclick="submitRemoveAddress()"><span uk-icon="save"></span> CLICK TO REMOVE ADDRESS</a>
 	</h2>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 	<p>Click the remove address button above to remove this address from the user OR edit the information below </p>

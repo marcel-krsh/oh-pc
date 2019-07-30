@@ -269,7 +269,15 @@
             Route::post('/modals/make-project-default-phone', 'ProjectContactsController@defaultPhoneOfUserForProject')->name('user.make-project-default-phone');
             Route::get('/modals/edit-phone-of-user/{address}/{project}', 'ProjectContactsController@editPhoneOfUser');
             Route::post('/modals/{phone}/edit-phone-of-user', 'ProjectContactsController@saveEditPhoneOfUser')->name('user.edit-phone-of-user');
+            Route::post('/modals/{phone}/remove-phone-of-user', 'ProjectContactsController@removePhoneOfUser')->name('user.remove-phone-of-user');
             Route::post('/modals/add-allita-access-to-user', 'ProjectContactsController@saveAllitaAccessToUser')->name('user.add-allita-access-to-user');
+
+            Route::get('/modals/add-email-to-user/{user}/{project}', 'ProjectContactsController@addEmailToUser');
+            Route::post('/modals/{user}/add-email-to-user', 'ProjectContactsController@saveEmailToUser')->name('user.add-email-to-user');
+            Route::post('/modals/make-project-default-email', 'ProjectContactsController@defaultEmailOfUserForProject')->name('user.make-project-default-email');
+            Route::get('/modals/edit-email-of-user/{address}/{project}', 'ProjectContactsController@editEmailOfUser');
+            Route::post('/modals/{email}/edit-email-of-user', 'ProjectContactsController@saveEditEmailOfUser')->name('user.edit-email-of-user');
+            Route::post('/modals/{email}/remove-email-of-user', 'ProjectContactsController@removeEmailOfUser')->name('user.remove-email-of-user');
 
 
 

@@ -18,6 +18,7 @@ use App\Models\CachedUnit;
 use App\Models\ReportAccess;
 use App\Models\UserAddresses;
 use App\Models\UserOrganization;
+use App\Models\UserEmail;
 use App\Models\Comment;
 use App\Models\Finding;
 use App\Models\GuideProgress;
@@ -1682,6 +1683,14 @@ class AuditController extends Controller
         	$details_new->save();
         } elseif(!is_null($project_default_user->person->user->organization_id) && $project_default_user->person->user->organization_details) {
         	$details_new->manager_phone = $project_default_user->person->user->organization_details->phone_number_formatted();
+        	$details_new->save();
+        }
+        $default_email = UserEmail::with('user', 'email_address')->where('project_id', $id)->where('default', 1)->first();
+        if($default_email) { // && $default_org->organization->organization_name != $details_new->manager_name
+        	$details_new->manager_email = $default_email->email_address->email_address;
+        	$details_new->save();
+        } elseif($project_default_user->person && $project_default_user->person->email) {
+        	$details_new->manager_email = $project_default_user->person->email->email_address;
         	$details_new->save();
         }
         $details = $details_new;

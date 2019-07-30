@@ -151,16 +151,38 @@
 							<small class="use-hand-cursor" id="add-phone-{{ $user->id }}" onclick="addPhoneNumber({{ $user->id }})"  uk-tooltip="" title="ADD ANOTHER PHONE NUMBER" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> ADD ANOTHER PHONE NUMBER</small>
 						</td>
 						{{-- EMAIL ADDRESS --}}
+						@php
+						// check if this project has entries in user phone numbers
+						$user_emails = $user->user_emails->where('project_id', $project->id);
+						@endphp
 						<td>
 							{{-- {{ dd($user->person->email) }} --}}
 							@if($user->person && $user->person->email)
-							<input class="uk-radio" onchange="makeDefaultEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="email" id="email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT EMAIL FOR REPORT" aria-expanded="false" {{ (($exists_in_up && $exists_in_up->default) || (!$default_phone && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							@php
+							// Check if this user phone emails exists in user emails
+							$exists_in_ue = $user_emails->where('devco', 1)->where('email_address_id', $user->person->default_email_address_id)->first();
+							@endphp
+							<input class="uk-radio" onchange="makeDefaultEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="email" id="email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT EMAIL FOR REPORT" aria-expanded="false" {{ (($exists_in_ue && $exists_in_ue->default) || (!$default_phone && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
 							<small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->person->email->email_address }}">{{ $user->person->email->email_address }}</a>
 							</small>
+							<hr class="dashed-hr  uk-margin-small-bottom">
 							@else
 								<div class="uk-text-muted uk-align-left">NA</div>
 								<hr class="dashed-hr  uk-margin-small-bottom">
 							@endif
+							@php
+								// Non devco emails
+								$user_emails = $user_emails->where('devco', '!=', 1);
+							@endphp
+								@foreach($user_emails as $email)
+								<input class="uk-radio" onchange="makeDefaultEmail({{ $email->id }}, {{ $user->id }})" name="email" id="email-{{ $email->email_address_id }}" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT EMAIL FOR REPORT" aria-expanded="false" {{ $email->default ? 'checked=checked': '' }}>
+								<small>
+									{{ $email->email_address->email_address }}
+								</small>
+								<i onclick="editEmail({{ $email->id }})" id="project-email-{{ $email->id }}" class="a-pencil" uk-tooltip="" title="EDIT EMAIL ADDRESS" aria-expanded="false"></i>
+								<hr class="dashed-hr  uk-margin-small-bottom">
+								@endforeach
+							<small class="use-hand-cursor" id="add-email-{{ $user->id }}" onclick="addEmail({{ $user->id }})"  uk-tooltip="" title="ADD ANOTHER EMAIL ADDRESS" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> ADD ANOTHER EMAIL ADDRESS</small>
 						</td>
 						@php
 						$pm_access = $user->pm_access();
@@ -383,6 +405,44 @@
 						UIkit.notification('<span uk-icon="icon: check"></span> Added allita access to user', {pos:'top-right', timeout:1000, status:'success'});
 		    		loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
 					}
+				}
+				jQuery.each(data.errors, function(key, value){
+					jQuery('.alert-danger').show();
+					jQuery('.alert-danger').append('<p>'+value+'</p>');
+				});
+			}
+		});
+	}
+
+	function addEmail(userId) {
+		dynamicModalLoad('add-email-to-user/'+userId+'/{{ $project->id }}');
+	}
+
+	function editEmail(emailId) {
+		dynamicModalLoad('edit-email-of-user/'+emailId+'/{{ $project->id }}');
+	}
+
+	function makeDefaultEmail(emailId, userId, devco = 0) {
+		jQuery.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+			}
+		});
+		var data = { };
+		jQuery.ajax({
+			url: "{{ URL::route("user.make-project-default-email") }}",
+			method: 'post',
+			data: {
+				email_address_id : emailId,
+				user_id : userId,
+				project_id : {{ $project->id }},
+				devco : devco,
+				'_token' : '{{ csrf_token() }}'
+			},
+			success: function(data){
+				$('.alert-danger' ).empty();
+				if(data == 1) {
+					UIkit.notification('<span uk-icon="icon: check"></span> Marked as Default Email Address', {pos:'top-right', timeout:1000, status:'success'});
 				}
 				jQuery.each(data.errors, function(key, value){
 					jQuery('.alert-danger').show();

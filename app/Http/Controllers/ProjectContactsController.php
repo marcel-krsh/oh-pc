@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\EmailAddress;
+use App\Models\EmailAddressType;
 use App\Models\Organization;
 use App\Models\PhoneNumber;
 use App\Models\PhoneNumberType;
@@ -12,6 +14,7 @@ use App\Models\Role;
 use App\Models\State;
 use App\Models\User;
 use App\Models\UserAddresses;
+use App\Models\UserEmail;
 use App\Models\UserOrganization;
 use App\Models\UserPhoneNumber;
 use Auth;
@@ -26,29 +29,28 @@ class ProjectContactsController extends Controller
 
   public function contacts($project)
   {
-    $user_ids         = $this->allUserIdsInProject($project);
-    $project_user_ids = $this->projectUserIds($project);
-    $allita_user_ids  = $this->allitaUserIds($project);
+    $user_ids            = $this->allUserIdsInProject($project);
+    $project_user_ids    = $this->projectUserIds($project);
+    $allita_user_ids     = $this->allitaUserIds($project);
     $default_report_user = ReportAccess::where('project_id', $project)->where('default', 1)->first();
-    $project          = Project::with('contactRoles.person.user')->find($project); //DEVCO
+    $project             = Project::with('contactRoles.person.user')->find($project); //DEVCO
     // return $project->details();
-    $default_user = $project->contactRoles->where('project_role_key', 21)->first();
+    $default_user          = $project->contactRoles->where('project_role_key', 21)->first();
     $default_devco_user_id = 0;
-    $default_user_id = 0;
-    if($default_report_user && $default_report_user->devco && $default_user) {
-        $default_devco_user_id = $default_user->person->user->id;
+    $default_user_id       = 0;
+    if ($default_report_user && $default_report_user->devco && $default_user) {
+      $default_devco_user_id = $default_user->person->user->id;
     }
     if ($default_report_user) {
       $default_user_id = $default_report_user->user_id;
     } elseif ($default_user) {
-        $default_user_id = $default_devco_user_id = $default_user->person->user->id;
+      $default_user_id = $default_devco_user_id = $default_user->person->user->id;
     }
 
-
-   // return $default_user_id;
+    // return $default_user_id;
 
     // replace joins with relationship
-    $users         = User::whereIn('id', $user_ids)->with('role', 'person.email', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access', 'user_phone_numbers.phone')->orderBy('name')->get(); //->paginate(25);
+    $users         = User::whereIn('id', $user_ids)->with('role', 'person.email', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
     $default_org   = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->count();
     $default_addr  = $users->pluck('user_addresses')->filter()->flatten()->where('default', 1)->count();
     $default_phone = $users->pluck('user_phone_numbers')->filter()->flatten()->where('default', 1)->count();
@@ -166,12 +168,12 @@ class ProjectContactsController extends Controller
     }
     $check_user = ReportAccess::where('project_id', $request->project_id)->where('user_id', $request->user_id)->first();
     if ($check_user) {
-    	$check_user->delete();
+      $check_user->delete();
     } else {
       $report_user             = new ReportAccess;
       $report_user->project_id = $request->project_id;
       $report_user->user_id    = $request->user_id;
-      $report_user->devco    = 1;
+      $report_user->devco      = 1;
       $report_user->save();
     }
     return 1;
@@ -524,9 +526,8 @@ class ProjectContactsController extends Controller
 
   public function addPhoneToUser($user_id, $project_id)
   {
-    $user   = User::with('role', 'person', 'organization_details', 'addresses', 'user_organizations.organization')->find($user_id);
-    $states = State::get();
-    return view('modals.user-project-phone', compact('user', 'project_id', 'states'));
+    $user = User::with('role', 'person', 'organization_details', 'addresses', 'user_organizations.organization')->find($user_id);
+    return view('modals.user-project-phone', compact('user', 'project_id'));
   }
 
   public function savePhoneToUser($user_id, Request $request)
@@ -633,4 +634,145 @@ class ProjectContactsController extends Controller
     $phone_number->save();
     return 1;
   }
+
+  public function addEmailToUser($user_id, $project_id)
+  {
+    $user = User::with('role', 'person', 'organization_details', 'addresses', 'user_organizations.organization')->find($user_id);
+    return view('modals.user-project-email', compact('user', 'project_id', 'states'));
+  }
+
+  public function saveEmailToUser($user_id, Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'user_id'       => 'required',
+      'email_address' => 'required|email',
+      'project_id'    => 'required',
+    ], [
+      'user_id.required'    => 'Something went wrong, please contact admin',
+      'project_id.required' => 'Something went wrong, please contact admin',
+    ]);
+    if ($validator->fails()) {
+      return response()->json(['errors' => $validator->errors()->all()]);
+    }
+    $input_email_address                   = $request->email_address;
+    $email_address_type                    = EmailAddressType::where('email_address_type_name', 'Work')->first();
+    $email_address                         = new EmailAddress;
+    $email_address->email_address_type_id  = $email_address_type->id;
+    $email_address->email_address_type_key = $email_address_type->email_address_key;
+    $email_address->email_address          = $request->email_address;
+    $email_address->save();
+    $ua                   = new UserEmail;
+    $ua->user_id          = $request->user_id;
+    $ua->project_id       = $request->project_id;
+    $ua->email_address_id = $email_address->id;
+    $ua->save();
+    return 1;
+  }
+
+  public function defaultEmailOfUserForProject(Request $request)
+  {
+    // return $request->all();
+    $validator = \Validator::make($request->all(), [
+      'project_id'       => 'required',
+      'email_address_id' => 'required',
+      'user_id'          => 'required',
+    ]);
+    if ($validator->fails()) {
+      return 'Something went wrong, please contact admin';
+    }
+    $selected = $request->email_address_id;
+    // Check if it is devco user and exists in project emails
+    if ($request->devco) {
+      $devco = UserEmail::where('project_id', $request->project_id)
+        ->where('email_address_id', $request->email_address_id)
+        ->where('user_id', $request->user_id)
+        ->where('devco', 1)
+        ->first();
+      if ($devco) {
+        $selected = $devco->id;
+      } else {
+        $uo                   = new UserEmail;
+        $uo->email_address_id = $request->email_address_id;
+        $uo->user_id          = $request->user_id;
+        $uo->project_id       = $request->project_id;
+        $uo->devco            = $request->devco;
+        $uo->save();
+        $selected = $uo->id;
+      }
+    }
+    $defaults = UserEmail::where('project_id', $request->project_id)->get();
+    foreach ($defaults as $key => $default) {
+      if ($default->id == $selected) {
+        $default->default = 1;
+      } else {
+        $default->default = 0;
+      }
+      $default->save();
+    }
+    return 1;
+  }
+
+  public function editEmailOfUser($email_address_id, $project_id)
+  {
+    $up = UserEmail::with('email_address', 'user')->find($email_address_id);
+    return view('modals.edit-user-project-email', compact('up', 'project_id'));
+  }
+
+  public function saveEditEmailOfUser($address_id, Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'user_id'          => 'required',
+      'email_address'    => 'required|email',
+      'project_id'       => 'required',
+      'email_address_id' => 'required',
+    ], [
+      'user_id.required'          => 'Something went wrong, please contact admin',
+      'project_id.required'       => 'Something went wrong, please contact admin',
+      'email_address_id.required' => 'Something went wrong, please contact admin',
+    ]);
+    $email_address                = EmailAddress::find($request->email_address_id);
+    $input_email_address          = $request->email_address;
+    $email_address_type           = EmailAddressType::where('email_address_type_name', 'Work')->first();
+    $email_address->email_address = $input_email_address;
+    $email_address->last_edited   = \Carbon\Carbon::now();
+    $email_address->save();
+    return 1;
+  }
+
+  public function removeEmailOfUser($email_id, Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'email_id' => 'required',
+    ], [
+      'email_id.required' => 'Something went wrong, please contact admin',
+    ]);
+    if ($validator->fails()) {
+      return response()->json(['errors' => $validator->errors()->all()]);
+    }
+    $org = UserEmail::find($request->email_id);
+    $org->delete();
+    return 1;
+  }
+
+  public function removePhoneOfUser($phone_id, Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'phone_number_id' => 'required',
+    ], [
+      'phone_number_id.required' => 'Something went wrong, please contact admin',
+    ]);
+    if ($validator->fails()) {
+      return response()->json(['errors' => $validator->errors()->all()]);
+    }
+    $org = UserPhoneNumber::find($request->phone_number_id);
+    $org->delete();
+    return 1;
+  }
+
+
+
+
+
 }
+
+
