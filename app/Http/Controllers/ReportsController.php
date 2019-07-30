@@ -434,16 +434,22 @@ class ReportsController extends Controller
     }
   }
 
-  public function newReportForm()
+  public function newReportForm(Request $request)
   {
    if(Auth::user()->can('access_auditor')){
     // list out templates
-    $audits    = CachedAudit::where('step_id','>', 59)->where('step_id','<',67)->with('project')->with('audit.reports')
+    $project_id = '';
+    if($request->has('project_id'))
+      $project_id = $request->get('project_id');
+    
+    $audits    = CachedAudit::when(!empty($project_id), function($query) use($project_id){      
+      return $query->where('project_id',$project_id);      
+    })->where('step_id','>', 59)->where('step_id','<',67)->with('project')->with('audit.reports')
     //->orderBy('projects.project_name', 'asc')
     ->get();
     $templates = CrrReport::where('template', 1)->where('active_template', 1)->get();
 
-    return view('modals.new-report', compact('templates', 'audits'));
+    return view('modals.new-report', compact('templates', 'audits','project_id'));
     }else{
       return 'Sorry, you are not allowed to access this page.';
     }

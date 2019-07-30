@@ -2651,14 +2651,22 @@ class AuditController extends Controller
         $id = $project;
         $project = Project::find($project);
 
+        $messages = [];
         // Perform Actions First.
-        if (!is_null($request->get('due'))) {
+        if (!is_null($request->get('due'))) 
+        {
             $data        = [];
             $data['due'] = $request->get('due');
-            $data['id']  = $request->get('report_id');
-            //dd($data);
-            $messages[] = $this->dueDate($data);
-            //dd($messages);
+            $data['id']  = $request->get('report_id');            
+            $messages[] = $this->dueDate($data);            
+        }
+
+        if (!is_null($request->get('action'))) 
+        {
+            $data           = [];
+            $data['action'] = intval($request->get('action'));                  
+            $report     = CrrReport::find($request->get('id'));
+            $messages[] = $this->reportAction($report, $data);            
         }
 
         // Set default filters for first view of page:
@@ -2681,15 +2689,15 @@ class AuditController extends Controller
 
         // Search Number
         if ($request->get('search')) {
-            session(['crr_search' => $request->get('search')]);
-        } elseif (is_null(session('crr_search'))) {
-            session(['crr_search' => 'all']);
+            session(['crrp_search' => $request->get('search')]);
+        } elseif (is_null(session('crrp_search'))) {
+            session(['crrp_search' => 'all']);
         }
-        if (session('crr_search') !== 'all') {
+        if (session('crrp_search') !== 'all') {
             $searchEval = '=';
-            $searchVal  = intval(session('crr_search'));
+            $searchVal  = intval(session('crrp_search'));
         } else {
-            session(['crr_search' => 'all']);
+            session(['crrp_search' => 'all']);
             $searchEval = '>';
             $searchVal  = '0';
         }
@@ -2813,8 +2821,16 @@ class AuditController extends Controller
                 return $query->whereIn('project_id', $userProjects);
         })
         ->orderBy('updated_at', 'desc')
-        ->paginate(10);        
-        return view('projects.partials.reports',compact('reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'crr_types_array', 'messages', 'newest'));
+        ->paginate(10);     
+        
+        if (count($reports)) {
+            $newest = $reports->sortByDesc('updated_at');
+            $newest = date('Y-m-d G:i:s', strtotime($newest[0]->updated_at));
+        } else {
+            $newest = null;
+        }
+
+        return view('projects.partials.reports',compact('id','reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'crr_types_array', 'messages', 'newest'));
     }
 
     public function modalProjectProgramSummaryFilterProgram($project_id, $program_id, Request $request)
