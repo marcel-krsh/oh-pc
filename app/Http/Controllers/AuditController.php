@@ -2809,6 +2809,122 @@ class AuditController extends Controller
             $crrApprovalTypes = CrrApprovalType::where('id','>',5)->orderBy('order')->get();
         }
 
+        if(null !== $request->get('order_by')){
+            switch($request->get('order_by')){
+                case "id":
+                        
+                        if(null !== session('report_order_by') && session('report_order_by') == 'id'){                            
+                            if(session('report_asc_desc')=='asc'){
+                                session(['report_asc_desc' => 'desc']);                
+                            }else{
+                                session(['report_asc_desc' => 'asc']);                    
+                            }
+                        }else{                            
+                            session(['report_asc_desc' => 'asc']);            
+                        }
+                        session(['report_order_by' => 'id']);                        
+                        break;
+
+                case "project_id":
+                        if(null !== session('report_order_by') && session('report_order_by') == 'project_id'){
+                            if(session('report_asc_desc')=='asc'){
+                                session(['report_asc_desc' => 'desc']);                
+                            }else{
+                                session(['report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session(['report_asc_desc' => 'asc']);                
+                        }
+                        session(['report_order_by' => 'project_id']);
+                        break;
+
+                case "audit_id":
+                        if(null !== session('report_order_by') && session('report_order_by') == 'audit_id'){
+                            if(session('report_asc_desc')=='asc'){
+                                session(['report_asc_desc' => 'desc']);                
+                            }else{
+                                session(['report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session(['report_asc_desc' => 'asc']);                
+                        }
+                        session(['report_order_by' => 'audit_id']);
+                        break;
+                
+                case "lead_id":
+                        if(null !== session('report_order_by') && session('report_order_by') == 'lead_id'){
+                            if(session('report_asc_desc')=='asc'){
+                                session(['report_asc_desc' => 'desc']);                
+                            }else{
+                                session(['report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session(['report_asc_desc' => 'asc']);                
+                        }
+                        session(['report_order_by' => 'lead_id']);
+                        break;
+                case "from_template_id":
+                        if(null !== session('report_order_by') && session('report_order_by') == 'from_template_id'){
+                            if(session('report_asc_desc')=='asc'){
+                                session(['report_asc_desc' => 'desc']);                
+                            }else{
+                                session(['report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session(['report_asc_desc' => 'asc']);                
+                        }
+                        session(['report_order_by' => 'from_template_id']);
+                        break;                        
+                
+                case "crr_approval_type_id":
+                        if(null !== session('report_order_by') && session('report_order_by') == 'crr_approval_type_id'){
+                            if(session('report_asc_desc')=='asc'){
+                                session(['report_asc_desc' => 'desc']);                
+                            }else{
+                                session(['report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session(['report_asc_desc' => 'asc']);                
+                        }
+                        session(['report_order_by' => 'crr_approval_type_id']);
+                        break;
+                                                                
+                case "created_at":
+                        if(null !== session('report_order_by') && session('report_order_by') == 'created_at'){
+                            if(session('report_asc_desc')=='asc'){
+                                session(['report_asc_desc' => 'desc']);                
+                            }else{
+                                session(['report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session(['report_asc_desc' => 'asc']);                
+                        }
+                        session(['report_order_by' => 'created_at']);
+                        break;
+                        
+                case "response_due_date":
+                        if(null !== session('report_order_by') && session('report_order_by') == 'response_due_date'){
+                            if(session('report_asc_desc')=='asc'){
+                                session(['report_asc_desc' => 'desc']);                
+                            }else{
+                                session(['report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session(['report_asc_desc' => 'asc']);                
+                        }
+                        session(['report_order_by' => 'response_due_date']);
+                        break;
+
+                default:
+                    session(['report_asc_desc' => 'desc']);
+                    session(['report_order_by' => 'updated_at']);
+                    break;
+            }
+        }else{            
+            session(['report_asc_desc' => 'desc']);
+            session(['report_order_by' => 'updated_at']);
+        }
+        
         $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
         ->whereNull('template')
         ->where('project_id', '=', $id)
@@ -2820,7 +2936,7 @@ class AuditController extends Controller
                 $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();        
                 return $query->whereIn('project_id', $userProjects);
         })
-        ->orderBy('updated_at', 'desc')
+        ->orderBy(session('report_order_by'), session('report_asc_desc'))
         ->paginate(10);     
         
         if (count($reports)) {

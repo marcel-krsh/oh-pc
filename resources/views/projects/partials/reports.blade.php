@@ -119,34 +119,97 @@ $crrTypeSelection    = 'all';
                 top: 4px;
                 font-size: 16px;
         }
+        .sort-neutral1 {
+            display: inline-block;
+            width: 99%;
+            height: 18px;            
+            background-position: center;
+            background-repeat: no-repeat;
+        }
     </style>
     <div class="uk-width-1-1 uk-grid-margin uk-first-column">
             <table class="uk-table " id="crr-report-list">
                 <thead>
 
+                    @php
+                    $class = '';
+                    $report_asc_desc   = session('report_asc_desc');
+                    $report_order_by   = session('report_order_by');
 
-                    <th ><strong>REPORT</strong></th>
-                    <th ><strong>PROJECT</strong></th>
+                    if($report_asc_desc == 'asc')
+                        $class = 'sort-asc';
+                    else
+                        $class = 'sort-desc';
 
-                    <th  width="100px"><strong>AUDIT</strong></th>
+                    @endphp
+                    <th ><strong>REPORT
+                            <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" data-sorting="id" class="<?= ($report_order_by == 'id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                            </span>
+                        </strong>
+                    </th>
+                    <th ><strong> PROJECT</strong>
+                        <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" data-sorting="project_id" class="<?= ($report_order_by == 'project_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                        </span>
+                    </th>
 
-                    @can('access_auditor') <th ><strong>LEAD</strong></th>
+                    <th  width="100px">
+                        <strong>AUDIT</strong>
+                        <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" data-sorting="audit_id" class="<?= ($report_order_by == 'audit_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                        </span>
+                    </th>
+
+                    @can('access_auditor') <th ><strong>LEAD</strong>
+                    <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                            <a href="JavaScript:void(0);" data-sorting="lead_id" class="<?= ($report_order_by == 'lead_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                    </span>
+                    </th>
 
                     @endCan
 
-                    <th ><strong>TYPE</strong></th>
+                    <th ><strong>TYPE</strong>
+                        <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" data-sorting="from_template_id" class="<?= ($report_order_by == 'from_template_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                        </span>
+                    </th>
 
-                    <th width="120px"><strong>STATUS</strong></th>
+                    <th width="120px"><strong>STATUS</strong>
+                        <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" data-sorting="crr_approval_type_id" class="<?= ($report_order_by == 'crr_approval_type_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                        </span>
+                    </th>
 
-                    @can('access_auditor')<th  width="80px"><strong>ACTION</strong></th>@endCan
+                    @can('access_auditor')<th  width="80px"><strong>ACTION</strong>
+                        <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" class="sort-neutral1 sortingcolumn uk-margin-small-top"></a>
+                        </span>
+                    </th>@endCan
 
-                    <th width="120px"><strong>CREATED</strong></th>
+                    <th width="120px"><strong>CREATED</strong>
+                        <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" data-sorting="created_at" class="<?= ($report_order_by == 'created_at')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                        </span>
+                    </th>
 
-                    <th width="120px"><strong>LAST EDITED</strong></th>
+                    <th width="120px"><strong>LAST EDITED</strong>
+                        <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" data-sorting="updated_at" class="<?= ($report_order_by == 'updated_at')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                        </span>
+                    </th>
 
-                    <th width="120px"><strong>DUE DATE</strong></th>
+                    <th width="120px"><strong>DUE DATE</strong>
+                        <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" data-sorting="response_due_date" class="<?= ($report_order_by == 'response_due_date')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                        </span>
+                    </th>
                     @can('access_auditor')
-                        <th width="40px" uk-tooltip title="Report History"><i class="a-person-clock"></i></th>
+                        <th width="40px" uk-tooltip title="Report History"><i class="a-person-clock"></i>
+                            <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                    <a href="JavaScript:void(0);" class="sort-neutral1 sortingcolumn uk-margin-small-top"></a>
+                            </span>
+                        </th>
                     @endCan
 
             </thead>
@@ -159,6 +222,12 @@ $crrTypeSelection    = 'all';
             var project_id = {{$id}};
 
         $(document).ready(function(){
+            $('.sortingcolumn').click(function(){
+                $.get('/projects/'+project_id+'/reports?order_by=' + encodeURIComponent($(this).data('sorting')), function(data) {                                                                        
+                        $("#project-detail-tab-6-content").html(data);
+                } );                
+            }),
+
             $('.page-link').click(function(){
                $('#project-detail-tab-6-content').load($(this).attr('href'));
                window.current_finding_type_page = $('#project-detail-tab-6-content').load($(this).attr('href'));
@@ -175,7 +244,7 @@ $crrTypeSelection    = 'all';
             });
 
             function searchReports(project_id){                     
-                $.get('/projects/'+project_id+'/reports?search=' + encodeURIComponent($("#reports-search").val()), function(data) {                
+                $.get('/projects/'+project_id+'/reports?order_by=' + encodeURIComponent($("#reports-search").val()), function(data) {                
                             // $('#project-detail-tab-6').load('/projects/'+project_id+'/reports');                            
                             $('#project-detail-tab-6').trigger("click");
                 } );
