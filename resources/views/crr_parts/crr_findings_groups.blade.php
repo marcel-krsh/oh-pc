@@ -83,22 +83,48 @@
 			@endif
 
 			<span id="inspec-tools-finding-resolve-{{ $f->id }}" >
-				@can('access_auditor')
+				
 				@if(!$f->cancelled_at)
 				@if($f->auditor_approved_resolution != 1)
-				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" onclick="resolveFinding({{ $f->id }})"><span class="a-circle"></span> RESOLVE</button>
+				
 				@else
-				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $f->id }})"><span class="a-circle-checked"></span> RESOLVED</button>
+				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button><br />
 				@endif
 				@endif
 				@else
 				@if($f->auditor_approved_resolution == 1)
-				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};"><span class="a-circle-checked"></span> RESOLVED</button>
+				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE</button>
 				@endif
-				@endcan
+				
+
+				
 			</span>
+			<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" readonly="readonly" type="text" placeholder="DATE RESOLVED" value="">
+				<script>
+					flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+
+					flatpickr("#resolved-date-finding-{{$f->id}}", {
+						
+						altFormat: "F j, Y G:i K",
+						dateFormat: "F j, Y G:i K",
+						enableTime: true,
+						"locale": {
+				        "firstDayOfWeek": 1 // start week on Monday
+				      },
+				      onClose: function(selectedDates, dateStr, instance){
+				      	
+				      	resolveFinding({{ $f->id }},dateStr);
+				      	
+				      }
+				    });
+
+			  </script>
 		</div>
 		@endif
+		@else
+			@if($f->auditor_approved_resolution == 1)
+				<p>RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }}</p>
+			@endIf
 		@endcan
 
 		<h2>@if($f->finding_type->type == 'nlt')

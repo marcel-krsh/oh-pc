@@ -187,14 +187,15 @@ foreach($grouped_bf as $bk => $bf) {
 <script>
 
 	@can('access_auditor')
-	function resolveFinding(findingid){
+	function resolveFinding(findingid, dateResolved){
 		$.post('/findings/'+findingid+'/resolve', {
-			'_token' : '{{ csrf_token() }}'
+			'_token' : '{{ csrf_token() }}',
+			'date' : dateResolved
 		}, function(data) {
 			if(data != 0){
-				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+')"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
+				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+',\'null\')"><span class="a-circle-checked">&nbsp; </span>REMOVE RESOLUTION DATE</button>');
 			}else{
-				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" onclick="resolveFinding('+findingid+')"><span class="a-circle">&nbsp; </span>RESOLVE</button>');
+				$('#inspec-tools-finding-resolve-'+findingid).html('');
 			}
 		});
 	}
