@@ -1935,6 +1935,8 @@ class AuditController extends Controller
                     'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file,
                 ];
 
+                $data['auditID']= $audit->id;
+
                 if($return_raw){
                     return $data;
                 }
@@ -5829,6 +5831,31 @@ class AuditController extends Controller
 			}
 		}
 		return true;
+    }
+
+    public function ajaxAuditRequiredUnits(Request $request){
+        $audit_id = $request->post('id');
+        $name=$request->post('name');
+        $req_type=$request->post('req_type');
+        $value=$request->post('req_val');
+        $audit_details = Audit::where('id', '=', $audit_id)->first();
+        $selection_summary = json_decode($audit_details->selection_summary, 1);
+        if(null !== $selection_summary){
+            foreach ($selection_summary['programs'] as $key => $program) {
+                $selection_summary['programs'][$key]['name'];
+                if($selection_summary['programs'][$key]['name']== $name){
+                    @$selection_summary['programs'][$key][$req_type]=$value;
+                }
+            }
+            $audit_details->selection_summary=json_encode($selection_summary);
+            if($audit_details->save()){
+                return "true";
+            }else{
+                return "false";
+            }
+            // dd($selection_summary['programs']);
+        }
+        
     }
 
 }

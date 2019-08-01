@@ -126,6 +126,7 @@
 							<div class="uk-width-2-5">
 								<?php
 								$program_id=$program['id'];
+								 $auditID=$data['auditID'];
 								?>
 								<table class="uk-table uk-table-small noline small-padding">
 									<tbody>
@@ -141,13 +142,13 @@
 											<td class="uk-text-center border-right">
 												{{-- {{$program['required_units']}} --}}
 												<div>
-													<input ondblclick="enableEditField('#required_units_{{$program_id}}');" name="required_units[{{$program_id}}]" id="required_units_{{$program_id}}" type="text" value="{{$program['required_units']}}" class="change-watch" onblur="disableEditField('#required_units_{{$program_id}}');" style="text-align: center;background: transparent;border: none;color: #333;width: 50px;" readonly="">
+													<input ondblclick="enableEditField('#required_units_{{$program_id}}','{{$program['name']}}','required_units','{{$program_id}}',{{$auditID}});" name="required_units[{{$program_id}}]" id="required_units_{{$program_id}}" type="text" value="{{$program['required_units']}}" class="change-watch" onblur="disableEditField('#required_units_{{$program_id}}','{{$program['name']}}','required_units','{{$program_id}}',{{$auditID}});" style="text-align: center;background: transparent;border: none;color: #333;width: 50px;" readonly="">
 												</div>
 											</td>
 											<td class="uk-text-center">
 												{{-- {{$program['required_units_file']}} --}}
 												<div>
-													<input ondblclick="enableEditField('#required_units_file_{{$program_id}}');" name="required_units_file[{{$program_id}}]" id="required_units_file_{{$program_id}}" type="text" value="{{$program['required_units_file']}}" class="change-watch" onblur="disableEditField('#required_units_file_{{$program_id}}');" style="text-align: center;background: transparent;border: none;color: #333;width: 50px;" readonly="">
+													<input ondblclick="enableEditField('#required_units_file_{{$program_id}}','{{$program['name']}}','required_units_file','{{$program_id}},{{$auditID}}');" name="required_units_file[{{$program_id}}]" id="required_units_file_{{$program_id}}" type="text" value="{{$program['required_units_file']}}" class="change-watch" onblur="disableEditField('#required_units_file_{{$program_id}}','{{$program['name']}}','required_units_file','{{$program_id}}',{{$auditID}});" style="text-align: center;background: transparent;border: none;color: #333;width: 50px;" readonly="">
 												</div>
 											</td>
 										</tr>
@@ -454,15 +455,32 @@
 	   }
 	}
 
-function enableEditField(fieldId){
+function enableEditField(fieldId,fieldName,fieldUnitType,Id){
+console.log(fieldId+" "+fieldName+" "+fieldUnitType+" "+Id);
 $(fieldId).prop('readonly', false);
 $(fieldId).addClass('editing');
 $(fieldId).focus();
 console.log('Enabled field '+fieldId);
 }
-function disableEditField(fieldId) {
+function disableEditField(fieldId,fieldName,fieldUnitType,Id,auditID) {
+console.log($(fieldId).val());
 $(fieldId).prop('readonly', true);
 $(fieldId).removeClass('editing');
+
+$.post('{{ URL::route("ajax.audit.required.units") }}', {
+	'id' : auditID,
+	'name' : fieldName,
+	'req_type' : fieldUnitType,
+	'req_val' : $(fieldId).val(),
+	'_token' : '{{ csrf_token() }}'
+}, function(data) {
+	$("#project-details-button-1").trigger("click");
+	// if(data){
+	// UIkit.modal.alert("");
+	// } 
+});
+
+
 console.log('Readonly field '+fieldId);
 }
 </script>
