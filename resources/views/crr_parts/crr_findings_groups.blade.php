@@ -74,6 +74,7 @@
 
 		@can('access_auditor')
 		@if(!$print)
+		<!-- LINE 77 -->
 		<div class="inspec-tools-tab-finding-actions  uk-margin-small-top ">
 
 			@if($f->cancelled_at)
@@ -88,7 +89,7 @@
 				@if($f->auditor_approved_resolution != 1)
 				
 				@else
-				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button><br />
+				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button>
 				@endif
 				@endif
 				@else
@@ -107,7 +108,6 @@
 						
 						altFormat: "F j, Y G:i K",
 						dateFormat: "F j, Y G:i K",
-						enableTime: true,
 						"locale": {
 				        "firstDayOfWeek": 1 // start week on Monday
 				      },
@@ -120,13 +120,15 @@
 
 			  </script>
 		</div>
+		<!-- LINE 123 -->
 		@endif
 		@else
 			@if($f->auditor_approved_resolution == 1)
+			<!-- LINE 127 -->
 				<p>RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }}</p>
 			@endIf
 		@endcan
-
+		<!-- LINE 131 -->
 		<h2>@if($f->finding_type->type == 'nlt')
 			<i class="a-booboo"></i>
 			@endIf
