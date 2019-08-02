@@ -104,12 +104,14 @@
 									// "locale": {
 							  		//"firstDayOfWeek": 1 // start week on Monday
 							      },
-							      
+							      onOpen: function(dateStr){
+							      	console.log('Calendar opened for finding {{$f->id}}'),
+							      },
 							      onClose: function(selectedDates, dateStr, instance){
 							      	console.log('Calling resolve finding {{$f->id}} dateStr'),
 							      	resolveFinding({{ $f->id }},dateStr)
 							      	
-							      }
+							      
 							    });
 
 						  </script>
