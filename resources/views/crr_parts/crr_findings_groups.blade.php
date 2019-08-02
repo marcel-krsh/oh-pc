@@ -78,19 +78,21 @@
 				<div class="inspec-tools-tab-finding-actions  uk-margin-small-top " uk-grid>
 
 					@if($f->cancelled_at)
-					<button class="uk-button uk-link uk-width-1-1" style="width: 45%;" onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
+					<button class="uk-button uk-link uk-width-1-1"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
 					@else
-					<button class="uk-button uk-link uk-width-1-1" style="width: 45%;" onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
+					<button class="uk-button uk-link uk-width-1-1"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
 					@endif
 					<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="uk-width-1-2">
-					RESOLVED AT:
+					
 					</div>
 					<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="uk-width-1-2">
 						
 						@if(!$f->cancelled_at)
 							@if($f->auditor_approved_resolution == 1)
-								<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button>
+								<button class="uk-button uk-link uk-margin-small-left " style="width: 45%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button>
 							@endif
+						@else
+							RESOLVED AT:
 						@endif
 						<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" readonly="readonly" type="text" placeholder="DATE RESOLVED" value="">
 						<script>
