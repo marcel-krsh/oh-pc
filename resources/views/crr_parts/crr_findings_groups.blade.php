@@ -108,11 +108,11 @@
 							        "firstDayOfWeek": 1 // start week on Monday
 							      },
 							      onClose: function(selectedDates, dateStr, instance){
-							      	var setDefaultTo = instance.parseDate(dateStr)
+							      	//var setDefaultTo = instance.parseDate(dateStr)
 							      	//alert(setDefaultTo);
-							      	resolveFinding({{ $f->id }},dateStr);
+							      	//resolveFinding({{ $f->id }},dateStr);
 							      	
-							      	//alert(selectedDates+' '+dateStr+' '+instance);
+							      	alert(selectedDates+' '+dateStr+' '+instance);
 							      	//loadTab('dashboard/calls?order_by=date&dates='+encodeURIComponent(dateStr),'1','','','',1);
 							      }
 							    });
