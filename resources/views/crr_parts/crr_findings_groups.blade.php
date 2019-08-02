@@ -78,13 +78,13 @@
 				<div class="inspec-tools-tab-finding-actions  uk-margin-small-top " uk-grid>
 
 					@if($f->cancelled_at)
-					<button class="uk-button uk-link uk-width-1-1"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
+					<button class="uk-button uk-link uk-width-1-1"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3 uk-margin-small-bottom"></i> RESTORE</button>
 					@else
-					<button class="uk-button uk-link uk-width-1-1"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
+					<button class="uk-button uk-link uk-width-1-1"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3 uk-margin-small-bottom"></i> CANCEL</button>
 					@endif
 					
 					@if(!$f->cancelled_at)
-						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="uk-width-1-2 uk-remove-margin">
+						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="uk-width-1-2 uk-margin-remove">
 							@if($f->auditor_approved_resolution == 1)
 
 								<button class="uk-button uk-link uk-margin-small-left " style="width: 100%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button>
@@ -92,7 +92,7 @@
 								RESOLVED AT:
 							@endif
 						</div>
-						<div  class="uk-width-1-2 uk-remove-margin">
+						<div  class="uk-width-1-2 uk-margin-remove">
 							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" style="width:100%;" readonly type="text" placeholder="DATE" value="">
 							<script>
 								flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
