@@ -176,7 +176,7 @@ foreach($grouped_bf as $bk => $bf) {
 	@foreach($grouped_uf as $uf)
 	@php
 		$findings = $uf;
-		$compiledFlatPikers = "";
+		$compiledFlatPickers = "";
 	@endphp
 		@include('crr_parts.crr_findings_groups')
 	@endforeach
