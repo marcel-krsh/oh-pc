@@ -369,6 +369,7 @@
 		@endforeach
 		@endIf
 		{{-- End documents --}}
-		@endif
+		@endif 
 	</div>
+</div>
 	@endForEach
