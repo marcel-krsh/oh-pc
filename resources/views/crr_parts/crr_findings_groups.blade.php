@@ -82,9 +82,7 @@
 					@else
 					<button class="uk-button uk-link uk-width-1-1"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
 					@endif
-					<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="uk-width-1-2">
 					
-					</div>
 					<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="uk-width-1-2">
 						
 						@if(!$f->cancelled_at)
