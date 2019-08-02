@@ -75,7 +75,7 @@
 		@can('access_auditor')
 			@if(!$print)
 				<!-- LINE 77 -->
-				<div class="inspec-tools-tab-finding-actions  uk-margin-small-top ">
+				<div class="inspec-tools-tab-finding-actions  uk-margin-small-top " uk-grid>
 
 					@if($f->cancelled_at)
 					<button class="uk-button uk-link uk-width-1-1" style="width: 45%;" onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
