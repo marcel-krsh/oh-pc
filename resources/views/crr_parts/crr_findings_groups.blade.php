@@ -98,11 +98,14 @@
 								flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
 								flatpickr("#resolved-date-finding-{{$f->id}}", {
-									console.log('Calendar opened for finding {{$f->id}}')
+									
 									// altFormat: "F j, Y",
 									// dateFormat: "F j, Y",
 									// "locale": {
 							  		//"firstDayOfWeek": 1 // start week on Monday
+							      },
+							      onOpen: function(dateStr){
+							      	console.log('Calendar opened for finding {{$f->id}}'),
 							      },
 							      onClose: function(selectedDates, dateStr, instance){
 							      	console.log('Calling resolve finding {{$f->id}} dateStr'),
