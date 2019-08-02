@@ -111,8 +111,8 @@
 							      	//alert(setDefaultTo);
 							      	//resolveFinding({{ $f->id }},dateStr);
 							      	
-							      	alert(selectedDates+' '+dateStr+' '+instance);
-							      	//loadTab('dashboard/calls?order_by=date&dates='+encodeURIComponent(dateStr),'1','','','',1);
+							      	alert(selectedDates+\' \'+dateStr+\' \'+instance);
+							      	//loadTab(\'dashboard/calls?order_by=date&dates=\'+encodeURIComponent(dateStr),\'1\',\'\',\'\',\'\',1);
 							      }
 							    });
 							    ';
