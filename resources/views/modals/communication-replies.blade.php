@@ -31,9 +31,19 @@
 		<div class="uk-width-1-5 uk-width-1-5@s communication-item-tt-to-from">
 			@if(count($message->recipient_details))
 			<span class="uk-text-muted">To: </span> <br>
-			@foreach ($message->recipient_details as $recipient)
-			{{ $recipient->full_name() }}@if(!$loop->last), @endif <br>
-			@endforeach
+			@foreach ($message->recipients as $recipient)
+				@if($recipient->user->name)
+					@if($recipient->seen_at)
+						{{$recipient->user->name}} <a class="uk-link-muted tooltipmodal" uk-tooltip="pos:top-left;title:First viewed on {{ date('F d, Y h:i A T', strtotime($recipient->seen_at)) }}"><i class="a-envelope-open_1"></i></a>@if(!$loop->last), @endif
+					@else
+						@if($recipient->seen)
+							{{$recipient->user->name}} <i class="a-envelope-open_1" uk-tooltip="pos:top-left;title:Viewed"></i>@if(!$loop->last),@endif
+						@else
+							{{$recipient->user->name}} <i class="a-envelope-4" uk-tooltip="pos:top-left;title:Not viewed yet"></i>@if(!$loop->last),@endif
+						@endif
+					@endif
+				@endif
+			@endforeach		
 			@endif
 		</div>
 		{{-- Dcouments section --}}
