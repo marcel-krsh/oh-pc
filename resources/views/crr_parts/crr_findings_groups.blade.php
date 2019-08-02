@@ -73,55 +73,56 @@
 			
 
 		@can('access_auditor')
-		@if(!$print)
-		<!-- LINE 77 -->
-		<div class="inspec-tools-tab-finding-actions  uk-margin-small-top ">
+			@if(!$print)
+				<!-- LINE 77 -->
+				<div class="inspec-tools-tab-finding-actions  uk-margin-small-top ">
 
-			@if($f->cancelled_at)
-			<button class="uk-button uk-link uk-width-1-2" style="width: 45%;" onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
-			@else
-			<button class="uk-button uk-link uk-width-1-2" style="width: 45%;" onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
-			@endif
+					@if($f->cancelled_at)
+					<button class="uk-button uk-link uk-width-1-2" style="width: 45%;" onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
+					@else
+					<button class="uk-button uk-link uk-width-1-2" style="width: 45%;" onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
+					@endif
 
-			<span id="inspec-tools-finding-resolve-{{ $f->id }}" >
-				
-				@if(!$f->cancelled_at)
-				@if($f->auditor_approved_resolution != 1)
-				
-				@else
-				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button>
-				@endif
-				@endif
-				@else
-				@if($f->auditor_approved_resolution == 1)
-				<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE</button>
-				@endif
-				
-
-				
-			</span>
-			<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" readonly="readonly" type="text" placeholder="DATE RESOLVED" value="">
-				<script>
-					flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
-
-					flatpickr("#resolved-date-finding-{{$f->id}}", {
+					<span id="inspec-tools-finding-resolve-{{ $f->id }}" >
 						
-						altFormat: "F j, Y G:i K",
-						dateFormat: "F j, Y G:i K",
-						"locale": {
-				        "firstDayOfWeek": 1 // start week on Monday
-				      },
-				      onClose: function(selectedDates, dateStr, instance){
-				      	
-				      	resolveFinding({{ $f->id }},dateStr);
-				      	
-				      }
-				    });
+						@if(!$f->cancelled_at)
+							@if($f->auditor_approved_resolution == 1)
+								<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button>
+							@endif
+						@endif
+						<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" readonly="readonly" type="text" placeholder="DATE RESOLVED" value="">
+						<script>
+							flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
-			  </script>
-		</div>
-		<!-- LINE 123 -->
-		@endif
+							flatpickr("#resolved-date-finding-{{$f->id}}", {
+								
+								altFormat: "F j, Y G:i K",
+								dateFormat: "F j, Y G:i K",
+								"locale": {
+						        "firstDayOfWeek": 1 // start week on Monday
+						      },
+						      onClose: function(selectedDates, dateStr, instance){
+						      	
+						      	resolveFinding({{ $f->id }},dateStr);
+						      	
+						      }
+						    });
+
+					  </script>
+					</span>
+				</div>
+			
+			@else
+				
+
+					@if($f->auditor_approved_resolution == 1)
+					<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $f->id }},'null')">
+						<span class="a-circle-checked"></span> REMOVE RESOLUTION DATE</button>
+					@endif
+
+			<!-- LINE 123 -->
+			@endif
+		
 		@else
 			@if($f->auditor_approved_resolution == 1)
 			<!-- LINE 127 -->
@@ -371,5 +372,5 @@
 		{{-- End documents --}}
 		@endif 
 	</div>
-</div>
+
 	@endForEach
