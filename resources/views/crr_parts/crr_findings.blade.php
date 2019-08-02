@@ -195,11 +195,12 @@ foreach($grouped_bf as $bk => $bf) {
 		$.post('/findings/'+findingid+'/resolve', {
 			'_token' : '{{ csrf_token() }}',
 			'date' : dateResolved
-		}, function(data) {
+		}, function(data,findingid) {
 			if(data != 0){
-				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+',\'null\')"><span class="a-circle-checked">&nbsp; </span>REMOVE RESOLUTION DATE</button>');
+				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+',\'null\')"><span class="a-circle-cross">&nbsp;</span>CLEAR</button>');
 			}else{
-				$('#inspec-tools-finding-resolve-'+findingid).html('');
+				$('#inspec-tools-finding-resolve-'+findingid).html('RESOLVED AT:');
+				$('#resolved-date-finding-'+findingid).val('');
 			}
 		});
 	}
