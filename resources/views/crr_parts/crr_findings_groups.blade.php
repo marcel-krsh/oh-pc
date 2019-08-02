@@ -13,7 +13,7 @@
 			@if ($findingHeader !== $f->building->building_name)
 				@php $findingHeader = $f->building->building_name; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom">
-					<h2>FINDINGS FOR BIN: {{$f->building_name}}</h2>
+					<h2>FINDINGS FOR BIN: {{$f->building->building_name}}</h2>
 					<hr class="dashed-hr uk-margin-bottom">
 				</div> 
 			@endif
@@ -21,7 +21,7 @@
 
 		@elseIf(!is_null($f->unit_id))
 			@if ($findingHeader !== $f->unit->unit_name)
-				@php $findingHeader = $f->building->building_name; @endphp
+				@php $findingHeader = $f->unit->unit_name; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom">
 					<h2>FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h2>
 					<hr class="dashed-hr uk-margin-bottom">
