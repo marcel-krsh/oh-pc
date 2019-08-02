@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/js/systems/findings.js{{ asset_version() }}"></script>
 <script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
 
+<script type="text/javascript" src="/js/jquery.mask.js"></script>
 <script>
 	function showOnlyFindingsFor(className){
 		if(className == 'finding-group'){
@@ -353,7 +354,8 @@
 
 		<a name="{{ str_replace(' ','',$section->crr_section_id) }}" ></a>
 		<hr class="dashed-hr" style="margin-bottom: 60px; margin-top: 0px; padding:0px; border-color: #3a3a3a;">
-		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $report->version }}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
+		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $report->version }}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a> | <a href="#fax-modal" class="uk-contrast uk-link-mute" uk-toggle><i class="a-fax-2"></i> FAX</a></small>
+
 
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
 			@if(property_exists($section,'parts'))
@@ -440,6 +442,20 @@
 			@endIf
 		</div>
 		@endForEach
+
+		<?php /* Send Fax with Print Report PDF - Start */ ?>
+
+		<div id="fax-modal" uk-modal>
+			<div class="uk-modal-dialog uk-modal-body">
+				<h2 class="uk-modal-title" style="font-size: 20px;font-weight: 600;"><i class="a-fax-2"></i> FAX Number</h2>
+				<p><input id="faxnumber" name="faxnumber" type="text" style="width: 100%;" class="uk-input fieldDisable" placeholder="111-333-5555"></p>
+				<p class="uk-text-right">
+					<button class="uk-button uk-button-default uk-modal-close sendfaxbtnClose fieldDisable" type="button">Cancel</button>
+					<button class="uk-button uk-button-primary sendfaxbtn fieldDisable" type="button">Send</button>
+				</p>
+			</div>
+		</div>
+		<?php /* Send Fax with Print Report PDF - End */ ?>
 	</div>
 
 
@@ -448,6 +464,51 @@
 	session(['projectDetailsOutput' =>0]);
 	
 ?>
+
+
+
+<script type="text/javascript">
+$("#faxnumber").mask("999-999-9999");
+$(".sendfaxbtnClose").click(function(){
+	$('#faxnumber').val("");
+});
+$(".sendfaxbtn").click(function(){
+	var faxnumber = $('#faxnumber').val();
+	var _token= '{!! csrf_token() !!}';
+	var report='{{ $report->id }}';
+	$('.sendfaxbtn').html("<div uk-spinner></div> Please Wait");
+	$('.fieldDisable').prop('disabled', true);
+	$.ajax({
+	   type:'POST',
+	   url:"{{URL('/report/sendfax')}}",
+	   data:{faxnumber:faxnumber,_token:_token,report:report},
+	   dataType:'json',
+	   success:function(data){
+		  $('.fieldDisable').prop('disabled', false);
+		  $('.sendfaxbtn').html("Send");
+		  $(".sendfaxbtnClose").trigger('click');
+		  if(data.status){
+			UIkit.modal.dialog('<center style="color:green">'+data.message+'</center>');
+			/* UIkit.notification({
+				message: data.message,
+				status: 'success',
+				pos: 'top-center',
+				timeout: 30000
+			}); */
+		  }else{
+			UIkit.notification({
+				message: data.message,
+				status: 'danger',
+				pos: 'top-center',
+				timeout: 30000
+			});
+		  }
+		  
+	   }
+	});
+});
+
+</script>
 
 </div>
 @can('access_auditor')<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan

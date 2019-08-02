@@ -42,143 +42,144 @@
 				UIkit.modal.alert(data,{stack: true});
 			} else {
 				UIkit.notification('<span uk-icon="icon: check"></span> Auditor Assigned', {pos:'top-right', timeout:1000, status:'success'});
+                // reload inspection screen
+                // debugger;
+
+                if(unit_id != 0 && amenity_id == 0){
+                	@if($current_auditor)
+                	console.log('1');
+                	// auditor-6324 6659 23058 208307 397
+                	var newcontent = '<div id="auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float use-hand-cursor" onclick="swapAuditor({{$current_auditor->id}}, {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+data.initials+'</div>';
+                	$('#{{$element}}').html(newcontent);
+
+                	var newunitcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
+                	$('[id^=auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}]').replaceWith(newunitcontent);
+
+                	var unitelement = '#unit-auditors-'+data.unit_id+' .uk-slideshow-items li.uk-active > div';
+                	console.log(unitelement);
+                	$(unitelement).html('');
+                	$.each(data.unit_auditors, function(index, value){
+                		var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+                		$(unitelement).append(newcontent);
+                	});
+
+                	var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
+                	console.log(buildingelement);
+                	$(buildingelement).html('');
+                	$.each(data.building_auditors, function(index, value){
+                		var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+                		$(buildingelement).append(newcontent);
+                	});
 
 
-				if(unit_id != 0 && amenity_id == 0){
-					@if($current_auditor)
-					console.log('1');
+                	@else
+                	console.log('2');
 
-					var newcontent = '<div id="auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float use-hand-cursor" onclick="swapAuditor({{$current_auditor->id}}, {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+data.initials+'</div>';
-					$('#{{$element}}').html(newcontent);
+                	var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float">'+data.initials+'</div>';
+                	$('#{{$element}}').html(newcontent);
 
-					var newunitcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
-					$('[id^=auditor-{{$current_auditor->id}}{{$audit_id}}{{$building_id}}]').replaceWith(newunitcontent);
+                	if($('#building-auditors-'+building_id).hasClass('hasAuditors')){
+                		$('#building-auditors-'+building_id).append(newcontent);
+                	}else{
+                		$('#building-auditors-'+building_id).html(newcontent);
+                	}
 
-					var unitelement = '#unit-auditors-'+data.unit_id+' .uk-slideshow-items li.uk-active > div';
-					console.log(unitelement);
-					$(unitelement).html('');
-					$.each(data.unit_auditors, function(index, value){
-						var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
-						$(unitelement).append(newcontent);
-					});
+                	var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
 
-					var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
-					console.log(buildingelement);
-					$(buildingelement).html('');
-					$.each(data.building_auditors, function(index, value){
-						var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
-						$(buildingelement).append(newcontent);
-					});
+                	$(unitelement).html('');
+                	$.each(data.unit_auditors, function(index, value){
+                		var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+                		$(unitelement).append(newcontent);
+                	});
 
+                	var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
 
-					@else
-					console.log('2');
+                	$(buildingelement).html('');
+                	$.each(data.building_auditors, function(index, value){
+                		var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+                		$(buildingelement).append(newcontent);
+                	});
 
-					var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float">'+data.initials+'</div>';
-					$('#{{$element}}').html(newcontent);
+                	@endif
+                }else if(unit_id == 0 && building_id != 0 && amenity_id == 0){
+                	console.log('3');
+                	var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float use-hand-cursor" onclick="swapAuditor('+data.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+data.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+data.initials+'</div>';
+                	$('#{{$element}}').html(newcontent);
 
-					if($('#building-auditors-'+building_id).hasClass('hasAuditors')){
-						$('#building-auditors-'+building_id).append(newcontent);
-					}else{
-						$('#building-auditors-'+building_id).html(newcontent);
-					}
+                	if($('#building-auditors-'+building_id).hasClass('hasAuditors')){
 
-					var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
+                		// we don't know if/which unit is open
+                		var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
 
-					$(unitelement).html('');
-					$.each(data.unit_auditors, function(index, value){
-						var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
-						$(unitelement).append(newcontent);
-					});
-
-					var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
-
-					$(buildingelement).html('');
-					$.each(data.building_auditors, function(index, value){
-						var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
-						$(buildingelement).append(newcontent);
-					});
-
-					@endif
-				}else if(unit_id == 0 && building_id != 0 && amenity_id == 0){
-					console.log('3');
-					var newcontent = '<div class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' no-float use-hand-cursor" onclick="swapAuditor('+data.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+data.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+data.initials+'</div>';
-					$('#{{$element}}').html(newcontent);
-
-					if($('#building-auditors-'+building_id).hasClass('hasAuditors')){
-
-        		// we don't know if/which unit is open
-        		var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
-
-        		$(unitelement).html('');
-        		$.each(data.unit_auditors, function(index, value){
-        			var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
-        			$(unitelement).append(newcontent);
-        		});
-        	}else{
-      			// we don't know if/which unit is open
-      			var unitelement = 'div[id^=unit-auditors-]';
-      			$(unitelement).html('');
-      			$.each(data.unit_auditors, function(index, value){
-      				var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
-      				$(unitelement).append(newcontent);
-      			});
-      		}
-      		var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
-      		$(buildingelement).html('');
-      		$.each(data.building_auditors, function(index, value){
-      			var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
-      			$(buildingelement).append(newcontent);
-      		});
-      	}else if(unit_id == 0 && building_id == 0 && amenity_id != 0 && inmodel == 0){
-      		console.log('4');
-      		console.log('element {{$element}}');
-      		var newcontent = '<div id="building-audits-'+data.id+'-avatar-1" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="swapAuditor('+data.id+', {{$audit_id}}, 0, 0, \'building-audits-'+data.id+'-avatar-1\', '+amenity_id+')">'+data.initials+'</div>';
-      		$('#{{$element}}').replaceWith(newcontent);
-      	}else if(inmodel == 0) {
-      		console.log('5');
-      		console.log("element "+element);
-      		var newcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
-      		$('#{{$element}}').replaceWith(newcontent);
-      		var unitelement = '#unit-auditors-'+data.unit_id+' .uk-slideshow-items li.uk-active > div';
-      		$(unitelement).html('');
-      		$.each(data.unit_auditors, function(index, value){
-      			var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
-      			$(unitelement).append(newcontent);
-      		});
-      		var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
-      		$(buildingelement).html('');
-      		$.each(data.building_auditors, function(index, value){
-      			var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
-      			$(buildingelement).append(newcontent);
-      		});
-      	}
-      	if(inmodel == 1) {
-      		dynamicModalClose(2);
-      		var newcontent = '<div class="amenity-auditor uk-margin-remove"  id="building-auditor-'+amenity_id+'-avatar-1"><div uk-tooltip="pos:top-left;title:'+data.name+';" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="assigBuildingAuditor({{ $audit_id }}, '+building_id+', 0, '+amenity_id+', \'building-auditor-'+amenity_id+'-avatar-1\', 0, 0, 0, 2);">'+data.initials+'</div></div>';
-      		$('#{{$element}}').replaceWith(newcontent);
-      		loadTypes(0,1);
-          	// filterBuildingAmenities(building_id);
-          } else if(inmodel == 2) {
-          	dynamicModalClose(2);
-          	var newcontent = '<div class="amenity-auditor uk-margin-remove"  id="site-auditor-'+amenity_id+'-avatar-1"><div uk-tooltip="pos:top-left;title:'+data.name+';" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="assignSiteAuditor({{ $audit_id }}, 0, 0, '+amenity_id+', \'site-auditor-'+amenity_id+'-avatar-1\', 0, 0, 0, 2);">'+data.initials+'</div></div>';
-          	$('#{{$element}}').replaceWith(newcontent);
-          	loadTypes(0,1);
-          	//filterSiteAmenities(audit_id);
-          } else if(inmodel == 3) {
-          	dynamicModalClose(2);
-          	var newcontent = '<div class="amenity-auditor uk-margin-remove"  id="unit-auditor-'+amenity_id+'-avatar-1"><div uk-tooltip="pos:top-left;title:'+data.name+';" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="assignUnitAuditor({{ $audit_id }}, '+building_id+', '+unit_id+', '+amenity_id+', \'unit-auditor-'+amenity_id+'-avatar-1\', 0, 0, 0, 2);">'+data.initials+'</div></div>';
-          	$('#{{$element}}').replaceWith(newcontent);
-          	loadTypes(0,1);
-          	// filterUnitAmenities(unit_id);
-          } else if(inmodel == 4) {
-          	dynamicModalClose(2);
-          	loadTypes(1);
-          } else {
-          	dynamicModalClose();
-          }
-        }
-      });
+                		$(unitelement).html('');
+                		$.each(data.unit_auditors, function(index, value){
+                			var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+                			$(unitelement).append(newcontent);
+                		});
+                	}else{
+                		// we don't know if/which unit is open
+                		var unitelement = 'div[id^=unit-auditors-]';
+                		$(unitelement).html('');
+                		$.each(data.unit_auditors, function(index, value){
+                			var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+                			$(unitelement).append(newcontent);
+                		});
+                	}
+                	var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
+                	$(buildingelement).html('');
+                	$.each(data.building_auditors, function(index, value){
+                		var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+                		$(buildingelement).append(newcontent);
+                	});
+                }else if(unit_id == 0 && building_id == 0 && amenity_id != 0 && inmodel == 0){
+                	console.log('4');
+                	console.log('element {{$element}}');
+                	var newcontent = '<div id="building-audits-'+data.id+'-avatar-1" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="swapAuditor('+data.id+', {{$audit_id}}, 0, 0, \'building-audits-'+data.id+'-avatar-1\', '+amenity_id+')">'+data.initials+'</div>';
+                	$('#{{$element}}').replaceWith(newcontent);
+                }else if(inmodel == 0) {
+                	console.log('5');
+                	console.log("element "+element);
+                	var newcontent = '<div id="'+element+'" uk-tooltip="pos:top-left;title:'+data.name+';" title="" aria-expanded="false" class="user-badge '+data.color+' no-float use-hand-cursor" onclick="assignAuditor('+audit_id+', '+building_id+', '+unit_id+', '+amenity_id+', \''+element+'\');">'+data.initials+'</div>';
+                	$('#{{$element}}').replaceWith(newcontent);
+                	var unitelement = '#unit-auditors-'+data.unit_id+' .uk-slideshow-items li.uk-active > div';
+                	$(unitelement).html('');
+                	$.each(data.unit_auditors, function(index, value){
+                		var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, {{$unit_id}}, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+                		$(unitelement).append(newcontent);
+                	});
+                	var buildingelement = '#building-auditors-'+data.building_id+' .uk-slideshow-items li.uk-active > div';
+                	$(buildingelement).html('');
+                	$.each(data.building_auditors, function(index, value){
+                		var newcontent = '<div id="unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', {{$audit_id}}, {{$building_id}}, 0, \'unit-auditor-'+value.id+'{{$audit_id}}{{$building_id}}{{$unit_id}}\')">'+value.initials+'</div>';
+                		$(buildingelement).append(newcontent);
+                	});
+                }
+                if(inmodel == 1) {
+                	dynamicModalClose(2);
+                	var newcontent = '<div class="amenity-auditor uk-margin-remove"  id="building-auditor-'+amenity_id+'-avatar-1"><div uk-tooltip="pos:top-left;title:'+data.name+';" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="assignSiteAuditor({{ $audit_id }}, '+building_id+', 0, '+amenity_id+', \'building-auditor-'+amenity_id+'-avatar-1\', 0, 0, 0, 2);">'+data.initials+'</div></div>';
+                	$('#{{$element}}').replaceWith(newcontent);
+                	loadTypes(0,1);
+                	// filterBuildingAmenities(building_id);
+                } else if(inmodel == 2) {
+                	dynamicModalClose(2);
+                	var newcontent = '<div class="amenity-auditor uk-margin-remove"  id="site-auditor-'+amenity_id+'-avatar-1"><div uk-tooltip="pos:top-left;title:'+data.name+';" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="assignSiteAuditor({{ $audit_id }}, 0, 0, '+amenity_id+', \'site-auditor-'+amenity_id+'-avatar-1\', 0, 0, 0, 2);">'+data.initials+'</div></div>';
+                	$('#{{$element}}').replaceWith(newcontent);
+                	loadTypes(0,1);
+                	//filterSiteAmenities(audit_id);
+                } else if(inmodel == 3) {
+                	dynamicModalClose(2);
+                	var newcontent = '<div class="amenity-auditor uk-margin-remove"  id="unit-auditor-'+amenity_id+'-avatar-1"><div uk-tooltip="pos:top-left;title:'+data.name+';" class="auditor-badge '+data.color+' use-hand-cursor no-float" onclick="assignSiteAuditor({{ $audit_id }}, '+building_id+', '+unit_id+', '+amenity_id+', \'unit-auditor-'+amenity_id+'-avatar-1\', 0, 0, 0, 2);">'+data.initials+'</div></div>';
+                	$('#{{$element}}').replaceWith(newcontent);
+                	loadTypes(0,1);
+                	// filterUnitAmenities(unit_id);
+                } else if(inmodel == 4) {
+                	dynamicModalClose(2);
+                	loadTypes(1);
+                } else {
+                	dynamicModalClose();
+                }
+              }
+            } );
 }
 
 </script>

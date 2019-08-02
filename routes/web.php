@@ -211,9 +211,11 @@
             Route::get('/modals/audits/{id}/updateStep', 'AuditController@updateStep')->name('audits.updatestep');
             Route::post('audits/{id}/saveStep', 'AuditController@saveStep')->name('audits.savestep');
 
+            Route::post('/projects/refreshdetails', 'AuditController@getProjectDetailsAjax')->name('project.refreshdetails');
             Route::get('/projects/{id}', 'AuditController@getProject')->name('project');
             Route::get('/projects/{id}/title', 'AuditController@getProjectTitle')->name('project.title');
             Route::get('/projects/{id}/details', 'AuditController@getProjectDetails')->name('project.details');
+
             // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
              Route::get('/projects/{id}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
              Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
@@ -244,6 +246,22 @@
             Route::post('/modals/{project}/add-user-to-project', 'ProjectContactsController@saveAddUserToProject')->name('project.add-user');
             Route::get('/modals/remove-user-from-project/{project}/{user}', 'ProjectContactsController@removeUserFromProject');
             Route::post('/modals/{project}/remove-user-from-project', 'ProjectContactsController@deleteAddUserToProject')->name('project.remove-user');
+            Route::get('/modals/add-organization-to-user/{user}/{project}', 'ProjectContactsController@addOrganizationToUser');
+            Route::post('/modals/{user}/add-organization-to-user', 'ProjectContactsController@saveOrganizationToUser')->name('user.add-organization-to-user');
+            Route::get('/modals/edit-organization-of-user/{org}/{project}', 'ProjectContactsController@editOrganizationOfUser');
+            Route::post('/modals/{org}/edit-organization-of-user', 'ProjectContactsController@saveOrganizationOfUser')->name('user.edit-organization-of-user');
+            Route::post('/modals/{org}/remove-organization-of-user', 'ProjectContactsController@removeOrganizationOfUser')->name('user.remove-organization-of-user');
+            Route::post('/modals/make-project-default-organization', 'ProjectContactsController@defaultOrganizationOfUserForProject')->name('user.make-project-default-organization');
+            Route::get('/modals/edit-name-of-user/{user}/{project}', 'ProjectContactsController@editNameOfUser');
+            Route::post('/modals/{user}/edit-name-of-user', 'ProjectContactsController@saveNameOfUser')->name('user.edit-name-of-user');
+            Route::post('/modals/make-project-default-user', 'ProjectContactsController@defaultUserForProject')->name('user.make-project-default-user');
+            Route::get('/modals/add-address-to-user/{user}/{project}', 'ProjectContactsController@addAddressToUser');
+            Route::post('/modals/{user}/add-address-to-user', 'ProjectContactsController@saveAddressToUser')->name('user.add-address-to-user');
+            Route::post('/modals/make-project-default-address', 'ProjectContactsController@defaultAddressOfUserForProject')->name('user.make-project-default-address');
+            Route::get('/modals/edit-address-of-user/{address}/{project}', 'ProjectContactsController@editAddressOfUser');
+            Route::post('/modals/{address}/edit-address-of-user', 'ProjectContactsController@saveAddressOfUser')->name('user.edit-address-of-user');
+            Route::post('/modals/{address}/remove-address-of-user', 'ProjectContactsController@removeAddressOfUser')->name('user.remove-address-of-user');
+
 
 
 
@@ -325,6 +343,7 @@
             Route::get('/modals/property-amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/{toplevel}/complete/{building_option?}', 'AuditController@propertyMarkComplete')->name('property-amenities.mark.completed');
             Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}/{element}/{im_model?}', 'AuditController@swapAuditorToAmenity')->name('amenities.swap.auditor');
             Route::post('/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}', 'AuditController@saveSwapAuditorToAmenity')->name('amenities.swap.auditor.save');
+            Route::post('report/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/swap/{auditor_id}', 'AuditController@saveSwapAuditorToAmenity')->name('amenities.swap.auditor.save');
 
             Route::get('/modals/amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/delete/{element?}', 'AuditController@deleteAmenity')->name('amenities.delete');
             Route::get('/modals/findings-amenities/{amenity_id}/audit/{audit_id}/building/{building_id}/unit/{unit_id}/delete/{element?}', 'AuditController@deleteFindingAmenity')->name('amenities.delete');
@@ -471,7 +490,7 @@
             Route::get('/projects/{project}/followups', 'AuditController@getProjectFollowups')->name('project.followups');
             Route::get('/projects/{project}/followups/title', 'AuditController@getProjectFollowupsTitle')->name('project.followups.title');
 
-
+            Route::post('/report/sendfax','ReportsController@sendfax');
             Route::get('/report/{report}', 'ReportsController@getReport');
             Route::get('/report/{report}/{section}','ReportsController@getSection');
             Route::get('/report/{report}/download/{type}','ReportsController@download');

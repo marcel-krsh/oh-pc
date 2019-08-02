@@ -19,6 +19,7 @@ class CommunicationRecipient extends Model
     'communication_id',
     'user_id',
     'seen',
+    'seen_at',
   ];
 
   public static function boot()

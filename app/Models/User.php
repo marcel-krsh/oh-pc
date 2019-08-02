@@ -520,4 +520,19 @@ class User extends Authenticatable
     	$users = User::whereIn('id', $user_ids)->get();
     	return $users;
     }
+
+    public function user_organizations()
+    {
+        return $this->hasMany(UserOrganization::class, 'user_id', 'id');
+    }
+
+    public function report_access()
+    {
+        return $this->hasMany(ReportAccess::class, 'user_id', 'id');
+    }
+
+    public function user_addresses()
+    {
+        return $this->hasMany(UserAddresses::class, 'user_id', 'id');
+    }
 }
