@@ -93,7 +93,7 @@
 							@endif
 						</div>
 						<div  class="uk-width-1-2">
-							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" readonly="readonly" type="text" placeholder="DATE" value="">
+							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" style="width:100%;" readonly type="text" placeholder="DATE" value="">
 							<script>
 								flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
