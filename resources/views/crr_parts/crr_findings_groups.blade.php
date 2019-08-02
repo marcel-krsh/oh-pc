@@ -93,19 +93,29 @@
 							@endif
 						</div>
 						<div  class="uk-width-1-2 uk-margin-remove">
-							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" style="width:100%;" readonly type="text" placeholder="DATE" value="">
-							<script>
+							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input" style="width:100%;" readonly type="text" placeholder="DATE" value="">
+							
+
+						  <script>
 								flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
-								flatpickr("#resolved-date-finding-{{$f->id}}", 
+								flatpickr("#resolved-date-finding-{{$f->id}}", {
+									
+									altFormat: "F j, Y G:i K",
+									dateFormat: "F j, Y G:i K",
+									enableTime: true,
+									"locale": {
+							        "firstDayOfWeek": 1 // start week on Monday
+							      },
+							      onClose: function(selectedDates, dateStr, instance){
+							      	var setDefaultTo = instance.parseDate(dateStr)
+							      	//alert(setDefaultTo);
+							      	resolveFinding({{ $f->id }},dateStr);
 							      	
-							      	onClose: function(selectedDates, dateStr, instance){
-							      		console.log('Calling resolve finding {{$f->id}} '+dateStr),
-							      		resolveFinding({{ $f->id }},dateStr),
-							      	
-							      
-							    	}
-								});
+							      	//alert(selectedDates+' '+dateStr+' '+instance);
+							      	//loadTab('dashboard/calls?order_by=date&dates='+encodeURIComponent(dateStr),'1','','','',1);
+							      }
+							    });
 
 						  </script>
 
