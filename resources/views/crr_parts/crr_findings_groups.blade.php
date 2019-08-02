@@ -89,7 +89,7 @@
 
 								<button class="uk-button uk-link uk-margin-small-left " style="width: 100%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button>
 							@else
-								<span class="uk-position-center">RESOLVED AT:</span>
+								<span >RESOLVED AT:</span>
 							@endif
 						</div>
 						<div  class="uk-width-1-2 uk-margin-remove">
