@@ -93,7 +93,7 @@
 							@endif
 						</div>
 						<div  class="uk-width-1-2 uk-margin-remove">
-							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input" style="width:100%;" readonly type="text" placeholder="DATE" value="">
+							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input" style="width:100%;" readonly type="text" placeholder="DATE" value="" onchange="resolveFinding({{ $f->id }},$(this).val());">
 							
 
 						  <script>
