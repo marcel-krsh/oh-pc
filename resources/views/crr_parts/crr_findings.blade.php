@@ -189,7 +189,7 @@ foreach($grouped_bf as $bk => $bf) {
 
 	@can('access_auditor')
 	// Flatpickers in use for findings
-	{{$compiledFlatPikers}}
+	{{$compiledFlatPickers}}
 	// End Flatpickers
 	function resolveFinding(findingid, dateResolved){
 		$.post('/findings/'+findingid+'/resolve', {
