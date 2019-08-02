@@ -90,18 +90,19 @@
 						@if(!$f->cancelled_at)
 							@if($f->auditor_approved_resolution == 1)
 								<button class="uk-button uk-link uk-margin-small-left " style="width: 45%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button>
+							@else
+								RESOLVED AT:
 							@endif
-						@else
-							RESOLVED AT:
+
 						@endif
-						<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" readonly="readonly" type="text" placeholder="DATE RESOLVED" value="">
+						<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input active" readonly="readonly" type="text" placeholder="DATE" value="">
 						<script>
 							flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
 							flatpickr("#resolved-date-finding-{{$f->id}}", {
 								
-								altFormat: "F j, Y G:i K",
-								dateFormat: "F j, Y G:i K",
+								altFormat: "F j, Y",
+								dateFormat: "F j, Y",
 								"locale": {
 						        "firstDayOfWeek": 1 // start week on Monday
 						      },
