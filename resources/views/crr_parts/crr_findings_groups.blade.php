@@ -97,25 +97,25 @@
 							
 
 						  <script>
-								flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+								// flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
-								flatpickr("#resolved-date-finding-{{$f->id}}", {
+								// flatpickr("#resolved-date-finding-{{$f->id}}", {
 									
-									altFormat: "F j, Y G:i K",
-									dateFormat: "F j, Y G:i K",
-									enableTime: true,
-									"locale": {
-							        "firstDayOfWeek": 1 // start week on Monday
-							      },
-							      onClose: function(selectedDates, dateStr, instance){
-							      	//var setDefaultTo = instance.parseDate(dateStr)
-							      	//alert(setDefaultTo);
-							      	//resolveFinding({{ $f->id }},dateStr);
+								// 	altFormat: "F j, Y G:i K",
+								// 	dateFormat: "F j, Y G:i K",
+								// 	enableTime: true,
+								// 	"locale": {
+							 //        "firstDayOfWeek": 1 // start week on Monday
+							 //      },
+							 //      onClose: function(selectedDates, dateStr, instance){
+							 //      	//var setDefaultTo = instance.parseDate(dateStr)
+							 //      	//alert(setDefaultTo);
+							 //      	//resolveFinding({{ $f->id }},dateStr);
 							      	
-							      	alert(selectedDates+' '+dateStr+' '+instance);
-							      	//loadTab('dashboard/calls?order_by=date&dates='+encodeURIComponent(dateStr),'1','','','',1);
-							      }
-							    });
+							 //      	alert(selectedDates+' '+dateStr+' '+instance);
+							 //      	//loadTab('dashboard/calls?order_by=date&dates='+encodeURIComponent(dateStr),'1','','','',1);
+							 //      }
+							 //    });
 
 						  </script>
 
