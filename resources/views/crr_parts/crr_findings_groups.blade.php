@@ -78,9 +78,9 @@
 				<div class="inspec-tools-tab-finding-actions  uk-margin-small-top " uk-grid>
 
 					@if($f->cancelled_at)
-					<button class="uk-button uk-link uk-width-1-1"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3 uk-margin-small-bottom"></i> RESTORE</button>
+					<button class="uk-button uk-link uk-width-1-1"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3 uk-margin-bottom"></i> RESTORE</button>
 					@else
-					<button class="uk-button uk-link uk-width-1-1"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3 uk-margin-small-bottom"></i> CANCEL</button>
+					<button class="uk-button uk-link uk-width-1-1"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3 uk-margin-bottom"></i> CANCEL</button>
 					@endif
 					
 					@if(!$f->cancelled_at)
