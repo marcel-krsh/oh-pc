@@ -176,6 +176,7 @@ foreach($grouped_bf as $bk => $bf) {
 	@foreach($grouped_uf as $uf)
 	@php
 		$findings = $uf;
+		$compiledFlatPikers = "";
 	@endphp
 		@include('crr_parts.crr_findings_groups')
 	@endforeach
@@ -187,6 +188,9 @@ foreach($grouped_bf as $bk => $bf) {
 <script>
 
 	@can('access_auditor')
+	// Flatpickers in use for findings
+	{{$compiledFlatPikers}}
+	// End Flatpickers
 	function resolveFinding(findingid, dateResolved){
 		$.post('/findings/'+findingid+'/resolve', {
 			'_token' : '{{ csrf_token() }}',

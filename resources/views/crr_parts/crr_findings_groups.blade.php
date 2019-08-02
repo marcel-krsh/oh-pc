@@ -96,10 +96,9 @@
 							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input" style="width:100%;" readonly type="text" placeholder="DATE" value="" onchange="resolveFinding({{ $f->id }},$(this).val());">
 							
 
-						  <script>
-								// flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+						  <?php
 
-								flatpickr("#resolved-date-finding-{{$f->id}}", {
+						  	$compiledFlatPikers .= 'flatpickr("#resolved-date-finding-{{$f->id}}", {
 									
 									altFormat: "F j, Y G:i K",
 									dateFormat: "F j, Y G:i K",
@@ -107,17 +106,18 @@
 									"locale": {
 							        "firstDayOfWeek": 1 // start week on Monday
 							      },
-							 //      onClose: function(selectedDates, dateStr, instance){
-							 //      	//var setDefaultTo = instance.parseDate(dateStr)
-							 //      	//alert(setDefaultTo);
-							 //      	//resolveFinding({{ $f->id }},dateStr);
+							      onClose: function(selectedDates, dateStr, instance){
+							      	//var setDefaultTo = instance.parseDate(dateStr)
+							      	//alert(setDefaultTo);
+							      	//resolveFinding({{ $f->id }},dateStr);
 							      	
-							 //      	alert(selectedDates+' '+dateStr+' '+instance);
-							 //      	//loadTab('dashboard/calls?order_by=date&dates='+encodeURIComponent(dateStr),'1','','','',1);
-							 //      }
+							      	alert(selectedDates+' '+dateStr+' '+instance);
+							      	//loadTab('dashboard/calls?order_by=date&dates='+encodeURIComponent(dateStr),'1','','','',1);
+							      }
 							    });
+							    ';
+							 ?>
 
-						  </script>
 
 						</div>
 					@endif
