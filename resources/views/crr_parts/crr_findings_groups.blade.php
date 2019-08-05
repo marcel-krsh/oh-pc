@@ -174,7 +174,7 @@
 						@endIf
 					@endif
 					@if($oneColumn)
-								<div class="uk-width-1-2" uk-grid>
+								<div class="uk-width-1-2">
 					@endIf
 					@if($f->cancelled_at)
 						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
