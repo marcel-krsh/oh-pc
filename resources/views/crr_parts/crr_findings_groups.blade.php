@@ -14,7 +14,7 @@
 				
 
 				@php $findingHeader = $f->building->building_name; @endphp
-				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @if(isset($ufs)) @if(count($ufs)>0) @forEach($ufs as $unit_header) unit-{{$unit_header->unit_id}}-finding @endForEach @endIf @endIf @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group">
+				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group">
 					<h2>FINDINGS FOR BIN: {{$f->building->building_name}}</h2>
 					@if(!is_null($f->building->address))
 						{{$f->building->address->line_1}} {{$f->building->address->line_2}}<br />
@@ -29,7 +29,12 @@
 			@if ($findingHeader !== $f->unit->unit_name)
 				@php $findingHeader = $f->unit->unit_name; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group">
-					<h3>FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3>
+					<h3>FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3> @if({{$f->unit->building_id}})<p>IN BIN: {{$f->unit->building->building_name}} <br />
+						@if(!is_null($f->unit->building->address))
+							{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}}<br />
+							{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}
+						@endIf</p>
+					@endIf
 					<hr class="dashed-hr uk-margin-bottom">
 				</div> 
 			@endif
