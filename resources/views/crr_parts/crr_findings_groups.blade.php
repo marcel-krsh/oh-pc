@@ -6,11 +6,18 @@
 			border: none;
 		}
 	</style>
-	@php $findingHeader = ""; @endphp
+	@php $findingHeader = ""; 
+		if($group_building){
+			$findings = $findings->sort('building.building_name');
+		}
+		if($group_unit){
+			$findings = $findings->sort('unit.unit_name');
+		}
+	@endphp
 @forEach($findings as $f)
 		
 		@if(!is_null($f->building_id))
-			<?php dd($f); ?>
+			
 			@if ($findingHeader !== $f->building->building_name)
 				
 
