@@ -86,22 +86,23 @@
 			@if(!$print) </div> @endIf
 			 <hr />
 			@if(!is_null($f->building_id))
-			<strong>{{$f->building->building_name}}</strong> <br />
+			{{-- <strong>{{$f->building->building_name}}</strong> <br /> --}}
 			
 
 			@elseIf(!is_null($f->unit_id))
-			{{$f->unit->building->building_name}} <br />
+			{{-- {{$f->unit->building->building_name}} <br /> --}}
 			@if(!is_null($f->unit->building->address))
-			{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}}<br />
-			{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}
+			{{-- {{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}}<br />
+			{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}} --}}
 			@endIf
-			<br /><strong>Unit {{$f->unit->unit_name}}</strong>
+			{{-- <br /><strong>Unit {{$f->unit->unit_name}}</strong> --}}
 			@else
-			<strong>Site Finding</strong><br />
+			{{-- <strong>Site Finding</strong><br />
 			@if($f->project->address)
 				{{$f->project->address->line_1}} {{$f->project->address->line_2}}<br />
 				{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
-			@endIf
+			@endIf --}}
+			
 			@endIf
 		@if(!$print) </div> <hr class="dashed-hr" /> @else </div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
 
