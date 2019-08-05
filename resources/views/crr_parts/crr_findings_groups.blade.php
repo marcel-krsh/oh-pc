@@ -8,7 +8,7 @@
 	</style>
 	@php 
 		$findingHeader = "";
-	@endPhp
+	@endphp
 @forEach($findings as $f)
 		
 		@if(!is_null($f->building_id))
