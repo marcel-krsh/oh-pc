@@ -9,10 +9,10 @@
 	@php $findingHeader = ""; 
 	 $findings = collect($findings);
 		if($group_building){
-			$findings = $findings->sortBy('building.building_name');
+			$findings = $findings->sortByDesc('building.building_name');
 		}
 		if($group_unit){
-			$findings = $findings->sortBy('unit.unit_name');
+			$findings = $findings->sortByDesc('unit.unit_name');
 		}
 	@endphp
 @forEach($findings as $f)
