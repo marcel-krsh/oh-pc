@@ -126,9 +126,7 @@
 				<div class="inspec-tools-tab-finding-actions  @if($oneColumn) uk-width-1-5 @endIf uk-margin-small-top " uk-grid>
 
 					
-					@if($oneColumn)
-								<div class="uk-width-1-1" uk-grid>
-					@endIf
+					
 					@if(!$f->cancelled_at)
 						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="@if($oneColumn) uk-width-1-1 @else uk-width-1-2 uk-margin-remove @endIf">
 							
@@ -169,12 +167,10 @@
 						  @endpush
 
 						</div>
-						@if($oneColumn)
-								</div>
-						@endIf
+						
 					@endif
 					@if($oneColumn)
-								<div class="uk-width-1-2">
+								<div class="uk-width-1-1">
 					@endIf
 					@if($f->cancelled_at)
 						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
