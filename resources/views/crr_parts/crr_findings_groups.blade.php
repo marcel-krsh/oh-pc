@@ -204,7 +204,13 @@
 				<p>RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }}</p>
 			@endIf
 		@endcan
-		@if(!$print && !$oneColumn) </div> @else </div> @if($oneColumn) <div class="uk-width-1-5">&nbsp;</div> @endIf <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
+		@if(!$print && !$oneColumn) 
+			</div> 
+		@elseif($print) 
+			</div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> 
+		@elseif($oneColumn) 
+			<div class="uk-width-1-5">&nbsp;</div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> 
+		@endIf
 
 		
 			
@@ -456,6 +462,10 @@
 		@endIf
 		{{-- End documents --}}
 		@endif 
+
+		@if($oneColumn)
+			</div>
+		@endIf
 	</div>
 
 	@endForEach
