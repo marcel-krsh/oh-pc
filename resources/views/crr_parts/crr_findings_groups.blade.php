@@ -288,8 +288,12 @@
 		@endIf
 		@endIf
 
-		@if($print || $oneColumn)
+		@if($print)
 				</div>
+			</div>
+		@endIf
+
+		@if($oneColumn)
 			</div>
 		@endIf
 
