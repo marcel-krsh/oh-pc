@@ -105,21 +105,13 @@
 			@endIf --}}
 
 			@endIf
-		@if(!$print) </div> @else </div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
 
-		
-			
-
-		@can('access_auditor')
+			@can('access_auditor')
 			@if(!$print)
 				<!-- LINE 77 -->
 				<div class="inspec-tools-tab-finding-actions  uk-margin-small-top " uk-grid>
 
-					@if($f->cancelled_at)
-					<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
-					@else
-					<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
-					@endif
+					
 					
 					@if(!$f->cancelled_at)
 						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="uk-width-1-2 uk-margin-remove">
@@ -161,6 +153,13 @@
 
 						</div>
 					@endif
+
+					@if($f->cancelled_at)
+						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
+					@else
+						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
+					@endif
+
 				</div>
 			
 			@else
@@ -180,6 +179,12 @@
 				<p>RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }}</p>
 			@endIf
 		@endcan
+		@if(!$print) </div> @else </div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
+
+		
+			
+
+		
 		<!-- LINE 131 -->
 		<h2>@if($f->finding_type->type == 'nlt')
 			<i class="a-booboo"></i>
