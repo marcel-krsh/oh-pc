@@ -11,10 +11,10 @@
 		
 		@if(!is_null($f->building_id))
 			@if ($findingHeader !== $f->building->building_name)
-				@if(isset($ufs) && count($ufs)>0) <?php dd($ufs); ?> @endIf
+				
 
 				@php $findingHeader = $f->building->building_name; @endphp
-				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @if(count($group_unit)>0) @if(isset($group_unit)) @forEach($group_unit as $unit_header) unit-{{$unit_header->unit_id}}-finding @endForEach @endIf @endIf @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group">
+				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @if(isset($ufs)) @if(count($ufs)>0) @forEach($ufs as $unit_header) unit-{{$unit_header->unit_id}}-finding @endForEach @endIf @endIf @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group">
 					<h2>FINDINGS FOR BIN: {{$f->building->building_name}}</h2>
 					@if(!is_null($f->building->address))
 						{{$f->building->address->line_1}} {{$f->building->address->line_2}}<br />
