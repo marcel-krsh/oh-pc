@@ -10,11 +10,11 @@
 	 $findings = collect($findings);
 		if($group_building){
 
-			$findings = $findings->sortByDesc('building.building_name');
+			$findings = $findings->sortByDesc('building.building_name')->values()->all();
 		}
 		if($group_unit){
-			dd('I AM TRIGGERED');
-			$findings = $findings->sortByDesc('unit.unit_name');
+			
+			$findings = $findings->sortByDesc('unit.unit_name')->values()->all();
 		}
 	@endphp
 @forEach($findings as $f)
