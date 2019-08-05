@@ -82,6 +82,10 @@
 					<strong class="cancelled-{{$f->id}}">F|N #{{$f->id}}</strong>@can('access_auditor') @if(!$print)
 				</a> @endIf @endCan
 				@if(!$print)
+				@if($oneColumn)
+					</div>
+					<div class="uk-width-4-5">
+				@endIf
 				<span class="use-hand-cursor" style="float: right;" aria-expanded="false"><i class="a-circle-plus  "></i> ADD RESPONSE</span>
 				<div uk-drop="mode: click; pos: bottom-right" style="min-width: 315px; background-color: #ffffff;  ">
 					<div class="uk-card uk-card-body uk-card-default uk-card-small">
