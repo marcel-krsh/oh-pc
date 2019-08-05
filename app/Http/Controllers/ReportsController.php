@@ -717,6 +717,7 @@ class ReportsController extends Controller
   public function getReport(CrrReport $report, Request $request)
   {
     if ($report) {
+    $oneColumn = null;
     $current_user    = Auth::user();
       // check if logged in user has access to this report if they are not an auditor:
       $loadReport = 0;
@@ -749,6 +750,7 @@ class ReportsController extends Controller
           $versionText = 'version-' . $version;
           $data        = $data[$version - 1]->$versionText;
           $print       = $request->get('print');
+          $oneColumn       = $request->get('one_column');
 
           $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Opened and viewed report'];
           if(Auth::user()->cannot('access_auditor')){
@@ -760,9 +762,9 @@ class ReportsController extends Controller
           //return dd(collect($x)[48]);
 
           if ($request->get('print') != 1) {
-            return view('crr.crr', compact('report', 'data', 'version', 'print', 'users', 'current_user'));
+            return view('crr.crr', compact('report', 'data', 'version', 'print', 'users', 'current_user','oneColumn'));
           } else {
-            return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user'));
+            return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user','oneColumn'));
           }
         }
       } else {
