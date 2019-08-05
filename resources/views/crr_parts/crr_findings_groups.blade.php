@@ -10,6 +10,7 @@
 @forEach($findings as $f)
 		
 		@if(!is_null($f->building_id))
+			<?php dd($f); ?>
 			@if ($findingHeader !== $f->building->building_name)
 				
 
@@ -62,8 +63,8 @@
 			$columnCount = 1;
 		}
 		?>
-		<div style="break-inside:avoid" @if($print) uk-grid @endIf>
-			<div class="inspec-tools-tab-finding-top-actions @if($print) uk-width-1-5 @endIf" style="z-index:10; break-inside: avoid; page-break-inside: avoid;">
+		<div style="break-inside:avoid" @if($print || $oneColumn) uk-grid @endIf>
+			<div class="inspec-tools-tab-finding-top-actions @if($print || $oneColumn) uk-width-1-5 @endIf" style="z-index:10; break-inside: avoid; page-break-inside: avoid;">
 				@can('access_auditor') @if(!$print)
 				<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
 					<i class="a-pencil"></i>@endIf
@@ -186,7 +187,7 @@
 				<p>RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }}</p>
 			@endIf
 		@endcan
-		@if(!$print) </div> @else </div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
+		@if(!$print && !$oneColumn) </div> @else </div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
 
 		
 			
@@ -270,7 +271,7 @@
 		@endIf
 		@endIf
 
-		@if($print)
+		@if($print || $oneColumn)
 				</div>
 			</div>
 		@endIf
