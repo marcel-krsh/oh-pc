@@ -7,6 +7,7 @@
 		}
 	</style>
 	@php $findingHeader = ""; 
+	 $findings = collect($findings);
 		if($group_building){
 			$findings = $findings->sort('building.building_name');
 		}
