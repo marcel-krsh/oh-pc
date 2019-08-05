@@ -6,7 +6,9 @@
 			border: none;
 		}
 	</style>
-	
+	@php 
+		$findingHeader = "";
+	@endPhp
 @forEach($findings as $f)
 		
 		@if(!is_null($f->building_id))
