@@ -9,10 +9,11 @@
 	@php $findingHeader = ""; 
 	 $findings = collect($findings);
 		if($group_building){
-			dd('I AM TRIGGERED');
+
 			$findings = $findings->sortByDesc('building.building_name');
 		}
 		if($group_unit){
+			dd('I AM TRIGGERED');
 			$findings = $findings->sortByDesc('unit.unit_name');
 		}
 	@endphp
