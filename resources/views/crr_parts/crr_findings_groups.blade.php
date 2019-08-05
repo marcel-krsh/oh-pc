@@ -8,7 +8,7 @@
 	</style>
 	@php $findingHeader = ""; @endphp
 @forEach($findings as $f)
-		@if(isset($group_unit)) <?php dd($group_unit); ?> @endIf
+		@if(isset($group_unit) && $group_unit !== 0) <?php dd($group_unit); ?> @endIf
 
 		@if(!is_null($f->building_id))
 			@if ($findingHeader !== $f->building->building_name)
