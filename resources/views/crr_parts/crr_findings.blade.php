@@ -157,7 +157,7 @@ foreach($grouped_bf as $bk => $bf) {
 			$group_unit = 0;
 		@endphp
 		{{-- <strong>{{ $bf[0]->building->building_name }}</strong> <br /> --}}
-		@include('crr_parts.crr_findings_groups', ['group_building', $group_building])
+		@include('crr_parts.crr_findings_groups', ['group_building', $group_building],['group_unit', $group_unit])
 		@php
 		if(!is_null($ufs)) {
 			$findings = $ufs;
