@@ -123,7 +123,7 @@
 			@can('access_auditor')
 			@if(!$print)
 				<!-- LINE 77 -->
-				<div class="inspec-tools-tab-finding-actions  uk-margin-small-top " uk-grid>
+				<div class="inspec-tools-tab-finding-actions  @if($oneColumn) uk-width-1-1 @endIf uk-margin-small-top " uk-grid>
 
 					
 					@if($oneColumn)
@@ -173,12 +173,17 @@
 								</div>
 						@endIf
 					@endif
-
+					@if($oneColumn)
+								<div class="uk-width-1-2" uk-grid>
+					@endIf
 					@if($f->cancelled_at)
 						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
 					@else
 						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
 					@endif
+					@if($oneColumn)
+								</div>
+					@endIf
 
 				</div>
 			
