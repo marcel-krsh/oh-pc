@@ -6,17 +6,7 @@
 			border: none;
 		}
 	</style>
-	@php $findingHeader = ""; 
-	 $findings = collect($findings);
-		if($group_building){
-
-			$findings = $findings->sortByDesc('building.building_name')->values()->all();
-		}
-		if($group_unit){
-
-			$findings = $findings->sortByDesc('unit.unit_name')->values()->all();
-		}
-	@endphp
+	
 @forEach($findings as $f)
 		
 		@if(!is_null($f->building_id))
@@ -107,7 +97,7 @@
 				</div>
 				@endIf
 			@if(!$print) </div> @endIf
-			 <hr />
+			 <hr @if($oneColumn) class="uk-width-1-1 uk-margin-small-top" />
 			@if(!is_null($f->building_id))
 			{{-- <strong>{{$f->building->building_name}}</strong> <br /> --}}
 			
@@ -134,10 +124,13 @@
 				<div class="inspec-tools-tab-finding-actions  uk-margin-small-top " uk-grid>
 
 					
-					
+					@if($oneColumn)
+								<div class="uk-width-1-2" uk-grid>
+					@endIf
 					@if(!$f->cancelled_at)
 						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="uk-width-1-2 uk-margin-remove">
-							@if($f->auditor_approved_resolution == 1)
+							
+								@if($f->auditor_approved_resolution == 1)
 
 								<button class="uk-button uk-link uk-margin-small-left " style="width: 100%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }},'null')"><span class="a-circle-checked"></span> REMOVE RESOLUTION DATE:</button>
 							@else
@@ -174,6 +167,9 @@
 						  @endpush
 
 						</div>
+						@if($oneColumn)
+								</div>
+						@endIf
 					@endif
 
 					@if($f->cancelled_at)
