@@ -84,8 +84,8 @@ $building_findings->map(function ($b) use($current_audit) {
 	return $b;
 });
 
-$grouped_bf = $building_findings->groupBy('u_building_key')->toArray();
-$grouped_uf = $unit_findings->groupBy('u_building_key')->toArray();
+$grouped_bf = $building_findings->sortBy('building.building_name')->groupBy('u_building_key')->toArray();
+$grouped_uf = $unit_findings->sortBy('unit.unit_name')->groupBy('u_building_key')->toArray();
 foreach($grouped_bf as $bk => $bf) {
 	if(array_key_exists($bk, $grouped_uf)) {
 		$grouped_bf[$bk]['uf'] = $grouped_uf[$bk];
