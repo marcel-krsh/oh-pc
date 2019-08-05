@@ -14,6 +14,10 @@
 				@php $findingHeader = $f->building->building_name; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom">
 					<h2>FINDINGS FOR BIN: {{$f->building->building_name}}</h2>
+					@if(!is_null($f->building->address))
+						{{$f->building->address->line_1}} {{$f->building->address->line_2}}<br />
+						{{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}}<br /><br />
+					@endIf
 					<hr class="dashed-hr uk-margin-bottom">
 				</div> 
 			@endif
@@ -23,7 +27,7 @@
 			@if ($findingHeader !== $f->unit->unit_name)
 				@php $findingHeader = $f->unit->unit_name; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom">
-					<h2>FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h2>
+					<h3>FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3>
 					<hr class="dashed-hr uk-margin-bottom">
 				</div> 
 			@endif
@@ -83,10 +87,7 @@
 			 <hr />
 			@if(!is_null($f->building_id))
 			<strong>{{$f->building->building_name}}</strong> <br />
-			@if(!is_null($f->building->address))
-			{{$f->building->address->line_1}} {{$f->building->address->line_2}}<br />
-			{{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}}<br /><br />
-			@endIf
+			
 
 			@elseIf(!is_null($f->unit_id))
 			{{$f->unit->building->building_name}} <br />
