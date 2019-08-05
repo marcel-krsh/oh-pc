@@ -97,7 +97,7 @@
 				</div>
 				@endIf
 			@if(!$print) </div> @endIf
-			 <hr @if($oneColumn) class="uk-width-1-1 uk-margin-small-top" />
+			 <hr @if($oneColumn) class="uk-width-1-1 uk-margin-small-top" @endIf />
 			@if(!is_null($f->building_id))
 			{{-- <strong>{{$f->building->building_name}}</strong> <br /> --}}
 			
