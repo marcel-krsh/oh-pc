@@ -17,7 +17,7 @@
 @forEach($findings as $f)
 		
 		@if(!is_null($f->building_id))
-			<?php dd($f); ?>
+			
 			@if ($findingHeader !== $f->building->building_name)
 				
 
