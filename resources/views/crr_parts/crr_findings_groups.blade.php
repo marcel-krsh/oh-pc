@@ -32,7 +32,7 @@
 			@if ($findingHeader !== $f->unit->unit_name)
 				@php $findingHeader = $f->unit->unit_name; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group">
-					<h3>FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3> @if(!is_null($f->unit->building_id))<p>IN BIN: {{$f->unit->building->building_name}} <br />
+					<h2>FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h2> @if(!is_null($f->unit->building_id))<p>IN BIN: {{$f->unit->building->building_name}} <br />
 						@if(!is_null($f->unit->building->address))
 							{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}}<br />
 							{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}
@@ -204,7 +204,7 @@
 				<p>RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }}</p>
 			@endIf
 		@endcan
-		@if(!$print && !$oneColumn) </div> @else </div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
+		@if(!$print && !$oneColumn) </div> @else </div> @if($oneColumn) <div class="uk-width-1-5">&nbsp;</div> @endIf <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
 
 		
 			
