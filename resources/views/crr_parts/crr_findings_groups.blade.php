@@ -54,7 +54,7 @@
 			$columnCount = 1;
 		}
 		?>
-		<div style="min-height: 105px; break-inside:avoid" @if($print) uk-grid @endIf>
+		<div style="break-inside:avoid" @if($print) uk-grid @endIf>
 			<div class="inspec-tools-tab-finding-top-actions @if($print) uk-width-1-5 @endIf" style="z-index:10; break-inside: avoid; page-break-inside: avoid;">
 				@can('access_auditor') @if(!$print)
 				<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
@@ -102,9 +102,9 @@
 				{{$f->project->address->line_1}} {{$f->project->address->line_2}}<br />
 				{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
 			@endIf --}}
-			
+
 			@endIf
-		@if(!$print) </div> <hr class="dashed-hr" /> @else </div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
+		@if(!$print) </div> @else </div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> @endIf
 
 		
 			
