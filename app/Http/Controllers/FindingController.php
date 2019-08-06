@@ -1498,8 +1498,13 @@ class FindingController extends Controller
                 $buildingInspection = BuildingInspection::where('audit_id',$finding->audit_id)->where('building_id',$buildingId)->first();
 
                 if(null != $buildingInspection){
-                    if(strtotime($buildingInspection->latest_resolution) < strtotime($date)){
-                        $buildingInspection->latest_resolution = $date;
+                    $latestResolution = Finding::select('auditor_last_approved_resolution_at')->with('unit.building')->where('building_id',$buildingId)->orWhere('unit.building.building_id',$buildingId)->orderBy('auditor_last_approved_resolution_at','desc')->first();
+
+                    if(null != $latestResolution){
+                        $buildingInspection->latest_resolution = $latestResolution->auditor_last_approved_resolution_at;
+                        $buildingInspection->save();
+                    } else {
+                        $buildingInspection->latest_resolution = null;
                         $buildingInspection->save();
                     }
                 }
