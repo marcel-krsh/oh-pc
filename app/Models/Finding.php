@@ -44,7 +44,7 @@ class Finding extends Model
     {
         return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
     }
-    public function findingBuilding(): HasOne
+    public function building(): HasOne
     {
         return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
     }
