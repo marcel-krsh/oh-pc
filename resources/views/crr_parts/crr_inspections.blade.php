@@ -276,7 +276,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 		<?php //dd($i);
 		$inspections = collect($inspections);
 		?>
-		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Building Eteriors and Systems @else Building Exterior and System @endIf Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
+		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Building Exteriors and/or Systems @else Building Exterior and/or System @endIf Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 		<hr class="dashed-hr uk-margin-bottom">
 		
 		<div class="uk-column-1-3 uk-column-divider">
