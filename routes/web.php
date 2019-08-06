@@ -279,6 +279,9 @@
             Route::post('/modals/{email}/edit-email-of-user', 'ProjectContactsController@saveEditEmailOfUser')->name('user.edit-email-of-user');
             Route::post('/modals/{email}/remove-email-of-user', 'ProjectContactsController@removeEmailOfUser')->name('user.remove-email-of-user');
 
+            // owner
+            Route::post('/modals/make-project-default-owner', 'ProjectContactsController@defaultOwnerForProject')->name('user.make-project-default-owner');
+
 
 
 

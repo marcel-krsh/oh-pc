@@ -29,44 +29,42 @@ class ProjectContactsController extends Controller
 
   public function contacts($project)
   {
-    $user_ids            = $this->allUserIdsInProject($project);
-    $project_user_ids    = $this->projectUserIds($project);
-    $allita_user_ids     = $this->allitaUserIds($project);
-    $default_report_user = ReportAccess::where('project_id', $project)->where('default', 1)->first();
-    $project             = Project::with('contactRoles.person.user')->find($project); //DEVCO
+    $user_ids              = $this->allUserIdsInProject($project);
+    $project_user_ids      = $this->projectUserIds($project);
+    $allita_user_ids       = $this->allitaUserIds($project);
+    $project_report_access = ReportAccess::where('project_id', $project)->get();
+    $default_report_user   = $project_report_access->where('default', 1)->first();
+    $default_report_owner  = $project_report_access->where('owner_default', 1)->first();
+    $project               = Project::with('contactRoles.person.user')->find($project); //DEVCO
     // return $project->details();
-    $default_user          = $project->contactRoles->where('project_role_key', 21)->first();
-    $default_devco_user_id = 0;
-    $default_user_id       = 0;
+    $default_user           = $project->contactRoles->where('project_role_key', 21)->first();
+    $default_owner          = $project->contactRoles->where('project_role_key', 20)->first();
+    $default_devco_user_id  = 0;
+    $default_devco_owner_id = 0;
+    $default_user_id        = 0;
+    $default_owner_id       = 0;
     if ($default_report_user && $default_report_user->devco && $default_user) {
       $default_devco_user_id = $default_user->person->user->id;
+    }
+    if ($default_report_owner && $default_report_owner->devco && $default_owner) {
+      $default_devco_owner_id = $default_owner->person->user->id;
     }
     if ($default_report_user) {
       $default_user_id = $default_report_user->user_id;
     } elseif ($default_user) {
       $default_user_id = $default_devco_user_id = $default_user->person->user->id;
     }
-
-    // return $default_user_id;
-
+    if ($default_report_owner) {
+      $default_owner_id = $default_report_owner->user_id;
+    } elseif ($default_owner && $default_owner->person->user) {
+      $default_owner_id = $default_devco_owner_id = $default_owner->person->user->id;
+    }
     // replace joins with relationship
     $users         = User::whereIn('id', $user_ids)->with('role', 'person.email', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
     $default_org   = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->count();
     $default_addr  = $users->pluck('user_addresses')->filter()->flatten()->where('default', 1)->count();
     $default_phone = $users->pluck('user_phone_numbers')->filter()->flatten()->where('default', 1)->count();
-    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id'));
-
-    /*$users = User::whereIn('users.id', $user_ids)->
-  join('people', 'users.person_id', '=', 'people.id')->
-  leftJoin('users_roles', 'users.id', '=', 'users_roles.user_id')->
-  leftJoin('roles', 'users_roles.role_id', '=', 'roles.id')->
-  leftJoin('organizations', 'users.organization_id', 'organizations.id')->
-  leftJoin('addresses', 'organizations.default_address_id', 'addresses.id')->
-  leftJoin('phone_numbers', 'organizations.default_phone_number_id', 'phone_numbers.id')->
-  select('users.*', 'line_1', 'line_2', 'city', 'state', 'zip', 'organization_name', 'role_id', 'role_name', 'area_code', 'phone_number', 'extension', 'last_name', 'first_name')->
-  orderBy('last_name', 'asc')->
-  paginate(25);
-  return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'report_user_ids'));*/
+    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id', 'default_owner_id', 'default_devco_owner_id'));
   }
 
   protected function projectUserIds($project_id)
@@ -769,10 +767,46 @@ class ProjectContactsController extends Controller
     return 1;
   }
 
+  //Project owner
 
-
-
-
+  public function defaultOwnerForProject(Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'project_id' => 'required',
+      'user_id'    => 'required',
+    ], [
+      'user_id.required'    => 'Something went wrong, please contact admin',
+      'project_id.required' => 'Something went wrong, please contact admin',
+    ]);
+    if ($validator->fails()) {
+      return 'Something went wrong, please contact admin';
+    }
+    $selected_user = $request->user_id;
+    if ($request->devco) {
+      $devco_user = ReportAccess::where('project_id', $request->project_id)
+        ->where('user_id', $request->user_id)
+        ->where('devco', 1)
+        ->first();
+      if ($devco_user) {
+        $selected_user = $devco_user->user_id;
+      } else {
+        $ra             = new ReportAccess;
+        $ra->user_id    = $request->user_id;
+        $ra->project_id = $request->project_id;
+        $ra->devco      = $request->devco;
+        $ra->save();
+        $selected_user = $ra->user_id;
+      }
+    }
+    $defaults = ReportAccess::where('project_id', $request->project_id)->get();
+    foreach ($defaults as $key => $default) {
+      if ($default->user_id == $selected_user) {
+        $default->owner_default = 1;
+      } else {
+        $default->owner_default = 0;
+      }
+      $default->save();
+    }
+    return 1;
+  }
 }
-
-

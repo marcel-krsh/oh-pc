@@ -17,19 +17,19 @@
 				<thead>
 					<tr>
 						<th>
-							<small>NAME</small>
+							<small>M | O : NAME</small>
 						</th>
 						<th>
-							<small>ORGANIZATION</small>
+							<small>M | O : ORGANIZATION</small>
 						</th>
 						<th>
-							<small>ADDRESS</small>
+							<small>M | O : ADDRESS</small>
 						</th>
 						<th>
-							<small>PHONE</small>
+							<small>M | O : PHONE</small>
 						</th>
 						<th>
-							<small>EMAIL</small>
+							<small>M | O : EMAIL</small>
 						</th>
 						<th>
 							<small>REPORT ACCESS</small>
@@ -40,8 +40,12 @@
 					@foreach($users as $user)
 					<tr class="{{ !$user->active ? 'uk-text-muted' : '' }}">
 						<td>
-							<input class="uk-radio" onchange="makeDefaultUser({{ $user->id }}, {{ in_array($user->id, $project_user_ids) }})" id="contact-user-{{ $user->id }}" name="contact" type="radio" uk-tooltip="" title="MAKE THIS USER AS DEFAULT CONTACT TO REPORT" aria-expanded="false" {{ $default_user_id == $user->id ? 'checked=checked' : '' }}> {{ $user->name }}<i  onclick="editUserName({{ $user->id }})" class="a-pencil" uk-tooltip="" title="EDIT NAME" aria-expanded="false"></i><br>
-							<small style="margin-left:20px;">@if($user->role){{ strtoupper($user->role->role->role_name) }}@else NO ACCESS @endIf</small>
+							{{-- manager --}}
+							<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultUser({{ $user->id }}, {{ in_array($user->id, $project_user_ids) }})" id="contact-user-{{ $user->id }}" name="contact" type="radio" uk-tooltip="" title="MAKE THIS USER AS DEFAULT CONTACT TO REPORT" aria-expanded="false" {{ $default_user_id == $user->id ? 'checked=checked' : '' }}>  |
+							{{-- owner --}}
+							<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOwner({{ $user->id }}, {{ in_array($user->id, $project_user_ids) }})" id="owner-user-{{ $user->id }}" name="owner" type="radio" uk-tooltip="" title="MAKE THIS USER AS DEFAULT OWNER TO PROJECT" aria-expanded="false" {{ $default_owner_id == $user->id ? 'checked=checked' : '' }}>
+							 <span style="margin-left: 2px">{{ $user->name }}</span><i  onclick="editUserName({{ $user->id }})" class="a-pencil" uk-tooltip="" title="EDIT NAME" aria-expanded="false"></i><br>
+							<small class="uk-margin-large-left">@if($user->role){{ strtoupper($user->role->role->role_name) }}@else NO ACCESS @endIf</small>
 						</td>
 						@php
 						$user_orgs = $user->user_organizations->where('project_id', $project->id);
@@ -51,7 +55,11 @@
 							@php
 							$exists_in_uo = $user_orgs->where('devco', 1)->where('organization_id', $user->organization_details->id)->first();
 							@endphp
-							<input class="uk-radio" onchange="makeDefaultOrganization({{ $user->organization_details->id }}, {{ $user->id }},  1)" name="organization" id="organization-{{ $user->organization_details->id }}" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT ORGANIZATION FOR REPORT" aria-expanded="false" {{ (($exists_in_uo && $exists_in_uo->default) || (!$default_org && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							{{-- manager --}}
+							<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOrganization({{ $user->organization_details->id }}, {{ $user->id }},  1)" name="organization" id="organization-{{ $user->organization_details->id }}" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT ORGANIZATION FOR REPORT" aria-expanded="false" {{ (($exists_in_uo && $exists_in_uo->default) || (!$default_org && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							{{-- |
+							<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOwnerOrganization({{ $user->organization_details->id }}, {{ $user->id }},  1)" name="owner_organization" id="owner-organization-{{ $user->organization_details->id }}" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT OWNER ORGANIZATION" aria-expanded="false" {{ (($exists_in_uo && $exists_in_uo->default) || (!$default_org && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							 --}}
 							<small>
 								{{ $user->organization_details->organization_name }}
 							</small>
@@ -443,6 +451,37 @@
 				$('.alert-danger' ).empty();
 				if(data == 1) {
 					UIkit.notification('<span uk-icon="icon: check"></span> Marked as Default Email Address', {pos:'top-right', timeout:1000, status:'success'});
+				}
+				jQuery.each(data.errors, function(key, value){
+					jQuery('.alert-danger').show();
+					jQuery('.alert-danger').append('<p>'+value+'</p>');
+				});
+			}
+		});
+	}
+
+	// Owner related
+	function makeDefaultOwner(userId, devco = 0) {
+		jQuery.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+			}
+		});
+		var data = { };
+		jQuery.ajax({
+			url: "{{ URL::route("user.make-project-default-owner") }}",
+			method: 'post',
+			data: {
+				user_id : userId,
+				project_id : {{ $project->id }},
+				devco : devco,
+				'_token' : '{{ csrf_token() }}'
+			},
+			success: function(data){
+				$('.alert-danger' ).empty();
+				if(data == 1) {
+					UIkit.notification('<span uk-icon="icon: check"></span> Marked as Default Owner', {pos:'top-right', timeout:1000, status:'success'});
+	    		loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
 				}
 				jQuery.each(data.errors, function(key, value){
 					jQuery('.alert-danger').show();
