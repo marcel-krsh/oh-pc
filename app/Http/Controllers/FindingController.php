@@ -1475,18 +1475,18 @@ class FindingController extends Controller
     {
         $finding = Finding::where('id', $findingid)->first();
 
-        $now = Carbon\Carbon::now()->format('Y-m-d H:i:s');
+        $date = date('Y-m-d H:i:s',strtotime($request->input('date')));
 
         if ($finding->auditor_approved_resolution != 1) {
             // resolve all followups
             if (count($finding->followups)) {
                 foreach ($finding->followups as $followup) {
-                    $followup->resolve($now);
+                    $followup->resolve($date);
                 }
             }
 
             $finding->auditor_approved_resolution = 1;
-            $finding->auditor_last_approved_resolution_at = $now;
+            $finding->auditor_last_approved_resolution_at = $date;
             $finding->save();
         } else {
             // unresolve
