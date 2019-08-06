@@ -167,7 +167,7 @@
 								<hr class="uk-margin-top dashed-hr uk-margin-bottom">
 								<div class="uk-width-1-1 uk-margin-top">
 					@else
-								<hr class="uk-margin-top dashed-hr uk-margin-bottom">
+								<hr class="uk-margin-top dashed-hr uk-margin-bottom uk-width-1-1">
 					@endIf
 
 					@if($f->cancelled_at)
