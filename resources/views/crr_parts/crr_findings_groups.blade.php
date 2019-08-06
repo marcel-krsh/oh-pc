@@ -185,8 +185,8 @@
 				
 
 					@if($f->auditor_approved_resolution == 1)
-					<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $f->id }},'null')">
-						<span class="a-circle-checked"></span> REMOVE RESOLUTION DATE</button>
+						<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $f->id }})">
+						<span class="a-circle-cross"></span> DATE</button>
 					@endif
 
 			<!-- LINE 123 -->
