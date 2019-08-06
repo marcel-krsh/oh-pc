@@ -137,7 +137,7 @@
 								<span style="position: relative; top: 9px;">RESOLVED AT:</span>
 							@endif
 						</div>
-						<div  class="@if($oneColumn)  @else uk-width-1-2 uk-margin-remove @endIf">
+						<div  class="@if($oneColumn) uk-margin-top @else uk-width-1-2 uk-margin-remove @endIf">
 							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input" style="width:100%;" readonly type="text" placeholder="DATE" value="" onchange="resolveFinding({{ $f->id }},$(this).val());">
 							
 
@@ -170,7 +170,8 @@
 						
 					@endif
 					@if($oneColumn)
-								<div class="uk-width-1-1">
+								<hr class="uk-margin-top dashed-hr uk-margin-bottom">
+								<div class="uk-width-1-1 uk-margin-top">
 					@endIf
 					@if($f->cancelled_at)
 						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
