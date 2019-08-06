@@ -1548,7 +1548,7 @@ class FindingController extends Controller
         }
 
         if ($finding->auditor_last_approved_resolution_at !== null) {
-            return formatDate($finding->auditor_last_approved_resolution_at);
+            return date('m-d-Y',strtotime($finding->auditor_last_approved_resolution_at));
         } else {
             return 0;
         }
