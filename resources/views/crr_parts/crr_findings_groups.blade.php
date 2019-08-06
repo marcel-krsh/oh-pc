@@ -132,10 +132,10 @@
 							@endif
 						</div>
 						<div  class="@if($oneColumn) uk-margin-top @else uk-width-1-2 uk-margin-remove @endIf">
-							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input" style="width:100%;" readonly type="text" placeholder="DATE" value="" onchange="resolveFinding({{ $f->id }},$(this).val());">
+							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input" style="width:100%;" readonly type="text" placeholder="DATE" value="" onchange="resolveFinding({{ $f->id }},$(this).val());" @if(null !== $f->auditor_last_approved_resolution_at) value="{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}" @endIf >
 							
 
-						  @push('flatPickers')
+						  {{-- @push('flatPickers')
     
 						  		///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -158,7 +158,7 @@
 							    });
 
 							    
-						  @endpush
+						  @endpush --}}
 
 						</div>
 						
