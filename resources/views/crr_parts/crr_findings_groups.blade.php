@@ -466,7 +466,7 @@
 			$columnCount = 1;
 			if(!$print && !$oneColumn){
 			?>
-				<hr class="dashed-hr uk-margin-bottom uk-width-1-1" >
+				<hr class="dashed-hr uk-margin-bottom uk-width-1-1 @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" >
 			<?php  
 			}
 			
