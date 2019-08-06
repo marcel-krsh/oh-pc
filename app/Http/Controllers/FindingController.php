@@ -1520,8 +1520,8 @@ class FindingController extends Controller
             $finding->auditor_approved_resolution = 0;
             $finding->auditor_last_approved_resolution_at = null;
             $finding->save();
-            if($finding->building_id || ($finding->unit && $finding->unit->building_id)){
-                if($finding->building){
+            if($finding->building_id || ($finding->findingUnit && $finding->findingUnit->building_id)){
+                if($finding->building_id){
                     $buildingId = $finding->building_id;
                 }else{
                     $buildingId = $finding->findingUnit->building_id;
@@ -1533,7 +1533,7 @@ class FindingController extends Controller
                     // get the most recent resolution date for other findings to update the date on the building inspection
 
                     $latestResolution = Finding::select('auditor_last_approved_resolution_at')->leftJoin('units', 'units.id', '=', 'findings.unit_id')->where('findings.building_id',$buildingId)->orWhere('units.building_id',$buildingId)->orderBy('auditor_last_approved_resolution_at','desc')->first();
-
+                    
                     if(null != $latestResolution){
                         $buildingInspection->latest_resolution = $latestResolution->auditor_last_approved_resolution_at;
                         $buildingInspection->save();
