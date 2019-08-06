@@ -207,6 +207,10 @@ foreach($grouped_bf as $bk => $bf) {
 				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<span style="position: relative; top: 9px;">RESOLVED AT:</span>');
 				$('#resolved-date-finding-'+resolveFindingId).val('');
 			}
+			if(window.resolveDateChangeAlert !== 1){
+				UIkit.modal.alert('<h1>Don\'t Forget!</h1><p>You will need to refresh the report\'s content for these changes to appear on the report.</p>');
+				window.resolveDateChangeAlert = 1;
+			}
 		});
 	}
 	function cancelFinding(findingid){
