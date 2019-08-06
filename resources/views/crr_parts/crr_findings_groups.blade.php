@@ -32,11 +32,11 @@
 			@if ($findingHeader !== $f->unit->unit_name)
 				@php $findingHeader = $f->unit->unit_name; $columnCount = 1; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast"  style="background: #4e4e4e; padding-top: 7px;">
-					<h3 class="uk-margin-remove">FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3> @if(!is_null($f->unit->building_id))<p>IN BIN: {{$f->unit->building->building_name}} <br />
+					<h3 class="uk-margin-remove">FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3> @if(!is_null($f->unit->building_id))IN BIN: {{$f->unit->building->building_name}} <br />
 						@if(!is_null($f->unit->building->address))
 							{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}}<br />
 							{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}
-						@endIf</p>
+						@endIf
 					@endIf
 					<hr class="dashed-hr uk-margin-bottom">
 				</div> 
