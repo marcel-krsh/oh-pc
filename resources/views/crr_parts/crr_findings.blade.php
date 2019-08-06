@@ -199,7 +199,7 @@ foreach($grouped_bf as $bk => $bf) {
 		}, function(data) {
 			if(data != 0){
 				console.log('Resolution saved for finding '+resolveFindingId);
-				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2">CLEAR</button>');
+				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2"><i class="a-circle-cross"></i>&nbsp; RESOLVE DATE</button>');
 				//<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" onclick="resolveFinding(\''+resolveFindingId+'\',\'null\')"><span class="a-circle-cross">&nbsp;</span>CLEAR</button>
 			}else{
 				console.log('Resolution cleared for finding '+resolveFindingId);
