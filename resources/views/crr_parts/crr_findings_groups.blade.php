@@ -206,7 +206,7 @@
 		@elseif($print) 
 			</div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> 
 		@elseif($oneColumn) 
-			<div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> 
+			<div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid; margin-top: 11px;"> 
 		@endIf
 
 		
