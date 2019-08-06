@@ -189,7 +189,7 @@ foreach($grouped_bf as $bk => $bf) {
 
 	@can('access_auditor')
 	// Flatpickers in use for findings
-	 @stack('flatPickers')
+	 {{-- @stack('flatPickers') --}}
 	// End Flatpickers
 	function resolveFinding(findingid, dateResolved){
 		var resolveFindingId = findingid;
