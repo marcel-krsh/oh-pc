@@ -58,19 +58,7 @@
 		@endIf
 		
 	<div id="cancelled-finding-{{$f->id}}" class="@if($print || $oneColumn) uk-width-1-1 @else uk-width-1-3 @endIf crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" style=" @if(!$print && !$oneColumn) @if($columnCount < 3 && count($findings) > $columnCount && count($findings) > $findingsRun) border-right:1px dotted #3c3c3c; @endIf @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid; break-inside: avoid;">
-		<?php
-				// using column count to put in center lines rather than rely on css which breaks.
-		$columnCount++;
-		$findingsRun++;
-		if($columnCount > 3){
-			$columnCount = 1;
-			if(!$print && !$oneColumn){
-				?>
-				<hr class="dashed-hr uk-margin-bottom">
-				<?php
-			}
-		}
-		?>
+
 		<div style="break-inside:avoid" @if($print || $oneColumn) uk-grid @endIf>
 			<div class="inspec-tools-tab-finding-top-actions @if($print || $oneColumn) uk-width-1-5 @endIf" style="z-index:10; break-inside: avoid; page-break-inside: avoid;">
 				@can('access_auditor') @if(!$print)
@@ -470,5 +458,17 @@
 			</div>
 		@endIf
 	</div>
+		<?php
+				// using column count to put in center lines rather than rely on css which breaks.
+		$columnCount++;
+		$findingsRun++;
+		if($columnCount > 3){
+			$columnCount = 1;
+			?>
+			<hr class="dashed-hr uk-margin-bottom" >
+			<?php  
+			
+		}
+		?>
 
 	@endForEach
