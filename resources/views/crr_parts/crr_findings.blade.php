@@ -203,7 +203,7 @@ foreach($grouped_bf as $bk => $bf) {
 				//<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" onclick="resolveFinding(\''+resolveFindingId+'\',\'null\')"><span class="a-circle-cross">&nbsp;</span>CLEAR</button>
 			}else{
 				console.log('Resolution cleared for finding '+resolveFindingId);
-				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('RESOLVED AT:');
+				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<span style="position: relative; top: 9px;">RESOLVED AT:</span>');
 				$('#resolved-date-finding-'+resolveFindingId).val('');
 			}
 		});

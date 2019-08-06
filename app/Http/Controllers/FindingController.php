@@ -1491,7 +1491,7 @@ class FindingController extends Controller
             $finding->save();
             if($finding->building_id || ($finding->findingUnit && $finding->findingUnit->building_id)){
 
-                if($finding->building){
+                if($finding->building_id){
                     $buildingId = $finding->building_id;
                 }else{
                     $buildingId = $finding->findingUnit->building_id;
