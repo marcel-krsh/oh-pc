@@ -123,12 +123,12 @@
 			@can('access_auditor')
 			@if(!$print)
 				<!-- LINE 77 -->
-				<div class="inspec-tools-tab-finding-actions  @if($oneColumn) uk-width-1-5 @endIf uk-margin-small-top " uk-grid>
+				<div class="inspec-tools-tab-finding-actions  @if($oneColumn) uk-width-1-5 @endIf uk-margin-small-top " @if(!$oneColumn) uk-grid @endIf>
 
 					
 					
 					@if(!$f->cancelled_at)
-						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="@if($oneColumn) uk-width-1-1 @else uk-width-1-2 uk-margin-remove @endIf">
+						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="@if($oneColumn)  @else uk-width-1-2 uk-margin-remove @endIf">
 							
 								@if($f->auditor_approved_resolution == 1)
 
@@ -137,7 +137,7 @@
 								<span style="position: relative; top: 9px;">RESOLVED AT:</span>
 							@endif
 						</div>
-						<div  class="@if($oneColumn) uk-width-1-1 @else uk-width-1-2 uk-margin-remove @endIf">
+						<div  class="@if($oneColumn)  @else uk-width-1-2 uk-margin-remove @endIf">
 							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input" style="width:100%;" readonly type="text" placeholder="DATE" value="" onchange="resolveFinding({{ $f->id }},$(this).val());">
 							
 
