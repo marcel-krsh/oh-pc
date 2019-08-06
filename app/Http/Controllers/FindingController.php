@@ -1015,10 +1015,10 @@ class FindingController extends Controller
     }
 
     /**
-     * [findingUnitAmenities description]
+     * [unitAmenities description]
      * @return [partial view]          [Shows the list of amenities assciated with the unit]
      */
-    public function findingUnitAmenities($auditid, $unit_id)
+    public function unitAmenities($auditid, $unit_id)
     {
         if ($auditid > 0) {
             $audit = CachedAudit::where('audit_id', $auditid)->with('inspection_items')->first();
@@ -1473,7 +1473,7 @@ class FindingController extends Controller
 
     public function resolveFinding(Request $request, $findingid)
     {
-        $finding = Finding::where('id', $findingid)->with('findingUnit')->first();
+        $finding = Finding::where('id', $findingid)->with('unit')->first();
 
         $date = date('Y-m-d H:i:s',strtotime($request->input('date')));
 
@@ -1489,12 +1489,12 @@ class FindingController extends Controller
             $finding->auditor_last_approved_resolution_at = $date;
             // put into the bin as the latest save date.
             $finding->save();
-            if($finding->building_id || ($finding->findingUnit && $finding->findingUnit->building_id)){
+            if($finding->building_id || ($finding->unit && $finding->unit->building_id)){
 
                 if($finding->building_id){
                     $buildingId = $finding->building_id;
                 }else{
-                    $buildingId = $finding->findingUnit->building_id;
+                    $buildingId = $finding->unit->building_id;
                 }
                 //get the building inspection for this building
                 $buildingInspection = BuildingInspection::where('audit_id',$finding->audit_id)->where('building_id',$buildingId)->first();
@@ -1520,11 +1520,11 @@ class FindingController extends Controller
             $finding->auditor_approved_resolution = 0;
             $finding->auditor_last_approved_resolution_at = null;
             $finding->save();
-            if($finding->building_id || ($finding->findingUnit && $finding->findingUnit->building_id)){
+            if($finding->building_id || ($finding->unit && $finding->unit->building_id)){
                 if($finding->building_id){
                     $buildingId = $finding->building_id;
                 }else{
-                    $buildingId = $finding->findingUnit->building_id;
+                    $buildingId = $finding->unit->building_id;
                 }
                 //get the building inspection for this building
                 $buildingInspection = BuildingInspection::where('audit_id',$finding->audit_id)->where('building_id',$buildingId)->first();

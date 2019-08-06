@@ -40,7 +40,7 @@ class Finding extends Model
     {
         return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
     }
-    public function findingUnit(): HasOne
+    public function unit(): HasOne
     {
         return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
     }
