@@ -1473,7 +1473,7 @@ class FindingController extends Controller
 
     public function resolveFinding(Request $request, $findingid)
     {
-        $finding = Finding::where('id', $findingid)->with('unit')->first();
+        $finding = Finding::where('id', $findingid)->with('findingUnit')->first();
 
         $date = date('Y-m-d H:i:s',strtotime($request->input('date')));
 
