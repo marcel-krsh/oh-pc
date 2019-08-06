@@ -1489,7 +1489,7 @@ class FindingController extends Controller
             $finding->auditor_last_approved_resolution_at = $date;
             // put into the bin as the latest save date.
             $finding->save();
-            if($finding->building_id || (null !== $finding->unit_id && $finding->unit->building_id)){
+            if($finding->building_id || (null !== $finding->unit && $finding->unit->building_id)){
                 if($finding->building){
                     $buildingId = $finding->building_id;
                 }else{
