@@ -16,7 +16,7 @@
 			@if ($findingHeader !== $f->building->building_name)
 				
 
-				@php $findingHeader = $f->building->building_name; $columnCount = 1; $findingsRun = 0; @endphp
+				@php $findingHeader = $f->building->building_name; $columnCount = 1; $findingsRun = 1; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast" style="background: #4e4e4e; padding-top: 7px;">
 					<h3 class="uk-margin-remove">FINDINGS FOR BIN: {{$f->building->building_name}}</h3>
 					@if(!is_null($f->building->address))
@@ -30,7 +30,7 @@
 
 		@elseIf(!is_null($f->unit_id))
 			@if ($findingHeader !== $f->unit->unit_name)
-				@php $findingHeader = $f->unit->unit_name; $columnCount = 1; $findingsRun = 0; @endphp
+				@php $findingHeader = $f->unit->unit_name; $columnCount = 1; $findingsRun = 1; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast"  style="background: #4e4e4e; padding-top: 7px;">
 					<h3 class="uk-margin-remove">FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3> @if(!is_null($f->unit->building_id))IN BIN: {{$f->unit->building->building_name}} <br />
 						@if(!is_null($f->unit->building->address))
@@ -44,7 +44,7 @@
 			
 		@else
 			@if ($findingHeader !== $f->project->project_name)
-				@php $findingHeader = $f->project->project_name; $columnCount = 1; $findingsRun = 0; @endphp
+				@php $findingHeader = $f->project->project_name; $columnCount = 1; $findingsRun = 1; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast"  style="background: #4e4e4e; padding-top: 7px;">
 					<h3 class="uk-margin-remove">SITE FINDINGS FOR: {{$f->project->project_name}}</h3>
 					@if($f->project->address)
@@ -57,7 +57,7 @@
 			
 		@endIf
 		
-	<div id="cancelled-finding-{{$f->id}}" class="@if($print || $oneColumn) uk-width-1-1 @else uk-width-1-3 @endIf crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" style=" @if(!$print && !$oneColumn) border-bottom:1px dotted #3c3c3c; @if($columnCount < 3 && count($findings) > $columnCount && count($findings) > ($findingsRun - 1)) border-right:1px dotted #3c3c3c; @endIf @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid; break-inside: avoid;">
+	<div id="cancelled-finding-{{$f->id}}" class="@if($print || $oneColumn) uk-width-1-1 @else uk-width-1-3 @endIf crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" style=" @if(!$print && !$oneColumn) border-bottom:1px dotted #3c3c3c; @if($columnCount < 3 && count($findings) > $columnCount && count($findings) > $findingsRun) border-right:1px dotted #3c3c3c; @endIf @endIf padding-top:12px; padding-bottom: 18px; page-break-inside: avoid; break-inside: avoid;">
 		<?php
 				// using column count to put in center lines rather than rely on css which breaks.
 		$columnCount++;
