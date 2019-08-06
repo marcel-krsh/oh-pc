@@ -166,11 +166,14 @@
 					@if($oneColumn)
 								<hr class="uk-margin-top dashed-hr uk-margin-bottom">
 								<div class="uk-width-1-1 uk-margin-top">
-					@endIf
-					@if($f->cancelled_at)
-						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE</button>
 					@else
-						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL</button>
+								<hr class="uk-margin-top dashed-hr uk-margin-bottom">
+					@endIf
+
+					@if($f->cancelled_at)
+						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="restoreFinding({{ $f->id }})"><i class="a-trash-3"></i> RESTORE FINDING</button>
+					@else
+						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL FINDING</button>
 					@endif
 					@if($oneColumn)
 								</div>
