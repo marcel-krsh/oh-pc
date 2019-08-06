@@ -189,20 +189,21 @@ foreach($grouped_bf as $bk => $bf) {
 
 	@can('access_auditor')
 	// Flatpickers in use for findings
-	 @stack('flatPickers')
+	 {{-- @stack('flatPickers') --}}
 	// End Flatpickers
 	function resolveFinding(findingid, dateResolved){
+		var resolveFindingId = findingid;
 		$.post('/findings/'+findingid+'/resolve', {
 			'_token' : '{{ csrf_token() }}',
 			'date' : dateResolved
-		}, function(data,findingid) {
+		}, function(data) {
 			if(data != 0){
-				console.log('Resolution saved for finding '+findingid);
-				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+',\'null\')"><span class="a-circle-cross">&nbsp;</span>CLEAR</button>');
+				console.log('Resolution saved for finding '+resolveFindingId);
+				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+resolveFindingId+',\'null\')"><span class="a-circle-cross">&nbsp;</span>CLEAR</button>');
 			}else{
-				console.log('Resolution cleared for finding '+findingid);
-				$('#inspec-tools-finding-resolve-'+findingid).html('RESOLVED AT:');
-				$('#resolved-date-finding-'+findingid).val('');
+				console.log('Resolution cleared for finding '+resolveFindingId);
+				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('RESOLVED AT:');
+				$('#resolved-date-finding-'+resolveFindingId).val('');
 			}
 		});
 	}
