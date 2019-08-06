@@ -197,8 +197,10 @@ foreach($grouped_bf as $bk => $bf) {
 			'date' : dateResolved
 		}, function(data,findingid) {
 			if(data != 0){
+				console.log('Resolution saved for finding '+findingid);
 				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+',\'null\')"><span class="a-circle-cross">&nbsp;</span>CLEAR</button>');
 			}else{
+				console.log('Resolution cleared for finding '+findingid);
 				$('#inspec-tools-finding-resolve-'+findingid).html('RESOLVED AT:');
 				$('#resolved-date-finding-'+findingid).val('');
 			}
