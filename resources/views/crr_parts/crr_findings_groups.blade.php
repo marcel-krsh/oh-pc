@@ -65,7 +65,9 @@
 		if($columnCount > 3){
 			$columnCount = 1;
 			if(!$print && !$oneColumn){
-				echo '<hr class="dashed-hr uk-margin-bottom">';
+				?>
+				<hr class="dashed-hr uk-margin-bottom">
+				<?php
 			}
 		}
 		?>
