@@ -472,5 +472,6 @@
 			
 		}
 		?>
+		@if($print) <hr class="dashed-hr uk-margin-bottom uk-width-1-1" > @endIf
 
 	@endForEach
