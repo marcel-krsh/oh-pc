@@ -464,9 +464,11 @@
 		$findingsRun++;
 		if($columnCount > 3){
 			$columnCount = 1;
+			if(!$print && !$oneColumn){
 			?>
-			<hr class="dashed-hr uk-margin-bottom uk-width-1-1" >
+				<hr class="dashed-hr uk-margin-bottom uk-width-1-1" >
 			<?php  
+			}
 			
 		}
 		?>
