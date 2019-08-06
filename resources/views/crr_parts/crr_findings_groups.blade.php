@@ -208,7 +208,7 @@
 
 		
 		<!-- LINE 131 -->
-		<h2>@if($f->finding_type->type == 'nlt')
+		<h2 style="page-break-inside: avoid; break-inside: avoid;">@if($f->finding_type->type == 'nlt')
 			<i class="a-booboo"></i>
 			@endIf
 			@if($f->finding_type->type == 'lt')
@@ -219,16 +219,16 @@
 			@endIf
 			{{$f->amenity->amenity_description}}  {{ $f->amenity_index ?? '' }}
 		</h2>
-		<strong> {{$f->finding_type->name}}</strong><br>
+		<strong style="page-break-inside: avoid; break-inside: avoid;"> {{$f->finding_type->name}}</strong><br>
 		@if($f->level == 1)
-		{{$f->finding_type->one_description}}
+		<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->one_description}}</span>
 		@endIf
 		@if($f->level == 2)
-		{{$f->finding_type->two_description}}
+		<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->two_description}}</span>
 		@endIf
 		@if($f->level == 3)
 
-		{{$f->finding_type->three_description}}
+		<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->three_description}}</span>
 		@endIf
 		@if((is_null($f->level) || $f->level == 0) && $f->finding_type->type !== 'file')
 		<span style="color:red" class="attention">!!LEVEL NOT SET!!</span>
@@ -240,7 +240,7 @@
 
 		@if(is_null($c->deleted_at))
 		@if($c->hide_on_reports != 1)
-		@can('access_auditor')@if(!$print)<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endif @endcan<i class="a-comment"></i> : {{nl2br($c->comment)}}
+		@can('access_auditor')@if(!$print)<span style="page-break-inside: avoid; break-inside: avoid;"><i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endif @endcan<i class="a-comment"></i> : {{nl2br($c->comment)}}</span>
 		{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
 		@endIf
 		@endif
