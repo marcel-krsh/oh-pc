@@ -1511,7 +1511,7 @@ class FindingController extends Controller
                     }
                 }
             } else {
-                dd('No building Id',$finding);
+                //dd('No building Id',$finding);
             }
 
             
