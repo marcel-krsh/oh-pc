@@ -1488,6 +1488,7 @@ class FindingController extends Controller
             $finding->auditor_approved_resolution = 1;
             $finding->auditor_last_approved_resolution_at = $date;
             // put into the bin as the latest save date.
+            $finding->save();
             if($finding->building_id || ($finding->unit && $finding->unit->building_id)){
                 if($finding->building){
                     $buildingId = $finding->building_id;
@@ -1510,12 +1511,12 @@ class FindingController extends Controller
                 }
             }
 
-            $finding->save();
+            
         } else {
             // unresolve
             $finding->auditor_approved_resolution = 0;
             $finding->auditor_last_approved_resolution_at = null;
-
+            $finding->save();
             if($finding->building_id || ($finding->unit && $finding->unit->building_id)){
                 if($finding->building){
                     $buildingId = $finding->building_id;
@@ -1540,7 +1541,7 @@ class FindingController extends Controller
                 }
             }
 
-            $finding->save();
+            
         }
 
         if ($finding->auditor_last_approved_resolution_at !== null) {
