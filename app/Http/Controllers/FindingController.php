@@ -1477,7 +1477,7 @@ class FindingController extends Controller
 
         $date = date('Y-m-d H:i:s',strtotime($request->input('date')));
 
-        if ($finding->auditor_approved_resolution != 1) {
+        if ($request->input('date')) {
             // resolve all followups
             if (count($finding->followups)) {
                 foreach ($finding->followups as $followup) {
