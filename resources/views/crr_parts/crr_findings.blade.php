@@ -189,7 +189,7 @@ foreach($grouped_bf as $bk => $bf) {
 
 	@can('access_auditor')
 	// Flatpickers in use for findings
-	 {{-- @stack('flatPickers') --}}
+	 @stack('flatPickers')
 	// End Flatpickers
 	function resolveFinding(findingid, dateResolved){
 		var resolveFindingId = findingid;
@@ -208,7 +208,9 @@ foreach($grouped_bf as $bk => $bf) {
 				$('#resolved-date-finding-'+resolveFindingId).val('');
 			}
 			if(window.resolveDateChangeAlert !== 1){
-				UIkit.modal.alert('<h1>Don\'t Forget!</h1><p>You will need to refresh the report\'s content for these changes to appear on the report.</p>');
+				UIkit.modal.alert('<h1>Don\'t Forget!</h1><p>You will need to refresh the report\'s content for these changes to appear on the report.</p><p>Just in case you forget - I am making the refresh icon pulse to remind you.');
+				$('.refresh-content-button').addClass('attention');
+				$('.refresh-content-button').css('color','red');
 				window.resolveDateChangeAlert = 1;
 			}
 		});
@@ -234,7 +236,14 @@ foreach($grouped_bf as $bk => $bf) {
 		});
 	}
 	@endCan
-
+	// flatpickr(".flatpickr", {	
+	// 							altFormat: "F j, Y ",
+	// 							dateFormat: "F j, Y",
+	// 							enableTime: true,
+	// 							"locale": {
+	// 					        "firstDayOfWeek": 1 // start week on Monday
+	// 					      }
+	// 					    });
 </script>
 
 @else

@@ -325,6 +325,13 @@
 
 <div uk-grid >
 	<div id="section-thumbnails" class="uk-panel-scrollable" style="background-color:lightgray; padding-top:30px; min-height: 100vh; max-width:130px;">
+
+		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @can('access_auditor')| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endCan | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endIf 
+		@can('access_auditor')
+		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
+		<div id="comment-list" style="display: none;"></div>
+		@endCan
+		<hr class="dashed-hr uk-margin-bottom">
 		@forEach($report->sections as $section)
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-thumbs" style="width:85px; magin-left:auto; margin-right:auto; padding:15px; min-height: 110px;">
 			<?php $thumbNavPartCount = 1;?>
@@ -337,11 +344,13 @@
 		</div>
 		@endForEach
 		<hr class="dashed-hr uk-margin-bottom">
-		<small><a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute"> <i class="a-print" style="font-weight: bolder;"></i> PRINT</a></small>
+
+		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @can('access_auditor')| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endCan | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endIf 
 		@can('access_auditor')
 		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
 		<div id="comment-list" style="display: none;"></div>
 		@endCan
+		
 	</div>
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
 		@php
@@ -353,7 +362,7 @@
 
 		<a name="{{ str_replace(' ','',$section->crr_section_id) }}" ></a>
 		<hr class="dashed-hr" style="margin-bottom: 60px; margin-top: 0px; padding:0px; border-color: #3a3a3a;">
-		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $report->version }}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
+		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $report->version }}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
 
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
 			@if(property_exists($section,'parts'))

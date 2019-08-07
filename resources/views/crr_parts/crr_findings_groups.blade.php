@@ -126,18 +126,27 @@
 							
 								@if($f->auditor_approved_resolution == 1)
 
-								<button class="uk-button uk-link uk-margin-small-left " style="width: 100%;" uk-tooltip="pos:top-left;title:<br />;" onclick="resolveFinding({{ $f->id }})"><span class="a-circle-cross"></span> DATE</button>
+								<button class="uk-button uk-link uk-margin-small-left " style="width: 100%;"  onclick="resolveFinding({{ $f->id }})"><span class="a-circle-cross"></span> DATE</button>
 							@else
 								<span style="position: relative; top: 9px;">RESOLVED AT:</span>
 							@endif
 						</div>
 						<div  class="@if($oneColumn) uk-margin-top @else uk-width-1-2 uk-margin-remove @endIf">
-							<input id="resolved-date-finding-{{$f->id}}" class="uk-input flatpickr flatpickr-input" style="width:100%;" readonly type="text" placeholder="DATE" onchange="resolveFinding({{ $f->id }},$(this).val());" @if(null !== $f->auditor_last_approved_resolution_at) value="{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}" WHOOT!@endIf >
+							<input id="resolved-date-finding-{{$f->id}}" class="uk-input " style="width:100%;" readonly type="text" placeholder="DATE" onchange="resolveFinding({{ $f->id }},$(this).val());"  >
+							
+							@push('flatPickers')
+								$('#resolved-date-finding-{{$f->id}}').flatpickr('{dateFormat: "m-d-Y"}');
+								@if(null !== $f->auditor_last_approved_resolution_at)
+									$('#resolved-date-finding-{{$f->id}}').val('{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}'); 
+								@endIf
+							@endpush
+							
 							
 
 						  {{-- @push('flatPickers')
     
 						  		///////////////////////////////////////////////////////////////////////////////////////////////////
+						  		flatpickr flatpickr-input
 
 								flatpickr("#resolved-date-finding-{{$f->id}}", {
 									
@@ -185,8 +194,7 @@
 				
 
 					@if($f->auditor_approved_resolution == 1)
-						<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" style="width: 45%;" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $f->id }})">
-						<span class="a-circle-cross"></span> DATE</button>
+						<p>RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }}</p>
 					@endif
 
 			<!-- LINE 123 -->

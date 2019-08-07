@@ -36,7 +36,7 @@ if(array_key_exists(5, $pieceData)){
 		<div class="uk-width-1-3">
 			<h5 class="uk-margin-remove"><strong>OWNER: </strong></h5>
 			<div class="address" style="margin-bottom:20px;">
-				<i class="a-building" style="font-weight: bolder;"></i> @if($projectDetails->owner_name != '') {{$projectDetails->owner_name}} @else NA @endIf<br>
+				<i class="a-bank" style="font-weight: bolder;"></i> @if($projectDetails->owner_name != '') {{$projectDetails->owner_name}} @else NA @endIf<br>
 				<i class="a-avatar"></i> POC: @if($projectDetails->owner_poc != ''){{$projectDetails->owner_poc}}@else NA @endIf<br>
 				<i class="a-phone-5"></i>  @if($projectDetails->owner_phone != ''){{$projectDetails->owner_phone}}@else NA @endIf<br>
 				<i class="a-fax-2"></i>  @if($projectDetails->owner_fax != ''){{$projectDetails->owner_fax}}@else NA @endIf<br>
@@ -44,7 +44,7 @@ if(array_key_exists(5, $pieceData)){
 			</div>
 			<h5 class="uk-margin-remove"><strong>Managed By: </strong></h5>
 			<div class="address">
-				<i class="a-building" style="font-weight: bolder;"></i> @if($projectDetails->manager_name != '') {{$projectDetails->manager_name}} @else NA @endIf<br>
+				<i class="a-bank" style="font-weight: bolder;"></i> @if($projectDetails->manager_name != '') {{$projectDetails->manager_name}} @else NA @endIf<br>
 				<i class="a-avatar"></i> POC: @if($projectDetails->manager_poc != ''){{$projectDetails->manager_poc}}@else NA @endIf<br>
 				<i class="a-phone-5"></i>  @if($projectDetails->manager_phone != ''){{$projectDetails->manager_phone}}@else NA @endIf<br>
 				<i class="a-fax-2"></i>  @if($projectDetails->manager_fax != ''){{$projectDetails->manager_fax}}@else NA @endIf<br>
@@ -156,13 +156,15 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 			$nhtfFileInspections = count(collect($inspections)->whereIn('group','NHTF')->where('is_site_visit',0)->groupBy('unit_id'));
 		?>
 
-		<small><i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} PHYSICAL INSPECTIONS @else {{$siteInspections}} PHYSICAL INSPECTION @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :&nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf 
+		<small>
+			@if($homeSiteInspections > 0) <i class="a-mobile"></i> :@if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME PHYSICAL INSPECTIONS @else 1 HOME PHYSICAL INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf &nbsp;| &nbsp; @endIf
 
-			@if($homeSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($homeSiteInspections > 1 || $homeSiteInspections < 1) {{$homeSiteInspections}} HOME PHYSICAL INSPECTIONS @else 1 HOME PHYSICAL INSPECTION @endIf  @endIf @if($homeFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($homeFileInspections > 1 || $homeFileInspections < 1) {{$homeFileInspections}} HOME FILE INSPECTIONS @else 1 HOME FILE INSPECTION @endIf @endIf
+			@if($ohtfSiteInspections > 0) <i class="a-mobile"></i> :@if($ohtfSiteInspections > 1 || $ohtfSiteInspections < 1) {{$ohtfSiteInspections}} OHTF PHYSICAL INSPECTIONS @else 1 OHTF PHYSICAL INSPECTION @endIf  @endIf @if($ohtfFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($ohtfFileInspections > 1 || $ohtfFileInspections < 1) {{$ohtfFileInspections}} OHTF FILE INSPECTIONS @else 1 OHTF FILE INSPECTION @endIf &nbsp;| &nbsp; @endIf
 
-			@if($ohtfSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($ohtfSiteInspections > 1 || $ohtfSiteInspections < 1) {{$ohtfSiteInspections}} OHTF PHYSICAL INSPECTIONS @else 1 OHTF PHYSICAL INSPECTION @endIf  @endIf @if($ohtfFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($ohtfFileInspections > 1 || $ohtfFileInspections < 1) {{$ohtfFileInspections}} OHTF FILE INSPECTIONS @else 1 OHTF FILE INSPECTION @endIf @endIf
+			@if($nhtfSiteInspections > 0) ;<i class="a-mobile"></i> :@if($nhtfSiteInspections > 1 || $nhtfSiteInspections < 1) {{$nhtfSiteInspections}} NHTF PHYSICAL INSPECTIONS @else 1 NHTF PHYSICAL INSPECTION @endIf  @endIf @if($nhtfFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($nhtfFileInspections > 1 || $nhtfFileInspections < 1) {{$nhtfFileInspections}} NHTF FILE INSPECTIONS @else 1 NHTF FILE INSPECTION @endIf &nbsp;| &nbsp @endIf
+			<i class="a-mobile"></i> : @if($siteInspections > 1 || $siteInspections < 1) {{$siteInspections}} PHYSICAL INSPECTIONS @else {{$siteInspections}} PHYSICAL INSPECTION @endIf &nbsp;|   &nbsp;<i class="a-folder"></i> :&nbsp; @if($fileInspections > 1 || $fileInspections < 1) {{$fileInspections}} FILE INSPECTIONS @else {{$fileInspections}} FILE INSPECTION @endIf 
 
-			@if($nhtfSiteInspections > 0) &nbsp;| &nbsp;<i class="a-mobile"></i> :@if($nhtfSiteInspections > 1 || $nhtfSiteInspections < 1) {{$nhtfSiteInspections}} NHTF PHYSICAL INSPECTIONS @else 1 NHTF PHYSICAL INSPECTION @endIf  @endIf @if($nhtfFileInspections > 0) &nbsp;|&nbsp; <i class="a-folder"></i> <i class="a-home-2 home-folder-small"></i>: @if($nhtfFileInspections > 1 || $nhtfFileInspections < 1) {{$nhtfFileInspections}} NHTF FILE INSPECTIONS @else 1 NHTF FILE INSPECTION @endIf @endIf
+			
 
 
 		</small>
@@ -207,10 +209,12 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					@endIf
 
 					@elseIf(!in_array($g->unit_id, $fileVisited))
-					@if(!in_array($g->unit_id, $siteVisited))
-					<span style="color:#cecece"><i class="a-mobile uk-text-large uk-margin-small-right "  ></i> <i class="a-circle-minus on-phone"></i></span>
-					@endIf
-					<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf @if($isHome || $isOhtf || $isNhtf) <i class="a-home-2 home-folder"></i> @endIf<?php $fileVisited[]=$g->unit_id; ?>
+						@if(!in_array($g->unit_id, $siteVisited))
+							<span style="color:#cecece"><i class="a-mobile uk-text-large uk-margin-small-right "  ></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{$thisUnitSiteFindings}}">{{$thisUnitSiteFindings}}</span> @else<i class="a-circle-minus on-phone"></i> @endIf</span>
+						@endIf
+						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf 
+							@if($isHome || $isOhtf || $isNhtf) <i class="a-home-2 home-folder"></i> @endIf
+							<?php $fileVisited[]=$g->unit_id; ?>
 
 					@else
 					<?php $noShow = 1; ?>
