@@ -17,12 +17,12 @@ $crrTypeSelection    = 'all';
                         <option value="all">
                             FILTER BY STATUS
                         </option>
-                        <option value="all" @if(session('crr_report_status_id') == 'all')  @endIf>
+                        <option value="all" @if(session($prefix.'crr_report_status_id') == 'all')  @endIf>
                             ALL REPORT STATUSES
                         </option>
                         @if(!is_null($crrApprovalTypes))
                             @foreach ($crrApprovalTypes as $status)
-                            <option value="{{$status->id}}" @if(session('crr_report_status_id') == $status->id) <?php $crrStatusSelection = $status->name;?> @endIf><a class="uk-dropdown-close">{{$status->name}}</a></option>
+                            <option value="{{$status->id}}" @if(session($prefix.'crr_report_status_id') == $status->id) <?php $crrStatusSelection = $status->name;?> @endIf><a class="uk-dropdown-close">{{$status->name}}</a></option>
                             @endforeach
                         @endIf
                     </select>      
@@ -34,12 +34,12 @@ $crrTypeSelection    = 'all';
                         <option value="all" selected="">
                             FILTER BY LEAD
                             </option>
-                            <option value="all" @if(session('crr_report_lead_id') == 'all')  @endIf>
+                            <option value="all" @if(session($prefix.'crr_report_lead_id') == 'all')  @endIf>
                             ALL LEADS
                         </option>
                             @if(!is_null($hfa_users_array))
 	                            @foreach ($hfa_users_array as $user)
-	                            <option value="{{$user->id}}">@if(session('crr_report_lead_id') == $user->id)<?php $crrLeadSelection = $user->person->first_name . ' ' . $user->person->last_name;?>  @endIf<a  class="uk-dropdown-close">{{$user->person->first_name}} {{$user->person->last_name}}</a></option>
+	                            <option value="{{$user->id}}">@if(session($prefix.'crr_report_lead_id') == $user->id)<?php $crrLeadSelection = $user->person->first_name . ' ' . $user->person->last_name;?>  @endIf<a  class="uk-dropdown-close">{{$user->person->first_name}} {{$user->person->last_name}}</a></option>
 	                            @endforeach
 	                        @endIf
                         </select>
@@ -49,12 +49,12 @@ $crrTypeSelection    = 'all';
                         <option value="all" selected="">
                             FILTER BY TYPE
                             </option>
-                            <option value="all" @if(session('crr_report_type') == 'all')  @endIf>
+                            <option value="all" @if($prefix.session('crr_report_type') == 'all')  @endIf>
                             ALL TYPES
                         </option>
                             @if(!is_null($crr_types_array))
                                 @foreach ($crr_types_array as $type)
-                                <option value="{{$type->id}}">@if(session('crr_report_type') == $type->id)<?php $crrTypeSelection = $type->template_name;?>  @endIf<a  class="uk-dropdown-close">{{$type->template_name}}</a></option>
+                                <option value="{{$type->id}}">@if(session($prefix.'crr_report_type') == $type->id)<?php $crrTypeSelection = $type->template_name;?>  @endIf<a  class="uk-dropdown-close">{{$type->template_name}}</a></option>
                                 @endforeach
                             @endIf
                         </select>
@@ -85,25 +85,25 @@ $crrTypeSelection    = 'all';
                 </a>
             </div>
             @endCan
-            @if(session('crrp_search') && session('crrp_search') !== 'all')
+            @if(session($prefix.'crrp_search') && session($prefix.'crrp_search') !== 'all')
                 <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
-                    <a onClick="loadTab('/projects/{{$id}}/reports?search=all', '6','','','project-',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>REPORT #:{{ session('crrp_search') }}</span></a>
+                    <a onClick="loadTab('/projects/{{$id}}/reports?search=all', '6','','','project-',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>REPORT #:{{ session($prefix.'crrp_search') }}</span></a>
                 </div>
             @endIf
 
-            @if(session('crr_report_status_id') && session('crr_report_status_id') !== 'all')
+            @if(session($prefix.'crr_report_status_id') && session($prefix.'crr_report_status_id') !== 'all')
                 <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
                     <a onClick="loadTab('/projects/{{$id}}/reports?crr_report_status_id=all', '6','','','project-',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ strtoupper($crrStatusSelection) }}</span></a>
                 </div>
             @endIf
 
-            @if(session('crr_report_lead_id') && session('crr_report_lead_id') !== 'all')
+            @if(session($prefix.'crr_report_lead_id') && session($prefix.'crr_report_lead_id') !== 'all')
                 <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
                     <a onClick="loadTab('/projects/{{$id}}/reports?crr_report_lead_id=all', '6','','','project-',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>@if($crrLeadSelection == Auth::user()->full_name()) Mine @else {{ $crrLeadSelection }} @endIf</span></a>
                 </div>
             @endIf
 
-            @if(session('crr_report_type') && session('crr_report_type') !== 'all')
+            @if(session($prefix.'crr_report_type') && session($prefix.'crr_report_type') !== 'all')
                 <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
                     <a onClick="loadTab('/projects/{{$id}}/reports?crr_report_type=all', '6','','','project-',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ $crrTypeSelection }}</span></a>
                 </div>

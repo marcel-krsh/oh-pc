@@ -28,6 +28,8 @@ class ReportsController extends Controller
   public function __construct(Request $request)
   {
     // $this->middleware('auth');
+    
+
   }
 
   public function reportHistory(CrrReport $report, $data)
@@ -210,10 +212,12 @@ class ReportsController extends Controller
   {
     $messages = []; //this is to send messages back to the view confirming actions or errors.
     // set values - ensure this single request works for both dashboard and project details
+    $prefix = '';
     if (!is_null($project)) {
       // this sets values for if it is a project details view
       $project = Project::find($project);
       session(['crr_report_project_id' => $project->id]);
+      $prefix = $project->id;
     }
 
     // Perform Actions First.
@@ -238,16 +242,16 @@ class ReportsController extends Controller
 
     // Set default filters for first view of page:
     if (session('crr_first_load') !== 1) {
-        session(['crr_report_status_id' => 1]);
+        // session(['crr_report_status_id' => 1]);
       // set some default parameters
       if (Auth::user()->can('access_manager')) {
-        session(['crr_report_status_id' => 2]);
+        // session(['crr_report_status_id' => 2]);
         // pending manager review
       } elseif (Auth::user()->can('access_auditor')) {
-        session(['crr_report_lead_id' => Auth::user()->id]);
+        session([$prefix.'crr_report_lead_id' => Auth::user()->id]);
         // show this auditors reports
       } elseif (Auth::user()->can('access_pm')) {
-        session(['crr_report_status_id' => 6]);
+        // session(['crr_report_status_id' => 6]);
         // @todo
       }
       session(['crr_first_load' => 1]);
@@ -255,59 +259,59 @@ class ReportsController extends Controller
     }
     // Search Number
     if ($request->get('search')) {
-      session(['crr_search' => $request->get('search')]);
+      session([$prefix.'crr_search' => $request->get('search')]);
     } elseif (is_null(session('crr_search'))) {
-      session(['crr_search' => 'all']);
+      session([$prefix.'crr_search' => 'all']);
     }
-    if (session('crr_search') !== 'all') {
+    if (session($prefix.'crr_search') !== 'all') {
       $searchEval = '=';
       $searchVal  = intval(session('crr_search'));
     } else {
-      session(['crr_search' => 'all']);
+      session([$prefix.'crr_search' => 'all']);
       $searchEval = '>';
       $searchVal  = '0';
     }
 
     // Report Type
     if ($request->get('crr_report_type')) {
-      session(['crr_report_type' => $request->get('crr_report_type')]);
+      session([$prefix.'crr_report_type' => $request->get('crr_report_type')]);
     } elseif (is_null(session('crr_report_type'))) {
-      session(['crr_report_type' => 'all']);
+      session([$prefix.'crr_report_type' => 'all']);
     }
-    if (session('crr_report_type') !== 'all') {
+    if (session($prefix.'crr_report_type') !== 'all') {
       $typeEval = '=';
-      $typeVal  = intval(session('crr_report_type'));
+      $typeVal  = intval(session($prefix.'crr_report_type'));
     } else {
-      session(['crr_report_type' => 'all']);
+      session([$prefix.'crr_report_type' => 'all']);
       $typeEval = '>';
       $typeVal  = '0';
     }
 
     // Report Status
     if ($request->get('crr_report_status_id')) {
-      session(['crr_report_status_id' => $request->get('crr_report_status_id')]);
+      session([$prefix.'crr_report_status_id' => $request->get('crr_report_status_id')]);
     } elseif (is_null(session('crr_report_status_id'))) {
-      session(['crr_report_status_id' => 'all']);
+      session([$prefix.'crr_report_status_id' => 'all']);
     }
     if(Auth::user()->can('access_auditor')){
-      if (session('crr_report_status_id') !== 'all') {
+      if (session($prefix.'crr_report_status_id') !== 'all') {
         $approvalTypeEval = '=';
-        $approvalTypeVal  = intval(session('crr_report_status_id'));
+        $approvalTypeVal  = intval(session($prefix.'crr_report_status_id'));
       } else {
-        session(['crr_report_status_id' => 'all']);
+        session([$prefix.'crr_report_status_id' => 'all']);
         $approvalTypeEval = '>';
         $approvalTypeVal  = 0;
       }
     }else{
-      if (session('crr_report_status_id') !== 'all') {
-        if(intval(session('crr_report_status_id'))<6){
+      if (session($prefix.'crr_report_status_id') !== 'all') {
+        if(intval(session($prefix.'crr_report_status_id'))<6){
           //user is trying to get a status they cannot access
-          session(['crr_report_status_id' => 6]); // default them to the sent
+          session([$prefix.'crr_report_status_id' => 6]); // default them to the sent
         }
         $approvalTypeEval = '=';
-        $approvalTypeVal  = intval(session('crr_report_status_id'));
+        $approvalTypeVal  = intval(session($prefix.'crr_report_status_id'));
       } else {
-        session(['crr_report_status_id' => 'all']);
+        session([$prefix.'crr_report_status_id' => 'all']);
         $approvalTypeEval = '>';
         $approvalTypeVal  = 5;
       }
@@ -315,30 +319,30 @@ class ReportsController extends Controller
 
     // Project Selection
     if ($request->get('crr_report_project_id')) {
-      session(['crr_report_project_id' => $request->get('crr_report_project_id')]);
-    } elseif (is_null(session('crr_report_project_id'))) {
-      session(['crr_report_project_id' => 'all']);
+      session([$prefix.'crr_report_project_id' => $request->get('crr_report_project_id')]);
+    } elseif (is_null(session($prefix.'crr_report_project_id'))) {
+      session([$prefix.'crr_report_project_id' => 'all']);
     }
-    if (session('crr_report_project_id') !== 'all') {
+    if (session($prefix.'crr_report_project_id') !== 'all') {
       $projectEval = '=';
-      $projectVal  = intval(session('crr_report_project_id'));
+      $projectVal  = intval(session($prefix.'crr_report_project_id'));
     } else {
-      session(['crr_report_project_id' => 'all']);
+      session([$prefix.'crr_report_project_id' => 'all']);
       $projectEval = '>';
       $projectVal  = 0;
     }
 
     // Lead Selection
     if ($request->get('crr_report_lead_id')) {
-      session(['crr_report_lead_id' => $request->get('crr_report_lead_id')]);
-    } elseif (is_null(session('crr_report_lead_id'))) {
-      session(['crr_report_lead_id' => 'all']);
+      session([$prefix.'crr_report_lead_id' => $request->get('crr_report_lead_id')]);
+    } elseif (is_null(session($prefix.'crr_report_lead_id'))) {
+      session([$prefix.'crr_report_lead_id' => 'all']);
     }
-    if (session('crr_report_lead_id') !== 'all') {
+    if (session($prefix.'crr_report_lead_id') !== 'all') {
       $leadEval = '=';
-      $leadVal  = intval(session('crr_report_lead_id'));
+      $leadVal  = intval(session($prefix.'crr_report_lead_id'));
     } else {
-      session(['crr_report_lead_id' => 'all']);
+      session([$prefix.'crr_report_lead_id' => 'all']);
       $leadEval = '>';
       $leadVal  = 0;
     }
@@ -428,9 +432,9 @@ class ReportsController extends Controller
         return 1;
       }
     } else if ($request->get('rows_only')) {
-      return view('dashboard.partials.reports-row', compact('reports'));
+      return view('dashboard.partials.reports-row', compact('reports','prefix'));
     } else {
-      return view('dashboard.reports', compact('reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'projects_array', 'crr_types_array', 'messages', 'newest'));
+      return view('dashboard.reports', compact('reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'projects_array', 'crr_types_array', 'messages', 'newest','prefix'));
     }
   }
 
