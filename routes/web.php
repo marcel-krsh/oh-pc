@@ -281,6 +281,10 @@
 
             // owner
             Route::post('/modals/make-project-default-owner', 'ProjectContactsController@defaultOwnerForProject')->name('user.make-project-default-owner');
+            Route::post('/modals/make-project-default-owner-organization', 'ProjectContactsController@defaultOwnerOrganizationOfProject')->name('user.make-project-default-owner-organization');
+            Route::post('/modals/make-project-default-owner-address', 'ProjectContactsController@defaultOwnerAddress')->name('user.make-project-default-owner-address');
+            Route::post('/modals/make-project-default-owner-phone', 'ProjectContactsController@defaultOwnerPhone')->name('user.make-project-default-owner-phone');
+            Route::post('/modals/make-project-default-owner-email', 'ProjectContactsController@defaultOwnerEmail')->name('user.make-project-default-owner-email');
 
 
 

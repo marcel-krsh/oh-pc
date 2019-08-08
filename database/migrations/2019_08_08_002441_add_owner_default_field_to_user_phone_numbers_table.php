@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddOwnerFieldsToReportAccessTable extends Migration
+class AddOwnerDefaultFieldToUserPhoneNumbersTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,7 +13,7 @@ class AddOwnerFieldsToReportAccessTable extends Migration
    */
   public function up()
   {
-    Schema::table('report_access', function (Blueprint $table) {
+    Schema::table('user_phone_numbers', function (Blueprint $table) {
       $table->boolean('owner_default')->default(0)->nullable();
     });
   }
@@ -25,7 +25,7 @@ class AddOwnerFieldsToReportAccessTable extends Migration
    */
   public function down()
   {
-    Schema::table('report_access', function (Blueprint $table) {
+    Schema::table('user_phone_numbers', function (Blueprint $table) {
       $table->dropColumn('owner_default');
     });
   }

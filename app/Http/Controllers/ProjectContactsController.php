@@ -47,7 +47,9 @@ class ProjectContactsController extends Controller
       $default_devco_user_id = $default_user->person->user->id;
     }
     if ($default_report_owner && $default_report_owner->devco && $default_owner) {
-      $default_devco_owner_id = $default_owner->person->user->id;
+      if ($default_owner->person->user) {
+        $default_devco_owner_id = $default_owner->person->user->id;
+      }
     }
     if ($default_report_user) {
       $default_user_id = $default_report_user->user_id;
@@ -60,11 +62,19 @@ class ProjectContactsController extends Controller
       $default_owner_id = $default_devco_owner_id = $default_owner->person->user->id;
     }
     // replace joins with relationship
-    $users         = User::whereIn('id', $user_ids)->with('role', 'person.email', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
-    $default_org   = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->count();
-    $default_addr  = $users->pluck('user_addresses')->filter()->flatten()->where('default', 1)->count();
-    $default_phone = $users->pluck('user_phone_numbers')->filter()->flatten()->where('default', 1)->count();
-    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id', 'default_owner_id', 'default_devco_owner_id'));
+    $users             = User::whereIn('id', $user_ids)->with('role', 'person.email', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
+    $default_org       = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
+    $default_owner_org = $users->pluck('user_organizations')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
+
+    $default_addr       = $users->pluck('user_addresses')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
+    $default_owner_addr = $users->pluck('user_addresses')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
+
+    $default_phone       = $users->pluck('user_phone_numbers')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
+    $default_owner_phone = $users->pluck('user_phone_numbers')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
+
+    $default_email       = $users->pluck('user_emails')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
+    $default_owner_email = $users->pluck('user_emails')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
+    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id', 'default_owner_id', 'default_devco_owner_id', 'default_owner_org', 'default_owner_addr', 'default_owner_phone', 'default_email', 'default_owner_email'));
   }
 
   protected function projectUserIds($project_id)
@@ -809,4 +819,177 @@ class ProjectContactsController extends Controller
     }
     return 1;
   }
+
+  public function defaultOwnerOrganizationOfProject(Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'project_id'      => 'required',
+      'organization_id' => 'required',
+      'user_id'         => 'required',
+    ]);
+    if ($validator->fails()) {
+      return 'Something went wrong, please contact admin';
+    }
+    $selected_org = $request->organization_id;
+    // Check if it is devco user and exists in project orgs
+    if ($request->devco_org) {
+      $devco_organization = UserOrganization::where('project_id', $request->project_id)
+        ->where('organization_id', $request->organization_id)
+        ->where('user_id', $request->user_id)
+        ->where('devco', 1)
+        ->first();
+      if ($devco_organization) {
+        $selected_org = $devco_organization->id;
+      } else {
+        $uo                  = new UserOrganization;
+        $uo->organization_id = $request->organization_id;
+        $uo->user_id         = $request->user_id;
+        $uo->project_id      = $request->project_id;
+        $uo->devco           = $request->devco_org;
+        $uo->save();
+        $selected_org = $uo->id;
+      }
+    }
+    $orgs = UserOrganization::where('project_id', $request->project_id)->get();
+    foreach ($orgs as $key => $org) {
+      if ($org->id == $selected_org) {
+        $org->owner_default = 1;
+      } else {
+        $org->owner_default = 0;
+      }
+      $org->save();
+    }
+    return 1;
+  }
+
+  public function defaultOwnerAddress(Request $request)
+  {
+    //return $request->all();
+    $validator = \Validator::make($request->all(), [
+      'project_id' => 'required',
+      'address_id' => 'required',
+      'user_id'    => 'required',
+    ]);
+    if ($validator->fails()) {
+      return 'Something went wrong, please contact admin';
+    }
+    $selected = $request->address_id;
+    // Check if it is devco user and exists in project orgs
+    if ($request->devco) {
+      $devco_address = UserAddresses::where('project_id', $request->project_id)
+        ->where('address_id', $request->address_id)
+        ->where('user_id', $request->user_id)
+        ->where('devco', 1)
+        ->first();
+      if ($devco_address) {
+        $selected = $devco_address->id;
+      } else {
+        $uo             = new UserAddresses;
+        $uo->address_id = $request->address_id;
+        $uo->user_id    = $request->user_id;
+        $uo->project_id = $request->project_id;
+        $uo->devco      = $request->devco;
+        $uo->save();
+        $selected = $uo->id;
+      }
+    }
+    $defaults = UserAddresses::where('project_id', $request->project_id)->get();
+    foreach ($defaults as $key => $default) {
+      if ($default->id == $selected) {
+        $default->owner_default = 1;
+      } else {
+        $default->owner_default = 0;
+      }
+      $default->save();
+    }
+    return 1;
+  }
+
+  public function defaultOwnerPhone(Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'project_id'      => 'required',
+      'phone_number_id' => 'required',
+      'user_id'         => 'required',
+    ]);
+    if ($validator->fails()) {
+      return 'Something went wrong, please contact admin';
+    }
+    $selected = $request->phone_number_id;
+    // Check if it is devco user and exists in project phones
+    if ($request->devco) {
+      $devco = UserPhoneNumber::where('project_id', $request->project_id)
+        ->where('phone_number_id', $request->phone_number_id)
+        ->where('user_id', $request->user_id)
+        ->where('devco', 1)
+        ->first();
+      if ($devco) {
+        $selected = $devco->id;
+      } else {
+        $uo                  = new UserPhoneNumber;
+        $uo->phone_number_id = $request->phone_number_id;
+        $uo->user_id         = $request->user_id;
+        $uo->project_id      = $request->project_id;
+        $uo->devco           = $request->devco;
+        $uo->save();
+        $selected = $uo->id;
+      }
+    }
+    $defaults = UserPhoneNumber::where('project_id', $request->project_id)->get();
+    foreach ($defaults as $key => $default) {
+      if ($default->id == $selected) {
+        $default->owner_default = 1;
+      } else {
+        $default->owner_default = 0;
+      }
+      $default->save();
+    }
+    return 1;
+  }
+
+  public function defaultOwnerEmail(Request $request)
+  {
+    // return $request->all();
+    $validator = \Validator::make($request->all(), [
+      'project_id'       => 'required',
+      'email_address_id' => 'required',
+      'user_id'          => 'required',
+    ]);
+    if ($validator->fails()) {
+      return 'Something went wrong, please contact admin';
+    }
+    $selected = $request->email_address_id;
+    // Check if it is devco user and exists in project emails
+    if ($request->devco) {
+      $devco = UserEmail::where('project_id', $request->project_id)
+        ->where('email_address_id', $request->email_address_id)
+        ->where('user_id', $request->user_id)
+        ->where('devco', 1)
+        ->first();
+      if ($devco) {
+        $selected = $devco->id;
+      } else {
+        $uo                   = new UserEmail;
+        $uo->email_address_id = $request->email_address_id;
+        $uo->user_id          = $request->user_id;
+        $uo->project_id       = $request->project_id;
+        $uo->devco            = $request->devco;
+        $uo->save();
+        $selected = $uo->id;
+      }
+    }
+    $defaults = UserEmail::where('project_id', $request->project_id)->get();
+    foreach ($defaults as $key => $default) {
+      if ($default->id == $selected) {
+        $default->owner_default = 1;
+      } else {
+        $default->owner_default = 0;
+      }
+      $default->save();
+    }
+    return 1;
+  }
+
+
+
 }
