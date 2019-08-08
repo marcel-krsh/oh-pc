@@ -6153,6 +6153,12 @@ class AuditController extends Controller
         $audit_id = $request->post('id');
         $name=$request->post('name');
         $req_type=$request->post('req_type');
+        if($req_type == "required_units"){
+            $requiredTypeDisplay = 'physical inspection';
+        }
+        if($req_type == "required_units_file"){
+            $requiredTypeDisplay = 'file inspection';
+        }
         $value=$request->post('req_val');
         $audit_details = Audit::where('id', '=', $audit_id)->first();
         $selection_summary = json_decode($audit_details->selection_summary, 1);
@@ -6160,7 +6166,9 @@ class AuditController extends Controller
             foreach ($selection_summary['programs'] as $key => $program) {
                 $selection_summary['programs'][$key]['name'];
                 if($selection_summary['programs'][$key]['name']== $name){
+                    @$selection_summary['programs'][$key]['comments'][]=date('m/d/Y h:i:s a',time()).': '.Auth::user()->name.' ( user id: '.Auth::user()->id.' ) changed the '.$requiredTypeDisplay.' required amount from '.$selection_summary['programs'][$key][$req_type].' to '.$value;
                     @$selection_summary['programs'][$key][$req_type]=$value;
+
                 }
             }
             $audit_details->selection_summary=json_encode($selection_summary);
