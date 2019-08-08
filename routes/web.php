@@ -243,6 +243,29 @@
             Route::post('/report/{report}/section/{section}/part/{part}/order','ReportsController@modifySectionPartOrder');
             Route::get('/projects/{project}/reports', 'AuditController@getProjectReports')->name('project.reports');
             Route::get('/projects/{project}/reports/title', 'AuditController@getProjectReportsTitle')->name('project.reports.title');
+            Route::get('project/{project}/contacts', 'ProjectContactsController@contacts')->name('project.contacts');
+            Route::get('/modals/{project}/add-user-to-project', 'ProjectContactsController@addUserToProject');
+            Route::post('/modals/{project}/add-user-to-project', 'ProjectContactsController@saveAddUserToProject')->name('project.add-user');
+            Route::get('/modals/remove-user-from-project/{project}/{user}', 'ProjectContactsController@removeUserFromProject');
+            Route::post('/modals/{project}/remove-user-from-project', 'ProjectContactsController@deleteAddUserToProject')->name('project.remove-user');
+            Route::get('/modals/add-organization-to-user/{user}/{project}', 'ProjectContactsController@addOrganizationToUser');
+            Route::post('/modals/{user}/add-organization-to-user', 'ProjectContactsController@saveOrganizationToUser')->name('user.add-organization-to-user');
+            Route::get('/modals/edit-organization-of-user/{org}/{project}', 'ProjectContactsController@editOrganizationOfUser');
+            Route::post('/modals/{org}/edit-organization-of-user', 'ProjectContactsController@saveOrganizationOfUser')->name('user.edit-organization-of-user');
+            Route::post('/modals/{org}/remove-organization-of-user', 'ProjectContactsController@removeOrganizationOfUser')->name('user.remove-organization-of-user');
+            Route::post('/modals/make-project-default-organization', 'ProjectContactsController@defaultOrganizationOfUserForProject')->name('user.make-project-default-organization');
+            Route::get('/modals/edit-name-of-user/{user}/{project}', 'ProjectContactsController@editNameOfUser');
+            Route::post('/modals/{user}/edit-name-of-user', 'ProjectContactsController@saveNameOfUser')->name('user.edit-name-of-user');
+            Route::post('/modals/make-project-default-user', 'ProjectContactsController@defaultUserForProject')->name('user.make-project-default-user');
+            Route::get('/modals/add-address-to-user/{user}/{project}', 'ProjectContactsController@addAddressToUser');
+            Route::post('/modals/{user}/add-address-to-user', 'ProjectContactsController@saveAddressToUser')->name('user.add-address-to-user');
+            Route::post('/modals/make-project-default-address', 'ProjectContactsController@defaultAddressOfUserForProject')->name('user.make-project-default-address');
+            Route::get('/modals/edit-address-of-user/{address}/{project}', 'ProjectContactsController@editAddressOfUser');
+            Route::post('/modals/{address}/edit-address-of-user', 'ProjectContactsController@saveAddressOfUser')->name('user.edit-address-of-user');
+            Route::post('/modals/{address}/remove-address-of-user', 'ProjectContactsController@removeAddressOfUser')->name('user.remove-address-of-user');
+
+
+
 
             //documents
             Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');

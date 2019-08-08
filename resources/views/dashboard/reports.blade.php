@@ -104,21 +104,21 @@ $crrTypeSelection    = 'all';
                     </a>
                 </div>
                 @endCan
-            @if(session('crr_search') && session('crr_search') !== 'all')
+            @if(session($prefix.'crr_search') && session($prefix.'crr_search') !== 'all')
 
             <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
                 <a onClick="loadTab('/dashboard/reports?search=all', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>REPORT #:{{ session('crr_search') }}</span></a>
 
             </div>
             @endIf
-            @if(session('crr_report_status_id') && session('crr_report_status_id') !== 'all')
+            @if(session($prefix.'crr_report_status_id') && session($prefix.'crr_report_status_id') !== 'all')
 
             <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
                 <a onClick="loadTab('/dashboard/reports?crr_report_status_id=all', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ strtoupper($crrStatusSelection) }}</span></a>
 
             </div>
             @endIf
-            @if(session('crr_report_project_id') && session('crr_report_project_id') !== 'all')
+            @if(session($prefix.'crr_report_project_id') && session($prefix.'crr_report_project_id') !== 'all')
 
             <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
                 <a onClick="loadTab('/dashboard/reports?crr_report_project_id=all', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ $crrProjectSelection }}</span></a>
@@ -126,7 +126,7 @@ $crrTypeSelection    = 'all';
             </div>
             @endIf
 
-            @if(session('crr_report_lead_id') && session('crr_report_lead_id') !== 'all')
+            @if(session($prefix.'crr_report_lead_id') && session($prefix.'crr_report_lead_id') !== 'all')
 
             <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
                 <a onClick="loadTab('/dashboard/reports?crr_report_lead_id=all', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>@if($crrLeadSelection == Auth::user()->full_name()) Mine @else {{ $crrLeadSelection }} @endIf</span></a>
@@ -134,7 +134,7 @@ $crrTypeSelection    = 'all';
             </div>
             @endIf
 
-            @if(session('crr_report_type') && session('crr_report_type') !== 'all')
+            @if(session($prefix.'crr_report_type') && session($prefix.'crr_report_type') !== 'all')
 
             <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
                 <a onClick="loadTab('/dashboard/reports?crr_report_type=all', '3','','','',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ $crrTypeSelection }}</span></a>

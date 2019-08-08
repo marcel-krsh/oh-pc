@@ -33,10 +33,13 @@ use App\Models\UnitAmenity;
 use App\Models\UnitInspection;
 use App\Models\UnitProgram;
 use App\Models\User;
+use App\Models\CrrApprovalType;
+use App\Models\CrrReport;
 use DB;
 use Auth;
 use Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Session;
 use App\Models\Group;
 use App\Models\Program;
@@ -1580,6 +1583,7 @@ class AuditController extends Controller
             // ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
             ['title' => 'Audit Stream', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.stream'],
             ['title' => 'Reports', 'icon' => 'a-file-chart-3', 'status' => '', 'badge' => '', 'action' => 'project.reports'],
+            ['title' => 'Contacts', 'icon' => 'a-person-notebook icon', 'status' => '', 'badge' => '', 'action' => 'project.contacts'],
         ]);
         $tab = 'project-detail-tab-1';
 
@@ -2644,9 +2648,321 @@ class AuditController extends Controller
         return view('projects.partials.stream', compact('type','findings','auditid', 'buildingid', 'unitid', 'amenityid'));
     }
 
-    public function getProjectReports($project = null)
+    public function getProjectReports(Request $request, $project = null)
     {
-        return view('projects.partials.reports');
+        $id = $project;
+        $project = Project::find($project);
+        $prefix = 'project'.$project->id;
+        $messages = [];
+        // Perform Actions First.
+        if (!is_null($request->get('due'))) 
+        {
+            $data        = [];
+            $data['due'] = $request->get('due');
+            $data['id']  = $request->get('report_id');            
+            $messages[] = $this->dueDate($data);            
+        }
+
+        if (!is_null($request->get('action'))) 
+        {
+            $data           = [];
+            $data['action'] = intval($request->get('action'));                  
+            $report     = CrrReport::find($request->get('id'));
+            $messages[] = $this->reportAction($report, $data);            
+        }
+
+        // Set default filters for first view of page:
+        if (session($prefix.'crr_first_load') !== 1) {
+            //session([$prefix.'crr_report_status_id' => 1]);
+        // set some default parameters
+        if (Auth::user()->can('access_manager')) {
+            //session([$prefix.'crr_report_status_id' => 2]);
+            // pending manager review
+        } elseif (Auth::user()->can('access_auditor')) {
+            //session([$prefix.'crr_report_lead_id' => Auth::user()->id]);
+            // show this auditors reports
+        } elseif (Auth::user()->can('access_pm')) {
+            //session([$prefix.'crr_report_status_id' => 6]);
+            // @todo
+        }
+        session([$prefix.'crr_first_load' => 1]);
+        // makes sure if they override or clear the default filter it doesn't get overrideen.
+        }
+
+        // Search Number
+        $sessionCrrpSearchName = $prefix.'crrp_search';
+        if ($request->get('search')) {
+            session([$sessionCrrpSearchName => $request->get('search')]);
+        } elseif (is_null(session('crrp_search'))) {
+            session([$sessionCrrpSearchName => 'all']);
+        }
+        if (session($sessionCrrpSearchName) !== 'all') {
+            $searchEval = '=';
+            $searchVal  = intval(session($sessionCrrpSearchName));
+        } else {
+            session([$sessionCrrpSearchName => 'all']);
+            $searchEval = '>';
+            $searchVal  = '0';
+        }
+
+        // Report Type
+        $sessionCrrReportType = $prefix.'crr_report_type';
+        if ($request->get('crr_report_type')) {
+            session([$sessionCrrReportType => $request->get('crr_report_type')]);
+        } elseif (is_null(session($sessionCrrReportType))) {
+            session([$sessionCrrReportType => 'all']);
+        }
+        if (session($sessionCrrReportType) !== 'all') {
+            $typeEval = '=';
+            $typeVal  = intval(session($sessionCrrReportType));
+        } else {
+            session([$sessionCrrReportType => 'all']);
+            $typeEval = '>';
+            $typeVal  = '0';
+        }
+        
+        // Report Status
+        if ($request->get('crr_report_status_id')) {
+            session([$prefix.'crr_report_status_id' => $request->get('crr_report_status_id')]);
+        } elseif (is_null(session($prefix.'crr_report_status_id'))) {
+            session([$prefix.'crr_report_status_id' => 'all']);
+        }
+        if(Auth::user()->can('access_auditor')){
+            if (session($prefix.'crr_report_status_id') !== 'all') {
+            $approvalTypeEval = '=';
+            $approvalTypeVal  = intval(session($prefix.'crr_report_status_id'));
+            } else {
+            session([$prefix.'crr_report_status_id' => 'all']);
+            $approvalTypeEval = '>';
+            $approvalTypeVal  = 0;
+            }
+        }else{
+            if (session($prefix.'crr_report_status_id') !== 'all') {
+            if(intval(session($prefix.'crr_report_status_id'))<6){
+                //user is trying to get a status they cannot access
+                session([$prefix.'crr_report_status_id' => 6]); // default them to the sent
+            }
+            $approvalTypeEval = '=';
+            $approvalTypeVal  = intval(session($prefix.'crr_report_status_id'));
+            } else {
+            session([$prefix.'crr_report_status_id' => 'all']);
+            $approvalTypeEval = '>';
+            $approvalTypeVal  = 5;
+            }
+        }
+
+        // Lead Selection
+        if ($request->get('crr_report_lead_id')) {
+            session([$prefix.'crr_report_lead_id' => $request->get('crr_report_lead_id')]);
+        } elseif (is_null(session($prefix.'crr_report_lead_id'))) {
+            session([$prefix.'crr_report_lead_id' => 'all']);
+        }
+        if (session($prefix.'crr_report_lead_id') !== 'all') {
+            $leadEval = '=';
+            $leadVal  = intval(session($prefix.'crr_report_lead_id'));
+        } else {
+            session([$prefix.'crr_report_lead_id' => 'all']);
+            $leadEval = '>';
+            $leadVal  = 0;
+        }
+
+        // Check For Newer Than Selection
+        if ($request->get('newer_than')) {
+            // this is only used for checking for updated records
+            $newerThan = $request->get('newer_than');
+        } else {
+            $newerThan = '1900-01-01 00:00:01';
+        }
+
+        if (Auth::user()->can('access_auditor')) {
+            $auditLeads      = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+            $auditProjects   = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
+            $crr_types_array = CrrReport::select('id', 'template_name')->groupBy('template_name')->whereNotNull('template')->get()->all();
+            $hfa_users_array = [];
+            $projects_array  = [];
+        } else {
+            $auditLeads      = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+            $auditProjects   = CrrReport::select('*')->when(Auth::user()->cannot('access_auditor'), function ($query) {
+                  $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();                  
+                  return $query->whereIn('project_id', $userProjects);
+        })->with('project')->groupBy('project_id')->get();
+            $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id','>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
+            $hfa_users_array = [];
+            $projects_array  = [];
+    
+        }
+        foreach ($auditLeads as $hfa) {
+            if ($hfa->lead_user_id) {
+              $hfa_users_array[] = $hfa->lead;
+            }
+        }
+        foreach ($auditProjects as $hfa) {
+            if ($hfa->project) {
+              $projects_array[] = $hfa->project;
+            }
+        }
+        $hfa_users_array = array_values(Arr::sort($hfa_users_array, function ($value) {
+            return $value['name'];
+        }));
+        $projects_array = array_values(Arr::sort($projects_array, function ($value) {
+            return $value['project_name'];
+        }));
+        if(Auth::user()->can('access_auditor')){
+            $crrApprovalTypes = CrrApprovalType::orderBy('order')->get();
+        } else {
+            $crrApprovalTypes = CrrApprovalType::where('id','>',5)->orderBy('order')->get();
+        }
+
+        if(null !== $request->get('order_by')){
+            switch($request->get('order_by')){
+                case "id":
+                        
+                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'id'){                            
+                            if(session($prefix.'report_asc_desc')=='asc'){
+                                session([$prefix.'report_asc_desc' => 'desc']);                
+                            }else{
+                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                            }
+                        }else{                            
+                            session([$prefix.'report_asc_desc' => 'asc']);            
+                        }
+                        session([$prefix.'report_order_by' => 'id']);                        
+                        break;
+
+                case "project_id":
+                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'project_id'){
+                            if(session($prefix.'report_asc_desc')=='asc'){
+                                session([$prefix.'report_asc_desc' => 'desc']);                
+                            }else{
+                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session([$prefix.'report_asc_desc' => 'asc']);                
+                        }
+                        session([$prefix.'report_order_by' => 'project_id']);
+                        break;
+
+                case "audit_id":
+                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'audit_id'){
+                            if(session($prefix.'report_asc_desc')=='asc'){
+                                session([$prefix.'report_asc_desc' => 'desc']);                
+                            }else{
+                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session([$prefix.'report_asc_desc' => 'asc']);                
+                        }
+                        session([$prefix.'report_order_by' => 'audit_id']);
+                        break;
+                
+                case "lead_id":
+                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'lead_id'){
+                            if(session($prefix.'report_asc_desc')=='asc'){
+                                session([$prefix.'report_asc_desc' => 'desc']);                
+                            }else{
+                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session([$prefix.'report_asc_desc' => 'asc']);                
+                        }
+                        session([$prefix.'report_order_by' => 'lead_id']);
+                        break;
+                case "from_template_id":
+                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'from_template_id'){
+                            if(session($prefix.'report_asc_desc')=='asc'){
+                                session([$prefix.'report_asc_desc' => 'desc']);                
+                            }else{
+                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session([$prefix.'report_asc_desc' => 'asc']);                
+                        }
+                        session([$prefix.'report_order_by' => 'from_template_id']);
+                        break;                        
+                
+                case "crr_approval_type_id":
+                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'crr_approval_type_id'){
+                            if(session($prefix.'report_asc_desc')=='asc'){
+                                session([$prefix.'report_asc_desc' => 'desc']);                
+                            }else{
+                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session([$prefix.'report_asc_desc' => 'asc']);                
+                        }
+                        session([$prefix.'report_order_by' => 'crr_approval_type_id']);
+                        break;
+                                                                
+                case "created_at":
+                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'created_at'){
+                            if(session($prefix.'report_asc_desc')=='asc'){
+                                session([$prefix.'report_asc_desc' => 'desc']);                
+                            }else{
+                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session([$prefix.'report_asc_desc' => 'asc']);                
+                        }
+                        session([$prefix.'report_order_by' => 'created_at']);
+                        break;
+                        
+                case "response_due_date":
+                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'response_due_date'){
+                            if(session($prefix.'report_asc_desc')=='asc'){
+                                session([$prefix.'report_asc_desc' => 'desc']);                
+                            }else{
+                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                            }
+                        }else{
+                            session([$prefix.'report_asc_desc' => 'asc']);                
+                        }
+                        session([$prefix.'report_order_by' => 'response_due_date']);
+                        break;
+
+                default:
+                    session([$prefix.'report_asc_desc' => 'desc']);
+                    session([$prefix.'report_order_by' => 'updated_at']);
+                    break;
+            }
+        }else{            
+            session([$prefix.'report_asc_desc' => 'desc']);
+            session([$prefix.'report_order_by' => 'updated_at']);
+        }
+        
+        $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
+        ->whereNull('template')
+        ->where('project_id', '=', $id)
+        ->where('lead_id', $leadEval, $leadVal)
+        ->where('updated_at', '>', $newerThan)
+        ->where('from_template_id', $typeEval, $typeVal)
+        ->where('id', $searchEval, $searchVal)
+        // ->when(Auth::user()->cannot('access_auditor'), function ($query) {
+        //         $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();        
+        //         return $query->whereIn('project_id', $userProjects);
+        // })
+        ->orderBy(session($prefix.'report_order_by'), session($prefix.'report_asc_desc'))
+        ->paginate(3);     
+        
+        if (count($reports)) {
+            $newest = $reports->sortByDesc('updated_at');
+            $newest = date('Y-m-d G:i:s', strtotime($newest[0]->updated_at));
+        } else {
+            $newest = null;
+        }
+
+        // return view('projects.partials.reports',compact('id','reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'crr_types_array', 'messages', 'newest','prefix','sessionCrrReportType'));
+
+        if ($request->get('check')) {
+              if (count($reports)) {
+                return json_encode($reports);
+              } else {
+                return 1;
+              }
+        } else if ($request->get('rows_only')) {
+            return view('projects.partials.reports-row', compact('reports','prefix'));
+        } else {
+            return view('projects.partials.reports',compact('id','reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'crr_types_array', 'messages', 'newest','prefix','sessionCrrReportType'));
+        }
     }
 
     public function modalProjectProgramSummaryFilterProgram($project_id, $program_id, Request $request)
@@ -2878,7 +3194,7 @@ class AuditController extends Controller
 
     public function modalProjectProgramSummary($project_id, $program_id = 0)
     {
-  			if ($program_id == 0) {
+  		if ($program_id == 0) {
 	        // if program_id == 0 we display all the programs (Here these are actually gorups not programs!)
 	        // units are automatically selected using the selection process
 	        // then randomize all units before displaying them on the modal
@@ -2917,7 +3233,7 @@ class AuditController extends Controller
         } else {
             //dd($selection_summary['programs'][$program_id-1]);
             //
-            //$project = Project::where('id', '=', $project_id)->first();
+            $project = Project::where('id', '=', $project_id)->first();
 			      $audit = $project->selected_audit()->audit;
 			      $selection_summary = json_decode($audit->selection_summary, 1);
 			      session(['audit-' . $audit->id . '-selection_summary' => $selection_summary]);

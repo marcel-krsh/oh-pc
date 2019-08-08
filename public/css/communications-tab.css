@@ -164,3 +164,22 @@ position: relative !important;
 .communication-unread .communication-item-date-time, .communication-unread .communication-item-tt-to-from, .communication-unread .communication-item-parcel {
 	font-weight: bold;
 }
+
+/* WWU - Project detail page*/
+.proj_details{
+	background-color: rgba(86,178,133,0.5) !important;
+	color: #fff !important;
+	padding: 4px 0 !important;
+	text-shadow: none !important;
+	line-height: 20px !important;
+	border: 2px solid #56b285 !important;
+	width: 100% !important;
+	text-transform: uppercase !important;
+	margin-top: 15px !important;
+}
+
+.proj_details_1{
+	background-color: rgb(224, 224, 223) !important;
+	color: #000 !important;
+	border: 2px solid #909090 !important;
+}

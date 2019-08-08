@@ -24,6 +24,7 @@ use App\Models\Organization; //
 use App\Models\Project; //
 use App\Models\Program; // only funding_id - which we don't sync
 use App\Models\Unit; //
+use App\Models\UnitProgram; //
 use App\Models\HouseholdEvent; //
 use App\Models\Household; //
 use App\Models\UtilityAllowance; //
@@ -1648,6 +1649,32 @@ class SyncIdsJob implements ShouldQueue
             'null_field' => 'default_fax_number_id',
             'look_up_reference' => 'default_fax_number_key',
             'lookup_field' => 'phone_number_key',
+            'look_up_foreign_key' => 'id',
+            'condition_operator' => '!=',
+            'condition' => '1000000000000000000000'
+        ];
+        try {
+            $this->associate($model, $lookUpModel, $associate);
+        } catch (Exception $e) {
+            Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model);
+            echo '<strong>'.date('m/d/Y H:i:s ::', time()).'Failed associating keys for '.$model.'</strong><hr>';
+        }
+
+        //////////////////////////////////////////////////
+        /////// Project Program ID updates
+        /////
+
+        
+
+        $model = new UnitProgram;
+        
+
+        $lookUpModel = new \App\Models\ProjectProgram;
+        $associate = [];
+        $associate[] = [
+            'null_field' => 'project_program_id',
+            'look_up_reference' => 'project_program_key',
+            'lookup_field' => 'project_program_key',
             'look_up_foreign_key' => 'id',
             'condition_operator' => '!=',
             'condition' => '1000000000000000000000'

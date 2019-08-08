@@ -113,6 +113,88 @@ $(function(){
 
 	checkForReportUpdates();
 });
+
+
+// Project Reports watch
+$(function(){
+	
+	function checkForProjectReportUpdates(){ 
+	    		// ensure the tab is active to run updates on it.
+               if($('#project-detail-tab-6').hasClass('uk-active')){
+                    //console.log("Checking for updated reports. "+$('#report-checking').val());
+                    window.projectReportNewest =  $('#project-crr-newest').val();
+                    $('#project-crr-newest').val('2200-01-01 12:12:12');
+                    console.log('newest to check is now set to '+window.projectReportNewest+'. Loading page '+$('#project-reports-current-page').val());
+                    $.get('/projects/'+window.currentProjectOpen+'/reports', {
+                                'check' : 1,
+                                'page' : $('#project-reports-current-page').val(),
+                                'newer_than' : window.projectReportNewest
+                                }, function(data) {
+                                    if(data==1){ 
+                                        console.log('No Report Updates - newest record is '+window.projectReportNewest);
+                                        $('#project-crr-newest').val(window.projectReportNewest);
+                                        window.projectReportLastRequestCompleted = true;
+										console.log('Set lastRequestCompleted to :'+window.projectReportLastRequestCompleted);
+                                        
+                                    } else {
+                                        //UIkit.modal.alert('updated'+data1);
+                                        console.log('There is a newer report than the previous time:'+window.projectReportNewest);
+										var data = JSON.parse(data);
+										data.data.forEach( function(report){
+                                          	$('#crr-project-report-row-'+report.id).slideUp().remove();
+                                          	$('#project-report-'+report.id+'-history').remove();
+                                          });
+                                        //get the views to add to the top:
+                                        $.get('/projects/'+window.currentProjectOpen+'/reports', {
+			                                  'rows_only' : 1,
+			                                  'page' : $('#project-reports-current-page').val(),
+			                                 'newer_than' : window.projectReportNewest
+			                                 }, function(data2) {
+			                                 	console.log('Updating Reports');
+			                              		$('#crr-project-report-list').prepend(data2);
+												
+			                              			
+			                            });
+                                    
+	                                	console.log('Updating Time Stamp to '+data.data[0].updated_at);
+	                                	$('#project-crr-newest').val(data.data[0].updated_at);
+	                                	window.projectReportLastRequestCompleted = true;
+										console.log('Set lastRequestCompleted to :'+window.projectReportLastRequestCompleted);
+                                    }    
+                                        
+                                    
+					});
+
+                } else {
+                	//console.log('Check not run - Current tab is Report tab:'+$('#detail-tab-3').hasClass('uk-active')+' crr-newest = "'+$('#crr-newest').val()+'"');
+                	window.projectReportLastRequestCompleted = true;
+					//console.log('Set lastRequestCompleted to :'+window.lastRequestCompleted);
+                	
+                }
+                            
+                
+            }
+
+	window.projectReportLastRequestCompleted = false;
+ //    function runReportRequest(){
+
+	// 			setTimeout(function(){
+	// 				window.lastRequestCompleted = true;
+	// 				console.log('Set lastRequestCompleted to :'+window.lastRequestCompleted);
+	// 			},10000);
+	// }
+
+	
+	setInterval(function(){ 
+					if(window.projectReportLastRequestCompleted){
+						window.projectReportLastRequestCompleted = false;
+						checkForProjectReportUpdates();
+					}
+					//console.log('Checked lastRequestCompleted is ' + window.lastRequestCompleted);
+			},10000);
+
+	checkForProjectReportUpdates();
+});
 		
 		 
 	// Set value for script to not run
