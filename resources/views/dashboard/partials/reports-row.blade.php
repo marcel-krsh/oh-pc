@@ -44,7 +44,7 @@
                     @endCan
                     <td>{{ date('M d, Y',strtotime($report->created_at)) }}</td>
                     <td>{{ ucfirst($report->updated_at->diffForHumans()) }}</td>
-                    <td>@if(!is_null($report->response_due_date))
+                    <td>{{$prefix}} ! @if(!is_null($report->response_due_date))
                             @if(strtotime($report->response_due_date) < time())
                                 <span class="attention" style="color:darkred"> <i class="a-warning"></i>
                             @endIf

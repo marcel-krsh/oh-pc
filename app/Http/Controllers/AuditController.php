@@ -2939,7 +2939,7 @@ class AuditController extends Controller
         //         return $query->whereIn('project_id', $userProjects);
         // })
         ->orderBy(session($prefix.'report_order_by'), session($prefix.'report_asc_desc'))
-        ->paginate(10);     
+        ->paginate(3);     
         
         if (count($reports)) {
             $newest = $reports->sortByDesc('updated_at');
@@ -2948,7 +2948,19 @@ class AuditController extends Controller
             $newest = null;
         }
 
-        return view('projects.partials.reports',compact('id','reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'crr_types_array', 'messages', 'newest','prefix','sessionCrrReportType'));
+        // return view('projects.partials.reports',compact('id','reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'crr_types_array', 'messages', 'newest','prefix','sessionCrrReportType'));
+
+        if ($request->get('check')) {
+              if (count($reports)) {
+                return json_encode($reports);
+              } else {
+                return 1;
+              }
+        } else if ($request->get('rows_only')) {
+            return view('projects.partials.reports-row', compact('reports','prefix'));
+        } else {
+            return view('projects.partials.reports',compact('id','reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'crr_types_array', 'messages', 'newest','prefix','sessionCrrReportType'));
+        }
     }
 
     public function modalProjectProgramSummaryFilterProgram($project_id, $program_id, Request $request)

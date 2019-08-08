@@ -11,7 +11,7 @@ $crrTypeSelection    = 'all';
                 <!-- Begin Tools and Filters --> 
         
         <div uk-grid class="uk-margin-top">                        
-            <input type="hidden" id="crr-newest" name="crr-newest">
+            <input type="hidden" id="project-crr-newest" name="project-crr-newest">
             <div class="uk-width-1-1@s uk-width-1-4@m" id="recipient-dropdown" style="vertical-align: top;">
                     <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/projects/{{$id}}/reports?crr_report_status_id='+this.value, '6','','','project-',1);">
                         <option value="all">
@@ -61,7 +61,7 @@ $crrTypeSelection    = 'all';
                 </div>
 
                 <div class="uk-width-1-5" >
-                    <input id="reports-search" name="reports-search" type="text" value="" class=" uk-input" placeholder="REPORT #">
+                    <input id="project-reports-search" name="reports-search" type="text" value="" class=" uk-input" placeholder="REPORT #">
 
                 </div>
 
@@ -72,7 +72,7 @@ $crrTypeSelection    = 'all';
     </div>        
 </div>
 <hr class="dashed-hr">
-<input type="hidden" id="reports-current-page" value="{{$reports->currentPage()}}">
+<input type="hidden" id="project-reports-current-page" value="{{$reports->currentPage()}}">
 <div uk-grid class="uk-margin-top ">
 
         <div class="uk-width-1-1">
@@ -128,7 +128,7 @@ $crrTypeSelection    = 'all';
         }
     </style>
     <div class="uk-width-1-1 uk-grid-margin uk-first-column">
-            <table class="uk-table " id="crr-report-list">
+            <table class="uk-table " id="crr-project-report-list">
                 <thead>
 
                     @php
@@ -181,11 +181,7 @@ $crrTypeSelection    = 'all';
                         </span>
                     </th>
 
-                    @can('access_auditor')<th  width="80px"><strong>ACTION</strong>
-                        <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                                <a href="JavaScript:void(0);" class="sort-neutral1 sortingcolumn uk-margin-small-top"></a>
-                        </span>
-                    </th>@endCan
+                    
 
                     <th width="120px"><strong>CREATED</strong>
                         <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
@@ -210,6 +206,11 @@ $crrTypeSelection    = 'all';
                                     <a href="JavaScript:void(0);" class="sort-neutral1 sortingcolumn uk-margin-small-top"></a>
                             </span>
                         </th>
+                        <th  width="80px"><strong>ACTION</strong>
+                            <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
+                                <a href="JavaScript:void(0);" class="sort-neutral1 sortingcolumn uk-margin-small-top"></a>
+                            </span>
+                        </th>
                     @endCan
 
             </thead>
@@ -223,6 +224,7 @@ $crrTypeSelection    = 'all';
 
         $(document).ready(function(){
             $('.sortingcolumn').click(function(){
+                $("#project-detail-tab-6-content").html('');
                 $.get('/projects/'+project_id+'/reports?order_by=' + encodeURIComponent($(this).data('sorting')), function(data) {                                                                        
                         $("#project-detail-tab-6-content").html(data);
                 } );                
@@ -230,21 +232,21 @@ $crrTypeSelection    = 'all';
 
             $('.page-link').click(function(){
                $('#project-detail-tab-6-content').load($(this).attr('href'));
-               window.current_finding_type_page = $('#project-detail-tab-6-content').load($(this).attr('href'));
+               window.current_project_reports_page = $('#project-detail-tab-6-content').load($(this).attr('href'));
                return false;
            });
 
             // on doc ready we allow updates to start:
-            $('#crr-newest').val('{{$newest}}');
+            $('#project-crr-newest').val('{{$newest}}');
             
-            $('#report-checking').val('0');
+            $('#project-report-checking').val('0');
 
 
 
             });
 
             function searchReports(project_id){                     
-                $.get('/projects/'+project_id+'/reports?order_by=' + encodeURIComponent($("#reports-search").val()), function(data) {                
+                $.get('/projects/'+project_id+'/reports?order_by=' + encodeURIComponent($("#project-reports-search").val()), function(data) {                
                             // $('#project-detail-tab-6').load('/projects/'+project_id+'/reports');                            
                             $('#project-detail-tab-6').trigger("click");
                 } );
@@ -252,7 +254,7 @@ $crrTypeSelection    = 'all';
 
             // process search
             $(document).ready(function() {
-                $('#reports-search').keydown(function (e) {
+                $('#project-reports-search').keydown(function (e) {
                 if (e.keyCode == 13) {                             
                     searchReports(project_id);
                     e.preventDefault();
@@ -263,7 +265,7 @@ $crrTypeSelection    = 'all';
             @can('access_auditor')
 
             function updateStatus(report_id, action) {
-                    $.get('/dashboard/reports', {
+                    $.get('/project/'+window.currentProjectOpen+'/reports', {
                                                 'id' : report_id,
                                                 'action' : action,
                                                 'check' : 1
