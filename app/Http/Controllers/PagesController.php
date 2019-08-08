@@ -26,6 +26,7 @@ use App\Models\State;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\SystemSetting;
+use App\Models\FindingType;
 use Auth;
 use Excel;
 use Gate;
@@ -53,6 +54,16 @@ class PagesController extends Controller
     //   $current_user->socket_id = $token;
     //   $current_user->save();
     // }
+  }
+
+  function codes(Request $request){
+    if($request->get('code')){
+      $codeId = intval($request->get('code'));
+    }else{
+      $codeId = null;
+    }
+    $codes = FindingType::get();
+    return view('crr.reac-codes',compact('codeId','codes'));
   }
 
   public function resetTokens(){

@@ -17,6 +17,7 @@
             });
 
     Route::get('/', 'DashboardController@index');
+    Route::get('/codes', 'PagesController@codes');
     Route::get('/home', function () {
             return redirect('/');
     });
