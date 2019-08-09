@@ -476,43 +476,43 @@ class ReportsController extends Controller
     }
     $string = str_replace("||TODAY||", date('M d, Y', time()), $string);
     //return ['organization_id'=> $owner_organization_id,'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
-    $string = str_replace("||OWNER ORGANIZATION NAME||", $audit->project->owner()['organization'], $string);
-    if ($audit->project->owner()['name']) {
-      $string = str_replace("||OWNER NAME||", $audit->project->owner()['name'], $string);
+    $projectDetails =  $audit->project->details($audit->id);
+    $string = str_replace("||OWNER ORGANIZATION NAME||",$projectDetails->owner_name, $string);
+    if ($projectDetails->owner_poc) {
+      $string = str_replace("||OWNER NAME||", $projectDetails->owner_poc, $string);
     } else {
       $string = str_replace("||OWNER NAME||", 'Sir or Madam', $string);
     }
     if (strpos($string, "||OWNER FORMATTED ADDRESS||")) {
       $address = '';
-      if ($audit->project->owner()['line_1']) {
-        $address = $audit->project->owner()['line_1'];
-        if ($audit->project->owner()['line_2']) {
-          $address .= '<br /> ' . $audit->project->owner()['line_2'] . '<br />';
+      if ($projectDetails->owner_address) {
+        $address = $projectDetails->owner_address;
+        if ($projectDetails->owner_address2) {
+          $address .= '<br /> ' .$projectDetails->owner_address2 . '<br />';
         } else {
           $address .= '<br />';
         }
-      } else if ($audit->project->owner()['line_2']) {
-        $address = $audit->project->owner()['line_2'] . '<br />';
+      } else if ($projectDetails->owner_address2) {
+        $address = $projectDetails->owner_address2 . '<br />';
       }
-      if ($audit->project->owner()['city']) {
-        $address .= $audit->project->owner()['city'];
-        if ($audit->project->owner()['state']) {
-          $address .= ', ' . $audit->project->owner()['state'];
+      if ($projectDetails->owner_city) {
+        $address .= $projectDetails->owner_city;
+        if ($projectDetails->owner_state) {
+          $address .= ', ' . $projectDetails->owner_state;
         }
       }
-      if ($audit->project->owner()['zip']) {
-        $address .= ' ' . $audit->project->owner()['zip'];
+      if ($projectDetails->owner_zip) {
+        $address .= ' ' . $projectDetails->owner_zip;
       }
       $address .= '<br />';
       $string = str_replace("||OWNER FORMATTED ADDRESS||", $address, $string);
     }
-    $string = str_replace("||OWNER ADDRESS||", $audit->project->owner()['address'], $string);
-    $string = str_replace("||OWNER ADDRESS||", $audit->project->owner()['address'], $string);
-    $string = str_replace("||OWNER ADDRESS LINE 1||", $audit->project->owner()['line_1'], $string);
-    $string = str_replace("||OWNER ADDRESS LINE 2||", $audit->project->owner()['line_2'], $string);
-    $string = str_replace("||OWNER ADDRESS CITY||", $audit->project->owner()['city'], $string);
-    $string = str_replace("||OWNER ADDRESS STATE||", $audit->project->owner()['state'], $string);
-    $string = str_replace("||OWNER ADDRESS ZIP||", $audit->project->owner()['zip'], $string);
+    $string = str_replace("||OWNER ADDRESS||", $projectDetails->owner_address, $string);
+    $string = str_replace("||OWNER ADDRESS LINE 1||", $projectDetails->owner_address, $string);
+    $string = str_replace("||OWNER ADDRESS LINE 2||", $projectDetails->owner_address2, $string);
+    $string = str_replace("||OWNER ADDRESS CITY||", $projectDetails->owner_city, $string);
+    $string = str_replace("||OWNER ADDRESS STATE||", $projectDetails->owner_state, $string);
+    $string = str_replace("||OWNER ADDRESS ZIP||", $projectDetails->owner_zip, $string);
     if ($report->response_due_date) {
       $string = str_replace("||REPORT RESPONSE DUE||", $report->response_due_date, $string);
     } else {
