@@ -750,8 +750,8 @@ class CommunicationController extends Controller
         if (!is_null($report_id)) {
           // we sent a notification about the report
           // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
-            //$report->update(['crr_approval_type_id' =>$forminputs['report_approval_type'] ]);
-            $report_status = $this->reportStatusUpdate($forminputs, $report);
+          //$report->update(['crr_approval_type_id' =>$forminputs['report_approval_type'] ]);
+          $report_status = $this->reportStatusUpdate($forminputs, $report);
         }
         return 1;
       } else {
@@ -894,7 +894,12 @@ class CommunicationController extends Controller
     return $this->communicationsTab($page, $project);
   }
 
-  public function communicationsTab($page = 0, $project = 0)
+  public function auditCommunicationsFromProjectTab(Project $project, $audit = 0, $page = 0)
+  {
+    return $this->communicationsTab($page, $project, $audit);
+  }
+
+  public function communicationsTab($page = 0, $project = 0, $audit = 0)
   {
     $number_per_page = 100;
     $skip            = $number_per_page * $page;
@@ -919,6 +924,9 @@ class CommunicationController extends Controller
         });
       if ($project) {
         $search_messages = $search_messages->where('project_id', $project->id);
+      }
+      if ($audit_id) {
+        $search_messages = $search_messages->where('audit_id', $audit_id);
       }
 
       $search_messages = $search_messages->with('owner')
@@ -1349,7 +1357,7 @@ class CommunicationController extends Controller
       $recipients = User::whereIn('person_key', $user_keys)->with('person')
         ->where('active', 1)
         ->get();
-        //dd($project,$report,$user_keys,$recipients);
+      //dd($project,$report,$user_keys,$recipients);
       $audit = $report->audit_id;
       return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'report'));
     } else {
@@ -1368,8 +1376,8 @@ class CommunicationController extends Controller
       $recipients        = User::allManagers();
       $audit             = $report->audit_id;
       $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
-        'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report. 
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
+        'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {
@@ -1472,7 +1480,7 @@ Please be sure to view your report using the Chrome browser. PLEASE NOTE: If you
         ->get();
       $audit  = $report->audit_id;
       $status = 9;
-      $data   = ['subject' => 'All items for ' . $project->project_number . ' : ' . $project->project_name . ' on report '.$report->id.' have been resolved.',
+      $data   = ['subject' => 'All items for ' . $project->project_number . ' : ' . $project->project_name . ' on report ' . $report->id . ' have been resolved.',
         'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your resolved report.'];
       $single_receipient = 1;
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));

@@ -535,6 +535,7 @@
             Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
             Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
             Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
+            Route::get('/projects/{project}/audit-communications/{audit}/{page?}', 'CommunicationController@auditCommunicationsFromProjectTab')->name('project.audit-communications');
 
 
             // notifications trigger
