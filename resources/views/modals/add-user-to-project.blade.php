@@ -41,9 +41,9 @@
 						@endforeach
 					</ul>
 				</div>
-				<div class="uk-form-row">
+				{{-- <div class="uk-form-row">
 					<input style="width: 100%" type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Users">
-				</div>
+				</div> --}}
 				<script>
           // CLONE RECIPIENTS
           function addRecipient(formValue,name){

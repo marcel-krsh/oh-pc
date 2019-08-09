@@ -84,8 +84,8 @@ $building_findings->map(function ($b) use($current_audit) {
 	return $b;
 });
 
-$grouped_bf = $building_findings->groupBy('u_building_key')->toArray();
-$grouped_uf = $unit_findings->groupBy('u_building_key')->toArray();
+$grouped_bf = $building_findings->sortBy('building.building_name')->groupBy('u_building_key')->toArray();
+$grouped_uf = $unit_findings->sortBy('unit.unit_name')->groupBy('u_building_key')->toArray();
 foreach($grouped_bf as $bk => $bf) {
 	if(array_key_exists($bk, $grouped_uf)) {
 		$grouped_bf[$bk]['uf'] = $grouped_uf[$bk];
@@ -176,6 +176,7 @@ foreach($grouped_bf as $bk => $bf) {
 	@foreach($grouped_uf as $uf)
 	@php
 		$findings = $uf;
+		$compiledFlatPikers = "";
 	@endphp
 		@include('crr_parts.crr_findings_groups')
 	@endforeach
@@ -187,14 +188,30 @@ foreach($grouped_bf as $bk => $bf) {
 <script>
 
 	@can('access_auditor')
-	function resolveFinding(findingid){
+	// Flatpickers in use for findings
+	 @stack('flatPickers')
+	// End Flatpickers
+	function resolveFinding(findingid, dateResolved){
+		var resolveFindingId = findingid;
 		$.post('/findings/'+findingid+'/resolve', {
-			'_token' : '{{ csrf_token() }}'
+			'_token' : '{{ csrf_token() }}',
+			'date' : dateResolved
 		}, function(data) {
 			if(data != 0){
-				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+')"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
+				console.log('Resolution saved for finding '+resolveFindingId);
+				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-1" onclick="resolveFinding(\''+resolveFindingId+'\');"><i class="a-circle-cross"></i>&nbsp; DATE</button>');
+				$('#resolved-date-finding-'+resolveFindingId).val(data);
+				//<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" onclick="resolveFinding(\''+resolveFindingId+'\',\'null\')"><span class="a-circle-cross">&nbsp;</span>CLEAR</button>
 			}else{
-				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" onclick="resolveFinding('+findingid+')"><span class="a-circle">&nbsp; </span>RESOLVE</button>');
+				console.log('Resolution cleared for finding '+resolveFindingId);
+				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<span style="position: relative; top: 9px;">RESOLVED AT:</span>');
+				$('#resolved-date-finding-'+resolveFindingId).val('');
+			}
+			if(window.resolveDateChangeAlert !== 1){
+				UIkit.modal.alert('<h1>Don\'t Forget!</h1><p>You will need to refresh the report\'s content for these changes to appear on the report.</p><p>Just in case you forget - I am making the refresh icon pulse to remind you.');
+				$('.refresh-content-button').addClass('attention');
+				$('.refresh-content-button').css('color','red');
+				window.resolveDateChangeAlert = 1;
 			}
 		});
 	}
@@ -219,7 +236,14 @@ foreach($grouped_bf as $bk => $bf) {
 		});
 	}
 	@endCan
-
+	// flatpickr(".flatpickr", {	
+	// 							altFormat: "F j, Y ",
+	// 							dateFormat: "F j, Y",
+	// 							enableTime: true,
+	// 							"locale": {
+	// 					        "firstDayOfWeek": 1 // start week on Monday
+	// 					      }
+	// 					    });
 </script>
 
 @else

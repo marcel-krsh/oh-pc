@@ -2,7 +2,7 @@
 	<div id="dynamic-modal-content">
 
 		<form name="newReportForm" id="newReportForm" method="post">
-			
+			<input type="hidden" id="project_id" value="{{$project_id}}">
 			<!-- begin communication opened template -->
 			<div class="" uk-grid>
 
@@ -78,8 +78,12 @@
 	                if(data!=1){ 
 	                    $('#new-report-errors').html('<div class="attention"><h2>!!'+data+'</h2></div>');
 	                } else {
-	                    UIkit.modal.alert('Your report has been created.');
-	                    $('#detail-tab-3').trigger("click");
+						UIkit.modal.alert('Your report has been created.');
+						if($("#project_id").val())
+							$('#project-detail-tab-6').trigger("click");
+						else
+							$('#detail-tab-3').trigger("click");
+						
 						dynamicModalClose();                                                                           
 	                }
 		} );

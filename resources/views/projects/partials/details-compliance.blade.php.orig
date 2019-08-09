@@ -428,6 +428,7 @@
 		}
 	});
 
+<<<<<<< HEAD
 	document.getElementById("chartjs-summary").onclick = function(e) {
 	   var slice = mainSummaryChart.getElementAtEvent(e);
 	   if (!slice.length) return; // return if not clicked on slice
@@ -495,4 +496,32 @@ function disableEditField(fieldId,fieldName,fieldUnitType,Id,auditID) {
 
 	console.log('Readonly field '+fieldId);
 }
+=======
+	{{--document.getElementById("chartjs-summary").onclick = function(e) {--}}
+	   {{--var slice = mainSummaryChart.getElementAtEvent(e);--}}
+	   {{--if (!slice.length) return; // return if not clicked on slice--}}
+	   {{--var label = slice[0]._model.label;--}}
+	   {{--var color = slice[0]._view.backgroundColor;--}}
+	   {{--console.log(slice[0]._view.backgroundColor);--}}
+	   {{--var programName = label;--}}
+	   {{--switch (color) {--}}
+	   		{{--case 'rgb(24, 22, 22)':--}}
+	         {{--// alert(label + ' / required');--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   		{{--case 'rgb(0, 139, 194)':--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   		{{--case 'rgb(209, 0, 105)':--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   		{{--case 'rgb(1, 173, 104)':--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   		{{--case 'rgb(203, 203, 200)':--}}
+	         {{--dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);--}}
+	         {{--break;--}}
+	   {{--}--}}
+	{{--}--}}
+>>>>>>> wwu_reports_tab
 </script>

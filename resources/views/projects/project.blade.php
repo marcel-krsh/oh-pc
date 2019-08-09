@@ -27,6 +27,7 @@
 
 <script>
 $( document ).ready(function() {
+	window.currentProjectOpen = {{$projectId}};
 	// place tab's buttons on main footer
 	$('#footer-actions-tpl').html($('#footer-actions-project').html());
 	@if(session()->has('audit-message'))
