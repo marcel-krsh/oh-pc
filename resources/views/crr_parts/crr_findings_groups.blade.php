@@ -1,6 +1,7 @@
 	<style type="text/css">
 		pre {
 			font-size: 12pt;
+			line-height: 23px;
 			font-family: sans-serif;
 			background-color: none;
 			border: none;
@@ -18,7 +19,7 @@
 				
 
 				@php $findingHeader = $f->building->building_name; $columnCount = 1; $findingsRun = 1; @endphp
-				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast" style="background: #4e4e4e; padding-top: 11px; padding-bottom: 11px; @if($oneColumn) margin-bottom: 0px !important; @endIf">
+				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast" style="background: #4e4e4e; padding-top: 11px; padding-bottom: 11px; @if($oneColumn  && !$print) margin-bottom: 0px !important; @endIf">
 					@if(!$print)<h3 class="uk-margin-remove">BUILDING FINDINGS FOR BIN: {{$f->building->building_name}}</h3>@else <small>BUILDING FINDINGS FOR BIN: {{$f->building->building_name}}</small> @endIf
 					@if(!is_null($f->building->address))
 						<small style="text-transform: uppercase;">{{$f->building->address->line_1}} {{$f->building->address->line_2}} | 
@@ -32,7 +33,7 @@
 		@elseIf(!is_null($f->unit_id))
 			@if ($findingHeader !== $f->unit->unit_name)
 				@php $findingHeader = $f->unit->unit_name; $columnCount = 1; $findingsRun = 1; @endphp
-				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast"  style="background: #4e4e4e; padding-top: 11px; padding-bottom: 11px; @if($oneColumn) margin-bottom: 0px !important; @endIf">
+				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast"  style="background: #4e4e4e; padding-top: 11px; padding-bottom: 11px; @if($oneColumn  && !$print) margin-bottom: 0px !important; @endIf">
 					@if(!$print)
 						<h3 class="uk-margin-remove">UNIT FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3> 
 							@if(!is_null($f->unit->building_id))IN BIN: {{$f->unit->building->building_name}} <br /> 
@@ -54,7 +55,7 @@
 		@else
 			@if ($findingHeader !== $f->project->project_name)
 				@php $findingHeader = $f->project->project_name; $columnCount = 1; $findingsRun = 1; @endphp
-				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast"  style="background: #4e4e4e; padding-top: 11px; padding-bottom: 11px; @if($oneColumn) margin-bottom: 0px !important; @endIf">
+				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast"  style="background: #4e4e4e; padding-top: 11px; padding-bottom: 11px; @if($oneColumn  && !$print) margin-bottom: 0px !important; @endIf">
 					<h3 class="uk-margin-remove">SITE FINDINGS FOR: {{$f->project->project_name}}</h3>
 					@if($f->project->address)
 						<small style="text-transform: uppercase;"> {{$f->project->address->line_1}} {{$f->project->address->line_2}} | 
@@ -66,7 +67,7 @@
 			
 		@endIf
 		
-	<div id="cancelled-finding-{{$f->id}}" class="@if($print || $oneColumn) uk-width-1-1 @else uk-width-1-3 @endIf crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" style=" @if(!$print && !$oneColumn) @if($columnCount < 3 && count($findings) > $columnCount && count($findings) > $findingsRun) border-right:1px dotted #3c3c3c; @endIf @elseIf($oneColumn) border: 1px solid; margin-top:0px; margin-bottom:0px; @endIf @if(!$print) padding-top:12px; padding-bottom: 18px; @else margin-top:11px !important;  @endIf page-break-inside: avoid; break-inside: avoid;">
+	<div id="cancelled-finding-{{$f->id}}" class="@if($print || $oneColumn) uk-width-1-1 @else uk-width-1-3 @endIf crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" style=" @if(!$print && !$oneColumn) @if($columnCount < 3 && count($findings) > $columnCount && count($findings) > $findingsRun) border-right:1px dotted #3c3c3c; @endIf @elseIf($oneColumn && !$print) border: 1px solid; !!;margin-top:0px; margin-bottom:0px; @endIf @if(!$print) padding-top:12px; padding-bottom: 18px; @else margin-top:11px !important;  @endIf page-break-inside: avoid; break-inside: avoid;">
 
 		<div style="break-inside:avoid" @if($print || $oneColumn) uk-grid @endIf>
 			<div class="inspec-tools-tab-finding-top-actions @if($print || $oneColumn) uk-width-1-5 @endIf" style="z-index:10; break-inside: avoid; page-break-inside: avoid;">
@@ -77,7 +78,7 @@
 					<strong class="cancelled-{{$f->id}}">F|N #{{$f->id}}</strong>@can('access_auditor') @if(!$print)
 				</a> @endIf @endCan
 				@if(!$print)
-				@if($oneColumn)
+				@if($oneColumn && !$print)
 					</div>
 					<div class="uk-width-4-5">
 				@endIf
@@ -86,8 +87,8 @@
 					<div class="uk-card uk-card-body uk-card-default uk-card-small">
 						<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
 							@can('access_auditor')
-							<div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $f->id }}, 'followup')"><i class="a-bell-plus"></i></div>
-							<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'comment')"><i class="a-comment-plus"></i></div>
+							<!-- <div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $f->id }}, 'followup')"><i class="a-bell-plus"></i></div>
+							 --><div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'comment')"><i class="a-comment-plus"></i></div>
 							@endCan
 							<div class="icon-circle use-hand-cursor" onclick="dynamicModalLoad('new-outbound-email-entry/{{$report->project_id}}/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}/{{ $f->id }}')" ><i class="a-envelope-4"></i>
 							</div>
@@ -95,14 +96,14 @@
 							<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'document')"><i class="a-file-plus"></i></div>
 							@endCan
 							@if(env('APP_ENV') == 'local')
-							<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'photo')"><i class="a-picture"></i></div>
-							@endIf
+							<!-- <div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'photo')"><i class="a-picture"></i></div>
+							 -->@endIf
 						</div>
 					</div>
 				</div>
 				@endIf
 			@if(!$print) </div> @endIf
-			 <hr @if($oneColumn) class="uk-width-1-1 uk-margin-small-top" @endIf />
+			 <hr @if($oneColumn && !$print) class="uk-width-1-1 uk-margin-small-top" @endIf />
 			@if(!is_null($f->building_id))
 			{{-- <strong>{{$f->building->building_name}}</strong> <br /> --}}
 			
@@ -126,12 +127,12 @@
 			@can('access_auditor')
 			@if(!$print)
 				<!-- LINE 77 -->
-				<div class="inspec-tools-tab-finding-actions  @if($oneColumn) uk-width-1-5 @endIf uk-margin-small-top " @if(!$oneColumn) uk-grid @endIf>
+				<div class="inspec-tools-tab-finding-actions  @if($oneColumn  && !$print) uk-width-1-5 @endIf uk-margin-small-top " @if(!$oneColumn) uk-grid @endIf>
 
 					
 					
 					@if(!$f->cancelled_at)
-						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="@if($oneColumn)  @else uk-width-1-2 uk-margin-remove @endIf">
+						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="@if($oneColumn  && !$print)  @else uk-width-1-2 uk-margin-remove @endIf">
 							
 								@if($f->auditor_approved_resolution == 1)
 
@@ -140,7 +141,7 @@
 								<span style="position: relative; top: 9px;">RESOLVED AT:</span>
 							@endif
 						</div>
-						<div  class="@if($oneColumn) uk-margin-top @else uk-width-1-2 uk-margin-remove @endIf">
+						<div  class="@if($oneColumn  && !$print) uk-margin-top @else uk-width-1-2 uk-margin-remove @endIf">
 							<input id="resolved-date-finding-{{$f->id}}" class="uk-input " style="width:100%;" readonly type="text" placeholder="DATE" onchange="resolveFinding({{ $f->id }},$(this).val());"  >
 							
 							@push('flatPickers')
@@ -181,7 +182,7 @@
 						</div>
 						
 					@endif
-					@if($oneColumn)
+					@if($oneColumn  && !$print)
 								<hr class="uk-margin-top dashed-hr uk-margin-bottom">
 								<div class="uk-width-1-1 uk-margin-top">
 					@else
@@ -193,7 +194,7 @@
 					@else
 						<button class="uk-button uk-link uk-width-1-1 uk-margin-bottom"  onclick="cancelFinding({{ $f->id }})"><i class="a-trash-3"></i> CANCEL FINDING</button>
 					@endif
-					@if($oneColumn)
+					@if($oneColumn  && !$print)
 								</div>
 					@endIf
 
@@ -246,37 +247,51 @@
 			@endIf
 			{{$f->amenity->amenity_description}}  {{ $f->amenity_index ?? '' }}
 		 @if($print) | @else </h2> @endIf
-		@if(!$print)
-			<strong style="page-break-inside: avoid; break-inside: avoid;">VIOLATION CODE: <a href="/codes?code={{$f->finding_type_id}}" target="code_reference">OH.{{strtoupper($f->finding_type->type)}}.{{$f->finding_type_id}} @if($f->level) LEVEL {{$f->level}} @endIf</a>:<br /> {{$f->finding_type->name}}</strong><br>
+		@if(!$print || (count($f->comments)==0))
+			<strong style="page-break-inside: avoid; break-inside: avoid; ">VIOLATION CODE: <a href="/codes?code={{$f->finding_type_id}}" target="code_reference">OH.{{strtoupper($f->finding_type->type)}}.{{$f->finding_type_id}} @if($f->level) LEVEL {{$f->level}} @endIf</a>:</strong><br/><div style="margin-left:24px; margin-top:7px;"> {{$f->finding_type->name}}:</div>
 			@if($f->level == '1')
 				@if(null == $f->finding_type->one_description)
 					@can('access_auditor')
+					<div style="margin-left:24px; margin-top:7px;">
 						<span style="color:red" class="attention">UNDEFINED LEVEL SELECTED - PLEASE SELECT A DEFINED LEVEL</span>
+					</div>
 					@endCan
 				@else
-				<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->one_description}}</span>
+					<div style="margin-left:24px; margin-top:7px;">
+						<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->one_description}}</span>
+					</div>
 				@endIf
 			@endIf
 			@if($f->level == '2')
-			@if(null == $f->finding_type->one_description)
+			@if(null == $f->finding_type->two_description)
 					@can('access_auditor')
+					<div style="margin-left:24px; margin-top:7px;">
 						<span style="color:red" class="attention">UNDEFINED LEVEL SELECTED - PLEASE SELECT A DEFINED LEVEL</span>
+					</div>
 					@endCan
 				@else
-					<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->two_description}}</span>
+					<div style="margin-left:24px; margin-top:7px;">
+						<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->two_description}}</span>
+					</div>
 				@endIf
 			@endIf
 			@if($f->level == '3')
-				@if(null == $f->finding_type->one_description)
+				@if(null == $f->finding_type->three_description)
 					@can('access_auditor')
+					<div style="margin-left:24px; margin-top:7px;">
 						<span style="color:red" class="attention">UNDEFINED LEVEL SELECTED - PLEASE SELECT A DEFINED LEVEL</span>
+					</div>
 					@endCan
 				@else
-					<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->three_description}}</span>
+					<div style="margin-left:24px; margin-top:7px;">
+						<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->three_description}}</span>
+					</div>
 				@endIf
 			@endIf
 			@if((is_null($f->level) || $f->level == 0) && $f->finding_type->type !== 'file')
-			<span style="color:red" class="attention">!!LEVEL NOT SET!!</span>
+				<div style="margin-left:24px; margin-top:7px;">
+					<span style="color:red" class="attention">!!LEVEL NOT SET!!</span>
+				</div>
 			@endIf
 		@else
 			VIOLATION CODE: <a href="/codes?code={{$f->finding_type_id}}" target="code_reference">OH.{{strtoupper($f->finding_type->type)}}.{{$f->finding_type_id}}</a> </h5>
@@ -287,7 +302,7 @@
 
 		@if(is_null($c->deleted_at))
 		@if($c->hide_on_reports != 1)
-		@can('access_auditor')@if(!$print)<span style="page-break-inside: avoid; break-inside: avoid;"><i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endif @endcan<i class="a-comment"></i> : {{nl2br($c->comment)}}</span>
+		@if(!$print)<span style="page-break-inside: avoid; break-inside: avoid; color: black">@can('access_auditor')<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endcan @else <span style="page-break-inside: avoid; break-inside: avoid; color: black">  @endif <i class="a-person-chat-2" ></i></span> <div style="display:inline-table;margin-left: 2px;color:black;line-height: 23px;">{!!  nl2br($c->comment) !!}</div> 
 		{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
 		@endIf
 		@endif
@@ -337,7 +352,7 @@
 			</div>
 		@endIf
 
-		@if($oneColumn)
+		@if($oneColumn  && !$print)
 			</div>
 		@endIf
 
@@ -366,9 +381,14 @@
 
 		{{-- Communications --}}
 		@if(count($communications))
+		
 		@foreach($communications as $message)
-		{!! $loop->first ? '<hr>': '' !!}
-		<strong class="a-envelope-4"></strong> : {{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }} <br>
+		@if($print || $oneColumn)
+			<hr class="uk-width-1-1">
+				<div class="uk-width-1-5">
+			@endIf 
+		{!! $loop->first && !$print && !$oneColumn ? '<hr class="uk-width-1-1 uk-margin-bottom">': '' !!}
+		<strong class="a-envelope-4" @if($print || $oneColumn) style="margin-top: 4px !important" @endIf></strong> : {{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }} @if($print || $oneColumn)</div><div class="uk-width-4-5"> @else <br> @endIf
 		<span {{-- style="margin-left: 20px" --}}>
 			<li>
 				<strong class="uk-text-small" style="float: left; margin-top: 2px;">From:&nbsp;</strong>
@@ -395,7 +415,7 @@
 				</label>
 			</li>
 			@if(count($message->local_documents) > 0)
-			<li class="uk-margin-small-top">
+			<li class="uk-margin-top">
 				{{-- <strong class="uk-text-small" style="float: left; margin-top: 2px;">DOC:&nbsp;</strong> --}}
 				{{-- <label style="display: block; margin-left: 28px;" for="message-doc-{{ $message->id }}"> --}}
 					@foreach($message->local_documents as $document)
@@ -404,10 +424,10 @@
 						$document_category = $document->assigned_categories->first();
 						@endphp
 						<li class="doc-{{ $document->id }} {{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
-							<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}-{{ $f->id }}" class="">
+							<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}-{{ $f->id }}" class="" style="font-size: 23px">
 								<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }} doc-span-{{ $document->id }}">
 								</span>
-								<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon-{{ $f->id }}" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }} doc-span-check-{{ $document->id }}">
+								<span style="float: left; " id="sent-id-{{ $document->id }}category-id-1-not-received-icon-{{ $f->id }}" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }} doc-span-check-{{ $document->id }}">
 								</span>
 								<span style="display: block; margin-left: 30px"></span>
 							</a>
@@ -433,7 +453,7 @@
 							</div>
 							@endCan
 							<label style="display: block; margin-left: 15px;" for="documents-{{ $document->id }}">
-								<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
+								<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-margin-left uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
 									<i class="a-paperclip-2"></i> {{-- {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} --}}{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }}
 								</a>
 								<br>
@@ -448,21 +468,27 @@
 			</li>
 			@endif
 		</span>
+		@if($print || $oneColumn)</div> @endIf
 		{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
+
 		@endforeach
 		@endIf
 		{{-- End communications --}}
 
 		{{-- Documents --}}
 		@if(count($documents))
+			@if($print || $oneColumn)
+			
+				<div class="uk-width-1-5" style="margin-top: 10px;"><i class="a-paperclip-2"></i> Other Documents</div><div class="uk-width-4-5" style="margin-top: 10px;">
+			@endIf 
 		@foreach($documents as $document)
-		{!! $loop->first ? '<span class="uk-margin-top"><hr></span>':'' !!}
+		{!! $loop->first && !$print && !$oneColumn ? '<span class="uk-margin-top"><hr></span>':'' !!}
 		<span class="finding-documents-{{ $document->id }}">
 			@php
 			$document_category = $document->assigned_categories->first();
 			@endphp
 			<li class="doc-{{ $document->id }} {{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
-				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}-{{ $f->id }}" class="">
+				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}-{{ $f->id }}" class="" style="font-size: 23px">
 					<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }} doc-span-{{ $document->id }}"></span>
 					<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon-{{ $f->id }}" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }} doc-span-check-{{ $document->id }}"></span>
 					<span style="display: block; margin-left: 30px"></span>
@@ -489,7 +515,7 @@
 				</div>
 				@endCan
 				<label style="display: block; margin-left: 15px;" for="documents-{{ $document->id }}">
-					<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
+					<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-margin-left uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
 						<i class="a-paperclip-2"></i> {{-- {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} --}}{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }}
 					</a>
 					<br>
@@ -497,11 +523,14 @@
 			</li>
 		</span>
 		@endforeach
+			@if($print || $oneColumn)
+				</div>
+			@endIf 
 		@endIf
 		{{-- End documents --}}
 		@endif 
 
-		@if($oneColumn)
+		@if($oneColumn  && !$print)
 			</div>
 		@endIf
 		

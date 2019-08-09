@@ -1,7 +1,6 @@
    @extends('layouts.simplerAllita')
 @section('head')
-<title>{{$report->template()->template_name}}: {{date('y',strtotime($report->audit->scheduled_at))}}-{{$report->audit->id}}.{{str_pad($report->version, 3, '0', STR_PAD_LEFT)}}</title>
-
+<title>{{ $report->template()->template_name }}: #{{ $report->id }} || {{ $report->project->project_number }} : {{ $report->project->project_name }} || AUDIT: {{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
 
 @stop
 @section('content')
@@ -168,7 +167,16 @@ ul.leaders li {
             		@endIf
             	</div>
             	@endForEach
+            	
             </div>
+            <div class=" uk-width-1-1" >
+				
+	            	<div class="uk-background-default uk-padding uk-panel">
+			            <p class="uk-h4" align="center">To View All Ohio Violation Codes Please Visit:
+			            <a href="{{URL::to('/codes')}}" class="uk-link uk-text-center uk-h4">{{URL::to('/codes')}}</a></p>
+			        </div>
+			   
+			</div>
 
 
 

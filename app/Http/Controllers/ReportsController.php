@@ -760,7 +760,13 @@ class ReportsController extends Controller
           $versionText = 'version-' . $version;
           $data        = $data[$version - 1]->$versionText;
           $print       = $request->get('print');
-          $oneColumn       = $request->get('one_column');
+          if(null == session('reports_one_column') || intval($request->get('three_column')) == 1){
+            session(['reports_one_column' => 0]);
+          }
+          if($request->get('one_column')){
+            session(['reports_one_column' => intval($request->get('one_column'))]);
+          }
+          $oneColumn       = session('reports_one_column');
 
           $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Opened and viewed report'];
           if(Auth::user()->cannot('access_auditor')){
@@ -823,8 +829,11 @@ class ReportsController extends Controller
         }
         $sectionOrder++;
       }
-
-      $approvalId = 1;
+      if($report->crr_approval_type_id < 4){
+        $approvalId = 1;
+      } else {
+        $approvalId = $report->crr_approval_type_id;
+      }
       if ($noStatusChange) {
         // we will not modify the status if this flag is set.
         $approvalId = $report->crr_approval_type_id;

@@ -1501,8 +1501,12 @@ class FindingController extends Controller
 
                 if(null != $buildingInspection){
                     $latestResolution = Finding::select('auditor_last_approved_resolution_at')->leftJoin('units', 'units.id', '=', 'findings.unit_id')->where('findings.building_id',$buildingId)->orWhere('units.building_id',$buildingId)->orderBy('auditor_last_approved_resolution_at','desc')->first();
+                    $latestResolutionNullCheck = Finding::leftJoin('units', 'units.id', '=', 'findings.unit_id')->where(function($q) use ($buildingId){
+                        $q->where('findings.building_id',$buildingId);
+                        $q->orWhere('units.building_id',$buildingId);
+                    })->whereNull('auditor_last_approved_resolution_at')->count();
                     
-                    if(null != $latestResolution){
+                    if(null != $latestResolution && $latestResolutionNullCheck == 0 ){
                         $buildingInspection->latest_resolution = $latestResolution->auditor_last_approved_resolution_at;
                         $buildingInspection->save();
                     } else {
@@ -1532,15 +1536,12 @@ class FindingController extends Controller
                 if(null != $buildingInspection){
                     // get the most recent resolution date for other findings to update the date on the building inspection
 
-                    $latestResolution = Finding::select('auditor_last_approved_resolution_at')->leftJoin('units', 'units.id', '=', 'findings.unit_id')->where('findings.building_id',$buildingId)->orWhere('units.building_id',$buildingId)->orderBy('auditor_last_approved_resolution_at','desc')->first();
+                    // $latestResolution = Finding::select('auditor_last_approved_resolution_at')->leftJoin('units', 'units.id', '=', 'findings.unit_id')->where('findings.building_id',$buildingId)->orWhere('units.building_id',$buildingId)->orderBy('auditor_last_approved_resolution_at','desc')->first();
                     
-                    if(null != $latestResolution){
-                        $buildingInspection->latest_resolution = $latestResolution->auditor_last_approved_resolution_at;
-                        $buildingInspection->save();
-                    } else {
+                    
                         $buildingInspection->latest_resolution = null;
                         $buildingInspection->save();
-                    }
+                    
                 }
             }
 
