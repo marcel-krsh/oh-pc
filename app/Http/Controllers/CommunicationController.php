@@ -270,6 +270,7 @@ class CommunicationController extends Controller
           $single_receipient = true;
         }
       }
+
       return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings'));
     } else {
       $project             = null;
@@ -316,7 +317,6 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       }
-
       $audit = null;
 
       return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'all_findings'));
