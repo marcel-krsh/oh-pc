@@ -94,12 +94,14 @@
     	$("#finding-id-"+formValue+"-holder").slideUp();
     	$("#finding-id-"+formValue+"-holder").remove();
     }
+    updateMessage();
   }
 
   function removeFinding(id){
   	$("#finding-id-"+id+"-holder").slideUp();
   	$("#finding-id-"+id+"-holder").remove();
   	$("#list-finding-id-"+id).prop("checked",false)
+    updateMessage();
   }
 
    function showFindings() {

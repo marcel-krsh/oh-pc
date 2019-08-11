@@ -139,9 +139,9 @@
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
         				@if($all_findings && $single_receipient)
-        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." value="Finding: {{ $finding->id }}">
+        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." id="findings_based_subject" value="Finding: {{ $finding->id }}">
         				@else
-        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
+        					<input type="text" id="findings_based_subject" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
         				@endif
         			</div>
         		</div>
@@ -230,6 +230,29 @@
         @endif
         dynamicModalClose();
       }
+    }
+
+    function updateMessage() {
+    	var audit = "{{ $audit->id }}";
+    	var projectNumber = "{{ $project->project_number }}";
+    	var projectName = "{{ $project->project_name }}";
+    	var findings_array = [];
+    	$("input[name='findings[]']:checked").each(function (){
+    		findings_array.push(parseInt($(this).val()));
+    	});
+    	if(findings_array.length > 1) {
+    		subject = 'Findings: '+findings_array.join(", ");
+    		message = 'Owner response for findings '+findings_array.join(", ")+' on audit # '+audit+' for '+projectNumber+' : '+projectName;
+    	} else if(findings_array.length == 1) {
+    		subject = 'Finding: '+findings_array.toString();
+    		message = 'Owner response for finding '+findings_array.toString()+' on audit # '+audit+' for '+projectNumber+' : '+projectName;
+    	} else {
+    		subject = '';
+    		message = '';
+    	}
+    	$('#findings_based_subject').attr('value', subject);
+    	$('textarea#message-body').val(message);
+    	// debugger;
     }
   </script>
 </div>
