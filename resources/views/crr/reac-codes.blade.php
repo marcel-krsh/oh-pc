@@ -1,6 +1,6 @@
    @extends('layouts.simplerAllita')
 @section('head')
-<title>Ohio USPCS Violation Code Reference.</title>
+<title>Ohio UPCS Violation Code Reference.</title>
 
 
 @stop
@@ -87,7 +87,7 @@ ul.leaders li {
             <div id="main-report-view" class="" style=" min-width: auto; padding:0px; background-color: currentColor;">
             	
             	<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
-            		<h1>Ohio USPCS Violation Code Reference</h1>
+            		<h1>Ohio UPCS Violation Code Reference</h1>
             		<hr class="uk-width-1-1">
             		<p>These codes can be referenced directly to your Compliance Audit Report (CAR). You can enter the reference number of your violation code in the box below, or click on the violation number in your online version of the CAR to view its description directly.</p>
             		<hr class="uk-width-1-1">
