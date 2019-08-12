@@ -267,9 +267,8 @@ class CommunicationController extends Controller
           $recipients = $recipients->merge($project_recipients);
         }
       }
-      $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
 
-      if (null !== $report_id) {
+      if (null !== $report_id && Auth::user()->cannot('access_auditor')) {
         $report = CrrReport::with('lead')->find($report_id);
         if ('CAR' == $report->template()->template_name) {
           $lead_id    = $report->lead->id;
@@ -287,7 +286,9 @@ class CommunicationController extends Controller
           $single_receipient = true;
         }
       }
-      // return $recipients->first();
+      $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
+
+      // return $recipients;
       return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings'));
     } else {
       $project             = null;
@@ -1410,7 +1411,7 @@ class CommunicationController extends Controller
       $audit             = $report->audit_id;
       $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
         'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {
