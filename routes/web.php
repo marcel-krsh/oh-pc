@@ -65,6 +65,7 @@
         app('debugbar')->disable();
 
         Route::group(['prefix'=>'','middleware'=>'can:access_auditor'], function ()  {
+            Route::get('/change_log','PagesController@changeLog');
             Route::get('/compliance_rerun/{audit_id}', 'Phase1ComplianceSelection@runSimpleCompliance');
             Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
 
