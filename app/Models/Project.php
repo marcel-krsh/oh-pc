@@ -481,4 +481,9 @@ class Project extends Model
     {
         return count($this->contactRoles->where('user_id',$user_id));
     }
+
+    public function project_users()
+    {
+        return $this->hasMany(\App\Models\ReportAccess::class, 'project_id', 'id');
+    }
 }

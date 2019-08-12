@@ -1641,6 +1641,7 @@ class AuditController extends Controller
     {
         $id = $request->id;
         $audit_id = $request->audit_id;
+        $cached_audit = CachedAudit::whereAuditId($audit_id)->first();
         $project = Project::with('contactRoles.person.user')->find($id);
         $project_default_user = $project->contactRoles->where('project_role_key', 21)->first();
         $details = $project->details($audit_id);
@@ -1672,6 +1673,17 @@ class AuditController extends Controller
         	$details_new->manager_zip = $default_address->address->zip;
         	$details_new->save();
         }
+        // Cached audit pm update
+      	if($cached_audit) {
+      		$cached_audit->pm = $details_new->manager_poc;
+      		$cached_audit->address = $details_new->manager_address;
+        	$cached_audit->state = $details_new->manager_state;
+        	$cached_audit->zip = $details_new->manager_zip;
+      		$cached_audit->city = $details_new->manager_city;
+      		$cached_audit->save();
+      	}
+
+
         $default_org  = UserOrganization::with('user', 'organization')->where('project_id', $id)->where('default', 1)->first();
         if($default_org) { // && $default_org->organization->organization_name != $details_new->manager_name
         	$details_new->manager_name = $default_org->organization->organization_name;
@@ -2798,20 +2810,20 @@ class AuditController extends Controller
         $prefix = 'project'.$project->id;
         $messages = [];
         // Perform Actions First.
-        if (!is_null($request->get('due'))) 
+        if (!is_null($request->get('due')))
         {
             $data        = [];
             $data['due'] = $request->get('due');
-            $data['id']  = $request->get('report_id');            
-            $messages[] = $this->dueDate($data);            
+            $data['id']  = $request->get('report_id');
+            $messages[] = $this->dueDate($data);
         }
 
-        if (!is_null($request->get('action'))) 
+        if (!is_null($request->get('action')))
         {
             $data           = [];
-            $data['action'] = intval($request->get('action'));                  
+            $data['action'] = intval($request->get('action'));
             $report     = CrrReport::find($request->get('id'));
-            $messages[] = $this->reportAction($report, $data);            
+            $messages[] = $this->reportAction($report, $data);
         }
 
         // Set default filters for first view of page:
@@ -2863,7 +2875,7 @@ class AuditController extends Controller
             $typeEval = '>';
             $typeVal  = '0';
         }
-        
+
         // Report Status
         if ($request->get('crr_report_status_id')) {
             session([$prefix.'crr_report_status_id' => $request->get('crr_report_status_id')]);
@@ -2926,13 +2938,13 @@ class AuditController extends Controller
         } else {
             $auditLeads      = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
             $auditProjects   = CrrReport::select('*')->when(Auth::user()->cannot('access_auditor'), function ($query) {
-                  $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();                  
+                  $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();
                   return $query->whereIn('project_id', $userProjects);
         })->with('project')->groupBy('project_id')->get();
             $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id','>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
             $hfa_users_array = [];
             $projects_array  = [];
-    
+
         }
         foreach ($auditLeads as $hfa) {
             if ($hfa->lead_user_id) {
@@ -2959,28 +2971,28 @@ class AuditController extends Controller
         if(null !== $request->get('order_by')){
             switch($request->get('order_by')){
                 case "id":
-                        
-                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'id'){                            
+
+                        if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'id'){
                             if(session($prefix.'report_asc_desc')=='asc'){
-                                session([$prefix.'report_asc_desc' => 'desc']);                
+                                session([$prefix.'report_asc_desc' => 'desc']);
                             }else{
-                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                                session([$prefix.'report_asc_desc' => 'asc']);
                             }
-                        }else{                            
-                            session([$prefix.'report_asc_desc' => 'asc']);            
+                        }else{
+                            session([$prefix.'report_asc_desc' => 'asc']);
                         }
-                        session([$prefix.'report_order_by' => 'id']);                        
+                        session([$prefix.'report_order_by' => 'id']);
                         break;
 
                 case "project_id":
                         if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'project_id'){
                             if(session($prefix.'report_asc_desc')=='asc'){
-                                session([$prefix.'report_asc_desc' => 'desc']);                
+                                session([$prefix.'report_asc_desc' => 'desc']);
                             }else{
-                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                                session([$prefix.'report_asc_desc' => 'asc']);
                             }
                         }else{
-                            session([$prefix.'report_asc_desc' => 'asc']);                
+                            session([$prefix.'report_asc_desc' => 'asc']);
                         }
                         session([$prefix.'report_order_by' => 'project_id']);
                         break;
@@ -2988,76 +3000,76 @@ class AuditController extends Controller
                 case "audit_id":
                         if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'audit_id'){
                             if(session($prefix.'report_asc_desc')=='asc'){
-                                session([$prefix.'report_asc_desc' => 'desc']);                
+                                session([$prefix.'report_asc_desc' => 'desc']);
                             }else{
-                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                                session([$prefix.'report_asc_desc' => 'asc']);
                             }
                         }else{
-                            session([$prefix.'report_asc_desc' => 'asc']);                
+                            session([$prefix.'report_asc_desc' => 'asc']);
                         }
                         session([$prefix.'report_order_by' => 'audit_id']);
                         break;
-                
+
                 case "lead_id":
                         if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'lead_id'){
                             if(session($prefix.'report_asc_desc')=='asc'){
-                                session([$prefix.'report_asc_desc' => 'desc']);                
+                                session([$prefix.'report_asc_desc' => 'desc']);
                             }else{
-                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                                session([$prefix.'report_asc_desc' => 'asc']);
                             }
                         }else{
-                            session([$prefix.'report_asc_desc' => 'asc']);                
+                            session([$prefix.'report_asc_desc' => 'asc']);
                         }
                         session([$prefix.'report_order_by' => 'lead_id']);
                         break;
                 case "from_template_id":
                         if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'from_template_id'){
                             if(session($prefix.'report_asc_desc')=='asc'){
-                                session([$prefix.'report_asc_desc' => 'desc']);                
+                                session([$prefix.'report_asc_desc' => 'desc']);
                             }else{
-                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                                session([$prefix.'report_asc_desc' => 'asc']);
                             }
                         }else{
-                            session([$prefix.'report_asc_desc' => 'asc']);                
+                            session([$prefix.'report_asc_desc' => 'asc']);
                         }
                         session([$prefix.'report_order_by' => 'from_template_id']);
-                        break;                        
-                
+                        break;
+
                 case "crr_approval_type_id":
                         if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'crr_approval_type_id'){
                             if(session($prefix.'report_asc_desc')=='asc'){
-                                session([$prefix.'report_asc_desc' => 'desc']);                
+                                session([$prefix.'report_asc_desc' => 'desc']);
                             }else{
-                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                                session([$prefix.'report_asc_desc' => 'asc']);
                             }
                         }else{
-                            session([$prefix.'report_asc_desc' => 'asc']);                
+                            session([$prefix.'report_asc_desc' => 'asc']);
                         }
                         session([$prefix.'report_order_by' => 'crr_approval_type_id']);
                         break;
-                                                                
+
                 case "created_at":
                         if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'created_at'){
                             if(session($prefix.'report_asc_desc')=='asc'){
-                                session([$prefix.'report_asc_desc' => 'desc']);                
+                                session([$prefix.'report_asc_desc' => 'desc']);
                             }else{
-                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                                session([$prefix.'report_asc_desc' => 'asc']);
                             }
                         }else{
-                            session([$prefix.'report_asc_desc' => 'asc']);                
+                            session([$prefix.'report_asc_desc' => 'asc']);
                         }
                         session([$prefix.'report_order_by' => 'created_at']);
                         break;
-                        
+
                 case "response_due_date":
                         if(null !== session($prefix.'report_order_by') && session($prefix.'report_order_by') == 'response_due_date'){
                             if(session($prefix.'report_asc_desc')=='asc'){
-                                session([$prefix.'report_asc_desc' => 'desc']);                
+                                session([$prefix.'report_asc_desc' => 'desc']);
                             }else{
-                                session([$prefix.'report_asc_desc' => 'asc']);                    
+                                session([$prefix.'report_asc_desc' => 'asc']);
                             }
                         }else{
-                            session([$prefix.'report_asc_desc' => 'asc']);                
+                            session([$prefix.'report_asc_desc' => 'asc']);
                         }
                         session([$prefix.'report_order_by' => 'response_due_date']);
                         break;
@@ -3067,11 +3079,11 @@ class AuditController extends Controller
                     session([$prefix.'report_order_by' => 'updated_at']);
                     break;
             }
-        }else{            
+        }else{
             session([$prefix.'report_asc_desc' => 'desc']);
             session([$prefix.'report_order_by' => 'updated_at']);
         }
-        
+
         $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
         ->whereNull('template')
         ->where('project_id', '=', $id)
@@ -3080,12 +3092,12 @@ class AuditController extends Controller
         ->where('from_template_id', $typeEval, $typeVal)
         ->where('id', $searchEval, $searchVal)
         // ->when(Auth::user()->cannot('access_auditor'), function ($query) {
-        //         $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();        
+        //         $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();
         //         return $query->whereIn('project_id', $userProjects);
         // })
         ->orderBy(session($prefix.'report_order_by'), session($prefix.'report_asc_desc'))
-        ->paginate(3);     
-        
+        ->paginate(3);
+
         if (count($reports)) {
             $newest = $reports->sortByDesc('updated_at');
             $newest = date('Y-m-d G:i:s', strtotime($newest[0]->updated_at));
@@ -6322,7 +6334,7 @@ class AuditController extends Controller
             }
             // dd($selection_summary['programs']);
         }
-        
+
     }
 
 }

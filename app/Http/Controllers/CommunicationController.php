@@ -149,7 +149,7 @@ class CommunicationController extends Controller
     }
 
     if (null !== $project_id) {
-      $project = Project::where('id', '=', intval($project_id))->first();
+      $project = Project::with('project_users')->where('id', '=', intval($project_id))->first();
 
       if (!is_null($project)) {
         $audit_details = $project->selected_audit();
@@ -241,18 +241,34 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       } else {
-        $recipients = User::where('organization_id', '<>', $ohfa_id)->where('users.id', '<>', Auth::user()->id)
+        $recipients = User::where('organization_id', '<>', $ohfa_id)
+          ->where('users.id', '<>', Auth::user()->id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
           ->join('users_roles', 'users_roles.user_id', 'users.id')
+          ->where('users_roles.role_id', '>=', 2)
           ->select('users.*', 'last_name', 'first_name', 'organization_name')
           ->where('active', 1)
           ->orderBy('organization_name', 'asc')
           ->orderBy('last_name', 'asc')
           ->get();
+        $project_users = $project->project_users;
+        if ($project_users) {
+          $project_user_ids   = $project_users->pluck('user_id');
+          $project_recipients = User::whereIn('users.id', $project_user_ids)
+            ->leftJoin('people', 'people.id', 'users.person_id')
+            ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+            ->join('users_roles', 'users_roles.user_id', 'users.id')
+            ->select('users.*', 'last_name', 'first_name', 'organization_name')
+            ->where('active', 1)
+            ->orderBy('organization_name', 'asc')
+            ->orderBy('last_name', 'asc')
+            ->get();
+          $recipients = $recipients->merge($project_recipients);
+        }
       }
 
-      if (null !== $report_id) {
+      if (null !== $report_id && Auth::user()->cannot('access_auditor')) {
         $report = CrrReport::with('lead')->find($report_id);
         if ('CAR' == $report->template()->template_name) {
           $lead_id    = $report->lead->id;
@@ -270,6 +286,9 @@ class CommunicationController extends Controller
           $single_receipient = true;
         }
       }
+      $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
+
+      // return $recipients;
       return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings'));
     } else {
       $project             = null;
@@ -316,7 +335,6 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       }
-
       $audit = null;
 
       return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'all_findings'));
@@ -908,25 +926,36 @@ class CommunicationController extends Controller
     //return $project;
     //Search (in session)
     if (Session::has('communications-search') && Session::get('communications-search') != '') {
-      $search          = Session::get('communications-search');
-      $search_messages = Communication::with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')
-        ->where(function ($query) use ($search, $project) {
-          $query->where('message', 'LIKE', '%' . $search . '%');
-          $query->orWhereHas('audit', function ($query) use ($search) {
-            $query->where('id', 'LIKE', '%' . $search . '%');
-          });
-        })
-        ->where(function ($query) use ($current_user) {
-          $query->where('owner_id', '=', $current_user->id);
-          $query->orWhereHas('recipients', function ($query) use ($current_user) {
-            $query->where('user_id', '=', $current_user->id);
-          });
-        });
+      $search = Session::get('communications-search');
       if ($project) {
-        $search_messages = $search_messages->where('project_id', $project->id);
+        // $search_messages = $search_messages->where('project_id', $project->id);
+        $search_messages = Communication::with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')
+          ->where(function ($query) use ($search, $project) {
+            $query->where('message', 'LIKE', '%' . $search . '%');
+            $query->orWhereHas('audit', function ($query) use ($search) {
+              $query->where('id', 'LIKE', '%' . $search . '%');
+            });
+          })
+          ->where('project_id', $project->id)
+          ->whereNull('parent_id');
+      } else {
+        $search_messages = Communication::with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')
+          ->where(function ($query) use ($search, $project) {
+            $query->where('message', 'LIKE', '%' . $search . '%');
+            $query->orWhereHas('audit', function ($query) use ($search) {
+              $query->where('id', 'LIKE', '%' . $search . '%');
+            });
+          })
+          ->where(function ($query) use ($current_user) {
+            $query->where('owner_id', '=', $current_user->id);
+            $query->orWhereHas('recipients', function ($query) use ($current_user) {
+              $query->where('user_id', '=', $current_user->id);
+            });
+          });
       }
-      if ($audit_id) {
-        $search_messages = $search_messages->where('audit_id', $audit_id);
+
+      if ($audit) {
+        $search_messages = $search_messages->where('audit_id', $audit);
       }
 
       $search_messages = $search_messages->with('owner')
@@ -1064,10 +1093,15 @@ class CommunicationController extends Controller
         ->skip($skip)->take($number_per_page)
         ->get();
       if ($project) {
-        $audit    = $project->selected_audit();
-        $messages = $messages->where('project_id', $project->id)
-        //->where('audit_id', $audit->id); //Changed by Div, 20190526
-          ->where('audit_id', $audit->audit_id);
+        // $audit    = $project->selected_audit();
+
+        // $messages = $messages->where('project_id', $project->id)
+        // //->where('audit_id', $audit->id); //Changed by Div, 20190526
+        //   ->where('audit_id', $audit->audit_id);
+        $project_messages = Communication::where('project_id', $project->id)->whereNull('parent_id')
+          ->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')
+          ->get();
+        $messages = $messages->merge($project_messages)->where('project_id', $project->id);
       }
 
       //return $messages->pluck('project_id');
@@ -1377,7 +1411,7 @@ class CommunicationController extends Controller
       $audit             = $report->audit_id;
       $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
         'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {

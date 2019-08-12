@@ -3,20 +3,20 @@
 </script>
 <div id="dynamic-modal-content">
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
-		@if(!is_null($project))<input type="hidden" name="project_id" value="{{$project->id}}">@endif
-		@if(!is_null($audit))<input type="hidden" name="audit" value="{{$audit->id}}">@endif
+		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
+		@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit->id }}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
 			<div uk-grid class="uk-grid-small ">
 				<div class="uk-width-1-1 uk-padding-small">
 					@if(!is_null($project))
 					@if(!is_null($audit))
 					@if(!is_null($finding))
-					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}} | Audit: {{$audit->id}} Findings Response</span></h3>
+					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{ $project->project_number }} : {{ $project->project_name }} | Audit: {{ $audit->id }} Findings Response</span></h3>
 					@else
-					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}} | Audit: {{$audit->id}}</span></h3>
+					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{ $project->project_number }} : {{ $project->project_name }} | Audit: {{ $audit->id }}</span></h3>
 					@endIf
 					@else
-					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{$project->project_number}} : {{$project->project_name}}</span></h3>
+					<h3>Message for Project: <span id="current-file-id-dynamic-modal">{{ $project->project_number }} : {{ $project->project_name }}</span></h3>
 					@endIf
 					@else
 					<h3>New Message</h3>
@@ -26,12 +26,12 @@
 			<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 			<div uk-grid class="uk-grid-collapse">
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
-				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{Auth::user()->full_name()}}</div>
+				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{ Auth::user()->full_name() }}</div>
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
 				@if($single_receipient)
-				<?php $recipient = $recipients->first(); ?>
+				<?php $recipient = $recipients->first()->first();?>
 				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-					<li class="recipient-list-item {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
+					<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
 						<input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" checked="checked" onclick="return false;">
 						<label for="recipient-id-{{ $recipient->id }}">
 							{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
@@ -54,7 +54,7 @@
 							<li class="recipient-list-item ohfa "><strong>OHFA STAFF</strong></li>
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 							@foreach ($recipients_from_hfa as $recipient_from_hfa)
-							<li class="recipient-list-item ohfa {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name)))))}} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
+							<li class="recipient-list-item ohfa {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name))))) }} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
 								<input name="" id="list-recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}')">
 								<label for="recipient-id-{{ $recipient_from_hfa->id }}">
 									{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}
@@ -62,19 +62,32 @@
 							</li>
 							@endforeach
 							@endif
-							@php $currentOrg = ''; @endphp
-							@foreach ($recipients as $recipient)
-							@if($currentOrg != $recipient->organization_name)
-							<li class="recipient-list-item @if(count($recipients_from_hfa) > 0 || $currentOrg != '') uk-margin-large-top @endif {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}}"><strong>{{$recipient->organization_name}}</strong></li>
+							{{-- @php $currentOrg = ''; @endphp --}}
+							@foreach ($recipients as $key => $orgs)
+							<li class="recipient-list-item  {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$key))))) }}"><strong>{{ $key }}</strong>
+							</li>
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-							@php $currentOrg = $recipient->organization_name; @endphp
-							@endIf
-							<li class="recipient-list-item {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
+							@foreach($orgs as $recipient)
+							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
 								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
 								<label for="recipient-id-{{ $recipient->id }}">
 									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
 								</label>
 							</li>
+							@endforeach
+
+							{{--  @if($currentOrg != $recipient->organization_name)
+							<li class="recipient-list-item @if(count($recipients_from_hfa) > 0 || $currentOrg != '') uk-margin-large-top @endif {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->organization_name }}</strong></li>
+							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
+							@php $currentOrg = $recipient->organization_name; @endphp
+							@endIf
+							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
+								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
+								<label for="recipient-id-{{ $recipient->id }}">
+									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
+								</label>
+							</li>
+							 --}}
 							@endforeach
 						</ul>
 					</div>
@@ -126,9 +139,9 @@
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
         				@if($all_findings && $single_receipient)
-        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." value="Finding: {{ $finding->id }}">
+        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." id="findings_based_subject" value="Finding: {{ $finding->id }}">
         				@else
-        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
+        					<input type="text" id="findings_based_subject" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
         				@endif
         			</div>
         		</div>
@@ -209,14 +222,37 @@
     		} );
 
     		@if($project && Auth::user()->can('access_auditor'))
-    		var id = {{$project->id}};
-    		loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
+    		var id = {{ $project->id }};
+    		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);
         //loadParcelSubTab('communications',id);
         @else
         //loadDashBoardSubTab('dashboard','communications');
         @endif
         dynamicModalClose();
       }
+    }
+
+    function updateMessage() {
+    	var audit = "{{ $audit->id }}";
+    	var projectNumber = "{{ $project->project_number }}";
+    	var projectName = "{{ $project->project_name }}";
+    	var findings_array = [];
+    	$("input[name='findings[]']:checked").each(function (){
+    		findings_array.push(parseInt($(this).val()));
+    	});
+    	if(findings_array.length > 1) {
+    		subject = 'Findings: '+findings_array.join(", ");
+    		message = 'Owner response for findings '+findings_array.join(", ")+' on audit # '+audit+' for '+projectNumber+' : '+projectName;
+    	} else if(findings_array.length == 1) {
+    		subject = 'Finding: '+findings_array.toString();
+    		message = 'Owner response for finding '+findings_array.toString()+' on audit # '+audit+' for '+projectNumber+' : '+projectName;
+    	} else {
+    		subject = '';
+    		message = '';
+    	}
+    	$('#findings_based_subject').attr('value', subject);
+    	$('textarea#message-body').val(message);
+    	// debugger;
     }
   </script>
 </div>
