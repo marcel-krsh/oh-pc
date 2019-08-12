@@ -49,7 +49,7 @@ class PagesController extends Controller
     
   }
   function changeLog(Request $request){
-    return view('pages.change_log')
+    return view('pages.change_log');
   }
   function codes(Request $request){
     if($request->get('code')){
