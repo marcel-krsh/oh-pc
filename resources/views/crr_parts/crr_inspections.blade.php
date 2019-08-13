@@ -302,7 +302,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 						return $item;
 					}
 				});
-
+				$hasFindings = 0;
 				//dd($currentBuilding,$findings,$findingsHello);
 				$thisBuildingSiteFindings = count($$findingCount->where('finding_type.type','!=','file'));
 				$thisBuildingFileFindings = count($$findingCount->where('finding_type.type','==','file'));
