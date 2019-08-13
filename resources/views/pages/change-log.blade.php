@@ -123,11 +123,11 @@ ul.leaders li {
 		            						<ol>
 		            							<li>Ensure your project's step has been updated by the lead to be "In progress" or higher, but not "Archived".</li>
 		            							<li>Open your audit's project details by clicking on the project name on the audit list, or using the quick lookup.</li>
-		            							<li>Click on the reports tab for the project.</li>
+		            							<li>Click on the "Reports" tab for the project.</li>
 		            							<li>Click on the "NEW REPORT" button.</li>
-		            							<li>Select the Report Type from the drop list.</li>
-		            							<li>Select the audit.</li>
-		            							<li>Click "Create" to create your report, or "Cancel" to cancel the process.</li>
+		            							<li>Select the report "Type" from the drop list.</li>
+		            							<li>Select the audit for the report to use as its data source from the revealed "For Audit" drop list.</li>
+		            							<li>Click "GO" to create your report, or "Cancel" to cancel the process.</li>
 		            							<li>The window will close, and in a moment (no more than 10 seconds), your report will appear at the top of the report list.</li>
 		            						</ol></p>
 		            						<hr />
@@ -136,7 +136,7 @@ ul.leaders li {
 		            							<li>Scroll to the "Units Audited" list</li>
 		            							<li>Click on the text "<span ><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;" title="" aria-expanded="false"></i> SWAP UNITS </span>" in the sub text preceding the summary statement.</li>
 		            							<li>Select additional units or deselect units to remove them from the list (units with findings will still show, but they will be grayed out and will not count toward the required number for inspection).</li>
-		            							<li>Click X in the upper right corner, or outside the window to close the swap unit modal.</li>
+		            							<li>Click the X in the upper right hand corner, or outside the window to close the swap unit modal.</li>
 		            							<li>If you have no other changes to make, or require the units to show on the report to continue - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
 		            							<li>Confirm you want to refresh the report's content.</li>
 		            						</ol></p>
@@ -144,7 +144,7 @@ ul.leaders li {
 		            					<p>Updating Your CAR or EHS: Editing Finding Level, Type, or Date of Finding: 
 		            						<ol>
 		            							<li>Click on the "F|N XXXX" link on the finding.</li>
-		            							<li>Make desired changes to the finding (NOTE: When changing the finding type, the level descriptions will not update until you save and reopen the edit modal).</li>
+		            							<li>Make your desired changes to the finding.<br /> NOTE: When changing the finding type, the level descriptions will not update until you save and reopen the edit modal.</li>
 		            							<li>Click on the "Save Finding" button.</li>
 		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
 		            							<li>Confirm you want to refresh the report's content.</li>
@@ -153,10 +153,10 @@ ul.leaders li {
 		            					<p>Updating Your CAR or EHS: Editing / Hiding Comments: 
 		            						<ol>
 		            							<li>Click on the edit icon "<i class="a-pencil"></i>" next to the comment.</li>
-		            							<li>Make desired changes to the comment text.</li>
+		            							<li>Make your desired changes to the comment text.</li>
 		            							<li>If you want to prevent the comment from showing on the report, check the box next to "Do Not Display On Reports"</li>
-		            							<li>Click on "Save Comment" button.</li>
-		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
+		            							<li>Click on the "Save Comment" button.</li>
+		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar. <br />NOTE: The report content must be refreshed for comments to show on the report. Comments will show on the printed report unless the hide option has been selected. Findings without at least 1 reportable comment will show the violation description on the printed report.</li>
 		            							<li>Confirm you want to refresh the report's content.</li>
 		            						</ol></p>
 		            						<hr />
@@ -167,9 +167,9 @@ ul.leaders li {
 		            							<ul>
 		            								<li>Comment</li>
 		            								<ol>
-		            									<li>Enter your text in the comment field.</li>
-		            									<li>Choose if you would like to hide the comment from reports</li>
-		            									<li>Click "Save Comment" to save your comment.<br />NOTE: The report content must be refreshed for comments to show on the report. Comments will show on the printed report unless the hide option has been selected. Findings without at least 1 reportable comment will show the violation description on the printed report.</li>
+		            									<li>Enter your text in the "Comment" field.</li>
+		            									<li>If you want to prevent the comment from showing on the report, check the box next to "Do Not Display On Reports".</li>
+		            									<li>Click the "Save Comment" button to save your comment.<br />NOTE: The report content must be refreshed for comments to show on the report. Comments will show on the printed report unless the hide option has been selected. Findings without at least 1 reportable comment will show the violation description on the printed report.</li>
 		            								</ol>
 		            								<li>Document</li>
 		            								<ol>
@@ -204,10 +204,10 @@ ul.leaders li {
 				            									<li>Repeat 2-4 for each document you want to add to the selected finding(s)</li>
 				            									<li>Click on "DONE ADDING DOCUMENTS" when you have finished.</li>
 				            								</ol>
-				            							<li>Edit the SUBJECT line if needed.<br />
+				            							<li>Edit the "SUBJECT" line if needed.<br />
 				            							WARNING: This will be visible in the email notification that is sent to the recipients. DO NOT STATE ANY CONFIDENTIAL OR PERSONAL INFORMATION IN THIS FIELD.</li>
-				            							<li>Edit the MESSAGE body content if needed.<br/>NOTE: This information requires the recipient to login to the system to view it.</li>
-		            									<li>Click "SEND" button.<br />NOTE: Communication notifications are sent out based on each recipient's notification preference. It could be up to 24 hours before they receive their notification depending on the time you send the communication. The default for users is every hour. They can immediately see the communication however if they login regardless of when their notification is sent. Communications do not show on the printed report.</li>
+				            							<li>Edit the "MESSAGE" body content if needed.<br/>NOTE: This information requires the recipient to login to the system to view it.</li>
+		            									<li>Click the "SEND" button.<br />NOTE: You do NOT need to refresh the report's content for communications to show on the report since they are not a part of printed report. Communication notifications are sent out based on each recipient's notification preference. It could be up to 24 hours before they receive their notification depending on the time you send the communication. The default notification time for users is every hour. Recipients can immediately see the communication if they login, regardless of when their notification is sent.</li>
 		            								</ol>
 		            							</ul>
 		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
@@ -216,11 +216,11 @@ ul.leaders li {
 		            						<hr />
 		            						<p>Updating Your CAR or EHS: Reviewing, Approving and/or Declining Documents: 
 		            						<ol>
-		            							<li>Click on the document name to download a copy of the document.</li>
+		            							<li>Click on the document's name to download a copy of the document.</li>
 		            							<ul><li>To Approve/Decline, or Clear the Approval status of the Document:</li>
 		            								<ol>
 		            									<li>Click on the approval status icon next to the document.</li>
-		            									<li>Select the desired approval status to assign to the document.<br />NOTE: You DO NOT NEED TO REFRESH REPORT CONTENT for the approval status to be shown on the report. Documents, and their approval status are NOT shown on the printed report.</li>
+		            									<li>Select the desired approval status to assign to the document.<br />NOTE: You do NOT need to refresh the report's content for the approval status to be shown on the report since documents, and their approval status are not on the printed report.</li>
 		            								</ol>
 		            							</ul>
 		            						</ol></p>
@@ -228,28 +228,28 @@ ul.leaders li {
 		            						<p>Updating Your CAR or EHS: Resolving Findings: 
 		            						<ul>
 		            							<li>Findings resolved in the findings modal will show the date the resolve button was clicked.</li>
-		            							<li>To add or change the date of a finding:</li>
+		            							<li>To add or change the date of a finding's resolution on the report:</li>
 		            							<ol>
-		            								<li>Click on the date field (or the currently showing date).</li>
+		            								<li>Click on the date field (or the current date recorded).</li>
 		            								<li>Click on the month's name to select a different month.</li>
 		            								<li>Click on the year to enter a different year.</li>
-		            								<li>Click on the day to select the day.<br />NOTE: The resolved date is saved immediately to the database, but the report will need to have its content refreshed for the date to appear on the report permanently. We recommend refreshing the content after you have finished updating all the findings for that session.</li>
+		            								<li>Click on the day to select the day.</li>
 		            							</ol>
-		            							<li>To clear a finding resolution date:</li>
+		            							<li>To clear a finding's resolution date:</li>
 		            								<ol>
 			            								<li>Click on the "<i class="a-circle-cross"></i> DATE" button beside the date.
-			            								<br />NOTE: The resolved date is saved immediately to the database, but the report will need to have its content refreshed for the date to appear on the report permanently. We recommend refreshing the content after you have finished updating all the findings for that session.</li>
+			            								</li>
 		            								</ol>
 		            							<li>After you have finished all updates:</li>
 		            							<ol>
-		            								<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
+		            								<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.<br />NOTE: The resolved date is saved immediately to the database, but the report will need to have its content refreshed for the date to appear on the report permanently. We recommend refreshing the report's content after you have finished updating all the findings on that report for your current login session. If you forgot to refresh the report's content in a session, you do not need to re-enter the dates. Just reopen the report and click on the "Refresh Report Content" link or icon. Refreshing the content will also update the dates shown for the latest resolution on the BINs.</li>
 		            								<li>Confirm you want to refresh the report's content.</li>
 		            							</ol>
 		            						</ul></p>
 		            						<hr />
 		            						<p>Updating Your CAR or EHS: Cancelling a Finding: 
 		            						<ol>
-		            							<li>Click on the "CANCEL" Button on the finding.</li>
+		            							<li>Click on the "CANCEL" button on the finding.</li>
 		            							<li>Confirm you wish to cancel the finding.</li>
 		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
 		            							<li>Confirm you want to refresh the report's content.<br />WARNING: Failing to refresh the content of the report will allow the finding to remain visible to all users with report access. If you have cancelled a finding prior but forgot to refresh the content, DO NOT click to cancel the finding again, but click to refresh the content of the report first. If after refreshing the content the finding still shows, then try repeating the cancel process again.</li>
@@ -265,6 +265,47 @@ ul.leaders li {
 		            							<li>Click on "Done Adding Findings"</li>
 		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
 		            							<li>Confirm you want to refresh the report's content.</li>
+		            							
+		            						</ol></p>
+		            						<hr />
+
+		            						<p>Sending Your CAR For Approval: 
+		            						<ol>
+		            							<li>If you haven't already- return the project's "Reports" tab.</li>
+		            							<li>From the "ACTION" drop down list, select "SEND TO MANAGER REVIEW".</li>
+		            							<li>Click on "ADD RECIPIENT"</li>
+		            							<li>Check the box next to the managers and or admins you would like to notify.<br />NOTE: Only managers and admins can approve CARs.</li>
+		            							<li>Click on "Done Adding Recipients"</li>
+		            							<li>You can make changes to the "SUBJECT" and "MESSAGE" if you like.</li>
+		            							<li>Click the "SEND" button to send the notification.<br />NOTE: You do NOT need to refresh the report's content for communications to show on the report since they are not a part of printed report. Communication notifications are sent out based on each recipient's notification preference. It could be up to 24 hours before they receive their notification depending on the time you send the communication. The default notification time for users is every hour. Recipients can immediately see the communication if they login, regardless of when their notification is sent.</li>
+		            							
+		            						</ol></p>
+		            						<hr />
+		            						<p>Signing the EHS: 
+		            						<ol>
+		            							<li>Scroll to the bottom of your EHS.</li>
+		            							<li>Have the property representative use their finger or a stylus to sign the report inside the signature box.</li>
+		            							<li>Select the name of the signator from the "Who is Signing" drop down list.<br />NOTE: If the person signing is not listed, you can either add them to the list of contacts on the project's contacts tab (they must already be a DEVCO user) or you can select "Other" and then type in the name of the person signing.</li>
+		            							<li>Click the "Confirm Signature" button to save the signature.<br />NOTE:Confirming the signature on the EHS will make the report available for viewing by the project's contacts with report access.</li>
+		            							
+		            						</ol></p>
+		            						<hr />
+		            						<p>Clearing an EHS Signature: 
+		            						<ol>
+		            							<li>Click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.<br />NOTE: Do not use the EHS report to manage resolutions or finding changes. This will clear the signature on the report. Justifiably, the signature represents acknowlegement of the report's content at that specific time. Changing the report's content would change the content the person signed acknowelegment of, hence why the signature is removed any time the report content is refreshed.</li>
+		            							
+		            							
+		            						</ol></p>
+		            						<hr />
+		            						<p>Sending Your CAR or EHS To Property Managers and Owners: 
+		            						<ol>
+		            							<li>CAR Only: Recieve approval from your manager or admin on the CAR.</li>
+		            							<li>From the "ACTION" drop down list, select "SEND TO PROPERTY CONTACT".</li>
+		            							<li>Click on "ADD RECIPIENT"</li>
+		            							<li>Check the box next to the contacts you would like to notify.<br />NOTE: If you do not see a contact in the list, go to the project's contacts tab and add them as a project user and then try again.</li>
+		            							<li>Click on "Done Adding Recipients"</li>
+		            							<li>You can make changes to the "SUBJECT" and "MESSAGE" if you like.</li>
+		            							<li>Click the "SEND" button to send the notification.<br />NOTE: You do NOT need to refresh the report's content for communications to show on the report since they are not a part of printed report. Communication notifications are sent out based on each recipient's notification preference. It could be up to 24 hours before they receive their notification depending on the time you send the communication. The default notification time for users is every hour. Recipients can immediately see the communication if they login, regardless of when their notification is sent.</li>
 		            							
 		            						</ol></p>
 		            						<hr />
