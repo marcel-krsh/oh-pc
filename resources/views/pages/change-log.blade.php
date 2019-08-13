@@ -116,7 +116,7 @@ ul.leaders li {
 			            					HOWTO : CREATING AND MANAGING THE CAR/EHS RESOLUTION PROCESS
 		            					</h3>
 		            				
-		            					<p>Creating and managing the CAR while easy, does require some upfront knowledge and know how. This process was outlined based on OHFA's previous methodology while making some portions automatic, others have to be manually processed to ensure accuracy and compliant responses.</p>
+		            					<p>Creating and managing the CAR while easy, does require some upfront knowledge and know how. This process was outlined based on OHFA's previous methodology and while it has automated some actions, others have to be manually processed to ensure accurate and compliant responses.</p>
 		            					
 
 		            					<p>Creating Your CAR or EHS: 
@@ -130,16 +130,17 @@ ul.leaders li {
 		            							<li>Click "Create" to create your report, or "Cancel" to cancel the process.</li>
 		            							<li>The window will close, and in a moment (no more than 10 seconds), your report will appear at the top of the report list.</li>
 		            						</ol></p>
+		            						<hr />
 		            					<p>Updating Your CAR or EHS: Adding/Removing Inspected Units: 
 		            						<ol>
 		            							<li>Scroll to the "Units Audited" list</li>
-		            							<li>Click on the text "<span ><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;" title="" aria-expanded="false"></i> SWAP UNITS </span>" in the sub text preceeding the summary statement.</li>
+		            							<li>Click on the text "<span ><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;" title="" aria-expanded="false"></i> SWAP UNITS </span>" in the sub text preceding the summary statement.</li>
 		            							<li>Select additional units or deselect units to remove them from the list (units with findings will still show, but they will be grayed out and will not count toward the required number for inspection).</li>
 		            							<li>Click X in the upper right corner, or outside the window to close the swap unit modal.</li>
 		            							<li>If you have no other changes to make, or require the units to show on the report to continue - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
 		            							<li>Confirm you want to refresh the report's content.</li>
 		            						</ol></p>
-
+		            						<hr />
 		            					<p>Updating Your CAR or EHS: Editing Finding Level, Type, or Date of Finding: 
 		            						<ol>
 		            							<li>Click on the "F|N XXXX" link on the finding.</li>
@@ -148,6 +149,7 @@ ul.leaders li {
 		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
 		            							<li>Confirm you want to refresh the report's content.</li>
 		            						</ol></p>
+		            						<hr />
 		            					<p>Updating Your CAR or EHS: Editing / Hiding Comments: 
 		            						<ol>
 		            							<li>Click on the edit icon "<i class="a-pencil"></i>" next to the comment.</li>
@@ -157,17 +159,117 @@ ul.leaders li {
 		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
 		            							<li>Confirm you want to refresh the report's content.</li>
 		            						</ol></p>
+		            						<hr />
 		            					<p>Updating Your CAR or EHS: Adding Response (Auditor) 
 		            						<ol>
 		            							<li>Click on the "<i class="a-circle-plus"></i> ADD RESPONSE" button at the top right of the finding's header.</li>
-		            							<li>Make desired changes to the comment text.</li>
-		            							<li>If you want to prevent the comment from showing on the report, check the box next to "Do Not Display On Reports"</li>
-		            							<li>Click on "Save Comment" button.</li>
+		            							<li>Choose the desired response type:</li>
+		            							<ul>
+		            								<li>Comment</li>
+		            								<ol>
+		            									<li>Enter your text in the comment field.</li>
+		            									<li>Choose if you would like to hide the comment from reports</li>
+		            									<li>Click "Save Comment" to save your comment.<br />NOTE: The report content must be refreshed for comments to show on the report. Comments will show on the printed report unless the hide option has been selected. Findings without at least 1 reportable comment will show the violation description on the printed report.</li>
+		            								</ol>
+		            								<li>Document</li>
+		            								<ol>
+		            									
+		            									<li>Choose the category for your document from the left column.</li>
+		            									<li>Enter a brief description about the document you are uploading.</li>
+		            									<li>Either click on the link inside the upload box to browse to select your file, or drag and drop the file onto the upload box.</li>
+		            									<li>Repeat 1-3 for each document you want to add to the selected finding(s)</li>
+		            									<li>Click the check box next to any other findings you would like to attach the document. <br />NOTE: Hovering over the " <i class="a-info-circle"></i> " icon will give you more information about the finding. Documents do not show on printed reports. </li>
+		            									<li>Click on "Save Documents"</li>
+		            								</ol>
+		            								<li>Communication</li>
+		            								<ol>
+		            									<li>Click on "Add Recipient"</li>
+		            									<ol>
+		            										<li>Check the box next to the recipients you want to have notified of the communication.<br />NOTE: You can find recipients names faster by typing their first or last name into the filter box.</li>
+		            										<li>Click on "Done Adding Recipients" after selecting your last recipient.</li>
+		            									</ol>
+
+		            									<li>Click on "Add Finding" if you would like to attach the communication to multiple findings.
+		            										<ol>
+		            											<li>Check the box next to the findings you would like to attach the communication to.<br />NOTE: Hovering over the " <i class="a-info-circle"></i> " icon will give you more information about the finding.</li>
+		            											<li>Click on "Done Adding Findings" button when finished selecting findings.</li>
+		            											</li>
+		            										</ol>
+		            									<li>If you want to attach a document to the communication - Click "Add Document"</li>
+		            										<ol>
+				            									<li>Check the box of any existing documents you would like to be attached to the communication</li>
+				            									<li>Choose the category for your document from the right column.</li>
+				            									<li>Enter a brief description about the document you are uploading.</li>
+				            									<li>Either click on the link inside the upload box to browse to select your file, or drag and drop the file onto the upload box.</li>
+				            									<li>Repeat 2-4 for each document you want to add to the selected finding(s)</li>
+				            									<li>Click on "DONE ADDING DOCUMENTS" when you have finished.</li>
+				            								</ol>
+				            							<li>Edit the SUBJECT line if needed.<br />
+				            							WARNING: This will be visible in the email notification that is sent to the recipients. DO NOT STATE ANY CONFIDENTIAL OR PERSONAL INFORMATION IN THIS FIELD.</li>
+				            							<li>Edit the MESSAGE body content if needed.<br/>NOTE: This information requires the recipient to login to the system to view it.</li>
+		            									<li>Click "SEND" button.<br />NOTE: Communication notifications are sent out based on each recipient's notification preference. It could be up to 24 hours before they receive their notification depending on the time you send the communication. The default for users is every hour. They can immediately see the communication however if they login regardless of when their notification is sent. Communications do not show on the printed report.</li>
+		            								</ol>
+		            							</ul>
 		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
 		            							<li>Confirm you want to refresh the report's content.</li>
 		            						</ol></p>
+		            						<hr />
+		            						<p>Updating Your CAR or EHS: Reviewing, Approving and/or Declining Documents: 
+		            						<ol>
+		            							<li>Click on the document name to download a copy of the document.</li>
+		            							<ul><li>To Approve/Decline, or Clear the Approval status of the Document:</li>
+		            								<ol>
+		            									<li>Click on the approval status icon next to the document.</li>
+		            									<li>Select the desired approval status to assign to the document.<br />NOTE: You DO NOT NEED TO REFRESH REPORT CONTENT for the approval status to be shown on the report. Documents, and their approval status are NOT shown on the printed report.</li>
+		            								</ol>
+		            							</ul>
+		            						</ol></p>
+		            						<hr />
+		            						<p>Updating Your CAR or EHS: Resolving Findings: 
+		            						<ul>
+		            							<li>Findings resolved in the findings modal will show the date the resolve button was clicked.</li>
+		            							<li>To add or change the date of a finding:</li>
+		            							<ol>
+		            								<li>Click on the date field (or the currently showing date).</li>
+		            								<li>Click on the month's name to select a different month.</li>
+		            								<li>Click on the year to enter a different year.</li>
+		            								<li>Click on the day to select the day.<br />NOTE: The resolved date is saved immediately to the database, but the report will need to have its content refreshed for the date to appear on the report permanently. We recommend refreshing the content after you have finished updating all the findings for that session.</li>
+		            							</ol>
+		            							<li>To clear a finding resolution date:</li>
+		            								<ol>
+			            								<li>Click on the "<i class="a-circle-cross"></i> DATE" button beside the date.
+			            								<br />NOTE: The resolved date is saved immediately to the database, but the report will need to have its content refreshed for the date to appear on the report permanently. We recommend refreshing the content after you have finished updating all the findings for that session.</li>
+		            								</ol>
+		            							<li>After you have finished all updates:</li>
+		            							<ol>
+		            								<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
+		            								<li>Confirm you want to refresh the report's content.</li>
+		            							</ol>
+		            						</ul></p>
+		            						<hr />
+		            						<p>Updating Your CAR or EHS: Cancelling a Finding: 
+		            						<ol>
+		            							<li>Click on the "CANCEL" Button on the finding.</li>
+		            							<li>Confirm you wish to cancel the finding.</li>
+		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
+		            							<li>Confirm you want to refresh the report's content.<br />WARNING: Failing to refresh the content of the report will allow the finding to remain visible to all users with report access. If you have cancelled a finding prior but forgot to refresh the content, DO NOT click to cancel the finding again, but click to refresh the content of the report first. If after refreshing the content the finding still shows, then try repeating the cancel process again.</li>
+		            							
+		            						</ol></p>
+		            						<hr />
+		            						<p>Updating Your CAR or EHS: Adding a Finding: 
+		            						<ol>
+		            							<li>Click on the site or file icon from either the Buildings Audited or Units Audited list.</li>
+		            							<li>In the findings modal select the date, location, amenity, and violation.</li>
+		            							<li>Enter your comment and select the finding's level.</li>
+		            							<li>Repeat 2-3 until you are done adding findings.</li>
+		            							<li>Click on "Done Adding Findings"</li>
+		            							<li>If you have no other changes to make - click on the "Refresh Report Content" link or on the refresh report icon "<i class="a-rotate-left-3" style="font-weight: bolder;"></i>" in the sidebar.</li>
+		            							<li>Confirm you want to refresh the report's content.</li>
+		            							
+		            						</ol></p>
+		            						<hr />
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -195,7 +297,7 @@ ul.leaders li {
 
 		            					<p>Workaround: Click on the finding icon on the audit list to open the finding modal instead, click on the location option, and select the site from the list.</p>
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -223,7 +325,7 @@ ul.leaders li {
 
 		            					<p>It is important to note, this only refreshes the project details of the selected audit, not all audits. The details on this view are what will be used in the audit reports.</p>
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -250,7 +352,7 @@ ul.leaders li {
 
 		            					<p>It is important to note, this only works while on your desktop, and any changes you make are recorded into the selection method history.</p>
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -278,7 +380,7 @@ ul.leaders li {
 
 		            					<p>It is important to note, to add a user, they must have a devco user that has a property manager role permission. Also, these additions do not get pushed back to DEVCO.</p>
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -310,7 +412,7 @@ ul.leaders li {
 		            							<li>Information does not get pushed back to DEVCO</li>
 		            						</ul></p>
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -346,7 +448,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -380,7 +482,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -439,7 +541,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -463,11 +565,11 @@ ul.leaders li {
 			            					REPORTS : ACTION &amp; OPTION ICONS ADDED TO SIDE BAR
 		            					</h3>
 		            				
-		            					<p>Now you can click on the icons in the left hand side bar to print, refresh, or change your finding column view option. The icons are repeated at the top and bottom of the reports thumbnails.</p>
+		            					<p>Now you can click on the icons in the left hand side bar to print, refresh, or change your finding columnn view option. The icons are repeated at the top and bottom of the report's thumbnails.</p>
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -490,7 +592,7 @@ ul.leaders li {
 			            					REPORTS : FINDING LIST - NOW WITH 1 COLUMN VIEW OPTION
 		            					</h3>
 		            				
-		            					<p>You can now toggle the finding list colum view between the 3-column grid view (default) and the 1-column view by clicking on the view option in the left hand side bar.</p>
+		            					<p>You can now toggle the finding list colum view between the 3-columnn grid view (default) and the 1-columnn view by clicking on the view option in the left hand side bar.</p>
 
 		            					<p>Some important notes: 
 		            						<ul>
@@ -500,7 +602,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -531,12 +633,12 @@ ul.leaders li {
 		            							<li>Clicking on a violation code reference in a report will filter the codes reference page to just that code.</li>
 		            							<li>Working view of the report still outputs the entire description of the violation.</li>
 		            							<li>Print view of the report will only output the violation description if no comments were made on the finding.</li>
-		            							<li>All codes are output on the code reference page, even old codes. Old codes that are deactivated will include a date they were depricated.</li>
+		            							<li>All codes are output on the code reference page, even old codes. Old codes that are deactivated will include a date they were deprecated.</li>
 		            						</ul></p>
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -576,7 +678,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -610,7 +712,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -645,7 +747,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -690,7 +792,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -719,7 +821,7 @@ ul.leaders li {
 	            								<li>Violation descriptions are only output is there are no comments on the finding.</li>
 	            								<li>Use of headers for each finding group (SITE, BUILDING/BUILDING UNIT, UNIT) easier to browse.</li>
 	            								<li>Headers use smaller overall type size, and address is only output once in the header for each group of findings.</li>
-	            								<li>Use of one column for findings makes pagination easier to follow.</li>
+	            								<li>Use of one columnn for findings makes pagination easier to follow.</li>
 	            								<li>Margins are automatically set for most browsers allow for page information and page X/X to be displayed.</li>
 	            								<li>Overall page count required for printing has been reduced by 70%</li>
 	            							</ul>
@@ -727,7 +829,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -755,7 +857,7 @@ ul.leaders li {
 
 		            					
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
@@ -784,10 +886,10 @@ ul.leaders li {
 		            					<p>Some important notes: 
 		            						<ul>
 		            							<li>Project Details need to be refreshed on the project details tab to reflect changes.</li>
-		            							<li>Photos do not get pushed back to Docuware individually - they will be included in the final report export durring the archive process. (TBD)</li>
+		            							<li>Photos do not get pushed back to Docuware individually - they will be included in the final report export during the archive process. (TBD)</li>
 		            						</ul></p>
 
-		            					<p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p>
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
 		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
