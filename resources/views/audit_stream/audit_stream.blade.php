@@ -154,9 +154,9 @@
 										<button class="uk-button uk-link" onclick="dynamicModalLoad('edit/finding/{{ $finding->id }}',0,0,0,2)"><i class="a-pencil-2"></i> EDIT</button>
 										@endif
 										@if($finding->cancelled_at)
-										<button class="uk-button uk-link" onclick="restoreFinding({{ $finding->id }})"><i class="a-trash-3"></i> RESTORE</button>
+										<button class="uk-button uk-link" onclick="restoreFindingAS({{ $finding->id }})"><i class="a-trash-3"></i> RESTORE</button>
 										@else
-										<button class="uk-button uk-link" onclick="cancelFinding({{ $finding->id }})"><i class="a-trash-3"></i> CANCEL</button>
+										<button class="uk-button uk-link" onclick="cancelFindingAS({{ $finding->id }})"><i class="a-trash-3"></i> CANCEL</button>
 										@endif
 									</div>
 									@endcan
@@ -194,7 +194,7 @@
 		});
 	}
 
-	function cancelFinding(findingid){
+	function cancelFindingAS(findingid){
 
 		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3></div>', {stack:1}).then(function() {
 
@@ -215,7 +215,7 @@
 		});
 	}
 
-	function restoreFinding(findingid){
+	function restoreFindingAS(findingid){
 
 		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Restore Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to restore this finding?</h3></div>', {stack:1}).then(function() {
 
