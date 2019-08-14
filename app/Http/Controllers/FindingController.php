@@ -1474,8 +1474,11 @@ class FindingController extends Controller
     public function resolveFinding(Request $request, $findingid)
     {
         $finding = Finding::where('id', $findingid)->with('unit')->first();
-
-        $date = date('Y-m-d H:i:s',strtotime($request->input('date')));
+        if($request->input('date')){
+            $date = date('Y-m-d H:i:s',strtotime($request->input('date')));
+        } else {
+            $date = date('Y-m-d H:i:s',time());
+        }
 
         if ($finding->auditor_approved_resolution != 1 || $request->input('date')) {
             // resolve all followups
