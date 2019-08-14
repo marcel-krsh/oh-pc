@@ -117,7 +117,7 @@ ul.leaders li {
             					APPLIES TO
             				</th>
             				@can('access_root')
-	            				<th >
+	            				<!-- <th >
 	            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 30 DAYS" >30 Days</span>
 	            				</th>
 	            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 60 DAYS" >60 Days</span>
@@ -132,7 +132,7 @@ ul.leaders li {
 	            				</th>
 	            				<th>
 	            					<span uk-tooltip title="VIOLATIONS FOR JANUARY 1, {{date('Y',strtotime('last year'))}} - {{date('M, d Y')}} COMPARED TO THIS YEAR TO DATE" >Y/YTD</span>
-	            				</th>
+	            				</th> -->
             				@endCan
             				</tr>
             			</thead>
@@ -170,7 +170,7 @@ ul.leaders li {
 		            					</small>
 		            				</td>
 		            				@can('access_root')
-			            				<td>
+			            				<!-- <td>
 			            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 30 DAYS" >30 Days</span>
 			            				</td>
 			            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 60 DAYS" >60 Days</span>
@@ -185,7 +185,7 @@ ul.leaders li {
 			            				</td>
 			            				<td>
 			            					<span uk-tooltip title="VIOLATIONS FOR JANUARY 1, {{date('Y',strtotime('last year'))}} - {{date('M, d Y')}} COMPARED TO THIS YEAR TO DATE" >Y/YTD</span>
-			            				</td>
+			            				</td> -->
 		            				@endCan
             				</tr>
             				@if(0 !== $code->one || 0 !== $code->two || 0 !== $code->three )
