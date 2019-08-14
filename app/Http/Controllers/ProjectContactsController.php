@@ -53,12 +53,12 @@ class ProjectContactsController extends Controller
     }
     if ($default_report_user) {
       $default_user_id = $default_report_user->user_id;
-    } elseif ($default_user) {
+    } elseif ($default_user && $default_user->person && $default_user->person->user) {
       $default_user_id = $default_devco_user_id = $default_user->person->user->id;
     }
     if ($default_report_owner) {
       $default_owner_id = $default_report_owner->user_id;
-    } elseif ($default_owner && $default_owner->person->user) {
+    } elseif ($default_owner && $default_owner->person && $default_owner->person->user) {
       $default_owner_id = $default_devco_owner_id = $default_owner->person->user->id;
     }
     // replace joins with relationship
