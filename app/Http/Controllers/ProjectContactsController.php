@@ -113,7 +113,7 @@ class ProjectContactsController extends Controller
 
   public function addUserToProject($project_id)
   {
-    if (Auth::user()->manager_access()) {
+    if (Auth::user()->auditor_access()) {
       $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
       $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
       $states        = State::get();
@@ -130,8 +130,6 @@ class ProjectContactsController extends Controller
       return view('modals.add-user-to-project', compact('roles', 'organizations', 'states', 'recipients', 'project_id'));
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized createuser');
-      $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
       return 'Sorry you do not have access to this page.';
     }
   }
