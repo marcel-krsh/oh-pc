@@ -6022,20 +6022,33 @@ class AuditController extends Controller
     public function updateStep($id)
     {
 
-        $audit = CachedAudit::where('audit_id', '=', $id)->first();
-        $steps = GuideStep::where('guide_step_type_id', '=', 1)->orderBy('order', 'asc')->get();
+        $audit = CachedAudit::where('audit_id', '=', $id)->with('audit')->first();
+        $steps = GuideStep::where('guide_step_type_id', '=', 1)->orderBy('order', 'asc');
+        if(count($audit->audit->findings) || count($audit->audit->reports)){
+            $steps = $steps->where('id','>',59);
+        }
+        $steps = $steps->get();
 
         return view('modals.audit-update-step', compact('steps', 'audit'));
     }
 
     public function saveStep(Request $request, $id)
     {
-        $step_id = $request->get('step');
+        $message = 1;
+        $audit = CachedAudit::where('id', '=', $id)->with('audit')->first();
+        $step_id = intval($request->get('step'));
+        if((count($audit->audit->findings) || count($audit->audit->reports)) && $step_id < 60) {
+                $step_id = 60;
+                //if there are findings or a report- the step must be defaulted to inprogress - it cannot be lower.
+                $message = "There is either a report, or findings on this audit. The lowest step possible to set this audit to is In Progress.";
+            }
         $step = GuideStep::where('id', '=', $step_id)->first();
-        $audit = CachedAudit::where('id', '=', $id)->first();
+        
 
         // check if user has the right to save step using roles TBD
         if (Auth::user()->id == $audit->lead || Auth::user()->manager_access()) {
+
+            // Logic to prevent bad selections:
 
             // add new guide_progress entry
             $progress = new GuideProgress([
@@ -6054,7 +6067,7 @@ class AuditController extends Controller
                 'step_status_text' => $step->step_help,
             ]);
 
-            return 1;
+            return $message;
         } else {
             return 'Sorry, you do not have the correct permissions to update step progress.';
         }

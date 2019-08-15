@@ -206,7 +206,7 @@ class ReportsController extends Controller
 
   public function reports(Request $request, $project = null)
   {
-    return $messages = []; //this is to send messages back to the view confirming actions or errors.
+    $messages = []; //this is to send messages back to the view confirming actions or errors.
     // set values - ensure this single request works for both dashboard and project details
     $prefix = '';
     if (!is_null($project)) {
