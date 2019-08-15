@@ -1385,10 +1385,17 @@ class CommunicationController extends Controller
   public function reportReadyNotification($report_id, $project_id = null)
   {
     if (null !== $project_id) {
-      $project    = Project::where('id', '=', $project_id)->first();
+      $project = Project::with('project_users')->where('id', '=', $project_id)->first();
+      if ($project->project_users) {
+        $project_user_ids = $project->project_users->pluck('user_id');
+      } else {
+        $project_user_ids = [];
+      }
       $report     = CrrReport::find($report_id);
       $user_keys  = $report->signators()->pluck('person_key')->toArray();
-      $recipients = User::whereIn('person_key', $user_keys)->with('person')
+      $recipients = User::whereIn('person_key', $user_keys)
+        ->orWhereIn('id', $project_user_ids)
+        ->with('person')
         ->where('active', 1)
         ->get();
       //dd($project,$report,$user_keys,$recipients);
@@ -1411,7 +1418,7 @@ class CommunicationController extends Controller
       $audit             = $report->audit_id;
       $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
         'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {

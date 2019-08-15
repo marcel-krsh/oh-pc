@@ -2823,7 +2823,8 @@ class AuditController extends Controller
             $data           = [];
             $data['action'] = intval($request->get('action'));
             $report     = CrrReport::find($request->get('id'));
-            $messages[] = $this->reportAction($report, $data);
+            $rc = new ReportsController($request);
+            $messages[] = $rc->reportAction($report, $data);
         }
 
         // Set default filters for first view of page:
