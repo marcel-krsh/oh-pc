@@ -6026,9 +6026,12 @@ class AuditController extends Controller
         $steps = GuideStep::where('guide_step_type_id', '=', 1)->orderBy('order', 'asc');
         if(count($audit->audit->findings) || count($audit->audit->reports)){
             $steps = $steps->where('id','>',59);
+        } elseif(!count($audit->audit->reports) && count($audit->audit->findings)){
+            $steps = $steps->where('id','<',61)->where('id','>',59);
+        } elseif(!count($audit->audit->reports) && !count($audit->audit->findings)){
+            $steps = $steps->where('id','<',61);
         }
         $steps = $steps->get();
-
         return view('modals.audit-update-step', compact('steps', 'audit'));
     }
 

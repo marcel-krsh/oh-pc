@@ -18,7 +18,7 @@
 			@if($loop->first)
 			<li class="u-{{ $amenity->unit_id }} amenity-inspection-{{ $amenity->id }} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned(null, $amenity->unit_id)) uid-{{ Auth::user()->id }} @endif">
 				@if($amenity->cached_unit())
-				<strong>Unit : {{ $amenity->cached_unit()->unit_name }} in BIN: {{ $amenity->cached_unit()->building_key }} ADDRESS: {{ $amenity->cached_unit()->address }}</strong>
+				Unit : <strong>{{ $amenity->cached_unit()->unit_name }}</strong> in BIN: <strong>{{ $amenity->cached_unit()->building->building_name }}</strong> @ <strong>{{ $amenity->cached_unit()->address }}</strong>
 				@endif
 			</li>
 			@endif

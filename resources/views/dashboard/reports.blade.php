@@ -182,6 +182,9 @@ $crrTypeSelection    = 'all';
                     @can('access_auditor')
                         <th width="40px" uk-tooltip title="Report History"><i class="a-person-clock"></i></th>
                     @endCan
+                    @can('access_admin')
+                    <td><i class="a-trash"></i></td>
+                    @endCan
 
             </thead>
 
@@ -277,6 +280,8 @@ $crrTypeSelection    = 'all';
                     //nope
                 });
             }
+            $('#crr-report-action-'+reportId).val(0);
+            $('#crr-report-row-'+reportId).slideUp();
         }
         @endCan
         @if(count($messages))
