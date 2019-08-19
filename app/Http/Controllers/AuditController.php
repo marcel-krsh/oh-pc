@@ -1058,10 +1058,12 @@ class AuditController extends Controller
                 $amenity_inspection = AmenityInspection::where('id', '=', $amenity_id)->first();
                 $ordering_buildings = OrderingBuilding::where('audit_id', '=', $audit_id)->where('amenity_inspection_id', '=', $amenity_id)->first();
                 $cached_building = CachedBuilding::where('audit_id', '=', $audit_id)->where('amenity_inspection_id', '=', $amenity_id)->first();
+                $project_amenity = ProjectAmenity::where('project_id', '=', $project_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
 
                 $amenity_inspection->delete();
                 $ordering_buildings->delete();
                 $cached_building->delete();
+                $project_amenity->delete();
 
                 $new_comment = new Comment([
                     'user_id' => Auth::user()->id,
@@ -5458,13 +5460,15 @@ class AuditController extends Controller
                         ]);
                         $unitamenity->save();
 
+
                         $amenity = new AmenityInspection([
-                            'audit_id' => $audit->audit_id,
+                            'audit_id' => $audit_id,
                             'unit_id' => $unit_id,
                             'amenity_id' => $amenity_type->id,
                             'auditor_id' => $auditorid,
                         ]);
                         $amenity->save();
+                        dd($amenity,$audit_id,$unit_id,$amenity_type->id,$auditorid);
 
                         // latest ordering
                         $latest_ordering = OrderingAmenity::where('user_id', '=', Auth::user()->id)
