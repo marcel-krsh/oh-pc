@@ -120,12 +120,14 @@
 											$check_existing = $amenities->where('id', $finding->amenity_inspection_id)->first();
 											$existing_records = null;
 											$index = 0;
-											if(!is_null($check_existing->unit_id)) {
+											if($check_existing && !is_null($check_existing->unit_id)) {
 												$existing_records = $amenities->where('unit_id', $check_existing->unit_id)->where('amenity_id', $check_existing->amenity_id)->pluck('id')->toArray();
-											} elseif(!is_null($check_existing->building_id)) {
+											} elseif($check_existing && !is_null($check_existing->building_id)) {
 												$existing_records = $amenities->where('building_id', $check_existing->building_id)->where('amenity_id', $check_existing->amenity_id)->pluck('id')->toArray();
-											} else {
+											} elseif($check_existing ) {
 												$existing_records = $amenities->where('amenity_id', $check_existing->amenity_id)->pluck('id')->toArray();
+											} else {
+												$existing_records = [];
 											}
 											if(!is_null($existing_records)) {
 												$index = array_search($finding->amenity_inspection_id, $existing_records);
