@@ -978,13 +978,19 @@ class AuditController extends Controller
 
                 $amenity_inspection = AmenityInspection::where('id', '=', $amenity_id)->first();
                 $ordering_amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->where('amenity_inspection_id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
-                $unit_amenity = UnitAmenity::where('unit_id', '=', $unit_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
+                if(null !== $amenity_inspection){
+                    $unit_amenity = UnitAmenity::where('unit_id', '=', $unit_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
+                    $amenity_inspection->delete();
+                } else {
+                    $unit_amenity = null;
+                    $unit_amenity->delete();
+                }
 
-                $amenity_inspection->delete();
-                if($ordering_amenities){
+                
+                if(null !== $ordering_amenities){
                 	$ordering_amenities->delete();
                 }
-                $unit_amenity->delete();
+                
 
                 $new_comment = new Comment([
                     'user_id' => Auth::user()->id,
