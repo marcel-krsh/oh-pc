@@ -127,6 +127,7 @@ class CommunicationController extends Controller
 
   public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0)
   {
+    //dd('Called NewCommunicationEntry');
     $ohfa_id           = SystemSetting::get('ohfa_organization_id');
     $single_receipient = false;
 
@@ -241,12 +242,13 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       } else {
+        // this appears to be redundant
         $recipients = User::where('organization_id', '<>', $ohfa_id)
           ->where('users.id', '<>', Auth::user()->id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
           ->join('users_roles', 'users_roles.user_id', 'users.id')
-          ->where('users_roles.role_id', '>=', 2)
+          ->where('users_roles.role_id', '>=', 200)
           ->select('users.*', 'last_name', 'first_name', 'organization_name')
           ->where('active', 1)
           ->orderBy('organization_name', 'asc')
@@ -325,10 +327,13 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       } else {
-        $recipients = User::where('organization_id', '<>', $ohfa_id)->where('users.id', '<>', Auth::user()->id)
+        //dd('non project recipients for auditor+');
+        $recipients = User::where('organization_id', '<>', $ohfa_id)
+          ->where('users.id', '<>', Auth::user()->id)
           ->leftJoin('people', 'people.id', 'users.person_id')
           ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
           ->join('users_roles', 'users_roles.user_id', 'users.id')
+          ->where('users_roles.role_id', '>=', 1)
           ->select('users.*', 'last_name', 'first_name', 'organization_name')
           ->where('active', 1)
           ->orderBy('organization_name', 'asc')
@@ -336,6 +341,7 @@ class CommunicationController extends Controller
           ->get();
       }
       $audit = null;
+      $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
 
       return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'all_findings'));
     }

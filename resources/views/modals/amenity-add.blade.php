@@ -154,6 +154,7 @@
 	}
 
 	function saveAmenity() {
+		// debugger;
 		event.preventDefault();
 
 		var newAmenities = [];

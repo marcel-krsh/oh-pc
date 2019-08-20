@@ -17,22 +17,22 @@
 				<thead>
 					<tr>
 						<th>
-							<small>M | O : NAME</small>
+							M &nbsp; | &nbsp;O : <small>NAME</small>
 						</th>
 						<th>
-							<small>M | O : ORGANIZATION</small>
+							M &nbsp; | &nbsp;O : <small>ORGANIZATION</small>
 						</th>
 						<th>
-							<small>M | O : ADDRESS</small>
+							M &nbsp; | &nbsp;O : <small>ADDRESS</small>
 						</th>
 						<th>
-							<small>M | O : PHONE</small>
+							M &nbsp; | &nbsp;O : <small>PHONE</small>
 						</th>
 						<th>
-							<small>M | O : EMAIL</small>
+							M &nbsp; | &nbsp;O : <small>EMAIL</small>
 						</th>
 						<th>
-							<small>REPORT ACCESS</small>
+								ACCESS</small>
 						</th>
 					</tr>
 				</thead>
@@ -98,16 +98,16 @@
 							$exists_in_ua_owner = $user_addresses->where('devco', 1)->where('address_id', $user->organization_details->address->id)->where('owner_default', 1)->first();
 							@endphp
 							<div class="uk-grid-collapse" uk-grid>
-								<div class="uk-width-1-3 uk-padding-remove">
-									<a target="_blank" href="https://www.google.com/maps?q={{ urlencode(str_replace('<br />',' ',$user->organization_details->address->formatted_address())) }}" uk-tooltip="" title="VIEW ON MAP" class="uk-text-emphasis"><i style="font-size: 14px;" class="a-marker-basic uk-link"></i></a>
+								<div class="uk-width-1-4 uk-padding-remove">
+									
 									{{-- Manager --}}
 									<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultAddress({{ $user->organization_details->address->id }}, {{ $user->id }}, 1)" name="address" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT ADDRESS FOR REPORT" aria-expanded="false" {{ (($exists_in_ua) || (!$default_addr && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
 									{{-- owner --}}
 									<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOwnerAddress({{ $user->organization_details->address->id }}, {{ $user->id }}, 1)" name="owner_address" type="radio" uk-tooltip="" title="MAKE THIS AS DEFAULT OWNER ADDRESS" aria-expanded="false" {{ (($exists_in_ua_owner) || (!$default_owner_addr && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
 								</div>
-								<div class="uk-width-2-3">
+								<div class="uk-width-3-4">
 									<small>
-										{!! $user->organization_details->address->formatted_address() !!}
+										<a target="_blank" href="https://www.google.com/maps?q={{ urlencode(str_replace('<br />',' ',$user->organization_details->address->formatted_address())) }}" uk-tooltip="" title="VIEW ON MAP" class="uk-text-emphasis"><i style="font-size: 14px;" class="a-marker-basic uk-link"></i></a> {!! $user->organization_details->address->formatted_address() !!}
 									</small>
 								</div>
 							</div>
@@ -241,15 +241,15 @@
 						@endphp
 						<td>
 							<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles)}}"></i>  | </span>
-							<span class="use-hand-cursor" data-uk-tooltip title="{{ in_array($user->id, $allita_user_ids) ? 'REMOVE ALLITA ACCESS TO REPORTS' : 'ADD ALLITA ACCESS TO REPORTS' }}"> <i onclick="addAllitaAccess({{ $user->id }}, {{ in_array($user->id, $allita_user_ids) }})" class="{{ in_array($user->id, $allita_user_ids) ? 'a-avatar-approve' : 'a-avatar-fail uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
+							<span class="use-hand-cursor" data-uk-tooltip title="{{ in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO ADD)' }}"> <i onclick="addAllitaAccess({{ $user->id }}, {{ in_array($user->id, $allita_user_ids) }})" class="{{ in_array($user->id, $allita_user_ids) ? 'a-mail-chart-up' : 'a-mail-chart-up uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
 							</span>
-							<span class="" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ACCESS TO REPORTS' : 'USER HAS NO ACCESS TO REPORTS' }}"> <i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
+							<span class="" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ACCESS TO REPORTS VIA DEVCO (THIS IS NOT RELIABLE)' : 'USER HAS NO ACCESS TO REPORTS VIA DEVCO (THIS IS NOT RELIABLE)' }}"> <i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
 							</span>
 						</td>
 						@else
 						<td>
-							<span><i class="uk-text-muted a-file-gear_1"></i> | </span>
-							<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'CLICK TO REMOVE REPORTS ACCESS' : 'USER HAS NO ACCESS TO REPORTS' }}" onclick="editUser({{ $user->id }})"><i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
+							<span><i class="uk-text-muted a-file-gear_1" data-uk-tooltip title="USER DOES NOT HAVE ACCESS TO THIS PROJECT VIA DEVCO"></i> | </span>
+							<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS' }}" onclick="editUser({{ $user->id }})"><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i>
 							</span>
 						</td>
 						@endif
