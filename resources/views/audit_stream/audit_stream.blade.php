@@ -56,13 +56,13 @@
 									<i class="{{ $finding->icon() }}"></i><br>
 									<span class="auditinfo">AUDIT {{ $finding->audit_id }}</span>
 								</div>
-								<div id="inspec-tools-finding-resolve-{{ $finding->id }}" class="uk-display-block" style="margin: 15px 0;">
+								<div id="as-inspec-tools-finding-resolve-{{ $finding->id }}" class="uk-display-block" style="margin: 15px 0;">
 									@can('access_auditor')
 									@if(!$finding->cancelled_at)
 									@if($finding->auditor_approved_resolution != 1)
-									<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle"></span> RESOLVE</button>
+									<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFindingAS({{ $finding->id }})"><span class="a-circle"></span> RESOLVE</button>
 									@else
-									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};" onclick="resolveFinding({{ $finding->id }})"><span class="a-circle-checked"></span> RESOLVED</button>
+									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};" onclick="resolveFindingAS({{ $finding->id }})"><span class="a-circle-checked"></span> RESOLVED</button>
 									@endif
 									@endif
 									@else
@@ -120,12 +120,14 @@
 											$check_existing = $amenities->where('id', $finding->amenity_inspection_id)->first();
 											$existing_records = null;
 											$index = 0;
-											if(!is_null($check_existing->unit_id)) {
+											if($check_existing && !is_null($check_existing->unit_id)) {
 												$existing_records = $amenities->where('unit_id', $check_existing->unit_id)->where('amenity_id', $check_existing->amenity_id)->pluck('id')->toArray();
-											} elseif(!is_null($check_existing->building_id)) {
+											} elseif($check_existing && !is_null($check_existing->building_id)) {
 												$existing_records = $amenities->where('building_id', $check_existing->building_id)->where('amenity_id', $check_existing->amenity_id)->pluck('id')->toArray();
-											} else {
+											} elseif($check_existing ) {
 												$existing_records = $amenities->where('amenity_id', $check_existing->amenity_id)->pluck('id')->toArray();
+											} else {
+												$existing_records = [];
 											}
 											if(!is_null($existing_records)) {
 												$index = array_search($finding->amenity_inspection_id, $existing_records);
@@ -154,9 +156,9 @@
 										<button class="uk-button uk-link" onclick="dynamicModalLoad('edit/finding/{{ $finding->id }}',0,0,0,2)"><i class="a-pencil-2"></i> EDIT</button>
 										@endif
 										@if($finding->cancelled_at)
-										<button class="uk-button uk-link" onclick="restoreFinding({{ $finding->id }})"><i class="a-trash-3"></i> RESTORE</button>
+										<button class="uk-button uk-link" onclick="restoreFindingAS({{ $finding->id }})"><i class="a-trash-3"></i> RESTORE</button>
 										@else
-										<button class="uk-button uk-link" onclick="cancelFinding({{ $finding->id }})"><i class="a-trash-3"></i> CANCEL</button>
+										<button class="uk-button uk-link" onclick="cancelFindingAS({{ $finding->id }})"><i class="a-trash-3"></i> CANCEL</button>
 										@endif
 									</div>
 									@endcan
@@ -182,19 +184,19 @@
 	});
 
 	@can('access_auditor')
-	function resolveFinding(findingid){
+	function resolveFindingAS(findingid){
 		$.post('/findings/'+findingid+'/resolve', {
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
 			if(data != 0){
-				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFinding('+findingid+')"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
+				$('#as-inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFindingAS('+findingid+')"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
 			}else{
-				$('#inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFinding('+findingid+')"><span class="a-circle">&nbsp; </span>RESOLVE</button>');
+				$('#as-inspec-tools-finding-resolve-'+findingid).html('<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFindingAS('+findingid+')"><span class="a-circle">&nbsp; </span>RESOLVE</button>');
 			}
 		});
 	}
 
-	function cancelFinding(findingid){
+	function cancelFindingAS(findingid){
 
 		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3></div>', {stack:1}).then(function() {
 
@@ -215,7 +217,7 @@
 		});
 	}
 
-	function restoreFinding(findingid){
+	function restoreFindingAS(findingid){
 
 		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Restore Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to restore this finding?</h3></div>', {stack:1}).then(function() {
 

@@ -57,10 +57,10 @@ class AmenityInspection extends Model
     return $this->hasMany(\App\Models\UnitProgram::class, 'unit_id', 'unit_id');
   }
 
-  public function cached_unit():  ? object
+  public function cached_unit():  ? CachedUnit
   {
     $cachedUnit = CachedUnit::where('unit_id', $this->unit_id)->where('audit_id', $this->audit_id)->first();
-
+    
     return $cachedUnit;
   }
 
@@ -69,7 +69,7 @@ class AmenityInspection extends Model
     return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
   }
 
-  public function cached_building(): object
+  public function cached_building(): CachedBuilding
   {
     $cachedBuilding = CachedBuilding::where('building_id', $this->building_id)->where('audit_id', $this->audit_id)->first();
 

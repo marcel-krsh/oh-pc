@@ -53,12 +53,12 @@ class ProjectContactsController extends Controller
     }
     if ($default_report_user) {
       $default_user_id = $default_report_user->user_id;
-    } elseif ($default_user) {
+    } elseif ($default_user && $default_user->person && $default_user->person->user) {
       $default_user_id = $default_devco_user_id = $default_user->person->user->id;
     }
     if ($default_report_owner) {
       $default_owner_id = $default_report_owner->user_id;
-    } elseif ($default_owner && $default_owner->person->user) {
+    } elseif ($default_owner && $default_owner->person && $default_owner->person->user) {
       $default_owner_id = $default_devco_owner_id = $default_owner->person->user->id;
     }
     // replace joins with relationship
@@ -113,7 +113,7 @@ class ProjectContactsController extends Controller
 
   public function addUserToProject($project_id)
   {
-    if (Auth::user()->manager_access()) {
+    if (Auth::user()->auditor_access()) {
       $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
       $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
       $states        = State::get();
@@ -130,8 +130,6 @@ class ProjectContactsController extends Controller
       return view('modals.add-user-to-project', compact('roles', 'organizations', 'states', 'recipients', 'project_id'));
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized createuser');
-      $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
       return 'Sorry you do not have access to this page.';
     }
   }

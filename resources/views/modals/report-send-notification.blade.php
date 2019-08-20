@@ -178,7 +178,7 @@
         </div>
         <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
         <div class="uk-width-1-3">&nbsp;</div>
-        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="dynamicModalClose();"><i class="a-circle-cross"></i> CANCEL</a></div>
+        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="$('#crr-report-row-{{$report->id}}').slideDown();dynamicModalClose();"><i class="a-circle-cross"></i> CANCEL</a></div>
         <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="submitNewCommunication()"><i class="a-paper-plane"></i> SEND</a>
         </div>
       </div>
@@ -226,7 +226,12 @@
     			if(data!=1){
     				UIkit.modal.alert(data,{stack: true});
     			} else {
-    				updateStatus({{ $report_id }}, {{ $status }});
+    				
+            if($('#project-detail-tab-1').hasClass('uk-active')){
+                        $('#project-detail-tab-1').trigger('click');
+                    }else{
+                        updateStatus({{ $report_id }}, {{ $status }});
+                    }
     			}
     		} );
     		@if($project)

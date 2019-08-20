@@ -65,6 +65,7 @@
         app('debugbar')->disable();
 
         Route::group(['prefix'=>'','middleware'=>'can:access_auditor'], function ()  {
+            Route::get('/change_log','PagesController@changeLog');
             Route::get('/compliance_rerun/{audit_id}', 'Phase1ComplianceSelection@runSimpleCompliance');
             Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
 
@@ -338,7 +339,7 @@
             Route::get('/findings/modals/amenities/{auditid}', 'FindingController@findingAmenities');
             Route::get('/findings/modals/site-amenities/{auditid}/{siteid?}', 'FindingController@findingSiteAmenities');
             Route::get('/findings/modals/building-amenities/{auditid}/{buildingid?}', 'FindingController@findingBuildingAmenities');
-            Route::get('/findings/modals/unit-amenities/{auditid}/{unitid?}', 'FindingController@findingUnitAmenities');
+            Route::get('/findings/modals/unit-amenities/{auditid}/{unitid?}', 'FindingController@unitAmenities');
 
 
             Route::get('/findings/{findingid}/items/{type?}/{typeid?}', 'FindingController@findingItems');

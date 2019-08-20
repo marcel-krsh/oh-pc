@@ -228,13 +228,13 @@ function buildingDetails(id, auditid, target, targetaudit, detailcount=10, conte
 	}
 }
 
-function loadInspectionMenu(data, id, context='audits', level='') {
+function loadInspectionMenu(data, id, context='audits', level='', auditid='') {
 	var inspectionLeftTemplate = $('#inspection-left-template').html();
 	var inspectionMenuItemTemplate = $('#inspection-menu-item-template').html();
 
 	var unitOrBuildingOrProjectId = null;
 	var unitOrBuildingOrProject = null;
-console.log(data);
+// console.log(data);
 	if(data.detail.unit_id != null){
 		unitOrBuildingOrProjectId = data.detail.unit_id;
 		unitOrBuildingOrProject = 'unit';
@@ -246,10 +246,11 @@ console.log(data);
 		unitOrBuildingOrProject = 'project';
 	}
 
-	var addAmenityButton = '<button class="uk-button tool-add-area uk-link" onclick="addAmenity(\'tplId\', \'tplBuildingOrUnit\');"><i class="a-circle-plus"></i> AREA</button>';
+	var addAmenityButton = '<button class="uk-button tool-add-area uk-link" onclick="addAmenity(\'tplId\', \'tplBuildingOrUnit\',0,0,\'auditid\');"><i class="a-circle-plus"></i> AREA</button>';
 
 	addAmenityButton = addAmenityButton.replace(/tplId/g, unitOrBuildingOrProjectId);
 	addAmenityButton = addAmenityButton.replace(/tplBuildingOrUnit/g, unitOrBuildingOrProject);
+	addAmenityButton = addAmenityButton.replace(/auditid/g, auditid);
 
 	var menus = addAmenityButton;
 	var newmenu = '';
@@ -589,9 +590,9 @@ function inspectionDetailsFromBuilding(buildingid, auditid, target, targetaudit,
                 } else {
 					// $('#building-detail-r-'+target+'-inspect').html(data);
 					$('#building-'+context+'-r-'+target).attr( "expanded", true );
-					loadInspectionMenu(data, target, context);
-					loadInspectionMain(data.amenities, target, context);
-					loadInspectionTools(data, target, context);
+					loadInspectionMenu(data, target, context,'',auditid);
+					loadInspectionMain(data.amenities, target, context,'',auditid);
+					loadInspectionTools(data, target, context,'',auditid);
 					//
 					// //loadInspectionComments(data.comments, target, context);
 
@@ -661,9 +662,9 @@ function inspectionDetails(id, buildingid, auditid, target, targetaudit, rowid, 
 					// $('#building-detail-r-'+target+'-inspect').html(data);
 
 					$('#building-'+context+'-detail-r-'+target).attr( "expanded", true );
-					loadInspectionMenu(data, target, context, 'detail-');
-					loadInspectionMain(data.amenities, target, context, 'detail-');
-					loadInspectionTools(data, target, context, 'detail-'); // includes the comments
+					loadInspectionMenu(data, target, context, 'detail-', auditid);
+					loadInspectionMain(data.amenities, target, context, 'detail-', auditid);
+					loadInspectionTools(data, target, context, 'detail-', auditid); // includes the comments
 					//loadInspectionComments(data.comments, target, context, 'detail-');
 				}
 	    });
@@ -1061,9 +1062,9 @@ function fillSpacers() {
 }
 
 // either building id or unit id is given
-function addAmenity(id, type, stack=0, findingmodal=0) {
+function addAmenity(id, type, stack=0, findingmodal=0, audit=0) {
 	console.log("adding an amenity for "+type+" "+id);
-	dynamicModalLoad('amenities/add/'+type+'/'+id+'/'+findingmodal, 0, 0, 0,stack);
+	dynamicModalLoad('amenities/add/'+type+'/'+id+'/'+findingmodal+'?audit='+audit, 0, 0, 0,stack);
 }
 
 //documents loading

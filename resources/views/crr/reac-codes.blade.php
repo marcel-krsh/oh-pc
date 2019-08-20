@@ -1,6 +1,6 @@
    @extends('layouts.simplerAllita')
 @section('head')
-<title>Ohio USPCS Violation Code Reference.</title>
+<title>Ohio UPCS Violation Code Reference.</title>
 
 
 @stop
@@ -87,7 +87,7 @@ ul.leaders li {
             <div id="main-report-view" class="" style=" min-width: auto; padding:0px; background-color: currentColor;">
             	
             	<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
-            		<h1>Ohio USPCS Violation Code Reference</h1>
+            		<h1>Ohio UPCS Violation Code Reference</h1>
             		<hr class="uk-width-1-1">
             		<p>These codes can be referenced directly to your Compliance Audit Report (CAR). You can enter the reference number of your violation code in the box below, or click on the violation number in your online version of the CAR to view its description directly.</p>
             		<hr class="uk-width-1-1">
@@ -117,7 +117,7 @@ ul.leaders li {
             					APPLIES TO
             				</th>
             				@can('access_root')
-	            				<th >
+	            				<!-- <th >
 	            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 30 DAYS" >30 Days</span>
 	            				</th>
 	            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 60 DAYS" >60 Days</span>
@@ -132,7 +132,7 @@ ul.leaders li {
 	            				</th>
 	            				<th>
 	            					<span uk-tooltip title="VIOLATIONS FOR JANUARY 1, {{date('Y',strtotime('last year'))}} - {{date('M, d Y')}} COMPARED TO THIS YEAR TO DATE" >Y/YTD</span>
-	            				</th>
+	            				</th> -->
             				@endCan
             				</tr>
             			</thead>
@@ -170,7 +170,7 @@ ul.leaders li {
 		            					</small>
 		            				</td>
 		            				@can('access_root')
-			            				<td>
+			            				<!-- <td>
 			            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 30 DAYS" >30 Days</span>
 			            				</td>
 			            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 60 DAYS" >60 Days</span>
@@ -185,7 +185,7 @@ ul.leaders li {
 			            				</td>
 			            				<td>
 			            					<span uk-tooltip title="VIOLATIONS FOR JANUARY 1, {{date('Y',strtotime('last year'))}} - {{date('M, d Y')}} COMPARED TO THIS YEAR TO DATE" >Y/YTD</span>
-			            				</td>
+			            				</td> -->
 		            				@endCan
             				</tr>
             				@if(0 !== $code->one || 0 !== $code->two || 0 !== $code->three )

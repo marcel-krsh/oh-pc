@@ -15,7 +15,7 @@
 			@endphp
 			@foreach($amenities as $amenity)
 			@if($loop->first)
-			<li class="b-{{ $amenity->building_id }} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned($amenity->building_id)) uid-{{ Auth::user()->id }} @endif"><strong>Building BIN: {{ $amenity->building_key }}</strong></li>
+			<li class="b-{{ $amenity->building_id }} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned($amenity->building_id)) uid-{{ Auth::user()->id }} @endif">BIN: <strong>{{ $amenity->building->building_name }}</strong></li>
 			@endif
 			@php
 			array_push($currentAmenityIds, $amenity->amenity_id);
@@ -69,7 +69,7 @@
 		</ul>
 	</div>
 	<div class="uk-width-1-1">
-		<a class="uk-button" onClick="addAmenity('{{ $building_id }}', 'building', 2, 1)">
+		<a class="uk-button" onClick="addAmenity('{{ $building_id }}', 'building', 2, 1, '{{ $audit->audit_id }}')">
 			<i class="a-circle-plus" uk-tooltip title="ADD A BUILDING AMENITY"></i> ADD AMENITY
 		</a>
 	</div>

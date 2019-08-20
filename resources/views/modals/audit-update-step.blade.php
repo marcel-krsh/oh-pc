@@ -16,6 +16,10 @@
 										@foreach($steps as $step)
 										<option value="{{$step->id}}" @if($audit->step_id == $step->id) selected @endif>{{$step->name}}</option>
 										@endforeach
+										@can('access_admin')
+
+										<option value="delete">DELETE THIS AUDIT</option>
+										@endCan
 									</select>
 						        </div>
 							</div>
@@ -34,7 +38,35 @@
 		event.preventDefault();
 
 		console.log('saving step');
-		
+		@can('access_admin')
+		if($('#audit-step').val() == 'delete'){
+			UIkit.modal.confirm('<h1>Are You Sure?</h1><p>Are you sure you want to delete audit #{{$audit->audit_id}}?</p> <p>This cannot be undone! The monitoring record will remain, only the Allita specific items will be deleted, including communications, findings, reports, documents, notes... ANYTHING that is associated with this audit id will be deleted.</p>').then(function() {
+			    $.get("/tabs/audit/delete/{{$audit->audit_id}}", {
+	            '_token' : '{{ csrf_token() }}'
+		        }, function(data) {
+		           
+		            UIkit.notification('<span uk-icon="icon: trash"></span> Audit #{{$audit->audit_id}} Deleted.', {pos:'top-right', timeout:1000, status:'success'});
+		            loadTab('{{ route('dashboard.audits') }}','1','','','',1); 
+		            dynamicModalClose();
+		        } );
+			   
+			}, function () {
+			    console.log('Cancelled Deletion.')
+			});
+
+
+			
+		}else{
+			$.post("/audits/{{$audit->id}}/saveStep", {
+            'step' : $('#audit-step').val(),
+            '_token' : '{{ csrf_token() }}'
+	        }, function(data) {
+	            dynamicModalClose();
+	            UIkit.notification('<span uk-icon="icon: check"></span> Step Saved', {pos:'top-right', timeout:1000, status:'success'});
+	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	        } );
+		}
+		@else
 		$.post("/audits/{{$audit->id}}/saveStep", {
             'step' : $('#audit-step').val(),
             '_token' : '{{ csrf_token() }}'
@@ -43,6 +75,7 @@
             UIkit.notification('<span uk-icon="icon: check"></span> Step Saved', {pos:'top-right', timeout:1000, status:'success'});
             loadTab('{{ route('dashboard.audits') }}','1','','','',1);
         } );
+		@endCan
 	}
 
 </script>

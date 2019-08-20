@@ -236,6 +236,7 @@
 		@if($print)<h5 style="page-break-inside: avoid; break-inside: avoid;"> @else
 			<h2 style="page-break-inside: avoid; break-inside: avoid;">
 		@endIf
+
 			@if($f->finding_type->type == 'nlt')
 			<i class="a-booboo"></i>
 			@endIf
@@ -247,6 +248,9 @@
 			@endIf
 			{{$f->amenity->amenity_description}}  {{ $f->amenity_index ?? '' }}
 		 @if($print) | @else </h2> @endIf
+		 @if(null !== $f->date_of_finding)
+			<small>{{date('l F jS, Y',strtotime($f->date_of_finding))}}</small><br />
+			@endIf
 		@if(!$print || (count($f->comments)==0))
 			<strong style="page-break-inside: avoid; break-inside: avoid; ">VIOLATION CODE: <a href="/codes?code={{$f->finding_type_id}}" target="code_reference">OH.{{strtoupper($f->finding_type->type)}}.{{$f->finding_type_id}} @if($f->level) LEVEL {{$f->level}} @endIf</a>:</strong><br/><div style="margin-left:24px; margin-top:7px;"> {{$f->finding_type->name}}:</div>
 			@if($f->level == '1')

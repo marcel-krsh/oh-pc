@@ -369,7 +369,7 @@ class DashboardController extends Controller
     if(session()->has('total_inspection_amount') && session('total_inspection_amount') > 0){
 
         $total_inspection_amount = session('total_inspection_amount');
-        
+
         if(session('total_inspection_filter') != 1){
 
             $auditFilterInspection = "MORE THAN ".$total_inspection_amount." INSPECTABLE ITEMS";
@@ -396,18 +396,18 @@ class DashboardController extends Controller
 
         $audits = $audits->where(function ($query) use ( $auditFilterComplianceRR, $auditFilterComplianceNC, $auditFilterComplianceC ){
                         if(session()->has('compliance-status-rr') && session('compliance-status-rr') != 0){
-                            
+
                             $query->OrWhere('audit_compliance_status_text', '=', 'UNITS REQUIRE REVIEW');
                         }
                         if(session()->has('compliance-status-nc') && session('compliance-status-nc') != 0){
-                            
+
                             $query->OrWhere('audit_compliance_status_text', '=', 'AUDIT NOT COMPLIANT');
                         }
                         if(session()->has('compliance-status-c') && session('compliance-status-c') != 0){
-                            
+
                             $query->OrWhere('audit_compliance_status_text', '=', 'AUDIT COMPLIANT');
                         }
-                        
+
                     });
     }
 
@@ -444,7 +444,7 @@ class DashboardController extends Controller
 
     foreach ($audits as $audit) {
         // list all auditors based on previous filters
-        if($audit->auditors && count($audit->auditors)){ 
+        if($audit->auditors && count($audit->auditors)){
 
             $keep_audit_based_on_auditor_filter = 0;
             foreach($audit->auditors as $auditor){
@@ -457,11 +457,11 @@ class DashboardController extends Controller
                     // there is a filter to select audits with specific auditors
                     if(in_array($auditor->user_id, session('assignment-auditor'))){
                         // the auditor is in this audit, we keep it
-                        $keep_audit_based_on_auditor_filter = 1; 
+                        $keep_audit_based_on_auditor_filter = 1;
                     }
                 }else{
                     // no auditor filters, we keep all audits
-                    $keep_audit_based_on_auditor_filter = 1; 
+                    $keep_audit_based_on_auditor_filter = 1;
                 }
 
             }

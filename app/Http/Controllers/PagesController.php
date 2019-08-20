@@ -46,16 +46,11 @@ class PagesController extends Controller
       Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
     }
 
-    // this is normally setup upon login
-    // $current_user = Auth::user();
-    // if (null === $current_user->socket_id) {
-    //   // create a socket id and store in user table
-    //   $token                   = str_random(10);
-    //   $current_user->socket_id = $token;
-    //   $current_user->save();
-    // }
+    
   }
-
+  function changeLog(Request $request){
+    return view('pages.change-log');
+  }
   function codes(Request $request){
     if($request->get('code')){
       $codeId = intval($request->get('code'));
@@ -67,34 +62,12 @@ class PagesController extends Controller
   }
 
   public function resetTokens(){
-    SystemSetting::where('key','pcapi_access_token')->delete();
-    SystemSetting::where('key','pcapi_access_token_expires')->delete();
-    SystemSetting::where('key','pcapi_refresh_token')->delete();
-    $newTokens = SystemSetting::get();
-    dd($newTokens);
+    // SystemSetting::where('key','pcapi_access_token')->delete();
+    // SystemSetting::where('key','pcapi_access_token_expires')->delete();
+    // SystemSetting::where('key','pcapi_refresh_token')->delete();
+    // $newTokens = SystemSetting::get();
+    // dd($newTokens);
 
-  }
-
-  public function parcel_next_step(Parcel $parcel)
-  {
-    perform_all_parcel_checks($parcel);
-
-    $next_step         = guide_next_pending_step(2, $parcel->id);
-    $output['message'] = '';
-    $output['error']   = 0;
-    if ($next_step) {
-      $output['message'] = $next_step->name;
-      return ($output);
-    } else {
-      $output['error']   = 1;
-      $output['message'] = "NA";
-      return ($output);
-    }
-  }
-
-  public function reimbursement_how_to()
-  {
-    return view('modals.land_bank_steps');
   }
 
   public function imageGen($image)
@@ -112,251 +85,6 @@ class PagesController extends Controller
     return $img->response('jpg');
   }
 
-  public function parcel_import_template(Request $request)
-  {
-    $userCountyId = DB::table('programs')->
-      select('county_id')->
-      where('id', \Request::query('program_id'))
-      ->first();
-    if (!isset($userCountyId)) {
-      abort(500, 'Program ID Not Provided.');
-    }
-    $where_county_id          = $userCountyId->county_id;
-    $where_county_id_operator = '=';
-
-    $targetAreas = DB::table('target_areas')->select("*")->where('county_id', $where_county_id_operator, $where_county_id)->where('active', '1')->get()->all();
-    if (count($targetAreas) < 1) {
-      return "<html xmlns=\"http://www.w3.org/1999/xhtml\">
-        <head>
-          <title>Sorry, No Template Is Available to You Yet.</title>
-          <meta http-equiv=\"refresh\" content=\"0;URL='/import_parcels'\" /> <script> alert('Sorry, You don\'t have any target areas yet. I cannot build you a template without those! Please submit a Target Area Amendment Form in the Tools Menu. '); </script></head><body>
-                            <a href='/dashboard' style='font-family:_sans;margin-top:25px; text-align:center;'>Please click here to return to the dashboard</a></body></html>
-                            ";
-    }
-
-    $date        = date("m-d-Y_g-i-s_a", time());
-    $programName = DB::table('programs')->select('program_name')->where('id', $request->query('program_id'))->first();
-    \Excel::create(str_replace("'", "", str_replace(" ", "_", $programName->program_name)) . '_parcel_import_template_' . $date, function ($excel) {
-      require_once (base_path("vendor/phpoffice/phpexcel/Classes/PHPExcel/NamedRange.php"));
-      require_once (base_path("vendor/phpoffice/phpexcel/Classes/PHPExcel/Cell/DataValidation.php"));
-      require_once (base_path("vendor/phpoffice/phpexcel/Classes/PHPExcel/Cell/DataValidation.php"));
-      require_once (base_path("vendor/phpoffice/phpexcel/Classes/PHPExcel/Style/Protection.php"));
-
-      $excel->sheet('Parcels Data', function ($sheet) {
-        $userCountyId             = DB::table('programs')->select('county_id')->where('id', \Request::query('program_id'))->first();
-        $where_county_id          = $userCountyId->county_id;
-        $where_county_id_operator = '=';
-
-        $targetAreas = DB::table('target_areas')->select("*")->where('county_id', $where_county_id_operator, $where_county_id)->where('active', '1')->get()->all();
-
-        $sheet->setColumnFormat([
-          'A2:A5001' => '@', 'B2:B5001' => '@', 'C2:C5001' => '@', 'F2:F5001' => '@', 'G2:G5001' => '@', 'H2:H5001' => '@', 'I2:I5001' => '@', 'J2:J5001' => '0',
-          'W2:Z5001' => '@',
-        ]);
-
-        $sheet->SetCellValue("A1", "parcel_id");
-        $sheet->SetCellValue("B1", "street_address");
-        $sheet->SetCellValue("C1", "city");
-        $sheet->SetCellValue("D1", "zip");
-        $sheet->SetCellValue("E1", "sale_price");
-        $sheet->SetCellValue("F1", "units");
-        $sheet->SetCellValue("G1", "target_area_id");
-        $sheet->SetCellValue("H1", "how_acquired_id");
-        $sheet->SetCellValue("I1", "how_acquired_explanation");
-        $sheet->SetCellValue("J1", "historic_significance_or_district");
-        $sheet->SetCellValue("U1", "DO NOT IMPORT");
-        $sheet->SetCellValue("V1", "DO NOT IMPORT");
-        $sheet->SetCellValue("X1", "DO NOT IMPORT");
-        $sheet->SetCellValue("Z1", "DO NOT IMPORT");
-
-        $targetAreas             = DB::table('target_areas')->select("*")->where('county_id', $where_county_id_operator, $where_county_id)->where('active', '1')->get()->all();
-        $parcelTypeDropDownData  = DB::table('parcel_type_options')->select('*')->where('active', 1)->get()->all();
-        $howAcquiredDropDownData = DB::table('how_acquired_options')->select('*')->where('active', 1)->get()->all();
-
-        //dd($programDropDownData,$parcelTypeDropDownData,$howAcquiredDropDownData);
-
-        // $stateCellCount = 1;
-        // $countyCellCount = 1;
-        //$parcelTypeCellCount = 1; // Removed due to rule change
-        $targetAreaCellCount  = 1;
-        $howAcquiredCellCount = 1;
-        $password             = "Allita12";
-
-        // foreach ($parcelTypeDropDownData as $data) {
-
-        //  $parcelTypeCellCount++;
-        //  $sheet->SetCellValue("V".$parcelTypeCellCount, $data->parcel_type_option_name);
-        //  //$sheet->SetCellValue("W".$parcelTypeCellCount, $data->id);
-
-        // }
-        foreach ($howAcquiredDropDownData as $data) {
-          $howAcquiredCellCount++;
-          $sheet->SetCellValue("X" . $howAcquiredCellCount, $data->how_acquired_option_name);
-          //$sheet->SetCellValue("Y".$howAcquiredCellCount, $data->id);
-        }
-
-        foreach ($targetAreas as $data) {
-          $targetAreaCellCount++;
-          $sheet->SetCellValue("Z" . $targetAreaCellCount, $data->target_area_name);
-          //$sheet->SetCellValue("AA".$targetAreaCellCount, $data->id);
-          // $sheet->protectCells('X'.$targetAreaCellCount, $password);
-        }
-
-        /// set values for the historic options
-        $sheet->SetCellValue("U2", 'Please select 0 for No, or 1 for Yes');
-        $sheet->SetCellValue("U3", 0);
-        $sheet->SetCellValue("U4", 1);
-
-        // $sheet->_parent->addNamedRange(
-        //         new \PHPExcel_NamedRange(
-        //         'parcel_type', $sheet, 'V2:V'.$parcelTypeCellCount
-        //         )
-        // );
-        // $sheet->getColumnDimension('V')->setVisible(false);
-        $sheet->getColumnDimension('W')->setVisible(false);
-
-        $sheet->_parent->addNamedRange(
-          new \PHPExcel_NamedRange(
-            'how_acquired',
-            $sheet,
-            'X2:X' . $howAcquiredCellCount
-          )
-        );
-        $sheet->getColumnDimension('X')->setVisible(false);
-        $sheet->getColumnDimension('Y')->setVisible(false);
-
-        $sheet->_parent->addNamedRange(
-          new \PHPExcel_NamedRange(
-            'target_areas',
-            $sheet,
-            'Z2:Z' . $targetAreaCellCount
-          )
-        );
-        $sheet->getColumnDimension('Z')->setVisible(false);
-        $sheet->getColumnDimension('AA')->setVisible(false);
-
-        $sheet->_parent->addNamedRange(
-          new \PHPExcel_NamedRange(
-            'historic_options',
-            $sheet,
-            'U2:U4'
-          )
-        );
-        $sheet->getColumnDimension('U')->setVisible(false);
-
-        //$parcelTypeColumns = 2;
-        // do {
-        //   $objValidation = $sheet->getCell('F'.$parcelTypeColumns)->getDataValidation();
-        //   $objValidation->setType(\PHPExcel_Cell_DataValidation::TYPE_LIST);
-        //   $objValidation->setErrorStyle(\PHPExcel_Cell_DataValidation::STYLE_INFORMATION);
-        //   $objValidation->setAllowBlank(false);
-        //   $objValidation->setShowInputMessage(true);
-        //   $objValidation->setShowErrorMessage(true);
-        //   $objValidation->setShowDropDown(true);
-        //   $objValidation->setErrorTitle('Input error');
-        //   $objValidation->setError('Value is not in list.');
-        //   $objValidation->setPromptTitle('Pick from list');
-        //   $objValidation->setPrompt('Please pick a parcel type from the drop-down list.');
-        //   $objValidation->setFormula1('parcel_type'); //note this!
-        //   // PUT IN VLOOK UP IN NEXT COLUMN
-        //   //$sheet->SetCellValue("G".$parcelTypeColumns, '=IF(ISBLANK(F'.$parcelTypeColumns.'),"",VLOOKUP(F'.$parcelTypeColumns.',$V$2:$W$'.$parcelTypeCellCount.',2,FALSE))');
-        //   $sheet->getColumnDimension('X')->setVisible(false);
-        //   $parcelTypeColumns++;
-        // }while($parcelTypeColumns < 5000);
-
-        $targetAreaColumns = 2;
-        do {
-          $objValidation = $sheet->getCell('G' . $targetAreaColumns)->getDataValidation();
-          $objValidation->setType(\PHPExcel_Cell_DataValidation::TYPE_LIST);
-          $objValidation->setErrorStyle(\PHPExcel_Cell_DataValidation::STYLE_INFORMATION);
-          $objValidation->setAllowBlank(false);
-          $objValidation->setShowInputMessage(true);
-          $objValidation->setShowErrorMessage(true);
-          $objValidation->setShowDropDown(true);
-          $objValidation->setErrorTitle('Input error');
-          $objValidation->setError('Value is not in list.');
-          $objValidation->setPromptTitle('Pick from list');
-          $objValidation->setPrompt('Please pick a value from the drop-down list.');
-          $objValidation->setFormula1('target_areas'); //note this!
-          //$sheet->SetCellValue("I".$targetAreaColumns, '=IF(ISBLANK(H'.$targetAreaColumns.'),"",VLOOKUP(H'.$targetAreaColumns.',$Z$2:$AA$'.$targetAreaCellCount.',2,FALSE))');
-          $targetAreaColumns++;
-        } while ($targetAreaColumns < 5000);
-
-        $howAcquiredColumns = 2;
-        do {
-          $objValidation = $sheet->getCell('H' . $howAcquiredColumns)->getDataValidation();
-          $objValidation->setType(\PHPExcel_Cell_DataValidation::TYPE_LIST);
-          $objValidation->setErrorStyle(\PHPExcel_Cell_DataValidation::STYLE_INFORMATION);
-          $objValidation->setAllowBlank(false);
-          $objValidation->setShowInputMessage(true);
-          $objValidation->setShowErrorMessage(true);
-          $objValidation->setShowDropDown(true);
-          $objValidation->setErrorTitle('Input error');
-          $objValidation->setError('Value is not in list.');
-          $objValidation->setPromptTitle('Pick from list');
-          $objValidation->setPrompt('Please pick a parcel type from the drop-down list.');
-          $objValidation->setFormula1('how_acquired'); //note this!
-          //$sheet->SetCellValue("K".$howAcquiredColumns, '=IF(ISBLANK(J'.$howAcquiredColumns.'),"",VLOOKUP(J'.$howAcquiredColumns.',$X$2:$Y$'.$howAcquiredCellCount.',2,FALSE))');
-          $howAcquiredColumns++;
-        } while ($howAcquiredColumns < 5000);
-
-        $historicColumns = 2;
-        do {
-          $objValidation = $sheet->getCell('J' . $historicColumns)->getDataValidation();
-          $objValidation->setType(\PHPExcel_Cell_DataValidation::TYPE_LIST);
-          $objValidation->setErrorStyle(\PHPExcel_Cell_DataValidation::STYLE_INFORMATION);
-          $objValidation->setAllowBlank(false);
-          $objValidation->setShowInputMessage(true);
-          $objValidation->setShowErrorMessage(true);
-          $objValidation->setShowDropDown(true);
-          $objValidation->setErrorTitle('Input error');
-          $objValidation->setError('Value is not in list.');
-          $objValidation->setPromptTitle('Pick from list');
-          $objValidation->setPrompt('Please pick a historic type from the drop-down list.');
-          $objValidation->setFormula1('historic_options'); //note this!
-          //$sheet->SetCellValue("K".$historicColumns, '=IF(ISBLANK(J'.$historicColumns.'),"",VLOOKUP(J'.$historicColumns.',$X$2:$Y$'.$historicCellCount.',2,FALSE))');
-          $historicColumns++;
-        } while ($historicColumns < 5000);
-
-        // Set black background
-        $sheet->row(1, function ($row) {
-          // call cell manipulation methods
-          $row->setBackground('#005186');
-          $row->setFontSize(15);
-          $row->setFontColor('#ffffff');
-        });
-        $sheet->freezeFirstRow(1);
-        $sheet->setWidth([
-          'A' => 20,
-          'B' => 25,
-          'C' => 25,
-          'D' => 15,
-          'E' => 20,
-          'F' => 20,
-          'G' => 20,
-          'H' => 20,
-          'I' => 80,
-          'J' => 20,
-
-        ]);
-
-        // $sheet->protectCells('A1', $password);
-        // $sheet->protectCells('B1', $password);
-        // $sheet->protectCells('C1', $password);
-        // $sheet->protectCells('D1', $password);
-        // $sheet->protectCells('E1', $password);
-        // $sheet->protectCells('F1', $password);
-        // $sheet->protectCells('G1', $password);
-        // $sheet->protectCells('H1', $password);
-        // $sheet->protectCells('I1', $password);
-        // $sheet->protectCells('J1', $password);
-        $sheet->getProtection()->setSheet(true);
-        // mark the editable range as unprotected
-        $sheet->getStyle('A2:J5001')->getProtection()->setLocked(\PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
-      });
-    })->download("xlsx");
-    return view('/import_parcels');
-  }
 
   public function export()
   {
@@ -376,10 +104,8 @@ class PagesController extends Controller
       $job = new ParcelsExportJob($requestor, $new_report->id);
       dispatch($job);
 
-      $lc = new LogConverter('user', 'export parcels requested');
-      $lc->setDesc($requestor->email . ' requested a report (export parcels)')->setFrom($requestor)->setTo($requestor)->save();
-
-      return Redirect::route('reports.listparcels')->with('systemMessage', 'Parcels export is being processed. An email will be sent when the file is ready to download.');
+      
+      return Redirect::route('reports.listparcels')->with('systemMessage', 'Your export is being processed. An email will be sent when the file is ready to download.');
       //return redirect()->back()->with('systemMessage','Parcels export is being processed. An email will be sent when the file is ready to download.');
     } else {
       return "<script>alert('Sorry, you do not have permission to do this');</script>";

@@ -1474,8 +1474,11 @@ class FindingController extends Controller
     public function resolveFinding(Request $request, $findingid)
     {
         $finding = Finding::where('id', $findingid)->with('unit')->first();
-
-        $date = date('Y-m-d H:i:s',strtotime($request->input('date')));
+        if($request->input('date')){
+            $date = date('Y-m-d H:i:s',strtotime($request->input('date')));
+        } else {
+            $date = date('Y-m-d H:i:s',time());
+        }
 
         if ($finding->auditor_approved_resolution != 1 || $request->input('date')) {
             // resolve all followups
@@ -1505,7 +1508,7 @@ class FindingController extends Controller
                         $q->where('findings.building_id',$buildingId);
                         $q->orWhere('units.building_id',$buildingId);
                     })->whereNull('auditor_last_approved_resolution_at')->count();
-                    
+
                     if(null != $latestResolution && $latestResolutionNullCheck == 0 ){
                         $buildingInspection->latest_resolution = $latestResolution->auditor_last_approved_resolution_at;
                         $buildingInspection->save();
@@ -1518,7 +1521,7 @@ class FindingController extends Controller
                 //dd('No building Id',$finding);
             }
 
-            
+
         } else {
             // unresolve
             $finding->auditor_approved_resolution = 0;
@@ -1537,15 +1540,15 @@ class FindingController extends Controller
                     // get the most recent resolution date for other findings to update the date on the building inspection
 
                     // $latestResolution = Finding::select('auditor_last_approved_resolution_at')->leftJoin('units', 'units.id', '=', 'findings.unit_id')->where('findings.building_id',$buildingId)->orWhere('units.building_id',$buildingId)->orderBy('auditor_last_approved_resolution_at','desc')->first();
-                    
-                    
+
+
                         $buildingInspection->latest_resolution = null;
                         $buildingInspection->save();
-                    
+
                 }
             }
 
-            
+
         }
 
         if ($finding->auditor_last_approved_resolution_at !== null) {
