@@ -1666,7 +1666,7 @@ class AuditController extends Controller
         	$details_new->manager_state = $default_address->address->state;
         	$details_new->manager_zip = $default_address->address->zip;
         	$details_new->save();
-        } elseif($project_default_user && !is_null($project_default_user->person->user->organization_id) && $project_default_user->person->user->organization_details) {
+        } elseif($project_default_user && $project_default_user->person && $project_default_user->person->user && !is_null($project_default_user->person->user->organization_id) && $project_default_user->person->user->organization_details) {
         	$default_address = $project_default_user->person->user->organization_details;
         	$details_new->manager_address = $default_address->address->line_1;
         	$details_new->manager_address2 = $default_address->address->line_2;
