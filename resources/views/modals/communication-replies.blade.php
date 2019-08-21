@@ -115,7 +115,7 @@
 				</span>
 			</div>
 			<div class="uk-width-1-1 uk-width-2-5@s communication-item-excerpt">
-				<pre>{{ $reply->message }}</pre>
+				<p>{!! str_replace('<br />','</p><p>',nl2br($message->message)) !!}</p>
 			</div>
 			<div class="uk-width-1-1 uk-width-2-5@s">
 				@foreach($reply->local_documents as $document)
