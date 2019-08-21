@@ -143,9 +143,27 @@ ul.leaders li {
 			            					BUG FIX : ADD REMOVE AMENITIES WHEN TWO OR MORE AUDITS EXIST
 		            					</h3>
 		            				
-		            					<p>Fixed bug where when adding a amenity onto a Site, Building or Unit would create the amenity, but put the inspection on the first audit, no matter which audit was selected. The perceived behavior was that the amenity was not added because its inspection did not show up on the selected audits list of items. This resulted in auditors trying to add the amenity multiple times, thus resulting in multiple copies of the amenity on the Site, Building, or Unit.</p>
+		            					<p>Fixed bug that caused an inspection item to be added to the wrong audit when adding an amenity onto a Site, Building or Unit. The perceived behavior was that the amenity was not added because its inspection did not show up on the selected audit's list of items. This resulted in auditors trying to add the amenity multiple times, thus resulting in multiple copies of the amenity on the Site, Building, or Unit. These would then reveal themselves when a new audit was created or an existing one was rerun. Likewise, deleting an item did not appear to work as it would delete the item, but not the inspection of that item, causing it to re-appear on the list of inspection items if it was closed and opened.</p>
 
 		            					<p>Credit: Kimberly Smith</p>
+
+		            					
+		            				
+		            				</td>
+		            				
+            				</tr>
+            				<tr class="rows" <?php $row++; ?> >
+		            				<td  >
+		            					<small>August 20th, 2019</small>
+		            				</td>
+		            				<td>
+		            					<h3>
+			            					BUG FIX : ADDING AMENITY TO BUILDING SEEMED TO MAKE OTHER ITEMS DISAPPEAR
+		            					</h3>
+		            				
+		            					<p>Related to the other bug above, this bug would clear the list of items and then reload them, but because the audit was not correctly passed, the list would not load completely and it would show the inspection item that was actually added to a different audit. This has now been corrected alongside the above fix.</p>
+
+		            					<p>Credit: Jessica George</p>
 
 		            					
 		            				
