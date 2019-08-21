@@ -155,7 +155,7 @@
 				@if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0)
 				<div uk-grid class="uk-grid-collapse">
 					<div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
-						@if($message->subject){{ $message->subject }}:<hr /> @endif
+						@if($message->subject){{ $message->subject }}:<hr class="dashed-hr" /> @endif
 						{!! substr($message->message,0,255) !!} @if(strlen($message->message) > 255)...@endIf
 					</div>
 					<div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt uk-align-center" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
@@ -167,7 +167,7 @@
 					</div>
 				</div>
 				@else
-				@if($message->subject){{ $message->subject }}:<br />@endif
+				@if($message->subject){{ $message->subject }}<hr class="dashed-hr" />@endif
 				{!! substr($message->message,0,255) !!} @if(strlen($message->message) > 255)...@endIf
 				@endif
 			</div>
