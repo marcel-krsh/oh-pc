@@ -113,6 +113,33 @@ ul.leaders li {
 		            				</td>
 		            				<td>
 		            					<h3>
+			            					CONFIRMED BUG : ALL SITE ITEM INSPECTIONS LISTED FOR ALL AUDITS ON EXPANSION VIEW
+		            					</h3>
+		            				
+		            					<p>When working an audit that has another audit in the system, the site expansion currently displays the items to be inspected for both audits. The items for a different audit will not display their completion circkle, nor will they display their copy icon. The delete button will not work on these items.</p>
+
+		            					<p>Workaroud: Do not acknowlege these items to be worked. They do not show up in the findings modal list of amenities for the location.</p>
+
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
+
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
+												        <button class="uk-modal-close" type="button" uk-close></button>
+												       <p align="center"> 
+												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
+												       </p>
+												    </div>
+												</div> -->
+		            				
+		            				</td>
+		            				
+            				</tr>
+            				<tr class="rows" <?php $row++; ?> >
+		            				<td  >
+		            					<small>August 20th, 2019</small>
+		            				</td>
+		            				<td>
+		            					<h3>
 			            					CONTACTS TAB : FIXED NULL CHECKS ON USERS WITH INCOMPLETE INFORMATION
 		            					</h3>
 		            				
