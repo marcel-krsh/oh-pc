@@ -4,11 +4,11 @@
  	<div uk-grid class="uk-margin-remove">
  		<h4 class="uk-text-left uk-width-2-3" style="padding-top: 8px;">{{ number_format($users->total(), 0) }} TOTAL USERS</h4>
  		<div class="uk-width-1-3 uk-text-right">
- 			<input id="users-search" name="users-search" type="text" value="{{ Session::get('users-search') }}" class=" uk-input" placeholder="Search by user name (press enter)">
+ 			<input id="users-search" name="users-search" type="text" value="" class=" uk-input" placeholder="Search by user name (press enter)">
  		</div>
  	</div>
  	<hr>
- 	{{ $users->links() }} <a onClick="dynamicModalLoad('createuser');" class="uk-badge uk-margin-top uk-badge-success"><i class="a-circle-plus"></i> CREATE USER</a> <a href="#userbottom" id="user-scroll-to-top" class="uk-badge uk-overlay-background uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a>
+ 	{{ $users->links() }} <a onClick="dynamicModalLoad('createuser');" class="uk-badge uk-margin-top uk-badge-success"><i class="a-circle-plus"></i> CREATE USER</a> <a href="#userbottom" id="user-scroll-to-top" class="uk-badge uk-overlay-background uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a> @if( Session::get('users-search')) &nbsp;&nbsp; <a onclick="$('#users-search').val(''); searchUsers();" class="uk-badge uk-overlay-background uk-margin-top" uk-tooltip title="CLICK TO CLEAR SEARCH"><i class="a-circle-cross"></i> {{ strtoupper(Session::get('users-search')) }} &nbsp;</a> @endIf
  	<table class="uk-table uk-table-hover uk-table-striped uk-overflow-container small-table-text">
  		<thead>
  			<th>
@@ -33,8 +33,8 @@
  		<tbody>
  			@foreach($users as $user)
  			<tr class="{{ !$user->active ? 'uk-text-muted' : '' }}">
- 				<td>{{ $user->first_name }} {{ $user->last_name }}<br /><small>
- 					@if($user->role){{strtoupper($user->role->role->role_name)}}@else NO ACCESS @endIf</small></td>
+ 				<td>@can('access_root')<span uk-tooltip title="USER_ID: {{$user->id}} USER_KEY: {{$user->devco_key}}">@endCan{{ $user->first_name }} {{ $user->last_name }}@can('access_root')</span>@endCan <br /><small>
+ 					@if($user->role)ROLE:{{strtoupper($user->role->role->role_name)}}@else NO ACCESS @endIf</small></td>
  				<td><small>@if($user->organization_name)
  					{{ $user->organization_details->organization_name }}@else NA @endif</small></td>
  					<td><small>@if($user->has_address())
@@ -61,10 +61,10 @@
 					 	<span data-uk-tooltip title="Reset Password <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="resetPassword({{ $user->id }})"><i class="a-password "></i>
 					 	</span>
 					 	@if($user->active)
-						 	<span data-uk-tooltip title="Deactivate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="deactivateUser({{ $user->id }})"><i class="a-avatar-minus "></i>
+						 	<span data-uk-tooltip title="USER IS ACTIVE - CLICK TO DEACTIVATE THE USER" onclick="deactivateUser({{ $user->id }})"><i class="a-avatar"></i>
 						 	</span>
 					 	@else
-						 	<span data-uk-tooltip title="Activate User <br> {{ $user->role_name ? 'Role: ' . $user->role_name : '' }}" onclick="activateUser({{ $user->id }})"><i class="a-avatar-plus_1 uk-text-success"></i>
+						 	<span data-uk-tooltip title="USER IS IN-ACTIVE - CLICK TO ACTIVATE THE USER" onclick="activateUser({{ $user->id }})"><i class="a-avatar" style="color: lightgray;"></i>
 						 	</span>
 					 	@endif
 				 	@else
