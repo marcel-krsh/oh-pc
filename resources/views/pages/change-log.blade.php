@@ -109,6 +109,69 @@ ul.leaders li {
             			<tbody>
             				<tr class="rows" <?php $row++; ?> >
 		            				<td  >
+		            					<small>August 20th, 2019</small>
+		            				</td>
+		            				<td>
+		            					<h3>
+			            					CONTACTS TAB : FIXED NULL CHECKS ON USERS WITH INCOMPLETE INFORMATION
+		            					</h3>
+		            				
+		            					<p>Fixed bug where you would receive a 500 error when clicking on the contacts tab, or performing an action that would refresh the contacts tab when the selected or added user did not have complete information associated with them.</p>
+
+		            					<p>Credit: Athena Lunsford</p>
+
+		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
+
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
+												        <button class="uk-modal-close" type="button" uk-close></button>
+												       <p align="center"> 
+												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
+												       </p>
+												    </div>
+												</div> -->
+		            				
+		            				</td>
+		            				
+            				</tr>
+            				<tr class="rows" <?php $row++; ?> >
+		            				<td  >
+		            					<small>August 20th, 2019</small>
+		            				</td>
+		            				<td>
+		            					<h3>
+			            					BUG FIX : ADD REMOVE AMENITIES WHEN TWO OR MORE AUDITS EXIST
+		            					</h3>
+		            				
+		            					<p>Fixed bug where when adding a amenity onto a Site, Building or Unit would create the amenity, but put the inspection on the first audit, no matter which audit was selected. The perceived behavior was that the amenity was not added because its inspection did not show up on the selected audits list of items. This resulted in auditors trying to add the amenity multiple times, thus resulting in multiple copies of the amenity on the Site, Building, or Unit.</p>
+
+		            					<p>Credit: Kimberly Smith</p>
+
+		            					
+		            				
+		            				</td>
+		            				
+            				</tr>
+            				<tr class="rows" <?php $row++; ?> >
+		            				<td  >
+		            					<small>August 19th, 2019</small>
+		            				</td>
+		            				<td>
+		            					<h3>
+			            					CONTACTS TAB : UPDATED CONTACTS STATUS ICONS AND HOVERS
+		            					</h3>
+		            				
+		            					<p>Fixed issue where it was not clear what the icons meant, or what their click action would result in.</p>
+
+		            					<p>Credit: Holly Swisher</p>
+
+		            					
+		            				
+		            				</td>
+		            				
+            				</tr>
+            				<tr class="rows" <?php $row++; ?> >
+		            				<td  >
 		            					<small>August 12th, 2019</small>
 		            				</td>
 		            				<td>
@@ -312,14 +375,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -340,14 +403,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -368,14 +431,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -395,14 +458,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -423,14 +486,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -455,14 +518,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -491,14 +554,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -525,14 +588,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -584,14 +647,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -612,14 +675,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -645,14 +708,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -681,14 +744,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -721,14 +784,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -755,14 +818,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -790,14 +853,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -835,14 +898,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -872,14 +935,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -900,14 +963,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
@@ -932,14 +995,14 @@ ul.leaders li {
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
-		            						    <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
+		            						    <!-- <div id="modal-media-youtube{{$row}}" class="uk-flex-top" uk-modal>
 		            						    	<div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical uk-margin-top uk-margin-large-bottom">
 												        <button class="uk-modal-close" type="button" uk-close></button>
 												       <p align="center"> 
 												       	<iframe width="730" height="455" src="https://www.youtube.com/embed/mYhEgUnqKsM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen  uk-video style="margin-left: auto; margin-right: auto;" align="center"></iframe>
 												       </p>
 												    </div>
-												</div>
+												</div> -->
 		            				
 		            				</td>
 		            				
