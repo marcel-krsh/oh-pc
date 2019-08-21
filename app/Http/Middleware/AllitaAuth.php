@@ -326,21 +326,20 @@ class AllitaAuth
                     $timesLocked = $timesLocked + 1;
                     $lastLockedTime = time();
                 }
-                $currentlyBlocked->update([
-                                'token' => $request->get('token'),
-                                'ip' => $thisIp,
-                                'user_agent' => $thisAgent,
-                                'user_id' => $failedAttemptUser,
-                                'tries' => $loginTries,
-                                'total_failed_tries' => $totalTries,
-                                'times_locked' => $timesLocked,
-                                'blocked_until' => $blockedUntil,
-                                'unlock_token' => $unlockToken,
-                                'last_failed_time' => $lastFailedTime,
-                                'last_locked_time' => $lastLockedTime,
-                                 'last_failed_reason' => $failedLoginReason,
-
-                            ]);
+                $currentlyBlocked->token = $request->get('token');
+                $currentlyBlocked->ip = $thisIp;
+                $currentlyBlocked->user_agent = $thisAgent;
+                $currentlyBlocked->user_id = $failedAttemptUser;
+                $currentlyBlocked->tries = $loginTries;
+                $currentlyBlocked->total_failed_tries = $totalTries;
+                $currentlyBlocked->times_locked = $timesLocked;
+                $currentlyBlocked->blocked_until = $blockedUntil;
+                $currentlyBlocked->unlock_token = $unlockToken;
+                $currentlyBlocked->last_failed_time = $lastFailedTime;
+                $currentlyBlocked->last_locked_time = $lastLockedTime;
+                $currentlyBlocked->last_failed_reason = $failedLoginReason;
+                $currentlyBlocked->save();
+                            
             }
         }
 

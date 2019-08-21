@@ -1,5 +1,5 @@
 <div id="modal-auditor-amenity-assignment" class="uk-padding-remove uk-margin-bottom uk-overflow-auto">
-	<h2>Assign Auditor to {{$name}} @if($amenity) / {{$amenity->amenity->amenity_description}}@endif</h2>
+	<h2>Assign Auditor to @if(isset($name)){{$name}}@endIf @if(isset($amenity) && $amenity) / {{$amenity->amenity->amenity_description}}@endif @if(!isset($name) && !isset($amenity)) Site Level Inspections @endIf</h2>
 
 	<div class="uk-margin-large-top uk-margin-large-bottom">
 		@if($current_auditor)

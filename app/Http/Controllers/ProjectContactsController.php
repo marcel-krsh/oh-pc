@@ -43,7 +43,7 @@ class ProjectContactsController extends Controller
     $default_devco_owner_id = 0;
     $default_user_id        = 0;
     $default_owner_id       = 0;
-    if ($default_report_user && $default_report_user->devco && $default_user) {
+    if ($default_report_user && $default_report_user->devco && $default_user && $default_user->person && $default_user->person->user) {
       $default_devco_user_id = $default_user->person->user->id;
     }
     if ($default_report_owner && $default_report_owner->devco && $default_owner) {

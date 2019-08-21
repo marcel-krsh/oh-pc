@@ -164,7 +164,11 @@ class SyncPeopleJob implements ShouldQueue
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                     // Update the Allita Table Record with the Sync Table's updated at date
-                                    $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
+                                    if(null !== $syncTableRecord && is_object($syncTableRecord)){
+                                        $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
+                                    } else {
+                                        Log::info('Unable to update the last_edited for people record id '.$allitaTableRecord->id.' because the sync table did not return a record for SyncPeople record '.$updateRecord['id']);
+                                    }
                                 }
                             }
                         } else {
