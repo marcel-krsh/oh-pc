@@ -131,7 +131,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -158,7 +158,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -429,7 +429,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
 	            			
@@ -457,7 +457,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
 
@@ -485,7 +485,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -512,7 +512,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
 
@@ -540,7 +540,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -572,7 +572,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -608,7 +608,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -642,7 +642,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -701,7 +701,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
 
@@ -729,7 +729,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -762,7 +762,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -798,7 +798,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -838,7 +838,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -872,7 +872,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
 
@@ -907,7 +907,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
 
@@ -952,7 +952,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -989,7 +989,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -1017,7 +1017,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
             				<tr class="rows" <?php $row++; ?> >
@@ -1049,7 +1049,7 @@ ul.leaders li {
 												    </div>
 												</div> -->
 		            				
-		            				</td>
+		            				<br/></td>
 		            				
             				</tr>
 	            				
