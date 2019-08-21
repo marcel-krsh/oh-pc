@@ -156,7 +156,7 @@
 				<div uk-grid class="uk-grid-collapse">
 					<div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
 						@if($message->subject){{ $message->subject }}:<hr /> @endif
-						{{ $message->message }}
+						{{ substr($message->message,0,255) }} @if(strlen($message->message) > 255)...@endIf
 					</div>
 					<div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt uk-align-center" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
 						<div class="communication-item-attachment uk-margin-large-left">
