@@ -116,9 +116,9 @@ ul.leaders li {
 			            					CONFIRMED BUG : ALL SITE ITEM INSPECTIONS LISTED FOR ALL AUDITS ON EXPANSION VIEW
 		            					</h3>
 		            				
-		            					<p>When working an audit that has another audit in the system, the site expansion currently displays the items to be inspected for both audits. The items for a different audit will not display their completion circkle, nor will they display their copy icon. The delete button will not work on these items.</p>
+		            					<p>When working a project that has more than one audit in Allita PC, the site expansion currently displays the items to be inspected for all audits. The items for different audits do not display their completion circle, nor do they display their copy icon. The delete button will not work on these items.</p>
 
-		            					<p>Workaroud: Do not acknowlege these items to be worked. They do not show up in the findings modal list of amenities for the location.</p>
+		            					<p>Workaroud: You can ignore these items. They do not show up in the findings modal list of amenities for the location, nor will they affect the audit's report.</p>
 
 		            					<!-- <p><a class="uk-button uk-success"  href="#modal-media-youtube{{$row}}" uk-toggle><i uk-icon="icon:play-circle " class="uk-margin-small-right"></i> WATCH</a></p> -->
 
