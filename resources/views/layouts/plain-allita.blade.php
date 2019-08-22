@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Allita Program Compliance</title>
+	<title>DEVCO INSPECTION</title>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
@@ -12,11 +12,11 @@
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 
 	<meta name="theme-color" content="#ffffff">
-	<link rel="stylesheet" href="/css/allita-font.css{{ asset_version() }}">
-	<link rel="stylesheet" href="/css/allita-admin.css{{ asset_version() }}">
-	<link rel="stylesheet" href="/css/system.css{{ asset_version() }}">
-	<link rel="stylesheet" href="/css/uikit.min.css{{ asset_version() }}">
-	<link rel="stylesheet" href="/css/auto-complete.css{{ asset_version() }}">
+	<link rel="stylesheet" href="/css/allita-font.css">
+	<link rel="stylesheet" href="/css/allita-admin.css">
+	<link rel="stylesheet" href="/css/system.css">
+	<link rel="stylesheet" href="/css/uikit.min.css">
+	<link rel="stylesheet" href="/css/auto-complete.css">
 	<style type="text/css">
 		#plain-main-window {
 			max-width: 1450px;
@@ -39,10 +39,10 @@
   'csrfToken' => csrf_token(),
 ]); ?>
 		</script>
-		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}"></script>
-		<script src="/js/jquery.js{{ asset_version() }}"></script>
-		<script src="/js/uikit.min.js{{ asset_version() }}"></script>
-		<script src="/js/uikit-icons.min.js{{ asset_version() }}"></script>
+		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js"></script>
+		<script src="/js/jquery.js"></script>
+		<script src="/js/uikit.min.js"></script>
+		<script src="/js/uikit-icons.min.js"></script>
 		<style>
 			.hideImportnull {
 				display: none;
@@ -50,7 +50,7 @@
 			.autocomplete-suggestions {max-height: none;}
 			.autocomplete-suggestion {border-bottom:1px solid #ddd; padding:15px 10px; cursor: pointer;}
 		</style>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 		@yield('head')
 	</head>
@@ -65,7 +65,7 @@
 				<div id="plain-main-window" class="uk-width-1-1" style="padding-top:20px">
 					<div class="uk-grid " >
 						<div class="uk-width-1-1">
-
+							
 						</div>
 					</div>
 					@yield('content')
