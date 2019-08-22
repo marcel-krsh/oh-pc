@@ -1,11 +1,12 @@
 @extends('layouts.plain-allita')
 @section('content')
 @if(Auth::guest())
-<div class="uk-vertical-align uk-text-center" uk-scrollspy="target:#login-panel;cls:uk-animation-slide-top-small uk-transform-origin-bottom; delay: 1300">
+<div class="uk-vertical-align uk-text-center uk-margin-large-bottom  uk-margin-top" uk-scrollspy="target:#login-panel;cls:uk-animation-slide-top-small uk-transform-origin-bottom; delay: 1300">
 	<div class="uk-vertical-align-middle login-panel"  id="login-panel">
-		<a href="{{env('DEVCO_LOGIN_URL')}}"><img src="https://devco.ohiohome.org/AuthorityOnlineALTTEST/images/Logo.jpg"> {{-- Login through DevCo --}}</a>
-		<p>Program Compliance Inspection</p>
-		<p>LOGIN</p>
+		<img src="/images/ohfa_logo_large.png" style="width: 200px;height: 200px;">
+		<h2 style="margin-top:0px">Ohio Housing Finance Agency</h2>
+		<p>Dev|Co Inspection Direct Login</p>
+		
 		@if(session('loginMessage'))
 		<hr class="dashed-hr">
 		{{session('loginMessage')}}
@@ -54,11 +55,7 @@
 			</div>
 		</form>
 		<div class="uk-grid">
-			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
-				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
-				</div>
-			</div>
+			
 			@if(env('USER_REGISTRATION'))
 			<div class="uk-width-1-2">
 				<div uk-scrollspy="cls:uk-animation-fade;">

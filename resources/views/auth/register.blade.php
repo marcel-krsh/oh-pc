@@ -1,9 +1,10 @@
 @extends('layouts.plain-allita')
 @section('content')
-<div class="uk-vertical-align uk-text-center">
-	<div class="uk-vertical-align-middle" id="login-panel">
-		<p>Program Compliance Inspection</p>
-		<p>REGISTER</p>
+<div class="uk-vertical-align uk-text-center uk-margin-large-bottom uk-margin-top" uk-scrollspy="target:#login-panel;cls:uk-animation-slide-top-small uk-transform-origin-bottom; delay: 1300">
+	<div class="uk-vertical-align-middle login-panel"  id="login-panel">
+		<img src="/images/ohfa_logo_large.png" style="width: 200px;height: 200px;">
+		@if( env('USER_REGISTRATION'))
+		<h2 style="margin-top:0px">REGISTER</h2>
 		<form class="uk-panel uk-panel-box uk-form" role="form" method="POST" action="{{ url('/register-user') }}">
 			@if (count($errors) > 0)
 			<div class="alert alert-danger uk-text-danger">
@@ -74,20 +75,15 @@
 				<button type="submit" class="uk-width-1-1 uk-button uk-button-primary uk-button-large">Register</button>
 			</div>
 		</form>
-		<div class="uk-grid">
-			<div class="{{ env('USER_REGISTRATION') ? 'uk-width-1-2' : 'uk-width-1-1' }}">
-				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="{{env('DEVCO_LOGIN_URL')}}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Dev|Co Login</a>
-				</div>
-			</div>
-			<div class="uk-width-1-2">
-				<div uk-scrollspy="cls:uk-animation-fade;">
-					<a href="{{ url('/login') }}" class="uk-button uk-button-default uk-width-1-1 uk-margin-top">Login</a>
-				</div>
-			</div>
-		</div>
+		@else
+		<h2 style="margin-top:0px">REGISTRATION HAS BEEN DISABLED</h2>
+		<hr class="dashed-hr uk-margin-bottom">
+		<p>If you would like to have access to this site, please contact your adminstrator.</p>
+		@endIf
+		
 	</div>
 </div>
+@if( env('USER_REGISTRATION'))
 <script type="text/javascript">
 	function phone_formatting(ele,restore) {
 		var new_number,
@@ -179,5 +175,5 @@
   	business_phone_number_check(this,e);
   }
 </script>
-
+@endIf
 @endsection
