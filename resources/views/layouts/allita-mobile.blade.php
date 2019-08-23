@@ -81,6 +81,9 @@ if ($allowPageLoad) {
 		h1 {
 			font-size:27px !important;
 		}
+		.small-h3{
+			font-size:14px !important;
+		}
 		.uk-modal{
 			background-color: darkgray;
 			width: 99%;

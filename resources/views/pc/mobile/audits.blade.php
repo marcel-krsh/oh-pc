@@ -7,8 +7,8 @@ MY AUDITS ({{count($audits)}})
 	@forEach($audits as $a)
 		@if($a->cached_audit)
 		<div class="uk-width-1-1 ">
-			<h3><i class="a-info-circle" onclick="$('#info-audit-{{$a->id}}').slideToggle();infoToggle(this)"></i> {{$a->project->project_name}}</h3>
-			<small>AUDIT: {{$a->id}} | <i class="{{$a->cached_audit->step_status_icon}}"></i> {{$a->cached_audit->step_status_text}}</small>
+			<h3><i class="a-info-circle" id="info-audit-{{$a->id}}-toggle" onclick="$('#info-audit-{{$a->id}}').slideToggle();infoToggle(this)"></i> <span onclick="$('#info-audit-{{$a->id}}-toggle').trigger('click');">{{$a->project->project_name}}<br clear="uk-visible@s" /></span>
+			<small class="small-h3">AUDIT: {{$a->id}} | <i class="{{$a->cached_audit->step_status_icon}}"></i> {{$a->cached_audit->step_status_text}}</small></h3>
 		</div>
 		<div id="info-audit-{{$a->id}}" class="uk-width-1-1 uk-margin-small-top" style="display: none;">
 			<h3>
