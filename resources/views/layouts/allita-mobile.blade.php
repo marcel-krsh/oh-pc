@@ -264,9 +264,9 @@ if ($allowPageLoad) {
 		    line-height: 28px;
 		}
 		.audit-info-mobile li {
-			    margin-bottom: 6px;
-			    border-bottom: 1px dotted #737373;
-			    padding-bottom: 11px;
+			        margin-bottom: 13px;
+				    border-bottom: 1px dotted #737373;
+				    padding-bottom: 18px;
 		}
 		.findings-details-mobile i.a-booboo, .findings-details-mobile i.a-skull {
 			font-size: 21px;

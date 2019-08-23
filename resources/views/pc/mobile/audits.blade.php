@@ -7,13 +7,13 @@ MY AUDITS ({{count($audits)}})
 	@forEach($audits as $a)
 		@if($a->cached_audit)
 		<div class="uk-width-1-1 ">
-			<h3><i class="a-info-circle" id="info-audit-{{$a->id}}-toggle" onclick="$('#info-audit-{{$a->id}}').slideToggle();infoToggle(this)"></i> <span onclick="$('#info-audit-{{$a->id}}-toggle').trigger('click');">{{$a->project->project_name}}<br clear="uk-visible@s" /></span>
-			<small class="small-h3">AUDIT: {{$a->id}} | <i class="{{$a->cached_audit->step_status_icon}}"></i> {{$a->cached_audit->step_status_text}}</small></h3>
+			<h3><i class="a-info-circle" id="info-audit-{{$a->id}}-toggle" onclick="$('#info-audit-{{$a->id}}').slideToggle();infoToggle(this)"></i> <span onclick="$('#info-audit-{{$a->id}}-toggle').trigger('click');">{{$a->project->project_name}}</span>
+			<small class="small-h3">AUDIT:&nbsp;{{$a->id}}&nbsp;|&nbsp;<i class="{{$a->cached_audit->step_status_icon}}"></i>&nbsp;{!!str_replace(' ','&nbsp;',$a->cached_audit->step_status_text)!!}</small></h3>
 		</div>
 		<div id="info-audit-{{$a->id}}" class="uk-width-1-1 uk-margin-small-top" style="display: none;">
 			<h3>
 
-				<ul class="audit-info-mobile"><li><h3 class="uk-margin-remove findings-details-mobile">@if(count($a->findings)>0)<i class="a-info-circle" id="audit-{{$a->id}}-findings-toggle" onclick="$('#audit-{{$a->id}}-findings').slideToggle();infoToggle(this);"></i> &nbsp; &nbsp; @endIf<i class="a-booboo"></i> {{count($a->nlts)}}  &nbsp; &nbsp; <i class="a-skull"></i> {{count($a->lts)}}</h3>
+				<ul class="audit-info-mobile"><li><h3 class="uk-margin-remove findings-details-mobile">@if(count($a->findings)>0)<i class="a-info-circle" id="audit-{{$a->id}}-findings-toggle" onclick="$('#audit-{{$a->id}}-findings').slideToggle();infoToggle(this);"></i>  @endIf <span onclick="$('#audit-{{$a->id}}-findings-toggle').trigger('click');"><i class="a-booboo"></i> {{count($a->nlts)}}  &nbsp; &nbsp; <i class="a-skull"></i> {{count($a->lts)}}</span></h3>
 					<div id="audit-{{$a->id}}-findings" class=" findings-details-mobile" style="display: none; margin-top: 12px; margin-bottom: 12px;">
 						<?php // lets make these go in a nice order:
 							
@@ -37,11 +37,11 @@ MY AUDITS ({{count($audits)}})
 						<hr class="dashed-hr uk-margin-bottom">
 						<i class="a-info-circle"></i> <span class="finding-breakdown">UNIT:</span><span class="finding-breakdown-stat"><i class="a-booboo"></i> {{count($a->unit_nlts)}}</span><span class="finding-breakdown-stat"> <i class="a-skull"></i> {{count($a->unit_lts)}}</span>
 						<hr class="dashed-hr ">
-						<div class="close-long-box " onclick="$('#audit-{{$a->id}}-findings-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE FINDINGS BREAKDOWN</div>
+						<div class="close-long-box " onclick="$('#audit-{{$a->id}}-findings-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE FINDINGS</div>
 					</div>
 
 				</li>
-					@if($a->lead)<li><i class="a-info-circle" onclick="$('#audit-{{$a->id}}-lead-info').slideToggle();infoToggle(this)"></i> Lead : {{$a->lead->name}} 
+					@if($a->lead)<li><i id="audit-{{$a->id}}-lead-info-toggle" class="a-info-circle" onclick="$('#audit-{{$a->id}}-lead-info').slideToggle();infoToggle(this)"></i> <span onclick="$('#audit-{{$a->id}}-lead-info-toggle').trigger('click');">Lead : {{$a->lead->name}}</span>
 						
 						<div id="audit-{{$a->id}}-lead-info" style="display: none; margin-bottom: 24px; margin-top:21px;"> 
 							<a class="uk-button" href="mailto:{{$a->lead->email}}"><i class="a-envelope-4"></i></a> 
@@ -49,7 +49,7 @@ MY AUDITS ({{count($audits)}})
 						&nbsp; &nbsp; 
 					<a class="uk-button"  href="tel://+1{{$a->lead->person->allita_phone->area_code}}{{$a->lead->person->allita_phone->phone_number}}"><i class="a-phone-talk"></i></a>@endIf</li>@endIf
 					@if(count($a->auditors)>0)
-					<li><i class="a-info-circle" onclick="$('#audit-{{$a->id}}-auditors').slideToggle();infoToggle(this)"></i> {{count($a->auditors)}} @if(count($a->auditors)>1 || count($a->auditors) < 1)Auditors @else Auditor @endIf Assigned 
+					<li><i id="audit-{{$a->id}}-auditors-toggle" class="a-info-circle" onclick="$('#audit-{{$a->id}}-auditors').slideToggle();infoToggle(this)"></i> <span onclick="$('#audit-{{$a->id}}-auditors-toggle').trigger('click');">{{count($a->auditors)}} @if(count($a->auditors)>1 || count($a->auditors) < 1)Auditors @else Auditor @endIf Assigned </span>
 						<div id="audit-{{$a->id}}-auditors" style="display: none; margin-top: 5px; margin-bottom: 12px;">
 							@forEach($a->auditors as $auditor)
 
@@ -64,14 +64,17 @@ MY AUDITS ({{count($audits)}})
 								</div>
 								
 							@endForEach
+							<div class="close-long-box " onclick="$('#audit-{{$a->id}}-auditors-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE AUDITORS LIST</div>
 						</div>
 					</li>
 					@endIf
 					<li>Buildings : {{count($a->building_inspections->where('complete','1'))}}/{{$a->cached_audit->total_buildings}} AUDITED</li>
 					<li>Unit Inspections : {{count($a->unit_inspections)}}</li>
-					<li>Address : <div style="display: inline-table;">{{$a->project->address->line_1}}@if(null !== $a->project->address->line_2 && $a->project->address->line_2 !== '')<br />{{$a->project->address->line_2}}@endIf @if(null !== $a->project->address->city)<br />{{$a->project->address->city}},@endIf {{$a->project->address->state}} {{$a->project->address->zip}}</div></li>
+					<li>Programs : {{count($a->project->programs)}}</li>
+					<li>Address : <div style="display: inline-table;"><a href="http://maps.apple.com/?daddr={{$a->project->address->line_1}}@if(null !== $a->project->address->line_2 && $a->project->address->line_2 !== '') {{$a->project->address->line_2}}@endIf @if(null !== $a->project->address->city) {{$a->project->address->city}} @endIf {{$a->project->address->state}} {{$a->project->address->zip}}&dirflg=d&t=h"> {{$a->project->address->line_1}}@if(null !== $a->project->address->line_2 && $a->project->address->line_2 !== '')<br />{{$a->project->address->line_2}}@endIf @if(null !== $a->project->address->city)<br />{{$a->project->address->city}},@endIf {{$a->project->address->state}} {{$a->project->address->zip}}</a></div></li>
 				</ul>
 			</h3>
+			<div class="close-long-box " onclick="$('#info-audit-{{$a->id}}-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE AUDIT DETAILS</div>
 		</div>
 		<hr class="dashed-hr uk-width-1-1">
 		@endIf
