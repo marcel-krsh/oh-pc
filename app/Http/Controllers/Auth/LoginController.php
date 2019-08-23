@@ -63,6 +63,8 @@ class LoginController extends Controller
 
     if (Auth::attempt($credentials)) {
       // Authentication passed...
+      Auth::user()->auto_login_token = Str::random(255);
+      Auth::user()->save();
       return redirect()->intended('dashboard');
     } else {
       // return "oops";
@@ -131,10 +133,10 @@ class LoginController extends Controller
 
   public function getCode(Request $request)
   {
-    $user_id = session()->get('user_id');
+    $user_id = intval(session()->get('user_id'));
     $user    = User::with('person.allita_phone')->find($user_id);
     if (is_null($user) || !session()->has('login_success')) {
-    	$error   = "Looks like the user doesn't exist with the provided information";
+    	$error   = "Looks like the user doesn't exist with the provided information. ".$user_id.' '.session('user_id');
 	    abort(403, $error);
       // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
       // $error   = "Looks like the user doesn't exist with the provided information";

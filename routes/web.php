@@ -43,6 +43,8 @@
 
     Route::get('/check', function(){ return '1';});
 
+    Route::get('/mobile/auto_login','PC\Mobile\LoginController@autoLogin');
+
     Route::get('/ping', function () {
         echo 'pong';
         return 'pong';
@@ -64,6 +66,13 @@
     Route::group(['middleware' => 'web'], function () {
         app('debugbar')->disable();
 
+        Route::group(['prefix'=>'mobile','middleware'=>'can:access_auditor'], function ()  {
+            Route::get('/audits','PC\Mobile\AuditController@index');
+            Route::post('/request_auto_login','PC\Mobile\LoginController@requestAutoLogin');
+        });
+        Route::group(['prefix'=>'mobile','middleware'=>'can:access_pm'], function ()  {
+            Route::get('/reports','PC\Mobile\ReportController@index');
+        });
         Route::group(['prefix'=>'','middleware'=>'can:access_auditor'], function ()  {
             Route::get('/change_log','PagesController@changeLog');
             Route::get('/compliance_rerun/{audit_id}', 'Phase1ComplianceSelection@runSimpleCompliance');
