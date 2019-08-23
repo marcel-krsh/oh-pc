@@ -72,7 +72,7 @@ class LoginController extends Controller
       $message = "Your ".env('APP_NAME')." Login Link: " . url('/mobile/auto_login').'?token='.$user->auto_login_token.'&user_id='.$user->id;
       try {
         Twilio::message($to_number, $message);
-        return '<h1>Check Your Phone!</h1><p>I Sent Message to '.mask_phone_number($to_number).' - Your Verification Code is: '.$token->code;
+        return '<h2>Check Your Phone!</h2><h3>I Sent a Text Message With Your Auto-login Link to ('.substr($to_number, 0,3).') '.substr($to_number, 3,3).'-'.substr($to_number,6,4).'. Tap the Link and Enter The Verification Code:</p><hr class="dashed-hr uk-margin-bottom"><h1 class="uk-align-center"> '.$token->code.'</h1><hr class="dashed-hr uk-margin-bottom">';
       } catch (\Exception $ex) {
         return 1;
       }

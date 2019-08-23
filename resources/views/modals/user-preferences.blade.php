@@ -13,7 +13,7 @@
 							<input type="hidden" name="_token" value="{{csrf_token()}}">
 						</form>
 						@can('access_auditor')
-						<a href="javascript:launchMobile()" class="uk-button uk-button-small uk-padding-small-top uk-align-right"><i class="a-mobile-home"></i> SEND AUTOLOGIN TO YOUR PHONE</a>
+						<a href="javascript:launchMobile()" class="uk-button uk-button-small uk-padding-small-top uk-align-left" style="margin-left: 38px; padding-top: 3px;"><i class="a-mobile-home"></i> SEND AUTO-LOGIN TO YOUR PHONE</a>
 							<script>
 								function launchMobile(){
 									var number = prompt("Please enter your mobile area code and phone number (no dashes or spaces please)");
