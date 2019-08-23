@@ -19,7 +19,7 @@ MY AUDITS ({{count($audits)}})
 							
 							
 						?>
-						<i class="a-info-circle" id="audit-{{$a->id}}-site-findings-toggle" onclick="$('#audit-{{$a->id}}-site-findings').slideToggle();infoToggle(this);"></i> <span class="finding-breakdown">SITE:</span><span class="finding-breakdown-stat"><i class="a-booboo"></i> {{count($a->site_nlts)}}</span><span class="finding-breakdown-stat"><i class="a-skull"></i> {{count($a->site_lts)}}</span>
+						<i class="a-info-circle" id="audit-{{$a->id}}-site-findings-toggle" onclick="$('#audit-{{$a->id}}-site-findings').slideToggle();infoToggle(this);"></i> <span class="finding-breakdown" onclick="$('#audit-{{$a->id}}-site-findings-toggle').trigger('click')">SITE:</span><span class="finding-breakdown-stat" onclick="$('#audit-{{$a->id}}-site-findings-toggle').trigger('click')"><i class="a-booboo"></i> {{count($a->site_nlts)}}</span><span class="finding-breakdown-stat" onclick="$('#audit-{{$a->id}}-site-findings-toggle').trigger('click')"><i class="a-skull"></i> {{count($a->site_lts)}}</span>
 						@if(count($a->findings->where('building_id',null)->where('unit_id',null)))
 							<div id="audit-{{$a->id}}-site-findings" style="display: none; margin-top: 21px; margin-bottom: 24px">
 								<?php 	$findings = $a->findings->where('cancelled_at',null)->where('building_id',null)->where('unit_id',null)->sortBy('date_of_finding');
@@ -33,9 +33,33 @@ MY AUDITS ({{count($audits)}})
 							</div>
 						@endIf
 						<hr class="dashed-hr uk-margin-bottom">
-						<i class="a-info-circle"></i> <span class="finding-breakdown">BUILDING:</span><span class="finding-breakdown-stat"><i class="a-booboo"></i> {{count($a->building_nlts)}}</span><span class="finding-breakdown-stat"><i class="a-skull"></i> {{count($a->building_lts)}}</span>
+						<i class="a-info-circle" id="audit-{{$a->id}}-building-findings-toggle" onclick="$('#audit-{{$a->id}}-building-findings').slideToggle();infoToggle(this);"></i> <span class="finding-breakdown" onclick="$('#audit-{{$a->id}}-building-findings-toggle').trigger('click')">BUILDING:</span><span class="finding-breakdown-stat" onclick="$('#audit-{{$a->id}}-building-findings-toggle').trigger('click')"><i class="a-booboo"></i> {{count($a->building_nlts)}}</span><span class="finding-breakdown-stat" onclick="$('#audit-{{$a->id}}-building-findings-toggle').trigger('click')"><i class="a-skull"></i> {{count($a->building_lts)}}</span>
+						@if(count($a->findings->where('building_id','<>',null)))
+							<div id="audit-{{$a->id}}-building-findings" style="display: none; margin-top: 21px; margin-bottom: 24px">
+								<?php 	$findings = $a->findings->where('cancelled_at',null)->where('building_id','<>',null)->sortBy('building.building_name');
+										$cancelledFindings = $a->findings->where('cancelled_at','<>',null)->where('building_id',null)->where('unit_id',null)->sortBy('building.building_name');
+								?>
+								@forEach($findings as $f)
+									<i class="{{$f->icon()}}"></i> <span onClick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)">F|N: {{$f->id}} BIN: {{$f->building->building_name}} OH-{{strtoupper($f->finding_type->type)}}-{{$f->finding_type_id}} Level {{$f->level}}</span><br />@if(count($f->comments)) {{$f->comments->first()->comment}} @else {{$f->finding_type->name}} @endIf
+									<hr />
+								@endForEach
+								<div class="close-long-box " onclick="$('#audit-{{$a->id}}-building-findings-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE BUILDING FINDINGS</div>
+							</div>
+						@endIf
 						<hr class="dashed-hr uk-margin-bottom">
-						<i class="a-info-circle"></i> <span class="finding-breakdown">UNIT:</span><span class="finding-breakdown-stat"><i class="a-booboo"></i> {{count($a->unit_nlts)}}</span><span class="finding-breakdown-stat"> <i class="a-skull"></i> {{count($a->unit_lts)}}</span>
+						<i class="a-info-circle" id="audit-{{$a->id}}-unit-findings-toggle" onclick="$('#audit-{{$a->id}}-unit-findings').slideToggle();infoToggle(this);"></i> <span class="finding-breakdown" onclick="$('#audit-{{$a->id}}-unit-findings-toggle').trigger('click')">UNIT:</span><span class="finding-breakdown-stat"onclick="$('#audit-{{$a->id}}-unit-findings-toggle').trigger('click')"><i class="a-booboo"></i> {{count($a->unit_nlts)}}</span><span class="finding-breakdown-stat"onclick="$('#audit-{{$a->id}}-unit-findings-toggle').trigger('click')"> <i class="a-skull"></i> {{count($a->unit_lts)}}</span>
+						@if(count($a->findings->where('unit_id','<>',null)))
+							<div id="audit-{{$a->id}}-unit-findings" style="display: none; margin-top: 21px; margin-bottom: 24px">
+								<?php 	$findings = $a->findings->where('cancelled_at',null)->where('unit_id','<>',null)->sortBy('unit.unit_name');
+										$cancelledFindings = $a->findings->where('cancelled_at','<>',null)->where('unit_id',null)->where('unit_id',null)->sortBy('unit.unit_name');
+								?>
+								@forEach($findings as $f)
+									<i class="{{$f->icon()}}"></i> <span onClick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)">F|N: {{$f->id}} BIN: {{$f->unit->building->building_name}} UNIT: {{$f->unit->unit_name}} OH-{{strtoupper($f->finding_type->type)}}-{{$f->finding_type_id}} Level {{$f->level}}</span><br />@if(count($f->comments)) {{$f->comments->first()->comment}} @else {{$f->finding_type->name}} @endIf
+									<hr />
+								@endForEach
+								<div class="close-long-box " onclick="$('#audit-{{$a->id}}-unit-findings-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE UNIT FINDINGS</div>
+							</div>
+						@endIf
 						<hr class="dashed-hr ">
 						<div class="close-long-box " onclick="$('#audit-{{$a->id}}-findings-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE FINDINGS</div>
 					</div>
