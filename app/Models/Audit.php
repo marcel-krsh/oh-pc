@@ -85,19 +85,76 @@ class Audit extends Model
     {
         return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'nlt');
-        });
+            
+        })->whereNull('cancelled_at');
+    }
+    public function site_nlts() : HasMany
+    {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
+            $query->where('type', '=', 'nlt');
+            
+        })
+        ->whereNull('cancelled_at')
+        ->whereNull('building_id')->whereNull('unit_id');
+    }
+    public function building_nlts() : HasMany
+    {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
+            $query->where('type', '=', 'nlt');
+            
+        })
+        ->whereNull('cancelled_at')
+        ->whereNotNull('building_id');
+    }
+    public function unit_nlts() : HasMany
+    {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
+            $query->where('type', '=', 'nlt');
+            
+        })
+        ->whereNull('cancelled_at')
+        ->whereNotNull('unit_id');
     }
     public function lts() : HasMany
     {
         return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'lt');
-        });
+            
+        })->whereNull('cancelled_at');
+    }
+    public function site_lts() : HasMany
+    {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
+            $query->where('type', '=', 'lt');
+            
+        })
+        ->whereNull('cancelled_at')
+        ->whereNull('building_id')->whereNull('unit_id');
+    }
+    public function building_lts() : HasMany
+    {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
+            $query->where('type', '=', 'lt');
+            
+        })
+        ->whereNull('cancelled_at')
+        ->whereNotNull('building_id');
+    }
+    public function unit_lts() : HasMany
+    {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
+            $query->where('type', '=', 'lt');
+            
+        })
+        ->whereNull('cancelled_at')
+        ->whereNotNull('unit_id');
     }
     public function files() : HasMany
     {
         return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'file');
-        });
+            
+        })->whereNull('cancelled_at');
     }
     public function findings() : HasMany
     {

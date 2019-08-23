@@ -27,10 +27,10 @@
 	    		<button onclick="saveBoilerplace();"><i class="a-file-text"></i> Save as new boilerplate for this finding</button>
 	    	</div> -->
 	    	
-	    	<div class="uk-width-1-2">
+	    	<div class="uk-width-1-2@m uk-visible@m">
 	    		
 	    	</div>
-	    	<div class="uk-width-1-2">
+	    	<div class="uk-width-1-2@m uk-width-1-1@s">
 	    		<input type="hidden" id="finding_id" name="finding_id" value="{{$finding->id}}" />
 	    		<button class="uk-button uk-button-success uk-width-1-1" onclick="saveFinding(event);"><i class="a-file-pen"></i> SAVE FINDING</button>
 	    	</div>

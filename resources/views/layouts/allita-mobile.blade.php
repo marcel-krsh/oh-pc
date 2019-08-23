@@ -60,8 +60,58 @@ if ($allowPageLoad) {
 		body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
 			opacity:1 !important;
 		}
+		html{
+			background-color: black !important;
+		}
 		/*Universal header styles*/
 
+		body,h1,h2,h3,h4,h5,p,ul,li,a {
+			color:white !important;
+		}
+		.uk-modal{
+			background-color: darkgray;
+			width: 99%;
+			border: 1px solid white;
+		}
+		#modal-size,#modal-size-2,#modal-size-3{
+			width:92% !important;
+			padding:20px !important;
+			background-color: black;
+			
+			border: 1px solid white;
+			margin-left: calc(.7% )!important;
+			height: 98%!important;
+    		max-height: 98%!important;
+		}
+		.uk-modal-header{
+			    margin-bottom: 15px;
+			    margin: -20px -20px 15px -20px;
+			    padding: 20px;
+			    border-bottom: 1px solid #dddddd;
+			    border-radius: 4px 4px 0 0;
+			    background: #000000 !important;
+		}
+		.uk-modal-title{
+			    font-size: 15px !important;
+   				line-height: 36px !important;
+		}
+		.uk-modal-title h4{
+			line-height: 0px !important;
+		    margin-top: 0px !important;
+		    margin-left: 35px !important;
+		    position: relative;
+		    top: -19px;
+		}
+		.uk-close{
+			color: lightgray !important;
+		}
+		.uk-button {
+			background: white;
+    		color: black !important;
+		}
+		.uk-button-success{
+			background-color: #73FF6B !important;
+		}
 		#apcsv-logo {
 			position: relative; top: -9px; padding-left: 10px; display: inline-block;
 		}
@@ -158,6 +208,75 @@ if ($allowPageLoad) {
 			left:0;
 			background: #000;
 		}
+		h3 .a-info-circle, h3 .a-circle-up{
+			position: relative;
+			top:1px;
+			margin-right: 4px;
+		}
+		a.uk-button i.a-phone-talk {
+			position: relative;
+		    font-size: 19px;
+		    top: 3px;
+			
+		}
+		a.uk-button i.a-comment {
+			position: relative;
+		    font-size: 19px;
+		    top: 3px;
+			
+		}
+		a.uk-button i.a-envelope-4 {
+			position: relative;
+		    font-size: 20px;
+		    top: 3px;
+			
+		}
+		#apcsv-avatar {
+		    float: left;
+		    margin-right: 25px;
+		    border-radius: 20px;
+		    width: 30px;
+		    height: 30px;
+		    padding: 5px;
+		    font-size: 20px;
+		    background: #d4e9ff;
+		    text-align: center;
+		    -webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+		    -moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+		    box-shadow: 0px 4px 5px 0px rgba(255, 255, 255, 0.22);
+		    color: black;
+		    line-height: 28px;
+		}
+		.audit-info-mobile li {
+			    margin-bottom: 6px;
+			    border-bottom: 1px dotted #737373;
+			    padding-bottom: 11px;
+		}
+		.findings-details-mobile i.a-booboo, .findings-details-mobile i.a-skull {
+			font-size: 21px;
+		    position: relative;
+		    top: 3px;
+		    margin-right: 3px;
+		}
+		.finding-breakdown{
+			width: 84px;
+			font-size: 15px;
+			display: inline-table;;
+		}
+		.finding-breakdown-stat{
+			width: 80px;
+			display: inline-table;;
+		}
+		.close-long-box {
+			    background-color: #9a9a9a;
+			    color: black;
+			    width: 96%;
+			    text-align: center;
+			    padding: 5px;
+			    font-size: 14px;
+			    font-weight: bold;
+			    margin-top: 13px;
+		}
 
 	</style>
 	<?php /* session(['disablePacer'=>0]); */?>
@@ -213,14 +332,7 @@ if ($allowPageLoad) {
 		.uk-notification {z-index: 1060;}
 	</style>
 
-	<script>
-		// initial values
-		var statsAuditsTotal = "{{$stats_audits_total}}";
-		var statsCommunicationTotal = "{{$stats_communication_total}}";
-		var statsReportsTotal = "{{$stats_reports_total}}";
-		var uid = "{{$current_user->id}}";
-		var sid = "{{$current_user->socket_id}}";
-	</script>
+	
 
 </head>
 <body >
@@ -228,14 +340,13 @@ if ($allowPageLoad) {
 	<!-- MOBILE -->
 	<div id="phone" class="uk-visible-touch uk-hidden@s">
 		<div id="phone-app" class="uk-container uk-padding-small uk-align-center" >
-			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 100px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
-				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h3 style="margin-bottom: 0px"><i class="a-menu uk-text-muted uk-contrast" style="color:white !important; font-weight: bolder; margin-right:5px; font-size: 20px;"></i> Dev|Co Mobile Inspection Launcher</h3></a>
+			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 20px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
+				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h3 style="margin-bottom: 0px"><i class="a-menu uk-text-muted uk-contrast" style="color:white !important; font-weight: bolder; margin-right:5px; font-size: 20px;position: relative; top: 2px;"></i> @yield('header')</h3></a>
 			</div>
 			<div class="uk-container">
 
-				<div id="mobile-content" uk-grid style="height: 1600px; padding:20px !important">
-					<i class="a-mobile-home uk-contrast uk-align-center use-hand-cursor" style="font-size: 116px; padding-right: 13px; padding-bottom: 16px;border-radius: 27px;border: 10px solid;padding-top: 16px;" ></i>
-					<div class="uk-button uk-padding-small-top uk-margin-top uk-width-1-1"><strong>LAUNCH MOBILE INSPECTION</strong></div>
+				<div id="mobile-content" class="" uk-grid style="height:100%; padding:20px !important" >
+					@yield('content')
 				</div>
 				<script type="text/javascript">
 					isMobile = function(){
@@ -259,6 +370,7 @@ if ($allowPageLoad) {
 			<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
 								{{Auth::user()->initials()}}
 							</div>
+							@yield('side_bar_links')
 
 			
 
@@ -269,19 +381,19 @@ if ($allowPageLoad) {
 	<div id="dynamic-modal" uk-modal>
 		<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content">
 			<a class="uk-modal-close-default" uk-close></a>
-			<div id="dynamic-modal-content"></div>
+			<div id="dynamic-modal-content" style="height: 100%; overflow-y: scroll;"></div>
 		</div>
 	</div>
 	<div id="dynamic-modal-2" uk-modal>
 		<div id="modal-size-2" class="uk-modal-dialog uk-modal-body uk-modal-content">
 			<a class="uk-modal-close-default" uk-close></a>
-			<div id="dynamic-modal-content-2"></div>
+			<div id="dynamic-modal-content-2" style="height: 100%; overflow-y: scroll;"></div>
 		</div>
 	</div>
 	<div id="dynamic-modal-3" uk-modal>
 		<div id="modal-size-3" class="uk-modal-dialog uk-modal-body uk-modal-content">
 			<a class="uk-modal-close-default" uk-close></a>
-			<div id="dynamic-modal-content-3"></div>
+			<div id="dynamic-modal-content-3" style="height: 100%; overflow-y: scroll;"></div>
 		</div>
 	</div>
 

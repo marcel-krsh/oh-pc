@@ -234,8 +234,12 @@ if ($allowPageLoad) {
 			<div class="uk-container">
 
 				<div id="mobile-content" uk-grid style="height: 1600px; padding:20px !important">
-					<i class="a-mobile-home uk-contrast uk-align-center use-hand-cursor" style="font-size: 116px; padding-right: 13px; padding-bottom: 16px;border-radius: 27px;border: 10px solid;padding-top: 16px;" ></i>
-					<div class="uk-button uk-padding-small-top uk-margin-top uk-width-1-1"><strong>LAUNCH MOBILE INSPECTION</strong></div>
+					@can('access_auditor')
+					<i onclick="window.location.href='/mobile/audits'" class="a-mobile-home uk-contrast uk-align-center use-hand-cursor" style="font-size: 116px; padding-right: 13px; padding-bottom: 16px;border-radius: 27px;border: 10px solid;padding-top: 16px;" ></i>
+					<div onclick="window.location.href='/mobile/audits'" class="uk-button uk-padding-small-top uk-margin-top uk-width-1-1"><strong>LAUNCH MOBILE INSPECTION</strong></div>
+					@else
+						<h2 class="uk-contrast">Sorry, we do not currently support access on this device for property managers and owners.</h2>
+					@endCan
 				</div>
 				<script type="text/javascript">
 					isMobile = function(){
@@ -255,11 +259,15 @@ if ($allowPageLoad) {
 
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
-
+			@can('access_auditor')
 			<h3 style="font-weight: bolder;">Using Your Phone Instead?</h3>
 
 			<p style="font-weight: bolder;">Click the launch button to open the mobile version of the site optimized for your phone. The features are limited in this version and will be added to over time.</p>
+			@else
+			<h3 style="font-weight: bolder;">Using Your Phone?</h3>
 
+			<p style="font-weight: bolder;">Please tell your contact about how you would like to be able to utilize your phone to review and resolve your items.</p>
+			@endCan
 		</div>
 	</div>
 
@@ -368,21 +376,21 @@ if ($allowPageLoad) {
 
 				<a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
 				<div id="dynamic-modal" uk-modal>
-					<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content">
+					<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content"  uk-overflow-auto>
 						<a class="uk-modal-close-default" uk-close></a>
-						<div id="dynamic-modal-content"></div>
+						<div id="dynamic-modal-content" style="height: 100%; overflow-y: scroll;"></div>
 					</div>
 				</div>
 				<div id="dynamic-modal-2" uk-modal>
-					<div id="modal-size-2" class="uk-modal-dialog uk-modal-body uk-modal-content">
+					<div id="modal-size-2" class="uk-modal-dialog uk-modal-body uk-modal-content"  uk-overflow-auto>
 						<a class="uk-modal-close-default" uk-close></a>
-						<div id="dynamic-modal-content-2"></div>
+						<div id="dynamic-modal-content-2"style="height: 100%; overflow-y: scroll;"></div>
 					</div>
 				</div>
 				<div id="dynamic-modal-3" uk-modal>
-					<div id="modal-size-3" class="uk-modal-dialog uk-modal-body uk-modal-content">
+					<div id="modal-size-3" class="uk-modal-dialog uk-modal-body uk-modal-content"  uk-overflow-auto>
 						<a class="uk-modal-close-default" uk-close></a>
-						<div id="dynamic-modal-content-3"></div>
+						<div id="dynamic-modal-content-3"style="height: 100%; overflow-y: scroll;"></div>
 					</div>
 				</div>
 			</div>

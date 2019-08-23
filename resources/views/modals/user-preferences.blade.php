@@ -13,7 +13,7 @@
 							<input type="hidden" name="_token" value="{{csrf_token()}}">
 						</form>
 						@can('access_auditor')
-						<a href="javascript:launchMobile()" class="uk-button uk-button-small uk-padding-small-top uk-align-left" style="margin-left: 38px; padding-top: 3px;"><i class="a-mobile-home"></i> SEND AUTO-LOGIN TO YOUR PHONE</a>
+						<a href="javascript:launchMobile()" class="uk-button uk-button-small uk-padding-small-top uk-align-left uk-visible@m" style="margin-left: 38px; padding-top: 3px;"><i class="a-mobile-home"></i> SEND AUTO-LOGIN TO YOUR PHONE</a>
 							<script>
 								function launchMobile(){
 									var number = prompt("Please enter your mobile area code and phone number (no dashes or spaces please)");
@@ -38,7 +38,7 @@
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<hr />
 
-						<h3 class="uk-margin-small-top">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>@can('access_root')
+						<h3 class="uk-margin-small-top uk-visible@m">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>@can('access_root')
 						<div class="uk-grid-small uk-margin-remove" uk-grid>
 							<div class="uk-width-1-3 uk-padding-remove">
 								<label class="uk-text-small">Max Hours per Day</label>

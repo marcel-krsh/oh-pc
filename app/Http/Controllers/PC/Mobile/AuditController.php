@@ -58,8 +58,33 @@ class AuditController extends Controller
 
     public function index(Request $request){
         $user = Auth::user();
-        $cachedAudits = CachedAudit::with('audit.auditors')->where('auditors.user_id',$user->id)->orWhere('lead',$user->id)->where('step_id','>',59)->where('step_id','<',67);
-        return view('pc.mobile.audits',compact('user','cachedAudits'));
+        $auditsA = Audit::
+        has('cached_audit')
+        ->whereHas('auditors',function($query){
+            $query->where('user_id',Auth::id());
+        })
+        ->with('cached_audit')
+        ->with('project')
+        ->with('lead')
+        ->with('nlts')
+        ->with('lts')
+        ->groupBy('id')
+        ->get();
+
+        $auditsB = Audit::
+        has('cached_audit')
+        ->with('cached_audit')
+        ->with('project')
+        ->with('lead')
+        ->with('nlts')
+        ->with('lts')
+        ->with('findings')
+        ->where('lead_user_id',$user->id)
+        ->groupBy('id')
+        ->get();
+        $audits = $auditsA->merge($auditsB);
+        $audits = $audits->sortBy('project.project_name');
+        return view('pc.mobile.audits',compact('user','audits'));
     }
     
 
