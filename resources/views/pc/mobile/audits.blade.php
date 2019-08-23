@@ -54,7 +54,7 @@ MY AUDITS ({{count($audits)}})
 							@forEach($a->auditors as $auditor)
 
 								<hr class="dashed-hr uk-margin-bottom">
-								<i class="a-info-circle" onclick="$('#audit-{{$a->id}}-auditor-{{$auditor->id}}-info').slideToggle();infoToggle(this)"></i> {{$auditor->user->name}} 
+								<i class="a-info-circle" id="audit-{{$a->id}}-auditor-{{$auditor->id}}-info-toggle" onclick="$('#audit-{{$a->id}}-auditor-{{$auditor->id}}-info').slideToggle();infoToggle(this)"></i> <span onclick="$('#audit-{{$a->id}}-auditor-{{$auditor->id}}-info-toggle').trigger('click')">{{$auditor->user->name}} </span>
 							
 								<div id="audit-{{$a->id}}-auditor-{{$auditor->id}}-info" style="display: none; margin-bottom: 24px; margin-top:21px;"> 
 									<a class="uk-button" href="mailto:{{$auditor->email}}"><i class="a-envelope-4"></i></a> 
