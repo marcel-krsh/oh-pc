@@ -26,7 +26,7 @@ MY AUDITS ({{count($audits)}})
 										$cancelledFindings = $a->findings->where('cancelled_at','<>',null)->where('building_id',null)->where('unit_id',null)->sortBy('date_of_finding');
 								?>
 								@forEach($findings as $f)
-									<i class="{{$f->icon()}}"></i> <span onClick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)">F|N: {{$f->id}} OH-{{strtoupper($f->finding_type->type)}}-{{$f->finding_type_id}} Level {{$f->level}}</span><br />@if(count($f->comments)) {{$f->comments->first()->comment}} @else {{$f->finding_type->name}} @endIf
+									<i class="{{$f->icon()}}"></i> <span onClick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)"><span class="dimmer">F|N</span>{{$f->id}} OH-{{strtoupper($f->finding_type->type)}}-{{$f->finding_type_id}} Level {{$f->level}}</span><br />@if(count($f->comments)) {{$f->comments->first()->comment}} @else {{$f->finding_type->name}} @endIf
 									<hr />
 								@endForEach
 								<div class="close-long-box " onclick="$('#audit-{{$a->id}}-site-findings-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE SITE FINDINGS</div>
@@ -40,7 +40,7 @@ MY AUDITS ({{count($audits)}})
 										$cancelledFindings = $a->findings->where('cancelled_at','<>',null)->where('building_id',null)->where('unit_id',null)->sortBy('building.building_name');
 								?>
 								@forEach($findings as $f)
-									<i class="{{$f->icon()}}"></i> <span onClick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)">F|N: {{$f->id}} BIN: {{$f->building->building_name}} OH-{{strtoupper($f->finding_type->type)}}-{{$f->finding_type_id}} Level {{$f->level}}</span><br />@if(count($f->comments)) {{$f->comments->first()->comment}} @else {{$f->finding_type->name}} @endIf
+									<i class="{{$f->icon()}}"></i> <span onClick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)"><span class="dimmer">F|N</span>{{$f->id}} <span class="dimmer">BIN</span>{{$f->building->building_name}} <br />OH-{{strtoupper($f->finding_type->type)}}-{{$f->finding_type_id}} Level {{$f->level}}</span><br />@if(count($f->comments)) {{$f->comments->first()->comment}} @else {{$f->finding_type->name}} @endIf
 									<hr />
 								@endForEach
 								<div class="close-long-box " onclick="$('#audit-{{$a->id}}-building-findings-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE BUILDING FINDINGS</div>
@@ -54,7 +54,7 @@ MY AUDITS ({{count($audits)}})
 										$cancelledFindings = $a->findings->where('cancelled_at','<>',null)->where('unit_id',null)->where('unit_id',null)->sortBy('unit.unit_name');
 								?>
 								@forEach($findings as $f)
-									<i class="{{$f->icon()}}"></i> <span onClick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)">F|N: {{$f->id}} BIN: {{$f->unit->building->building_name}} UNIT: {{$f->unit->unit_name}} OH-{{strtoupper($f->finding_type->type)}}-{{$f->finding_type_id}} Level {{$f->level}}</span><br />@if(count($f->comments)) {{$f->comments->first()->comment}} @else {{$f->finding_type->name}} @endIf
+									<i class="{{$f->icon()}}"></i> <span onClick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)"><span class="dimmer">F|N</span>{{$f->id}} <span class="dimmer">BIN</span>{{$f->unit->building->building_name}} #{{$f->unit->unit_name}} <br/>OH-{{strtoupper($f->finding_type->type)}}-{{$f->finding_type_id}} Level {{$f->level}}</span><br />@if(count($f->comments)) {{$f->comments->first()->comment}} @else {{$f->finding_type->name}} @endIf
 									<hr />
 								@endForEach
 								<div class="close-long-box " onclick="$('#audit-{{$a->id}}-unit-findings-toggle').trigger('click');"><i class="a-circle-up"></i> CLOSE UNIT FINDINGS</div>

@@ -247,6 +247,29 @@ if ($allowPageLoad) {
 		    top: 3px;
 			
 		}
+		.dimmer{
+			color: #d4d2d2;
+		    font-size: 10px;
+		    font-weight: bold;
+		    vertical-align: bottom;
+			transform: rotate(-90deg);
+
+
+			  /* Legacy vendor prefixes that you probably don't need... */
+
+			  /* Safari */
+				-webkit-transform: rotate(-90deg);
+
+			  /* Firefox */
+			  -moz-transform: rotate(-90deg);
+
+			  /* IE */
+			  -ms-transform: rotate(-90deg);
+
+			  /* Opera */
+			  -o-transform: rotate(-90deg);
+			  display: inline-table;
+		}
 		#apcsv-avatar {
 		    float: left;
 		    margin-right: 25px;
