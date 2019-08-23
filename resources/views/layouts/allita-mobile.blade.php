@@ -62,11 +62,24 @@ if ($allowPageLoad) {
 		}
 		html{
 			background-color: black !important;
+			font-size:20px;
 		}
 		/*Universal header styles*/
 
 		body,h1,h2,h3,h4,h5,p,ul,li,a {
 			color:white !important;
+		}
+		p,div{
+			font-size: 20px !important;
+		}
+		h3,h4,h5 {
+			font-size: 23px !important;
+		}
+		h2 {
+			font-size: 25px !important;
+		}
+		h1 {
+			font-size:27px !important;
 		}
 		.uk-modal{
 			background-color: darkgray;
@@ -338,14 +351,14 @@ if ($allowPageLoad) {
 <body >
 	<a name="top"></a>
 	<!-- MOBILE -->
-	<div id="phone" class="uk-visible-touch uk-hidden@s">
+	<div id="phone" class="uk-visible-touch ">
 		<div id="phone-app" class="uk-container uk-padding-small uk-align-center" >
 			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 20px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
 				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h3 style="margin-bottom: 0px"><i class="a-menu uk-text-muted uk-contrast" style="color:white !important; font-weight: bolder; margin-right:5px; font-size: 20px;position: relative; top: 2px;"></i> @yield('header')</h3></a>
 			</div>
 			<div class="uk-container">
 
-				<div id="mobile-content" class="" uk-grid style="height:100%; padding:20px !important" >
+				<div id="mobile-content" class="" uk-grid style="height:100%; padding:3px !important" >
 					@yield('content')
 				</div>
 				<script type="text/javascript">
