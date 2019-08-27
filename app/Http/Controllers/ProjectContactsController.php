@@ -9,6 +9,7 @@ use App\Models\Organization;
 use App\Models\PhoneNumber;
 use App\Models\PhoneNumberType;
 use App\Models\Project;
+use App\Models\ProjectContactRole;
 use App\Models\ReportAccess;
 use App\Models\Role;
 use App\Models\State;
@@ -32,6 +33,10 @@ class ProjectContactsController extends Controller
     $user_ids              = $this->allUserIdsInProject($project);
     $project_user_ids      = $this->projectUserIds($project);
     $allita_user_ids       = $this->allitaUserIds($project);
+    $projectUserPersonIds  = $this->projectUserPersonIds($project);
+    $contactsWithoutUsers  = ProjectContactRole::join('people','people.id','person_id')->where('project_id',$project)
+                            ->whereNotIn('person_id',$projectUserPersonIds)->with('organization')->with('person.organizations')->with('projectRole')->with('person.email')->with('person.phone')->orderBy('people.last_name')->orderBy('people.id')
+                            ->get();
     $project_report_access = ReportAccess::where('project_id', $project)->get();
     $default_report_user   = $project_report_access->where('default', 1)->first();
     $default_report_owner  = $project_report_access->where('owner_default', 1)->first();
@@ -74,7 +79,7 @@ class ProjectContactsController extends Controller
 
     $default_email       = $users->pluck('user_emails')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
     $default_owner_email = $users->pluck('user_emails')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
-    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id', 'default_owner_id', 'default_devco_owner_id', 'default_owner_org', 'default_owner_addr', 'default_owner_phone', 'default_email', 'default_owner_email'));
+    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id', 'default_owner_id', 'default_devco_owner_id', 'default_owner_org', 'default_owner_addr', 'default_owner_phone', 'default_email', 'default_owner_email','contactsWithoutUsers','projectUserPersonIds'));
   }
 
   protected function projectUserIds($project_id)
@@ -89,6 +94,20 @@ class ProjectContactsController extends Controller
       $project_user_ids = [];
     }
     return $project_user_ids;
+  }
+
+  protected function projectUserPersonIds($project_id)
+  {
+    $project = Project::with('contactRoles.person')->find($project_id); //DEVCO
+    // Check if they have Devco, else check allita -
+    // Test with Charlene Wray
+    if ($project->contactRoles) {
+      $project_person_ids = $project->contactRoles->pluck('person_id');
+      $project_user_person_ids   = User::whereIn('person_id', $project_person_ids)->pluck('person_id')->toArray();
+    } else {
+      $project_user_person_ids = [];
+    }
+    return $project_user_person_ids;
   }
 
   protected function allitaOnlyUserIds($project_id)

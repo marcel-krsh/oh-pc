@@ -20,7 +20,11 @@
 </div>
 @endif
 <div id="dynamic-modal-content">
-  <h2 class="uk-text-uppercase uk-text-emphasis">Create New User</h2>
+  @if(null == $contact)
+    <h2 class="uk-text-uppercase uk-text-emphasis">Create New User</h2>
+  @else
+    <h2 class="uk-text-uppercase uk-text-emphasis">Create User For {{$contact->first_name}} {{$contact->last_name}}</h2>
+  @endIf
   <hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
   <div class="alert alert-danger uk-text-danger" style="display:none"></div>
   <form id="userForm" action="{{ route('admin.createuser') }}" method="post" role="userForm">
@@ -32,21 +36,21 @@
           <select id="role" name="role" class="uk-width-1-1 uk-select">
             <option value="0">No Access</option>
             @foreach($roles as $role)
-            	<option value="{{ $role->id }}" >{{ $role->role_name }}</option>
+            	<option value="{{ $role->id }}" @if($contact !== null && $role->id == 1) selected @endIf >{{ $role->role_name }}</option>
             @endforeach
           </select>
         </div>
         <div class="uk-width-1-1 uk-margin-top">
           <label for="name">First Name<span class="uk-text-danger uk-text-bold">*</span> :</label>
-          <input type="text" class="uk-input uk-width-1-1" name="first_name" placeholder="Enter First name">
+          <input type="text" class="uk-input uk-width-1-1" name="first_name" placeholder="Enter First name" @if(null !== $contact) value="{{$contact->first_name}}"@endIf>
         </div>
         <div class="uk-width-1-1 uk-margin-top">
           <label for="name">Last Name<span class="uk-text-danger uk-text-bold">*</span> :</label>
-          <input type="text" class="uk-input uk-width-1-1" name="last_name" placeholder="Enter Last name">
+          <input type="text" class="uk-input uk-width-1-1" name="last_name" placeholder="Enter Last name" @if(null !== $contact) value="{{$contact->last_name}}"@endIf>
         </div>
         <div class="uk-width-1-1 uk-margin-top">
           <label for="name">Work Email<span class="uk-text-danger uk-text-bold">*</span> :</label>
-          <input type="text" class="uk-input uk-form-large uk-width-1-1" name="email" placeholder="Enter Email">
+          <input type="text" class="uk-input uk-form-large uk-width-1-1" name="email" placeholder="Enter Email" @if(null !== $contact && $contact->email !== null) value="{{$contact->email->email_address}}"@endIf>
         </div>
        {{--  <div class="uk-width-1-1 uk-margin-top">
           <label for="name">Password<span class="uk-text-danger uk-text-bold">*</span> :</label>
@@ -60,7 +64,7 @@
           <label for="name">Badge Color :</label>
           <select name="badge_color" class="uk-width-1-1 uk-select">
             <option value="blue">Select Badge</option>
-            <option value="blue" >Blue</option>
+            <option value="blue" selected>Blue</option>
             <option value="green" >Green</option>
             <option value="orange" >Orange</option>
             <option value="pink" >Pink</option>
@@ -72,7 +76,7 @@
         </div>
         <div class="uk-width-1-1 uk-margin-top">
           <label for="name">Business Phone Number :</label><br>
-          <input id="business_phone_number" type="text" class="uk-input uk-width-1-3" name="business_phone_number" placeholder="Format: xxx-xxx-xxxx">
+          <input id="business_phone_number" type="text" class="uk-input uk-width-1-3" name="business_phone_number" placeholder="Format: xxx-xxx-xxxx" @if(null !== $contact && $contact->phone !== null) value="{{$contact->phone->area_code}}{{$contact->phone->phone_number}}"@endIf>
           <input id="phone_extension" type="number" class="uk-input uk-width-1-3" name="phone_extension" placeholder="xxxx">
         </div>
       </div>
@@ -123,6 +127,20 @@
       </div> --}}
     </div>
     <div class="uk-grid">
+      @if(count($projects))
+      <div class="uk-width-1-1 uk-margin-bottom">
+        <h3>Adding to @if(count($projects) == 1)Project @else Projects @endIf</h3>
+          <ul>
+            @forEach($projects as $p)
+              <li>{{$p->project_number}} : {{$p->project_name}}</li>
+            @endForEach
+            <input type="hidden" name="projects" value="{{implode(',',$projectIds)}}">
+            <input type="hidden" name="person_id" value="{{$contact->id}}">
+          </ul>
+      </div>
+      <hr class="uk-width-1-1 uk-margin-bottom">
+      @endIf
+      <div class="uk-width-1-2"></div>
       <div class="uk-width-1-4">
         <a class="uk-button uk-button-default uk-width-1-1" onclick="dynamicModalClose()"><span uk-icon="times-circle"></span> CANCEL</a>
       </div>
@@ -132,99 +150,16 @@
     </div>
   </form>
 </div>
-<script type="text/javascript">
+<script src="https://unpkg.com/imask"></script>
+<script>
 
-  function phone_formatting(ele,restore) {
-    var new_number,
-    selection_start = ele.selectionStart,
-    selection_end = ele.selectionEnd,
-    number = ele.value.replace(/\D/g,'');
-    // automatically add dashes
-    if (number.length > 2) {
-      // matches: 123 || 123-4 || 123-45
-      new_number = number.substring(0,3) + '-';
-      if (number.length === 4 || number.length === 5) {
-        // matches: 123-4 || 123-45
-        new_number += number.substr(3);
-      }
-      else if (number.length > 5) {
-        // matches: 123-456 || 123-456-7 || 123-456-789
-        new_number += number.substring(3,6) + '-';
-      }
-      if (number.length > 6) {
-        // matches: 123-456-7 || 123-456-789 || 123-456-7890
-        new_number += number.substring(6);
-      }
-    }
-    else {
-      new_number = number;
-    }
+  var codeMask = IMask(
+  document.getElementById('business_phone_number'),
+  {
+    mask: '(000) 000-0000'
+  });
 
-    // if value is heigher than 12, last number is dropped
-    // if inserting a number before the last character, numbers
-    // are shifted right, only 12 characters will show
-    ele.value =  (new_number.length > 12) ? new_number.substring(0,12) : new_number;
-
-    // restore cursor selection,
-    // prevent it from going to the end
-    // UNLESS
-    // cursor was at the end AND a dash was added
-
-    if (new_number.slice(-1) === '-' && restore === false && (new_number.length === 8 && selection_end === 7) || (new_number.length === 4 && selection_end === 3)) {
-      selection_start = new_number.length;
-      selection_end = new_number.length;
-    }
-    else if (restore === 'revert') {
-      selection_start--;
-      selection_end--;
-    }
-    ele.setSelectionRange(selection_start, selection_end);
-  }
-
-  function business_phone_number_check(field,e) {
-    var key_code = e.keyCode,
-    key_string = String.fromCharCode(key_code),
-    press_delete = false,
-    dash_key = 189,
-    delete_key = [8,46],
-    direction_key = [33,34,35,36,37,38,39,40],
-    selection_end = field.selectionEnd;
-
-    // delete key was pressed
-    if (delete_key.indexOf(key_code) > -1) {
-      press_delete = true;
-    }
-
-    // only force formatting is a number or delete key was pressed
-    if (key_string.match(/^\d+$/) || press_delete) {
-      phone_formatting(field,press_delete);
-    }
-    // do nothing for direction keys, keep their default actions
-    else if(direction_key.indexOf(key_code) > -1) {
-      // do nothing
-    }
-    else if(dash_key === key_code) {
-      if (selection_end === field.value.length) {
-        field.value = field.value.slice(0,-1)
-      }
-      else {
-        field.value = field.value.substring(0,(selection_end - 1)) + field.value.substr(selection_end)
-        field.selectionEnd = selection_end - 1;
-      }
-    }
-    // all other non numerical key presses, remove their value
-    else {
-      e.preventDefault();
-      //    field.value = field.value.replace(/[^0-9\-]/g,'')
-      phone_formatting(field,'revert');
-    }
-  }
-
-  document.getElementById('business_phone_number').onkeyup = function(e) {
-    business_phone_number_check(this,e);
-  }
-
-  function submitNewUser() {
+function submitNewUser() {
    jQuery.ajaxSetup({
     headers: {
       'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -238,15 +173,17 @@
     data[this.name] = this.value;
   });
    jQuery.ajax({
-    url: "{{ URL::route("admin.createuser") }}",
+    @if(null == $contact)
+      url: "{{ URL::route("admin.createuser") }}",
+    @else
+      url: "{{ URL::route("admin.createuser_for_contact") }}",
+    @endIf
     method: 'post',
     data: {
       first_name: data['first_name'],
       last_name: data['last_name'],
       role: data['role'],
       email: data['email'],
-      // password: data['password'],
-      // password_confirmation: data['password_confirmation'],
       badge_color: data['badge_color'],
       organization: data['organization'],
       business_phone_number: data['business_phone_number'],
@@ -256,8 +193,9 @@
       state_id: data['state_id'],
       zip: data['zip'],
       zip_4: data['zip_4'],
+      person_id: data['person_id'],
+      projects: data['projects'],
       phone_extension: data['phone_extension'],
-      api_token: data['api_token'],
       '_token' : '{{ csrf_token() }}'
     },
     success: function(data){

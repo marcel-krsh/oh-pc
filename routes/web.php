@@ -68,6 +68,9 @@
             Route::get('/change_log','PagesController@changeLog');
             Route::get('/compliance_rerun/{audit_id}', 'Phase1ComplianceSelection@runSimpleCompliance');
             Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
+            Route::get('/modals/createuser_for_contact', 'PagesController@createUser');
+            Route::post('/modals/createuser_for_contact', 'PagesController@createUserForContactSave')->name('admin.createuser_for_contact');
+                
 
 
             // Route::get('/testProject/{project}', function($project){

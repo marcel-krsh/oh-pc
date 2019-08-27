@@ -258,7 +258,106 @@
 				</tbody>
 			</table>
 			{{-- <a name="userbottom"></a> --}}
+			<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
+			<h2>Project Contacts Without A User Login {{$project->id}}</h2>
+			<table class="uk-table uk-table-striped uk-table-hover">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>NAME</th>
+						<th>CONTACT ROLE</th>
+						<th>ORGANIZATIONS</th>
+						<th>PROJECTS</th>
+						<th>CONTACT PHONE</th>
+						<th>CONTACT EMAIL</th>
+						<th>ACTION</th>
+					</tr>
+				</thead>
+				<tbody>
+					@forEach($contactsWithoutUsers as $contact)
+					<tr>
+						<td>{{$contact->person->id}}</td>
+						<td> {{$contact->person->first_name}} {{$contact->person->last_name}}</td>
+						<td>{{$contact->projectRole->role_name}}</td>
+						<td>
+							@if($contact->organization)
+								{{$contact->organization->organization_name}}
+								
+								@if(count($contact->person->organizations))
+									<hr class="dashed-hr uk-margin-bottom" >
+									Other Organizations This Contact is Associated With:
+									<ul>
+										@forEach($contact->person->organizations as $org)
+											@if($org->id !== $contact->organization_id)
+												<li>{{$org->organization_name}}</li>
+											@endIf
+										@endForEach
+									</ul>
+								@endIf
+							@elseif(count($contact->person->organizations)) 
+								No Organization is Assigned to This Role
+								
+								<hr class="dashed-hr uk-margin-bottom" >
+								Other Organizations This Contact is Associated With:
+									@forEach($contact->person->organizations as $org)
+										{{$org->organization_name}}
+										@if(null !== $org->address)
+											{{$org->address->line_1}} 
+											@if($org->address->line_2)
+												<br />{{$org->address->line_2}}
+											@endIf
+											<br />@if($org->address->city) 
+													{{$org->address->city}},
+												 @endIf {{$org->address->state}} {{$org->address->zip}} 
+										
+										@endIf
+									@endForEach
+							@else
+								<span uk-tooltip title="This person may be associated with an organization, however I can only see if they are a default contact for an organization.">NA</span>
+							@endIf</td>
+						<td>@if(count($contact->person->projects)>1)
+								<span onclick="$('#contact-{{$contact->id}}-projects').slideToggle();" class="use-hand-cursor"><i class="a-info-circle"></i> 
+									Total Projects: {{count($contact->person->projects)}}</span>
+								<div id="contact-{{$contact->id}}-projects" style="display: none;">
+									<ul>
+										@forEach($contact->person->projects as $p)
+											<li @if($p->id == $project->id) style="font-weight:bold" @endIf>
+												{{$p->project_number}} : {{$p->project_name}}
+											</li>
+										@endForEach
+									</ul>
+								</div>
+							@endIf
+							
+						</td>
+						<td>@if(null !== $contact->person->phone)({{$contact->person->phone->area_code}}) {{substr($contact->person->phone->phone_number,0,3)}}-{{substr($contact->person->phone->phone_number,2,4)}} @else NA @endIf</td>
+						<td>
+							@if(null !== $contact->person->email)
+							<a href="mailto:{{$contact->person->email->email_address}}" target="_blank">{{$contact->person->email->email_address}}</a> @if(null !== $contact->person->matchingUserByEmail) <span class="uk-warning attention" uk-title="User {{$contact->person->matchingUserByEmail->name}} is using this email address.">!!!</span>@endIf @else NA @endIf</td>
+						<td><span class="use-hand-cursor">ACTION</span>
+<div uk-dropdown="mode:click">
+    <ul class="uk-nav uk-dropdown-nav">
+        <li ><a onclick="dynamicModalLoad('createuser_for_contact?contact={{$contact->id}}&on_project={{$project->id}}');">Create User & Add to This Project</a></li>
+        @if(count($contact->person->projects)>1)
+        <li><a href="#">Create User & Add to All Their Projects</a></li>
+        @endif
+        <li ><a href="#">Remove Person From This Project</a></li>
+        @if(count($contact->person->projects)>1)
+        <li><a href="#">Remove Person From All Their Projects</a></li>
+        @endif
+        <li><a href="#">Combine this Contact with a Project User<br />(Using This Information)</a></li>
+        <li><a href="#">Combine this Contact with a Project User<br /> (Using Project User's Information)</a></li>
+        @if(null !== $contact->person->matchingUserByEmail)
+        <li ><a href="#">Combine this Contact With Conflicting User (using user {{$contact->person->matchingUserByEmail->name}}'s' information)</a></li>
+        <li ><a href="#">Combine this Contact With Conflicting User (using contact {{$contact->person->first_name}} {{$contact->person->last_name}}'s information)</a></li>
+        @endIf
+    </ul>
+</div></td>
+					</tr>
+					@endForEach
+				</tbody>
 		</div>
+		Project User Person Ids: {{print_r($projectUserPersonIds)}}
 	</div>
 </div>
 <script>
