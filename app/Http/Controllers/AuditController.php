@@ -1660,10 +1660,14 @@ class AuditController extends Controller
         if($default_user) { //&& $default_user->user->name != $details_new->manager_poc
         	$details_new->manager_poc = $default_user->user->name;
         	$details_new->save();
-        } elseif($project_default_user) {
+        } elseif($project_default_user && $project_default_user->person && $project_default_user->person->user) {
         	$details_new->manager_poc = $project_default_user->person->user->name;
         	$details_new->save();
+        } elseif($project_default_user && $project_default_user->person){
+            $details_new->manager_poc = $project_default_user->person->first_name.' '.$project_default_user->person->last_name;
+            $details_new->save();   
         }
+        
         $default_address  = UserAddresses::with('user', 'address')->where('project_id', $id)->where('default', 1)->first();
         if($default_address) { // && $default_address->address->line_1 != $details_new->manager_address
         	$details_new->manager_address = $default_address->address->line_1;
