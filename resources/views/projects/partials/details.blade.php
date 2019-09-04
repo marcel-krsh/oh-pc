@@ -241,6 +241,7 @@
 
     	UIkit.modal('#modal-select-audit').hide();
     	$('#modal-select-audit').remove();
+    	dynamicModalClose();
 
     	$.post("/session/project.{{ $project->id }}.selectedaudit/"+nextAudit, {
             '_token' : '{{ csrf_token() }}'
