@@ -1,6 +1,6 @@
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
-		<div id="project-details-main-row" class="{{$selected_audit->status}}">
+		<div id="project-details-main-row" class="{{ $selected_audit->status }}">
 			<div class="uk-grid-match" uk-grid>
 				<div class="uk-width-1-4 uk-padding-remove">
 					<div uk-grid>
@@ -8,13 +8,13 @@
 							<i class="a-square-right-2"></i>
 						</div>
 						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 7px;">
-							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$selected_audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$selected_audit->lead_json->color}} no-float uk-link">
-								{{$selected_audit->lead_json->initials}}
+							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{ $selected_audit->lead_json->name }};" title="" aria-expanded="false" class="user-badge user-badge-{{ $selected_audit->lead_json->color }} no-float uk-link">
+								{{ $selected_audit->lead_json->initials }}
 							</span>
 						</div>
 						<div class="uk-width-3-5" style="padding-right:0">
-							<h3 id="audit-project-name-1" class="uk-margin-bottom-remove">{{$project->project_number}}</h3>
-			            	<small class="uk-text-muted" style="font-size: 0.7em;">AUDIT {{$selected_audit->audit_id}}</small>
+							<h3 id="audit-project-name-1" class="uk-margin-bottom-remove">{{ $project->project_number }}</h3>
+			            	<small class="uk-text-muted" style="font-size: 0.7em;">AUDIT {{ $selected_audit->audit_id }}</small>
 						</div>
 					</div>
 				</div>
@@ -27,22 +27,22 @@
 									<div class="uk-text-center hasdivider" uk-grid>
 						            	<div class="uk-width-1-2 uk-padding-remove" uk-grid>
 						            		<div class="uk-width-1-3 iconpadding">
-						            			<i class="{{$selected_audit->inspection_icon}} {{$selected_audit->inspection_status}}" uk-tooltip="title:{{$selected_audit->inspection_status_text}};"></i>
+						            			<i class="{{ $selected_audit->inspection_icon }} {{ $selected_audit->inspection_status }}" uk-tooltip="title:{{ $selected_audit->inspection_status_text }};"></i>
 						            		</div>
 						            		<div class="uk-width-2-3 uk-padding-remove">
 						            			@if(!is_null($selected_audit->inspection_schedule_date))
-							            		<h3 class="uk-link uk-margin-remove" uk-tooltip="title:{{$selected_audit->inspection_schedule_text}};">{{date('m/d',strtotime($selected_audit->inspection_schedule_date))}}</h3>
-							            		<div class="dateyear">{{date('Y',strtotime($selected_audit->inspection_schedule_date))}}</div>
+							            		<h3 class="uk-link uk-margin-remove" uk-tooltip="title:{{ $selected_audit->inspection_schedule_text }};">{{ date('m/d',strtotime($selected_audit->inspection_schedule_date)) }}</h3>
+							            		<div class="dateyear">{{ date('Y',strtotime($selected_audit->inspection_schedule_date)) }}</div>
 							            		@else
 							            		<i class="a-calendar-pencil" uk-tooltip="title:Schedule Using Assignment Below;"></i>
 							            		@endif
 
 						            		</div>
 						            	</div>
-						            	<div class="uk-width-1-6 iconpadding uk-text-right" uk-tooltip="title:{{$selected_audit->auditor_items()}} INSPECTABLE ITEMS;">{{$selected_audit->auditor_items()}}@if($selected_audit->lead == Auth::user()->id)*@endif /</div>
-						            	<div class="uk-width-1-6 iconpadding uk-text-left">{{$selected_audit->total_items}}</div>
+						            	<div class="uk-width-1-6 iconpadding uk-text-right" uk-tooltip="title:{{ $selected_audit->auditor_items() }} INSPECTABLE ITEMS;">{{ $selected_audit->auditor_items() }}@if($selected_audit->lead == Auth::user()->id)*@endif /</div>
+						            	<div class="uk-width-1-6 iconpadding uk-text-left">{{ $selected_audit->total_items }}</div>
 						            	<div class="uk-width-1-6 iconpadding uk-text-left">
-						            		<i class="{{$selected_audit->audit_compliance_icon}} {{$selected_audit->audit_compliance_status}}"  uk-tooltip="title:{{$selected_audit->audit_compliance_status_text}};"></i>
+						            		<i class="{{ $selected_audit->audit_compliance_icon }} {{ $selected_audit->audit_compliance_status }}"  uk-tooltip="title:{{ $selected_audit->audit_compliance_status_text }};"></i>
 						            	</div>
 						            </div>
 								</div>
@@ -50,14 +50,14 @@
 									<div class="divider"></div>
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 						            	<div class="uk-width-1-3">
-						            		<i class="a-bell-2" uk-tooltip="title:{{$selected_audit->followup_status_text}};"></i>
+						            		<i class="a-bell-2" uk-tooltip="title:{{ $selected_audit->followup_status_text }};"></i>
 						            	</div>
 						            	<div class="uk-width-2-3">
 						            		@if(is_null($selected_audit->followup_date))
 						            		<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
 						            		@else
-						            		<h3 class="uk-link uk-margin-remove" uk-tooltip="title:{{$selected_audit->inspection_schedule_text}};">{{date('m/d',strtotime($selected_audit->followup_date))}}</h3>
-							            		<div class="dateyear">{{date('Y',strtotime($selected_audit->followup_date))}}</div>
+						            		<h3 class="uk-link uk-margin-remove" uk-tooltip="title:{{ $selected_audit->inspection_schedule_text }};">{{ date('m/d',strtotime($selected_audit->followup_date)) }}</h3>
+							            		<div class="dateyear">{{ date('Y',strtotime($selected_audit->followup_date)) }}</div>
 							            	@endif
 						            	</div>
 						            </div>
@@ -113,12 +113,12 @@
 	<div id="project-details-general" class="uk-width-1-1">
 		<div uk-grid>
 			<div class="uk-width-2-3">
-				<h3>{{$project->project_name}}<br /><small>Project {{$project->project_number}} @if($project->currentAudit())| Current Audit {{$project->currentAudit()->audit_id}}@endif</small></h3>
+				<h3>{{ $project->project_name }}<br /><small>Project {{ $project->project_number }} @if($selected_audit)| Current Audit {{ $selected_audit->audit_id }}@endif</small></h3>
 			</div>
 			<div class="uk-width-1-3">
 				<div class="audit-info" style="width: 80%;float: left;">
-				Last Audit Completed: {{$project->lastAuditCompleted()}}<br />
-				Next Audit Due By: {{$project->nextDueDate()}}<br />
+				Last Audit Completed: {{ $project->lastAuditCompleted() }}<br />
+				Next Audit Due By: {{ $project->nextDueDate() }}<br />
 				Current Project Score : N/A
 				</div>
 				<div class="audit-refresh">
@@ -139,10 +139,10 @@
 			<div class="uk-width-1-2 uk-padding-remove">
 				<div uk-grid>
 					<div class="uk-width-1-2">
-						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{$project->id}}, 'compliance', this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
+						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{ $project->id }}, 'compliance', this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 					</div>
 					<div class="uk-width-1-2">
-						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$project->id}}, 'assignment', this);" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
+						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{ $project->id }}, 'assignment', this);" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
 					</div>
 				</div>
 			</div>
@@ -157,7 +157,7 @@
         <h2 class="uk-modal-title">Select another audit</h2>
         <select name="audit-selection" id="audit-selection" class="uk-select">
         	@foreach($audits as $audit)
-        	<option value="{{$audit->audit_id}}" @if($audit->audit_id == $selected_audit->audit_id) selected @endif>Audit {{$audit->audit_id}} @if($audit->completed_date) | Completed on {{formatDate($audit->completed_date)}}@endif</option>
+        	<option value="{{ $audit->audit_id }}" @if($audit->audit_id == $selected_audit->audit_id) selected @endif>Audit {{ $audit->audit_id }} @if($audit->completed_date) | Completed on {{ formatDate($audit->completed_date) }}@endif</option>
         	@endforeach
         </select>
         <p class="uk-text-right">
@@ -242,7 +242,7 @@
     	UIkit.modal('#modal-select-audit').hide();
     	$('#modal-select-audit').remove();
 
-    	$.post("/session/project.{{$project->id}}.selectedaudit/"+nextAudit, {
+    	$.post("/session/project.{{ $project->id }}.selectedaudit/"+nextAudit, {
             '_token' : '{{ csrf_token() }}'
         }, function(data) {
             loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);
@@ -276,6 +276,6 @@ $( document ).ready(function() {
 	if($('#project-details-info-container').html() == ''){
 		$('#project-details-button-1').trigger("click");
 	}
-	loadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
+	loadProjectDetailsBuildings( {{ $project->id }}, {{ $project->id }} ) ;
 });
 </script>

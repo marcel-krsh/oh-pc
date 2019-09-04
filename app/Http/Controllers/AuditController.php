@@ -986,11 +986,11 @@ class AuditController extends Controller
                     $unit_amenity->delete();
                 }
 
-                
+
                 if(null !== $ordering_amenities){
                 	$ordering_amenities->delete();
                 }
-                
+
 
                 $new_comment = new Comment([
                     'user_id' => Auth::user()->id,
@@ -1665,9 +1665,9 @@ class AuditController extends Controller
         	$details_new->save();
         } elseif($project_default_user && $project_default_user->person){
             $details_new->manager_poc = $project_default_user->person->first_name.' '.$project_default_user->person->last_name;
-            $details_new->save();   
+            $details_new->save();
         }
-        
+
         $default_address  = UserAddresses::with('user', 'address')->where('project_id', $id)->where('default', 1)->first();
         if($default_address) { // && $default_address->address->line_1 != $details_new->manager_address
         	$details_new->manager_address = $default_address->address->line_1;
