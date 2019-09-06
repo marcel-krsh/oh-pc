@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Models\People;
 use App\Models\EmailAddress;
 use App\Models\EmailAddressType;
 use App\Models\Organization;
@@ -30,6 +31,7 @@ class ProjectContactsController extends Controller
 
   public function contacts($project)
   {
+  	// return $project;
     $user_ids              = $this->allUserIdsInProject($project);
     $project_user_ids      = $this->projectUserIds($project);
     $allita_user_ids       = $this->allitaUserIds($project);
@@ -130,7 +132,7 @@ class ProjectContactsController extends Controller
     return $user_ids;
   }
 
-  public function addUserToProject($project_id)
+  public function addUserToProject($project_id, $combine = 0)
   {
     if (Auth::user()->auditor_access()) {
       $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
@@ -146,11 +148,87 @@ class ProjectContactsController extends Controller
         ->orderBy('organization_name', 'asc')
         ->orderBy('last_name', 'asc')
         ->get();
-      return view('modals.add-user-to-project', compact('roles', 'organizations', 'states', 'recipients', 'project_id'));
+      if($combine) {
+      	return view('modals.combine-contact-with-user', compact('roles', 'organizations', 'states', 'recipients', 'project_id'));
+      } else {
+      	return view('modals.add-user-to-project', compact('roles', 'organizations', 'states', 'recipients', 'project_id'));
+      }
     } else {
       $tuser = Auth::user();
       return 'Sorry you do not have access to this page.';
     }
+  }
+
+  public function combineContactWithUser($contact_id, $project_id, $project_users = 0)
+  {
+    if (Auth::user()->auditor_access()) {
+    	if($project_users) {
+	      $user_ids      = $this->allUserIdsInProject($project_id);
+	      $recipients    = User::whereIn('users.id', $user_ids)
+	        ->join('people', 'people.id', 'users.person_id')
+	        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+	        ->join('users_roles', 'users_roles.user_id', 'users.id')
+	        ->select('users.*', 'last_name', 'first_name', 'organization_name')
+	        ->where('active', 1)
+	        ->orderBy('organization_name', 'asc')
+	        ->orderBy('last_name', 'asc')
+	        ->get();
+    	} else {
+    		$recipients    = User::join('people', 'people.id', 'users.person_id')
+	        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+	        ->join('users_roles', 'users_roles.user_id', 'users.id')
+	        ->select('users.*', 'last_name', 'first_name', 'organization_name')
+	        ->where('active', 1)
+	        ->orderBy('organization_name', 'asc')
+	        ->orderBy('last_name', 'asc')
+	        ->get();
+    	}
+
+    	return view('modals.combine-contact-with-user', compact('roles', 'organizations', 'states', 'recipients', 'contact_id'));
+    } else {
+      $tuser = Auth::user();
+      return 'Sorry you do not have access to this page.';
+    }
+  }
+
+
+  public function saveCombineContactWithUser(Request $request)
+  {
+  	// return $request->all();
+  	$validator = \Validator::make($request->all(), [
+      'recipients_array' => 'required',
+      'contact_id' => 'required',
+    ], [
+      'recipients_array.required' => 'Select atleast one user',
+      'contact_id.required' => 'Something went wrong, contact admin',
+    ]);
+    if ($validator->fails()) {
+      return response()->json(['errors' => $validator->errors()->all()]);
+    }
+  	$contact = People::with('phone', 'allita_phone')->with('email')->with('fax')->find(intval($request->contact));
+  	$user = User::whereIn('id', $request->recipients_array)->first();
+  	$old_user = $user;
+  	if($user) {
+  		// Email address table
+      $email_address_type                   = EmailAddressType::where('email_address_type_name', 'Work')->first();
+      $email_address                        = $contact->email;
+  		$user->name  = $contact->first_name . ' ' . $contact->last_name;
+      $user->email = $email_address->email_address;
+      $user->person_id   = $contact->id;
+      $user->person_key   = $contact->person_key;
+      $user->save();
+      $project_contact_roles = ProjectContactRole::where('person_id', $old_user->person_id)->get();
+      foreach ($project_contact_roles as $key => $pcr) {
+      	$new_pcr = $pcr->replicate();
+      	$new_pcr->person_id = $user->person_id;
+      	$new_pcr->person_key = $user->person_key;
+      	$new_pcr->save();
+      	$pcr->delete();
+      }
+      return 1;
+  	} else {
+  		return 'Something went wrong, contact admin';
+  	}
   }
 
   public function saveAddUserToProject($project_id, Request $request)
@@ -1003,6 +1081,24 @@ class ProjectContactsController extends Controller
         $default->owner_default = 0;
       }
       $default->save();
+    }
+    return 1;
+  }
+
+  public function removeContactFromProject(Request $request)
+  {
+  	// return $request->all();
+    $validator = \Validator::make($request->all(), [
+      'project_id'       => 'required',
+      'person_id' => 'required',
+    ]);
+    if ($validator->fails()) {
+      return 'Something went wrong, please contact admin';
+    }
+    if($request->multiple) {
+    	$project_contact_roles = ProjectContactRole::whereIn('project_id', $request->project_id)->where('person_id', $request->person_id)->delete();
+    } else {
+    	$project_contact_roles = ProjectContactRole::where('project_id', $request->project_id)->where('person_id', $request->person_id)->delete();
     }
     return 1;
   }

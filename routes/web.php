@@ -70,7 +70,7 @@
             Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
             Route::get('/modals/createuser_for_contact', 'PagesController@createUser');
             Route::post('/modals/createuser_for_contact', 'PagesController@createUserForContactSave')->name('admin.createuser_for_contact');
-                
+
 
 
             // Route::get('/testProject/{project}', function($project){
@@ -226,7 +226,7 @@
 
             // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
             Route::post('/audits-required-units','AuditController@ajaxAuditRequiredUnits')->name('ajax.audit.required.units');
-            
+
              Route::get('/projects/{id}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
              Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
 
@@ -292,6 +292,11 @@
             Route::post('/modals/make-project-default-owner-address', 'ProjectContactsController@defaultOwnerAddress')->name('user.make-project-default-owner-address');
             Route::post('/modals/make-project-default-owner-phone', 'ProjectContactsController@defaultOwnerPhone')->name('user.make-project-default-owner-phone');
             Route::post('/modals/make-project-default-owner-email', 'ProjectContactsController@defaultOwnerEmail')->name('user.make-project-default-owner-email');
+            Route::post('/modals/remove-contact-from-this-project', 'ProjectContactsController@removeContactFromProject')->name('user.remove-contact-from-this-project');
+
+
+            Route::get('/modals/{contact}/{project_id}/combine-contact-with-user/{from}', 'ProjectContactsController@combineContactWithUser');
+            Route::post('/modals/{contact}/combine-contact-with-user', 'ProjectContactsController@saveCombineContactWithUser')->name('contact.combine-with-user');
 
 
 

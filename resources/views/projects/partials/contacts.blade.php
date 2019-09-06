@@ -1,3 +1,6 @@
+@php
+$projectIds = [];
+@endphp
 <div  id="contacts-content">
 	<div class="uk-width-1-1 uk-align-center	" style="width: 90%">
 		<a name="organizationtop"></a>
@@ -32,7 +35,7 @@
 							M &nbsp; | &nbsp;O : <small>EMAIL</small>
 						</th>
 						<th>
-								ACCESS</small>
+							<small>ACCESS</small>
 						</th>
 					</tr>
 				</thead>
@@ -83,7 +86,7 @@
 							<small>
 								{{ $org->organization->organization_name }}
 							</small>
-							<i onclick="editOrganization({{ $org->id }})" id="project-organization-{{ $org->id }}" class="a-pencil" uk-tooltip="" title="{{ is_null($org->organization->organization_key) ? 'EDIT ORGANIZATION NAME / REMOVE ORGANIZATION' : 'REMOVE ORGANIZATION'}}" aria-expanded="false"></i>
+							<i onclick="editOrganization({{ $org->id }})" id="project-organization-{{ $org->id }}" class="a-pencil" uk-tooltip="" title="{{ is_null($org->organization->organization_key) ? 'EDIT ORGANIZATION NAME / REMOVE ORGANIZATION' : 'REMOVE ORGANIZATION' }}" aria-expanded="false"></i>
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@endforeach
 							<small class="use-hand-cursor" id="add-organization-{{ $user->id }}" onclick="addOrganization({{ $user->id }})"  uk-tooltip="" title="ADD NEW ORGANIZATION" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> ADD ANOTHER ORGANIZATION</small>
@@ -99,7 +102,7 @@
 							@endphp
 							<div class="uk-grid-collapse" uk-grid>
 								<div class="uk-width-1-4 uk-padding-remove">
-									
+
 									{{-- Manager --}}
 									<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultAddress({{ $user->organization_details->address->id }}, {{ $user->id }}, 1)" name="address" type="radio" uk-tooltip="" title="MAKE THIS DEFAULT ADDRESS FOR REPORT" aria-expanded="false" {{ (($exists_in_ua) || (!$default_addr && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
 									{{-- owner --}}
@@ -131,7 +134,7 @@
 								<div class="uk-width-2-3">
 									<small>
 										{!! $address->address->formatted_address() !!}
-										<i onclick="editAddress({{ $address->id }})" id="project-address-{{ $address->id }}" class="a-pencil" uk-tooltip="" title="{{ is_null($address->address->address_key) ? 'EDIT ADDRESS / REMOVE ADDRESS' : 'REMOVE ADDRESS'}}" aria-expanded="false"></i>
+										<i onclick="editAddress({{ $address->id }})" id="project-address-{{ $address->id }}" class="a-pencil" uk-tooltip="" title="{{ is_null($address->address->address_key) ? 'EDIT ADDRESS / REMOVE ADDRESS' : 'REMOVE ADDRESS' }}" aria-expanded="false"></i>
 									</small>
 								</div>
 							</div>
@@ -240,7 +243,7 @@
 						$user_roles = implode(',', $roles);
 						@endphp
 						<td>
-							<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles)}}"></i>  | </span>
+							<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles) }}"></i>  | </span>
 							<span class="use-hand-cursor" data-uk-tooltip title="{{ in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO ADD)' }}"> <i onclick="addAllitaAccess({{ $user->id }}, {{ in_array($user->id, $allita_user_ids) }})" class="{{ in_array($user->id, $allita_user_ids) ? 'a-mail-chart-up' : 'a-mail-chart-up uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
 							</span>
 							<span class="" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ACCESS TO REPORTS VIA DEVCO (THIS IS NOT RELIABLE)' : 'USER HAS NO ACCESS TO REPORTS VIA DEVCO (THIS IS NOT RELIABLE)' }}"> <i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
@@ -259,7 +262,7 @@
 			</table>
 			{{-- <a name="userbottom"></a> --}}
 			<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
-			<h2>Project Contacts Without A User Login {{$project->id}}</h2>
+			<h2>Project Contacts Without A User Login {{-- {{ $project->id }} --}}</h2>
 			<table class="uk-table uk-table-striped uk-table-hover">
 				<thead>
 					<tr>
@@ -276,88 +279,95 @@
 				<tbody>
 					@forEach($contactsWithoutUsers as $contact)
 					<tr>
-						<td>{{$contact->person->id}}</td>
-						<td> {{$contact->person->first_name}} {{$contact->person->last_name}}</td>
-						<td>{{$contact->projectRole->role_name}}</td>
+						<td>{{ $contact->person->id }}</td>
+						<td> {{ $contact->person->first_name }} {{ $contact->person->last_name }}</td>
+						<td>{{ $contact->projectRole->role_name }}</td>
 						<td>
 							@if($contact->organization)
-								{{$contact->organization->organization_name}}
-								
-								@if(count($contact->person->organizations))
-									<hr class="dashed-hr uk-margin-bottom" >
-									Other Organizations This Contact is Associated With:
-									<ul>
-										@forEach($contact->person->organizations as $org)
-											@if($org->id !== $contact->organization_id)
-												<li>{{$org->organization_name}}</li>
-											@endIf
-										@endForEach
-									</ul>
+							{{ $contact->organization->organization_name }}
+
+							@if(count($contact->person->organizations))
+							<hr class="dashed-hr uk-margin-bottom" >
+							Other Organizations This Contact is Associated With:
+							<ul>
+								@forEach($contact->person->organizations as $org)
+								@if($org->id !== $contact->organization_id)
+								<li>{{ $org->organization_name }}</li>
 								@endIf
-							@elseif(count($contact->person->organizations)) 
-								No Organization is Assigned to This Role
-								
-								<hr class="dashed-hr uk-margin-bottom" >
-								Other Organizations This Contact is Associated With:
-									@forEach($contact->person->organizations as $org)
-										{{$org->organization_name}}
-										@if(null !== $org->address)
-											{{$org->address->line_1}} 
-											@if($org->address->line_2)
-												<br />{{$org->address->line_2}}
-											@endIf
-											<br />@if($org->address->city) 
-													{{$org->address->city}},
-												 @endIf {{$org->address->state}} {{$org->address->zip}} 
-										
-										@endIf
-									@endForEach
-							@else
-								<span uk-tooltip title="This person may be associated with an organization, however I can only see if they are a default contact for an organization.">NA</span>
-							@endIf</td>
-						<td>@if(count($contact->person->projects)>1)
-								<span onclick="$('#contact-{{$contact->id}}-projects').slideToggle();" class="use-hand-cursor"><i class="a-info-circle"></i> 
-									Total Projects: {{count($contact->person->projects)}}</span>
-								<div id="contact-{{$contact->id}}-projects" style="display: none;">
-									<ul>
-										@forEach($contact->person->projects as $p)
-											<li @if($p->id == $project->id) style="font-weight:bold" @endIf>
-												{{$p->project_number}} : {{$p->project_name}}
-											</li>
-										@endForEach
-									</ul>
-								</div>
+								@endForEach
+							</ul>
 							@endIf
-							
+							@elseif(count($contact->person->organizations))
+							No Organization is Assigned to This Role
+
+							<hr class="dashed-hr uk-margin-bottom" >
+							Other Organizations This Contact is Associated With:
+							@forEach($contact->person->organizations as $org)
+							{{ $org->organization_name }}
+							@if(null !== $org->address)
+							{{ $org->address->line_1 }}
+							@if($org->address->line_2)
+							<br />{{ $org->address->line_2 }}
+							@endIf
+							<br />@if($org->address->city)
+							{{ $org->address->city }},
+							@endIf {{ $org->address->state }} {{ $org->address->zip }}
+
+							@endIf
+							@endForEach
+							@else
+							<span uk-tooltip title="This person may be associated with an organization, however I can only see if they are a default contact for an organization.">NA</span>
+							@endIf
 						</td>
-						<td>@if(null !== $contact->person->phone)({{$contact->person->phone->area_code}}) {{substr($contact->person->phone->phone_number,0,3)}}-{{substr($contact->person->phone->phone_number,2,4)}} @else NA @endIf</td>
+						<td>@if(count($contact->person->projects)>1)
+							<span onclick="$('#contact-{{ $contact->id }}-projects').slideToggle();" class="use-hand-cursor"><i class="a-info-circle"></i>
+								Total Projects: {{ count($contact->person->projects) }}
+							</span>
+							<div id="contact-{{ $contact->id }}-projects" style="display: none;">
+								<ul>
+									@forEach($contact->person->projects as $p)
+									<li @if($p->id == $project->id) style="font-weight:bold" @endIf>
+										{{ $p->project_number }} : {{ $p->project_name }}
+									</li>
+									@php
+									array_push($projectIds, $p->id);
+									@endphp
+									@endForEach
+								</ul>
+							</div>
+							@endIf
+						</td>
+						<td>@if(null !== $contact->person->phone)({{ $contact->person->phone->area_code }}) {{ substr($contact->person->phone->phone_number,0,3) }}-{{ substr($contact->person->phone->phone_number,2,4) }} @else NA @endIf</td>
 						<td>
 							@if(null !== $contact->person->email)
-							<a href="mailto:{{$contact->person->email->email_address}}" target="_blank">{{$contact->person->email->email_address}}</a> @if(null !== $contact->person->matchingUserByEmail) <span class="uk-warning attention" uk-title="User {{$contact->person->matchingUserByEmail->name}} is using this email address.">!!!</span>@endIf @else NA @endIf</td>
+							<a href="mailto:{{ $contact->person->email->email_address }}" target="_blank">{{ $contact->person->email->email_address }}</a> @if(null !== $contact->person->matchingUserByEmail) <span class="uk-warning attention" uk-title="User {{ $contact->person->matchingUserByEmail->name }} is using this email address.">!!!</span>@endIf @else NA @endIf
+						</td>
 						<td><span class="use-hand-cursor">ACTION</span>
-<div uk-dropdown="mode:click">
-    <ul class="uk-nav uk-dropdown-nav">
-        <li ><a onclick="dynamicModalLoad('createuser_for_contact?contact={{$contact->id}}&on_project={{$project->id}}');">Create User & Add to This Project</a></li>
-        @if(count($contact->person->projects)>1)
-        <li><a href="#">Create User & Add to All Their Projects</a></li>
-        @endif
-        <li ><a href="#">Remove Person From This Project</a></li>
-        @if(count($contact->person->projects)>1)
-        <li><a href="#">Remove Person From All Their Projects</a></li>
-        @endif
-        <li><a href="#">Combine this Contact with a Project User<br />(Using This Information)</a></li>
-        <li><a href="#">Combine this Contact with a Project User<br /> (Using Project User's Information)</a></li>
-        @if(null !== $contact->person->matchingUserByEmail)
-        <li ><a href="#">Combine this Contact With Conflicting User (using user {{$contact->person->matchingUserByEmail->name}}'s' information)</a></li>
-        <li ><a href="#">Combine this Contact With Conflicting User (using contact {{$contact->person->first_name}} {{$contact->person->last_name}}'s information)</a></li>
-        @endIf
-    </ul>
-</div></td>
+							<div uk-dropdown="mode:click">
+								<ul class="uk-nav uk-dropdown-nav">
+									<li ><a onclick="dynamicModalLoad('createuser_for_contact?contact={{ $contact->id }}&on_project={{ $project->id }}&project={{ $project->id }}&multiple=0');">Create User & Add to This Project</a></li>
+									@if(count($contact->person->projects)>1)
+									<li><a onclick="dynamicModalLoad('createuser_for_contact?contact={{ $contact->id }}&on_project={{ json_encode($projectIds) }}&project={{ $project->id }}&multiple=1');">Create User & Add to All Their Projects</a></li>
+									@endif
+									<li ><a onclick="removePersonFromThisProject({{ $contact->id }}, {{ $project->id }})">Remove Person From This Project</a></li>
+									@if(count($contact->person->projects)>1)
+									<li><a onclick="removePersonFromThisProject({{ $contact->id }}, {{ json_encode($projectIds) }}, 1)">Remove Person From All Their Projects</a></li>
+									@endif
+									<li><a onclick="dynamicModalLoad('{{ $contact->id }}/{{ $project->id }}/combine-contact-with-user/0');">Combine this Contact with a Project User<br />(Using This Information)</a></li>
+									<li><a onclick="dynamicModalLoad('{{ $contact->id }}/{{ $project->id }}/combine-contact-with-user/1');">Combine this Contact with a Project User<br /> (Using Project User's Information)</a></li>
+									@if(null !== $contact->person->matchingUserByEmail)
+									<li ><a href="#">Combine this Contact With Conflicting User (using user {{ $contact->person->matchingUserByEmail->name }}'s' information)</a></li>
+									<li ><a href="#">Combine this Contact With Conflicting User (using contact {{ $contact->person->first_name }} {{ $contact->person->last_name }}'s information)</a></li>
+									@endIf
+								</ul>
+							</div>
+						</td>
 					</tr>
 					@endForEach
 				</tbody>
+			</table>
 		</div>
-		Project User Person Ids: {{print_r($projectUserPersonIds)}}
+		{{-- Project User Person Ids: {{ print_r($projectUserPersonIds) }} --}}
 	</div>
 </div>
 <script>
@@ -742,6 +752,45 @@
 			}
 		});
 	}
+
+	function removePersonFromThisProject(contactId, projectId, multiple = 0) {
+		jQuery.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+			}
+		});
+		var data = { };
+		jQuery.ajax({
+			url: "{{ URL::route("user.remove-contact-from-this-project") }}",
+			method: 'post',
+			data: {
+				person_id : contactId,
+				project_id : projectId,
+				multiple: multiple,
+				'_token' : '{{ csrf_token() }}'
+			},
+			success: function(data){
+				$('.alert-danger' ).empty();
+				if(data == 1) {
+					if(multiple == 1)
+						UIkit.notification('<span uk-icon="icon: check"></span> Person removed from all his projects', {pos:'top-right', timeout:1000, status:'success'});
+					else
+						UIkit.notification('<span uk-icon="icon: check"></span> Person removed from this project', {pos:'top-right', timeout:1000, status:'success'});
+					loadProjectContacts();
+	    		// loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
+	    	}
+	    	jQuery.each(data.errors, function(key, value){
+	    		jQuery('.alert-danger').show();
+	    		jQuery('.alert-danger').append('<p>'+value+'</p>');
+	    	});
+	    }
+	  });
+	}
+
+	function loadProjectContacts() {
+		loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
+	}
+
 
 
 

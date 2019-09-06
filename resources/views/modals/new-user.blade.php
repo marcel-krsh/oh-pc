@@ -23,7 +23,7 @@
   @if(null == $contact)
     <h2 class="uk-text-uppercase uk-text-emphasis">Create New User</h2>
   @else
-    <h2 class="uk-text-uppercase uk-text-emphasis">Create User For {{$contact->first_name}} {{$contact->last_name}}</h2>
+    <h2 class="uk-text-uppercase uk-text-emphasis">Create User For {{ $contact->first_name }} {{ $contact->last_name }}</h2>
   @endIf
   <hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
   <div class="alert alert-danger uk-text-danger" style="display:none"></div>
@@ -42,15 +42,15 @@
         </div>
         <div class="uk-width-1-1 uk-margin-top">
           <label for="name">First Name<span class="uk-text-danger uk-text-bold">*</span> :</label>
-          <input type="text" class="uk-input uk-width-1-1" name="first_name" placeholder="Enter First name" @if(null !== $contact) value="{{$contact->first_name}}"@endIf>
+          <input type="text" class="uk-input uk-width-1-1" name="first_name" placeholder="Enter First name" @if(null !== $contact) value="{{ $contact->first_name }}"@endIf>
         </div>
         <div class="uk-width-1-1 uk-margin-top">
           <label for="name">Last Name<span class="uk-text-danger uk-text-bold">*</span> :</label>
-          <input type="text" class="uk-input uk-width-1-1" name="last_name" placeholder="Enter Last name" @if(null !== $contact) value="{{$contact->last_name}}"@endIf>
+          <input type="text" class="uk-input uk-width-1-1" name="last_name" placeholder="Enter Last name" @if(null !== $contact) value="{{ $contact->last_name }}"@endIf>
         </div>
         <div class="uk-width-1-1 uk-margin-top">
           <label for="name">Work Email<span class="uk-text-danger uk-text-bold">*</span> :</label>
-          <input type="text" class="uk-input uk-form-large uk-width-1-1" name="email" placeholder="Enter Email" @if(null !== $contact && $contact->email !== null) value="{{$contact->email->email_address}}"@endIf>
+          <input type="text" class="uk-input uk-form-large uk-width-1-1" name="email" placeholder="Enter Email" @if(null !== $contact && $contact->email !== null) value="{{ $contact->email->email_address }}"@endIf>
         </div>
        {{--  <div class="uk-width-1-1 uk-margin-top">
           <label for="name">Password<span class="uk-text-danger uk-text-bold">*</span> :</label>
@@ -76,7 +76,7 @@
         </div>
         <div class="uk-width-1-1 uk-margin-top">
           <label for="name">Business Phone Number :</label><br>
-          <input id="business_phone_number" type="text" class="uk-input uk-width-1-3" name="business_phone_number" placeholder="Format: xxx-xxx-xxxx" @if(null !== $contact && $contact->phone !== null) value="{{$contact->phone->area_code}}{{$contact->phone->phone_number}}"@endIf>
+          <input id="business_phone_number" type="text" class="uk-input uk-width-1-3" name="business_phone_number" placeholder="Format: xxx-xxx-xxxx" @if(null !== $contact && $contact->phone !== null) value="{{ $contact->phone->area_code }}{{ $contact->phone->phone_number }}"@endIf>
           <input id="phone_extension" type="number" class="uk-input uk-width-1-3" name="phone_extension" placeholder="xxxx">
         </div>
       </div>
@@ -127,15 +127,16 @@
       </div> --}}
     </div>
     <div class="uk-grid">
-      @if(count($projects))
+      @if($projects && count($projects))
       <div class="uk-width-1-1 uk-margin-bottom">
         <h3>Adding to @if(count($projects) == 1)Project @else Projects @endIf</h3>
           <ul>
             @forEach($projects as $p)
-              <li>{{$p->project_number}} : {{$p->project_name}}</li>
+              <li>{{ $p->project_number }} : {{ $p->project_name }}</li>
             @endForEach
-            <input type="hidden" name="projects" value="{{implode(',',$projectIds)}}">
-            <input type="hidden" name="person_id" value="{{$contact->id}}">
+            <input type="hidden" name="projects" value="{{ is_array($projectIds) ? json_encode($projectIds, true) : implode(',',$projectIds) }}">
+            <input type="hidden" name="person_id" value="{{ $contact->id }}">
+            <input type="hidden" name="multiple" value="{{ $multiple }}">
           </ul>
       </div>
       <hr class="uk-width-1-1 uk-margin-bottom">
@@ -152,6 +153,14 @@
 </div>
 <script src="https://unpkg.com/imask"></script>
 <script>
+
+	$(document).ready(function(){
+		var codeMask = IMask(
+	  document.getElementById('business_phone_number'),
+	  {
+	    mask: '(000) 000-0000'
+	  });
+	});
 
   var codeMask = IMask(
   document.getElementById('business_phone_number'),
@@ -194,6 +203,7 @@ function submitNewUser() {
       zip: data['zip'],
       zip_4: data['zip_4'],
       person_id: data['person_id'],
+      multiple: data['multiple'],
       projects: data['projects'],
       phone_extension: data['phone_extension'],
       '_token' : '{{ csrf_token() }}'
@@ -203,7 +213,11 @@ function submitNewUser() {
       if(data == 1) {
         UIkit.modal.alert('User has been saved.',{stack: true});
         dynamicModalClose();
-        $('#users-tab').trigger('click');
+        @if(null == $contact)
+        	$('#users-tab').trigger('click');
+		    @else
+		    	loadProjectContacts();
+		    @endIf
       }
       jQuery.each(data.errors, function(key, value){
         jQuery('.alert-danger').show();

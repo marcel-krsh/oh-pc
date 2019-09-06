@@ -6,11 +6,13 @@ use App\LogConverter;
 use App\Mail\EmailCreateNewUser;
 use App\Models\Account;
 use App\Models\Address;
+use App\Models\Audit;
 use App\Models\Communication;
 use App\Models\CommunicationRecipient;
 use App\Models\EmailAddress;
 use App\Models\EmailAddressType;
 use App\Models\Entity;
+use App\Models\FindingType;
 use App\Models\GuideStep;
 use App\Models\HistoricEmail;
 use App\Models\Jobs\ParcelsExportJob;
@@ -22,14 +24,12 @@ use App\Models\PhoneNumberType;
 use App\Models\Program;
 use App\Models\Project;
 use App\Models\ProjectContactRole;
-use App\Models\Audit;
 use App\Models\Report;
+use App\Models\ReportAccess;
 use App\Models\Role;
 use App\Models\State;
 use App\Models\User;
 use App\Models\UserRole;
-use App\Models\SystemSetting;
-use App\Models\FindingType;
 use Auth;
 use Excel;
 use Gate;
@@ -45,32 +45,34 @@ class PagesController extends Controller
 {
   public function __construct()
   {
-    if(env('APP_ENV')=='local'){
+    if (env('APP_ENV') == 'local') {
       Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
     }
-
-    
   }
-  function changeLog(Request $request){
+
+  public function changeLog(Request $request)
+  {
     return view('pages.change-log');
   }
-  function codes(Request $request){
-    if($request->get('code')){
+
+  public function codes(Request $request)
+  {
+    if ($request->get('code')) {
       $codeId = intval($request->get('code'));
-    }else{
+    } else {
       $codeId = null;
     }
     $codes = FindingType::get();
-    return view('crr.reac-codes',compact('codeId','codes'));
+    return view('crr.reac-codes', compact('codeId', 'codes'));
   }
 
-  public function resetTokens(){
+  public function resetTokens()
+  {
     // SystemSetting::where('key','pcapi_access_token')->delete();
     // SystemSetting::where('key','pcapi_access_token_expires')->delete();
     // SystemSetting::where('key','pcapi_refresh_token')->delete();
     // $newTokens = SystemSetting::get();
     // dd($newTokens);
-
   }
 
   public function imageGen($image)
@@ -87,7 +89,6 @@ class PagesController extends Controller
 
     return $img->response('jpg');
   }
-
 
   public function export()
   {
@@ -107,7 +108,6 @@ class PagesController extends Controller
       $job = new ParcelsExportJob($requestor, $new_report->id);
       dispatch($job);
 
-      
       return Redirect::route('reports.listparcels')->with('systemMessage', 'Your export is being processed. An email will be sent when the file is ready to download.');
       //return redirect()->back()->with('systemMessage','Parcels export is being processed. An email will be sent when the file is ready to download.');
     } else {
@@ -1922,68 +1922,72 @@ class PagesController extends Controller
   public function createUser(Request $request)
   {
     if (Auth::user()->manager_access() && null == $request->contact) {
-      $contact = null;
-      $projects = null;
+      $contact       = null;
+      $projects      = null;
       $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
       $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
       $states        = State::get();
-      return view('modals.new-user', compact('roles', 'organizations', 'states','contact','projects'));
-    } elseif(Auth::user()->auditor_access() && intval($request->contact)) {
+      return view('modals.new-user', compact('roles', 'organizations', 'states', 'contact', 'projects'));
+    } elseif (Auth::user()->auditor_access() && intval($request->contact)) {
       // check to make sure this person either is an admin or higher or is an auditor or lead on the project.
-      $projectIds = explode(',', $request->on_project);// make them an array;
-      if(is_array($projectIds)){
-        $projects = Project::whereIn('id',$projectIds)->get();
-        $allowed = 0;
-        if(count($projects)){
+      // return dd(json_decode($request->on_project));
+      // $projectIds = explode(',', $request->on_project);// make them an array;
+      $projectIds = $request->on_project;
+      $multiple   = $request->multiple;
+      // if(is_array($projectIds)){
+      if ($request->multiple) {
+        $projectIds = json_decode($request->on_project);
+      } else {
+        $projectIds = explode(',', $request->on_project);
+      }
+      if (is_array($projectIds)) {
+        $projects = Project::whereIn('id', $projectIds)->get();
+        $allowed  = 0;
+        if (count($projects)) {
           // make sure they are a auditor or lead on at least one of the projects
-          if(Auth::user()->manager_access()){
+          if (Auth::user()->manager_access()) {
             $allowed = 1;
           } else {
-            forEach($projects as $p){
-              $check = Audit::join('audit_auditors','audit_id','audits.id')->where('project_id',$p->id)->where('user_id',Auth::user()->id)->count();
-              if($check > 0){
+            foreach ($projects as $p) {
+              $check = Audit::join('audit_auditors', 'audit_id', 'audits.id')->where('project_id', $p->id)->where('user_id', Auth::user()->id)->count();
+              if ($check > 0) {
                 //return 'Found on audit '.$check[0]->id;
                 $allowed = 1;
                 break;
               }
               // check to see if they are the lead
-              $check = Audit::where('lead_user_id',Auth::user()->id)->where('project_id',$p->id)->count();
-              if($check > 0){
+              $check = Audit::where('lead_user_id', Auth::user()->id)->where('project_id', $p->id)->count();
+              if ($check > 0) {
                 //return 'Found on audit '.$check[0]->id;
                 $allowed = 1;
                 break;
               }
-              
-
-
             }
           }
-          if($allowed){
-            $contact = People::with('phone')->with('email')->with('fax')->find(intval($request->contact));
-            $check = ProjectContactRole::where('person_id',intval($request->contact))->whereIn('project_id',$projectIds)->count();
-            if(null !== $contact && $check > 0){
+          if ($allowed) {
+            $contact = People::with('phone', 'allita_phone')->with('email')->with('fax')->find(intval($request->contact));
+            $check   = ProjectContactRole::where('person_id', intval($request->contact))->whereIn('project_id', $projectIds)->count();
+            if (null !== $contact && $check > 0) {
               $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
               $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
               $states        = State::get();
-              return view('modals.new-user', compact('roles', 'organizations', 'states','contact','projects','projectIds'));
-            }else{
+              $selected_project = $request->project;
+              return view('modals.new-user', compact('roles', 'organizations', 'states', 'contact', 'projects', 'projectIds', 'multiple', 'selected_project'));
+            } else {
               return '<h1>Sorry!</h1><h3>The contact you provided could not be found in the database or they are not on the projects submitted.</h3>';
             }
-          }else{
+          } else {
             return '<h1>Sorry!</h1><h3>To add them as a user, you need to be an auditor or lead on at least one audit associated with this contact\'s projects. Please contact an audit lead, one of the auditors on an audit, or your manager to add them.</h3>';
           }
-        }else{
+        } else {
           return '<h3>Sorry the projects provided are not valid.</h3>';
         }
-      }else{
+      } else {
         return '<h3>Sorry, a project was not provided and at least one needs to be provided to add a user.</h3>';
       }
-
-    }else{
+    } else {
       return '<h3>Sorry you do not have access to this page.</h3>';
     }
-    
-    
   }
 
   public function editUser($id)
@@ -2090,13 +2094,13 @@ class PagesController extends Controller
   {
     if (Auth::user()->manager_access()) {
       $validator = \Validator::make($request->all(), [
-        'first_name' => 'required|max:255',
-        'last_name'  => 'required|max:255',
-        'email'      => 'required|email|max:255|unique:users',
+        'first_name'            => 'required|max:255',
+        'last_name'             => 'required|max:255',
+        'email'                 => 'required|email|max:255|unique:users',
         //'password'              => ['required', 'string', 'min:8', 'confirmed'],
-        'role'       => 'required',
-        // 'business_phone_number' => 'required|min:12',
-        'zip'        => 'nullable|min:5|max:5',
+        'role'                  => 'required',
+        'business_phone_number' => 'required|min:14',
+        'zip'                   => 'nullable|min:5|max:5',
         // 'state_id'              => 'required',
       ], [
         'business_phone_number.min' => 'Enter valid Business Phone Number',
@@ -2104,6 +2108,7 @@ class PagesController extends Controller
       if ($validator->fails()) {
         return response()->json(['errors' => $validator->errors()->all()]);
       }
+
       DB::beginTransaction();
       try {
         $current_user = Auth::user();
@@ -2114,9 +2119,13 @@ class PagesController extends Controller
           $phone_number_type                  = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
           $phone_number                       = new PhoneNumber;
           $phone_number->phone_number_type_id = $phone_number_type->id;
-          $phone_number->area_code            = $split_number[0];
-          $phone_number->phone_number         = $split_number[1] . $split_number[2];
-          $phone_number->extension            = $request->phone_extension;
+          $first_half                         = explode(' ', $split_number[0]);
+          $area_code                          = str_replace(['(', ')'], '', $first_half[0]);
+          $phone_number->area_code            = $area_code;
+          $phone_number->phone_number         = $first_half[1] . $split_number[1];
+          // $phone_number->area_code            = $split_number[0];
+          // $phone_number->phone_number         = $split_number[1] . $split_number[2];
+          $phone_number->extension = $request->phone_extension;
           $phone_number->save();
         } else {
           $phone_number = false;
@@ -2130,7 +2139,14 @@ class PagesController extends Controller
         $email_address->save();
 
         // People table
-        $people             = new People;
+       if ($request->has('from_contact')) {
+       		$people = People::find($request->person_id);
+       		if(!$people) {
+       			return 'Something went wrong, please contact admin';
+       		}
+       } else {
+ 	        $people             = new People;
+       }
         $people->last_name  = $request->last_name;
         $people->first_name = $request->first_name;
         if ($phone_number) {
@@ -2189,12 +2205,17 @@ class PagesController extends Controller
           $user_role->user_id = $user->id;
           $user_role->save();
         }
+        // return 'done';
         //Trigger email to User to create password, save it in HistoricEmail - look into Mail/EmailNotification
         $email_notification = new EmailCreateNewUser($current_user, $user);
         \Mail::to($user->email)->send($email_notification);
         DB::commit();
         //$some = $email_notification->render(); // For some reason, email histories was not saving until this is being rendered
-        return 1;
+        if ($request->has('from_contact')) {
+          return $user->id;
+        } else {
+          return 1;
+        }
       } catch (\Exception $e) {
         DB::rollBack();
         $data_insert_error = $e->getMessage();
@@ -2211,175 +2232,79 @@ class PagesController extends Controller
 
   public function createUserForContactSave(Request $request)
   {
-    if(Auth::user()->auditor_access() && intval($request->person_id)) {
-
+    if (Auth::user()->auditor_access() && intval($request->person_id)) {
+      // return $request->all();
       // check access to do this action first:
-      $projectIds = explode(',', $request->on_project);// make them an array;
-      if(is_array($projectIds)){
-        $projects = Project::whereIn('id',$projectIds)->get();
-        $allowed = 0;
-        if(count($projects)){
+      $projectIds = $request->projects;
+      $multiple   = $request->multiple;
+      $projectIds = json_decode($projectIds, true);
+      if (is_array($projectIds)) {
+        $projects = Project::whereIn('id', $projectIds)->get();
+        $allowed  = 0;
+        if (count($projects)) {
           // make sure they are a auditor or lead on at least one of the projects
-          if(Auth::user()->manager_access()){
+          if (Auth::user()->manager_access()) {
             $allowed = 1;
           } else {
-            forEach($projects as $p){
-              $check = Audit::join('audit_auditors','audit_id','audits.id')->where('project_id',$p->id)->where('user_id',Auth::user()->id)->count();
-              if($check > 0){
+            foreach ($projects as $p) {
+              $check = Audit::join('audit_auditors', 'audit_id', 'audits.id')->where('project_id', $p->id)->where('user_id', Auth::user()->id)->count();
+              if ($check > 0) {
                 //return 'Found on audit '.$check[0]->id;
                 $allowed = 1;
                 break;
               }
               // check to see if they are the lead
-              $check = Audit::where('lead_user_id',Auth::user()->id)->where('project_id',$p->id)->count();
-              if($check > 0){
+              $check = Audit::where('lead_user_id', Auth::user()->id)->where('project_id', $p->id)->count();
+              if ($check > 0) {
                 //return 'Found on audit '.$check[0]->id;
                 $allowed = 1;
                 break;
               }
-              
-
-
             }
           }
-          if($allowed){
-        // check the submitted user:
-            $contact = People::with('phone')->with('email')->with('fax')->find(intval($request->contact));
-            $check = ProjectContactRole::where('person_id',intval($request->contact))->whereIn('project_id',$projectIds)->count();
-            if(null !== $contact && $check > 0){
-              $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
-              $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
-              $states        = State::get();
-              return view('modals.new-user', compact('roles', 'organizations', 'states','contact','projects','projectIds'));
-            
-            $validator = \Validator::make($request->all(), [
-              'first_name' => 'required|max:255',
-              'last_name'  => 'required|max:255',
-              'email'      => 'required|email|max:255|unique:users',
-              //'password'              => ['required', 'string', 'min:8', 'confirmed'],
-              'role'       => 'required',
-              // 'business_phone_number' => 'required|min:12',
-              'zip'        => 'nullable|min:5|max:5',
-              // 'state_id'              => 'required',
-            ], [
-              'business_phone_number.min' => 'Enter valid Business Phone Number',
-            ]);
-            if ($validator->fails()) {
-              return response()->json(['errors' => $validator->errors()->all()]);
-            }
-            DB::beginTransaction();
-            try {
-              $current_user = Auth::user();
-              //Phone numbers table
-              if ($request->filled('business_phone_number')) {
-                $input_phone_number                 = $request->business_phone_number;
-                $split_number                       = explode('-', $input_phone_number);
-                $phone_number_type                  = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
-                $phone_number                       = new PhoneNumber;
-                $phone_number->phone_number_type_id = $phone_number_type->id;
-                $phone_number->area_code            = $split_number[0];
-                $phone_number->phone_number         = $split_number[1] . $split_number[2];
-                $phone_number->extension            = $request->phone_extension;
-                $phone_number->save();
+          if ($allowed) {
+            // return $request->person_id;
+            // check the submitted user:
+            $contact = People::with('phone')->with('email')->with('fax')->find(intval($request->person_id));
+            $check   = ProjectContactRole::where('person_id', intval($request->person_id))->whereIn('project_id', $projectIds)->count();
+            if (null !== $contact && $check > 0) {
+              // $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
+              // $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
+              // $states        = State::get();
+              // return view('modals.new-user', compact('roles', 'organizations', 'states', 'contact', 'projects', 'projectIds'));
+              $request->request->add(['from_contact' => 1]);
+              $request->request->add(['person_id' => $request->person_id]);
+              // allita_phone, phone, email, fax exists
+              $user = $this->createUserSave($request);
+              if($user && is_int($user)) {
+              	foreach ($projectIds as $key => $project_id) {
+              		$check_user = ReportAccess::where('project_id', $project_id)->where('user_id', $user)->get();
+						      if (count($check_user) == 0) {
+						        $report_user             = new ReportAccess;
+						        $report_user->project_id = $project_id;
+						        $report_user->user_id    = $user;
+						        $report_user->save();
+						      }
+              	}
+              	return 1;
               } else {
-                $phone_number = false;
+      	        	return $user;
               }
-
-              // Email address table
-              $email_address_type                   = EmailAddressType::where('email_address_type_name', 'Work')->first();
-              $email_address                        = new EmailAddress;
-              $email_address->email_address         = $request->email;
-              $email_address->email_address_type_id = $email_address_type->id;
-              $email_address->save();
-
-              // People table
-              $people             = new People;
-              $people->last_name  = $request->last_name;
-              $people->first_name = $request->first_name;
-              if ($phone_number) {
-                $people->default_phone_number_id = $phone_number->id;
-              }
-
-              $people->default_email_address_id = $email_address->id;
-              $people->is_active                = 1;
-              $people->save();
-
-              // User table
-              $user        = new User;
-              $user->name  = $people->first_name . ' ' . $people->last_name;
-              $user->email = $email_address->email_address;
-              //$user->active        = 1;
-              $user->password     = bcrypt(str_random(8));
-              $user->badge_color  = $request->badge_color;
-              $input_organization = $request->organization;
-              if (!is_null($input_organization)) {
-                $organization_selected = Organization::find($input_organization);
-                $user->organization    = $organization_selected->organization_name;
-                $user->organization_id = $organization_selected->id;
-              }
-              $input_role = $request->role;
-              if ($input_role > 1) {
-                return $this->extraCheckErrors($validator);
-              }
-              $selected_role     = Role::find($input_role);
-              $user->email_token = alpha_numeric_random(60);
-              $user->person_id   = $people->id;
-              $user->save();
-
-              // Address table
-              if ($request->filled('address_line_1') || $request->filled('city') || $request->filled('state_id') || $request->filled('zip')) {
-                $address         = new Address;
-                $address->line_1 = $request->address_line_1;
-                $address->line_2 = $request->address_line_2;
-                $address->city   = $request->city;
-                $input_state_id  = $request->state_id;
-                if (!is_null($input_state_id)) {
-                  $state_selected    = State::find($input_state_id);
-                  $address->state_id = $input_state_id;
-                  $address->state    = $state_selected->state_acronym;
-                }
-                $address->zip     = $request->zip;
-                $address->zip_4   = $request->zip_4;
-                $address->user_id = $user->id;
-                $address->default = 1;
-                $address->save();
-              }
-
-              // User role table
-              if ($input_role) {
-                $user_role          = new UserRole;
-                $user_role->role_id = $input_role;
-                $user_role->user_id = $user->id;
-                $user_role->save();
-              }
-              //Trigger email to User to create password, save it in HistoricEmail - look into Mail/EmailNotification
-              $email_notification = new EmailCreateNewUser($current_user, $user);
-              \Mail::to($user->email)->send($email_notification);
-              DB::commit();
-              //$some = $email_notification->render(); // For some reason, email histories was not saving until this is being rendered
-              return 1;
-            } catch (\Exception $e) {
-              DB::rollBack();
-              $data_insert_error = $e->getMessage();
-            }
-            return $this->extraCheckErrors($validator);
-          }else{
+              // return $this->extraCheckErrors($validator);
+            } else {
               return '<h1>Sorry!</h1><h3>The contact you provided could not be found in the database or they are not on the projects submitted.</h3>';
+            }
+          } else {
+            return '<h1>Sorry</h1><h3>The project specified could not be found. Please make sure the contact still has a contact role on each project submitted. You may need to just refresh the contacts list to have updates post.</h3>';
           }
-          
-        }else{
-          return '<h1>Sorry</h1><h3>The project specified could not be found. Please make sure the contact still has a contact role on each project submitted. You may need to just refresh the contacts list to have updates post.</h3>';
+        } else {
+          return '<h3>Sorry, a project was not provided and at least one needs to be provided to add a user.</h3>';
         }
-      }else{
-        return '<h3>Sorry, a project was not provided and at least one needs to be provided to add a user.</h3>';
-      }
-
-      
       } else {
         return '<h1>Sorry</h1><h3>You do not have sufficient priveledges to do this action.</h3>';
       }
     } else {
-      
+
       $msg = ['message' => 'Sorry you do not have access to create a user', 'status' => 0];
       return json_encode($msg);
     }
