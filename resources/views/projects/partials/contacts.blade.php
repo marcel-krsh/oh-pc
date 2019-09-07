@@ -1,5 +1,7 @@
 @php
 $projectIds = [];
+$projectsHtml = '';
+$thisProjectHtml = '';
 @endphp
 <div  id="contacts-content">
 	<div class="uk-width-1-1 uk-align-center	" style="width: 90%">
@@ -192,7 +194,7 @@ $projectIds = [];
 						$user_emails = $user->user_emails->where('project_id', $project->id);
 						@endphp
 						<td>
-							{{-- {{ dd($user->person->email) }} --}}
+							{{-- {{ dd($user->person) }} --}}
 							@if($user->person && $user->person->email)
 							@php
 							// Check if this user phone emails exists in user emails
@@ -331,6 +333,9 @@ $projectIds = [];
 									</li>
 									@php
 									array_push($projectIds, $p->id);
+									$projectsHtml = $projectsHtml . $p->project_number . ' : ' . $p->project_name . '<br>';
+									if($p->id == $project->id)
+									$thisProjectHtml = $p->project_number . ' : ' . $p->project_name;
 									@endphp
 									@endForEach
 								</ul>
@@ -343,15 +348,15 @@ $projectIds = [];
 							<a href="mailto:{{ $contact->person->email->email_address }}" target="_blank">{{ $contact->person->email->email_address }}</a> @if(null !== $contact->person->matchingUserByEmail) <span class="uk-warning attention" uk-title="User {{ $contact->person->matchingUserByEmail->name }} is using this email address.">!!!</span>@endIf @else NA @endIf
 						</td>
 						<td><span class="use-hand-cursor">ACTION</span>
-							<div uk-dropdown="mode:click">
+							<div uk-dropdown="mode:click;pos: top-right">
 								<ul class="uk-nav uk-dropdown-nav">
 									<li ><a onclick="dynamicModalLoad('createuser_for_contact?contact={{ $contact->id }}&on_project={{ $project->id }}&project={{ $project->id }}&multiple=0');">Create User & Add to This Project</a></li>
 									@if(count($contact->person->projects)>1)
 									<li><a onclick="dynamicModalLoad('createuser_for_contact?contact={{ $contact->id }}&on_project={{ json_encode($projectIds) }}&project={{ $project->id }}&multiple=1');">Create User & Add to All Their Projects</a></li>
 									@endif
-									<li ><a onclick="removePersonFromThisProject({{ $contact->id }}, {{ $project->id }})">Remove Person From This Project</a></li>
+									<li ><a onclick='removePersonFromThisProject({{ $contact->id }}, {{ $project->id }}, 0, "{{ $thisProjectHtml }}")'>Remove Person From This Project</a></li>
 									@if(count($contact->person->projects)>1)
-									<li><a onclick="removePersonFromThisProject({{ $contact->id }}, {{ json_encode($projectIds) }}, 1)">Remove Person From All Their Projects</a></li>
+									<li><a onclick='removePersonFromThisProject({{ $contact->id }}, {{ json_encode($projectIds) }}, 1, "{{ $projectsHtml}}")'>Remove Person From All Their Projects</a></li>
 									@endif
 									<li><a onclick="dynamicModalLoad('{{ $contact->id }}/{{ $project->id }}/combine-contact-with-user/0');">Combine this Contact with a Project User<br />(Using This Information)</a></li>
 									<li><a onclick="dynamicModalLoad('{{ $contact->id }}/{{ $project->id }}/combine-contact-with-user/1');">Combine this Contact with a Project User<br /> (Using Project User's Information)</a></li>
@@ -753,30 +758,36 @@ $projectIds = [];
 		});
 	}
 
-	function removePersonFromThisProject(contactId, projectId, multiple = 0) {
-		jQuery.ajaxSetup({
-			headers: {
-				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-			}
-		});
-		var data = { };
-		jQuery.ajax({
-			url: "{{ URL::route("user.remove-contact-from-this-project") }}",
-			method: 'post',
-			data: {
-				person_id : contactId,
-				project_id : projectId,
-				multiple: multiple,
-				'_token' : '{{ csrf_token() }}'
-			},
-			success: function(data){
-				$('.alert-danger' ).empty();
-				if(data == 1) {
-					if(multiple == 1)
-						UIkit.notification('<span uk-icon="icon: check"></span> Person removed from all his projects', {pos:'top-right', timeout:1000, status:'success'});
-					else
-						UIkit.notification('<span uk-icon="icon: check"></span> Person removed from this project', {pos:'top-right', timeout:1000, status:'success'});
-					loadProjectContacts();
+	function removePersonFromThisProject(contactId, projectId, multiple = 0, projectsHtml = '') {
+		if(multiple) {
+			var modalText = '<h2 class="uk-text-uppercase uk-text-emphasis">Remove Person From All Their Projects</h2><hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">' + projectsHtml;
+		} else {
+			var modalText = '<h2 class="uk-text-uppercase uk-text-emphasis">Remove Person From This Project</h2><hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">' + projectsHtml;
+		}
+		UIkit.modal.confirm(modalText).then(function() {
+			jQuery.ajaxSetup({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+				}
+			});
+			var data = { };
+			jQuery.ajax({
+				url: "{{ URL::route("user.remove-contact-from-this-project") }}",
+				method: 'post',
+				data: {
+					person_id : contactId,
+					project_id : projectId,
+					multiple: multiple,
+					'_token' : '{{ csrf_token() }}'
+				},
+				success: function(data){
+					$('.alert-danger' ).empty();
+					if(data == 1) {
+						if(multiple == 1)
+							UIkit.notification('<span uk-icon="icon: check"></span> Person removed from all his projects', {pos:'top-right', timeout:1000, status:'success'});
+						else
+							UIkit.notification('<span uk-icon="icon: check"></span> Person removed from this project', {pos:'top-right', timeout:1000, status:'success'});
+						loadProjectContacts();
 	    		// loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
 	    	}
 	    	jQuery.each(data.errors, function(key, value){
@@ -785,6 +796,10 @@ $projectIds = [];
 	    	});
 	    }
 	  });
+		}, function () {
+			console.log('Rejected.')
+		});
+
 	}
 
 	function loadProjectContacts() {

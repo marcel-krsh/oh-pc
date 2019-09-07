@@ -31,6 +31,7 @@ class ProjectContactsController extends Controller
 
   public function contacts($project)
   {
+  	// return         $last_record = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
   	// return $project;
     $user_ids              = $this->allUserIdsInProject($project);
     $project_user_ids      = $this->projectUserIds($project);
@@ -159,32 +160,20 @@ class ProjectContactsController extends Controller
     }
   }
 
-  public function combineContactWithUser($contact_id, $project_id, $project_users = 0)
+  public function combineContactWithUser($contact_id, $project_id, $using_project_user = 0)
   {
     if (Auth::user()->auditor_access()) {
-    	if($project_users) {
-	      $user_ids      = $this->allUserIdsInProject($project_id);
-	      $recipients    = User::whereIn('users.id', $user_ids)
-	        ->join('people', 'people.id', 'users.person_id')
-	        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-	        ->join('users_roles', 'users_roles.user_id', 'users.id')
-	        ->select('users.*', 'last_name', 'first_name', 'organization_name')
-	        ->where('active', 1)
-	        ->orderBy('organization_name', 'asc')
-	        ->orderBy('last_name', 'asc')
-	        ->get();
-    	} else {
-    		$recipients    = User::join('people', 'people.id', 'users.person_id')
-	        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-	        ->join('users_roles', 'users_roles.user_id', 'users.id')
-	        ->select('users.*', 'last_name', 'first_name', 'organization_name')
-	        ->where('active', 1)
-	        ->orderBy('organization_name', 'asc')
-	        ->orderBy('last_name', 'asc')
-	        ->get();
-    	}
-
-    	return view('modals.combine-contact-with-user', compact('roles', 'organizations', 'states', 'recipients', 'contact_id'));
+    	$user_ids      = $this->allUserIdsInProject($project_id);
+      $recipients    = User::whereIn('users.id', $user_ids)
+        ->join('people', 'people.id', 'users.person_id')
+        ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+        ->join('users_roles', 'users_roles.user_id', 'users.id')
+        ->select('users.*', 'last_name', 'first_name', 'organization_name')
+        ->where('active', 1)
+        ->orderBy('organization_name', 'asc')
+        ->orderBy('last_name', 'asc')
+        ->get();
+    	return view('modals.combine-contact-with-user', compact('roles', 'organizations', 'states', 'recipients', 'contact_id', 'using_project_user'));
     } else {
       $tuser = Auth::user();
       return 'Sorry you do not have access to this page.';

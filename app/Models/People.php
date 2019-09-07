@@ -48,8 +48,11 @@ class People extends Model
     public function matchingUserByEmail() : HasOne
     {
         // do not eager load this relationship it will fail
-        return $this->hasOne(\App\Models\User::class, 'email', $this->email->email_address);
-        
+        if($this->email)
+        	return $this->hasOne(\App\Models\User::class, 'email', $this->email->email_address);
+      	else
+      		return $this->hasOne(\App\Models\User::class, 'email', 'cccc');
+
     }
     public function allita_phone() : HasOne
     {

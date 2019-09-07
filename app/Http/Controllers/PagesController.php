@@ -1965,14 +1965,16 @@ class PagesController extends Controller
             }
           }
           if ($allowed) {
-            $contact = People::with('phone', 'allita_phone')->with('email')->with('fax')->find(intval($request->contact));
+            $contact = People::with('phone', 'allita_phone', 'organizations')->with('email')->with('fax')->find(intval($request->contact));
             $check   = ProjectContactRole::where('person_id', intval($request->contact))->whereIn('project_id', $projectIds)->count();
+            $project_contact_role   = ProjectContactRole::with('organization.address')->where('person_id', intval($request->contact))->whereIn('project_id', $projectIds)->first();
             if (null !== $contact && $check > 0) {
               $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
               $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
               $states        = State::get();
               $selected_project = $request->project;
-              return view('modals.new-user', compact('roles', 'organizations', 'states', 'contact', 'projects', 'projectIds', 'multiple', 'selected_project'));
+              $org = $project_contact_role->organization;
+              return view('modals.new-user', compact('roles', 'organizations', 'states', 'contact', 'projects', 'projectIds', 'multiple', 'selected_project', 'org'));
             } else {
               return '<h1>Sorry!</h1><h3>The contact you provided could not be found in the database or they are not on the projects submitted.</h3>';
             }
@@ -2119,6 +2121,9 @@ class PagesController extends Controller
           $phone_number_type                  = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
           $phone_number                       = new PhoneNumber;
           $phone_number->phone_number_type_id = $phone_number_type->id;
+          $phone_number->phone_number_type_key = $phone_number_type->phone_number_type_key;
+          $last_record = PhoneNumber::whereNotNull('phone_number_key')->orderBy('id', 'DESC')->first();
+          $phone_number->phone_number_key = $last_record->phone_number_key + 1;
           $first_half                         = explode(' ', $split_number[0]);
           $area_code                          = str_replace(['(', ')'], '', $first_half[0]);
           $phone_number->area_code            = $area_code;
@@ -2136,6 +2141,9 @@ class PagesController extends Controller
         $email_address                        = new EmailAddress;
         $email_address->email_address         = $request->email;
         $email_address->email_address_type_id = $email_address_type->id;
+        $email_address->email_address_type_key = $email_address_type->email_address_type_key;
+        $last_record = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
+        $email_address->email_address_key = $last_record->email_address_key + 1;
         $email_address->save();
 
         // People table
@@ -2151,9 +2159,11 @@ class PagesController extends Controller
         $people->first_name = $request->first_name;
         if ($phone_number) {
           $people->default_phone_number_id = $phone_number->id;
+          $people->default_phone_number_key = $phone_number->phone_number_key;
         }
 
         $people->default_email_address_id = $email_address->id;
+        $people->default_email_address_key = $email_address->email_address_key;
         $people->is_active                = 1;
         $people->save();
 
@@ -2230,7 +2240,7 @@ class PagesController extends Controller
     }
   }
 
-  public function createUserForContactSave(Request $request)
+  public function  createUserForContactSave(Request $request)
   {
     if (Auth::user()->auditor_access() && intval($request->person_id)) {
       // return $request->all();

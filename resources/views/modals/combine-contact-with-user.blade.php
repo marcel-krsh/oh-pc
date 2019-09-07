@@ -8,7 +8,13 @@
 </div>
 @endif
 <div id="dynamic-modal-content">
-	<h2 class="uk-text-uppercase uk-text-emphasis">Combine contact with one of the user</h2>
+	<h2 class="uk-text-uppercase uk-text-emphasis">
+		@if($using_project_user)
+		Combine this Contact with a Project User (Using Project User's Information)
+		@else
+		Combine this Contact with a Project User (Using This Information)
+		@endif
+	</h2>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 	<div class="alert alert-danger uk-text-danger" style="display:none"></div>
 	<form id="userForm" action="{{ route('contact.combine-with-user', $contact_id) }}" method="post" role="userForm">
@@ -92,6 +98,9 @@
 
 
 <script type="text/javascript">
+	$(document).ready(function(){
+		showRecipients()
+	});
     // filter recipients based on class
     $('#recipient-filter').on('keyup', function () {
     	var searchString = $(this).val().toLowerCase();
