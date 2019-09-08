@@ -3,13 +3,20 @@
 $inspections = $bladeData;
 $projectDetails = null;
 $findings = null;
+$dpView = null;
 if(array_key_exists(4, $pieceData)){
 	$projectDetails = $pieceData[4];
 }
 if(array_key_exists(5, $pieceData)){
 	$findings = $pieceData[5];
 }
-
+if(isset($pdtDetails)){
+	$projectDetails = $pdtDetails;
+	$findings = $pdtFindings;
+}
+if(isset($detailsPage)){
+	$dpView = 1;
+}
 ?>
 @if(null !== $projectDetails)
 @if(session('projectDetailsOutput') == 0)
@@ -64,8 +71,9 @@ if(array_key_exists(5, $pieceData)){
 $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 ?>
 <div uk-grid class="uk-margin-bottom">
+
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2>@if($totalUnits >1 || $totalUnits < 1) {{$totalUnits}} Units @else 1 Unit @endIf Audited: </h2> @can('access_auditor') <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
+		<h2 id="units-summary-header">@if($totalUnits >1 || $totalUnits < 1) {{$totalUnits}} Units @else 1 Unit @endIf @if($dpView) Selected: @else Audited: @endIf </h2> @can('access_auditor') <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
 		@endCan<style>
 			#modal-size {
 				height: 815px;
@@ -127,7 +135,11 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 			}
 			.unit-name {
 				float: left;
+				@if($dpView)
+				max-width: 360px;
+				@else
 			    max-width: 200px;
+			    @endIf
 			    margin-bottom: 8px;
 			}
 		</style>
@@ -138,9 +150,9 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 			$fileVisited = array();
 			$nameOutput = array();
 			$loops = 0;
-			if(is_array($inspections) && count($inspections)> 0){
+
 				$currentUnit = 0;
-			}
+			
 			$inspections = collect($inspections);
 			$inspections =$inspections->sortBy('unit_name');
 				//dd($inspections);
@@ -170,11 +182,11 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 		</small>
 		<hr class="dashed-hr uk-margin-bottom">
 
-		<div class="uk-column-1-3 uk-column-divider">
+		<div id="unit-column-set" class="uk-column-1-3 uk-column-divider">
 			@forEach($inspections as $i)
 			<?php $noShow = 0 ; ?>
 			@if($currentUnit != $i->unit_id)
-			<div  class="inspection-data-row">
+			<div id="unit-inspection-{{$i->unit_id}}"  class="inspection-data-row">
 
 				@if(!in_array($i->unit_id, $nameOutput))
 				<?php
@@ -190,9 +202,63 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 
 				?>
 				<div  class="unit-name"  >
-					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');">
+					@if($print !== 1 && !$dpView)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');"> @elseIf($dpView && $i->unit->household)<span onclick="$('.inspection-data-row').toggle();$('#unit-inspection-{{$i->unit_id}}').show();$('#unit-{{$i->unit_id}}').slideToggle(); if($('#unit-column-set').hasClass('uk-column-1-3')){$('#unit-column-set').removeClass('uk-column-1-3'); $('#unit-column-set').addClass('uk-column-1-2');$('#unit-{{$i->unit_id}}').css('max-width','500');$('#units-summary-header').scrollView();}else{ $('#unit-column-set').addClass('uk-column-1-3'); $('#unit-column-set').removeClass('uk-column-1-2');$('#unit-{{$i->unit_id}}').css('max-width','360px');}" class="use-hand-cursor" uk-tooltip title="CLICK TO TOGGLE VIEW OF TENANT DETAILS"><i class="a-avatar-info"></i>  
 						@endIf {{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] =$i->unit_id; ?> :
-					@if($print !== 1)</a>@endIf
+					@if($print !== 1 && !$dpView)</a> @elseIf($dpView && $i->unit->household)</span>@endIf
+					@if($dpView)
+						@if($i->unit->bedroomCount())
+							<br />Bedrooms: <strong>{{$i->unit->bedroomCount()}}</strong>
+						@endIf
+						@if(!is_null($i->unit->building->address))
+							<br /><small style="text-transform: uppercase;">{{$i->unit->building->address->line_1}} {{$i->unit->building->address->line_2}} <br />
+							{{$i->unit->building->address->city}}, {{$i->unit->building->address->state}} {{$i->unit->building->address->zip}}</small>
+						@endIf
+						@if($i->unit->household)
+						<div id="unit-{{$i->unit_id}}" style="display: none;">
+							<ul>
+							@if($i->unit->household->head_of_household_name)
+							<li>Tenant: <strong>{{$i->unit->household->head_of_household_name}}</strong> </li>
+							@endIf
+							@if($i->unit->most_recent_event())
+							<li>Most Recent Event: <strong>{{date('n/d/Y',strtotime($i->unit->most_recent_event()->event_date))}} : {{$i->unit->most_recent_event()->type->event_type_description}} </strong></li>
+							@endIf
+							@if($i->unit->household->initial_move_in_date)
+							 <li>Initial Move In Date: <strong>{{date('l n/j/Y',strtotime($i->unit->household->initial_move_in_date))}}</strong> </li>
+							@endIf
+							@if($i->unit->household->special_needs_id)
+							<li>Special Needs: <strong>{{$i->unit->household->special_needs->special_needs_description}} ({{$i->unit->household->special_needs->special_needs_code}})</strong></li>
+							@endIf
+							@if(null !== $i->unit->household->household_income_move_in)
+							<li>Household Move In Income: <strong>${{number_format($i->unit->household->household_income_move_in)}}</strong></li>
+							@endIf
+							@if($i->unit->most_recent_event())
+							<li>Current Income: <strong>${{number_format($i->unit->most_recent_event()->current_income)}} </strong>
+							</li>
+							@endIf
+
+							@if($i->unit->household->household_size_id)
+							<li>Household Size: <strong>{{$i->unit->household->household_size->household_size_description}} </strong><br > &nbsp;(at move in: {{$i->unit->household->move_in_household_size->household_size_description}})</li>
+							@endIf
+							@if($i->unit->most_recent_event())
+							<li>Household Count: <strong>{{number_format($i->unit->most_recent_event()->household_count)}} </strong></li>
+							@endIf
+							
+							@if($i->unit->most_recent_event())
+							<li>Tenant Rent Portion: <strong>${{number_format($i->unit->most_recent_event()->tenant_rent_portion)}} </strong>  </li>
+							@endIf
+							@if($i->unit->most_recent_event())
+							<li>Rental Assistance Amount: <strong>${{number_format($i->unit->most_recent_event()->rent_assistance_amount)}} </strong>@if($i->unit->most_recent_event()->rental_assistance_type_id) ({{$i->unit->most_recent_event()->rent_assistance_type->rental_assistance_type_name}})@endIf</li>
+							@endIf
+							@if($i->unit->most_recent_event())
+							<li>Utility Allowance: <strong>${{number_format($i->unit->most_recent_event()->utility_allowance)}} </strong></li>
+							@endIf
+
+
+							</ul>
+						</div>
+						@endIf
+						
+					@endIf
 				</div>
 
 				@endIf
@@ -243,7 +309,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 		<?php
 		$inspections = collect($inspections);
 		?>
-		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Site Amenities @else Site Amenity @endIf Inspected: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
+		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Site Amenities @else Site Amenity @endIf @if($dpView) Selected: @else Audited: @endIf: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 		<hr class="dashed-hr uk-margin-bottom">
 		
 		<div class="uk-column-1-3 uk-column-divider">
@@ -282,8 +348,9 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 		<?php //dd($i);
 		
 		$inspections = collect($inspections);
+
 		?>
-		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Buildings @else Building @endIf Audited: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
+		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Buildings @else Building @endIf @if($dpView) Selected: @else Audited: @endIf </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 		<hr class="dashed-hr uk-margin-bottom">
 		
 		<div class="uk-column-1-3 uk-column-divider">
@@ -293,6 +360,19 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				$currentBuilding = $i->building_id;
 				$findingCount = 'findings'.$currentBuilding;
 				$thisBuildingValues = collect($inspections)->where('building_id',$i->building_id)->sortByDesc('is_site_visit');
+				if($dpView){
+					$thisBuildingUnfinishedInspections = collect($inspections)->where('building_id',$i->building_id)->where('complete',0)->sortByDesc('is_site_visit');
+					// $building_auditors = $type->auditors($audit->audit_id);
+					$building_auditors = $selected_audit->audit->amenity_inspections->where('building_id', '=', $i->building_id)->where('auditor_id', '<>', null);
+					//dd($inspections,$building_auditors);
+					if(count($building_auditors)) {
+						$b_units = $building_auditors->pluck('building')->first();
+						$unit_ids = $b_units->units->pluck('id');
+						$unit_auditors = $selected_audit->audit->amenity_inspections->whereIn('unit_id', $unit_ids)->where('auditor_id', '<>', null);
+						$combined_auditors = $building_auditors->merge($unit_auditors);
+						$building_auditors = $combined_auditors->pluck('user')->unique();
+					}
+				}
 				$$findingCount = collect($findings);
 				$$findingCount = $$findingCount->filter(function($item) use ($currentBuilding){
 					if($item->building && $item->building->id == $currentBuilding){
@@ -311,12 +391,54 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					$hasFindings = 1;
 				}
 
+				
+				
+				
+
 			?>
 			<div  class="inspection-data-row">
 				<div  class="unit-name"  >
-					@if($print !== 1)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('building-{{$i->building_id}}-finding');">
-						@endIf {{ $i->building_name }}
-					@if($print !== 1)</a>@endIf @if($hasFindings && property_exists($i, 'latest_resolution') && $i->latest_resolution)<br /> <i class="a-checkbox-checked" uk-tooltip title ="ALL ITEMS CORRECTED"></i> {{date('m/d/Y',strtotime($i->latest_resolution))}} @elseIf($hasFindings && property_exists($i,'latest_resolution'))<br /> <span class="attention" style="color:red; display: inline-block;margin-top: 5px;"><i class="a-multiply"></i> UNCORRECTED</span> @endIf
+					@if($print !== 1 && !$dpView)
+						<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('building-{{$i->building_id}}-finding');"> 
+					@elseif($dpView) 
+						<span class="use-hand-cursor" onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" > 
+					@endIf
+					 {{ $i->building_name }}
+
+					@if($print !== 1 && !$dpView)
+					</a> 
+					@elseif($dpView) 
+					</span> 
+					@endIf 
+					@if($hasFindings && property_exists($i, 'latest_resolution') && $i->latest_resolution)
+						<br /> <i class="a-checkbox-checked" uk-tooltip title ="ALL ITEMS CORRECTED"></i> {{date('m/d/Y',strtotime($i->latest_resolution))}} 
+					@elseIf(($hasFindings && property_exists($i,'latest_resolution')) || ($dpView && !count($thisBuildingUnfinishedInspections) && $hasFindings && $i->latest_resolution == null))
+						<br /> <span class="attention" style="color:red; display: inline-block;margin-top: 5px;"><i class="a-multiply"></i> UNCORRECTED </span>
+						@if($dpView)
+							 <br/> <small onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" class="use-hand-cursor"><i class="a-circle-checked"></i> INSPECTION COMPLETE</small> 
+						@endIf 
+					@elseif($dpView && count($thisBuildingUnfinishedInspections) && ($selected_audit->step_id > 59 || count($selected_audit->audit->findings)))
+						<br /> <small onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" class="use-hand-cursor"><i class="a-circle"></i> INSPECTION IN PROGRESS</small> 
+					@elseif($dpView && !count($thisBuildingUnfinishedInspections) && !$hasFindings)
+						 <br /><small onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" class="use-hand-cursor"><i class="a-circle-checked"></i> INSPECTION COMPLETE </small>
+					@endIf 
+
+					@if($dpView)
+						@if($building_auditors && count($building_auditors) > 0)
+							@foreach($building_auditors as $auditor)
+							<div class="amenity-auditor uk-margin-remove">
+								<div id="building-{{ $i->building_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ strtoupper($auditor->full_name()) }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $selected_audit->audit_id }}, {{ $i->building_id }}, 0, 'building-auditors-{{ $i->building_id }}')">
+									{{ $auditor->initials() }}
+								</div>
+							</div>
+							@endforeach
+							@else
+							<div class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
+								<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignFindingAuditor({{ $selected_audit->audit_id }}, {{ $i->building_id }}, 0, 0, 'building-auditor-0', 0, 0, 0, 2);">
+								</i>
+							</div>
+							@endif
+					@endIf
 				</div>
 {{--
 				<div style="float: left;">

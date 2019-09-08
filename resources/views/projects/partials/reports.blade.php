@@ -212,6 +212,9 @@ $crrTypeSelection    = 'all';
                             </span>
                         </th>
                     @endCan
+                    @can('access_admin')
+                    <td><i class="a-trash"></i></td>
+                    @endCan
 
             </thead>
 
@@ -310,6 +313,9 @@ $crrTypeSelection    = 'all';
                         //nope
                     });
                 }
+                $('#crr-report-action-'+reportId).val(0);
+                $('#crr-report-row-'+reportId).slideUp();
+
             }
             @endCan
             @if(count($messages))

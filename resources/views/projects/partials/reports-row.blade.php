@@ -11,12 +11,12 @@
                     <td>{{ date('M d, Y',strtotime($report->created_at)) }}</td>
                     <td>{{ ucfirst($report->updated_at->diffForHumans()) }}</td>
                     <td>@if(!is_null($report->response_due_date))
-                            @if(strtotime($report->response_due_date) < time())
+                            @if(strtotime($report->response_due_date) < time() && $report->crr_approval_type_id !== 9)
                                 <span class="attention" style="color:darkred"> <i class="a-warning"></i>
                             @endIf
                             {{date('M d, Y',strtotime($report->response_due_date)) }}
 
-                            @if(strtotime($report->response_due_date) < time())
+                            @if(strtotime($report->response_due_date) < time() && $report->crr_approval_type_id !== 9)
                                </span>
                             @endIf
                         @endIf
@@ -54,6 +54,21 @@
                                 	$('#project-detail-tab-6').trigger("click");
                                 }
                             });
+                            function deleteThisReport{{$report->id}}(){
+                                UIkit.modal.confirm('Are you sure you want to delete the {{$report->template()->template_name}} report #{{$report->id}}?').then(function() {
+                                    $.get('/tabs/report/delete/{{$report->id}}');
+                                    $('#crr-report-row-{{$report->id}}').slideUp();
+                                    UIkit.notification({
+                                        message: '{{$report->template()->template_name}} Report #{{$report->id}} has been deleted.',
+                                        status: 'primary',
+                                        pos: 'top-right',
+                                        timeout: 1500
+                                    });
+                                }, 
+                                    function () {
+                                        console.log('Delete Cancelled.')
+                                });
+                            }
 
 
                             </script>
@@ -68,8 +83,8 @@
 ?>
                         @can('access_auditor')
                                     @if($report->crr_approval_type_id !== 8)
-                                    <select onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});" style="width: 184px;">
-                                        <option >ACTION</option>
+                                    <select id="crr-report-action-{{$report->id}}" onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});" style="width: 184px;">
+                                        <option value="0">ACTION</option>
                                         <option value="1">DRAFT</option>
                                         @if($report->requires_approval)
                                         <option value="2">SEND TO MANAGER REVIEW</option>
@@ -96,6 +111,9 @@
                         @endCan
 
                     </td>
+                    @endCan
+                     @can('access_admin')
+                    <td><i class="a-trash use-hand-cursor" onclick="deleteThisReport{{$report->id}}();"></i></td>
                     @endCan
                 </tr>
                 @can('access_auditor')

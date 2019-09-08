@@ -12,6 +12,25 @@
 						<form id="logout-form" action="/logout" method="POST" style="display: none;" siq_id="autopick_1705">
 							<input type="hidden" name="_token" value="{{csrf_token()}}">
 						</form>
+						@can('access_auditor')
+						<a href="javascript:launchMobile()" class="uk-button uk-button-small uk-padding-small-top uk-align-left uk-visible@m" style="margin-left: 38px; padding-top: 3px;"><i class="a-mobile-home"></i> SEND AUTO-LOGIN TO YOUR PHONE</a>
+							<script>
+								function launchMobile(){
+									var number = prompt("Please enter your mobile area code and phone number (no dashes or spaces please)");
+
+										$.post("/mobile/request_auto_login", {
+											'number' : number,
+											'_token' : '{{ csrf_token() }}'
+										}, function(data) {
+											if(data!=1){
+												UIkit.modal.alert(data+'<br /><br />NOTE: Do not dismiss this modal until you have input the code above on your phone.',{stack: true});
+											} else {
+												UIkit.notification('<span uk-icon="icon: check"></span> Unable to Send Link.', {pos:'top-right', timeout:1000, status:'warning'});
+											}
+										} );
+								}
+							</script>
+						@endCan
 						@endIf
 					</div>
 					@can('access_auditor')
@@ -19,7 +38,7 @@
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<hr />
 
-						<h3 class="uk-margin-small-top">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>@can('access_root')
+						<h3 class="uk-margin-small-top uk-visible@m">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>@can('access_root')
 						<div class="uk-grid-small uk-margin-remove" uk-grid>
 							<div class="uk-width-1-3 uk-padding-remove">
 								<label class="uk-text-small">Max Hours per Day</label>

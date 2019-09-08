@@ -41,7 +41,7 @@
 				@endif
 
 				<div class="uk-inline uk-padding-remove" style="flex:140px;">
-					<a onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address->basic_address() }}')" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf "> <strong style="color : @if($site_status == 0) #000 @else #50b8ec @endIf "> Site: {{ $audit->project->address->basic_address() }}</strong>
+					<a onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address->basic_address() }}')" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf ">  Site: <strong style="color : @if($site_status == 0) #000 @else #50b8ec @endIf ">{{ $audit->project->address->basic_address() }}</strong>
 					</a>
 				</div>
 			</li>
@@ -83,7 +83,7 @@
 				@endif
 				{{-- <input type="hidden" name="building-complete-baseLink-{{ $type->building_id }}" id="building-complete-baseLink-{{ $type->building_id }}" value="'amenities/0/audit/{{ $audit->audit_id }}/building/{{ $type->building_id }}/unit/0/1/complete'"> --}}
 				<div class="uk-inline uk-padding-remove" style="flex:140px;">
-					<a onclick="filterBuildingAmenities({{ $type->building_id }},'Building BIN: {{ $type->building_key }}, NAME: {{ $type->building_name }}, ADDRESS: @if($type->building->address){{ $type->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf')" style="color : @if($type->complete) #000 @else #50b8ec @endIf "> <strong style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf "> Building BIN:{{ $type->building_key }} NAME: {{ $type->building_name }} ADDRESS: {{ $type->address }}</strong>
+					<a onclick="filterBuildingAmenities({{ $type->building_id }},'Building BIN: {{ $type->building->building_name }}, ADDRESS: @if($type->building->address){{ $type->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf')" style="color : @if($type->complete) #000 @else #50b8ec @endIf ">  BIN: <strong style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf ">{{ $type->building_name }}</strong> @ <strong style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf ">{{ $type->address }}</strong>
 					</a>
 				</div>
 			</li>
@@ -140,7 +140,7 @@
 
 
 					<div class="uk-inline uk-padding-remove" style="flex:140px;">
-						<a onclick="filterUnitAmenities({{ $bu->unit_id }} ,'Unit {{ $bu->unit_name }} in BIN:{{ $bu->building_key }} ')" style="color : @if($bu->complete || ($unit_am_status == 0)) #000 @else #50b8ec @endIf "> Unit {{ $bu->unit_name }}
+						<a onclick="filterUnitAmenities({{ $bu->unit_id }} ,'Unit {{ $bu->unit_name }} in BIN:{{ $bu->building->building_name }} ')" style="color : @if($bu->complete || ($unit_am_status == 0)) #000 @else #50b8ec @endIf "> Unit <strong>{{ $bu->unit_name }}</strong>
 						</a>
 					</div>
 				</li>

@@ -179,7 +179,7 @@
 								</div>
 								<div class="uk-margin-remove" uk-grid>
 
-										<button class="uk-button uk-width-1-4" onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button> <button class="uk-button uk-button-primary  uk-width-3-4 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="dynamicModalClose()">DONE ADDING FINDINGS</button>
+										<button class="uk-button uk-width-1-4" onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button> <button class="uk-button uk-button-primary  uk-width-3-4 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="if($('#project-detail-tab-1').hasClass('uk-active') || window.project_detail_tab_1 != '1'){$('#project-detail-tab-1').trigger('click')} dynamicModalClose()">DONE ADDING FINDINGS</button>
 
 
 								</div>
@@ -489,7 +489,7 @@
 					$locationText = "Site picked";
 				} elseif ($passedAmenity->building_id) { // is a building
 					$locationType = 'b-' . $passedAmenity->building_id;
-					$locationText = "Building BIN: " . $passedAmenity->building_id . ", NAME: " . addslashes($buildingName);
+					$locationText = "BIN: " . addslashes($buildingName);
 					if ($passedAmenity->building->address) {
 						$locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
 					} else {
@@ -498,7 +498,7 @@
 					echo "console.log('Passed amenity is a building type');";
 				} else { // is a unit
 					$locationType = 'u-' . $passedAmenity->unit_id;
-					$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_key;
+					$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_name;
 					if ($passedAmenity->unit->building->address) {
 						$locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
 					} else {
@@ -509,7 +509,7 @@
 			// load the findings of selected amenities
 			@if(!is_null($passedUnit))
 			$.ajax({
-			   url:filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_key }}'),
+			   url:filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_name }}'),
 			   success:function(){
 				   selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
 				}
@@ -517,7 +517,7 @@
 
 			@elseif(!is_null($passedBuilding))
 			$.ajax({
-			   url:filterBuildingAmenities('{{ $passedBuilding->building_id }}','Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf'),
+			   url:filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf'),
 			   success:function(){
 				   selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
 				}
@@ -541,15 +541,15 @@
 				// set filter text for type
 				window.findingModalSelectedLocationType = '{{ $locationType }}';
 				// filterAmenities('u-{{ $passedUnit->unit_id }}', 'Unit NAME: {{ $passedUnit->unit_name }} in Building BIN:{{ $passedUnit->building_key }} ADDRESS: @if($passedUnit->building->address) {{ $passedUnit->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf',0);
-				filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_key }}');
+				filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building->building_name }}');
 		    	// filter to type and allita type (nlt, lt, file)
     	@else
 	    	console.log('Filtering building-level amenities {{ $passedBuilding->building_id }}}');
-	    	filterBuildingAmenities('{{ $passedBuilding->building_id }}','Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+	    	filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
     	@endif
   	@elseif(!is_null($passedBuilding))
     	@if($toplevel != 1)
-	    	console.log('Filtering to building id: Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: {{ $passedBuilding->address }}');
+	    	console.log('Filtering to Building BIN: {{ $passedBuilding->building_name }}, ADDRESS: {{ $passedBuilding->address }}');
 	    	<?php
 	    		$locationType = 'b-' . $passedBuilding->building_id;
 	    	?>
@@ -557,10 +557,10 @@
 				window.findingModalSelectedLocationType = '{{ $locationType }}';
 	    	// set filter test for type
 		  	@if($passedBuilding->building)
-		  		filterBuildingAmenities('{{ $passedBuilding->building_id }}','Building BIN: {{ $passedBuilding->building_key }}, NAME: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+		  		filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
 		  	@else
 		  		//need to check when this condition will be true - Div 20190403, not seeing much difference from true and false
-		  		filterAmenities('b-{{ $passedBuilding->building_id }}', 'Building BIN:{{ $passedBuilding->building_key }} NAME: {{ $passedBuilding->building_name }}',0,1);
+		  		filterAmenities('b-{{ $passedBuilding->building_id }}', 'BIN:{{ $passedBuilding->building_name }}',0,1);
 		  	@endif
 	  		// filter to type and allita type (nlt, lt, file)
 	  	@else

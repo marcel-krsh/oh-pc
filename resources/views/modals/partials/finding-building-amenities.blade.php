@@ -15,7 +15,7 @@
 			@endphp
 			@foreach($amenities as $amenity)
 			@if($loop->first)
-			<li class="b-{{ $amenity->building_id }} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned($amenity->building_id)) uid-{{ Auth::user()->id }} @endif"><strong>Building BIN: {{ $amenity->building_key }}</strong></li>
+			<li class="b-{{ $amenity->building_id }} amenity-list-item finding-modal-list-items @if($audit->hasAmenityInspectionAssigned($amenity->building_id)) uid-{{ Auth::user()->id }} @endif">BIN: <strong>{{ $amenity->building->building_name }}</strong></li>
 			@endif
 			@php
 			array_push($currentAmenityIds, $amenity->amenity_id);

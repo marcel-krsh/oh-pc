@@ -60,8 +60,74 @@ if ($allowPageLoad) {
 		body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
 			opacity:1 !important;
 		}
+		html{
+			background-color: black !important;
+			font-size:20px;
+		}
 		/*Universal header styles*/
 
+		body,h1,h2,h3,h4,h5,p,ul,li,a {
+			color:white !important;
+		}
+		p,div{
+			font-size: 20px !important;
+		}
+		h3,h4,h5 {
+			font-size: 23px !important;
+		}
+		h2 {
+			font-size: 25px !important;
+		}
+		h1 {
+			font-size:27px !important;
+		}
+		.small-h3{
+			font-size:14px !important;
+		}
+		.uk-modal{
+			background-color: darkgray;
+			width: 99%;
+			border: 1px solid white;
+		}
+		#modal-size,#modal-size-2,#modal-size-3{
+			width:92% !important;
+			padding:20px !important;
+			background-color: black;
+			
+			border: 1px solid white;
+			margin-left: calc(.7% )!important;
+			height: 98%!important;
+    		max-height: 98%!important;
+		}
+		.uk-modal-header{
+			    margin-bottom: 15px;
+			    margin: -20px -20px 15px -20px;
+			    padding: 20px;
+			    border-bottom: 1px solid #dddddd;
+			    border-radius: 4px 4px 0 0;
+			    background: #000000 !important;
+		}
+		.uk-modal-title{
+			    font-size: 15px !important;
+   				line-height: 36px !important;
+		}
+		.uk-modal-title h4{
+			line-height: 0px !important;
+		    margin-top: 0px !important;
+		    margin-left: 35px !important;
+		    position: relative;
+		    top: -19px;
+		}
+		.uk-close{
+			color: lightgray !important;
+		}
+		.uk-button {
+			background: white;
+    		color: black !important;
+		}
+		.uk-button-success{
+			background-color: #73FF6B !important;
+		}
 		#apcsv-logo {
 			position: relative; top: -9px; padding-left: 10px; display: inline-block;
 		}
@@ -158,6 +224,98 @@ if ($allowPageLoad) {
 			left:0;
 			background: #000;
 		}
+		h3 .a-info-circle, h3 .a-circle-up{
+			position: relative;
+			top:1px;
+			margin-right: 4px;
+		}
+		a.uk-button i.a-phone-talk {
+			position: relative;
+		    font-size: 19px;
+		    top: 3px;
+			
+		}
+		a.uk-button i.a-comment {
+			position: relative;
+		    font-size: 19px;
+		    top: 3px;
+			
+		}
+		a.uk-button i.a-envelope-4 {
+			position: relative;
+		    font-size: 20px;
+		    top: 3px;
+			
+		}
+		.dimmer{
+			color: #d4d2d2;
+		    font-size: 10px;
+		    font-weight: bold;
+		    vertical-align: bottom;
+			transform: rotate(-90deg);
+
+
+			  /* Legacy vendor prefixes that you probably don't need... */
+
+			  /* Safari */
+				-webkit-transform: rotate(-90deg);
+
+			  /* Firefox */
+			  -moz-transform: rotate(-90deg);
+
+			  /* IE */
+			  -ms-transform: rotate(-90deg);
+
+			  /* Opera */
+			  -o-transform: rotate(-90deg);
+			  display: inline-table;
+		}
+		#apcsv-avatar {
+		    float: left;
+		    margin-right: 25px;
+		    border-radius: 20px;
+		    width: 30px;
+		    height: 30px;
+		    padding: 5px;
+		    font-size: 20px;
+		    background: #d4e9ff;
+		    text-align: center;
+		    -webkit-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+		    -moz-box-shadow: 0px 4px 5px 0px rgba(0,0,0,0.22);
+		    box-shadow: 0px 4px 5px 0px rgba(255, 255, 255, 0.22);
+		    color: black;
+		    line-height: 28px;
+		}
+		.audit-info-mobile li {
+			        margin-bottom: 13px;
+				    border-bottom: 1px dotted #737373;
+				    padding-bottom: 18px;
+		}
+		.findings-details-mobile i.a-booboo, .findings-details-mobile i.a-skull {
+			font-size: 21px;
+		    position: relative;
+		    top: 3px;
+		    margin-right: 3px;
+		}
+		.finding-breakdown{
+			width: 84px;
+			font-size: 15px;
+			display: inline-table;;
+		}
+		.finding-breakdown-stat{
+			width: 80px;
+			display: inline-table;;
+		}
+		.close-long-box {
+			    background-color: #9a9a9a;
+			    color: black;
+			    width: 96%;
+			    text-align: center;
+			    padding: 5px;
+			    font-size: 14px;
+			    font-weight: bold;
+			    margin-top: 13px;
+		}
 
 	</style>
 	<?php /* session(['disablePacer'=>0]); */?>
@@ -213,33 +371,21 @@ if ($allowPageLoad) {
 		.uk-notification {z-index: 1060;}
 	</style>
 
-	<script>
-		// initial values
-		var statsAuditsTotal = "{{$stats_audits_total}}";
-		var statsCommunicationTotal = "{{$stats_communication_total}}";
-		var statsReportsTotal = "{{$stats_reports_total}}";
-		var uid = "{{$current_user->id}}";
-		var sid = "{{$current_user->socket_id}}";
-	</script>
+	
 
 </head>
 <body >
 	<a name="top"></a>
 	<!-- MOBILE -->
-	<div id="phone" class="uk-visible-touch uk-hidden@s">
+	<div id="phone" class="uk-visible-touch ">
 		<div id="phone-app" class="uk-container uk-padding-small uk-align-center" >
-			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 100px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
-				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h3 style="margin-bottom: 0px"><i class="a-menu uk-text-muted uk-contrast" style="color:white !important; font-weight: bolder; margin-right:5px; font-size: 20px;"></i> Dev|Co Mobile Inspection Launcher</h3></a>
+			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 20px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
+				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h3 style="margin-bottom: 0px"><i class="a-menu uk-text-muted uk-contrast" style="color:white !important; font-weight: bolder; margin-right:5px; font-size: 20px;position: relative; top: 2px;"></i> @yield('header')</h3></a>
 			</div>
 			<div class="uk-container">
 
-				<div id="mobile-content" uk-grid style="height: 1600px; padding:20px !important">
-					@can('access_auditor')
-					<i onclick="window.location.href='/mobile/audits'" class="a-mobile-home uk-contrast uk-align-center use-hand-cursor" style="font-size: 116px; padding-right: 13px; padding-bottom: 16px;border-radius: 27px;border: 10px solid;padding-top: 16px;" ></i>
-					<div onclick="window.location.href='/mobile/audits'" class="uk-button uk-padding-small-top uk-margin-top uk-width-1-1"><strong>LAUNCH MOBILE INSPECTION</strong></div>
-					@else
-						<h2 class="uk-contrast">Sorry, we do not currently support access on this device for property managers and owners.</h2>
-					@endCan
+				<div id="mobile-content" class="" uk-grid style="height:100%; padding:3px !important" >
+					@yield('content')
 				</div>
 				<script type="text/javascript">
 					isMobile = function(){
@@ -259,181 +405,59 @@ if ($allowPageLoad) {
 
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
-			@can('access_auditor')
-			<h3 style="font-weight: bolder;">Using Your Phone Instead?</h3>
 
-			<p style="font-weight: bolder;">Click the launch button to open the mobile version of the site optimized for your phone. The features are limited in this version and will be added to over time.</p>
-			@else
-			<h3 style="font-weight: bolder;">Using Your Phone?</h3>
-
-			<p style="font-weight: bolder;">Please tell your contact about how you would like to be able to utilize your phone to review and resolve your items.</p>
-			@endCan
-		</div>
-	</div>
-
-
-	<!-- MAIN VIEW -->
-
-	<div id="app" class="uk-container uk-align-center uk-visible@s" >
-		<div uk-grid class="uk-grid-collapse">
-			<div id="main-window" class=" uk-margin-large-bottom" uk-scrollspy="cls:uk-animation-fade; delay: 900">
-
-				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
-					<div uk-grid>
-						<div class="uk-width-1-1">
-							<img id="apcsv-logo" src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" >
-
-							@can('access_auditor')
-							<div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
-								<div class="uk-autocomplete quick-lookup-box uk-inline">
-									<span class="uk-form-icon a-magnify-2"></span>
-									<input class="uk-input" id="quick-lookup-box" type="text" placeholder="QUICK LOOK UP..." style="width: 250px;">
-								</div>
-							</div>
-							@else
-							<div style="width: 20px; display: inline-block;"></div>
-							@endCan
-
-							<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
-
-								<ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
-									@can('access_auditor')
-									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
-										<a href="" style="">
-											<span class="list-tab-text">
-
-												<i class="a-mobile-home"></i> AUDITS
-											</span>
-										</a>
-									</li>
-									@endCan
-									@can('access_pm')
-									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
-										<a href="">
-											<span class="list-tab-text">
-												<i class="a-envelope-3"></i> COMMUNICATIONS
-											</span>
-										</a>
-									</li>
-
-									<li id="detail-tab-3" class="detail-tab-3" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000"  onClick="if($('#detail-tab-3').hasClass('uk-active')  || window.reportsLoaded != 1){loadTab('{{ route('dashboard.reports') }}', '3','','','',1);}">
-										<a href=""><span class="list-tab-text"><i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
-									</li>
-
-									@can('access_admin')
-									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
-										<a href=""><span class="list-tab-text">ADMIN</span></a>
-									</li>
-									@endcan
-								@endcan
-								</ul>
-
-							</div>
-
-							<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
+			<div id="apcsv-avatar" class="" title="{{Auth::user()->full_name()}} - User ID:{{Auth::user()->id}} @if(Auth::user()->root_access()) Root Access @elseIf(Auth::user()->admin_access()) Admin Access @elseIf(Auth::user()->auditor_access()) Auditor Access @elseIf(Auth::user()->pm_access()) Property Manager @endIf" onclick="openUserPreferences();" style="cursor: pointer; margin-top:15px">
 								{{Auth::user()->initials()}}
 							</div>
-							<div id="apcsv-menu-icon" class="hvr-grow uk-inline" style="margin-top:15px">
-								<button id="apcsv-toggle" class="pcsv-toggle" style="background-color: transparent; border: none; cursor: pointer; 0" >APPS</button>
-								<div uk-dropdown="mode: click">
-									<div class="apcsv-menu-item">
-										<a href="https://devco.ohiohome.org/AuthorityOnline/" style="font-weight: 400">DEV|CO Compliance</a>
-									</div>
-									<div class="apcsv-menu-item">
-										<a href="/" style="font-weight: 400">DEV|CO Inspection</a>
-									</div>
-									@if(Auth::user()->allowed_tablet && Auth::user()->auditor_access())
-									<div class="apcsv-menu-item uk-hidden-notouch">
-										<a href="allitapc://" style="font-weight: 400">Open Tablet App</a>
-									</div>
-									@endif
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+							@yield('side_bar_links')
 
-				<ul id="tabs" class="maintabs uk-switcher" >
-					@can('access_auditor')<li>
-						<div id="detail-tab-1-content"></div>
-					</li>
-					@endCan
-					@can('access_pm')
-					<li>
-						<div id="detail-tab-2-content"></div>
-					</li>
-
-					<li>
-						<div id="detail-tab-3-content" style=" margin-top: 70px;"></div>
-					</li>
-					@endCan
-					@if(Auth::user()->admin_access())
-					<li>
-						<div id="detail-tab-5-content" style="padding-top:20px;"></div>
-					</li>
-					@endif
-				</ul>
-
-				<a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
-				<div id="dynamic-modal" uk-modal>
-					<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content"  uk-overflow-auto>
-						<a class="uk-modal-close-default" uk-close></a>
-						<div id="dynamic-modal-content" style="height: 100%; overflow-y: scroll;"></div>
-					</div>
-				</div>
-				<div id="dynamic-modal-2" uk-modal>
-					<div id="modal-size-2" class="uk-modal-dialog uk-modal-body uk-modal-content"  uk-overflow-auto>
-						<a class="uk-modal-close-default" uk-close></a>
-						<div id="dynamic-modal-content-2"style="height: 100%; overflow-y: scroll;"></div>
-					</div>
-				</div>
-				<div id="dynamic-modal-3" uk-modal>
-					<div id="modal-size-3" class="uk-modal-dialog uk-modal-body uk-modal-content"  uk-overflow-auto>
-						<a class="uk-modal-close-default" uk-close></a>
-						<div id="dynamic-modal-content-3"style="height: 100%; overflow-y: scroll;"></div>
-					</div>
-				</div>
-			</div>
+			
 
 		</div>
 	</div>
 
-	<div id="mainfooter"  class="uk-visible@s" uk-grid>
-		<div class="uk-width-1-3">
-			<p class="uk-dark uk-light" style="position: absolute; bottom: 20px;"><a href="http://allita.org" target="_blank" class="uk-link-muted uk-dark uk-light"><i class="a-mobile-home"></i>
-				@if(Auth::check() && Auth::user()->auditor_access())
-				Allita Program Compliance
-				@else
-				Dev|Co Inspect
-				@endif
-				&copy; 2018<?php if (date('Y', time()) != '2018') {
-    echo " — " . date('Y', time());
-  }
-  ?>: @include('git-version::version-comment')</a> </p>
-			</div>
-			<div id="footer-content" class="uk-width-1-3">
-				<div id="footer-actions-tpl"  class="uk-text-right"></div>
-			</div>
+	<a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
+	<div id="dynamic-modal" uk-modal>
+		<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content">
+			<a class="uk-modal-close-default" uk-close></a>
+			<div id="dynamic-modal-content" style="height: 100%; overflow-y: scroll;"></div>
 		</div>
-		<script>
-			flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
-			flatpickr(".flatpickr");
+	</div>
+	<div id="dynamic-modal-2" uk-modal>
+		<div id="modal-size-2" class="uk-modal-dialog uk-modal-body uk-modal-content">
+			<a class="uk-modal-close-default" uk-close></a>
+			<div id="dynamic-modal-content-2" style="height: 100%; overflow-y: scroll;"></div>
+		</div>
+	</div>
+	<div id="dynamic-modal-3" uk-modal>
+		<div id="modal-size-3" class="uk-modal-dialog uk-modal-body uk-modal-content">
+			<a class="uk-modal-close-default" uk-close></a>
+			<div id="dynamic-modal-content-3" style="height: 100%; overflow-y: scroll;"></div>
+		</div>
+	</div>
 
-			var configs = {
-				dateformat: {
-					dateFormat: "m/d/Y",
-				}
+
+
+
+	<script>
+		flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+		flatpickr(".flatpickr");
+
+		var configs = {
+			dateformat: {
+				dateFormat: "m/d/Y",
 			}
+		}
 
 
 
-			$(".uk-modal").on("hide", function() {
-				$("html").removeClass("uk-modal-page");
-			});
+		$(".uk-modal").on("hide", function() {
+			$("html").removeClass("uk-modal-page");
+		});
 
 
 
-		</script>
+	</script>
 
 
 		<!-- <script src="/js/app.js{{ asset_version() }}"></script> -->
@@ -466,58 +490,7 @@ if ($allowPageLoad) {
 	<script type="text/javascript" src="/js/systems/processing-tab.js{{ asset_version() }}"></script>
 	<script>
 		// single script tag
-		var quicklookupbox = new autoComplete({
-			selector: '#quick-lookup-box',
-			minChars: 3,
-			cache: 1,
-			delay: 150,
-			offsetLeft: 0,
-			offsetTop: 1,
-			menuClass: '',
-
-			source: function(term, suggest){
-				console.log('Looking up... '+term);
-				$.get( "/autocomplete/all", {
-					'search' : term,
-					'_token' : '{{ csrf_token() }}'
-				},
-				function(data) {
-					var output = eval(data);
-					term = term.toLowerCase();
-					var suggestions = [];
-					for (i=0;i<output.length;i++)
-						suggestions.push(output[i]);
-					suggest(suggestions);
-				},
-				'json' );
-			},
-			renderItem: function (item, search){
-				search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-				var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
-
-				var output = '<div class="autocomplete-suggestion" data-item-id="'+item[8]+'" data-val="'+search+'">';
-				output = output + item[4]+'<br />';
-				output = output + 'Project ID: '+item[7]+'<br />';
-				output = output + 'PM: '+item[6]+'<br />';
-				output = output + item[0]+'<br />';
-				output = output + item[1]+', '+item[2]+' '+item[3]+'<br />';
-				output = output + '</div>';
-
-				return output;
-			},
-			onSelect: function(e, term, item){
-				e.preventDefault();
-				loadTab('/projects/'+item.getAttribute('data-item-id'), '4', 1, 1, '', 1);
-		    	//loadDetailTab('/parcel/',item.getAttribute('data-item-id'),'1',0,0);
-		    	$('#quick-lookup-box').val('');
-		    }
-		  });
-
-		$( document ).ready(function() {
-			$('.uk-sticky-placeholder:last').remove();
-			$("html, body").animate({ scrollTop: 0 }, "slow");
-		});
-
+		
 
 	@endif
 
@@ -528,71 +501,11 @@ if ($allowPageLoad) {
 	},400);
 	@endif
 
-	@if($tab !== null && Auth::user()->can('access_auditor'))
-
-		setTimeout(function(){
-			$('#{{$tab}}').trigger("click");
-		},100);
-
-		window.currentSite='allita_pc';
-
-	@else
-
-		// Click on initial tab to load it:
-		setTimeout(function(){
-			@can('access_auditor')
-				// auditor default
-				$('#detail-tab-1').trigger("click");
-			@else
-				// property default
-				$('#detail-tab-2').trigger("click");
-			@endCan
-		},100);
-
-		window.currentSite='allita_pc';
-
-
-	@endif
+	
 
 
 
-		new Vue({
-			el: '#top-tabs',
-			data: {
-				statsAuditsTotal: statsAuditsTotal,
-				statsCommunicationTotal: statsCommunicationTotal,
-				statsReportsTotal: statsReportsTotal
-			},
-
-			mounted: function() {
-				console.log("Tabs Working");
-
-		    	//Echo.join('communications.'+uid+'.'+sid);
-		    	Echo.private('updates.{{Auth::user()->id}}')
-		    	.listen('UpdateEvent', (payload) => {
-		    		@if(env('APP_DEBUG'))
-		    		console.log('Update received with:');
-		    		console.log(payload);
-		    		@endIf
-
-		    		if(payload.data.event == 'tab'){
-		    			console.log("Tab event received.");
-		    			this.statsCommunicationTotal = payload.data.communicationTotal;
-		    		}
-		    	});
-
-		            // console.log("new total "+data.communicationTotal);
-
-
-		        // socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
-		        //     // console.log("user " + data.userId + " is getting a message because a new message has been sent.");
-		        //     // console.log("new total "+data.communicationTotal);
-		        //     this.statsCommunicationTotal = data.communicationTotal;
-
-
-
-		      }
-		    });
+		
 
 	</script>
 

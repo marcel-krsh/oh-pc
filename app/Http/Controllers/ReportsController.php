@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Audit;
-use App\Models\CachedAudit;
+use App\Models\cachedAudit;
 use App\Models\CrrApprovalType;
+use App\Models\GuideStep;
+use App\Models\GuideProgress;
 use App\Models\CrrPart;
 use App\Models\CrrPartOrder;
 use App\Models\CrrReport;
@@ -206,6 +208,7 @@ class ReportsController extends Controller
 
   public function reports(Request $request, $project = null)
   {
+  	// return 'correct';
     $messages = []; //this is to send messages back to the view confirming actions or errors.
     // set values - ensure this single request works for both dashboard and project details
     $prefix = '';
@@ -362,11 +365,10 @@ class ReportsController extends Controller
       } else {
         $auditLeads    = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
         $auditProjects = CrrReport::select('*')->when(Auth::user()->cannot('access_auditor'), function ($query) {
-          $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', Auth::user()->person_id)->get()->toArray();
-
-          //dd(Auth::user()->person_id,$userProjects);
-          return $query->whereIn('project_id', $userProjects);
-        })->with('project')->groupBy('project_id')->get();
+	        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', Auth::user()->person_id)->get()->toArray();
+	          //dd(Auth::user()->person_id,$userProjects);
+	          return $query->whereIn('project_id', $userProjects);
+	        })->with('project')->groupBy('project_id')->get();
         $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id', '>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
         $hfa_users_array = [];
         $projects_array  = [];
@@ -395,6 +397,7 @@ class ReportsController extends Controller
     }
     //dd($hfa_users_array);
     //dd($searchVal,$searchEval,session('crr_search'),intval($request->get('search')));
+    $report_projects = ReportAccess::where('user_id', Auth::user()->id)->allita()->pluck('project_id');
     $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
       ->whereNull('template')
       ->where('project_id', $projectEval, $projectVal)
@@ -404,10 +407,11 @@ class ReportsController extends Controller
       ->where('id', $searchEval, $searchVal)
       ->when(Auth::user()->cannot('access_auditor'), function ($query) {
         $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', Auth::user()->person_id)->get()->toArray();
-
         //dd(Auth::user()->person_id,$userProjects);
         return $query->whereIn('project_id', $userProjects);
       })
+
+      ->orWhereIn('project_id', $report_projects)
       ->orderBy('updated_at', 'desc')
       ->paginate(10);
 
@@ -442,7 +446,7 @@ class ReportsController extends Controller
         $project_id = $request->get('project_id');
       }
 
-      $audits = CachedAudit::when(!empty($project_id), function ($query) use ($project_id) {
+      $audits = cachedAudit::when(!empty($project_id), function ($query) use ($project_id) {
         return $query->where('project_id', $project_id);
       })->where('step_id', '>', 59)->where('step_id', '<', 67)->with('project')->with('audit.reports')
       //->orderBy('projects.project_name', 'asc')
@@ -639,9 +643,50 @@ class ReportsController extends Controller
           }
         }
       } else {
+
+        if($audit->cached_audit->step_id < 61){
+          //dd($audit,$audit->cachedAudit);
+        $cachedAudit = $audit->cached_audit;
+        $step_id = 63; //generate report
+        $step = GuideStep::where('id', '=', $step_id)->first();
+        $progress = new GuideProgress([
+              'user_id' => Auth::user()->id,
+              'audit_id' => $audit->id,
+              'project_id' => $audit->project_id,
+              'guide_step_id' => $step_id,
+              'type_id' => 1,
+          ]);
+          $progress->save();
+
+          // update cachedAudit table with new step info
+          $cachedAudit->update([
+              'step_id' => $step->id,
+              'step_status_icon' => $step->icon,
+              'step_status_text' => $step->step_help,
+          ]);
+        }
         return 1;
       }
+      if($audit->cached_audit->step_id < 61){
+        $cachedAudit = $audit->cached_audit;
+        $step_id = 63; //generate report
+        $step = GuideStep::where('id', '=', $step_id)->first();
+        $progress = new GuideProgress([
+              'user_id' => Auth::user()->id,
+              'audit_id' => $audit->id,
+              'project_id' => $audit->project_id,
+              'guide_step_id' => $step_id,
+              'type_id' => 1,
+          ]);
+          $progress->save();
 
+          // update cachedAudit table with new step info
+          $cachedAudit->update([
+              'step_id' => $step->id,
+              'step_status_icon' => $step->icon,
+              'step_status_text' => $step->step_help,
+          ]);
+      }
       return 1;
     } else {
       return 'Please Select an Audit.';
@@ -842,6 +887,27 @@ class ReportsController extends Controller
       $report->update(['crr_data' => json_encode($data), 'version' => $version, 'crr_approval_type_id' => $approvalId, 'signature' => null]);
       $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Generated version ' . $version . ' of the report'];
       $this->reportHistory($report, $history);
+      $cachedAudit = $report->audit->cached_audit;
+
+      if($cachedAudit->step_id < 61){
+        $step_id = 63; //generate report
+        $step = GuideStep::where('id', '=', $step_id)->first();
+        $progress = new GuideProgress([
+              'user_id' => Auth::user()->id,
+              'audit_id' => $cachedAudit->id,
+              'project_id' => $cachedAudit->project_id,
+              'guide_step_id' => $step_id,
+              'type_id' => 1,
+          ]);
+          $progress->save();
+
+          // update cachedAudit table with new step info
+          $cachedAudit->update([
+              'step_id' => $step->id,
+              'step_status_icon' => $step->icon,
+              'step_status_text' => $step->step_help,
+          ]);
+      }
       //dd($data);
       //if ($goToView) {
       //dd($goToView);

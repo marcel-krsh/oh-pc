@@ -248,13 +248,15 @@ $thisProjectHtml = '';
 							<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles) }}"></i>  | </span>
 							<span class="use-hand-cursor" data-uk-tooltip title="{{ in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO ADD)' }}"> <i onclick="addAllitaAccess({{ $user->id }}, {{ in_array($user->id, $allita_user_ids) }})" class="{{ in_array($user->id, $allita_user_ids) ? 'a-mail-chart-up' : 'a-mail-chart-up uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
 							</span>
-							<span class="" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ACCESS TO REPORTS VIA DEVCO (THIS IS NOT RELIABLE)' : 'USER HAS NO ACCESS TO REPORTS VIA DEVCO (THIS IS NOT RELIABLE)' }}"> <i class="{{ $pm_access ? 'a-file-approve' : 'a-file-fail' }}"></i>
+							<span class="" data-uk-tooltip title="THE USER DOES NOT HAVE ACCESS TO REPORTS VIA THEIR ALLITA USER ACCESS"> <i class="a-file-fail uk-text-muted"></i>
 							</span>
 						</td>
 						@else
 						<td>
 							<span><i class="uk-text-muted a-file-gear_1" data-uk-tooltip title="USER DOES NOT HAVE ACCESS TO THIS PROJECT VIA DEVCO"></i> | </span>
 							<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS' }}" onclick="editUser({{ $user->id }})"><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i>
+							</span>
+							<span class="" data-uk-tooltip title="THE USER HAS ACCESS TO REPORTS VIA THEIR ALLITA USER ACCESS"> <i class="a-file-approve"></i>
 							</span>
 						</td>
 						@endif
@@ -348,7 +350,7 @@ $thisProjectHtml = '';
 							<a href="mailto:{{ $contact->person->email->email_address }}" target="_blank">{{ $contact->person->email->email_address }}</a> @if(null !== $contact->person->matchingUserByEmail) <span class="uk-warning attention" uk-title="User {{ $contact->person->matchingUserByEmail->name }} is using this email address.">!!!</span>@endIf @else NA @endIf
 						</td>
 						<td><span class="use-hand-cursor">ACTION</span>
-							<div uk-dropdown="mode:click;pos: top-right">
+							<div uk-dropdown="mode:click; pos: top-right">
 								<ul class="uk-nav uk-dropdown-nav">
 									<li ><a onclick="dynamicModalLoad('createuser_for_contact?contact={{ $contact->id }}&on_project={{ $project->id }}&project={{ $project->id }}&multiple=0');">Create User & Add to This Project</a></li>
 									@if(count($contact->person->projects)>1)
