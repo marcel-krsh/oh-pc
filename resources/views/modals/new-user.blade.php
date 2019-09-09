@@ -76,7 +76,7 @@
         </div>
         <div class="uk-width-1-1 uk-margin-top">
         	<label for="name">Business Phone Number :</label><br>
-        	<input id="business_phone_number" type="text" class="uk-input uk-width-1-3" name="business_phone_number" placeholder="Format: (xxx) xxx-xxxx" @if(null !== $contact && $contact->phone !== null) value="{{ $contact->phone->area_code }}{{ $contact->phone->number }}"@endIf>
+        	<input id="business_phone_number" type="text" class="uk-input uk-width-1-3" name="business_phone_number" placeholder="Format: (xxx) xxx-xxxx" @if(null !== $contact && $contact->phone !== null) value="{{ $contact->phone->number }}"@endIf>
         	<input id="phone_extension" type="number" class="uk-input uk-width-1-3" name="phone_extension" placeholder="xxxx">
         </div>
       </div>
@@ -186,13 +186,13 @@
 <script src="https://unpkg.com/imask"></script>
 <script>
 
-	$(document).ready(function(){
-		var codeMask = IMask(
-		                     document.getElementById('business_phone_number'),
-		                     {
-		                     	mask: '(000) 000-0000'
-		                     });
-	});
+	// $(document).ready(function(){
+	// 	var codeMask = IMask(
+	// 	                     document.getElementById('business_phone_number'),
+	// 	                     {
+	// 	                     	mask: '(000) 000-0000'
+	// 	                     });
+	// });
 
 	var codeMask = IMask(
 	                     document.getElementById('business_phone_number'),

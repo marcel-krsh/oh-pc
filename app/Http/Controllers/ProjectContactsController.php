@@ -70,7 +70,8 @@ class ProjectContactsController extends Controller
       $default_owner_id = $default_devco_owner_id = $default_owner->person->user->id;
     }
     // replace joins with relationship
-    $users             = User::whereIn('id', $user_ids)->with('role', 'person.email', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
+    $users             = User::whereIn('id', $user_ids)->with('role', 'person.email', 'person.projects', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access.project', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
+    // return $users->first()->person->projects;
     $default_org       = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
     $default_owner_org = $users->pluck('user_organizations')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
 

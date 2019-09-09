@@ -12,6 +12,9 @@
  	<table class="uk-table uk-table-hover uk-table-striped uk-overflow-container small-table-text">
  		<thead>
  			<th>
+ 				<small>ID</small>
+ 			</th>
+ 			<th>
  				<small>NAME</small>
  			</th>
  			<th>
@@ -33,6 +36,7 @@
  		<tbody>
  			@foreach($users as $user)
  			<tr class="{{ !$user->active ? 'uk-text-muted' : '' }}">
+ 				<td><small>{{$user->id}}</small></td>
  				<td>@can('access_root')<span uk-tooltip title="USER_ID: {{$user->id}} USER_KEY: {{$user->devco_key}}">@endCan{{ $user->first_name }} {{ $user->last_name }}@can('access_root')</span>@endCan <br /><small>
  					@if($user->role)ROLE:{{strtoupper($user->role->role->role_name)}}@else NO ACCESS @endIf</small></td>
  				<td><small>@if($user->organization_name)

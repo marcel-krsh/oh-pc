@@ -33,9 +33,9 @@
 						@php $currentOrg = $recipient->organization_name; @endphp
 						@endIf
 						<li class="recipient-list-item {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-							<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
+							<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'ID: {{ $recipient->id }} | NAME: {{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
 							<label for="recipient-id-{{ $recipient->id }}">
-								{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
+							ID: {{ $recipient->id }} | NAME: {{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
 							</label>
 						</li>
 						@endforeach
