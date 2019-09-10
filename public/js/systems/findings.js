@@ -91,7 +91,7 @@ function refreshFindingStream(type,auditid,buildingid,unitid,amenityid,toplevel)
 	$('#modal-findings-items-container').load('/modals/updatestream/'+type+'/'+auditid+'/'+buildingid+'/'+unitid+'/'+amenityid+'/'+toplevel+'/1');
 }
 
-function clickingOnFindingFilter(element) {
+function clickingOnFindingFilter(element, selected = 0) {
 	//console.log('clicking on a filter');
 	if($(element).find('span').is(':visible')){
 

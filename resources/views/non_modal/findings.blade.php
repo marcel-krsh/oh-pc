@@ -37,23 +37,23 @@
 	}
 	.modal-findings-left {
 		width: auto;
-	    position: inherit;
-	    top: auto;
-	    border-right: 1px dotted #3a3a3a;
-	    padding-right: 25px;
-	    height: 95%;
+		position: inherit;
+		top: auto;
+		border-right: 1px dotted #3a3a3a;
+		padding-right: 25px;
+		height: 95%;
 	}
 	.modal-findings-right-bottom-container {
-    position: inherit;
-    top: 100px;
-    height: auto;
-    width: auto;
+		position: inherit;
+		top: 100px;
+		height: auto;
+		width: auto;
 	}
 	.modal-findings-right-bottom {
-    height: auto;
-    overflow-y: auto;
-    position: inherit;
-    width: auto;
+		height: auto;
+		overflow-y: auto;
+		position: inherit;
+		width: auto;
 	}
 	.inspec-tools-tab-findings-container {
 		height: 600px;
@@ -71,8 +71,9 @@
 	?>
 	window.findingModalSelectedAmenity = '';
 	window.findingModalSelectedLocationType = '';
+	window.scrollPosType = 0;
 	var loadTypeView = '';
-	var scrollPosType = 0;
+	// var scrollPosType = 0;
 	var scrollPosAmenity = 0;
 
 </script>
@@ -93,7 +94,7 @@
 										<div class="uk-inline uk-width-1-2">
 											<div uk-grid>
 												<div class="uk-width-1-4">
-													<button id="mine-filter-button" uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine); toggleMine();">MINE</button>
+													<button id="mine-filter-button" {{-- uk-tooltip="title:SHOW MY AMENITIES AND LOCATIONS;" --}} class="uk-button uk-button-default button-filter" style="border-left: 1px solid;border-right: 0px;" onclick=" console.log(window.findingModalSelectedMine); toggleMine();">MINE</button>
 												</div>
 												<div class="uk-width-3-4">
 													<input type='text' name="finding-description" id="finding-description" class="uk-input button-filter" placeholder="ENTER FINDING DESCRIPTION" type="text" style="width:100%">
@@ -132,108 +133,111 @@
 								</div>
 							</div>
 						</div>
-						<div class="uk-width-1-1" style="min-height:400px; max-height: 400px; overflow-y: scroll;">
+						<div id="left-side-dynamic-data" class="uk-width-1-1" style="min-height:400px; max-height: 400px; overflow-y: scroll;">
 
 							<!-- FINDING TYPE LISTS -->
 
-									<div id="dynamic-data" class="uk-margin uk-child-width-auto uk-grid">
-										{{-- Locations --}}
-										{{-- @include('modals.partials.finding-locations') --}}
-										{{-- Amenities --}}
-										{{-- @include('modals.partials.finding-amenities') --}}
-									</div>
+							<div id="dynamic-data" class="uk-margin uk-child-width-auto uk-grid">
+								{{-- Locations --}}
+								{{-- @include('modals.partials.finding-locations') --}}
+								{{-- Amenities --}}
+								{{-- @include('modals.partials.finding-amenities') --}}
+							</div>
 
 
 						</div>
 
 						<div class="uk-width-1-1" cuk-filter="target: .js-filter-findings">
 
-								<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
-									<div class="uk-width-1-1 uk-padding-remove uk-inline">
-										<button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-grid"></i> <span id="select-amenity-text">Select Amenity</span></button>
-									</div>
-									<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-										<button id="type-selection"  class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="typeList()"><i id="type-selection-icon" class="a-grid"></i> <span id="select-type-text">Select Location</span></button>
-									</div>
-									<input type="text" name="type_selected" id="type_selected" value="" hidden="hidden">
-									<input type="text" name="type_selected_value" id="type_selected_value" value="" hidden="hidden">
-									<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
-										<div class="uk-width-1-1 uk-padding-remove uk-first-column">
-											<div class="uk-inline uk-button button-finding-filter ">
-												<span class="uk-form-icon" ><i class="a-calendar-pencil" style="color:#000"></i></span>
-												<input type="text" id="finding-date" name="date" class=" flatpickr flatpickr-input calendar-selection-input uk-width-1-1"  readonly="readonly">
-											</div>
-
-											<script type="text/javascript">
-												flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
-												flatpickr("#finding-date", {
-													altInput: true,
-													altFormat: "F j, Y",
-													dateFormat: "Y-m-d",
-													defaultDate: "{{ date('Y-m-d',time()) }}",
-												});
-											</script>
-
+							<div id="modal-findings-filters" class="uk-margin uk-child-width-auto" uk-grid>
+								<div class="uk-width-1-1 uk-padding-remove uk-inline">
+									<button id="amenity-selection" class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="amenityList()"><i id="amenity-selection-icon" class="a-grid"></i> <span id="select-amenity-text">Select Amenity</span></button>
+								</div>
+								<input type="text" name="amenity_selected_value" id="amenity_selected_value" value="" hidden="hidden">
+								<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
+									<button id="type-selection"  class="uk-button button-finding-filter uk-width-1-1" type="button" onclick="typeList()"><i id="type-selection-icon" class="a-grid"></i> <span id="select-type-text">Select Location</span></button>
+									{{-- <input type="hidden" name="location_selection" id="location-selection" value=""> --}}
+								</div>
+								<input type="text" name="type_selected" id="type_selected" value="" hidden="hidden">
+								<input type="text" name="type_selected_value" id="type_selected_value" value="" hidden="hidden">
+								<div class="uk-width-1-1 uk-padding-remove uk-margin-small uk-inline">
+									<div class="uk-width-1-1 uk-padding-remove uk-first-column">
+										<div class="uk-inline uk-button button-finding-filter ">
+											<span class="uk-form-icon" ><i class="a-calendar-pencil" style="color:#000"></i></span>
+											<input type="text" id="finding-date" name="date" class=" flatpickr flatpickr-input calendar-selection-input uk-width-1-1"  readonly="readonly">
 										</div>
+
+										<script type="text/javascript">
+											flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+											flatpickr("#finding-date", {
+												altInput: true,
+												altFormat: "F j, Y",
+												dateFormat: "Y-m-d",
+												defaultDate: "{{ date('Y-m-d',time()) }}",
+											});
+										</script>
+
 									</div>
 								</div>
-								<div class="uk-margin-remove" uk-grid>
+							</div>
+							<div class="uk-margin-remove" uk-grid>
 
-										<button class="uk-button uk-width-1-4" onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button> <button class="uk-button uk-button-primary  uk-width-3-4 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="if($('#project-detail-tab-1').hasClass('uk-active') || window.project_detail_tab_1 != '1'){$('#project-detail-tab-1').trigger('click')} dynamicModalClose()">DONE ADDING FINDINGS</button>
+								<button class="uk-button uk-width-1-4" onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button> <button class="uk-button uk-button-primary  uk-width-3-4 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="if($('#project-detail-tab-1').hasClass('uk-active') || window.project_detail_tab_1 != '1'){$('#project-detail-tab-1').trigger('click')} dynamicModalClose()">DONE ADDING FINDINGS</button>
 
 
-								</div>
+							</div>
 						</div>
 
 					</div>
 				</div>
 				<div id="modal-findings-items-container" class="uk-width-1-2">
 
-						@include('audit_stream.audit_stream')
+					@include('audit_stream.audit_stream')
 
-				</div>
-		</div>
-
-		@include('templates.modal-findings-items')
-		<div id="modal-findings-completion-check" uk-modal>
-			<div class="uk-modal-dialog uk-modal-body uk-modal-content" uk-overflow-auto>
-				<a class="uk-modal-close-default" uk-close></a>
-				<div uk-grid>
-					<div class="uk-width-1-2  uk-margin-medium-top">
-						<p>Have you finished inspecting all items for that building/unit/common area?</p>
-						<div class="uk-padding-remove" uk-grid>
-							<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
-								<button class="uk-button uk-button-primary uk-margin-left uk-margin-right uk-padding-remove uk-margin-remove uk-width-1-1">Yes, Mark as Complete and Submit to Lead.</button>
-							</div>
-							<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
-								<button class="uk-button uk-button-primary uk-padding-remove uk-margin-remove uk-width-1-1">Just the Items I have Findings For.</button>
-							</div>
-							<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
-								<button class="uk-button uk-button-default uk-padding-remove uk-margin-remove uk-width-1-1 uk-modal-close">No, I am still working on it.</button>
-							</div>
-						</div>
-					</div>
-					<div class="uk-width-1-2  uk-margin-medium-top">
-						<div>bulleted list of items that have not had any findings here<br />
-							<ul class="uk-list">
-								<li>item</li>
-								<li>item</li>
-							</ul>
-						</div>
-					</div>
 				</div>
 			</div>
 
-			<style>
-				.notmine{display:none;}
-			</style>
+			@include('templates.modal-findings-items')
+			<div id="modal-findings-completion-check" uk-modal>
+				<div class="uk-modal-dialog uk-modal-body uk-modal-content" uk-overflow-auto>
+					<a class="uk-modal-close-default" uk-close></a>
+					<div uk-grid>
+						<div class="uk-width-1-2  uk-margin-medium-top">
+							<p>Have you finished inspecting all items for that building/unit/common area?</p>
+							<div class="uk-padding-remove" uk-grid>
+								<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+									<button class="uk-button uk-button-primary uk-margin-left uk-margin-right uk-padding-remove uk-margin-remove uk-width-1-1">Yes, Mark as Complete and Submit to Lead.</button>
+								</div>
+								<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+									<button class="uk-button uk-button-primary uk-padding-remove uk-margin-remove uk-width-1-1">Just the Items I have Findings For.</button>
+								</div>
+								<div class="uk-width-1-1 uk-padding-remove uk-margin-medium-top">
+									<button class="uk-button uk-button-default uk-padding-remove uk-margin-remove uk-width-1-1 uk-modal-close">No, I am still working on it.</button>
+								</div>
+							</div>
+						</div>
+						<div class="uk-width-1-2  uk-margin-medium-top">
+							<div>bulleted list of items that have not had any findings here<br />
+								<ul class="uk-list">
+									<li>item</li>
+									<li>item</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<style>
+					.notmine{display:none;}
+				</style>
+			</div>
 		</div>
 	</div>
-</div>
-<script>
+	<script>
 
-	{{-- This is to open locations and if amenities are open make the icon to close --}}
-	function typeList(){
+		{{-- This is to open locations and if amenities are open make the icon to close --}}
+		function typeList(){
+		// debugger;
 		// If amenity is open close this.
 		if($('#amenity-selection-icon').hasClass('a-arrow-small-up ')){
 			$('#amenity-selection-icon').addClass('a-grid');
@@ -244,15 +248,19 @@
 			$('#type-selection-icon').removeClass('a-grid');
 			$('#type-selection-icon').addClass('a-arrow-small-up ');
 			loadTypes();
+			$('#select-type-text').text('Select Location');
 		} else {
 			$('#type-selection-icon').addClass('a-grid');
 			$('#type-selection-icon').removeClass('a-arrow-small-up');
 			removeDynamicData();
+			// loadTypes();
+			$('#select-type-text').text('Select Location');
 		}
 		// $('#select-type-text').text('Select Location From Above');
 	}
 
 	{{-- Selecting one of the type/location would trigger this. Opens amenities and change both button icons --}}
+	// filterUnitAmenities(164868 ,'Unit 217 in BIN:OH-02-00472 ')
 	function amenityList(locationType = '') {
 		//check if locationType is set thorugh Location selection
 		if(window.findingModalSelectedLocationType != '') {
@@ -263,7 +271,9 @@
 			$('#type-selection-icon').removeClass('a-arrow-small-up ');
 			$('#type-selection-icon').addClass('a-grid');
 		}
+		// debugger;
 		// toggle amenities
+		// //$('#amenity_selected_value').val(
 		if($('#amenity-selection-icon').hasClass('a-grid')){
 			$('#amenity-selection-icon').removeClass('a-grid');
 			$('#amenity-selection-icon').addClass('a-arrow-small-up');
@@ -283,7 +293,19 @@
 		} else {
 			$('#amenity-selection-icon').addClass('a-grid');
 			$('#amenity-selection-icon').removeClass('a-arrow-small-up');
-			$('#dynamic-data').empty();
+			// $('#dynamic-data').empty();
+			if($('#type_selected').val() == 'site' || locationType == 'site') {
+				filterSiteAmenities($('#type_selected_value').val());
+			}
+			if($('#type_selected').val() == 'building' || locationType == 'building') {
+				filterBuildingAmenities($('#type_selected_value').val());
+			}
+			if($('#type_selected').val() == 'unit' || locationType == 'unit') {
+				filterUnitAmenities($('#type_selected_value').val());
+			}
+			if($('#type_selected').val() == '' || locationType == '') {
+				filterAmenities();
+			}
 		}
 	}
 
@@ -334,6 +356,7 @@
 	}
 
 	function filterBuildingAmenities(building_id, display = null) {
+		window.scrollPosType = $('#left-side-dynamic-data').scrollTop();
 		loadAnimation();
 		var url = '/findings/modals/building-amenities/{{ $audit->audit_id }}/'+building_id;
 		$.get(url, {
@@ -353,6 +376,8 @@
 	}
 
 	function filterUnitAmenities(unit_id, display = null, bottom = null) {
+		window.scrollPosType = $('#left-side-dynamic-data').scrollTop();
+		// debugger;
 		loadAnimation();
 		var url = '/findings/modals/unit-amenities/{{ $audit->audit_id }}/'+unit_id;
 		$.get(url, {
@@ -367,6 +392,7 @@
 		if(display != null) {
 			$('#select-type-text').text(display);
 		}
+		// debugger;
 		$('#type_selected').val('unit');
 		$('#type_selected_value').val(unit_id);
 		updateAmenitiesIcon('unit');
@@ -408,18 +434,29 @@
 			});
 		} else {
 			$('#dynamic-data').html(loadTypeView);
+			// scrollPosType = $('#left-side-dynamic-data').scrollTop();
 			scrollTo('type');
 		}
 	}
 
 	function scrollTo(element = null, bottom = null) {
+		// debugger;
 		if(element == 'type') {
-			$('#type-list').scrollTop(scrollPosType);
+			$('#left-side-dynamic-data').scrollTop(scrollPosType);
 		} else {
 			$('#amenity-list').scrollTop(scrollPosAmenity);
 		}
-
 	}
+
+	// $(document).ready(function() {
+	// 	$('a[href^="#"]').click(function() {
+	// 		var target = $(this.hash);
+	// 		if (target.length == 0) target = $('a[name="' + this.hash.substr(1) + '"]');
+	// 		if (target.length == 0) target = $('html');
+	// 		$('html, body').animate({ scrollTop: target.offset().top }, 500);
+	// 		return false;
+	// 	});
+	// });
 
 
 
@@ -441,6 +478,7 @@
 		// amenityList();
 		// filter the findings to the selection
 		$('#select-amenity-text').text(display);
+		$('#amenity_selected_value').val(amenity_id);
 		console.log('Selected '+amenity_id);
 		window.findingModalSelectedAmenity = amenity_id;
 		window.findingModalSelectedAmenityIncrement = amenity_increment;
@@ -505,21 +543,21 @@
 						$locationText .= ", NO ADDRESSS SET IN DEVCO.";
 					}
 				}
-			?>
+				?>
 			// load the findings of selected amenities
 			@if(!is_null($passedUnit))
 			$.ajax({
-			   url:filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_name }}'),
-			   success:function(){
-				   selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
+				url:filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_name }}'),
+				success:function(){
+					selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
 				}
 			})
 
 			@elseif(!is_null($passedBuilding))
 			$.ajax({
-			   url:filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf'),
-			   success:function(){
-				   selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
+				url:filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf'),
+				success:function(){
+					selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
 				}
 			})
 
@@ -531,9 +569,9 @@
 
 			// Set the building name in selected type button
 			console.log('Filtering to amenity id:a-{{ $passedAmenity->amenity_id }} ({{ $passedAmenity->amenity->amenity_description }}) for amenity inspection {{ $passedAmenity->id }} with a location type target of '+window.findingModalSelectedLocationType+' further filtered to show '+window.findingModalSelectedType+' findings.');
-		@elseif(!is_null($passedUnit))
+			@elseif(!is_null($passedUnit))
 			@if($toplevel != 1)
-				console.log('Filtering to unit id:u-{{ $passedUnit->unit_id }}');
+			console.log('Filtering to unit id:u-{{ $passedUnit->unit_id }}');
 	    	// set filter test for type
 	    	<?php
 	    	$locationType = 'u-' . $passedUnit->unit_id;
@@ -543,58 +581,56 @@
 				// filterAmenities('u-{{ $passedUnit->unit_id }}', 'Unit NAME: {{ $passedUnit->unit_name }} in Building BIN:{{ $passedUnit->building_key }} ADDRESS: @if($passedUnit->building->address) {{ $passedUnit->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf',0);
 				filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building->building_name }}');
 		    	// filter to type and allita type (nlt, lt, file)
-    	@else
-	    	console.log('Filtering building-level amenities {{ $passedBuilding->building_id }}}');
-	    	filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
-    	@endif
-  	@elseif(!is_null($passedBuilding))
-    	@if($toplevel != 1)
-	    	console.log('Filtering to Building BIN: {{ $passedBuilding->building_name }}, ADDRESS: {{ $passedBuilding->address }}');
-	    	<?php
-	    		$locationType = 'b-' . $passedBuilding->building_id;
-	    	?>
+		    	@else
+		    	console.log('Filtering building-level amenities {{ $passedBuilding->building_id }}}');
+		    	filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+		    	@endif
+		    	@elseif(!is_null($passedBuilding))
+		    	@if($toplevel != 1)
+		    	console.log('Filtering to Building BIN: {{ $passedBuilding->building_name }}, ADDRESS: {{ $passedBuilding->address }}');
+		    	<?php
+		    	$locationType = 'b-' . $passedBuilding->building_id;
+		    	?>
 				// set filter text for type
 				window.findingModalSelectedLocationType = '{{ $locationType }}';
 	    	// set filter test for type
-		  	@if($passedBuilding->building)
-		  		filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
-		  	@else
+	    	@if($passedBuilding->building)
+	    	filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+	    	@else
 		  		//need to check when this condition will be true - Div 20190403, not seeing much difference from true and false
 		  		filterAmenities('b-{{ $passedBuilding->building_id }}', 'BIN:{{ $passedBuilding->building_name }}',0,1);
-		  	@endif
+		  		@endif
 	  		// filter to type and allita type (nlt, lt, file)
-	  	@else
-			  console.log('Filtering project-level amenities {{ $audit->project_ref }}');
-			  filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
-		  @endif
-	  @else
+	  		@else
+	  		console.log('Filtering project-level amenities {{ $audit->project_ref }}');
+	  		filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
+	  		@endif
+	  		@else
   		//console.log('filtering by project-level');
   		// setTimeout(function() {
   		// 	typeList();
   		// }, .7);
 
-		@endif
-		toggleMine();
+  		@endif
+  		toggleMine();
 
-	}
+  	}
 
-	function toggleMine() {
-		window.findingModalSelectedAmenityDate = $('#finding-date').val();
-		//$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
-		console.log("select mine: "+window.findingModalSelectedMine);
-		if(window.findingModalSelectedMine == 'true'){
-			window.findingModalSelectedMine = 'false';
-			$('#mine-filter-button').addClass('uk-active');
-
-			// only already visible elements?
-
-			$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
-		} else {
-			window.findingModalSelectedMine = 'true';
-			$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
-			$('#mine-filter-button').removeClass('uk-active');
+  	function toggleMine() {
+  		window.findingModalSelectedAmenityDate = $('#finding-date').val();
+			//$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
+			console.log("select mine: "+window.findingModalSelectedMine);
+			if(window.findingModalSelectedMine == 'true'){
+				window.findingModalSelectedMine = 'false';
+				$('#mine-filter-button').addClass('uk-active');
+				// only already visible elements?
+				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
+			} else {
+				window.findingModalSelectedMine = 'true';
+				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
+				$('#mine-filter-button').removeClass('uk-active');
+			}
 		}
-	}
 
 
 	// A $( document ).ready() block.
@@ -604,14 +640,15 @@
 	});
 
 	// filter findings based on class
-  $('#finding-description').on('keyup', function () {
-  	if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
-  		filterFindingTypes();
-  	}else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
-  		filterFindingTypes();
-  	}
-  });
+	$('#finding-description').on('keyup', function () {
+		debugger;
+		if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
+			filterFindingTypes();
+		}else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
+			filterFindingTypes();
+		}
+	});
 
 
 
-	</script>
+</script>
