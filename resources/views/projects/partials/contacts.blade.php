@@ -336,7 +336,7 @@ $thisProjectHtml = '';
 						<td>
 							<div class="uk-margin-left">
 								<span><i class="uk-text-muted a-file-gear_1" data-uk-tooltip title="USER DOES NOT HAVE ACCESS TO THIS PROJECT VIA DEVCO"></i> | </span>
-								<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS' }}" onclick="editUser({{ $user->id }})"><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i> |
+								<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS' }}" onclick="removeUserFromProject({{ $user->id }})"><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i> |
 								</span>
 								<span class="" data-uk-tooltip title="THE USER HAS ACCESS TO REPORTS VIA THEIR ALLITA USER ACCESS"> <i class="a-file-approve"></i>
 								</span>
@@ -468,7 +468,7 @@ $thisProjectHtml = '';
 		});
 	});
 
-	function editUser(id) {
+	function removeUserFromProject(id) {
 		dynamicModalLoad('remove-user-from-project/{{ $project->id }}/'+id);
 	}
 
