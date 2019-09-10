@@ -507,6 +507,7 @@
 
 
             Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
+            Route::get('/modals/auditors/{id}/preferences-view', 'UserController@preferencesView')->name('auditor.preferences-view');
 
             Route::get('/modals/addreply/{id}/{fromtype}/{type}/{level?}','FindingController@replyFindingForm');
 

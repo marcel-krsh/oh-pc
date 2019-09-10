@@ -33,10 +33,10 @@ class ProjectContactsController extends Controller
   {
   	// return         $last_record = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
   	// return $project;
-    $user_ids              = $this->allUserIdsInProject($project);
     $project_user_ids      = $this->projectUserIds($project);
     $allita_user_ids       = $this->allitaUserIds($project);
     $projectUserPersonIds  = $this->projectUserPersonIds($project);
+    $user_ids              = $this->allUserIdsInProject($project);
     $contactsWithoutUsers  = ProjectContactRole::join('people','people.id','person_id')->where('project_id',$project)
                             ->whereNotIn('person_id',$projectUserPersonIds)->with('organization')->with('person.organizations')->with('projectRole')->with('person.email')->with('person.phone')->orderBy('people.last_name')->orderBy('people.id')
                             ->get();
@@ -71,7 +71,11 @@ class ProjectContactsController extends Controller
     }
     // replace joins with relationship
     $users             = User::whereIn('id', $user_ids)->with('role', 'person.email', 'person.projects', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access.project', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
-    // return $users->first()->person->projects;
+    // return Project::with('contactRoles.person.user')->find($project);
+    // return ProjectContactRole::where('person_id', 23773)->get()->unique();
+     // return $x = $users->where('id', 6380)->first()->person->projects;
+     // $y = $users->where('id', 6380)->first()->report_access->pluck('project');
+     // return $x->merge($y)->unique();
     $default_org       = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
     $default_owner_org = $users->pluck('user_organizations')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
 
@@ -88,7 +92,7 @@ class ProjectContactsController extends Controller
 
   protected function projectUserIds($project_id)
   {
-    $project = Project::with('contactRoles.person')->find($project_id); //DEVCO
+    $project = Project::with('contactRoles.person.user')->find($project_id); //DEVCO
     // Check if they have Devco, else check allita -
     // Test with Charlene Wray
     if ($project->contactRoles) {

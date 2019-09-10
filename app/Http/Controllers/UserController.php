@@ -554,6 +554,106 @@ class UserController extends Controller
     return view('modals.user-preferences', compact('data', 'user', 'unp'));
   }
 
+  public function preferencesView($id)
+  {
+    $user = User::find($id);
+    $phone_number = '';
+    if ($user->person) {
+      if ($user->person->phone) {
+        if ($user->person->phone->number()) {
+          $phone_number = $user->person->phone->number();
+        }
+      }
+    }
+    $org_name     = $user->organization;
+    $org_address1 = '';
+    $org_address2 = '';
+    $org_city     = '';
+    $org_state    = '';
+    $org_zip      = '';
+    if ($user->organization_details) {
+      if ($user->organization_details->address) {
+        $org_id       = $user->organization_details->address->id;
+        $org_address1 = $user->organization_details->address->line_1;
+        $org_address2 = $user->organization_details->address->line_2;
+        $org_city     = $user->organization_details->address->city;
+        $org_state    = $user->organization_details->address->state;
+        $org_zip      = $user->organization_details->address->zip;
+      }
+    }
+
+    $addresses = [];
+    foreach ($user->auditor_addresses as $address) {
+      $formatted_address = $address->line_1;
+      if ($address->line_2) {
+        $formatted_address = $formatted_address . ", " . $address->line_2;
+      }
+      if ($address->city) {
+        $formatted_address = $formatted_address . ", " . $address->city;
+      }
+      if ($address->state) {
+        $formatted_address = $formatted_address . ", " . $address->state;
+      }
+      if ($address->zip) {
+        $formatted_address = $formatted_address . " " . $address->zip;
+      }
+
+      $addresses[] = [
+        'address_id' => $address->id,
+        'address'    => $formatted_address,
+      ];
+    }
+
+    // build calendar
+    if (Session::has('availability.currentdate') && Session::get('availability.currentdate') != '') {
+      $d = Session::get('availability.currentdate');
+    } else {
+      $d = Carbon\Carbon::now()->startOfWeek();
+      Session::put('availability.currentdate', $d);
+    }
+
+    $calendar = $this->getCalendar($d); //dd($calendar);
+    $unp = UserNotificationPreferences::where('user_id', $user->id)->first();
+
+    $data = collect([
+      "summary"                 => [
+        "id"                       => $id,
+        "name"                     => $user->name,
+        'initials'                 => $user->initials(),
+        'active'                   => $user->active,
+        'email'                    => $user->email,
+        'phone'                    => $user->initials(),
+        'color'                    => $user->badge_color,
+        'phone'                    => $phone_number,
+        'organization'             => [
+          "id"       => isset($org_id) ? $org_id : null,
+          "name"     => $org_name,
+          "address1" => $org_address1,
+          "address2" => $org_address2,
+          "city"     => $org_city,
+          "state"    => $org_state,
+          "zip"      => $org_zip,
+        ],
+        'availability_max_hours'   => $user->availability_max_hours,
+        'availability_lunch'       => $user->availability_lunch,
+        'availability_max_driving' => $user->availability_max_driving,
+        'addresses'                => $addresses,
+        'date'                     => $d->copy()->subDays(0)->format('F j, Y'),
+        'ref'                      => $d->copy()->subDays(0)->format('Ymd'),
+        'date-previous'            => $d->copy()->subDays(7)->format('F j, Y'),
+        'ref-previous'             => $d->copy()->subDays(7)->format('Ymd'),
+        'date-next'                => strtoupper($d->copy()->addDays(7)->format('F j, Y')),
+        'ref-next'                 => $d->copy()->addDays(7)->format('Ymd'),
+      ],
+      "calendar"                => $calendar['now'],
+      "calendar-previous"       => $calendar['previous'],
+      "calendar-next"           => $calendar['next'],
+      "notification_preference" => [],
+    ]);
+
+    return view('modals.user-preferences-view', compact('data', 'user', 'unp'));
+  }
+
   public function setDefaultAddress(Request $request, $auditor_id, $address_id)
   {
     // TBD user check

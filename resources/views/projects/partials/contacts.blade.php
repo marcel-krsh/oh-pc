@@ -52,26 +52,33 @@ $thisProjectHtml = '';
 						</td>
 						<td>
 							{{-- manager --}}
-							
-								<div style="display: inline-table; min-width: 40px;">
-									<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultUser({{ $user->id }}, {{ in_array($user->id, $project_user_ids) }})" id="contact-user-{{ $user->id }}" name="contact" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER" aria-expanded="false" {{ $default_user_id == $user->id ? 'checked=checked' : '' }}>  |
-									{{-- owner --}}
-									<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOwner({{ $user->id }}, {{ in_array($user->id, $project_user_ids) }})" id="owner-user-{{ $user->id }}" name="owner" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER" aria-expanded="false" {{ $default_owner_id == $user->id ? 'checked=checked' : '' }}>
-								</div>
-								<div style="display:inline-table; min-width:100px;">
-									<small  onclick="editUserName({{ $user->id }})" uk-tooltip title="CLICK TO EDIT NAME" class="use-hand-cursor">{{ $user->name }}</small>
-								</div>
-							
-							@if(count($user->person->projects)>0)
+
+							<div style="display: inline-table; min-width: 40px;">
+								<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultUser({{ $user->id }}, {{ in_array($user->id, $project_user_ids) }})" id="contact-user-{{ $user->id }}" name="contact" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER" aria-expanded="false" {{ $default_user_id == $user->id ? 'checked=checked' : '' }}>  |
+								{{-- owner --}}
+								<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOwner({{ $user->id }}, {{ in_array($user->id, $project_user_ids) }})" id="owner-user-{{ $user->id }}" name="owner" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER" aria-expanded="false" {{ $default_owner_id == $user->id ? 'checked=checked' : '' }}>
+							</div>
+							<div style="display:inline-table; min-width:100px;">
+								<small  onclick="editUserName({{ $user->id }})" uk-tooltip title="CLICK TO EDIT NAME" class="use-hand-cursor">{{ $user->name }}</small>
+							</div>
+
+									@php
+									$devco_projects = $user->person->projects;
+									// if($user->id == 6380)
+									// 	dd($devco_projects);
+									$allita_projects = $user->report_access->pluck('project');
+									$all_projects = $devco_projects->merge($allita_projects)->unique();
+									@endphp
+							@if(count($all_projects) > 0)
 							<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 							<small>
 								<span onclick="$('#user-{{ $user->id }}-projects').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW PROJECT(S)"><i class="a-info-circle"></i>
-								Total Projects: {{ count($user->person->projects) }}
+									Total Projects: {{ count($all_projects) }}
 								</span>
 							</small>
 							<div id="user-{{ $user->id }}-projects" style="display: none;">
 								<small><ul>
-									@forEach($user->person->projects as $p)
+									@forEach($all_projects as $p)
 									<li @if($p->id == $project->id) style="font-weight:bold" @endIf>
 										{{ $p->project_number }} : {{ $p->project_name }}
 									</li>
@@ -97,18 +104,18 @@ $thisProjectHtml = '';
 							$exists_in_uo_owner = $user_orgs->where('devco', 1)->where('organization_id', $user->organization_details->id)->where('owner_default', 1)->first();
 							@endphp
 							{{-- manager --}}
-							
-								<div style="display: inline-table; min-width: 40px;">
-									<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOrganization({{ $user->organization_details->id }}, {{ $user->id }},  1)" name="organization" id="organization-{{ $user->organization_details->id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER ORGANIZATION" aria-expanded="false" {{ (($exists_in_uo) || (!$default_org && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
-									{{-- Owner --}}
-									<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOwnerOrganization({{ $user->organization_details->id }}, {{ $user->id }},  1)" name="owner_organization" id="owner-organization-{{ $user->organization_details->id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER ORGANIZATION" aria-expanded="false" {{ (($exists_in_uo_owner) || (!$default_owner_org && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
-								</div>
-								<div style="display:inline-table; min-width:100px;">
-									<small>
-										{{ $user->organization_details->organization_name }}
-									</small>
-								</div>
-							
+
+							<div style="display: inline-table; min-width: 40px;">
+								<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOrganization({{ $user->organization_details->id }}, {{ $user->id }},  1)" name="organization" id="organization-{{ $user->organization_details->id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER ORGANIZATION" aria-expanded="false" {{ (($exists_in_uo) || (!$default_org && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
+								{{-- Owner --}}
+								<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOwnerOrganization({{ $user->organization_details->id }}, {{ $user->id }},  1)" name="owner_organization" id="owner-organization-{{ $user->organization_details->id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER ORGANIZATION" aria-expanded="false" {{ (($exists_in_uo_owner) || (!$default_owner_org && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							</div>
+							<div style="display:inline-table; min-width:100px;">
+								<small>
+									{{ $user->organization_details->organization_name }}
+								</small>
+							</div>
+
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							{{-- @elseif(!is_null($user->organization) && ($user->organization != ''))
 								{{ $user->organization }}
@@ -123,19 +130,19 @@ $thisProjectHtml = '';
 							@endphp
 							@foreach($user_orgs as $org)
 							{{-- Manager --}}
-							
-								<div style="display: inline-table; min-width: 40px;">
-									<input class="uk-radio" onchange="makeDefaultOrganization({{ $org->id }}, {{ $user->id }})" name="organization" id="organization-{{ $org->organization_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER ORGANIZATION" aria-expanded="false" {{ $org->default ? 'checked=checked': '' }}> |
-									{{-- owner --}}
-									<input class="uk-radio" onchange="makeDefaultOwnerOrganization({{ $org->id }}, {{ $user->id }})" name="owner_organization" id="owner-organization-{{ $org->organization_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER ORGANIZATION" aria-expanded="false" {{ $org->owner_default ? 'checked=checked': '' }}>
-								</div>
-								<div style="display:inline-table; min-width:100px;">
-									<small>
-										{{ $org->organization->organization_name }}
-									</small>
-									<i onclick="editOrganization({{ $org->id }})" id="project-organization-{{ $org->id }}" class="a-pencil" uk-tooltip="" title="{{ is_null($org->organization->organization_key) ? 'EDIT ORGANIZATION NAME / REMOVE ORGANIZATION' : 'REMOVE ORGANIZATION' }}" aria-expanded="false"></i>
-								</div>
-							
+
+							<div style="display: inline-table; min-width: 40px;">
+								<input class="uk-radio" onchange="makeDefaultOrganization({{ $org->id }}, {{ $user->id }})" name="organization" id="organization-{{ $org->organization_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER ORGANIZATION" aria-expanded="false" {{ $org->default ? 'checked=checked': '' }}> |
+								{{-- owner --}}
+								<input class="uk-radio" onchange="makeDefaultOwnerOrganization({{ $org->id }}, {{ $user->id }})" name="owner_organization" id="owner-organization-{{ $org->organization_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER ORGANIZATION" aria-expanded="false" {{ $org->owner_default ? 'checked=checked': '' }}>
+							</div>
+							<div style="display:inline-table; min-width:100px;">
+								<small>
+									{{ $org->organization->organization_name }}
+								</small>
+								<i onclick="editOrganization({{ $org->id }})" id="project-organization-{{ $org->id }}" class="a-pencil" uk-tooltip="" title="{{ is_null($org->organization->organization_key) ? 'EDIT ORGANIZATION NAME / REMOVE ORGANIZATION' : 'REMOVE ORGANIZATION' }}" aria-expanded="false"></i>
+							</div>
+
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@endforeach
 							<small class="use-hand-cursor uk-text-muted" id="add-organization-{{ $user->id }}" onclick="addOrganization({{ $user->id }})"  uk-tooltip="" title="ADD NEW ORGANIZATION" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> ORGANIZATION</small>
@@ -149,20 +156,20 @@ $thisProjectHtml = '';
 							$exists_in_ua = $user_addresses->where('devco', 1)->where('address_id', $user->organization_details->address->id)->where('default', 1)->first();
 							$exists_in_ua_owner = $user_addresses->where('devco', 1)->where('address_id', $user->organization_details->address->id)->where('owner_default', 1)->first();
 							@endphp
-							
-								<div style="display: inline-table; min-width: 40px;">
-									{{-- Manager --}}
-									<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultAddress({{ $user->organization_details->address->id }}, {{ $user->id }}, 1)" name="address" type="radio" uk-tooltip="" title="SET AS DEFAULT ADDRESS FOR MANAGER" aria-expanded="false" {{ (($exists_in_ua) || (!$default_addr && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
-									{{-- owner --}}
-									<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOwnerAddress({{ $user->organization_details->address->id }}, {{ $user->id }}, 1)" name="owner_address" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER ADDRESS" aria-expanded="false" {{ (($exists_in_ua_owner) || (!$default_owner_addr && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
-								</div>
-								<div style="display:inline-table; min-width:100px;">
-									<small>
-										<a target="_blank" href="https://www.google.com/maps?q={{ urlencode(str_replace('<br />',' ',$user->organization_details->address->formatted_address())) }}" uk-tooltip="" title="VIEW ON MAP" class="uk-text-emphasis">
-										{!! $user->organization_details->address->formatted_address() !!}</a>
-									</small>
-								</div>
-							
+
+							<div style="display: inline-table; min-width: 40px;">
+								{{-- Manager --}}
+								<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultAddress({{ $user->organization_details->address->id }}, {{ $user->id }}, 1)" name="address" type="radio" uk-tooltip="" title="SET AS DEFAULT ADDRESS FOR MANAGER" aria-expanded="false" {{ (($exists_in_ua) || (!$default_addr && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
+								{{-- owner --}}
+								<input class="uk-radio" style="margin-top: .1px" onchange="makeDefaultOwnerAddress({{ $user->organization_details->address->id }}, {{ $user->id }}, 1)" name="owner_address" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER ADDRESS" aria-expanded="false" {{ (($exists_in_ua_owner) || (!$default_owner_addr && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							</div>
+							<div style="display:inline-table; min-width:100px;">
+								<small>
+									<a target="_blank" href="https://www.google.com/maps?q={{ urlencode(str_replace('<br />',' ',$user->organization_details->address->formatted_address())) }}" uk-tooltip="" title="VIEW ON MAP" class="uk-text-emphasis">
+									{!! $user->organization_details->address->formatted_address() !!}</a>
+								</small>
+							</div>
+
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@else
 							<div class="uk-text-muted uk-align-left"><small>NA</small></div>
@@ -172,22 +179,22 @@ $thisProjectHtml = '';
 							$user_addresses = $user_addresses->where('devco', '!=', 1);
 							@endphp
 							@foreach($user_addresses as $address)
-							
-								<div style="display: inline-table; min-width: 40px;">
-									{{-- Manager --}}
-									<input class="uk-radio"  style="margin-top: .1px" onchange="makeDefaultAddress({{ $address->id }}, {{ $user->id }})" name="address" id="address-{{ $address->address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER ADDRESS" aria-expanded="false" {{ $address->default ? 'checked=checked': '' }}> |
-									{{-- Owner --}}
-									<input class="uk-radio"  style="margin-top: .1px" onchange="makeDefaultOwnerAddress({{ $address->id }}, {{ $user->id }})" name="owner_address" id="owner-address-{{ $address->address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER ADDRESS" aria-expanded="false" {{ $address->owner_default ? 'checked=checked': '' }}>
-								</div>
-								<div style="display:inline-table; min-width:100px;">
-									<small>
 
-										<a target="_blank" href="https://www.google.com/maps?q={{ urlencode(str_replace('<br />',' ',$address->address->formatted_address())) }}" class="uk-text-emphasis" uk-tooltip="" title="VIEW ON MAP"><i style="font-size: 14px;" class="a-marker-basic uk-link"></i></a>
-										{!! $address->address->formatted_address() !!}
-										<i onclick="editAddress({{ $address->id }})" id="project-address-{{ $address->id }}" class="a-pencil" uk-tooltip="" title="{{ is_null($address->address->address_key) ? 'EDIT ADDRESS / REMOVE ADDRESS' : 'REMOVE ADDRESS' }}" aria-expanded="false"></i>
-									</small>
-								</div>
-							
+							<div style="display: inline-table; min-width: 40px;">
+								{{-- Manager --}}
+								<input class="uk-radio"  style="margin-top: .1px" onchange="makeDefaultAddress({{ $address->id }}, {{ $user->id }})" name="address" id="address-{{ $address->address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER ADDRESS" aria-expanded="false" {{ $address->default ? 'checked=checked': '' }}> |
+								{{-- Owner --}}
+								<input class="uk-radio"  style="margin-top: .1px" onchange="makeDefaultOwnerAddress({{ $address->id }}, {{ $user->id }})" name="owner_address" id="owner-address-{{ $address->address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER ADDRESS" aria-expanded="false" {{ $address->owner_default ? 'checked=checked': '' }}>
+							</div>
+							<div style="display:inline-table; min-width:100px;">
+								<small>
+
+									<a target="_blank" href="https://www.google.com/maps?q={{ urlencode(str_replace('<br />',' ',$address->address->formatted_address())) }}" class="uk-text-emphasis" uk-tooltip="" title="VIEW ON MAP"><i style="font-size: 14px;" class="a-marker-basic uk-link"></i></a>
+									{!! $address->address->formatted_address() !!}
+									<i onclick="editAddress({{ $address->id }})" id="project-address-{{ $address->id }}" class="a-pencil" uk-tooltip="" title="{{ is_null($address->address->address_key) ? 'EDIT ADDRESS / REMOVE ADDRESS' : 'REMOVE ADDRESS' }}" aria-expanded="false"></i>
+								</small>
+							</div>
+
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@endforeach
 							<small class="use-hand-cursor uk-text-muted" id="add-address-{{ $user->id }}" onclick="addAddress({{ $user->id }})"  uk-tooltip="" title="ADD NEW ADDRESS" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> ADDRESS</small>
@@ -208,18 +215,18 @@ $thisProjectHtml = '';
 							@endphp
 							{{-- Ie none of the phone number is marked as default, we mark default devco contact phone number as default --}}
 							{{-- Manager --}}
-							
-								<div  style="display:inline-table; min-width: 50px;">
-									<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultPhonenumber({{ $user->organization_details->default_phone_number_id }}, {{ $user->id }},  1)" name="phone_number" id="phone_number-{{ $user->organization_details->default_phone_number_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER PHONE NUMBER" aria-expanded="false" {{ (($exists_in_up) || (!$default_phone && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
-									{{-- Owner --}}
-									<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerPhonenumber({{ $user->organization_details->default_phone_number_id }}, {{ $user->id }},  1)" name="owner_phone_number" id="owner-phone-number-{{ $user->organization_details->default_phone_number_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER PHONE NUMBER" aria-expanded="false" {{ (($exists_in_up_owner) || (!$default_owner_phone && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
-								</div>
-								<div style="display:inline-table; min-width: 95px;">
-									<small>
-										{{ $user->organization_details->phone_number_formatted() }}
-									</small>
-								</div>
-							
+
+							<div  style="display:inline-table; min-width: 50px;">
+								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultPhonenumber({{ $user->organization_details->default_phone_number_id }}, {{ $user->id }},  1)" name="phone_number" id="phone_number-{{ $user->organization_details->default_phone_number_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER PHONE NUMBER" aria-expanded="false" {{ (($exists_in_up) || (!$default_phone && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
+								{{-- Owner --}}
+								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerPhonenumber({{ $user->organization_details->default_phone_number_id }}, {{ $user->id }},  1)" name="owner_phone_number" id="owner-phone-number-{{ $user->organization_details->default_phone_number_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER PHONE NUMBER" aria-expanded="false" {{ (($exists_in_up_owner) || (!$default_owner_phone && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							</div>
+							<div style="display:inline-table; min-width: 95px;">
+								<small>
+									{{ $user->organization_details->phone_number_formatted() }}
+								</small>
+							</div>
+
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@else
 							<div class="uk-text-muted uk-align-left"><small>NA</small></div>
@@ -231,19 +238,19 @@ $thisProjectHtml = '';
 							@endphp
 							@foreach($user_phones as $phone)
 							{{-- Manager --}}
-							
-								<div style="display: inline-table; min-width: 40px;">
-									<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultPhonenumber({{ $phone->id }}, {{ $user->id }})" name="phone_number" id="phone_number-{{ $phone->phone_number_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER PHONE NUMBER" aria-expanded="false" {{ $phone->default ? 'checked=checked': '' }}> |
-									{{-- Owner --}}
-									<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerPhonenumber({{ $phone->id }}, {{ $user->id }})" name="owner_phone_number" id="owner-phone-number-{{ $phone->phone_number_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER PHONE NUMBER" aria-expanded="false" {{ $phone->owner_default ? 'checked=checked': '' }}>
-								</div>
-								<div style="display:inline-table; min-width:100px;">
-									<small>
-										{{ $phone->phone_number_formatted() }}
-									</small>
-									<i onclick="editPhoneNumber({{ $phone->id }})" id="project-phone-number-{{ $phone->id }}" class="a-pencil" uk-tooltip="" title="EDIT / DELETE PHONE NUMBER" aria-expanded="false"></i>
-								</div>
-							
+
+							<div style="display: inline-table; min-width: 40px;">
+								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultPhonenumber({{ $phone->id }}, {{ $user->id }})" name="phone_number" id="phone_number-{{ $phone->phone_number_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER PHONE NUMBER" aria-expanded="false" {{ $phone->default ? 'checked=checked': '' }}> |
+								{{-- Owner --}}
+								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerPhonenumber({{ $phone->id }}, {{ $user->id }})" name="owner_phone_number" id="owner-phone-number-{{ $phone->phone_number_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER PHONE NUMBER" aria-expanded="false" {{ $phone->owner_default ? 'checked=checked': '' }}>
+							</div>
+							<div style="display:inline-table; min-width:100px;">
+								<small>
+									{{ $phone->phone_number_formatted() }}
+								</small>
+								<i onclick="editPhoneNumber({{ $phone->id }})" id="project-phone-number-{{ $phone->id }}" class="a-pencil" uk-tooltip="" title="EDIT / DELETE PHONE NUMBER" aria-expanded="false"></i>
+							</div>
+
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@endforeach
 							<small class="use-hand-cursor uk-text-muted" id="add-phone-{{ $user->id }}" onclick="addPhoneNumber({{ $user->id }})"  uk-tooltip="" title="ADD ANOTHER PHONE NUMBER" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> PHONE</small>
@@ -263,17 +270,17 @@ $thisProjectHtml = '';
 							$exists_in_ue_owner = $user_emails->where('devco', 1)->where('email_address_id', $user->person->default_email_address_id)->where('owner_default', 1)->first();
 							@endphp
 							{{-- Manager --}}
-							
-								<div style="display: inline-table; min-width: 40px;">
-									<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="email" id="email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER EMAIL" aria-expanded="false" {{ (($exists_in_ue) || (!$default_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
-									{{-- Owner --}}
-									<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="owner_email" id="owner-email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ (($exists_in_ue_owner) || (!$default_owner_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
-								</div>
-								<div style="display:inline-table; min-width:100px;">
-									<small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->person->email->email_address }}">{{ $user->person->email->email_address }}</a>
-									</small>
-								</div>
-						
+
+							<div style="display: inline-table; min-width: 40px;">
+								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="email" id="email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER EMAIL" aria-expanded="false" {{ (($exists_in_ue) || (!$default_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
+								{{-- Owner --}}
+								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="owner_email" id="owner-email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ (($exists_in_ue_owner) || (!$default_owner_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							</div>
+							<div style="display:inline-table; min-width:100px;">
+								<small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->person->email->email_address }}">{{ $user->person->email->email_address }}</a>
+								</small>
+							</div>
+
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@else
 							<div class="uk-text-muted uk-align-left"><small>NA</small></div>
@@ -285,18 +292,18 @@ $thisProjectHtml = '';
 							@endphp
 							@foreach($user_emails as $email)
 							{{-- Manager --}}
-							
-								<div style="display: inline-table; min-width: 40px;">
-									<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultEmail({{ $email->id }}, {{ $user->id }})" name="email" id="email-{{ $email->email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER EMAIL" aria-expanded="false" {{ $email->default ? 'checked=checked': '' }}> |
-									{{-- Owner --}}
-									<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerEmail({{ $email->id }}, {{ $user->id }})" name="owner_email" id="owner-email-{{ $email->email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ $email->owner_default ? 'checked=checked': '' }}>
-								</div>
-								<div class="uk-width-3-4">
-									<small>
-										{{ $email->email_address->email_address }}
-									</small>
-									<i onclick="editEmail({{ $email->id }})" id="project-email-{{ $email->id }}" class="a-pencil" uk-tooltip="" title="EDIT / DELETE EMAIL ADDRESS" aria-expanded="false"></i>
-								</div>
+
+							<div style="display: inline-table; min-width: 40px;">
+								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultEmail({{ $email->id }}, {{ $user->id }})" name="email" id="email-{{ $email->email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER EMAIL" aria-expanded="false" {{ $email->default ? 'checked=checked': '' }}> |
+								{{-- Owner --}}
+								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerEmail({{ $email->id }}, {{ $user->id }})" name="owner_email" id="owner-email-{{ $email->email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ $email->owner_default ? 'checked=checked': '' }}>
+							</div>
+							<div class="uk-width-3-4">
+								<small>
+									{{ $email->email_address->email_address }}
+								</small>
+								<i onclick="editEmail({{ $email->id }})" id="project-email-{{ $email->id }}" class="a-pencil" uk-tooltip="" title="EDIT / DELETE EMAIL ADDRESS" aria-expanded="false"></i>
+							</div>
 							<
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@endforeach

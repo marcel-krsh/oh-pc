@@ -83,6 +83,6 @@ class People extends Model
             'id', // Foreign key on project table...
             'id', // Local key on people table...
             'project_id' // Local key on project_contact_role table..
-        )->orderBy('project_name')->groupBy('id');
+        )->orderBy('project_name')->distinct();
     }
 }
