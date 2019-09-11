@@ -126,9 +126,9 @@
           <!-- END RECIPIENT LISTING -->
         </div>
         @endif
-        !!!!!!! CHECKING!
+        
         @if($all_findings > 0)
-        !!!!!! ALL FINDINGS!
+        
         @include('modals.partials.communication-findings')
         @endif
 

@@ -346,7 +346,7 @@ class CommunicationController extends Controller
       $audit = null;
       $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
 
-      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'all_findings'));
+      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient','finding','findings','all_findings'));
     }
   }
 
