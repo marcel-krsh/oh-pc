@@ -127,7 +127,7 @@
         </div>
         @endif
         
-        @if($all_findings > 0 && isarray($findings) && count($findings)>0)
+        @if($all_findings > 0 && is_array($findings) && count($findings)>0)
             !!!!! {{count($findings)}} !!!!
             @include('modals.partials.communication-findings')
         @endif
