@@ -113,7 +113,7 @@
     }
 
     $("document").ready(function() {
-    	@if(!is_null($selected_finding))
+    	@if(isset($selected_finding) && !is_null($selected_finding))
 	    	@if($selected_finding->finding_type->type == 'nlt')
 					@php
 						$selected_icon = '<i class="a-booboo"></i>';
