@@ -295,6 +295,7 @@ class CommunicationController extends Controller
       $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
 
       // return $recipients;
+      dd('values before modal',$finding,$findings);
       return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings'));
     } else {
       $project             = null;
@@ -346,7 +347,7 @@ class CommunicationController extends Controller
       }
       $audit = null;
       $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
-      dd('Values to modal',$finding,$findings);
+      //dd('Values to modal',$finding,$findings);
       return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient','finding','findings','all_findings'));
     }
   }
