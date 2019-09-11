@@ -62,13 +62,13 @@ $thisProjectHtml = '';
 								<small  onclick="editUserName({{ $user->id }})" uk-tooltip title="CLICK TO EDIT NAME" class="use-hand-cursor">{{ $user->name }}</small>
 							</div>
 
-									@php
-									$devco_projects = $user->person->projects;
+							@php
+							$devco_projects = $user->person->projects;
 									// if($user->id == 6380)
 									// 	dd($devco_projects);
-									$allita_projects = $user->report_access->pluck('project');
-									$all_projects = $devco_projects->merge($allita_projects)->unique();
-									@endphp
+							$allita_projects = $user->report_access->pluck('project');
+							$all_projects = $devco_projects->merge($allita_projects)->unique();
+							@endphp
 							@if(count($all_projects) > 0)
 							<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 							<small>
@@ -325,8 +325,13 @@ $thisProjectHtml = '';
 						@endphp
 						<td style="min-width: 85px;">
 							<div class="uk-margin-left">
+								@php
+									$allita_user_text = in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO ADD)';
+									$allita_modal_text = in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK OK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK OK TO ADD)';
+									$allita_modal_heading = in_array($user->id, $allita_user_ids) ? 'REMOVE ALLITA ACCESS FOR THIS USER' : 'ADD ALLITA ACCESS TO THIS USER';
+								@endphp
 								<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles) }}"></i>  | </span>
-								<span class="use-hand-cursor" data-uk-tooltip title="{{ in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO ADD)' }}"> <i onclick="addAllitaAccess({{ $user->id }}, {{ in_array($user->id, $allita_user_ids) }})" class="{{ in_array($user->id, $allita_user_ids) ? 'a-mail-chart-up' : 'a-mail-chart-up uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
+								<span class="use-hand-cursor" data-uk-tooltip title="{{ $allita_user_text }}"> <i onclick='addAllitaAccess({{ $user->id }}, "{{ in_array($user->id, $allita_user_ids) }}", "{{ $allita_modal_text }}", "{{ $allita_modal_heading }}")' class="{{ in_array($user->id, $allita_user_ids) ? 'a-mail-chart-up' : 'a-mail-chart-up uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
 								</span>
 								<span class="" data-uk-tooltip title="THE USER HAVE ACCESS TO REPORTS VIA THEIR DEVCO USER ACCESS"> <i class="a-file-approve"></i>
 								</span>
@@ -336,7 +341,10 @@ $thisProjectHtml = '';
 						<td>
 							<div class="uk-margin-left">
 								<span><i class="uk-text-muted a-file-gear_1" data-uk-tooltip title="USER DOES NOT HAVE ACCESS TO THIS PROJECT VIA DEVCO"></i> | </span>
-								<span class="use-hand-cursor" data-uk-tooltip title="{{ $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS' }}" onclick="removeUserFromProject({{ $user->id }})"><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i> |
+								@php
+									$project_user_text = $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS';
+								@endphp
+								<span class="use-hand-cursor" data-uk-tooltip title="{{ $project_user_text }}" onclick='removeUserFromProject({{ $user->id }})'><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i> |
 								</span>
 								<span class="" data-uk-tooltip title="THE USER HAS ACCESS TO REPORTS VIA THEIR ALLITA USER ACCESS"> <i class="a-file-approve"></i>
 								</span>
@@ -620,7 +628,9 @@ $thisProjectHtml = '';
 		});
 	}
 
-	function addAllitaAccess(userId, hasAccess) {
+	function addAllitaAccess(userId, hasAccess, projectsHtml = '', projectsHtmlHeading = '') {
+		var modalText = '<h2 class="uk-text-uppercase uk-text-emphasis">'+projectsHtmlHeading+'</h2><hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">' + projectsHtml;
+		UIkit.modal.confirm(modalText).then(function() {
 		jQuery.ajaxSetup({
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -651,6 +661,9 @@ $thisProjectHtml = '';
 					jQuery('.alert-danger').append('<p>'+value+'</p>');
 				});
 			}
+		});
+		}, function () {
+			console.log('Rejected.')
 		});
 	}
 
