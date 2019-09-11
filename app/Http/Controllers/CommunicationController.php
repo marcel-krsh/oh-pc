@@ -149,7 +149,7 @@ class CommunicationController extends Controller
       $finding  = null;
       $findings = null;
     }
-    dd($finding,$findings);
+    //dd($finding,$findings);
     if (null !== $project_id) {
       $project = Project::with('project_users')->where('id', '=', intval($project_id))->first();
 
@@ -346,7 +346,7 @@ class CommunicationController extends Controller
       }
       $audit = null;
       $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
-
+      dd('Values to modal',$finding,$findings);
       return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient','finding','findings','all_findings'));
     }
   }
