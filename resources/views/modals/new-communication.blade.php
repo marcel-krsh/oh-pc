@@ -127,9 +127,9 @@
         </div>
         @endif
         
-        @if($all_findings > 0)
-        
-        @include('modals.partials.communication-findings')
+        @if($all_findings > 0 && isarray($findings) && count($findings)>0)
+            !!!!! {{count($findings)}} !!!!
+            @include('modals.partials.communication-findings')
         @endif
 
         @if(!is_null($project))
