@@ -98,7 +98,7 @@
                                         pos: 'top-right',
                                         timeout: 1500
                                     });
-                                }, 
+                                },
                                     function () {
                                         console.log('Delete Cancelled.')
                                 });
@@ -138,7 +138,7 @@ $history = collect($report->report_history);
                             @forEach($history as $h)
                                 <tr>
                                     <td> {{$h['date']}}</td>
-                                    <td>{{$h['user_name']}} @can('access_admin')<i class="a-info-circle uk-link"  onClick="openUserPreferences({{$h['user_id']}});"></i>@endCan</td>
+                                    <td>{{$h['user_name']}} @can('access_admin')<i class="a-info-circle uk-link"  onClick="openUserPreferencesView({{$h['user_id']}});"></i>@endCan</td>
                                     <td>{{$h['note']}}</td>
                                 </tr>
                             @endForEach

@@ -35,8 +35,8 @@ Vue.use(infiniteScroll);
 
 // Reports watch
 $(function(){
-	
-	function checkForReportUpdates(){ 
+
+	function checkForReportUpdates(){
 	    		// ensure the tab is active to run updates on it.
                if($('#detail-tab-3').hasClass('uk-active')){
                     //console.log("Checking for updated reports. "+$('#report-checking').val());
@@ -48,12 +48,12 @@ $(function(){
                                 'page' : $('#reports-current-page').val(),
                                 'newer_than' : window.reportNewest
                                 }, function(data) {
-                                    if(data==1){ 
+                                    if(data==1){
                                         console.log('No Report Updates - newest record is '+window.reportNewest);
                                         $('#crr-newest').val(window.reportNewest);
                                         window.lastRequestCompleted = true;
 										console.log('Set lastRequestCompleted to :'+window.lastRequestCompleted);
-                                        
+
                                     } else {
                                         //UIkit.modal.alert('updated'+data1);
                                         console.log('There is a newer report than the previous time:'+window.reportNewest);
@@ -70,27 +70,27 @@ $(function(){
 			                                 }, function(data2) {
 			                                 	console.log('Updating Reports');
 			                              		$('#crr-report-list').prepend(data2);
-												
-			                              			
+
+
 			                            });
-                                    
+
 	                                	console.log('Updating Time Stamp to '+data.data[0].updated_at);
 	                                	$('#crr-newest').val(data.data[0].updated_at);
 	                                	window.lastRequestCompleted = true;
 										console.log('Set lastRequestCompleted to :'+window.lastRequestCompleted);
-                                    }    
-                                        
-                                    
+                                    }
+
+
 					});
 
                 } else {
                 	//console.log('Check not run - Current tab is Report tab:'+$('#detail-tab-3').hasClass('uk-active')+' crr-newest = "'+$('#crr-newest').val()+'"');
                 	window.lastRequestCompleted = true;
 					//console.log('Set lastRequestCompleted to :'+window.lastRequestCompleted);
-                	
+
                 }
-                            
-                
+
+
             }
 
 	window.lastRequestCompleted = false;
@@ -102,8 +102,8 @@ $(function(){
 	// 			},10000);
 	// }
 
-	
-	setInterval(function(){ 
+
+	setInterval(function(){
 					if(window.lastRequestCompleted){
 						window.lastRequestCompleted = false;
 						checkForReportUpdates();
@@ -111,14 +111,14 @@ $(function(){
 					//console.log('Checked lastRequestCompleted is ' + window.lastRequestCompleted);
 			},10000);
 
-	checkForReportUpdates();
+	//checkForReportUpdates();
 });
 
 
 // Project Reports watch
 $(function(){
-	
-	function checkForProjectReportUpdates(){ 
+
+	function checkForProjectReportUpdates(){
 	    		// ensure the tab is active to run updates on it.
                if($('#project-detail-tab-6').hasClass('uk-active')){
                     //console.log("Checking for updated reports. "+$('#report-checking').val());
@@ -130,12 +130,12 @@ $(function(){
                                 'page' : $('#project-reports-current-page').val(),
                                 'newer_than' : window.projectReportNewest
                                 }, function(data) {
-                                    if(data==1){ 
+                                    if(data==1){
                                         console.log('No Report Updates - newest record is '+window.projectReportNewest);
                                         $('#project-crr-newest').val(window.projectReportNewest);
                                         window.projectReportLastRequestCompleted = true;
 										console.log('Set lastRequestCompleted to :'+window.projectReportLastRequestCompleted);
-                                        
+
                                     } else {
                                         //UIkit.modal.alert('updated'+data1);
                                         console.log('There is a newer report than the previous time:'+window.projectReportNewest);
@@ -152,27 +152,27 @@ $(function(){
 			                                 }, function(data2) {
 			                                 	console.log('Updating Reports');
 			                              		$('#crr-project-report-list').prepend(data2);
-												
-			                              			
+
+
 			                            });
-                                    
+
 	                                	console.log('Updating Time Stamp to '+data.data[0].updated_at);
 	                                	$('#project-crr-newest').val(data.data[0].updated_at);
 	                                	window.projectReportLastRequestCompleted = true;
 										console.log('Set lastRequestCompleted to :'+window.projectReportLastRequestCompleted);
-                                    }    
-                                        
-                                    
+                                    }
+
+
 					});
 
                 } else {
                 	//console.log('Check not run - Current tab is Report tab:'+$('#detail-tab-3').hasClass('uk-active')+' crr-newest = "'+$('#crr-newest').val()+'"');
                 	window.projectReportLastRequestCompleted = true;
 					//console.log('Set lastRequestCompleted to :'+window.lastRequestCompleted);
-                	
+
                 }
-                            
-                
+
+
             }
 
 	window.projectReportLastRequestCompleted = false;
@@ -184,8 +184,8 @@ $(function(){
 	// 			},10000);
 	// }
 
-	
-	setInterval(function(){ 
+
+	setInterval(function(){
 					if(window.projectReportLastRequestCompleted){
 						window.projectReportLastRequestCompleted = false;
 						checkForProjectReportUpdates();
@@ -195,14 +195,14 @@ $(function(){
 
 	checkForProjectReportUpdates();
 });
-		
-		 
+
+
 	// Set value for script to not run
 	// Run script with a timeout of 5 seconds - then set run value to run.
 	// Set an interval that checks to see if variable is run.
-	// If it is set to run - set it to false		
+	// If it is set to run - set it to false
 
 
 
- 
+
 

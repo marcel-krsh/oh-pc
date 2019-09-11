@@ -247,7 +247,7 @@ if ($allowPageLoad) {
 						return isMobile.matches ? true : false
 					}
 					if(isMobile){
-						
+
 					}
 				</script>
 			</div>

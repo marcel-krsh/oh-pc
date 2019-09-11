@@ -272,7 +272,7 @@ class CommunicationController extends Controller
 
       if (null !== $report_id && Auth::user()->cannot('access_auditor')) {
         $report = CrrReport::with('lead')->find($report_id);
-        if ('CAR' == $report->template()->template_name) {
+        // if ('CAR' == $report->template()->template_name) {
           $lead_id    = $report->lead->id;
           $recipients = User::where('users.id', $lead_id)
             ->leftJoin('people', 'people.id', 'users.person_id')
@@ -283,10 +283,10 @@ class CommunicationController extends Controller
             ->orderBy('organization_name', 'asc')
             ->orderBy('last_name', 'asc')
             ->get();
-        }
-        if ($current_user->hasRole(1)) {
-          $single_receipient = true;
-        }
+          if ($current_user->hasRole(1)) {
+	          $single_receipient = true;
+	        }
+        // }
       }
       $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
 

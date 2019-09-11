@@ -407,7 +407,6 @@ $thisProjectHtml = '';
 							<br />@if($org->address->city)
 							{{ $org->address->city }},
 							@endIf {{ $org->address->state }} {{ $org->address->zip }}
-
 							@endIf
 							@endForEach
 							@else
