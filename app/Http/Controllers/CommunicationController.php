@@ -128,7 +128,7 @@ class CommunicationController extends Controller
   public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0)
   {
     //dd('Called NewCommunicationEntry');
-    dd($project_id,$audit_id,$report_id,$finding_id,$all_findings);
+    //dd($project_id,$audit_id,$report_id,$finding_id,$all_findings);
     $ohfa_id           = SystemSetting::get('ohfa_organization_id');
     $single_receipient = false;
 
@@ -149,7 +149,7 @@ class CommunicationController extends Controller
       $finding  = null;
       $findings = null;
     }
-
+    dd($finding,$findings);
     if (null !== $project_id) {
       $project = Project::with('project_users')->where('id', '=', intval($project_id))->first();
 
