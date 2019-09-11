@@ -126,8 +126,8 @@
           <!-- END RECIPIENT LISTING -->
         </div>
         @endif
-        <?php dd($findings,$finding); ?>
-        @if($all_findings > 0 && is_array($findings) && count($findings)>0)
+        
+        @if($all_findings > 0 && null !== $findings && count($findings)>0)
             !!!!! {{count($findings)}} !!!!
             @include('modals.partials.communication-findings')
         @endif
