@@ -437,7 +437,10 @@ class CommunicationController extends Controller
         ->orderby('document_category_name', 'asc')
         ->with('parent')
         ->get();
-      $documents = $docuware_documents->merge($local_documents);
+        $documents = [];
+        if(null !== $docuware_documents){
+          $documents = $docuware_documents->merge($local_documents);
+        }
     } else {
       $documents           = null;
       $document_categories = null;
