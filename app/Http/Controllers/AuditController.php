@@ -6068,7 +6068,7 @@ class AuditController extends Controller
                 $message = "There is either a report, or findings on this audit. The lowest step possible to set this audit to is In Progress.";
             }
         $step = GuideStep::where('id', '=', $step_id)->first();
-        
+
 
         // check if user has the right to save step using roles TBD
         if (Auth::user()->id == $audit->lead || Auth::user()->manager_access()) {
