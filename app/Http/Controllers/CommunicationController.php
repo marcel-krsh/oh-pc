@@ -182,7 +182,10 @@ class CommunicationController extends Controller
           ->with('parent')
           ->get();
       }
-      $documents = $docuware_documents->merge($local_documents);
+      $documents = [];
+      if(null !== $docuware_documents){
+         $documents = $docuware_documents->merge($local_documents);
+      }
       // build a list of all categories used for uploaded documents in this project
       $categories_used = [];
       // category keys for name reference ['id' => 'name']
