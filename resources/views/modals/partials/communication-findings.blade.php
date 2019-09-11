@@ -17,57 +17,59 @@
 		@php
 			$findings = session()->get('selected_findings');
 		@endphp
-		@foreach ($findings as $f)
-		@if($f->finding_type->type == 'nlt')
-			@php
-				$f_icon = '<i class="a-booboo"></i>';
-			@endphp
+		@if(null !== $findings)
+			@foreach ($findings as $f)
+				@if($f->finding_type->type == 'nlt')
+					@php
+						$f_icon = '<i class="a-booboo"></i>';
+					@endphp
+				@endIf
+				@if($f->finding_type->type == 'lt')
+					@php
+						$f_icon = '<i class="a-skull"></i>';
+					@endphp
+				@endIf
+				@if($f->finding_type->type == 'file')
+					@php
+						$f_icon = '<i class="a-folder"></i>';
+					@endphp
+				@endIf
+				<li class="findings-list-item finding-{{$f->id}}">
+					@php
+						if($f->id == $all_findings)
+							$selected_finding = $f;
+						else
+							$selected_finding = null;
+					@endphp
+					<input {{ $all_findings == $f->id ? 'checked=checked' : '' }} name="" id="list-finding-id-{{$f->id}}" value="{{$f->id}}" type="checkbox" class="uk-checkbox" onClick="addFinding(this.value,'{{ $f_icon }}Finding-{{ ($f->id) }}')">
+					<label for="finding-id-{{ $f->id }}">
+						{!! $f_icon !!} Finding # {{$f->id}} - @if(!is_null($f->building_id)) <strong>{{$f->building->building_name}}</strong> @if(!is_null($f->building->address)) {{$f->building->address->line_1}} {{$f->building->address->line_2}} {{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}} @endIf @endif
+						<span uk-tooltip title="@if(!is_null($f->building_id))
+							<strong>{{$f->building->building_name}}</strong> <br />
+							@if(!is_null($f->building->address))
+							{{$f->building->address->line_1}} {{$f->building->address->line_2}}<br />
+							{{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}}<br /><br />
+							@endIf
+							@elseIf(!is_null($f->unit_id))
+							{{$f->unit->building->building_name}} <br />
+							@if(!is_null($f->unit->building->address))
+							{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}}<br />
+							{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}
+							@endIf
+							<br /><strong>Unit {{$f->unit->unit_name}}</strong>
+							@else
+							<strong>Site Finding</strong><br />
+							{{$f->project->address->line_1}} {{$f->project->address->line_2}}<br />
+							{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
+							@endIf
+							{{$f->amenity->amenity_description}} <br />
+							<strong> {{$f->finding_type->name}}</strong><br>">
+							<span class="a-info-circle"  style="color: #56b285;"></span>
+						</span>
+					</label>
+				</li>
+			@endforeach
 		@endIf
-		@if($f->finding_type->type == 'lt')
-			@php
-				$f_icon = '<i class="a-skull"></i>';
-			@endphp
-		@endIf
-		@if($f->finding_type->type == 'file')
-			@php
-				$f_icon = '<i class="a-folder"></i>';
-			@endphp
-		@endIf
-		<li class="findings-list-item finding-{{$f->id}}">
-			@php
-				if($f->id == $all_findings)
-					$selected_finding = $f;
-				else
-					$selected_finding = null;
-			@endphp
-			<input {{ $all_findings == $f->id ? 'checked=checked' : '' }} name="" id="list-finding-id-{{$f->id}}" value="{{$f->id}}" type="checkbox" class="uk-checkbox" onClick="addFinding(this.value,'{{ $f_icon }}Finding-{{ ($f->id) }}')">
-			<label for="finding-id-{{ $f->id }}">
-				{!! $f_icon !!} Finding # {{$f->id}} - @if(!is_null($f->building_id)) <strong>{{$f->building->building_name}}</strong> @if(!is_null($f->building->address)) {{$f->building->address->line_1}} {{$f->building->address->line_2}} {{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}} @endIf @endif
-				<span uk-tooltip title="@if(!is_null($f->building_id))
-					<strong>{{$f->building->building_name}}</strong> <br />
-					@if(!is_null($f->building->address))
-					{{$f->building->address->line_1}} {{$f->building->address->line_2}}<br />
-					{{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}}<br /><br />
-					@endIf
-					@elseIf(!is_null($f->unit_id))
-					{{$f->unit->building->building_name}} <br />
-					@if(!is_null($f->unit->building->address))
-					{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}}<br />
-					{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}
-					@endIf
-					<br /><strong>Unit {{$f->unit->unit_name}}</strong>
-					@else
-					<strong>Site Finding</strong><br />
-					{{$f->project->address->line_1}} {{$f->project->address->line_2}}<br />
-					{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}}<br /><br />
-					@endIf
-					{{$f->amenity->amenity_description}} <br />
-					<strong> {{$f->finding_type->name}}</strong><br>">
-					<span class="a-info-circle"  style="color: #56b285;"></span>
-				</span>
-			</label>
-		</li>
-		@endforeach
 	</ul>
 </div>
 {{-- <div class="uk-form-row">
