@@ -407,37 +407,37 @@
 					$j++;
 				@endphp --}}
 				@if($pieceData[0]->type == 'blade')
-				<?php
+					<?php
 
-				if (array_key_exists(2, $pieceData)) {
-					$bladeData = $pieceData[2];
-				} else {
-					$bladeData = null;
-				}
-				?>
-				@if($piece->blade == 'crr_parts.crr_inspections')
-				@include($piece->blade, [$inspections_type = 'site'])
-				@endif
-				<?php
-				if (array_key_exists(3, $pieceData)) {
-					$bladeData = $pieceData[3];
-				} else {
-					$bladeData = null;
-				}
-				?>
-				@if($piece->blade == 'crr_parts.crr_inspections')
-				@include($piece->blade, [$inspections_type = 'building'])
-				@endif
+					if (array_key_exists(2, $pieceData)) {
+						$bladeData = $pieceData[2];
+					} else {
+						$bladeData = null;
+					}
+					?>
+					@if($piece->blade == 'crr_parts.crr_inspections')
+						@include($piece->blade, [$inspections_type = 'site'])
+					@endif
+					<?php
+					if (array_key_exists(3, $pieceData)) {
+						$bladeData = $pieceData[3];
+					} else {
+						$bladeData = null;
+					}
+					?>
+					@if($piece->blade == 'crr_parts.crr_inspections')
+						@include($piece->blade, [$inspections_type = 'building'])
+					@endif
 
 
-				<?php
-				if (array_key_exists(1, $pieceData)) {
-					$bladeData = $pieceData[1];
-				} else {
-					$bladeData = null;
-				}
-				?>
-				@include($piece->blade, [$inspections_type = 'unit'])
+					<?php
+					if (array_key_exists(1, $pieceData)) {
+						$bladeData = $pieceData[1];
+					} else {
+						$bladeData = null;
+					}
+					?>
+					@include($piece->blade, [$inspections_type = 'unit'])
 
 
 				@endIf
