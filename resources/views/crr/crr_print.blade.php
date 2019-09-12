@@ -119,7 +119,7 @@ ul.leaders li {
 	            				<div class="crr-part-{{$piece->part_id}} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{$piece->part_id}}"></a>
 	            					<?php $pieceData = json_decode($piece->data);?>
 	            					@if($pieceData[0]->type =='free-text')
-	            					<h3>Free-Text</h3>
+
 	            						{!!$piece->content!!}
 	            					@endIf
 	            					{{-- @if($j > 3)
@@ -129,6 +129,7 @@ ul.leaders li {
 										$j++;
 									@endphp --}}
 									@if($pieceData[0]->type == 'blade')
+										<h3>Blade Content</h3>
 		            						<?php
 												if (array_key_exists(2, $pieceData)) {
 													$bladeData = $pieceData[2];
