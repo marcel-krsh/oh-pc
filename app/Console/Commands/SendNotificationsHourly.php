@@ -7,6 +7,8 @@ use App\Mail\EmailBulkNotification;
 use App\Models\NotificationsTriggered;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Log;
+
 
 class SendNotificationsHourly extends Command
 {
