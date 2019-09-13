@@ -428,15 +428,18 @@
 					loadTypeView = data;
 					if(justFetch == 0) {
 						$('#dynamic-data').html(data);
+						toggleMineSticky();
 						scrollTo('type');
 					}
 				}
 			});
 		} else {
 			$('#dynamic-data').html(loadTypeView);
+			toggleMineSticky();
 			// scrollPosType = $('#left-side-dynamic-data').scrollTop();
 			scrollTo('type');
 		}
+		toggleMineSticky();
 	}
 
 	function scrollTo(element = null, bottom = null) {
@@ -612,22 +615,46 @@
   		// }, .7);
 
   		@endif
-  		toggleMine();
+  		// toggleMine();
 
   	}
 
-  	function toggleMine() {
+  	function toggleMineSticky() {
+  		// debugger;
+  		if(window.findingModalSelectedMine == 'false'){
+				// $('#mine-filter-button').addClass('uk-active');
+				// only already visible elements?
+				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
+				$('.not-mine-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
+			} else {
+				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
+				$('.not-mine-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
+				// $('#mine-filter-button').removeClass('uk-active');
+			}
+		}
+
+		function toggleMine() {
+  		// Find in which selection they are in
+  		// Top level
+  			// Show Site if site or internal ones are on his name
+  			// Show Building if Building or internal/units are
+  		// Site level
+  		// Building Level
+  		// Unit Level
   		window.findingModalSelectedAmenityDate = $('#finding-date').val();
 			//$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
+			debugger;
 			console.log("select mine: "+window.findingModalSelectedMine);
 			if(window.findingModalSelectedMine == 'true'){
 				window.findingModalSelectedMine = 'false';
 				$('#mine-filter-button').addClass('uk-active');
 				// only already visible elements?
 				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
+				$('.not-mine-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
 			} else {
 				window.findingModalSelectedMine = 'true';
 				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
+				$('.not-mine-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
 				$('#mine-filter-button').removeClass('uk-active');
 			}
 		}
@@ -637,6 +664,12 @@
 	$( document ).ready(function() {
 		console.log( "Modal Loaded!" );
 		clickDefault();
+		if(window.findingModalSelectedMine == 'false'){
+			$('#mine-filter-button').addClass('uk-active');
+		} else {
+			$('#mine-filter-button').removeClass('uk-active');
+		}
+		// toggleMineSticky();
 	});
 
 	// filter findings based on class

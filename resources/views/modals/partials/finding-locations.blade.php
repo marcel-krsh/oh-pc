@@ -49,22 +49,36 @@
 			{{-- Buildings here --}}
 			@foreach($buildings as $type)
 			@if(!is_null($type->building_id))
-			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf ">
+
+				@php
+					// $building_auditors = $type->auditors($audit->audit_id);
+        		// return $type;
+        		$building_auditors = $amenities->where('building_id', '=', $type->building_id)->where('auditor_id', '<>', null);
+						$buildingUnits = $units->where('building_id', $type->building_id);
+						// return $buildingUnits->pluck('unit_id');
+						$mine = [];
+						if($buildingUnits) {
+						 $bu_all_units = $amenities->whereIn('unit_id', $buildingUnits->pluck('unit_id'))->where('auditor_id', '<>', null);
+							if($bu_all_units) {
+								$all_auditors = $bu_all_units->merge($building_auditors);
+								$bu_all_units_users = $all_auditors->pluck('user')->unique();
+								$mine = $bu_all_units_users->where('id', Auth::user()->id);
+							}
+						}
+						if(count($building_auditors)) {
+							$b_units = $building_auditors->pluck('building')->first();
+							$unit_ids = $b_units->units->pluck('id');
+							$unit_auditors = $amenities->whereIn('unit_id', $unit_ids)->where('auditor_id', '<>', null);
+							$combined_auditors = $building_auditors->merge($unit_auditors);
+							$building_auditors = $combined_auditors->pluck('user')->unique();
+							// $mine = $bu_unit_auditors->where('id', Auth::user()->id);
+						}
+				@endphp
+			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor {{ (count($mine)) ? '' : 'not-mine-items' }}" style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf ">
 				<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
 					<i @if($type->complete == 0 || is_null($type->complete)) onclick="markBuildingCompleteModal({{ $audit->audit_id }}, {{ $type->building_id }}, 0, 0,'markcomplete', 0)" @endif class="{{ ($type->complete)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 					</i>
 				</div>
-				@php
-					// $building_auditors = $type->auditors($audit->audit_id);
-					$building_auditors = $amenities->where('building_id', '=', $type->building_id)->where('auditor_id', '<>', null);
-					if(count($building_auditors)) {
-						$b_units = $building_auditors->pluck('building')->first();
-						$unit_ids = $b_units->units->pluck('id');
-						$unit_auditors = $amenities->whereIn('unit_id', $unit_ids)->where('auditor_id', '<>', null);
-						$combined_auditors = $building_auditors->merge($unit_auditors);
-						$building_auditors = $combined_auditors->pluck('user')->unique();
-					}
-				@endphp
 
 				{{-- @if($type->order_building->auditors() && count($type->order_building->auditors()) > 0) --}}
 				@if($building_auditors && count($building_auditors) > 0)
@@ -87,9 +101,6 @@
 					</a>
 				</div>
 			</li>
-			@php
-			$buildingUnits = $units->where('building_id', $type->building_id);
-			@endphp
 			{{--
 			Units here
 			Making units complete (Check during amenity add, duplicate, delete and mark complete/incomplete)
@@ -104,18 +115,25 @@
 				@forEach($buildingUnits as $bu)
 				@php
 				$unit_am_status = $amenities->where('unit_id', $bu->unit_id)->where('completed_date_time', null)->count();
-				if(count($building_auditors)) {
-					$bu_unit_auditors = $unit_auditors->where('unit_id', $bu->unit_id);
-					if(count($bu_unit_auditors))
+				// if(count($building_auditors)) {
+				// 	$bu_unit_auditors = $unit_auditors->where('unit_id', $bu->unit_id);
+				// 	if(count($bu_unit_auditors))
+				// 	$bu_unit_auditors = $bu_unit_auditors->pluck('user')->unique();
+				// } else {
+				// 	$bu_unit_auditors = [];
+				// }
+				$bu_unit_auditors = $amenities->where('unit_id', $bu->unit_id)->where('auditor_id', '<>', null);
+				if(count($bu_unit_auditors)) {
 					$bu_unit_auditors = $bu_unit_auditors->pluck('user')->unique();
+					$mine = $bu_unit_auditors->where('id', Auth::user()->id);
 				} else {
 					$bu_unit_auditors = [];
+					$mine = [];
 				}
-
 
 				// dd($unit_auditors);
 				@endphp
-				<li class="uk-margin-left use-hand-cursor uk-column-span uk-margin"  style="color : @if($bu->complete == 1 || ($unit_am_status == 0)) #000 @else #50b8ec @endIf ">
+				<li class="uk-margin-left use-hand-cursor uk-column-span uk-margin {{ (count($mine)) ? '' : 'not-mine-items' }}"  style="color : @if($bu->complete == 1 || ($unit_am_status == 0)) #000 @else #50b8ec @endIf ">
 					<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
 						<i @if($bu->complete == 0 || is_null($bu->complete)) onclick="markUnitComplete({{ $audit->audit_id }}, 0, {{ $bu->unit_id }}, 0,'markcomplete', 0)" @endif class="{{ ($bu->complete) || ($unit_am_status == 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 						</i>

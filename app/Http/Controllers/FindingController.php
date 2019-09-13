@@ -965,6 +965,31 @@ class FindingController extends Controller
         $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity', 'user', 'building.units');
         $amenities = $amenities_query->get();
         $site = $amenities_query->whereNotNull('project_id')->get();
+      //   foreach ($buildings as $key => $type) {
+      //   	if($type->building_id == 13471) {
+      //   		// return $type;
+      //   		$building_auditors = $amenities->where('building_id', '=', $type->building_id)->where('auditor_id', '<>', null);
+						// $buildingUnits = $units->where('building_id', $type->building_id);
+						// // return $buildingUnits->pluck('unit_id');
+						// $mine = [];
+						// if($buildingUnits) {
+						//  $bu_all_units = $amenities->whereIn('unit_id', $buildingUnits->pluck('unit_id'))->where('auditor_id', '<>', null);
+						// 	if($bu_all_units) {
+						// 		$all_auditors = $bu_all_units->merge($building_auditors);
+						// 		$bu_all_units_users = $all_auditors->pluck('user')->unique();
+						// 		$mine = $bu_all_units_users->where('id', Auth::user()->id);
+						// 	}
+						// }
+						// if(count($building_auditors)) {
+						// 	$b_units = $building_auditors->pluck('building')->first();
+						// 	$unit_ids = $b_units->units->pluck('id');
+						// 	$unit_auditors = $amenities->whereIn('unit_id', $unit_ids)->where('auditor_id', '<>', null);
+						// 	$combined_auditors = $building_auditors->merge($unit_auditors);
+						// 	$building_auditors = $combined_auditors->pluck('user')->unique();
+						// 	// $mine = $bu_unit_auditors->where('id', Auth::user()->id);
+						// }
+      //   	}
+      //   }
         // $unit_auditors = AmenityInspection::where('audit_id', $auditid)->where('unit_id','=',$units->first()->unit_id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
         // $auditors = User::whereIn('id', $unit_auditors)->get();
         // return $site->where('completed_date_time', null)->count();
