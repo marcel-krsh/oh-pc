@@ -1,6 +1,6 @@
    @extends('layouts.simplerAllita')
 @section('head')
-<title>{{ $report->template()->template_name }}: #{{ $report->id }} || {{ $report->project->project_number }} : {{ $report->project->project_name }} || AUDIT: {{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
+<title>PRINT: {{ $report->template()->template_name }}: #{{ $report->id }} || {{ $report->project->project_number }} : {{ $report->project->project_name }} || AUDIT: {{ $report->audit->id }}.{{ str_pad($report->version, 3, '0', STR_PAD_LEFT) }}</title>
 
 @stop
 @section('content')
@@ -119,6 +119,7 @@ ul.leaders li {
 	            				<div class="crr-part-{{$piece->part_id}} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{$piece->part_id}}"></a>
 	            					<?php $pieceData = json_decode($piece->data);?>
 	            					@if($pieceData[0]->type =='free-text')
+
 	            						{!!$piece->content!!}
 	            					@endIf
 	            					{{-- @if($j > 3)
@@ -128,38 +129,40 @@ ul.leaders li {
 										$j++;
 									@endphp --}}
 									@if($pieceData[0]->type == 'blade')
-		            						<?php
-												if (array_key_exists(2, $pieceData)) {
-													$bladeData = $pieceData[2];
-												} else {
-													$bladeData = null;
-												}
-												?>
-												@if($piece->blade != 'crr_parts.crr_findings')
-												@include($piece->blade, [$inspections_type = 'site'])
-												@endif
-												<?php
-												if (array_key_exists(3, $pieceData)) {
-													$bladeData = $pieceData[3];
-												} else {
-													$bladeData = null;
-												}
-												?>
-												@if($piece->blade != 'crr_parts.crr_findings')
-												@include($piece->blade, [$inspections_type = 'building'])
-												@endif
+										<?php
+
+										if (array_key_exists(2, $pieceData)) {
+											$bladeData = $pieceData[2];
+										} else {
+											$bladeData = null;
+										}
+										?>
+										@if($piece->blade == 'crr_parts.crr_inspections')
+											@include($piece->blade, [$inspections_type = 'site'])
+										@endif
+										<?php
+										if (array_key_exists(3, $pieceData)) {
+											$bladeData = $pieceData[3];
+										} else {
+											$bladeData = null;
+										}
+										?>
+										@if($piece->blade == 'crr_parts.crr_inspections')
+											@include($piece->blade, [$inspections_type = 'building'])
+										@endif
 
 
-												<?php
-												if (array_key_exists(1, $pieceData)) {
-													$bladeData = $pieceData[1];
-												} else {
-													$bladeData = null;
-												}
-												?>
-												@include($piece->blade, [$inspections_type = 'unit'])
+										<?php
+										if (array_key_exists(1, $pieceData)) {
+											$bladeData = $pieceData[1];
+										} else {
+											$bladeData = null;
+										}
+										?>
+										@include($piece->blade, [$inspections_type = 'unit'])
 
-	            					@endIf
+
+									@endIf
 	            				</div>
 	            				<?php $pieceCount++;?>
 	            			@endForEach
