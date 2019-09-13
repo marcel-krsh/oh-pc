@@ -37,6 +37,16 @@ class ProjectContactsController extends Controller
     $allita_user_ids       = $this->allitaUserIds($project);
     $projectUserPersonIds  = $this->projectUserPersonIds($project);
     $user_ids              = $this->allUserIdsInProject($project);
+    $removed_devco_access_users = array_diff($allita_user_ids, $user_ids);
+    if(!empty($removed_devco_access_users)) {
+    	foreach ($removed_devco_access_users as $key => $dau) {
+    		$dauser = ReportAccess::where('project_id', $project)->where('user_id', $dau)->first();
+    		$dauser->devco = 0;
+    		$dauser->save();
+    	}
+	    $user_ids              = $this->allUserIdsInProject($project);
+    }
+    // return $user_ids;
     $contactsWithoutUsers  = ProjectContactRole::join('people','people.id','person_id')->where('project_id',$project)
                             ->whereNotIn('person_id',$projectUserPersonIds)->with('organization')->with('person.organizations')->with('projectRole')->with('person.email')->with('person.phone')->orderBy('people.last_name')->orderBy('people.id')
                             ->get();
