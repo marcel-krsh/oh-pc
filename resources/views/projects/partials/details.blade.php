@@ -136,20 +136,20 @@
 						            		?>
 						            		<a class="uk-link-mute" href="/report/{{$car->id}}" target="report-{{$car->id}}" uk-tooltip="title:VIEW CAR {{$car->id}} : {{strtoupper($car->status_name())}}"><i class="{{$carIcon}}" ></i></a> &nbsp; <i class="a-square-right-2 use-hand-cursor" id="car-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION"></i>
 												<div  uk-dropdown="mode:click">
-												    <ul class="uk-nav uk-dropdown-nav">
-												        <li @if($car->crr_approval_type_id == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$car->id}},1,{{$selected_audit->project_id}});">DRAFT</a></li>
+												    <ul class="uk-nav uk-dropdown-nav " style="text-align: left !important;">
+												        <li @if($car->crr_approval_type_id == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$car->id}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
 				                                        @if($car->requires_approval)
-				                                        <li @if($car->crr_approval_type_id == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},2,{{$selected_audit->project_id}});">SEND TO MANAGER REVIEW</a></li>
+				                                        <li @if($car->crr_approval_type_id == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
 				                                        @endIf
 				                                        @can('access_manager')
-				                                        <li @if($car->crr_approval_type_id == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},3,{{$selected_audit->project_id}});">DECLINE</a></li>
-				                                        <li @if($car->crr_approval_type_id == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},4,{{$selected_audit->project_id}});">APPROVE WITH CHANGES</a></li>
-				                                        <li @if($car->crr_approval_type_id == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},5,{{$selected_audit->project_id}});">APPROVE</a></li>
+				                                        <li @if($car->crr_approval_type_id == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
+				                                        <li @if($car->crr_approval_type_id == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
+				                                        <li @if($car->crr_approval_type_id == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
 				                                        @endCan
 				                                        @if(($car->requires_approval == 1 && $car->crr_approval_type_id > 3) || $car->requires_approval == 0 || Auth::user()->can('access_manager'))
-				                                        <li @if($car->crr_approval_type_id == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},6,{{$selected_audit->project_id}});">SEND TO PROPERTY CONTACT</a></li>
-				                                        <li @if($car->crr_approval_type_id == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},7,{{$selected_audit->project_id}});">PROPERTY VIEWED IN PERSON</a></li>
-				                                        <li @if($car->crr_approval_type_id == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},9,{{$selected_audit->project_id}});">ALL ITEMS RESOLVED</a></li>
+				                                        <li @if($car->crr_approval_type_id == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
+				                                        <li @if($car->crr_approval_type_id == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
+				                                        <li @if($car->crr_approval_type_id == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},9,{{$selected_audit->project_id}});"><i class="a-file-approve"></i> ALL ITEMS RESOLVED</a></li>
 				                                        @endIf
 
 												    </ul>
@@ -267,54 +267,28 @@
 	<div id="project-details-stats" class="uk-width-1-1" style="margin-top:20px;">
 		@include('projects.partials.details-project-details', ['details', $details])
 	</div>
-	<div id="project-details-selections" class="uk-width-1-1">
-		<?php
-			$siteInspections = $selected_audit->audit->project_amenity_inspections;
-			$buildingInspections = $selected_audit->audit->building_inspections;
-			$unitInspections = $selected_audit->audit->unit_inspections;
-			$pdtDetails = $details;
-			$pdtFindings = $selected_audit->audit->findings;
-			$pieceData = [];
-			$print = null;
-			$report = $selected_audit;
-			?>
-		@if(count($siteInspections))
-			<?php
-			  $bladeData = $siteInspections;
-			  ?>
-				@include('crr_parts.crr_inspections', [$inspections_type = 'site',$detailsPage = 1])
-		@endif
-		@if(count($buildingInspections))
-			<?php
-			  $bladeData = $buildingInspections;
-			  ?>
-				@include('crr_parts.crr_inspections', [$inspections_type = 'building',$detailsPage = 1])
-		@endif
-		@if(count($unitInspections))
-			<?php
-				//dd($unitInspections);
-			  $bladeData = $unitInspections;
-			  ?>
-				@include('crr_parts.crr_inspections', [$inspections_type = 'unit',$detailsPage = 1])
-		@endif
-	</div>
+	
 </div>
 
 
 <div id="project-details-buttons" class="project-details-buttons" uk-grid>
 	<div class="uk-width-1-1">
-		<div uk-grid>
-			<div class="uk-width-1-2 uk-padding-remove">
+		
 				<div uk-grid>
-					<div class="uk-width-1-2">
-						<button id="project-details-button-1" class="uk-button uk-link ok-actionable active" onclick="projectDetailsInfo({{$project->id}}, 'compliance', this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
+					<div class="uk-width-1-4">
+						<button id="project-details-button-3" class="uk-button uk-link  active" onclick="projectDetailsInfo({{$project->id}}, 'selections', {{$selected_audit->audit_id}},this);" type="button">
+						<i class="a-mobile"></i> <i class="a-folder"></i>
+						
+					 SELECTIONS</button>
 					</div>
-					<div class="uk-width-1-2">
-						<button id="project-details-button-2" class="uk-button uk-link critical" onclick="projectDetailsInfo({{$project->id}}, 'assignment', this);" type="button"><i class="a-avatar-fail"></i> ASSIGNMENT</button>
+					<div class="uk-width-1-4">
+						<button id="project-details-button-1" class="uk-button uk-link " onclick="projectDetailsInfo({{$project->id}}, 'compliance', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
+					</div>
+					<div class="uk-width-1-4">
+						<button id="project-details-button-2" class="uk-button uk-link" onclick="projectDetailsInfo({{$project->id}}, 'assignment', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-avatar"></i> ASSIGNMENT</button>
 					</div>
 				</div>
-			</div>
-		</div>
+			
 	</div>
 </div>
 
@@ -520,7 +494,7 @@
 
 $( document ).ready(function() {
 	if($('#project-details-info-container').html() == ''){
-		$('#project-details-button-1').trigger("click");
+		$('#project-details-button-3').trigger("click");
 	}
 	loadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
 	UIkit.dropdown('#car-dropdown-{{$selected_audit->audit_id}}', 'mode:click');

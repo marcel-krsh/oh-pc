@@ -17,7 +17,7 @@
 				<div>
 					<canvas id="chartjs-summary" class="chartjs" style="display: block;"></canvas>
 				</div>
-				<a onclick="dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);" class="uk-button uk-button-small uk-button-success " style="margin-top: 18px; height: 25px; padding-top:2px;"><i class="a-arrow-diagonal-both use-hand-cursor" ></i> SWAP UNITS</a>
+				<a onclick="dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary/{{$data["auditID"]}}',0,0,1);" class="uk-button uk-button-small uk-button-success " style="margin-top: 18px; height: 25px; padding-top:2px;"><i class="a-arrow-diagonal-both use-hand-cursor" ></i> SWAP UNITS</a>
 			</div>
 			<div class="uk-width-2-5">
 				<table class="uk-table uk-table-small noline small-padding">
@@ -133,7 +133,7 @@
 								<div class="uk-padding-remove" style="min-height:165px;">
 									<canvas id="chartjs-{{$program['id']}}{{$program['building_key']}}" class="chartjs" ></canvas>
 								</div>
-								<a onclick="dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary',0,0,1);" class="uk-button uk-link proj_details proj_details_1" style="margin-top: 18px;"><i class="a-arrow-diagonal-both use-hand-cursor" ></i> SWAP UNITS</a>
+								<a onclick="dynamicModalLoad('projects/{{$data["project"]["id"]}}/programs/0/summary/{{$data["auditID"]}}',0,0,1);" class="uk-button uk-link proj_details proj_details_1" style="margin-top: 18px;"><i class="a-arrow-diagonal-both use-hand-cursor" ></i> SWAP UNITS</a>
 							</div>
 							<div class="uk-width-2-5">
 								<?php

@@ -181,15 +181,28 @@ class Project extends Model
         }
     }
 
-    public function selected_audit($audit_id = 0)
+    public function selected_audit($audit_id = 0 , $reports = 0)
     {
     		if($audit_id) {
-          $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
+                $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->with('audit');
+                if($reports){
+                    $selected_audit = $selected_audit->with('audit.reports');
+                }
+                $selected_audit = $selected_audit->first();
     		} else if (Session::has('project.'.$this->id.'.selectedaudit') && Session::get('project.'.$this->id.'.selectedaudit') != '') {
-            $audit_id = Session::get('project.'.$this->id.'.selectedaudit');
-            $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
+                    $audit_id = Session::get('project.'.$this->id.'.selectedaudit');
+                    $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->with('audit');
+                if($reports){
+                    $selected_audit = $selected_audit->with('audit.reports');
+                }
+                $selected_audit = $selected_audit->first();
         }else{
-            $selected_audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
+            $selected_audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->with('audit');
+                if($reports){
+                    $selected_audit = $selected_audit->with('audit.reports');
+                }
+                $selected_audit = $selected_audit->first();
+                
             Session::put('project.'.$this->id.'.selectedaudit', $selected_audit->audit_id);
         }
 

@@ -218,7 +218,7 @@
 											<i class="a-person-clock colored uk-link"></i>
 										</div>
 										<div class="uk-width-1-1">
-											<i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;" onclick="dynamicModalLoad('projects/{{$project_id}}/programs/0/summary',0,0,1);"></i>
+											<i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;" onclick="dynamicModalLoad('projects/{{$project_id}}/programs/0/summary/{{$audit}}',0,0,1);"></i>
 										</div>
 									</div>
 								</div>

@@ -74,6 +74,7 @@
             Route::get('/reports','PC\Mobile\ReportController@index');
         });
         Route::group(['prefix'=>'','middleware'=>'can:access_auditor'], function ()  {
+            Route::get('/modals/household/{unit_id}','AuditController@householdInfo');
             Route::get('/change_log','PagesController@changeLog');
             Route::get('/compliance_rerun/{audit_id}', 'Phase1ComplianceSelection@runSimpleCompliance');
             Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
@@ -236,7 +237,7 @@
             // Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
             Route::post('/audits-required-units','AuditController@ajaxAuditRequiredUnits')->name('ajax.audit.required.units');
 
-             Route::get('/projects/{id}/details/{type}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
+             Route::get('/projects/{id}/details/{type}/{audit}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
              Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
 
             Route::get('/communications/{project}.json', 'CommunicationController@communicationsFromProjectIdJson')->name('communications.loadjson');
@@ -335,7 +336,7 @@
             Route::get('/projects/{project}/stream', 'AuditController@getProjectStream')->name('project.stream');
             Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');
 
-            Route::get('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummary');
+            Route::get('/modals/projects/{id}/programs/{programid}/summary/{audit}', 'AuditController@modalProjectProgramSummary');
             Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
             Route::post('/modals/projects/{project_id}/programs/save-program-unit-inspections', 'AuditController@saveProgramUnitInspection');
 

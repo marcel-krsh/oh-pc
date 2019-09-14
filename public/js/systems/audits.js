@@ -1012,14 +1012,14 @@ function loadProjectDetailsBuildings(id, target) {
     });
 }
 
-function projectDetailsInfo(id, type, target) {
+function projectDetailsInfo(id, type, audit, target) {
 	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 	$('#project-details-info-container').html(tempdiv);
 
 	// remove active buttons
 	$('#project-details-buttons').find('.uk-button').removeClass('active');
 	$(target).addClass('active');
-	var url = '/projects/'+id+'/details/'+type;
+	var url = '/projects/'+id+'/details/'+type+'/'+audit;
     $.get(url, {
         }, function(data) {
             if(data=='0'){
