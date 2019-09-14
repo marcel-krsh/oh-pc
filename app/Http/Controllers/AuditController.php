@@ -1184,7 +1184,11 @@ class AuditController extends Controller
             } elseif ($building_id != 0) {
                 $amenity = 0;
                 $name = "Building " . CachedBuilding::where('building_id', '=', $building_id)->first()->building_name;
-            }
+            } else {
+		        	$amenity = 0;
+		        	$audit = CachedAudit::where('audit_id', $audit_id)->with('inspection_items')->first();
+		        	$name = "Site " . $audit->project->address->basic_address() . " (swap)";
+		        }
         } else {
             if ($unit_id != "null" && $unit_id != 0) {
                 // $amenity = AmenityInspection::where('amenity_id', '=', $amenity_id)
@@ -1224,10 +1228,18 @@ class AuditController extends Controller
             }
         }
 
-        $auditors = CachedAudit::where('audit_id', '=', $audit_id)->first()->auditors;
-        $current_auditor = null;
+				$cached_audit = $auditors = CachedAudit::with('auditors.user')->where('audit_id', '=', $audit_id)->first();
+        $lead_auditor_id = Audit::find($audit_id)->lead_user_id;
+        $auditors = $cached_audit->auditors;
+        if(count($auditors)) {
+          $audit_user_ids = $auditors->pluck('user_id');
+          array_merge($audit_user_ids->toArray(), [$lead_auditor_id]);
+        } else {
+        	$audit_user_ids = [$lead_auditor_id];
+        }
+        $audit_users = User::whereIn('id', $audit_user_ids)->get();        $current_auditor = null;
 
-        return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'current_auditor', 'in_model'));
+        return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'current_auditor', 'in_model', 'audit_users'));
     }
 
     public function swapAuditorToAmenity($amenity_id, $audit_id, $building_id, $unit_id, $auditor_id, $element, $in_model = null)
@@ -1260,9 +1272,18 @@ class AuditController extends Controller
 
         $current_auditor = User::where('id', '=', $auditor_id)->first();
 
-        $auditors = CachedAudit::where('audit_id', '=', $audit_id)->first()->auditors;
+        $cached_audit = $auditors = CachedAudit::with('auditors.user')->where('audit_id', '=', $audit_id)->first();
+        $lead_auditor_id = Audit::find($audit_id)->lead_user_id;
+        $auditors = $cached_audit->auditors;
+        if(count($auditors)) {
+          $audit_user_ids = $auditors->pluck('user_id');
+          array_merge($audit_user_ids->toArray(), [$lead_auditor_id]);
+        } else {
+        	$audit_user_ids = [$lead_auditor_id];
+        }
+        $audit_users = User::whereIn('id', $audit_user_ids)->get();
 
-        return view('modals.auditor-amenity-assignment', compact('auditors', 'current_auditor', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'auditor_id','in_model'));
+        return view('modals.auditor-amenity-assignment', compact('auditors', 'current_auditor', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'auditor_id','in_model', 'audit_users'));
     }
 
     public function saveSwapAuditorToAmenity(Request $request, $amenity_id, $audit_id, $building_id, $unit_id, $auditor_id)
@@ -1411,13 +1432,20 @@ class AuditController extends Controller
         //return $request->all();
 
         // is it mass assignment
+        $auditor_id = $request->get('auditor_id');
+        $lead_auditor_selected = Audit::find($audit_id);
+        if($lead_auditor_selected->lead_user_id == $auditor_id) {
+        	$lead_auditor_selected = true;
+        } else {
+        	$lead_auditor_selected = false;
+        }
         if ($amenity_id == 0 && $unit_id != 0) {
             $auditor_id = $request->get('auditor_id');
 
             if ($auditor_id) {
 
                 // make sure this id is already in the auditor's list for this audit
-                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first()) {
+                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first() || $lead_auditor_selected) {
 
                     $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
 
@@ -1438,8 +1466,58 @@ class AuditController extends Controller
             if ($auditor_id) {
 
                 // make sure this id is already in the auditor's list for this audit
-                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first()) {
+                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first() || $lead_auditor_selected) {
 
+                    $building = CachedBuilding::where('building_id', '=', $building_id)->first();
+
+                    $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building->building_id)->update([
+                        "auditor_id" => $auditor_id,
+                    ]);
+
+                    // add to units
+                    foreach ($building->building->units as $unit) {
+
+                        $amenities_unit = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->update([
+                            "auditor_id" => $auditor_id,
+                        ]);
+                    }
+
+                    $unit_auditor_ids = array();
+                    $building_auditor_ids = array();
+                    $units = Unit::where('building_id', '=', $building_id)->get();
+                    foreach ($units as $unit) {
+                        $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+
+                        $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+                    }
+                    $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+
+                    $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
+                    foreach ($unit_auditors as $unit_auditor) {
+                        $unit_auditor->full_name = $unit_auditor->full_name();
+                        $unit_auditor->initials = $unit_auditor->initials();
+                    }
+                    $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
+                    foreach ($building_auditors as $building_auditor) {
+                        $building_auditor->full_name = $building_auditor->full_name();
+                        $building_auditor->initials = $building_auditor->initials();
+                    }
+
+                    $user = User::where('id', '=', $auditor_id)->first();
+
+                    $initials = $user->initials();
+                    $color = "auditor-badge-" . $user->badge_color;
+                    return ["initials" => $initials, "color" => $color, "id" => $user->id, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => 0, "building_id" => $building->building_id];
+                }
+            }
+        } elseif ($amenity_id == 0 && $building_id == 0 && $unit_id == 0) {
+            $auditor_id = $request->get('auditor_id');
+
+            if ($auditor_id) {
+
+                // make sure this id is already in the auditor's list for this audit
+                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first() || $lead_auditor_selected) {
+                		return $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->whereNull('unit_id')->whereNull('building_id')->get();
                     $building = CachedBuilding::where('building_id', '=', $building_id)->first();
 
                     $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building->building_id)->update([
@@ -1487,9 +1565,9 @@ class AuditController extends Controller
 
             if ($auditor_id) {
                 //dd(AuditAuditor::where('audit_id','=',$audit_id)->where('user_id','=',$auditor_id)->first(), $audit_id, $auditor_id);
-
+            	// return AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first();
                 // make sure this id is already in the auditor's list for this audit
-                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first()) {
+                if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first() || $lead_auditor_selected) {
 
                     // if $building_id = 0 we are working with an amenity at the building level like parking lot
                     if ($building_id == 0 && $unit_id == 0) {
