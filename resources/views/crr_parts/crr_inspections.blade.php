@@ -18,7 +18,7 @@ if(isset($detailsPage)){
 	$dpView = 1;
 }
 ?>
-@if(null !== $projectDetails)
+@if(null == $projectDetails)
 @if(session('projectDetailsOutput') == 0)
 <div id="project-details-stats" class="uk-width-1-1 uk-grid-margin uk-first-column" style="margin-top:20px;">
 	<div uk-grid="" class="uk-grid">
@@ -73,7 +73,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 <div uk-grid class="uk-margin-bottom">
 
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2 id="units-summary-header">@if($totalUnits >1 || $totalUnits < 1) {{$totalUnits}} Units @else 1 Unit @endIf @if($dpView) Selected: @else Audited: @endIf </h2> @can('access_auditor') <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
+		<h2 id="units-summary-header">@if($totalUnits >1 || $totalUnits < 1) {{$totalUnits}} Units @else 1 Unit @endIf @if($dpView) Selected: @else Audited: @endIf </h2> @can('access_auditor') <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary/{{$audit->audit_id}}',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
 		@endCan<style>
 			#modal-size {
 				height: 815px;
@@ -202,7 +202,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 
 				?>
 				<div  class="unit-name"  >
-					@if($print !== 1 && !$dpView)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');"> @elseIf($dpView && $i->unit->household)<span onclick="$('.inspection-data-row').toggle();$('#unit-inspection-{{$i->unit_id}}').show();$('#unit-{{$i->unit_id}}').slideToggle(); if($('#unit-column-set').hasClass('uk-column-1-3')){$('#unit-column-set').removeClass('uk-column-1-3'); $('#unit-column-set').addClass('uk-column-1-2');$('#unit-{{$i->unit_id}}').css('max-width','500');$('#units-summary-header').scrollView();}else{ $('#unit-column-set').addClass('uk-column-1-3'); $('#unit-column-set').removeClass('uk-column-1-2');$('#unit-{{$i->unit_id}}').css('max-width','360px');}" class="use-hand-cursor" uk-tooltip title="CLICK TO TOGGLE VIEW OF TENANT DETAILS"><i class="a-avatar-info"></i>  
+					@if($print !== 1 && !$dpView)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{$i->unit_id}}-finding');"> @elseIf($dpView && $i->unit->household)<span onclick="dynamicModalLoad('household/{{$i->unit_id}}')" class="use-hand-cursor" uk-tooltip title="VIEW HOUSEHOLD DETAILS"><i class="a-avatar-info"></i>  
 						@endIf {{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] =$i->unit_id; ?> :
 					@if($print !== 1 && !$dpView)</a> @elseIf($dpView && $i->unit->household)</span>@endIf
 					@if($dpView)
@@ -213,50 +213,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 							<br /><small style="text-transform: uppercase;">{{$i->unit->building->address->line_1}} {{$i->unit->building->address->line_2}} <br />
 							{{$i->unit->building->address->city}}, {{$i->unit->building->address->state}} {{$i->unit->building->address->zip}}</small>
 						@endIf
-						@if($i->unit->household)
-						<div id="unit-{{$i->unit_id}}" style="display: none;">
-							<ul>
-							@if($i->unit->household->head_of_household_name)
-							<li>Tenant: <strong>{{$i->unit->household->head_of_household_name}}</strong> </li>
-							@endIf
-							@if($i->unit->most_recent_event())
-							<li>Most Recent Event: <strong>{{date('n/d/Y',strtotime($i->unit->most_recent_event()->event_date))}} : {{$i->unit->most_recent_event()->type->event_type_description}} </strong></li>
-							@endIf
-							@if($i->unit->household->initial_move_in_date)
-							 <li>Initial Move In Date: <strong>{{date('l n/j/Y',strtotime($i->unit->household->initial_move_in_date))}}</strong> </li>
-							@endIf
-							@if($i->unit->household->special_needs_id)
-							<li>Special Needs: <strong>{{$i->unit->household->special_needs->special_needs_description}} ({{$i->unit->household->special_needs->special_needs_code}})</strong></li>
-							@endIf
-							@if(null !== $i->unit->household->household_income_move_in)
-							<li>Household Move In Income: <strong>${{number_format($i->unit->household->household_income_move_in)}}</strong></li>
-							@endIf
-							@if($i->unit->most_recent_event())
-							<li>Current Income: <strong>${{number_format($i->unit->most_recent_event()->current_income)}} </strong>
-							</li>
-							@endIf
-
-							@if($i->unit->household->household_size_id)
-							<li>Household Size: <strong>{{$i->unit->household->household_size->household_size_description}} </strong><br > &nbsp;(at move in: {{$i->unit->household->move_in_household_size->household_size_description}})</li>
-							@endIf
-							@if($i->unit->most_recent_event())
-							<li>Household Count: <strong>{{number_format($i->unit->most_recent_event()->household_count)}} </strong></li>
-							@endIf
-							
-							@if($i->unit->most_recent_event())
-							<li>Tenant Rent Portion: <strong>${{number_format($i->unit->most_recent_event()->tenant_rent_portion)}} </strong>  </li>
-							@endIf
-							@if($i->unit->most_recent_event())
-							<li>Rental Assistance Amount: <strong>${{number_format($i->unit->most_recent_event()->rent_assistance_amount)}} </strong>@if($i->unit->most_recent_event()->rental_assistance_type_id) ({{$i->unit->most_recent_event()->rent_assistance_type->rental_assistance_type_name}})@endIf</li>
-							@endIf
-							@if($i->unit->most_recent_event())
-							<li>Utility Allowance: <strong>${{number_format($i->unit->most_recent_event()->utility_allowance)}} </strong></li>
-							@endIf
-
-
-							</ul>
-						</div>
-						@endIf
+						
 						
 					@endIf
 				</div>
@@ -309,7 +266,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 		<?php
 		$inspections = collect($inspections);
 		?>
-		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Site Amenities @else Site Amenity @endIf @if($dpView) Selected: @else Audited: @endIf: </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
+		<h2>{{count($inspections)}} @if(count($inspections) > 1 || count($inspections) < 1) Site Amenities @else Site Amenity @endIf @if($dpView) Selected: @else Audited: @endIf </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 		<hr class="dashed-hr uk-margin-bottom">
 		
 		<div class="uk-column-1-3 uk-column-divider">

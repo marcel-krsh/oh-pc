@@ -1630,7 +1630,7 @@ class AuditController extends Controller
         // } else {
 	       //  $selected_audit = $project->selected_audit();
         // }
-        $selected_audit = $project->selected_audit($audit_id);
+        $selected_audit = $project->selected_audit($audit_id,1);
 
 
         //dd($id, $project, $selected_audit);
@@ -1801,19 +1801,20 @@ class AuditController extends Controller
         return response()->json(array('success' => true, 'html'=>$returnHTML));
     }
 
-    public function getProjectDetailsInfo($id, $type, $return_raw = 0)
+    public function getProjectDetailsInfo($id, $type, $audit, $return_raw = 0)
     {
         // types: compliance, assignment, findings, followups, reports, documents, comments, photos
         // project: project_id?
 
         $project = Project::where('id', '=', $id)->first();
+        $audit = CachedAudit::where('audit_id',$audit)->first();
         //dd($project->selected_audit());
 
         switch ($type) {
             case 'compliance':
                 // get the compliance summary for this audit
                 //
-                $audit = $project->selected_audit()->audit;
+                $audit = $audit->audit;
                 $selection_summary = json_decode($audit->selection_summary, 1);
                 //dd($selection_summary['programs']);
 
@@ -2104,6 +2105,7 @@ class AuditController extends Controller
                     'optimized_sample_size_file' => $summary_optimized_required_file,
                     'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
                     'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file,
+
                 ];
 
                 $data['auditID']= $audit->id;
@@ -2116,16 +2118,16 @@ class AuditController extends Controller
             case 'assignment':
 
                 // check if the lead is listed as an auditor and add it if needed
-                $auditors = $project->selected_audit()->auditors;
+                $auditors = $audit->auditors;
                 $is_lead_an_auditor = 0;
                 $auditors_key = array(); // used to store in which order the auditors will be displayed
-                if ($project->selected_audit()->lead_auditor) {
-                    $auditors_key[] = $project->selected_audit()->lead_auditor->id;
+                if ($audit->lead_auditor) {
+                    $auditors_key[] = $audit->lead_auditor->id;
                 }
 
                 foreach ($auditors as $auditor) {
-                    if ($project->selected_audit()->lead_auditor) {
-                        if ($project->selected_audit()->lead_auditor->id == $auditor->user_id) {
+                    if ($audit->lead_auditor) {
+                        if ($audit->lead_auditor->id == $auditor->user_id) {
                             $is_lead_an_auditor = 1;
                         } else {
                             $auditors_key[] = $auditor->user_id;
@@ -2135,32 +2137,32 @@ class AuditController extends Controller
                     }
                 }
 
-                if ($is_lead_an_auditor == 0 && $project->selected_audit()->lead_auditor) {
+                if ($is_lead_an_auditor == 0 && $audit->lead_auditor) {
                     // add to audit_auditors
                     $new_auditor = new AuditAuditor([
-                        'user_id' => $project->selected_audit()->lead_auditor->id,
-                        'user_key' => $project->selected_audit()->lead_auditor->devco_key,
-                        'monitoring_key' => $project->selected_audit()->audit_key,
-                        'audit_id' => $project->selected_audit()->audit_id,
+                        'user_id' => $audit->lead_auditor->id,
+                        'user_key' => $audit->lead_auditor->devco_key,
+                        'monitoring_key' => $audit->audit_key,
+                        'audit_id' => $audit->audit_id,
                     ]);
                     $new_auditor->save();
                 }
 
-                $chart_data = $project->selected_audit()->estimated_chart_data();
+                $chart_data = $audit->estimated_chart_data();
 
                 //foreach auditor and for each day, fetch calendar combining availability and schedules
                 $daily_schedules = array();
-                foreach ($project->selected_audit()->days as $day) {
+                foreach ($audit->days as $day) {
                     $date = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $day->date);
                     foreach ($auditors_key as $auditor_id) {
-                        $daily_schedules[$day->id][] = $this->getAuditorDailyCalendar($date, $day->id, $project->selected_audit()->audit_id, $auditor_id);
+                        $daily_schedules[$day->id][] = $this->getAuditorDailyCalendar($date, $day->id, $audit->audit_id, $auditor_id);
                     }
                 }
 
                 // list all the audits that have any of the auditors assigned
                 // foreach day
                 // $potential_conflict_audits_ids = array();
-                // foreach($project->selected_audit()->days as $day){
+                // foreach($audit->days as $day){
                 //     $potential_conflict_audits = ScheduleTime::select('audit_id')->whereIn('auditor_id', $auditors_key)->where('day_id','=',$day->id)->groupBy('audit_id')->pluck('audit_id')->toArray();
 
                 //     $potential_conflict_audits_ids = array_unique(array_merge($potential_conflict_audits_ids,$potential_conflict_audits), SORT_REGULAR);
@@ -2171,22 +2173,22 @@ class AuditController extends Controller
                 // $potential_conflict_audits = CachedAudit::whereIn('audit_id', $potential_conflict_audits_ids)->orderBy('project_ref','asc')->get();
 
                 // $daily_schedules = array();
-                // foreach($project->selected_audit()->days as $day){
-                //     // set current audit $project->selected_audit()
+                // foreach($audit->days as $day){
+                //     // set current audit $audit
                 //     foreach($auditors_key as $auditor_id){
                 //         // auditors are in the audit for sure
                 //         // check if they are scheduled on not
-                //         if(ScheduleTime::where('audit_id','=',$project->selected_audit()->audit_id)->where('auditor_id','=',$auditor_id)->where('day_id','=',$day->id)->count()){
-                //             $daily_schedules[$day->id][$project->selected_audit()->audit_id]['auditors'][$auditor_id] = 'scheduled'; // scheduled
+                //         if(ScheduleTime::where('audit_id','=',$audit->audit_id)->where('auditor_id','=',$auditor_id)->where('day_id','=',$day->id)->count()){
+                //             $daily_schedules[$day->id][$audit->audit_id]['auditors'][$auditor_id] = 'scheduled'; // scheduled
                 //         }else{
-                //             $daily_schedules[$day->id][$project->selected_audit()->audit_id]['auditors'][$auditor_id] = 'notscheduled'; // not scheduled
+                //             $daily_schedules[$day->id][$audit->audit_id]['auditors'][$auditor_id] = 'notscheduled'; // not scheduled
                 //         }
-                //         $daily_schedules[$day->id][$project->selected_audit()->audit_id]['audit'] = $project->selected_audit();
+                //         $daily_schedules[$day->id][$audit->audit_id]['audit'] = $audit;
                 //     }
 
                 //     // set all other audits
                 //     foreach($potential_conflict_audits as $potential_conflict_audit){
-                //         if($potential_conflict_audit->audit_id != $project->selected_audit()->audit_id){
+                //         if($potential_conflict_audit->audit_id != $audit->audit_id){
                 //             foreach($auditors_key as $auditor_id){
                 //                 // is auditor in the audit?
                 //                 if(AuditAuditor::where('audit_id','=',$potential_conflict_audit->audit_id)->where('user_id','=',$auditor_id)->count()){
@@ -2208,7 +2210,7 @@ class AuditController extends Controller
                     "project" => [
                         'id' => $project->id,
                         'ref' => $project->project_number,
-                        'audit_id' => $project->selected_audit()->audit_id,
+                        'audit_id' => $audit->audit_id,
                     ],
                     "summary" => [
                         'required_unit_selected' => 0,
@@ -2217,10 +2219,10 @@ class AuditController extends Controller
                         'file_audits_needed' => 0,
                         'physical_audits_needed' => 0,
                         'schedule_conflicts' => 0,
-                        'estimated' => $project->selected_audit()->estimated_hours() . ':' . $project->selected_audit()->estimated_minutes(),
-                        'estimated_hours' => $project->selected_audit()->estimated_hours(),
-                        'estimated_minutes' => $project->selected_audit()->estimated_minutes(),
-                        'needed' => $project->selected_audit()->hours_still_needed(),
+                        'estimated' => $audit->estimated_hours() . ':' . $audit->estimated_minutes(),
+                        'estimated_hours' => $audit->estimated_hours(),
+                        'estimated_minutes' => $audit->estimated_minutes(),
+                        'needed' => $audit->hours_still_needed(),
                     ],
                     'audits' => [
                         [
@@ -2257,6 +2259,10 @@ class AuditController extends Controller
             case 'comments':
                 break;
             case 'photos':
+                break;
+            case 'selections':
+                $details = $project->details();
+                return view('projects.partials.details-selections', compact('audit','details'));
                 break;
             default:
         }
@@ -2579,6 +2585,16 @@ class AuditController extends Controller
                 ]);
                 $day->save();
 
+                // see if day is earlier than previous days
+                $check = ScheduleDay::where('audit_id', $id)->where('date', '<', $date)->count();
+                if(!$check){
+                    // this is the new starting date - set it to be so on the audit and cached audit table
+                    $audit->completed_date = $date;
+                    $audit->save();
+                    $audit->cached_audit->inspection_schedule_date = $date;
+                    $audit->cached_audit->save();
+                }
+
                 return 1;
             } else {
                 return 'This day was already scheduled!';
@@ -2603,6 +2619,15 @@ class AuditController extends Controller
 
             // Event::fire('audit.cache', $audit->audit);
 
+            $check = ScheduleDay::where('audit_id', $id)->orderBy('date','asc')->first();
+                if($check){
+                    // this is the new starting date - set it to be so on the audit and cached audit table
+                    $audit->completed_date = $check->date;
+                    $audit->save();
+                    $audit->cached_audit->inspection_schedule_date = $check->date;
+                    $audit->cached_audit->save();
+            }
+
             $output = ['data' => 1];
             return $output;
         } else {
@@ -2619,27 +2644,33 @@ class AuditController extends Controller
         $hours = (int) $forminputs['estimated_hours'];
         $minutes = (int) $forminputs['estimated_minutes'];
 
-        $audit = CachedAudit::where('audit_id', '=', $id)->where('lead', '=', Auth::user()->id)->first();
+        $audit = CachedAudit::where('audit_id', '=', $id)->with('audit');
+            if(!Auth::user()->can('access_manager')){
+                $audit = $audit->where('lead', '=', Auth::user()->id);
+            }
+        $audit = $audit->first();
 
         $new_estimate = $hours . ":" . $minutes . ":00";
-        if (Auth::user()->id == $audit->audit->lead_user_id || Auth::user()->manager_access()) {
+        if(null !== $audit && null !== $hours && null !== $minutes){
+            if (Auth::user()->id == $audit->audit->lead_user_id || Auth::user()->manager_access()) {
 
-            if ($audit) {
-                $audit->update([
-                    'estimated_time' => $new_estimate,
-                ]);
+                if ($audit) {
+                    $audit->estimated_time = $new_estimate;
+                    $audit->audit->estimated_time = $new_estimate;
+                    $audit->save();
+                    $audit->audit->save();
+                    
+                    $needed = $audit->hours_still_needed();
 
-                // get new needed time
-                $audit->fresh();
-
-                $needed = $audit->hours_still_needed();
-
-                return ['status' => 1, 'hours' => $hours . ":" . $minutes, 'needed' => $needed];
+                    return ['status' => 1, 'hours' => $hours . ":" . $minutes, 'needed' => $needed];
+                } else {
+                    return ['status' => 0, 'message' => 'Sorry, this audit reference cannot be found or no lead has been set yet.'];
+                }
             } else {
-                return ['status' => 0, 'message' => 'Sorry, this audit reference cannot be found or no lead has been set yet.'];
+                return 'Sorry, only the lead or a manager can input estimated hours for an audit.';
             }
-        } else {
-            return 'Sorry, only the lead or a manager can input estimated hours for an audit.';
+        }else{
+            return 'Sorry, there is a problem with the data that was submitted. Please let the support team know to check the AC:2646 Save Estimated Hours feature and which audit ('.$id.') you are working on.';
         }
 
     }
@@ -3133,7 +3164,7 @@ class AuditController extends Controller
         }
     }
 
-    public function modalProjectProgramSummaryFilterProgram($project_id, $program_id, Request $request)
+    public function modalProjectProgramSummaryFilterProgram($project_id, $program_id, Request $request, $audit)
     {
         /**
          * Make chart data refelct the filter along with filter
@@ -3150,6 +3181,7 @@ class AuditController extends Controller
          *         Units info
          */
         $programs = $request->get('programs');
+        $audit = CachedAudit::where('id',$audit)->first();
         if (is_array($programs) && count($programs) > 0) {
             $filters = collect([
                 'programs' => $programs,
@@ -3158,7 +3190,7 @@ class AuditController extends Controller
             $filters = null;
         }
         $project = Project::where('id', '=', $project_id)->first();
-        $audit = $project->selected_audit()->audit;
+        $audit = $audit->audit;
         $selection_summary = json_decode($audit->selection_summary, 1);
         // get units filterd in programs
         if(empty($programs))
@@ -3347,7 +3379,7 @@ class AuditController extends Controller
         ];
         */
 
-        $data = $this->getProjectDetailsInfo($project_id, 'compliance', 1);
+        $data = $this->getProjectDetailsInfo($project_id, 'compliance',$audit->id, 1);
 
         $send_project_details = array(
         											'audit' => $audit,
@@ -6374,6 +6406,12 @@ class AuditController extends Controller
             // dd($selection_summary['programs']);
         }
 
+    }
+
+    public function householdInfo($unit){
+        $unit = Unit::where('id',$unit)->with('household')->first();
+        return view('modals.audit_details.householdInfo',compact('unit'));
+    
     }
 
 }
