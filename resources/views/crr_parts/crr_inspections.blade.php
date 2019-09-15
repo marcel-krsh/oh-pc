@@ -73,7 +73,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 <div uk-grid class="uk-margin-bottom">
 
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
-		<h2 id="units-summary-header">@if($totalUnits >1 || $totalUnits < 1) {{$totalUnits}} Units @else 1 Unit @endIf @if($dpView) Selected: @else Audited: @endIf </h2> @can('access_auditor') <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary/{{$audit->audit_id}}',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
+		<h2 id="units-summary-header">@if($totalUnits >1 || $totalUnits < 1) {{$totalUnits}} Units @else 1 Unit @endIf @if($dpView) Selected: @else Audited: @endIf </h2> @can('access_auditor') <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{$report->project->id}}/programs/0/summary/@if(isset($audit)){{$audit->audit_id}}@else{{$audit_id}} @endIf',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
 		@endCan<style>
 			#modal-size {
 				height: 815px;

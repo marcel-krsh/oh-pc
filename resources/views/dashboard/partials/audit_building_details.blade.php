@@ -8,7 +8,7 @@
 				<div id="building-{{$context}}-detail-r-{{$key}}" class="building building-detail @if($detail->unit) building-{{$detail->unit->status}} {{$detail->unit->status}} @endif uk-grid-match uk-margin-remove" data-audit="{{$detail->audit_id}}" data-building="{{$detail->building_id}}" data-area="{{$detail->unit_id}}" uk-grid>
 					<div class="uk-width-1-6 uk-padding-remove">
 						<div class="uk-padding-remove uk-flex">
-							<div id="building-{{$context}}-detail-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-details" style="    min-width: 16px; padding: 0 3px;">
+							<div id="building-{{$context}}-detail-{{$target}}-c-1-{{$key}}" class="uk-inline uk-sortable-details-disabled" style="    min-width: 16px; padding: 0 3px;">
 								<div class="linespattern"></div>
 								<span id="building-{{$context}}-detail-rid-{{$key}}" class="uk-position-bottom-center colored"><small>#<span class="rowindex">{{$loop->iteration}}</span></small></span>
 							</div>
