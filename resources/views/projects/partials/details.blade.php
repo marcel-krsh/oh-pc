@@ -2,19 +2,19 @@
 	.on-phone-pd {
 		position: relative;
 		left: -4px;
-		top: -17px;
+		top: -28px;
 		font-size: 0.95rem;
 		font-weight: bolder;
 	}
 
 	.finding-number-pd {
-		font-size: 9px;
-		background: #666;
-		padding: 0px 4px 0px;
-		border: 0px;
-		min-width: 13px;
-		max-height: 13px;
-		line-height: 1.5;
+		    font-size: 15px;
+		    background: #666;
+		    padding: 0px 4px 0px;
+		    border: 0px;
+		    min-width: 24px;
+		    max-height: 24px;
+		    line-height: 1.5;
 	}
 	.manager-fail {
 		color:red;
@@ -39,69 +39,82 @@
 		font-size: 14pt;
 		line-height: 22px;
 	}
+	#project-details-main-row .pd-findings-column i  {
+		font-size: 36px;
+    	line-height: 37px;
+	}
 </style>
 
 <?php
 	$fileCount = count($selected_audit->audit->files);
+	$correctedFileCount = count($selected_audit->audit->files->where('auditor_last_approved_resolution_at', '<>',null));
 	$nltCount = count($selected_audit->audit->nlts);
+	$correctedNltCount = count($selected_audit->audit->nlts->where('auditor_last_approved_resolution_at', '<>',null));
+	
 	$ltCount = count($selected_audit->audit->lts);
+	$correctedLtCount = count($selected_audit->audit->lts->where('auditor_last_approved_resolution_at', '<>',null));
+	
 	$car = collect($selected_audit->audit->reports)->where('from_template_id','1')->first();
 	$ehs = collect($selected_audit->audit->reports)->where('from_template_id','2')->first();
+	$_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')->first();
 	//dd($selected_audit->audit->reports,collect($selected_audit->audit->reports)->where('from_template_id','1')->first());
 ?>
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
 		<div id="project-details-main-row" class="{{$selected_audit->status}}">
 			<div class="uk-grid-match" uk-grid>
-				<div class="uk-width-1-4 uk-padding-remove">
+				<div class="uk-width-1-6 uk-padding-remove">
 					<div uk-grid>
 						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 10px;" onclick="UIkit.modal('#modal-select-audit').show();">
 							<i class="a-square-right-2"></i>
 						</div>
 						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 7px;">
-							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$selected_audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$selected_audit->lead_json->color}} no-float uk-link">
+							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$selected_audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$selected_audit->lead_json->color}} no-float uk-link" style="height: 48px;
+    width: 48px;
+    line-height: 48px; font-size: 27px; margin-top: .2em">
 								{{$selected_audit->lead_json->initials}}
 							</span>
 						</div>
-						<div class="uk-width-3-5" style="padding-right:0">
-							<h3 id="audit-project-name-1" class="uk-margin-bottom-remove">{{$project->project_number}}</h3>
-			            	<small class="uk-text-muted" style="font-size: 0.7em;">AUDIT {{$selected_audit->audit_id}}</small>
+						<div class="uk-width-3-5" style="padding-left:1.2em">
+							<h3 id="audit-project-name-1" class="uk-margin-bottom-remove uk-text-align-center" style="font-size: 1.5em; padding-top: .5em;">{{$project->project_number}}</h3>
+			            	<small class="uk-text-muted" style="font-size: 1em;">AUDIT {{$selected_audit->audit_id}}</small>
 						</div>
 					</div>
 				</div>
-				<div class="uk-width-3-4 uk-padding-remove">
+				<div class="uk-width-5-6 uk-padding-remove">
 					<div uk-grid>
 						<div class="uk-width-1-2 uk-padding-remove">
 							<div uk-grid>
-								<div class="uk-width-2-3 uk-padding-remove">
+								<div class="uk-width-2-5 uk-padding-remove">
 						            <div class="divider"></div>
 									<div class="uk-text-center hasdivider" uk-grid>
 						            	<div class="uk-width-1-2 uk-padding-remove" uk-grid>
-						            		<div class="uk-width-1-3 iconpadding">
-						            			<i class="{{$selected_audit->inspection_icon}} {{$selected_audit->inspection_status}}" uk-tooltip="title:{{$selected_audit->inspection_status_text}};"></i>
-						            		</div>
-						            		<div class="uk-width-2-3 uk-padding-remove">
+						    
+						            		<div class="uk-width-1-1 uk-padding-remove" uk-tooltip @if(!is_null($selected_audit->inspection_schedule_date) && count($selected_audit->days) > 0) title="AUDIT WILL TAKE {{count($selected_audit->days)}} @if( count($selected_audit->days) < 1 || count($selected_audit->days) > 1) DAYS @else DAY @endIf" @elseIf(!is_null($selected_audit->inspection_schedule_date) && count($selected_audit->days) == 0) title="NO DATES ARE SCHEDULED PLEASE USE ADD DAYS IN THE SCHEDULING TAB BELOW" @endIf>
 						            			@if(!is_null($selected_audit->inspection_schedule_date))
-							            		<h3 class="uk-link uk-margin-remove" uk-tooltip="title:AUDIT'S STARTING DATE;">{{date('m/d',strtotime($selected_audit->inspection_schedule_date))}}</h3>
+							            		<div class="dateyear" style="margin-top:5px; text-transform: uppercase;">{{date('l',strtotime($selected_audit->inspection_schedule_date))}}</div>
+							            		<h3 class="uk-link" style="margin: 9px 10px 6px 0px !important;">{{date('M jS',strtotime($selected_audit->inspection_schedule_date))}}</h3>
 							            		<div class="dateyear">{{date('Y',strtotime($selected_audit->inspection_schedule_date))}}</div>
 							            		@else
-							            		<i class="a-calendar-pencil" uk-tooltip="title:SCHEDULE USING ASSIGNMENT BELOW;"></i>
+							            		<i class="a-calendar-pencil" uk-tooltip="title:SCHEDULE USING SCHEDULING BELOW;"></i>
 							            		@endif
 
 						            		</div>
 						            	</div>
-						            	<div class="uk-width-1-6 iconpadding uk-text-right" uk-tooltip="title:I AM INSPECTING {{$selected_audit->auditor_items()}} ITEMS OF THE {{$selected_audit->total_items}} TOTAL;">{{$selected_audit->auditor_items()}}@if($selected_audit->lead == Auth::user()->id)*@endif /</div>
-						            	<div class="uk-width-1-6 iconpadding uk-text-left">{{$selected_audit->total_items}}</div>
-						            	<div class="uk-width-1-6 iconpadding uk-text-left">
-						            		<i class="{{$selected_audit->audit_compliance_icon}} {{$selected_audit->audit_compliance_status}}"  uk-tooltip="title:{{$selected_audit->audit_compliance_status_text}};"></i> @if(!count($selected_audit->audit->findings))<i class="use-hand-cursor a-rotate-left" uk-tooltip title="CLICK TO RERUN AUDIT SELECTION"></i>@endIf
-						            	</div>
+						            	<div class="uk-width-1-2 uk-padding-remove">
+							            	<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->building_inspections)}} @if(count($selected_audit->audit->building_inspections) >1 || count($selected_audit->audit->building_inspections) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{count($selected_audit->audit->building_inspections)}}</div>
+							            	<hr class="uk-width-1-1" style="margin-bottom: 8px; margin-top: 0px" >
+							            	<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->unique_unit_inspections)}} @if(count($selected_audit->audit->unique_unit_inspections) > 1 || count($selected_audit->audit->unique_unit_inspections) < 1) UNITS @else UNIT @endIf"><i class="a-buildings-2" style="font-size: 25px;"></i> : {{count($selected_audit->audit->unique_unit_inspections)}}</div>
+							            	
+							            </div>
+						            	
 						            </div>
 								</div>
-								<div class="uk-width-1-3 uk-padding-remove">
+								<div class="uk-width-3-5 uk-padding-remove">
 									<div class="divider"></div>
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 
-						            	<div class="uk-width-1-2">
+						            	<div class="uk-width-1-3">
 						            		@if(($car))
 						            		<?php
 						            			switch ($car->crr_approval_type_id) {
@@ -134,7 +147,7 @@
 						            					break;
 						            			}
 						            		?>
-						            		<a class="uk-link-mute" href="/report/{{$car->id}}" target="report-{{$car->id}}" uk-tooltip="title:VIEW CAR {{$car->id}} : {{strtoupper($car->status_name())}}"><i class="{{$carIcon}}" ></i></a> &nbsp; <i class="a-square-right-2 use-hand-cursor" id="car-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION"></i>
+						            		<a class="uk-link-mute" href="/report/{{$car->id}}" target="report-{{$car->id}}" uk-tooltip="title:VIEW CAR {{$car->id}} : {{strtoupper($car->status_name())}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a> &nbsp; <i class="a-square-right-2 use-hand-cursor" id="car-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION"></i>
 												<div  uk-dropdown="mode:click">
 												    <ul class="uk-nav uk-dropdown-nav " style="text-align: left !important;">
 												        <li @if($car->crr_approval_type_id == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$car->id}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
@@ -158,7 +171,7 @@
 						            		@else
 						            		<i  @if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) class="a-file-plus" uk-tooltip="title:GENERATE THIS AUDIT'S CAR" onclick="submitNewReportPD({{$selected_audit->id}},1)" @else class="a-file-fail" uk-tooltip="title:SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A CAR TO BE GENERATED." @endIf></i><br /><small>CAR</small>
 							            	@endIf
-							            </div><div class="uk-width-1-2">
+							            </div><div class="uk-width-1-3">
 							            	@if(($ehs))
 							            	<?php
 						            			switch ($ehs->crr_approval_type_id) {
@@ -191,9 +204,95 @@
 						            					break;
 						            			}
 						            		?>
-						            		<a class="uk-link-mute" href="/report/{{$ehs->id}}" target="report-{{$ehs->id}}" uk-tooltip="title:{{$ehs->status_name()}}"><i class="{{$ehsIcon}}" ></i><br /><small>EHS</small></a>
+						            		<a class="uk-link-mute" href="/report/{{$ehs->id}}" target="report-{{$ehs->id}}" uk-tooltip="title:{{$ehs->status_name()}}"><i class="{{$ehsIcon}}" style="font-size: 30px;" ></i></a>
+
+						            			&nbsp; <i class="a-square-right-2 use-hand-cursor" id="ehs-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION"></i>
+												<div  uk-dropdown="mode:click">
+												    <ul class="uk-nav uk-dropdown-nav " style="text-align: left !important;">
+												        <li @if($ehs->crr_approval_type_id == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$ehs->id}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
+				                                        @if($ehs->requires_approval)
+				                                        <li @if($ehs->crr_approval_type_id == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
+				                                        
+				                                        @can('access_manager')
+				                                        <li @if($ehs->crr_approval_type_id == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
+				                                        <li @if($ehs->crr_approval_type_id == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
+				                                        <li @if($ehs->crr_approval_type_id == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
+				                                        @endCan
+				                                        @endIf
+				                                        @if(($ehs->requires_approval == 1 && $ehs->crr_approval_type_id > 3) || $ehs->requires_approval == 0 || Auth::user()->can('access_manager'))
+				                                        <li @if($ehs->crr_approval_type_id == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
+				                                        <li @if($ehs->crr_approval_type_id == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
+				                                        <li @if($ehs->crr_approval_type_id == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},9,{{$selected_audit->project_id}});"><i class="a-file-approve"></i> ALL ITEMS RESOLVED</a></li>
+				                                        @endIf
+
+												    </ul>
+												</div>
+						            			<br /><small>EHS #{{$ehs->id}}</small></a>
 						            		@else
 						            		@if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S EHS" onclick="submitNewReportPD({{$selected_audit->audit_id}},2)"><i  class="a-file-plus"></i><br /><small>EHS</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A EHS TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
+							            	@endIf
+						            	</div>
+						            	<div class="uk-width-1-3">
+							            	@if(($_8823))
+							            	<?php
+						            			switch ($_8823->crr_approval_type_id) {
+						            				case '1':
+						            					$_8823Icon = "a-file-pencil-2"; // draft
+						            					break;
+						            				case '2':
+						            					$_8823Icon = "a-file-clock"; // pending manager review
+						            					break;
+						            				case '3':
+						            					$_8823Icon = "a-file-fail manager-fail attention"; // declined by manager
+						            					break;
+						            				case '4':
+						            					$_8823Icon = "a-file-repeat"; // approved with changes
+						            					break;
+						            				case '5':
+						            					$_8823Icon = "a-file-certified"; // approved
+						            					break;
+						            				case '6':
+						            					$_8823Icon = "a-file-mail"; // Unopened by PM
+						            					break;
+						            				case '7':
+						            					$_8823Icon = "a-file-pen"; // Viewed by a PM
+						            					break;
+						            				case '9':
+						            					$_8823Icon = "a-file-approve"; // All items resolved
+						            					break;
+						            				default:
+						            					$_8823Icon = "a-file-fail";
+						            					break;
+						            			}
+						            		?>
+						            		<a class="uk-link-mute" @can('access_manager') href="/report/{{$_8823->id}}" target="report-{{$_8823->id}}" uk-tooltip="title:{{$_8823->status_name()}}" @else onClick="alert('Sorry, this feature is still under development. It will be availble in a future release.');" @endCan ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
+
+						            			&nbsp; <i class="a-square-right-2 use-hand-cursor" @can('access_manager') id="8823-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION" @else onClick="alert('Sorry, this feature is still under development. It will be availble in a future release.');" @endCan></i>
+												<div  uk-dropdown="mode:click">
+												    @can('access_manager')
+												    <ul class="uk-nav uk-dropdown-nav " style="text-align: left !important;">
+												        <li @if($_8823->crr_approval_type_id == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$_8823->id}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
+				                                        @if($_8823->requires_approval)
+				                                        <li @if($_8823->crr_approval_type_id == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
+				                                        
+				                                        @can('access_manager')
+				                                        <li @if($_8823->crr_approval_type_id == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
+				                                        <li @if($_8823->crr_approval_type_id == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
+				                                        <li @if($_8823->crr_approval_type_id == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
+				                                        @endCan
+				                                        @endIf
+				                                        @if(($_8823->requires_approval == 1 && $_8823->crr_approval_type_id > 3) || $_8823->requires_approval == 0 || Auth::user()->can('access_manager'))
+				                                        <li @if($_8823->crr_approval_type_id == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
+				                                        <li @if($_8823->crr_approval_type_id == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
+				                                        <li @if($_8823->crr_approval_type_id == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},9,{{$selected_audit->project_id}});"><i class="a-file-approve"></i> ALL ITEMS RESOLVED</a></li>
+				                                        @endIf
+
+												    </ul>
+												    @endCan
+												</div>
+						            			<br /><small>8823 #{{$_8823->id}}</small></a>
+						            		@else
+						            		@if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S 8823" onclick="submitNewReportPD({{$selected_audit->audit_id}},5)"><i  class="a-file-plus"></i><br /><small>8823</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A 8823 TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
 							            	@endIf
 						            	</div>
 						            </div>
@@ -205,36 +304,38 @@
 								<div class="uk-width-2-5 uk-padding-remove">
 
 									<div class="divider"></div>
-									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
-						            	<div uk-tooltip="title: CLICK TO ADD A FILE FINDING" class="uk-width-1-3 use-hand-cursor  uk-first-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'file', null,'0');"><i class="a-folder"></i><span class="uk-badge finding-number-pd on-phone-pd" uk-tooltip title="{{$fileCount}} @if($fileCount < 1 || $fileCount > 1) FINDINGS @else FINDING @endIf" aria-expanded="false">{{$fileCount}}</span></div>
-						            	<div uk-tooltip="title: CLICK TO ADD A NLT FINDING" class="uk-width-1-3 use-hand-cursor " title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'nlt', null,'0');"><i class="a-booboo"></i><span class="uk-badge finding-number-pd on-phone-pd" uk-tooltip title="{{$nltCount}} @if($nltCount < 1 || $nltCount > 1) FINDINGS @else FINDING @endIf" aria-expanded="false">{{$nltCount}}</span></div>
-						            	<div uk-tooltip="title: CLICK TO ADD A LT FINDING" class="uk-width-1-3 use-hand-cursor" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'lt', null,'0');"><i class="a-skull"></i><span class="uk-badge finding-number-pd on-phone-pd" uk-tooltip title="{{$ltCount}} @if($ltCount < 1 || $ltCount > 1) FINDINGS @else FINDING @endIf" aria-expanded="false">{{$ltCount}}</span></div>
+									<div class="uk-text-center hasdivider uk-margin-top" uk-grid>
+						            	<div uk-tooltip="title: CLICK TO ADD A FILE FINDING" class="uk-width-1-3 use-hand-cursor  uk-first-column pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'file', null,'0');"><i class="a-folder"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedFileCount < $fileCount) attention @endIf" uk-tooltip title="{{$correctedFileCount}} / {{$fileCount}} @if($fileCount < 1 || $fileCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$fileCount}}</span></div>
+						            	<div uk-tooltip="title: CLICK TO ADD A NLT FINDING" class="uk-width-1-3 use-hand-cursor pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'nlt', null,'0');"><i class="a-booboo"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedNltCount < $nltCount) attention @endIf" uk-tooltip title="{{$correctedNltCount}} / {{$nltCount}} @if($nltCount < 1 || $nltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$nltCount}}</span></div>
+						            	<div uk-tooltip="title: CLICK TO ADD A LT FINDING" class="uk-width-1-3 use-hand-cursor pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'lt', null,'0');"><i class="a-skull"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedLtCount < $ltCount) attention @endIf" uk-tooltip title="{{$correctedLtCount}} / {{$ltCount}} @if($ltCount < 1 || $ltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$ltCount}}</span></div>
 						            </div>
 
 								</div>
 								<div class="uk-width-2-5 uk-padding-remove">
 									<div class="divider"></div>
 									<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
-										@if(env('APP_ENV') == 'local')
-						            	<div class="uk-width-1-4">
+										
+										<div class="uk-width-1-4 pd-findings-column">
+						            		<i class="{{$selected_audit->audit_compliance_icon}} {{$selected_audit->audit_compliance_status}}"  uk-tooltip="title:{{$selected_audit->audit_compliance_status_text}};"></i> @if(!count($selected_audit->audit->findings))<i class="use-hand-cursor a-rotate-left" uk-tooltip title="CLICK TO RERUN AUDIT SELECTION"></i>@endIf
+						            	</div>
+						            	<div class="uk-width-1-4 pd-findings-column">
 						            		<i class="{{$selected_audit->auditor_status_icon}}" uk-tooltip="title:{{$selected_audit->auditor_status_text}}"></i>
 						            	</div>
-						            	<div class="uk-width-1-4">
+						            	<div class="uk-width-1-4 pd-findings-column">
 						            		<i class="{{$selected_audit->message_status_icon}}" uk-tooltip="title:{{$selected_audit->message_status_text}};"></i>
 						            	</div>
-						            	<div class="uk-width-1-4">
+						            	<div class="uk-width-1-4 pd-findings-column">
 						            		<i class="{{$selected_audit->document_status_icon}}" uk-tooltip="title:{{$selected_audit->document_status_text}}"></i>
 						            	</div>
-						            	<div class="uk-width-1-4">
-						            		<!-- <i class="a-person-clock" uk-tooltip="title:VIEW HISTORY;"></i> -->
-						            	</div>
-						            	@endIF
+						            	
+						            	
 						            </div>
 								</div>
-								<div class="uk-width-1-5 iconpadding">
-									@if(env('APP_ENV') == 'local')
-									<i class="a-calendar-7"></i>
-									@endIf
+								<div class="uk-width-1-5 iconpadding  pd-findings-column uk-text-center" onclick="dynamicModalLoad('audits/{{$selected_audit->audit_id}}/updateStep?details_refresh=1',0,0,0);">
+									
+									<i class="{{$selected_audit->step_status_icon}} use-hand-cursor" uk-tooltip title="{{$selected_audit->step_status_text}}" ></i><br />
+									<small>UPDATE</small>
+									
 								</div>
 
 							</div>
@@ -285,7 +386,7 @@
 						<button id="project-details-button-1" class="uk-button uk-link " onclick="projectDetailsInfo({{$project->id}}, 'compliance', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 					</div>
 					<div class="uk-width-1-4">
-						<button id="project-details-button-2" class="uk-button uk-link" onclick="projectDetailsInfo({{$project->id}}, 'assignment', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-avatar"></i> ASSIGNMENT</button>
+						<button id="project-details-button-2" class="uk-button uk-link" onclick="projectDetailsInfo({{$project->id}}, 'assignment', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-calendar-person"></i> SCHEDULING</button>
 					</div>
 				</div>
 			

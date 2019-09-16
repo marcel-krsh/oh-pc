@@ -416,7 +416,7 @@ class Project extends Model
 
     public function buildings() : HasMany
     {
-        return $this->hasMany('\App\Models\Building')->where('building_status_key','=',1);
+        return $this->hasMany('\App\Models\Building')->where('building_status_key','=',1)->with('address');
     }
 
     public function units() : HasManyThrough {

@@ -142,6 +142,23 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 			    @endIf
 			    margin-bottom: 8px;
 			}
+			.amenity-auditor .auditor-badge {
+			    height: 20px;
+			    width: 20px;
+			    font-size: 10px;
+			    text-align: center;
+			    border-radius: 50%;
+			    border: 1px solid #50b8ec;
+			    background-color: #ffffff;
+			    color: #50b8ec;
+			    font-weight: 400;
+			    line-height: 21px;
+			    margin: 3px 3px 3px 3px;
+			}
+			.auditor-badge-on-details {
+				display: inline-table;
+				margin-right: 5px;
+			}
 		</style>
 		
 
@@ -193,7 +210,9 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					$currentUnit = $i->unit_id;
 					$thisUnitValues = collect($inspections)->where('unit_id',$i->unit_id)->sortByDesc('is_site_visit');
 					$thisUnitFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file'));
+					$thisUnitUnresolvedFileFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','file')->where('finding_type.auditor_last_approved_at','=',null));
 					$thisUnitSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file'));
+					$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id',$i->unit_id)->where('finding_type.type','!=','file')->where('finding_type.auditor_last_approved_at','=',null));
 					$isHome = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','HOME'));
 
 					$isOhtf = count(collect($inspections)->where('unit_id',$i->unit_id)->where('is_file_audit',1)->where('group','OHTF'));
@@ -226,7 +245,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					@if(!in_array($g->unit_id, $siteVisited))
 
 
-					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{$thisUnitSiteFindings}}">{{$thisUnitSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endIf <?php $siteVisited[] =$g->unit_id;  ?>
+					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor') @if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor') @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endcan></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone @if($thisUnitUnresolvedSiteFindings > 0) attention @endIf" uk-tooltip title="{{$thisUnitSiteFindings}} FINDINGS @if($thisUnitUnresolvedSiteFindings > 0) WITH {{$thisUnitUnresolvedSiteFindings}} PENDING RESOLUTION @ELSE FULLY RESOLVED @endIf ">{{$thisUnitSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endIf <?php $siteVisited[] =$g->unit_id;  ?>
 					@else
 					<?php $noShow = 1; ?>
 					@endIf
@@ -275,6 +294,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				$currentSite = $i->amenity_id;
 				$thisAmenityValues = collect($inspections)->where('amenity_id',$i->amenity_id);
 				$thisAmenityFindings = count(collect($findings)->where('amenity_id',$i->amenity_id));
+				$thisAmenityUnresolvedFindings = count(collect($findings)->where('amenity_id',$i->amenity_id)->where('finding_type.auditor_last_approved_at','=',null));
 			?>
 			<div class="inspection-data-row">
 				<div  class="unit-name" >
@@ -286,7 +306,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endcan></i>
 				</div> --}}
 				<div style="float: right;">
-					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endcan></i> @if($thisAmenityFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{$thisAmenityFindings}}">{{$thisAmenityFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
+					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endcan></i> @if($thisAmenityFindings > 0) <span class="uk-badge finding-number on-phone @if($thisAmenityUnresolvedFindings > 0) attention @endIf" uk-tooltip title="{{$thisAmenityFindings}} @if($thisAmenityFindings > 1) FINDINGS @else FINDING @endIf @if($thisAmenityUnresolvedFindings > 0) WITH {{$thisAmenityUnresolvedFindings}} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{$thisAmenityFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
 
 
 				</div>
@@ -342,7 +362,9 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				$hasFindings = 0;
 				//dd($currentBuilding,$findings,$findingsHello);
 				$thisBuildingSiteFindings = count($$findingCount->where('finding_type.type','!=','file'));
+				$thisBuildingUnresolvedSiteFindings = count($$findingCount->where('finding_type.type','!=','file')->where('auditor_last_approved_at',null));
 				$thisBuildingFileFindings = count($$findingCount->where('finding_type.type','==','file'));
+				$thisBuildingUnresolvedFileFindings = count($$findingCount->where('finding_type.type','==','file')->where('auditor_last_approved_at',null));
 
 				if($thisBuildingSiteFindings || $thisBuildingFileFindings){
 					$hasFindings = 1;
@@ -382,16 +404,17 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 
 					@if($dpView)
 						@if($building_auditors && count($building_auditors) > 0)
-							@foreach($building_auditors as $auditor)
-							<div class="amenity-auditor uk-margin-remove">
-								<div id="building-{{ $i->building_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ strtoupper($auditor->full_name()) }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $selected_audit->audit_id }}, {{ $i->building_id }}, 0, 'building-auditors-{{ $i->building_id }}')">
+						<br /><small>AUDITORS ASSIGNED:</small>
+							@foreach($building_auditors as $auditor) 
+							<div class="amenity-auditor uk-margin-remove auditor-badge-on-details">
+								<div id="building-{{ $i->building_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ strtoupper($auditor->full_name()) }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $selected_audit->audit_id }}, {{ $i->building_id }}, 0, 'building-auditors-{{ $i->building_id }}',1)">
 									{{ $auditor->initials() }}
 								</div>
 							</div>
 							@endforeach
 							@else
 							<div class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
-								<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignFindingAuditor({{ $selected_audit->audit_id }}, {{ $i->building_id }}, 0, 0, 'building-auditor-0', 0, 0, 0, 2);">
+								<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignFindingAuditor({{ $selected_audit->audit_id }}, {{ $i->building_id }}, 0, 0, 'building-auditor-0', 0, 0, 0, 2,1);">
 								</i>
 							</div>
 							@endif
@@ -402,8 +425,8 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 					{{ $i->building_name }}
 				</div> --}}
 				<div style="float: right;">
-					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan"  @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, null, null,'0');" @endif  @endcan></i> @if($thisBuildingSiteFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{$thisBuildingSiteFindings}}">{{$thisBuildingSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
-					<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" @endif @endcan></i> @if($thisBuildingFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisBuildingFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf 
+					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan"  @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, null, null,'0');" @endif  @endcan></i> @if($thisBuildingSiteFindings > 0) <span class="uk-badge finding-number on-phone @if($thisBuildingUnresolvedSiteFindings > 0) attention @endIf" uk-tooltip title="{{$thisBuildingSiteFindings}} @if($thisBuildingSiteFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedSiteFindings > 0) WITH {{$thisBuildingUnresolvedSiteFindings}} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{$thisBuildingSiteFindings}}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
+					<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" @endif @endcan></i> @if($thisBuildingFileFindings > 0) <span class="uk-badge finding-number on-folder @if($thisBuildingUnresolvedFileFindings > 0) attention @endIf" uk-tooltip title="{{$thisBuildingFileFindings}} @if($thisBuildingFileFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedFileFindings > 0) WITH {{$thisBuildingUnresolvedFileFindings}} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{$thisBuildingFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf 
 							
 				</div>
 				<hr class="dashed-hr uk-margin-small-bottom">
