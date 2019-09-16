@@ -1517,47 +1517,17 @@ class AuditController extends Controller
 
                 // make sure this id is already in the auditor's list for this audit
                 if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $auditor_id)->first() || $lead_auditor_selected) {
-                		return $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->whereNull('unit_id')->whereNull('building_id')->get();
-                    $building = CachedBuilding::where('building_id', '=', $building_id)->first();
-
-                    $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building->building_id)->update([
+                	  // $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->whereNull('unit_id')->whereNull('building_id')->get();
+                    // $building = CachedBuilding::where('building_id', '=', $building_id)->first();
+                    $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->whereNull('unit_id')->whereNull('building_id')->update([
                         "auditor_id" => $auditor_id,
                     ]);
-
-                    // add to units
-                    foreach ($building->building->units as $unit) {
-
-                        $amenities_unit = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->update([
-                            "auditor_id" => $auditor_id,
-                        ]);
-                    }
-
-                    $unit_auditor_ids = array();
-                    $building_auditor_ids = array();
-                    $units = Unit::where('building_id', '=', $building_id)->get();
-                    foreach ($units as $unit) {
-                        $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-
-                        $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-                    }
-                    $building_auditor_ids = array_merge($building_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id', '=', $building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
-
-                    $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
-                    foreach ($unit_auditors as $unit_auditor) {
-                        $unit_auditor->full_name = $unit_auditor->full_name();
-                        $unit_auditor->initials = $unit_auditor->initials();
-                    }
-                    $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
-                    foreach ($building_auditors as $building_auditor) {
-                        $building_auditor->full_name = $building_auditor->full_name();
-                        $building_auditor->initials = $building_auditor->initials();
-                    }
 
                     $user = User::where('id', '=', $auditor_id)->first();
 
                     $initials = $user->initials();
                     $color = "auditor-badge-" . $user->badge_color;
-                    return ["initials" => $initials, "color" => $color, "id" => $user->id, "name" => $user->full_name(), "unit_auditors" => $unit_auditors, "building_auditors" => $building_auditors, "unit_id" => 0, "building_id" => $building->building_id];
+                    return ["initials" => $initials, "color" => $color, "id" => $user->id, "name" => $user->full_name(), "unit_id" => 0, "building_id" => 0];
                 }
             }
         } else {
@@ -2737,7 +2707,7 @@ class AuditController extends Controller
                     $audit->audit->estimated_time = $new_estimate;
                     $audit->save();
                     $audit->audit->save();
-                    
+
                     $needed = $audit->hours_still_needed();
 
                     return ['status' => 1, 'hours' => $hours . ":" . $minutes, 'needed' => $needed];
@@ -6489,7 +6459,7 @@ class AuditController extends Controller
     public function householdInfo($unit){
         $unit = Unit::where('id',$unit)->with('household')->first();
         return view('modals.audit_details.householdInfo',compact('unit'));
-    
+
     }
 
 }

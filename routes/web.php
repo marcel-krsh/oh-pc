@@ -351,7 +351,7 @@
             Route::post('/findings/{findingid}/restore', 'FindingController@restoreFinding');
             Route::post('/findings/{findingid}/resolve', 'FindingController@resolveFinding');
 
-            Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{toplevel?}/{refresh}', 'FindingController@modalFindings');
+            Route::get('/modals/updatestream/{type}/{auditid}/{buildingid?}/{unitid?}/{amenityid?}/{toplevel?}/{refresh?}/{location_selected?}', 'FindingController@modalFindings');
 
             Route::get('/findings/modals/locations/{auditid}', 'FindingController@findingLocations');
             Route::get('/findings/modals/amenities/{auditid}', 'FindingController@findingAmenities');

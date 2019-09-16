@@ -14,12 +14,14 @@
 			@php
 			$site_status = $site->where('completed_date_time', null)->count();
 					// $building_auditors = $type->auditors($audit->audit_id);
+			$mine = [];
 			$site_auditors = $site->where('building_id', null)->where('unit_id', null)->where('auditor_id', '<>', null);
 			if(count($site_auditors)) {
 				$site_auditors = $site_auditors->pluck('user')->unique();
+				$mine = $site_auditors->where('id', Auth::user()->id);
 			}
 			@endphp
-			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf " >
+			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor {{ (count($mine)) ? '' : 'not-mine-items' }}" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf " >
 				<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
 					<i @if($site_status != 0) onclick="markSiteComplete({{ $audit->audit_id }}, 0, 0, 0,'markcomplete', 1)" @endif class="{{ ($site_status == 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 					</i>

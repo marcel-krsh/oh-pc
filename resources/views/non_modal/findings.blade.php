@@ -643,7 +643,7 @@
   		// Unit Level
   		window.findingModalSelectedAmenityDate = $('#finding-date').val();
 			//$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
-			debugger;
+			// debugger;
 			console.log("select mine: "+window.findingModalSelectedMine);
 			if(window.findingModalSelectedMine == 'true'){
 				window.findingModalSelectedMine = 'false';
@@ -656,6 +656,23 @@
 				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
 				$('.not-mine-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
 				$('#mine-filter-button').removeClass('uk-active');
+			}
+		}
+
+		function refreshLocationFindingStream(type,auditId,buildingId,unitId,amenityId) {
+			typeSelected = $('#type_selected').val();
+			typeSelectedValue = $('#type_selected_value').val();
+			debugger;
+			if(typeSelectedValue != '') {
+				if(typeSelected == 'building') {
+					buildingId = typeSelectedValue;
+					// type = typeSelected;
+				} else if(typeSelected == 'unit') {
+					unitId = typeSelectedValue;
+					// type = typeSelected;
+				}
+				loc = typeSelected;
+				refreshLocationFindingStreamFetch(type,auditId,buildingId,unitId,amenityId,0,loc);
 			}
 		}
 
