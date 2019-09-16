@@ -60,7 +60,7 @@ class AmenityInspection extends Model
   public function cached_unit():  ? CachedUnit
   {
     $cachedUnit = CachedUnit::where('unit_id', $this->unit_id)->where('audit_id', $this->audit_id)->first();
-    
+
     return $cachedUnit;
   }
 

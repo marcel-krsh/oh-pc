@@ -30,7 +30,7 @@
 			</div>
 		</div>
 
-		{{--  <div class="uk-width-1-1 filter-button-set-right js-findings-buttons uk-grid uk-first-column" uk-grid="">
+		 {{-- <div class="uk-width-1-1 filter-button-set-right js-findings-buttons uk-grid uk-first-column" uk-grid="">
         <div class="uk-width-1-6 uk-active findinggroup uk-first-column" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter; " onclick="clickingOnFindingFilter(this);">
             <button class="uk-button uk-button-default button-filter button-filter-border-left" uk-tooltip title="ONLY DISPLAY YOUR FINDINGS">MINE</button>
             <span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="" aria-expanded="false">
@@ -56,10 +56,10 @@
             </span>
         </div>
         <div class="uk-width-1-6 auditgroup">
-            <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter" onclick="refreshFindingStream('location',7027,1700,null,null);" uk-tooltip title="ONLY DISPLAY FINDINGS FOR THE SELECTED LOCATION">LOCATION</button>
+            <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter" onclick="refreshLocationFindingStream('location',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});" uk-tooltip title="ONLY DISPLAY FINDINGS FOR THE SELECTED LOCATION">LOCATION</button>
         </div>
         <div class="uk-width-1-6 auditgroup">
-            <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter" onclick="refreshFindingStream('nlt',7027,1700,null,null);" uk-tooltip title="REFRESH THE LIST OF FINDINGS">REFRESH</button>
+            <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter" onclick="refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});" uk-tooltip title="REFRESH THE LIST OF FINDINGS">REFRESH</button>
         </div>
     </div> --}}
 

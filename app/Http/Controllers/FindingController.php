@@ -669,8 +669,9 @@ class FindingController extends Controller
         }
     }
 
-    public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null, $toplevel = 0, $refresh_stream = 0)
+    public function modalFindings($type, $auditid, $buildingid = null, $unitid = null, $amenityid = null, $toplevel = 0, $refresh_stream = 0, $location_selected = '')
     {
+    	// return $location_selected;
         // $toplevel is to detect top level amenities
         // a project-level amenity will appear like a building, toplevel will be set to 1 to differentiate
         // a building-level amenity will appear like a unit, toplevel will be set to 1 to differentiate
@@ -759,18 +760,64 @@ class FindingController extends Controller
             $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
             $amenities = $amenities_query->get();
             $site = $amenities_query->whereNotNull('project_id')->whereNull('completed_date_time')->get();
-
-            $findings = Finding::where('project_id', $audit->project_id)
-                ->whereNull('cancelled_at')
-                ->orderBy('updated_at', 'desc')
-                ->get();
-            $cancelled_findings = Finding::where('project_id', $audit->project_id)
-                ->whereNotNull('cancelled_at')
-                ->orderBy('updated_at', 'desc')
-                ->get();
+            // return $type;
+            // return $buildingid;
+            $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
+            // $amenity_ids = $amenities->where('building_id', $buildingid)->pluck('amenity_id');
+            // return $findings = Finding::where('project_id', $audit->project_id)
+	           //      ->whereNull('cancelled_at')
+	           //      ->orderBy('updated_at', 'desc')
+	           //      ->with('amenity')
+	           //      //->whereIn('amenity_id', $amenity_ids)
+	           //      ->get();
+            if($location_selected == 'unit' || $location_selected == 'building' || $location_selected == 'site') {
+            	$findings = Finding::where('project_id', $audit->project_id)
+	                ->whereNull('cancelled_at')
+	                ->orderBy('updated_at', 'desc');
+	            $cancelled_findings = Finding::where('project_id', $audit->project_id)
+	                ->whereNotNull('cancelled_at')
+	                ->orderBy('updated_at', 'desc');
+            	if($location_selected == 'building') {
+            		// return $amenity_ids = $amenities->where('building_id', $buildingid)->pluck('amenity_id');
+            		$findings = $findings->where('building_id', $buildingid)->get();
+            		$cancelled_findings = $cancelled_findings->where('building_id', $buildingid)->get();
+            	} elseif($location_selected == 'unit') {
+            		$findings = $findings->where('unit_id', $unitid)->get();
+            		$cancelled_findings = $cancelled_findings->where('unit_id', $unitid)->get();
+            	} else {
+            		$findings = $findings->whereNull('building_id')->whereNull('unit_id')->get();
+            		$cancelled_findings = $cancelled_findings->whereNull('building_id')->whereNull('unit_id')->get();
+            	}
+            } else {
+	            $findings = Finding::where('project_id', $audit->project_id)
+	                ->whereNull('cancelled_at')
+	                ->orderBy('updated_at', 'desc')
+	                ->get();
+	            $cancelled_findings = Finding::where('project_id', $audit->project_id)
+	                ->whereNotNull('cancelled_at')
+	                ->orderBy('updated_at', 'desc')
+	                ->get();
+            }
             foreach ($cancelled_findings as $cancelled_finding) {
                 $findings->add($cancelled_finding);
             }
+
+            // 	$bd = [];
+            // 	$un = [];
+            // foreach($findings as $finding) {
+            // 	if($finding->amenity_inspection) {
+            // 		$ai = $finding->amenity_inspection;
+            // 		if($ai->unit_id) {
+	           //  		$bd[] = $ai->unit;
+	           //  		if(is_null($ai->unit)) {
+	           //  			$un['unit'][] = $ai->unit_id;
+	           //  			$un['ame'][] = $ai->id;
+	           //  		}
+            // 		}
+            // 	}
+            // }
+            // // return \App\Models\Unit::find(208992);
+            // return $un;
 
             if (is_null($type)) {
                 // default filter is all

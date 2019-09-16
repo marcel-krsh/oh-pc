@@ -85,6 +85,13 @@ function newFinding(id){
 
 }
 
+function refreshLocationFindingStreamFetch(type,auditid,buildingid,unitid,amenityid,toplevel,location = '') {
+	// debugger;
+	tempdiv = '<div style="height:200px;text-align:center;width: 44%;padding-left: 53%;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+	$('#modal-findings-items-container').html(tempdiv);
+	$('#modal-findings-items-container').load('/modals/updatestream/'+type+'/'+auditid+'/'+buildingid+'/'+unitid+'/'+amenityid+'/'+toplevel+'/1'+'/'+location);
+}
+
 function refreshFindingStream(type,auditid,buildingid,unitid,amenityid,toplevel) {
 	tempdiv = '<div style="height:200px;text-align:center;width: 44%;padding-left: 53%;"><div uk-spinner style="margin: 10% 0;"></div></div>';
 	$('#modal-findings-items-container').html(tempdiv);
