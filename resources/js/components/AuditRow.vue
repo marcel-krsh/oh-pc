@@ -1,7 +1,7 @@
 <template>
 	<tr>
 		<td :id="'audit-c-1-'+audit.auditId" class="uk-text-center audit-td-lead use-hand-cursor">
-        	<span id="audit-avatar-badge-1" v-on:click="openAssignment" :uk-tooltip="audit.tooltipLead" title="" aria-expanded="false" :class="{[audit.userBadgeColor]:true, 'user-badge':true, 'no-float':true, 'uk-link': true }">
+        	<span :id="'audit-avatar-badge-'+audit.auditId" v-on:click="openAssignment" :uk-tooltip="audit.tooltipLead" title="" aria-expanded="false" :class="{[audit.userBadgeColor]:true, 'user-badge-v2':true, 'no-float':true, 'uk-link': true }">
 				<span v-html="audit.initials"></span>
 			</span>
 			<span :id="'audit-rid-'+audit.auditId" style="position: relative; top: 27px; left: -15px;"><small>#<span v-html="auditIndex"></span></small></span>

@@ -22,12 +22,13 @@
 		--}}
 
 		{{-- Group 2, Attachments and conversation list view --}}
-		<div class=" uk-width-1-1@s uk-width-1-5@m">
+		
+		<div class=" uk-width-1-1@s uk-width-2-5@m">
 			<div uk-grid>
-				<button class="uk-button-large uk-button-default filter-attachments-button uk-width-1-5" uk-tooltip="pos:top-left;title:Show results with attachments">
+				<button class="uk-button-large uk-button-default filter-attachments-button uk-width-1-6" uk-tooltip="pos:top-left;title:Show results with attachments">
 					<i class="a-paperclip-2"></i>
 				</button>
-				<input id="communications-project-search" name="communications-project-search" type="text" value="{{ Session::get('communications-search') }}" class="uk-width-4-5 uk-input" placeholder="Search Messages Or Audit ID (press enter)">
+				<input id="communications-project-search" name="communications-project-search" type="text" value="{{ Session::get('communications-search') }}" class="uk-width-5-6 uk-input" placeholder="Search Messages Or Audit ID (press enter)">
 			</div>
 		</div>
 
@@ -48,6 +49,10 @@
   			<span>NEW MESSAGE</span>
   		</a>
   	</div>
+  	<div class=" uk-width-1-1@s uk-width-1-6@m uk-text-right">
+			
+				<div class="uk-align-right uk-label  uk-margin-top ">{{count($messages)}}  MESSAGES </div>
+		
 	</div>
 </div>
 
@@ -75,15 +80,28 @@
 <div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list" style="width: 98%">
 	@if(count($messages))
 	@foreach ($messages as $message)
-	<div class="filter_element uk-width-1-1 communication-list-item @if($message->owner)staff-{{ $message->owner->id }}@endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); $('#project-detail-tab-2').trigger('click');">
+	<div class="filter_element uk-width-1-1 communication-list-item @if($message->owner)staff-{{ $message->owner->id }}@endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
 		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
 			@if($message->owner->id == $current_user->id)
 			<div class="uk-width-1-5@m uk-width-1-2@s communication-item-tt-to-from uk-margin-small-bottom" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small><br>
 					<span>
-						FROM: Me <hr class="dashed-hr uk-margin-bottom uk-width-1-1">
-						@if(count($message->message_recipients))TO: @foreach($message->message_recipients->where('id', '<>', $current_user->id) as $recipient)@if($recipient->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf{{ $recipient->full_name() }}@if($recipient->seen == null)</strong>@endIf{{ !$loop->last ? ', ': '' }}@endforeach @endif
+						FROM: Me<hr class="dashed-hr uk-margin-bottom uk-width-1-1"> 
+							@if(count($message->message_recipients))TO: 
+								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id); ?>
+								@if(count($recipients)>0)
+									@foreach($recipients as $recipient)
+										@if($recipient->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf 
+											{{ $recipient->full_name() }}
+										@if($recipient->seen == null)</strong>@endIf
+										{{ !$loop->last ? ', ': '' }}
+									@endforeach 
+								
+								@else
+									Me
+								@endIf
+							@endIf
 					</span>
 				</div>
 				@if($message->unseen > 0)
@@ -91,7 +109,7 @@
 				@endif
 			</div>
 			@else
-			<div class="uk-width-1-5@m uk-width-3-6@s communication-item-tt-to-from uk-margin-small-bottom" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
+			<div class="uk-width-1-5@m uk-width-3-6@s communication-item-tt-to-from uk-margin-small-bottom"  >
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small>
 				</div>
@@ -106,7 +124,7 @@
 				<div class="uk-margin-right">
 					@if($message->audit_id && $message->audit && $message->audit->cached_audit)
 					<p style="margin-bottom:0">{{ $message->audit_id }} | {{ $message->project->project_number }} : {{ $message->project->project_name }}</p>
-					<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left;title:{{ $message->audit->cached_audit->title }}">
+					<p class="uk-visible@m" style="margin-top:0" >
 						<small>{{ $message->audit->cached_audit->address }},
 							{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->zip }}
 						</small>

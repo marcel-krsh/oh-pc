@@ -23,10 +23,13 @@
 		<div uk-grid class="uk-grid-collapse uk-visible@m uk-width-1-5@m">
 			{{-- Group 1, Inbox and Sent message --}}
 			<div class="uk-button-group uk-margin-medium-left">
-				<button class="uk-button-large @if(session('communication_sent'))uk-button-default @else uk-button-success @endif" onclick="switchInbox();" aria-checked="false" uk-tooltip="pos:top-left;title:View inbox">
+				<button id="user-comm-read-toggle" class="uk-button-large" onclick="toggleReadMessages(this);" aria-checked="false" uk-tooltip="pos:top-left;title:SHOW / HIDE READ MESSAGES">
+					<i class="a-star"></i>
+				</button>
+				<button class="uk-button-large @if(session('communication_sent'))uk-button-default @else uk-button-success @endif" onclick="switchInbox();" aria-checked="false" uk-tooltip="pos:top-left;title:VIEW INBOX">
 					<i class="a-folder-box"></i>
 				</button>
-				<button class="uk-button-large @if(session('communication_list'))uk-button-default @else uk-button-success @endif" onclick="switchListView();" aria-checked="false" uk-tooltip="pos:top-left;title:Switch conversation/list view">
+				<button class="uk-button-large @if(session('communication_list'))uk-button-default @else uk-button-success @endif" onclick="switchListView();" aria-checked="false" uk-tooltip="pos:top-left;title:SWITCH CONVERSATOIN VIEW/LIST VIEW">
 					<i class="a-file-hierarchy"></i>
 				</button>
 				<button class="uk-button-large @if(session('communication_sent'))uk-button-success @else uk-button-default @endif  uk-margin-right"  onclick="switchSentMessages();" aria-checked="false" uk-tooltip="pos:top-left;title:View sent messages">
@@ -75,6 +78,22 @@
 				<span>NEW MESSAGE</span>
 			</a>
 		</div>
+		<div class="uk-width-1-1 uk-margin-remove uk-text-right">
+
+				<?php // get unread count for this user
+					$unreadCount = 0;
+
+					forEach($messages as $urc){
+						if($urc->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()){
+							$unreadCount++;
+						}
+					}
+
+				?>
+				<div class="uk-align-right uk-label  uk-margin-top ">{{$unreadCount}} UNREAD MESSAGES </div>
+		
+	
+		</div>
 	</div>
 </div>
 
@@ -102,7 +121,7 @@
 <div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list" style="width: 98%">
 	@if(count($messages))
 	@foreach ($messages as $message)
-	<div class="filter_element uk-width-1-1 communication-list-item @if($message->owner)staff-{{ $message->owner->id }}@endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;">
+	<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endIf filter_element uk-width-1-1 communication-list-item @if($message->owner)staff-{{ $message->owner->id }}@endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
 		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
 
 			@if($message->owner->id == $current_user->id)
@@ -110,7 +129,21 @@
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small><br>
 					<span>
-						Me, @if(count($message->message_recipients))@foreach($message->message_recipients->where('id', '<>', $current_user->id) as $recipient){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}@endforeach @endif
+						FROM: Me<hr class="dashed-hr uk-margin-bottom uk-width-1-1"> 
+							@if(count($message->message_recipients))TO: 
+								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id); ?>
+								@if(count($recipients)>0)
+									@foreach($recipients as $recipient)
+										@if($recipient->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf 
+											{{ $recipient->full_name() }}
+										@if($recipient->seen == null)</strong>@endIf
+										{{ !$loop->last ? ', ': '' }}
+									@endforeach 
+								
+								@else
+									Me
+								@endIf
+							@endIf
 					</span>
 				</div>
 				@if($message->unseen > 0)
@@ -122,7 +155,17 @@
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small>
 				</div>
-				{{ $message->owner->full_name() }}, @if(count($message->message_recipients))@foreach ($message->message_recipients as $recipient)@if($recipient->id != $current_user->id && $message->owner->id != $recipient->id && $recipient->name != ''){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}@elseif($recipient->id == $current_user->id) Me{{ !$loop->last ? ', ': '' }} @endif @endforeach @endif
+				FROM: {{ $message->owner->full_name() }}<hr class="dashed-hr uk-margin-bottom uk-width-1-1"> @if(count($message->message_recipients))TO: 
+					@foreach ($message->message_recipients->where('id', '<>', $message->owner_id) as $recipient)
+						@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != '')
+							@if($recipient->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
+								{{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}
+							@if($recipient->seen == null)</strong>@endIf 
+						@elseif($recipient->id == $current_user->id) 
+							Me{{ !$loop->last ? ', ': '' }}
+						@endIf 
+					@endforeach 
+				@endif
 				@if($message->unseen > 0)
 				<div class="uk-label no-text-shadow user-badge-{{ Auth::user()->badge_color }}" uk-tooltip="pos:top-left;title:{{ $message->unseen }} unread messages">{{ $message->unseen }}</div>
 				@endif
@@ -133,7 +176,7 @@
 				<div class="uk-margin-right">
 					@if($message->audit_id && $message->audit && $message->audit->cached_audit)
 					<p style="margin-bottom:0">{{ $message->audit_id }} | {{ $message->project->project_number }} : {{ $message->project->project_name }}</p>
-					<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left;title:{{ $message->audit->cached_audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
+					<p class="uk-visible@m" style="margin-top:0" >
 						<small>{{ $message->audit->cached_audit->address }},
 							{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->cached_audit->zip }}
 						</small>
@@ -144,7 +187,7 @@
 			<div class="uk-width-1-5@m communication-item-parcel uk-visible@m">
 				@if($message->audit_id && $message->audit && $message->audit->cached_audit)
 				<p style="margin-bottom:0"><a class="uk-link-muted">{{ $message->audit_id }} | {{ $message->project->project_number }} : {{ $message->project->project_name }}</a></p>
-				<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left" title="{{ $message->audit->cached_audit->title }}"  onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
+				<p class="uk-visible@m" style="margin-top:0"   >
 					<small>{{ $message->audit->cached_audit->address }},
 						{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->cached_audit->zip }}
 					</small>
@@ -275,7 +318,18 @@
 		$("#communication-"+communicationId+"-summary").addClass('uk-hidden');
 	}
 
-
+	function toggleReadMessages(target){
+		console.log('Toggling read messages on/off');
+		if(window.user_comms_read == 1){
+			window.user_comms_read = 0;
+			$(target).removeClass('uk-button-success');
+			$('.user_comms_read').slideDown();
+		}else{
+			window.user_comms_read = 1;
+			$(target).addClass('uk-button-success');
+			$('.user_comms_read').slideUp();
+		}
+	}
 	 // process search
 	 $(document).ready(function() {
 	 	$('.filter-attachments-button').click(function () {
@@ -322,6 +376,12 @@
             $('#filter-by-program').prop('selectedIndex',0);
             @endif
           });
+	 	// reset view based on previous selection
+	 	if(window.user_comms_read == 1){
+	 		console.log('Hiding Read Messages');
+			$('#user-comm-read-toggle').addClass('uk-button-success');
+			$('.user_comms_read').hide();
+		}
 
 	 });
 	</script>
