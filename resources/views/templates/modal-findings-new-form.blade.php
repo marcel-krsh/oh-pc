@@ -81,9 +81,14 @@
             if(data!=1){
                 UIkit.modal.alert(data+'DUDE!',{stack: true});
             } else {
+            	// debugger;
+            	if(window.findingModalRightLocation) {
+            		// window.addFindingFlag = true;
+            		$('#finding-modal-audit-stream-location-sticky').trigger('click');
+            	} else {
+            		$('#finding-modal-audit-stream-refresh').trigger('click');
+            	}
 
-
-	            $('#finding-modal-audit-stream-refresh').trigger('click');
 	            dynamicModalClose(2);
 
             }
