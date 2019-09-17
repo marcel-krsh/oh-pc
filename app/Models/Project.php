@@ -499,4 +499,9 @@ class Project extends Model
     {
         return $this->hasMany(\App\Models\ReportAccess::class, 'project_id', 'id');
     }
+
+    public function documents() : HasMany
+    {
+        return $this->hasMany(\App\Models\Document::class, 'project_id', 'id')->with('user');
+    }
 }

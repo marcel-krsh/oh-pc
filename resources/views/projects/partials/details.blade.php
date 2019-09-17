@@ -46,6 +46,11 @@
 </style>
 
 <?php
+
+	if($selected_audit->update_cached_audit()){
+		$selected_audit->refresh();
+	}
+
 	$fileCount = count($selected_audit->audit->files);
 	$correctedFileCount = count($selected_audit->audit->files->where('auditor_last_approved_resolution_at', '<>',null));
 	$nltCount = count($selected_audit->audit->nlts);
@@ -58,6 +63,7 @@
 	$ehs = collect($selected_audit->audit->reports)->where('from_template_id','2')->first();
 	$_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')->first();
 	//dd($selected_audit->audit->reports,collect($selected_audit->audit->reports)->where('from_template_id','1')->first());
+
 ?>
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">

@@ -220,6 +220,9 @@ body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-do
 .color-red {
 	color:red !important;
 }
+.color-gray {
+  color:lightgray !important;
+}
 
 /*file upload styling */
 input[type="file"] {

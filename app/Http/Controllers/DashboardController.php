@@ -444,6 +444,10 @@ class DashboardController extends Controller
 
     foreach ($audits as $audit) {
         // list all auditors based on previous filters
+        if($audit->update_cached_audit()){
+            //refreshed - update values.
+            $audit->refresh();
+        }
         if($audit->auditors && count($audit->auditors)){
 
             $keep_audit_based_on_auditor_filter = 0;
