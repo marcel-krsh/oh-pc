@@ -752,7 +752,7 @@ class ReportsController extends Controller
     //dd($request->input('template_id'), $request->input('audit_id'));
     $template = CrrReport::find($request->input('template_id'));
     if (!is_null($template)) {
-      if (1 == $template->id || 2 == $template->id) {
+      if (1 == $template->id || 2 == $template->id || 5 == $template->id) {
         // these are document style reports
         $message = $this->setCrrData($template, null, $request->input('audit_id'));
       } else {
@@ -1038,6 +1038,54 @@ class ReportsController extends Controller
     $response['content'] = $this->freeTextPlaceHolders($report->audit, $part->crr_part_type->content, $report);
     $response['blade']   = $part->crr_part_type->blade;
     $response['data']    = $part->data;
+    $response['name']    = $part->crr_part_type->name;
+    $response['part_id'] = $part->id;
+    return $response;
+  }
+  public function _8823Header(CrrReport $report, CrrPart $part)
+  {
+    // calculate data for the header.
+    //dd($part);
+    $response            = [];
+    $response['content'] = $this->freeTextPlaceHolders($report->audit, $part->crr_part_type->content, $report);
+    $response['blade']   = $part->crr_part_type->blade;
+    $response['data']    = $part->data;
+    $response['name']    = $part->crr_part_type->name;
+    $response['part_id'] = $part->id;
+    return $response;
+  }
+  public function _8823Rev915(CrrReport $report, CrrPart $part){
+    // calculate data for the header.
+    //dd($part);
+    $originalData = json_decode($part->data);
+    $data[]       = $originalData[0];
+    $data[1][]       = $report->audit->uncorrectedFindings;
+    $data[1][]     = $report->audit->project->buildings;
+
+    //dd($data);
+
+    $response            = [];
+    $response['content'] = '';
+    $response['blade']   = $part->crr_part_type->blade;
+    $response['data']    = json_encode($data);
+    $response['name']    = $part->crr_part_type->name;
+    $response['part_id'] = $part->id;
+    return $response;
+  }
+  public function uncorrectedFindings(CrrReport $report, CrrPart $part){
+    // calculate data for the header.
+    //dd($part);
+    $originalData = json_decode($part->data);
+    $data[]       = $originalData[0];
+    $data[]       = $report->audit->uncorrectedFindings;
+    $data[]       = $report->audit->building_inspections;
+
+    //dd($data);
+
+    $response            = [];
+    $response['content'] = '';
+    $response['blade']   = $part->crr_part_type->blade;
+    $response['data']    = json_encode($data);
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
     return $response;

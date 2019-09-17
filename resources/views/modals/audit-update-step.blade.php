@@ -46,7 +46,11 @@
 		        }, function(data) {
 		           
 		            UIkit.notification('<span uk-icon="icon: trash"></span> Audit #{{$audit->audit_id}} Deleted.', {pos:'top-right', timeout:1000, status:'success'});
-		            loadTab('{{ route('dashboard.audits') }}','1','','','',1); 
+		            if(1 == {{$detailsPage}}){
+		            	loadTab('/projects/{{$audit->project_id}}/audit-details/0', '1', 0, 0, 'project-',1);window.tab_1=1;
+		            }else{
+		            	loadTab('{{ route('dashboard.audits') }}','1','','','',1); 
+		            }
 		            dynamicModalClose();
 		        } );
 			   
@@ -63,7 +67,11 @@
 	        }, function(data) {
 	            dynamicModalClose();
 	            UIkit.notification('<span uk-icon="icon: check"></span> Step Saved', {pos:'top-right', timeout:1000, status:'success'});
-	            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+	            if(1 == {{$detailsPage}}){
+		            	loadTab('/projects/{{$audit->project_id}}/audit-details/0', '1', 0, 0, 'project-',1);window.tab_1=1;
+		            }else{
+		            	loadTab('{{ route('dashboard.audits') }}','1','','','',1); 
+		        }
 	        } );
 		}
 		@else
@@ -73,7 +81,11 @@
         }, function(data) {
             dynamicModalClose();
             UIkit.notification('<span uk-icon="icon: check"></span> Step Saved', {pos:'top-right', timeout:1000, status:'success'});
-            loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+            if(1 == {{$detailsPage}}){
+		            	loadTab('/projects/{{$audit->project_id}}/audit-details/0', '1', 0, 0, 'project-',1);window.tab_1=1;
+		            }else{
+		            	loadTab('{{ route('dashboard.audits') }}','1','','','',1); 
+		    }
         } );
 		@endCan
 	}

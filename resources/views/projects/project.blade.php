@@ -7,6 +7,7 @@
 						@foreach($projectTabs as $projectTab)
 						<li id="project-detail-tab-{{$loop->iteration}}" class="project-detail-tab-{{$loop->iteration}} uk-margin-small-left {{$projectTab['status']}}" onclick="if($('#project-detail-tab-{{$loop->iteration}}').hasClass('uk-active') || window.project_detail_tab_{{$loop->iteration}} != '1'){loadTab('{{ route($projectTab['action'], ['id' => $projectId, 'audit_id' => $audit_id]) }}', '{{$loop->iteration}}', 0, 0, 'project-',1);window.tab_{{$loop->iteration}}=1;}" aria-expanded="false"><a><i class="{{$projectTab['icon']}}"></i> <span>{{$projectTab['title']}}</span></a></li>
 						@endforeach
+						<li><a><i class="a-clipboard"></i> {{$project->project_name}} Project Details</a></li>
 					</ul>
 				</div>
 			</nav>
@@ -18,6 +19,12 @@
 			<div id="project-detail-tab-{{$loop->iteration}}-content"></div>
 		</li>
 		@endforeach
+		<li>
+			<div id="project-detail-tab-999-content" style="margin:100px; padding:10px;">
+				<h2>This feature is currently unavailable.</h2>
+				<p>Please watch for its release in the near future.</p>
+			</div>
+		</li>
 	</ul>
 </div>
 
