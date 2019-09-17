@@ -60,6 +60,7 @@
 	}
 </style>
 <script>
+	window.findingModalRightLocation = false;
 	window.findingModalSelectedType = '{{ $type }}';
 	<?php
 	$passedAmenity = $amenity;
@@ -235,6 +236,10 @@
 	</div>
 	<script>
 
+		// $( document ).ready(function() {
+		// 	debugger;
+		// 	window.findingModalRightLocation = false;
+		// });
 		{{-- This is to open locations and if amenities are open make the icon to close --}}
 		function typeList(){
 		// debugger;
@@ -659,10 +664,39 @@
 			}
 		}
 
-		function refreshLocationFindingStream(type,auditId,buildingId,unitId,amenityId) {
+		function refreshLocationFindingStream(type,auditId,buildingId,unitId,amenityId, toggle = 0) {
 			typeSelected = $('#type_selected').val();
 			typeSelectedValue = $('#type_selected_value').val();
 			debugger;
+			if(window.findingModalRightLocation && !window.addFindingFlag) {
+				window.findingModalRightLocation = false;
+				window.addFindingFlag = true;
+				if(typeSelectedValue != '') {
+					refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});
+					return;
+				}
+			} else {
+				window.findingModalRightLocation = true;
+				window.addFindingFlag = false
+			}
+			debugger;
+			if(typeSelectedValue != '') {
+				if(typeSelected == 'building') {
+					buildingId = typeSelectedValue;
+					// type = typeSelected;
+				} else if(typeSelected == 'unit') {
+					unitId = typeSelectedValue;
+					// type = typeSelected;
+				}
+				loc = typeSelected;
+				refreshLocationFindingStreamFetch(type,auditId,buildingId,unitId,amenityId,0,loc);
+			}
+		}
+
+		function refreshLocationFindingStreamSticky(type,auditId,buildingId,unitId,amenityId, toggle = 0) {
+			typeSelected = $('#type_selected').val();
+			typeSelectedValue = $('#type_selected_value').val();
+			// debugger;
 			if(typeSelectedValue != '') {
 				if(typeSelected == 'building') {
 					buildingId = typeSelectedValue;
@@ -691,13 +725,14 @@
 
 	// filter findings based on class
 	$('#finding-description').on('keyup', function () {
-		debugger;
+		// debugger;
 		if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
 			filterFindingTypes();
 		}else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
 			filterFindingTypes();
 		}
 	});
+
 
 
 

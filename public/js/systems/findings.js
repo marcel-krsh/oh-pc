@@ -93,13 +93,34 @@ function refreshLocationFindingStreamFetch(type,auditid,buildingid,unitid,amenit
 }
 
 function refreshFindingStream(type,auditid,buildingid,unitid,amenityid,toplevel) {
-	tempdiv = '<div style="height:200px;text-align:center;width: 44%;padding-left: 53%;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-	$('#modal-findings-items-container').html(tempdiv);
-	$('#modal-findings-items-container').load('/modals/updatestream/'+type+'/'+auditid+'/'+buildingid+'/'+unitid+'/'+amenityid+'/'+toplevel+'/1');
+	if(window.findingModalRightLocation) {
+		$('#finding-modal-audit-stream-location-sticky').trigger('click');
+	} else {
+		tempdiv = '<div style="height:200px;text-align:center;width: 44%;padding-left: 53%;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+		$('#modal-findings-items-container').html(tempdiv);
+		$('#modal-findings-items-container').load('/modals/updatestream/'+type+'/'+auditid+'/'+buildingid+'/'+unitid+'/'+amenityid+'/'+toplevel+'/1');
+	}
 }
 
-function clickingOnFindingFilter(element, selected = 0) {
+function clickingOnFindingFilter(element, selected = 0, filter = '') {
 	//console.log('clicking on a filter');
+	// debugger;
+	if(filter != '') {
+		if(filter == 'mine') {
+			window.findingModalRightMine = true;
+			window.findingModalRightEveryone = false;
+		} else if(filter == 'everyone') {
+			window.findingModalRightMine = false;
+			window.findingModalRightEveryone = true;
+		}
+		if(filter == 'current') {
+			window.findingModalRightCurrent = true;
+			window.findingModalRightAll = false;
+		} else if(filter == 'all') {
+			window.findingModalRightCurrent = false;
+			window.findingModalRightAll = true;
+		}
+	}
 	if($(element).find('span').is(':visible')){
 
 		// switch order
