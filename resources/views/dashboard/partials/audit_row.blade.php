@@ -116,10 +116,8 @@
 </template>
 
 <script>
-    export default {
-	    props: ['audit','index'],
-	    methods: {
-            openFindings: function (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
+    
+    function openFindings: function (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
                 dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
             },
             rerunCompliance: function() {

@@ -426,7 +426,7 @@
 							</span>
 						</div>
 					</th>
-					<th class="uk-table-small" style="width:130px;">
+					<th class="uk-table-small" style="width:100px;">
 						<div uk-grid>
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" value="@if(session()->has('filter-search-project')){{session('filter-search-project')}}@endif">
@@ -441,7 +441,7 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-					<th>
+					<th >
 						<div uk-grid>
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" value="@if(session()->has('filter-search-pm')){{session('filter-search-pm')}}@endif">
@@ -463,7 +463,7 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-					<th >
+					<th style="">
 						<div uk-grid>
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" value="@if(session()->has('filter-search-address')){{session('filter-search-address')}}@endif">
@@ -492,7 +492,7 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-					<th @can('access_auditor') style="min-width:190px;" @else style="max-width:50px;" @endcan>
+					<th @can('access_auditor') style="width:150px;" @else style="max-width:50px;" @endcan>
 						<div uk-grid>
 							<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid>
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
@@ -500,7 +500,7 @@
 									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
 								</span>
 								@can('access_auditor')
-								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
+								<span class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
 									<i id="assignmentselectionbutton" class="a-avatar-home"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="audit_assignment_selection" method="post">
@@ -548,39 +548,7 @@
 
 									</div>
 								</span>
-								<span class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
-									<i id="complianceselectionbutton" class="a-circle-checked"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
-										<form id="audit_compliance_status_selection" method="post">
-											<fieldset class="uk-fieldset">
-												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
-
-													<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
-													<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
-
-													<input id="compliance-status-rr" class=" complianceselector" type="checkbox" @if(session('compliance-status-rr') == 1) checked @endif/>
-													<label for="compliance-status-rr"><i class="a-circle-ellipsis action-required"></i> <span class="action-required">UNITS REQUIRE REVIEW</span></label>
-
-													<input id="compliance-status-nc" class=" complianceselector" type="checkbox" @if(session('compliance-status-nc') == 1) checked @endif/>
-													<label for="compliance-status-nc"><i class="a-circle-cross action-required"></i> <span class="action-required">NOT COMPLIANT</span></label>
-
-													<input id="compliance-status-c" class=" complianceselector" type="checkbox" @if(session('compliance-status-c') == 1) checked @endif/>
-													<label for="compliance-status-c"><i class="a-circle-checked ok-actionable"></i><span class="ok-actionable">IS COMPLIANT</span></label>
-
-												</div>
-												<div class="uk-margin-remove" uk-grid>
-													<div class="uk-width-1-2">
-														<button onclick="updateAuditComplianceStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
-													</div>
-													<div class="uk-width-1-2">
-														<button onclick="$('#complianceselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
-													</div>
-												</div>
-											</fieldset>
-										</form>
-
-									</div>
-								</span>
+								
 								@endcan
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-2 @else uk-width-1-1 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
@@ -591,31 +559,25 @@
 								@endif
 							</span>
 							@can('access_auditor')
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
 								@if($sort_by == 'audit-sort-assigned-areas')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-assigned-areas',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
 								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-assigned-areas', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL INSPECTION AREAS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL INSPECTION AREAS">
 								@if($sort_by == 'audit-sort-total-areas')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-total-areas',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
 								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-total-areas', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY COMPLIANCE STATUS">
-								@if($sort_by == 'audit-sort-compliance-status')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status',  @php echo 1-$sort_order; @endphp);"></a>
-								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status', 1);"></a>
-								@endif
-							</span>
+							
 							@endcan
 						</div>
 					</th>
-					<th style="@can('access_auditor') min-width: 80px @else max-width: 50px @endcan">
+					<th style="@can('access_auditor') width:165px; @else max-width: 50px @endcan">
 						<div uk-grid>
 							<div class="filter-box filter-date-expire uk-vertical-align uk-width-1-1 uk-text-center">
 								<span>
@@ -631,7 +593,7 @@
 							</span>
 						</div>
 					</th>
-					<th style="@can('access_auditor') min-width: 90px; @else max-width: 103px; @endcan ">
+					<th style="@can('access_auditor') width: 100px; @else max-width: 103px; @endcan ">
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -774,11 +736,44 @@
 							</span>
 						</div>
 					</th>
-					<th  @can('access_auditor') style="min-width: 80px;" @else style="max-width: 70px;" @endcan >
+					<th  @can('access_auditor') style="width: 125px;" @else style="max-width: 70px;" @endcan >
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
 								@can('access_auditor')
-								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
+									<i id="complianceselectionbutton" class="a-circle-checked"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="audit_compliance_status_selection" method="post">
+											<fieldset class="uk-fieldset">
+												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+
+													<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
+													<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
+
+													<input id="compliance-status-rr" class=" complianceselector" type="checkbox" @if(session('compliance-status-rr') == 1) checked @endif/>
+													<label for="compliance-status-rr"><i class="a-circle-ellipsis action-required"></i> <span class="action-required">UNITS REQUIRE REVIEW</span></label>
+
+													<input id="compliance-status-nc" class=" complianceselector" type="checkbox" @if(session('compliance-status-nc') == 1) checked @endif/>
+													<label for="compliance-status-nc"><i class="a-circle-cross action-required"></i> <span class="action-required">NOT COMPLIANT</span></label>
+
+													<input id="compliance-status-c" class=" complianceselector" type="checkbox" @if(session('compliance-status-c') == 1) checked @endif/>
+													<label for="compliance-status-c"><i class="a-circle-checked ok-actionable"></i><span class="ok-actionable">IS COMPLIANT</span></label>
+
+												</div>
+												<div class="uk-margin-remove" uk-grid>
+													<div class="uk-width-1-2">
+														<button onclick="updateAuditComplianceStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+													</div>
+													<div class="uk-width-1-2">
+														<button onclick="$('#complianceselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+													</div>
+												</div>
+											</fieldset>
+										</form>
+
+									</div>
+								</span>
+								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i id="scheduleassignmentfilterbutton" class="a-avatar"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="schedule_assignment_filter" method="post">
@@ -806,7 +801,7 @@
 									</div>
 								</span>
 								@endcan
-								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-envelope-4"></i>
 									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right; animation: uk-animation-slide-top-small; mode: click" style="top: 26px; left: 0px;">
 										<ul class="uk-nav uk-nav-dropdown uk-text-small uk-list">
@@ -860,13 +855,20 @@
 										</ul>
 									</div>
 								</span>
-								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-files"></i>
 								</span>
 
 							</div>
 							@can('access_auditor')
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY COMPLIANCE STATUS">
+								@if($sort_by == 'audit-sort-compliance-status')
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status',  @php echo 1-$sort_order; @endphp);"></a>
+								@else
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status', 1);"></a>
+								@endif
+							</span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
 								@if($sort_by == 'audit-sort-status-auditor')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
@@ -874,14 +876,14 @@
 								@endif
 							</span>
 							@endif
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
 								@if($sort_by == 'audit-sort-status-message')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
 								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
 								@if($sort_by == 'audit-sort-status-document')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
