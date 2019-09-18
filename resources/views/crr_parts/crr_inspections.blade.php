@@ -254,7 +254,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 						@if(!in_array($g->unit_id, $siteVisited))
 							<span style="color:#cecece"><i class="a-mobile uk-text-large uk-margin-small-right "  ></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{$thisUnitSiteFindings}}">{{$thisUnitSiteFindings}}</span> @else<i class="a-circle-minus on-phone"></i> @endIf</span>
 						@endIf
-						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf 
+						<i class="a-folder uk-text-large @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endcan></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder @if($thisUnitUnresolvedFileFindings > 0) attention @endIf" uk-tooltip title="{{$thisUnitFileFindings}} FINDINGS @if($thisUnitUnresolvedFileFindings > 0) WITH {{$thisUnitUnresolvedFileFindings}} PENDING RESOLUTION @ELSE FULLY RESOLVED @endIf ">{{$thisUnitFileFindings}}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf 
 							@if($isHome || $isOhtf || $isNhtf) <i class="a-home-2 home-folder"></i> @endIf
 							<?php $fileVisited[]=$g->unit_id; ?>
 

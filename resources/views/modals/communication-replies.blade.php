@@ -8,7 +8,7 @@
 		<div class="uk-width-1-1">
 			<h3 class="communication-direction-text uk-text-lead uk-text-center">
 				<span class="uk-float-left">MESSAGE</span>
-				<span class="uk-text-emphasis">@if($audit)&nbsp;&nbsp;&nbsp;{{ $audit->project->project_number }}:{{ $audit->project->project_name }} | Audit: {{ $audit->id }}@endif </span>
+				<span class="uk-text-emphasis">@if($audit){{ $audit->project->project_number }} : {{ $audit->project->project_name }} | Audit: {{ $audit->id }}@endif </span>
 			</h3>
 		</div>
 		<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
@@ -23,7 +23,7 @@
 		</div>
 		<div class="uk-width-1-5 uk-width-1-5@s communication-item-excerpt uk-margin-bottom">
 			<span class="uk-text-muted">From: </span> <br>
-			{{-- <div style="margin-top: -5px" class="user-badge user-badge-communication-item user-badge-{{ $message->owner->badge_color }} no-float">
+			{{-- <div style="margin-top: -5px" class="user-badge-communication-item user-badge-{{ $message->owner->badge_color }} no-float">
 				{{ $message->initials }}
 			</div> --}}
 			{{ $message->owner->full_name() }}
@@ -106,7 +106,7 @@
 		<div uk-grid class="communication-summary">
 			<div class="uk-width-1-1 uk-width-1-5@s communication-type-and-who ">
 				<span uk-tooltip="pos:top-left;title:{{ $reply->owner->full_name() }};">
-					<div style="margin-top: -3px" class="user-badge user-badge-communication-item user-badge-{{ $reply->owner->badge_color }} no-float">
+					<div style="margin-top: -3px" class="user-badge-communication-item user-badge-{{ $reply->owner->badge_color }} no-float">
 						{{ $reply->initials }}
 					</div>
 				</span>
@@ -244,36 +244,8 @@
 
 
 
-		// function submitNewCommunication() {
-		// 	var form = $('#newOutboundEmailForm');
-
-		// 	$.post('{{ URL::route("communication.create") }}', {
-		// 		'inputs' : form.serialize(),
-		// 		'_token' : '{{ csrf_token() }}'
-		// 	}, function(data) {
-		// 		if(data!=1){
-		// 			UIkit.modal.alert(data);
-		// 		} else {
-		// 			UIkit.modal.alert('Your message has been saved.');
-		// 		}
-		// 	} );
-
-
-		// 		@if($audit)
-		  //       // var id = {{ $audit->id }};
-		  //       // if (typeof loadAuditSubTab === "function"){
-		  //       // 	loadAuditSubTab('communications',id);
-		  //       // }
-		  //       //debugger;
-		  //       loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
-		  //       @else
-		  //       // $('#dash-subtab-10').trigger('click');
-		  //       // loadDashBoardSubTab('dashboard','communications');
-		  //       @endif
-
-		  //       dynamicModalClose();
-
-
-		  //     }
+		// refresh communications tabs
+		  $('#project-detail-tab-2').trigger('click');
+		  $('#detail-tab-2').trigger('click');
     </script>
   </div>

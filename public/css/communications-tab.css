@@ -75,17 +75,7 @@
 	margin-right:8px;
 	
 }
-.filter-people .user-badge {
-	width: 100%;
-    height: 100%;
-    font-size: 15px;
-    line-height: 29px;
-    margin-top: 11px;
-    cursor: pointer;
-}
-.filter-people .user-badge:hover{
-	opacity: .9;
-	}
+
 	
 .communication-list-item{
 	padding-top: 15px;
@@ -116,9 +106,6 @@ position: relative !important;
 .communication-type-and-who, .communication-item-date-time, .communication-item-tt-to-from {
 	font-size:14px;
 }
-.no-float {
-	float: none;
-}
 
 .user-badge-communication-item{
 	width:20px;
@@ -126,6 +113,12 @@ position: relative !important;
 	font-size: 11px;
 	line-height: 21px;
 	display: inline-block;
+	text-align: center;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    color: white;
+    font-weight: 300;
+    margin-right: 3px;
 }
 .phone-communication {
 	color:rgb(0,174,239);

@@ -45,6 +45,7 @@ class UpdateAuditStartDates extends Command
         $this->line(PHP_EOL.PHP_EOL."Updating start date for audit ".$a->audit_id.".".PHP_EOL.PHP_EOL);
 
             $a->inspection_schedule_date = $a->audit->completed_date;
+            $a->update_cached_audit();
             $a->save();
         }
 

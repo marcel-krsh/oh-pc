@@ -33,6 +33,10 @@ class Document extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
+    public function user() : HasOne
+    {
+        return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
+    }
 
     public function comments() : HasMany
     {

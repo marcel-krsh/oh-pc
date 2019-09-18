@@ -97,7 +97,7 @@
 								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($project->selected_audit()->lead_auditor->full_name())}} {{$project->selected_audit()->lead}};" title="" aria-expanded="false" class="user-badge user-badge-{{$project->selected_audit()->lead_auditor->badge_color}} no-float uk-link" >{{$project->selected_audit()->lead_auditor->initials()}}</span>
 							</div>
 							@foreach($project->selected_audit()->auditors as $auditor)
-							@if($auditor->user_id != $project->selected_audit()->lead_auditor->id || Auth::user()->can('access_manager'))
+							@if($auditor->user_id != $project->selected_audit()->lead_auditor->id && Auth::user()->can('access_manager'))
 							<div class="divTableCell">
 								<span @if(Auth::user()->id == $project->selected_audit()->lead_auditor->id || Auth::user()->can('access_manager'))
 								 uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}} {{$auditor->user_id}};" title="" onclick="removeAuditorFromAudit({{$auditor->user_id}});" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" @else uk-tooltip title="{{strtoupper($auditor->user->full_name())}}" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" @endIf >{{$auditor->user->initials()}}</span>

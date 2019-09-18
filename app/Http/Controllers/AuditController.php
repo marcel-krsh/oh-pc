@@ -2566,12 +2566,16 @@ class AuditController extends Controller
 
         // user needs to be the lead
         // TBD add manager/roles
-        if ($event && $event->cached_audit->lead == $current_user->id) {
-            $event->delete();
-            return 1;
-        }
-
-        return 0;
+        if ($event){
+            if($event->cached_audit->lead == $current_user->id || $current_user->manager_access()) {
+                $event->delete();
+                return 1;
+            }else{
+                return "Only the lead or a manager can delete schedules.";
+            }
+        }else{
+            return "Event not found.";
+        } 
     }
 
     public function scheduleAuditor(Request $request, $audit_id, $day_id, $auditor_id)
@@ -3655,13 +3659,16 @@ class AuditController extends Controller
 
         $day = ScheduleDay::where('id', '=', $day_id)->where('audit_id', '=', $audit_id)->first();
 
-        $auditor = User::where('id', '=', $auditorid)->first();
+        $auditor = User::where('id', '=', $auditorid)->where('active','=',1)->first();
         // dd($audit_id, $audit, $day, $auditorid, $auditor);
 
         // get auditors from user roles
         $auditors = User::whereHas('roles', function ($query) {
             $query->where('role_id', '=', 2);
-        })->get();
+            $query->orWhere('role_id', '=', 3);
+        })
+        ->where('active','=',1)
+        ->get();
 
         return view('modals.project-assignment-add-auditor', compact('day', 'auditor', 'audit', 'auditors'));
     }

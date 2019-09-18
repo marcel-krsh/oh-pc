@@ -1,3 +1,20 @@
+<style type="text/css">
+	.audit-list-report-icons i {
+		font-size:22px;
+		padding-top: 0px;
+	}
+	.audit-list-report-icons small {
+		font-size: 14px;
+	    padding-top: 0px;
+	    margin-top: 0px;
+	    position: relative;
+	    top: -7px;
+	    color:black !important;
+	}
+	.audit-list-report-holder {
+		height: 54px;
+	}
+</style>
 <template class="uk-hidden" id="inspection-left-template">
 	<div class="inspection-menu">
 	</div>
@@ -379,20 +396,20 @@
 			$assigned_auditors = '';
 			$assigned_auditors_hover_text = '';
 			$counter = 0;
-			foreach($auditors_array as $auditor){
-				if(in_array($auditor['user_id'], session('assignment-auditor'))){
+			foreach($auditors as $auditor){
+				if(in_array($auditor->id, session('assignment-auditor'))){
 					$counter++;
 					if($counter < 3){
 						if($assigned_auditors == ''){
-							$assigned_auditors = $auditor['name'];
+							$assigned_auditors = strtoupper($auditor->name);
 						}else{
-							$assigned_auditors = $assigned_auditors.", ".$auditor['name'];
+							$assigned_auditors = $assigned_auditors.", ".strtoupper($auditor->name);
 						}
 					}
 					if($assigned_auditors_hover_text == ''){
-						$assigned_auditors_hover_text = $auditor['name'];
+						$assigned_auditors_hover_text = strtoupper($auditor->name);
 					}else{
-						$assigned_auditors_hover_text = $assigned_auditors_hover_text.", ".$auditor['name'];
+						$assigned_auditors_hover_text = $assigned_auditors_hover_text.", ".strtoupper($auditor->name);
 					}
 				}
 			}
@@ -412,10 +429,32 @@
 		<table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1320px;">
 			<thead>
 				<tr>
-					<th class="uk-table-shrink">
+					<th  style="width:48px;">
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-text-center uk-width-1-1 uk-link">
-								<i class="a-avatar-star" onclick="filterAudits('audit-my-audits')"></i>
+								<i class="a-avatar-star" ></i>
+								<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-left; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="audit_assignment_selection" method="post">
+											<fieldset class="uk-fieldset">
+												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+													<h5>AUDITS FOR:</h5>
+													@foreach($auditors as $auditor)
+													<input id="assignment-auditor-{{$auditor->id}}" user-id="{{$auditor->id}}" class="assignmentauditor" type="checkbox" @if(is_array(session('assignment-auditor'))) @if(in_array($auditor->id, session('assignment-auditor')) == 1) checked @endif @endif/>
+													<label for="assignment-auditor-{{$auditor->id}}">{{$auditor->name}}</label>
+													@endforeach
+												</div>
+												<div class="uk-margin-remove" uk-grid>
+													<div class="uk-width-1-2">
+														<button onclick="updateAuditAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+													</div>
+													<div class="uk-width-1-2">
+														<button onclick="$('#assignmentselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+													</div>
+												</div>
+											</fieldset>
+										</form>
+
+									</div>
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LEAD AUDITOR">
 								@if($sort_by == 'audit-sort-lead')
@@ -426,7 +465,7 @@
 							</span>
 						</div>
 					</th>
-					<th class="uk-table-small" style="width:130px;">
+					<th style="width:145px;">
 						<div uk-grid>
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" value="@if(session()->has('filter-search-project')){{session('filter-search-project')}}@endif">
@@ -441,7 +480,7 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-					<th>
+					<th class="uk-table-shrink">
 						<div uk-grid>
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" value="@if(session()->has('filter-search-pm')){{session('filter-search-pm')}}@endif">
@@ -463,7 +502,7 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-					<th >
+					<th style="width: 350px;">
 						<div uk-grid>
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" value="@if(session()->has('filter-search-address')){{session('filter-search-address')}}@endif">
@@ -492,7 +531,7 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-					<th @can('access_auditor') style="min-width:190px;" @else style="max-width:50px;" @endcan>
+					<th @can('access_auditor') style="width:185px;" @else style="max-width:50px;" @endcan>
 						<div uk-grid>
 							<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid>
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
@@ -500,30 +539,11 @@
 									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
 								</span>
 								@can('access_auditor')
-								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
-									<i id="assignmentselectionbutton" class="a-avatar-home"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
-										<form id="audit_assignment_selection" method="post">
-											<fieldset class="uk-fieldset">
-												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
-													<h5>AUDITS FOR:</h5>
-													@foreach($auditors_array as $auditor)
-													<input id="assignment-auditor-{{$auditor['user_id']}}" user-id="{{$auditor['user_id']}}" class="assignmentauditor" type="checkbox" @if(is_array(session('assignment-auditor'))) @if(in_array($auditor['user_id'], session('assignment-auditor')) == 1) checked @endif @endif/>
-													<label for="assignment-auditor-{{$auditor['user_id']}}">{{$auditor['name']}}</label>
-													@endforeach
-												</div>
-												<div class="uk-margin-remove" uk-grid>
-													<div class="uk-width-1-2">
-														<button onclick="updateAuditAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
-													</div>
-													<div class="uk-width-1-2">
-														<button onclick="$('#assignmentselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
-													</div>
-												</div>
-											</fieldset>
-										</form>
-
-									</div> / <i id="totalinspectionbutton" class="a-home-2"></i>
+								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
+									<i id="assignmentselectionbutton" class="a-buildings"></i>
+								</span>
+								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
+									<i id="totalinspectionbutton" class="a-buildings-2"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="total_inspection_filter" method="post">
 											<fieldset class="uk-fieldset">
@@ -548,39 +568,7 @@
 
 									</div>
 								</span>
-								<span class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
-									<i id="complianceselectionbutton" class="a-circle-checked"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
-										<form id="audit_compliance_status_selection" method="post">
-											<fieldset class="uk-fieldset">
-												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
-
-													<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
-													<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
-
-													<input id="compliance-status-rr" class=" complianceselector" type="checkbox" @if(session('compliance-status-rr') == 1) checked @endif/>
-													<label for="compliance-status-rr"><i class="a-circle-ellipsis action-required"></i> <span class="action-required">UNITS REQUIRE REVIEW</span></label>
-
-													<input id="compliance-status-nc" class=" complianceselector" type="checkbox" @if(session('compliance-status-nc') == 1) checked @endif/>
-													<label for="compliance-status-nc"><i class="a-circle-cross action-required"></i> <span class="action-required">NOT COMPLIANT</span></label>
-
-													<input id="compliance-status-c" class=" complianceselector" type="checkbox" @if(session('compliance-status-c') == 1) checked @endif/>
-													<label for="compliance-status-c"><i class="a-circle-checked ok-actionable"></i><span class="ok-actionable">IS COMPLIANT</span></label>
-
-												</div>
-												<div class="uk-margin-remove" uk-grid>
-													<div class="uk-width-1-2">
-														<button onclick="updateAuditComplianceStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
-													</div>
-													<div class="uk-width-1-2">
-														<button onclick="$('#complianceselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
-													</div>
-												</div>
-											</fieldset>
-										</form>
-
-									</div>
-								</span>
+								
 								@endcan
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-2 @else uk-width-1-1 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
@@ -591,31 +579,25 @@
 								@endif
 							</span>
 							@can('access_auditor')
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
 								@if($sort_by == 'audit-sort-assigned-areas')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-assigned-areas',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
 								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-assigned-areas', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL INSPECTION AREAS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL INSPECTION AREAS">
 								@if($sort_by == 'audit-sort-total-areas')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-total-areas',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
 								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-total-areas', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-6 uk-padding-remove-top uk-margin-remove-top" title="SORT BY COMPLIANCE STATUS">
-								@if($sort_by == 'audit-sort-compliance-status')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status',  @php echo 1-$sort_order; @endphp);"></a>
-								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status', 1);"></a>
-								@endif
-							</span>
+							
 							@endcan
 						</div>
 					</th>
-					<th style="@can('access_auditor') min-width: 80px @else max-width: 50px @endcan">
+					<th style="@can('access_auditor') width:165px; @else max-width: 50px @endcan">
 						<div uk-grid>
 							<div class="filter-box filter-date-expire uk-vertical-align uk-width-1-1 uk-text-center">
 								<span>
@@ -631,7 +613,7 @@
 							</span>
 						</div>
 					</th>
-					<th style="@can('access_auditor') min-width: 90px; @else max-width: 103px; @endcan ">
+					<th style="@can('access_auditor') width: 100px; @else max-width: 103px; @endcan ">
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -774,12 +756,45 @@
 							</span>
 						</div>
 					</th>
-					<th  @can('access_auditor') style="min-width: 80px;" @else style="max-width: 70px;" @endcan >
+					<th  @can('access_auditor') style="width: 140px;" @else style="max-width: 70px;" @endcan >
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
 								@can('access_auditor')
-								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i id="scheduleassignmentfilterbutton" class="a-avatar"></i>
+								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
+									<i id="complianceselectionbutton" class="a-circle-checked"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="audit_compliance_status_selection" method="post">
+											<fieldset class="uk-fieldset">
+												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+
+													<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
+													<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
+
+													<input id="compliance-status-rr" class=" complianceselector" type="checkbox" @if(session('compliance-status-rr') == 1) checked @endif/>
+													<label for="compliance-status-rr"><i class="a-circle-ellipsis action-required"></i> <span class="action-required">UNITS REQUIRE REVIEW</span></label>
+
+													<input id="compliance-status-nc" class=" complianceselector" type="checkbox" @if(session('compliance-status-nc') == 1) checked @endif/>
+													<label for="compliance-status-nc"><i class="a-circle-cross action-required"></i> <span class="action-required">NOT COMPLIANT</span></label>
+
+													<input id="compliance-status-c" class=" complianceselector" type="checkbox" @if(session('compliance-status-c') == 1) checked @endif/>
+													<label for="compliance-status-c"><i class="a-circle-checked ok-actionable"></i><span class="ok-actionable">IS COMPLIANT</span></label>
+
+												</div>
+												<div class="uk-margin-remove" uk-grid>
+													<div class="uk-width-1-2">
+														<button onclick="updateAuditComplianceStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+													</div>
+													<div class="uk-width-1-2">
+														<button onclick="$('#complianceselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+													</div>
+												</div>
+											</fieldset>
+										</form>
+
+									</div>
+								</span>
+								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
+									<i id="scheduleassignmentfilterbutton" class="a-clock-3"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="schedule_assignment_filter" method="post">
 											<fieldset class="uk-fieldset">
@@ -806,7 +821,7 @@
 									</div>
 								</span>
 								@endcan
-								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-envelope-4"></i>
 									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right; animation: uk-animation-slide-top-small; mode: click" style="top: 26px; left: 0px;">
 										<ul class="uk-nav uk-nav-dropdown uk-text-small uk-list">
@@ -860,13 +875,20 @@
 										</ul>
 									</div>
 								</span>
-								<span class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-files"></i>
 								</span>
 
 							</div>
 							@can('access_auditor')
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY COMPLIANCE STATUS">
+								@if($sort_by == 'audit-sort-compliance-status')
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status',  @php echo 1-$sort_order; @endphp);"></a>
+								@else
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status', 1);"></a>
+								@endif
+							</span>
+							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
 								@if($sort_by == 'audit-sort-status-auditor')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
@@ -874,14 +896,14 @@
 								@endif
 							</span>
 							@endif
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
 								@if($sort_by == 'audit-sort-status-message')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
 								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-3 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
 								@if($sort_by == 'audit-sort-status-document')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
@@ -953,122 +975,13 @@
 				</tr>
 			</thead>
 			<tbody>
-				@if(0)
+				
 				@foreach($audits as $audit)
 				<tr id="audit-r-{{$audit->audit_id}}" class="{{$audit['status']}} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
-					<td id="audit-c-1-{{$loop->iteration}}" class="uk-text-center audit-td-lead">
-						<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$audit->lead_json->color}} no-float uk-link">
-							{{$audit->lead_json->initials}}
-						</span>
-						<span id="audit-rid-{{$loop->iteration}}"><small>#{{$loop->iteration}}</small></span>
-					</td>
-					<td id="audit-c-2-{{$loop->iteration}}" class="audit-td-project">
-						<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-							<span id="audit-i-project-detail-{{$loop->iteration}}" onclick="projectDetails({{$audit['id']}},{{$loop->iteration}},{{$audit['total_buildings']}});" uk-tooltip="pos:top-left;title:View Buildings and Common Areas;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
-						</div>
-						<div class="uk-vertical-align-middle uk-display-inline-block">
-							<h3 id="audit-project-name-{{$loop->iteration}}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:Open Audit Details in Tab;" onClick="loadTab('{{ route('project', $audit['id']) }}', '4', 1, 1);">{{$audit['project_ref']}}</h3>
-							<small id="audit-project-aid-{{$loop->iteration}}" class="uk-text-muted faded filter-search-project" uk-tooltip="title:View Project's Audit Details;">AUDIT {{$audit['id']}}</small>
-						</div>
-					</td>
-					<td class="audit-td-name">
-						<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-							<i class="a-info-circle uk-text-muted uk-link" uk-tooltip="title:View Contact Details;"></i>
-						</div>
-						<div class="uk-vertical-align-top uk-display-inline-block fadetext">
-							<h3 class="uk-margin-bottom-remove filter-search-pm">{{$audit['title']}}</h3>
-							<small class="uk-text-muted faded filter-search-pm">{{$audit['pm']}}</small>
-						</div>
-					</td>
-					<td class="hasdivider audit-td-address">
-						<div class="divider"></div>
-						<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-							<i class="a-marker-basic uk-text-muted uk-link" uk-tooltip="title:View On Map;"></i>
-						</div>
-						<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext">
-							<h3 class="uk-margin-bottom-remove filter-search-address">{{$audit['address']}}</h3>
-							<small class="uk-text-muted faded filter-search-address">{{$audit['city']}}, {{$audit['state']}} {{$audit['zip']}}</small>
-						</div>
-					</td>
-					<td class="hasdivider audit-td-scheduled">
-						<div class="divider"></div>
-						<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
-							<div class="uk-width-1-2 uk-padding-remove-top" uk-grid>
-								<div class="uk-width-1-3">
-									<i class="a-mobile-repeat {{$audit['inspection_status']}}" uk-tooltip="title:{{$audit['inspection_status_text']}};"></i>
-								</div>
-								<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
-									<h3 class="uk-link" uk-tooltip="title:{{$audit['inspection_schedule_text']}};">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('m/d')}}</h3>
-									<div class="dateyear">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['inspection_schedule_date'])->format('Y')}}</div>
-								</div>
-							</div>
-							<div class="uk-width-1-6 uk-text-right uk-padding-remove" uk-tooltip="title:{{$audit['inspectable_items']}} INSPECTABLE ITEMS;">{{$audit['inspectable_items']}} /</div>
-							<div class="uk-width-1-6 uk-text-left uk-padding-remove">{{$audit['total_items']}}</div>
-							<div class="uk-width-1-6 uk-text-left">
-								<i class="{{$audit['audit_compliance_icon']}} {{$audit['audit_compliance_status']}}"  uk-tooltip="title:{{$audit['audit_compliance_status_text']}};"></i>
-							</div>
-						</div>
-					</td>
-					<td class="hasdivider audit-td-due">
-						<div class="divider"></div>
-						<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
-							<div class="uk-width-1-3">
-								<i class="a-bell-2 {{$audit['followup_status']}}" uk-tooltip="title:{{$audit['followup_status_text']}};"></i>
-							</div>
-							<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
-								@if($audit['followup_date'])
-								<h3 class="uk=link" uk-tooltip="title:Click to reschedule audits;">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('m/d')}}</h3>
-								<div class="dateyear">{{\Carbon\Carbon::createFromFormat('Y-m-d', $audit['followup_date'])->format('Y')}}</div>
-								@else
-								<i class="a-calendar-pencil" uk-tooltip="title:New followup;"></i>
-								@endif
-							</div>
-						</div>
-					</td>
-					<td class="hasdivider">
-						<div class="divider"></div>
-						<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-							<div class="uk-width-1-4 {{$audit['file_audit_status']}}" uk-tooltip="title:{{$audit['file_audit_status_text']}};">
-								<i class="{{$audit['file_audit_icon']}}"></i>
-							</div>
-							<div class="uk-width-1-4 {{$audit['nlt_audit_status']}}" uk-tooltip="title:{{$audit['nlt_audit_status_text']}};">
-								<i class="{{$audit['nlt_audit_icon']}}"></i>
-							</div>
-							<div class="uk-width-1-4 {{$audit['lt_audit_status']}}" uk-tooltip="title:{{$audit['lt_audit_status_text']}};">
-								<i class="{{$audit['lt_audit_icon']}}"></i>
-							</div>
-							<div class="uk-width-1-4 {{$audit['smoke_audit_status']}}" uk-tooltip="title:{{$audit['smoke_audit_status_text']}};">
-								<i class="{{$audit['smoke_audit_icon']}}"></i>
-							</div>
-						</div>
-					</td>
-					<td class="hasdivider">
-						<div class="divider"></div>
-						<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-							<div class="uk-width-1-4">
-								<i class="{{$audit['auditor_status_icon']}} {{$audit['auditor_status']}}" uk-tooltip="title:{{$audit['auditor_status_text']}};"></i>
-							</div>
-							<div class="uk-width-1-4">
-								<i class="{{$audit['message_status_icon']}} {{$audit['message_status']}}" uk-tooltip="title:{{$audit['message_status_text']}};"></i>
-							</div>
-							<div class="uk-width-1-4">
-								<i class="{{$audit['document_status_icon']}} {{$audit['document_status']}}" uk-tooltip="title:{{$audit['document_status_text']}};"></i>
-							</div>
-							<div class="uk-width-1-4">
-								<i class="{{$audit['history_status_icon']}} {{$audit['history_status']}}" uk-tooltip="title:{{$audit['history_status_text']}};"></i>
-							</div>
-						</div>
-					</td>
-					<td>
-						<div class="uk-margin-top" uk-grid>
-							<div class="uk-width-1-1  uk-padding-remove-top">
-								<i class="{{$audit['step_status_icon']}} {{$audit['step_status']}}" uk-tooltip="title:{{$audit['step_status_text']}};"></i>
-							</div>
-						</div>
-					</td>
+					@include('dashboard.partials.audit_row')
 				</tr>
 				@endforeach
-				@endif
+				
 				<tr is="auditrow" :class="{[audit.notcritical]:true}" :style="{ display: [audit.display] }" v-if="audits" v-for="(audit, index) in audits.slice().reverse()" :id="'audit-r-'+audit.auditId" :key="audit.auditId" :index="index" :audit="audit"></tr>
 				<div id="spinner-audits" class="uk-width-1-1" style="text-align:center;"></div>
 			</tbody>
@@ -1699,10 +1612,75 @@ function updateAuditStepSelection(e){
 		} );
 	} );
 }
+
+    
+    function openFindings (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
+                dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
+            }
+    
+    function updateStep (auditId) {
+                dynamicModalLoad('audits/'+auditId+'/updateStep',0,0,0);
+            }
+    function openContactInfo (projectId) {
+                dynamicModalLoad('projects/'+projectId+'/contact',0,0,0);
+            }
+    function openProject (projectKey,auditId) {
+            	loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
+            }
+    function openProjectDetails (auditId, total_buildings) {
+            	projectDetails(auditId, auditId, total_buildings);
+            }
+    function scheduleAudit (projectRef,auditId) {
+                loadTab('/projects/view/'+projectRef+'/'+auditId, '4', 1, 1, '', 1, auditId);
+            }
+    function openMapLink (mapLink) {
+                window.open(mapLink);
+            }
+    function openAssignment (projectKey, auditId) {
+                loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
+                // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
+            }
+    function submitNewReportAL(audit_id,template_id) {
+		console.log('Submitting Request for New Report.');
+		$.post('/new-report', {
+	            'template_id' : template_id,
+	            'audit_id' : audit_id,
+	            '_token' : '{{ csrf_token() }}'
+	            }, function(data) {
+	                if(data!=1){
+	                    UIkit.notification({
+					    message: data,
+					    status: 'danger',
+					    pos: 'top-right',
+					    timeout: 5000
+						});
+
+
+	                } else {
+
+	                    UIkit.notification({
+					    message: 'Report Created',
+					    status: 'success',
+					    pos: 'top-right',
+					    timeout: 1500
+						});
+						$('#detail-tab-1').trigger('click');
+
+	                }
+		} );
+
+		// by nature this note is it's history note - so no need to ask them for a comment.
+
+
+	}
+
+	
+        
+
 @endcan
 </script>
 <script>
-
+	@if(0)
 	new Vue({
 		el: '#auditstable',
 
@@ -1783,7 +1761,7 @@ function updateAuditStepSelection(e){
 
             }
           });
-
+		@endIf
         </script>
 
         <script>window.auditsLoaded = 1; </script>

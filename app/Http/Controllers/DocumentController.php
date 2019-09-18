@@ -70,12 +70,12 @@ class DocumentController extends Controller
 
             foreach($files as $file){
                 // $file = $request->file('files')[0];
-                $selected_audit = $project->selected_audit();
+                $selected_audit = 'non-audit-files';
                 $categories = DocumentCategory::with('parent')->find($request->categories);
                 //document_category_name
                 $parent_cat_folder = snake_case(strtolower($categories->parent->document_category_name));
                 $cat_folder = snake_case(strtolower($categories->document_category_name));
-                $folderpath = 'documents/project_' . $project->project_number . '/audit_' . $selected_audit->audit_id . '/class_' . $parent_cat_folder . '/description_' . $cat_folder . '/';
+                $folderpath = 'documents/project_' . $project->project_number . '/audit_' . $selected_audit . '/class_' . $parent_cat_folder . '/description_' . $cat_folder . '/';
                 $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
                 $file_extension = $file->getClientOriginalExtension();
@@ -83,7 +83,6 @@ class DocumentController extends Controller
                 $document = new Document([
                     'user_id' => $user->id,
                     'project_id' => $project->id,
-                    'audit_id' => $selected_audit->id,
                     'comment' => $request->comment,
                 ]);
                 $document->save();

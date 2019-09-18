@@ -43,9 +43,15 @@
 		font-size: 36px;
     	line-height: 37px;
 	}
+
 </style>
 
 <?php
+
+	if($selected_audit->update_cached_audit()){
+		$selected_audit->refresh();
+	}
+
 	$fileCount = count($selected_audit->audit->files);
 	$correctedFileCount = count($selected_audit->audit->files->where('auditor_last_approved_resolution_at', '<>',null));
 	$nltCount = count($selected_audit->audit->nlts);
@@ -58,6 +64,7 @@
 	$ehs = collect($selected_audit->audit->reports)->where('from_template_id','2')->first();
 	$_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')->first();
 	//dd($selected_audit->audit->reports,collect($selected_audit->audit->reports)->where('from_template_id','1')->first());
+
 ?>
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
@@ -69,7 +76,7 @@
 							<i class="a-square-right-2"></i>
 						</div>
 						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 7px;">
-							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$selected_audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$selected_audit->lead_json->color}} no-float uk-link" style="height: 48px;
+							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$selected_audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$selected_audit->lead_json->color}} uk-link" style="height: 48px;
     width: 48px;
     line-height: 48px; font-size: 27px; margin-top: .2em">
 								{{$selected_audit->lead_json->initials}}
@@ -102,7 +109,7 @@
 						            		</div>
 						            	</div>
 						            	<div class="uk-width-1-2 uk-padding-remove">
-							            	<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->building_inspections)}} @if(count($selected_audit->audit->building_inspections) >1 || count($selected_audit->audit->building_inspections) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{count($selected_audit->audit->building_inspections)}}</div>
+							            	<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->building_inspections)}} @if(count($selected_audit->audit->building_inspections) > 1 || count($selected_audit->audit->building_inspections) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{count($selected_audit->audit->building_inspections)}}</div>
 							            	<hr class="uk-width-1-1" style="margin-bottom: 8px; margin-top: 0px" >
 							            	<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->unique_unit_inspections)}} @if(count($selected_audit->audit->unique_unit_inspections) > 1 || count($selected_audit->audit->unique_unit_inspections) < 1) UNITS @else UNIT @endIf"><i class="a-buildings-2" style="font-size: 25px;"></i> : {{count($selected_audit->audit->unique_unit_inspections)}}</div>
 							            	
