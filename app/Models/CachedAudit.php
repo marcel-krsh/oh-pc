@@ -473,7 +473,7 @@ class CachedAudit extends Model
                         }
                     }
                     /////////////////////////////////////
-                    $_8823 = $this->audit->reports->where('from_template_id',1)->first();
+                    $_8823 = $this->audit->reports->where('from_template_id',5)->first();
                     if(null !== $_8823){ 
                         //dd('CAR!');
                         switch ($_8823->crr_approval_type_id) {
