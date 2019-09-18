@@ -352,6 +352,209 @@ class CachedAudit extends Model
         }
         return false;
     }
+    public function update_report_statuses(){
+        $updated = 0;
+        if(count($this->audit->reports)){
+           
+            $car = $this->audit->reports->where('from_template_id',1)->first();
+            if(null !== $car){ 
+                //dd('CAR!');
+                switch ($car->crr_approval_type_id) {
+                                                    case '1':
+                                                        $carIcon = "a-file-pencil-2"; // draft
+                                                        break;
+                                                    case '2':
+                                                        $carIcon = "a-file-clock"; // pending manager review
+                                                        break;
+                                                    case '3':
+                                                        $carIcon = "a-file-fail manager-fail attention"; // declined by manager
+                                                        break;
+                                                    case '4':
+                                                        $carIcon = "a-file-repeat"; // approved with changes
+                                                        break;
+                                                    case '5':
+                                                        $carIcon = "a-file-certified"; // approved
+                                                        break;
+                                                    case '6':
+                                                        $carIcon = "a-file-mail"; // Unopened by PM
+                                                        break;
+                                                    case '7':
+                                                        $carIcon = "a-file-pen"; // Viewed by a PM
+                                                        break;
+                                                    case '9':
+                                                        $carIcon = "a-file-approve"; // All items resolved
+                                                        break;
+                                                    default:
+                                                        $carIcon = "a-file-fail";
+                                                        break;
+                                                }
+                    $unCorrected = count($this->audit->findings->where('auditor_last_approved_resolution_at', null));
+                    if($this->car_icon != $carIcon || (time() > strtotime($car->response_due_date) && $car->response_due_date !== null && $unCorrected > 0)){
+                        // we trigger the update each time just in case there are new docs submitted.
+                        $this->car_icon = $carIcon;
+                        $statusText = '';
+                        if(time() > strtotime($car->response_due_date) && $car->response_due_date !== null && $unCorrected > 0){
+                                    $status = 'action-required';
+                                    $statusText = " | RESOLUTIONS ARE PAST DUE.";
+                                    $this->car_icon .= ' attention';
+                                }else{
+                                    $status = '';
+                                }
+                        $this->car_status = $status;
+                        $this->car_status_text ='CAR #'.$car->id.' '.strtoupper($car->status_name()).$statusText;
+                        $this->car_id = $car->id;
+                        $updated = 1;
+                    }
+                }else{
+                    if($this->car_icon != null){
+                        $this->car_icon = null;
+                        $this->car_status = null;
+                        $this->car_status_text =null;
+                        $this->car_id = null;
+                        $updated = 1;
+                    }
+                }
+                //////////////////////////////////////
+                $ehs = $this->audit->reports->where('from_template_id',2)->first();
+                if(null !== $ehs){ 
+                    //dd('CAR!');
+                    switch ($ehs->crr_approval_type_id) {
+                                                        case '1':
+                                                            $ehsIcon = "a-file-pencil-2"; // draft
+                                                            break;
+                                                        case '2':
+                                                            $ehsIcon = "a-file-clock"; // pending manager review
+                                                            break;
+                                                        case '3':
+                                                            $ehsIcon = "a-file-fail manager-fail attention"; // declined by manager
+                                                            break;
+                                                        case '4':
+                                                            $ehsIcon = "a-file-repeat"; // approved with changes
+                                                            break;
+                                                        case '5':
+                                                            $ehsIcon = "a-file-certified"; // approved
+                                                            break;
+                                                        case '6':
+                                                            $ehsIcon = "a-file-mail"; // Unopened by PM
+                                                            break;
+                                                        case '7':
+                                                            $ehsIcon = "a-file-pen"; // Viewed by a PM
+                                                            break;
+                                                        case '9':
+                                                            $ehsIcon = "a-file-approve"; // All items resolved
+                                                            break;
+                                                        default:
+                                                            $ehsIcon = "a-file-fail";
+                                                            break;
+                                                    }
+                    if($this->ehs_icon != $ehsIcon || ($ehs->signed_by == null && $ehs->signed_by_id == null)){
+                            // we trigger the update each time just in case there are new docs submitted.
+                            $this->ehs_icon = $ehsIcon;
+                            $statusText = '';
+                            if($ehs->signed_by == null && $ehs->signed_by_id == null){
+                                    $status = 'action-required';
+                                    $statusText = ' | REPORT HAS NOT BEEN SIGNED';
+                                    $this->ehs_icon .= ' attention';
+                                }else{
+                                    $status = '';
+                                }
+                            $this->ehs_status = $status;
+                            $this->ehs_status_text ='EHS #'.$ehs->id.' '.strtoupper($ehs->status_name()).$statusText;
+                            $this->ehs_id = $ehs->id;
+                            $updated = 1;
+                        }
+                    }else{
+                        if($this->ehs_icon != null){
+                            $this->ehs_icon = null;
+                            $this->ehs_status = null;
+                            $this->ehs_status_text =null;
+                            $this->ehs_id = null;
+                            $updated = 1;
+                        }
+                    }
+                    /////////////////////////////////////
+                    $_8823 = $this->audit->reports->where('from_template_id',1)->first();
+                    if(null !== $_8823){ 
+                        //dd('CAR!');
+                        switch ($_8823->crr_approval_type_id) {
+                                                            case '1':
+                                                                $_8823Icon = "a-file-pencil-2"; // draft
+                                                                break;
+                                                            case '2':
+                                                                $_8823Icon = "a-file-clock"; // pending manager review
+                                                                break;
+                                                            case '3':
+                                                                $_8823Icon = "a-file-fail manager-fail attention"; // declined by manager
+                                                                break;
+                                                            case '4':
+                                                                $_8823Icon = "a-file-repeat"; // approved with changes
+                                                                break;
+                                                            case '5':
+                                                                $_8823Icon = "a-file-certified"; // approved
+                                                                break;
+                                                            case '6':
+                                                                $_8823Icon = "a-file-mail"; // Unopened by PM
+                                                                break;
+                                                            case '7':
+                                                                $_8823Icon = "a-file-pen"; // Viewed by a PM
+                                                                break;
+                                                            case '9':
+                                                                $_8823Icon = "a-file-approve"; // All items resolved
+                                                                break;
+                                                            default:
+                                                                $_8823Icon = "a-file-fail";
+                                                                break;
+                                                        }
+                        $unCorrected = count($this->audit->findings->where('auditor_last_approved_resolution_at', null));
+                        if($this->_8823_icon != $_8823Icon || (time() > strtotime($_8823->response_due_date) && $_8823->response_due_date !== null && $unCorrected > 0)){
+                                // we trigger the update each time just in case there are new docs submitted.
+                                $this->_8823_icon = $_8823Icon;
+                                if(time() > strtotime($_8823->response_due_date) && $_8823->response_due_date !== null){
+                                    $status = 'action-required';
+                                    $statusText = ' | UNCORRECTED ITEMS REMAIN : XXX DAYS REMAIN TO RESOLVE.';
+                                    $this->_8823_icon .= ' attention';
+                                }else{
+                                    $status = '';
+                                    $statusText = '';
+                                }
+                                $this->_8823_status = $status;
+                                $this->_8823_status_text ='8823 #'.$_8823->id.' '.strtoupper($_8823->status_name()).$statusText;
+                                $this->_8823_id = $_8823->id;
+                                $updated = 1;
+                            }
+                        }else{
+                            if($this->_8823_icon != null){
+                                $this->_8823_icon = null;
+                                $this->_8823_status = null;
+                                $this->_8823_status_text =null;
+                                $this->_8823_id = null;
+                                $updated = 1;
+                            }
+                        }
+        }else{
+            if($this->car_icon != null || $this->car_status != null || $this->car_id != null || $this->car_status_text != null || $this->ehs_icon != null || $this->ehs_status != null || $this->ehs_status_text != null || $this->ehs_id != null || $this->_8823_icon != null || $this->_8823_status != null || $this->_8823_status_text !=null || $this->_8823_id != null){
+                    $this->car_icon = null;
+                    $this->car_status = null;
+                    $this->car_status_text = null;
+                    $this->car_id = null;
+                    $this->ehs_icon = null;
+                    $this->ehs_status = null;
+                    $this->ehs_status_text =null;
+                    $this->ehs_id = null;
+                    $this->_8823_icon = null;
+                    $this->_8823_status = null;
+                    $this->_8823_status_text =null;
+                    $this->_8823_id = null;
+                    $updated = 1;
+                }
+        }
+        if($updated){
+            $this->save();
+            return true;
+        }else{
+            return false;
+        }
+    }
     public function update_cached_audit(){
         $updated = false;
 
@@ -365,6 +568,9 @@ class CachedAudit extends Model
             $updated = true;
         }
         if($this->update_finding_stats()){
+            $updated = true;
+        }
+        if($this-> update_report_statuses()){
             $updated = true;
         }
         return $updated;

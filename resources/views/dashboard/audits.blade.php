@@ -539,9 +539,11 @@
 									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
 								</span>
 								@can('access_auditor')
-								<span class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
-									<i id="assignmentselectionbutton" class="a-avatar-home"></i>
-									 / <i id="totalinspectionbutton" class="a-home-2"></i>
+								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
+									<i id="assignmentselectionbutton" class="a-buildings"></i>
+								</span>
+								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
+									<i id="totalinspectionbutton" class="a-buildings-2"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="total_inspection_filter" method="post">
 											<fieldset class="uk-fieldset">

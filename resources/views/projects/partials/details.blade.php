@@ -109,7 +109,7 @@
 						            		</div>
 						            	</div>
 						            	<div class="uk-width-1-2 uk-padding-remove">
-							            	<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->building_inspections)}} @if(count($selected_audit->audit->building_inspections) >1 || count($selected_audit->audit->building_inspections) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{count($selected_audit->audit->building_inspections)}}</div>
+							            	<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->building_inspections)}} @if(count($selected_audit->audit->building_inspections) > 1 || count($selected_audit->audit->building_inspections) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{count($selected_audit->audit->building_inspections)}}</div>
 							            	<hr class="uk-width-1-1" style="margin-bottom: 8px; margin-top: 0px" >
 							            	<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->unique_unit_inspections)}} @if(count($selected_audit->audit->unique_unit_inspections) > 1 || count($selected_audit->audit->unique_unit_inspections) < 1) UNITS @else UNIT @endIf"><i class="a-buildings-2" style="font-size: 25px;"></i> : {{count($selected_audit->audit->unique_unit_inspections)}}</div>
 							            	
