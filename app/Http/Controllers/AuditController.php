@@ -37,6 +37,7 @@ use App\Models\UnitAmenity;
 use App\Models\UnitInspection;
 use App\Models\ProjectDetail;
 use App\Models\UnitProgram;
+use App\Models\UnitGroup;
 use App\Models\User;
 use App\Models\CrrApprovalType;
 use App\Models\CrrReport;
@@ -119,12 +120,12 @@ class AuditController extends Controller
         // start by checking each cached_building and make sure there is a clear link to amenity_inspection records if this is a building-level amenity
         $buildings = CachedBuilding::where('audit_id', '=', $audit)->orderBy('amenity_id','desc')->orderBy('building_name','asc')->get();
         //dd($buildings);
-        
+
         //// Optimized code...
         if(count($buildings)){
             $duplicates = array(); // to store amenity_inspection_ids for each amenity_id to see when we have duplicates
             $previous_name = array(); // used in case we have building-level amenity duplicates
-        
+
             foreach($buildings as $building){
                 if($building->building_id === null && $building->amenity_inspection_id === null){
                     // this is a building-level amenity without a clear link to the amenity inspection
@@ -3443,6 +3444,8 @@ class AuditController extends Controller
           $datasets = $get_project_details['datasets'];
           $project = $get_project_details['project'];
           $programs = $get_project_details['programs'];
+          //@divyam We need to make it so the swap unit modal shows all units regardless of the unit status type and if there are no programs on it but the program exists on the project, show it as a substitution option.
+          // $unit_ids = UnitGroup::where('audit_id', $audit->id)->get()->pluck('unit_id');
           $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
                 ->join('units','units.id','unit_programs.unit_id')
                 ->join('buildings','buildings.id','units.building_id')
@@ -3452,7 +3455,7 @@ class AuditController extends Controller
                                                                 ->orderBy('units.unit_name','asc')
           														->get();
           $actual_programs = $unitprograms->pluck('program')->unique()->toArray();
-          $unitprograms = $unitprograms->groupBy('unit_id');
+          // return $unitprograms = $unitprograms->groupBy('unit_id');
           foreach ($actual_programs as $key => $actual_program) {
           	$group_names = array_column($actual_program['related_groups'], 'group_name');
           	$group_ids = array_column($actual_program['related_groups'], 'id');
