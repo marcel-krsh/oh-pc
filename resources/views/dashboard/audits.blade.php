@@ -794,7 +794,7 @@
 									</div>
 								</span>
 								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i id="scheduleassignmentfilterbutton" class="a-avatar"></i>
+									<i id="scheduleassignmentfilterbutton" class="a-clock-3"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="schedule_assignment_filter" method="post">
 											<fieldset class="uk-fieldset">

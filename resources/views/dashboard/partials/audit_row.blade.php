@@ -67,7 +67,7 @@
                     @endIf
             	</div>
 
-                	<div class="uk-width-1-4 uk-text-center uk-padding-remove" style="margin-top: -4px;" uk-tooltip title="INSPECTING {{count($audit->total_buildings)}} @if(count($audit->total_buildings) > 1 || count($audit->total_buildings) < 1) BUILDINGS @else BUILDING @endIf">{{$audit->total_buildings}}</div>
+                	<div class="uk-width-1-4 uk-text-center uk-padding-remove" style="margin-top: -4px;" uk-tooltip title="INSPECTING {{$audit->total_buildings}} @if($audit->total_buildings > 1 || $audit->total_buildings < 1) BUILDINGS @else BUILDING @endIf">{{$audit->total_buildings}}</div>
                     <div class="uk-width-1-4 uk-text-center uk-padding-remove" style="margin-top: -4px;" uk-tooltip title="INSPECTING {{$audit->audit->unique_unit_inspections->count()}} @if($audit->audit->unique_unit_inspections->count() > 1 || $audit->audit->unique_unit_inspections->count() < 1) UNITS @else UNIT @endIf">{{$audit->audit->unique_unit_inspections->count()}}</div>
             </div>
         </td>
