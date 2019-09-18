@@ -1,159 +1,148 @@
-<template>
-	<tr>
-		<td :id="'audit-c-1-'+audit.auditId" class="uk-text-center audit-td-lead use-hand-cursor">
-        	<span :id="'audit-avatar-badge-'+audit.auditId" v-on:click="openAssignment" :uk-tooltip="audit.tooltipLead" title="" aria-expanded="false" :class="{[audit.userBadgeColor]:true, 'user-badge-v2':true, 'no-float':true, 'uk-link': true }">
-				<span v-html="audit.initials"></span>
+ <?php $lead = $audit->lead_json;
+
+    //dd($lead);
+  ?>
+	
+		<td id="'audit-c-1-'{{$audit->audit_id}}" class="uk-text-center audit-td-lead use-hand-cursor" >
+        	<span id="audit-avatar-badge-{{$audit->audit_id}}" onClick="openAssignment({{$audit->project_key}},{{$audit->audit_id}})" uk-tooltip title="{{$lead->name}}" aria-expanded="false" class="user-badge-{{$lead->color}} user-badge-v2 uk-align-center no-float uk-link" style="margin-right: auto !important; margin-left: auto; margin-bottom: 0px; margin-top: 0px; float: none;">
+				<span >{{$lead->initials}}</span>
 			</span>
-			<span :id="'audit-rid-'+audit.auditId" style="position: relative; top: 27px; left: -15px;"><small>#<span v-html="auditIndex"></span></small></span>
+			<span id="'audit-rid-'{{$audit->audit_id}}" class="uk-align-center" style="margin-right: auto; margin-left: auto; margin-bottom: 0px; margin-top: 0px">
+                <small>@if(isset($loop)) {{$loop->iteration}} @else  <i class="a-star" uk-tooltip title="THIS RECORD WAS UPDATED SINCE YOU LAST REFRESHED YOUR SCREEN" ></i>@endIf </small>
+            </span>
         </td>
-        <td :id="'audit-c-2-'+audit.auditId" class="audit-td-project">
+        <td id="audit-c-2-{{$audit->audit_id}}" class="audit-td-project">
         	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-        		<span :id="'audit-i-project-detail-'+audit.auditId" v-on:click="openProjectDetails" uk-tooltip="pos:top-left;title:VIEW BUILDINGS AND COMMON AREAS;" class="uk-link"><i class="a-menu uk-text-muted"></i></span>
+        		<span id="audit-i-project-detail-{{$audit->audit_id}}" onClick="openProjectDetails({{$audit->audit_id}},{{$audit->total_buildings}})" uk-tooltip title="pos:top-left;title:VIEW BUILDINGS AND COMMON AREAS;" class="uk-link" style="margin-right: 10px; margin-left: 7px; margin-top: 0px !important;"><i class="a-menu uk-text-muted"></i></span>
         	</div>
-        	<div class="uk-vertical-align-middle uk-display-inline-block use-hand-cursor"  v-on:click="openProjectDetails" >
-        		<h3 :id="'audit-project-name-'+audit.auditId" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip="title:VIEW BUILDINGS AND COMMON AREAS;"><span v-html="audit.projectRef"></span></h3>
-            	<small :id="'audit-project-aid-'+audit.auditId" class="uk-text-muted faded filter-search-project" uk-tooltip="title:VIEW BUILDINGS AND COMMON AREAS;">AUDIT <span v-html="audit.auditId"></span></small>
+        	<div class="uk-vertical-align-middle uk-display-inline-block use-hand-cursor"  onClick="openProjectDetails({{$audit->audit_id}},{{$audit->total_buildings}})" >
+        		<h3 id="audit-project-name-{{$audit->audit_id}}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip title="VIEW BUILDINGS AND COMMON AREAS;"><span >{{$audit->project_ref}}</span></h3>
+            	<small id="audit-project-aid-{{$audit->audit_id}}" class="uk-text-muted faded filter-search-project" uk-tooltip title="VIEW BUILDINGS AND COMMON AREAS;">AUDIT <span >{{$audit->audit_id}}</span></small>
             </div>
         </td>
-        <td class="audit-td-name ">
+        <td class="audit-td-name">
         	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-        		<i class="a-info-circle uk-text-muted uk-link" v-on:click="openContactInfo" uk-tooltip="title:VIEW CONTACT DETAILS;"></i>
+        		<i class="a-info-circle uk-text-muted uk-link" onClick="openContactInfo({{$audit->project_id}})" uk-tooltip title="VIEW CONTACT DETAILS;"></i>
         	</div>
-        	<div class="uk-vertical-align-top uk-display-inline-block fadetext use-hand-cursor"  v-on:click="openProject" uk-tooltip="title:VIEW PROJECT DETAILS;">
-        		<h3 class="uk-margin-bottom-remove filter-search-pm" v-html="audit.title"></h3>
-            	<small class="uk-text-muted faded filter-search-pm" v-html="audit.pm"></small>
+        	<div class="uk-vertical-align-top uk-display-inline-block fadetext use-hand-cursor"  onClick="openProject({{$audit->project_key}},{{$audit->audit_id}});" uk-tooltip title="VIEW PROJECT DETAILS;">
+        		<h3 class="uk-margin-bottom-remove filter-search-pm" >{{$audit->title}}</h3>
+            	<small class="uk-text-muted faded filter-search-pm" >{{$audit->pm}}</small>
         	</div>
         </td>
         <td class="hasdivider audit-td-address uk-text-truncate">
         	<div class="divider"></div>
-        	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
-        		<i class="a-marker-basic uk-text-muted uk-link" v-on:click="openMapLink" uk-tooltip="title:VIEW ON MAP;"></i>
-        	</div>
-        	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext" v-on:click="openMapLink">
-        		<h3 class="uk-margin-bottom-remove filter-search-address" v-html="audit.address"></h3>
-            	<small class="uk-text-muted faded filter-search-address" v-html="audit.address2"></small>
-        	</div>
+            @if(null != $audit->address && null != $audit->city && null != $audit->state && null != $audit->zip)
+            	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+            		<a href="https://maps.google.com/maps?q={{$audit->address}}+{{$audit->address2}}" class="uk-link-mute" target="_blank"><i class="a-marker-basic uk-text-muted uk-link" uk-tooltip title="VIEW ON MAP;"></i></a>
+            	</div>
+            	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad fadetext" >
+            		<a href="https://maps.google.com/maps?q={{$audit->address}}+{{$audit->address2}}" class="uk-link-mute" target="_blank"><h3 class="uk-margin-bottom-remove filter-search-address">{{$audit->address}}</h3>
+                	<small class="uk-text-muted faded filter-search-address">@if($audit->city){{$audit->city}}, @endIf {{$audit->state}} {{$audit->zip}} </small></a>
+            	</div>
+            @else
+                <div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+                    <i class="a-marker-fail uk-text-muted uk-link" uk-tooltip title="NO ADDRESS"></i>
+                </div>
+                <div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
+                    <span class="uk-text-muted" >NO ADDRESS</span>
+                </div>
+            @endIf
         </td>
         <td class="hasdivider audit-td-scheduled">
         	<div class="divider"></div>
-        	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
-            	<div class="uk-width-1-1 uk-padding-remove-top" v-bind:class="{'uk-width-1-2' : audit.auditor_access}" uk-grid>
-            		
-            		<div class="uk-width-1-2" v-if="audit.inspectionScheduleDateYear" v-on:click="openAssignment">
-	            		<h3 class="uk-link" :uk-tooltip="audit.tooltipInspectionSchedule" v-html="audit.inspectionScheduleDate"></h3>
-	            		<div class="dateyear" v-html="audit.inspectionScheduleDateYear"></div>
-            		</div>
-                    <div class="uk-width-1-2" v-on:click="openAssignment" v-else>
-                        <i class="a-calendar-7 action-needed use-hand-cursor" uk-tooltip="Click to schedule audits"></i>
-                    </div>
+        	<div class="uk-display-inline-block uk-text-center fullwidth" uk-grid>
+            	<div class="uk-width-1-2" uk-grid>
+            		@if($audit->inspection_schedule_date !== null)
+                		<div class="uk-padding-remove uk-align-center" @if($audit->inspection_schedule_date) onClick="" @endIf>
+    	            		<h3 class="uk-link" uk-tooltip title="{{$audit->inspection_schedule_text}}">{{date('m/d',strtotime($audit->inspection_schedule_date))}}</h3>
+    	            		<div class="dateyear" style="width:50px;">{{date('Y',strtotime($audit->inspection_schedule_date))}}</div>
+                		</div>
+                    @else
+                        <div class="uk-width-1-2" onClick="openAssignment({{$audit->project_key}},{{$audit->audit_id}})">
+                            <i class="a-calendar-7 action-needed use-hand-cursor" uk-tooltip title="CLICK TO SCHEDULE AUDIT"></i>
+                        </div>
+                    @endIf
             	</div>
 
-                	<div class="uk-width-1-6 uk-text-right uk-padding-remove" style="margin-top: -4px;" uk-tooltip="0 UNITS ASSIGNED TO YOU" v-html="audit.buildingCount+' /'" v-if="audit.auditor_access && audit.unitCount < 1 "></div>
-                    <div class="uk-width-1-6 uk-text-right uk-padding-remove" style="margin-top: -4px;" :uk-tooltip="audit.tooltipInspectableItems" v-html="audit.inspectableItems+' /'" v-if="audit.auditor_access && audit.inspectableItems > 0"></div>
-
-                	<div v-if="audit.auditor_access" class="uk-width-1-6 uk-text-left uk-padding-top-remove" style="margin-top: -4px;" :uk-tooltip="audit.totalItems + ' TOTAL BUILDINGS PROJECT AMENITIES AND UNITS THAT WILL BE INSPECTED'" v-html="audit.totalItems"></div>
-                	
-
+                	<div class="uk-width-1-4 uk-text-center uk-padding-remove" style="margin-top: -4px;" uk-tooltip title="INSPECTING {{$audit->total_buildings}} BUILDINGS">{{$audit->total_buildings}}</div>
+                    <div class="uk-width-1-4 uk-text-center uk-padding-remove" style="margin-top: -4px;" uk-tooltip title="INSPECTING {{$audit->audit->unique_unit_inspections->count()}} UNITS">{{$audit->audit->unique_unit_inspections->count()}}</div>
             </div>
         </td>
         <td class="hasdivider audit-td-due">
         	<div class="divider"></div>
-        	<div class="uk-display-inline-block uk-margin-small-top uk-text-center fullwidth" uk-grid>
-            	<div class="uk-width-1-3">
-            		<i :class="{'a-bell-2':true, [audit.followupStatusClass]:true}" :uk-tooltip="audit.tooltipFollowupStatus"></i>
+        	<div class="uk-text-center fullwidth  uk-remove-margin" uk-grid>
+            	<div class="uk-width-1-3 uk-remove-margin uk-padding-remove audit-list-report-holder" style="overflow: hidden;">
+            		<div class="audit-list-report-icons"> 
+                    @if($audit->car_id)
+                        <a href="/reports/{{$audit->car_id}}"><i class="{{$audit->car_icon}}" uk-tooltip title="{{$audit->car_status_text}}"></i></a><br /><small>CAR #{{$audit->car_id}}</small>
+                    @else
+                        <i  @if($audit->step_id > 59 && $audit->step_id < 67) class="a-file-plus use-hand-cursor" uk-tooltip title="GENERATE THIS AUDIT'S CAR" onclick="submitNewReportAL({{$audit->id}},1)" @else class="a-file-fail" uk-tooltip title="SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A CAR TO BE GENERATED." @endIf></i><br /><small>CAR</small>
+                    @endIf
+                    </div>
             	</div>
-            	<div class="uk-width-2-3 uk-padding-remove uk-margin-small-top">
-            		<div v-if="audit.followupDate">
-	            		<h3 class="uk=link" uk-tooltip="title: CLICK TO VIEW FOLLOW-UP;" v-html="audit.followupDate"></h3>
-		            	<div class="dateyear" v-html="audit.followupDateYear"></div>
-            		</div>
-            		<div v-else>
-            			<i v-if="audit.auditor_access" class="a-calendar-pencil use-hand-cursor" uk-tooltip="title:NEW FOLLOWUP;"></i>
-            		</div>
-            	</div>
+                <div class="uk-width-1-3  uk-remove-margin uk-padding-remove audit-list-report-holder" style="overflow: hidden;">
+                    <div class="audit-list-report-icons"> 
+                        @if($audit->ehs_id)
+                            <a href="/reports/{{$audit->ehs_id}}"><i class="{{$audit->ehs_icon}}" uk-tooltip title="{{$audit->ehs_status_text}}"></i></a><br /><small>EHS #{{$audit->ehs_id}}</small>
+                        @else
+                            <i  @if($audit->step_id > 59 && $audit->step_id < 67) class="a-file-plus use-hand-cursor" uk-tooltip title="GENERATE THIS AUDIT'S EHS" onclick="submitNewReportAL({{$audit->id}},2)" @else class="a-file-fail" uk-tooltip title="SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A EHS TO BE GENERATED." @endIf></i><br /><small>EHS</small>
+                        @endIf
+                    </div>
+                </div>
+                <div class="uk-width-1-3  uk-remove-margin uk-padding-remove audit-list-report-holder" style="overflow: hidden;">
+                    <div class="audit-list-report-icons"> 
+                        @if($audit->_8823_id)
+                            <a href="/reports/{{$audit->_8823_id}}"><i class="{{$audit->_8823_icon}}" uk-tooltip title="{{$audit->_8823_status_text}}"></i></a><br /><small>8823 #{{$audit->_8823_id}}</small>
+                        @else
+                            <i  @can('access_manager')@if($audit->step_id > 59 && $audit->step_id < 67) class="a-file-plus use-hand-cursor" uk-tooltip title="GENERATE THIS AUDIT'S 8823" onclick="submitNewReportAL({{$audit->id}},5)" @else class="a-file-fail" uk-tooltip title="SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A 8823 TO BE GENERATED." @endIf @else uk-tooltip title="SORRRY, THE 8823 GENERATOR IS NOT AVAILABLE YET."@endCan></i><br /><small>8823</small>
+                        @endIf
+                    </div>
+                </div>
             </div>
         </td>
         <td class="hasdivider">
         	<div class="divider"></div>
         	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.fileAuditStatusClass]:true}" :uk-tooltip="audit.tooltipFileAuditStatus" v-on:click="openFindings(this, audit.auditId, null, null, 'file')">
-            		<i :class="{[audit.fileAuditIconClass]:true}"></i>
+            	<div class="uk-width-1-3 use-hand-cursor {{$audit->file_audit_status}}" uk-tooltip title="{{$audit->file_audit_status_text}}" onClick="openFindings(this, {{$audit->audit_id}}, null, null, 'file')">
+            		<i class="{{$audit->file_audit_icon}}"></i>
             	</div>
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.nltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipNltAuditStatus" v-on:click="openFindings(this, audit.auditId, null, null, 'nlt')">
-            		<i :class="{[audit.nltAuditIconClass]:true}"></i>
-            	</div>
-            	<div :class="{'uk-width-1-3':true, 'use-hand-cursor':true, [audit.ltAuditStatusClass]:true}" :uk-tooltip="audit.tooltipLtAuditStatus"  v-on:click="openFindings(this, audit.auditId, null, null, 'lt')" >
-            		<i :class="{[audit.ltAuditIconClass]:true}"></i>
-            	</div>
+            	<div class="uk-width-1-3 use-hand-cursor {{$audit->nlt_audit_status}}" uk-tooltip title="{{$audit->nlt_audit_status_text}}" onClick="openFindings(this, {{$audit->audit_id}}, null, null, 'nlt')">
+                    <i class="{{$audit->nlt_audit_icon}}"></i>
+                </div>
+            	<div class="uk-width-1-3 use-hand-cursor {{$audit->lt_audit_status}}" uk-tooltip title="{{$audit->lt_audit_status_text}}" onClick="openFindings(this, {{$audit->audit_id}}, null, null, 'lt')">
+                    <i class="{{$audit->lt_audit_icon}}"></i>
+                </div>
             </div>
         </td>
         <td class="hasdivider">
         	<div class="divider"></div>
         	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-                <div v-if="audit.auditor_access" class="uk-width-1-4 uk-text-left">
-                        <i :class="{[audit.complianceIconClass]:true, [audit.complianceStatusClass]:true}" :uk-tooltip="audit.tooltipComplianceStatus" v-on:click="rerunCompliance"></i>
+                <div class="uk-width-1-4 ">
+                        @if(!$audit->audit->findings->count())
+                            <i class="a-rotate-left {{$audit->audit_compliance_status}} use-hand-cursor" onClick="rerunCompliance({{$audit->audit_id}})" uk-tooltip title="{{$audit->audit_compliance_status_text}} : YOU CAN CLICK TO RERUN COMPLIANCE SELECTION"></i>
+                        @else
+                            <i class="{{$audit->audit_compliance_icon}} {{$audit->audit_compliance_status}}" uk-tooltip title="{{$audit->audit_compliance_status_text}}" ></i>
+                        @endIf
                     </div>
             	<div class="uk-width-1-4">
-            		<i  v-on:click="openAssignment" :class="{[audit.auditorStatusIconClass]:true, 'use-hand-cursor':true, [audit.auditorStatusClass]:true}" :uk-tooltip="audit.tooltipAuditorStatus"></i>
+            		<i  onClick="openAssignment({{$audit->project_key}},{{$audit->audit_id}})" class="{{$audit->auditor_status_icon}} use-hand-cursor {{$audit->auditor_status}}" uk-tooltip title="{{$audit->auditor_status_text}}"></i>
             	</div>
             	<div class="uk-width-1-4">
-            		<i :class="{[audit.messageStatusIconClass]:true, 'use-hand-cursor':true, [audit.messageStatusClass]:true,}" :uk-tooltip="audit.tooltipMessageStatus"></i>
+            		<i onClick="openAssignment({{$audit->project_key}},{{$audit->audit_id}})" class="{{$audit->message_status_icon}} use-hand-cursor {{$audit->message_status}}" uk-tooltip title="{{$audit->message_status_text}}"></i>
             	</div>
             	<div class="uk-width-1-4">
-            		<i :class="{[audit.documentStatusIconClass]:true, 'use-hand-cursor':true, [audit.documentStatusClass]:true,}" :uk-tooltip="audit.tooltipDocumentStatus"></i>
+            		<i onClick="openAssignment({{$audit->project_key}},{{$audit->audit_id}})" class="{{$audit->document_status_icon}} use-hand-cursor {{$audit->document_status}}" uk-tooltip title="{{$audit->document_status_text}}"></i>
             	</div>
 
             </div>
         </td>
         <td>
         	<div class="uk-margin-top" uk-grid>
-        		<div class="uk-width-1-1  uk-padding-remove-top">
-            		<i :class="{[audit.stepStatusIconClass]:true, 'use-hand-cursor':true, [audit.stepStatusClass]:true}" :uk-tooltip="audit.tooltipStepStatus" v-on:click="updateStep"></i>
+        		<div class="uk-width-1-1  uk-padding-remove-top uk-text-center">
+            		<i class="{{$audit->step_status_icon}} use-hand-cursor {{$audit->step_status}}" uk-tooltip title="{{$audit->step_status}}" onClick="updateStep({{$audit->audit_id}})"></i>
 				</div>
         	</div>
         </td>
-	</tr>
-</template>
+	
 
-<script>
-    
-    function openFindings: function (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
-                dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
-            },
-            rerunCompliance: function() {
-                rerunCompliance(this.audit.auditId);
-            },
-            updateStep: function() {
-                dynamicModalLoad('audits/'+this.audit.auditId+'/updateStep',0,0,0);
-            },
-            openContactInfo: function() {
-                dynamicModalLoad('projects/'+this.audit.projectId+'/contact',0,0,0);
-            },
-            openProject: function() {
-            	loadTab('/projects/view/'+this.audit.projectKey+'/'+this.audit.auditId, '4', 1, 1, '', 1, this.audit.auditId);
-            },
-            openProjectDetails: function() {
-            	projectDetails(this.audit.auditId, this.audit.auditId, this.audit.total_buildings);
-            },
-            scheduleAudit: function() {
-                loadTab('/projects/view/'+this.audit.projectRef+'/'+this.audit.auditId, '4', 1, 1, '', 1, this.audit.auditId);
-            },
-            openMapLink: function() {
-                window.open(this.mapLink);
-            },
-            openAssignment: function() {
-                loadTab('/projects/view/'+this.audit.projectKey+'/'+this.audit.auditId, '4', 1, 1, '', 1, this.audit.auditId);
-                // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
-            }
-        },
-        computed: {
-        	auditIndex: function() {
-        		return this.index + 1;
-                // return this.audit.auditId;
-        	},
-            mapLink: function() {
-                return "https://maps.google.com/maps?q="+this.audit.address+"+"+this.audit.address2;
-            }
-        }
-    }
-</script>
+

@@ -43,6 +43,7 @@
 		font-size: 36px;
     	line-height: 37px;
 	}
+
 </style>
 
 <?php
@@ -75,7 +76,7 @@
 							<i class="a-square-right-2"></i>
 						</div>
 						<div class="uk-width-1-5 uk-padding-remove" style="margin-top: 7px;">
-							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$selected_audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$selected_audit->lead_json->color}} no-float uk-link" style="height: 48px;
+							<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$selected_audit->lead_json->name}};" title="" aria-expanded="false" class="user-badge user-badge-{{$selected_audit->lead_json->color}} uk-link" style="height: 48px;
     width: 48px;
     line-height: 48px; font-size: 27px; margin-top: .2em">
 								{{$selected_audit->lead_json->initials}}

@@ -96,6 +96,9 @@ function projectDetails(id, target, buildingcount = 10, reload = 0) {
 		// close own details
 		$('#audit-r-'+target+'-buildings').remove();
 		$('tr[id^="audit-r-"]').show();
+		$('html, body').animate({
+			scrollTop: $('#audit-r-'+target).offset().top - 59
+			}, 500, 'linear');
 	}else{
 		if(reload == 1){
 			$('#audit-r-'+target+'-buildings').remove();
