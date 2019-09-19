@@ -697,7 +697,6 @@ class FindingController extends Controller
         //// "type:nlt auditid:6410 buildingid:16721 unitid:1005379 amenityid:"
 
         // the selected one that opened this modal
-
         if (Auth::user()->auditor_access()) {
             $audit = null;
             $building = null;
@@ -825,6 +824,14 @@ class FindingController extends Controller
             }
             $checkDoneAddingFindings = 1;
             $current_user = Auth::user();
+
+
+            $passedAmenity = $amenity;
+						$passedBuilding = $building;
+						$passedUnit = $unit;
+						if ($amenity && $passedAmenity->building_id) {
+							return $buildingName = $passedAmenity->building_inspection()->building_name;
+						}
 
             if ($refresh_stream) {
                 return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'current_user'));

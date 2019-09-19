@@ -568,7 +568,7 @@
 
 									</div>
 								</span>
-								
+
 								@endcan
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-2 @else uk-width-1-1 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
@@ -593,7 +593,7 @@
 								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-total-areas', 1);"></a>
 								@endif
 							</span>
-							
+
 							@endcan
 						</div>
 					</th>
@@ -975,13 +975,13 @@
 				</tr>
 			</thead>
 			<tbody>
-				
+
 				@foreach($audits as $audit)
 				<tr id="audit-r-{{$audit->audit_id}}" class="{{$audit['status']}} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
 					@include('dashboard.partials.audit_row')
 				</tr>
 				@endforeach
-				
+
 				<tr is="auditrow" :class="{[audit.notcritical]:true}" :style="{ display: [audit.display] }" v-if="audits" v-for="(audit, index) in audits.slice().reverse()" :id="'audit-r-'+audit.auditId" :key="audit.auditId" :index="index" :audit="audit"></tr>
 				<div id="spinner-audits" class="uk-width-1-1" style="text-align:center;"></div>
 			</tbody>
@@ -1613,11 +1613,11 @@ function updateAuditStepSelection(e){
 	} );
 }
 
-    
+
     function openFindings (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
                 dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
             }
-    
+
     function updateStep (auditId) {
                 dynamicModalLoad('audits/'+auditId+'/updateStep',0,0,0);
             }
@@ -1674,8 +1674,8 @@ function updateAuditStepSelection(e){
 
 	}
 
-	
-        
+
+
 
 @endcan
 </script>

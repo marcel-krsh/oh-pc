@@ -33,31 +33,34 @@
 		 <div class="uk-width-1-1 filter-button-set-right js-findings-buttons uk-grid uk-first-column" uk-grid="">
         <div class="uk-width-1-6 uk-active findinggroup uk-first-column" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter; " id="findings-mine" onclick="clickingOnFindingFilter(this, 0, 'mine');">
             <button id="findings-mine-button" class="uk-button uk-button-default button-filter button-filter-border-left" uk-tooltip title="ONLY DISPLAY YOUR FINDINGS">MINE</button>
-            <span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="" aria-expanded="false">
-                <a class="sort-asc"></a>
+            <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="" aria-expanded="false">
+                <a class="sort-desc"></a>
             </span>
         </div>
         <div class="uk-width-1-6 findinggroup" uk-filter-control="filter: [data-finding-filter*='all']; group: findingfilter;" id="findings-everyone" onclick="clickingOnFindingFilter(this, 0, 'everyone');">
             <button id="findings-everyone-button" class="uk-button uk-button-default button-filter" style="padding-left: 5px; padding-right: 5px;" uk-tooltip title="DISPLAY EVERYONE'S FINDINGS">Everyone</button>
-            <span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="" aria-expanded="false">
-                <a class="sort-asc"></a>
+            <span style="display:none" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="" aria-expanded="false">
+                <a class="sort-desc"></a>
             </span>
         </div>
         <div class="uk-width-1-6 uk-active auditgroup" uk-filter-control="filter: [data-audit-filter*='this-audit']; group: auditfilter;" id="findings-current" onclick="clickingOnFindingFilter(this, 0, 'current');">
             <button id="findings-current-button" class="uk-button uk-button-default button-filter" uk-tooltip title="ONLY DISPLAY CURRENT AUDIT'S FINDINGS">CURRENT</button>
-            <span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="" aria-expanded="false">
-                <a class="sort-asc"></a>
+            <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="" aria-expanded="false">
+                <a class="sort-desc"></a>
             </span>
         </div>
         <div class="uk-width-1-6 auditgroup" uk-filter-control="filter: [data-audit-filter*='all']; group: auditfilter; " id="findings-all" onclick="clickingOnFindingFilter(this, 0, 'all');">
             <button id="findings-all-button" class="uk-button uk-button-default button-filter" uk-tooltip title="DISPLAY EVERY AUDIT'S FINDINGS">ALL</button>
-            <span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="" aria-expanded="false">
-                <a class="sort-asc"></a>
+            <span style="display:none" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="" aria-expanded="false">
+                <a class="sort-desc"></a>
             </span>
         </div>
         <div class="uk-width-1-6 auditgroup" id="findings-location">
             <button id="finding-modal-audit-stream-location" class="uk-button uk-button-default button-filter" onclick="refreshLocationFindingStream('location',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});" uk-tooltip title="ONLY DISPLAY FINDINGS FOR THE SELECTED LOCATION">LOCATION</button>
             <button class="uk-hidden" id="finding-modal-audit-stream-location-sticky" onclick="refreshLocationFindingStreamSticky('location',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});"></button>
+            <span style="display: none" id="location-findings-filter" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column order-span" title="" aria-expanded="false">
+							<a class="sort-desc"></a>
+						</span>
         </div>
         <div class="uk-width-1-6 auditgroup">
             <button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter" onclick="refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});" uk-tooltip title="REFRESH THE LIST OF FINDINGS">REFRESH</button>
@@ -245,8 +248,10 @@
 			}
 			if(window.findingModalRightLocation) {
 				$('#findings-location').removeClass('uk-active').addClass('uk-active');
+				$('#location-findings-filter').show();
 			} else {
 				$('#findings-location').removeClass('uk-active');
+				$('#location-findings-filter').hide();
 			}
 	});
 

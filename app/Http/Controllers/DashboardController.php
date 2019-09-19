@@ -994,7 +994,7 @@ class DashboardController extends Controller
         $auditors_array   = [];
         $auditor_ids      = []; // to prevent duplicates when building the auditors list
 
-        
+
         $auditors = User::join('users_roles','user_id','id')->select('users.id','users.name')->where('users.active',1)->where('role_id','>',1)->where('role_id','<',4)->orderBy('name')->get()->all();
             // $auditor_names = [];
             // foreach ($auditors_array as $auditor) {

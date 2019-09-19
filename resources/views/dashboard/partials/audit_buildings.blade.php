@@ -1,4 +1,4 @@
-		
+
 		<td colspan="10">
 
 			<!-- <div class="rowinset-top">PROJECT LEVEL INSPECTION AREAS AND BUILDINGS <span class="uk-link" style="color:#ffffff;" onclick="$('#audit-r-{{ $target }}-buildings').remove();$('tr[id^=\'audit-r-\']').show();"><i class="a-circle-cross"></i></span></div> -->
@@ -33,7 +33,7 @@
 						$b_amenity = $building->amenity();
 
 					} else {
-						
+
 						$b_amenity = null;
 					}
 					$b_amenity_findings = $building->amenities_and_findings();

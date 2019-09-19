@@ -99,7 +99,7 @@
 												<i class="@if($loop->last) a-home-marker @elseif($loop->first) a-home-marker @else a-marker-basic @endif colored"></i>
 												@if($building->followup_date !== null)
 												<div class="alert-icon {{ $building->status }}">
-													
+
 													@if($dueDate < $today)
 													<i class="a-bell-ring" uk-tooltip="pos:top-left;title:PAST DUE<br />FOLLOWUP: {{ \Carbon\Carbon::createFromFormat('Y-m-d', $building->followup_date)->format('m/d/Y') }}: {{ $building->followup_description }};"></i>
 													@elseIf($dueDate === $today)
@@ -267,4 +267,4 @@
 								</div>
 							</div>
 						</div>
-					</div> 
+					</div>
