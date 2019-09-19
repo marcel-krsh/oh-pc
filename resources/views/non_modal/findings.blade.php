@@ -284,11 +284,11 @@
 		$('#select-amenity-text').text('Select Amenity');
 		$('#type_selected').val('empty');
 		if($('#type_selected_value').val() != '') {
-			$('#finding-modal-audit-stream-refresh').trigger('click');
+			//$('#finding-modal-audit-stream-refresh').trigger('click');
 		}
-		window.findingModalRightLocation = false;
-		$('#location-findings-filter').hide();
-		$('#findings-location').removeClass('uk-active');
+		//window.findingModalRightLocation = false;
+		//$('#location-findings-filter').hide();
+		//$('#findings-location').removeClass('uk-active');
 		$('#type_selected_value').val("");
 		// amenityList();
 		// $('#select-type-text').text('Select Location From Above');
@@ -300,7 +300,9 @@
 		//check if locationType is set thorugh Location selection
 		if(window.findingModalSelectedLocationType != '') {
 			locationType = window.findingModalSelectedLocationType;
+
 		}
+
 		// If locations is active, make it inactive
 		if($('#type-selection-icon').hasClass('a-arrow-small-up ok-actionable')){
 			$('#type-selection-icon').removeClass('a-arrow-small-up ');
@@ -344,6 +346,7 @@
 				filterAmenities();
 			}
 		}
+
 	}
 
 	function updateAmenitiesIcon(locationType = '') {
@@ -390,6 +393,9 @@
 		$('#type_selected').val('site');
 		$('#type_selected_value').val(project_ref);
 		updateAmenitiesIcon('site');
+		if($('#findings-location').hasClass('uk-active')){
+			$('#finding-modal-audit-stream-refresh').trigger('click');
+		}
 	}
 
 	function filterBuildingAmenities(building_id, display = null) {
@@ -410,6 +416,9 @@
 		$('#type_selected').val('building');
 		$('#type_selected_value').val(building_id);
 		updateAmenitiesIcon('building');
+		if($('#findings-location').hasClass('uk-active')){
+			$('#finding-modal-audit-stream-refresh').trigger('click');
+		}
 	}
 
 	function filterUnitAmenities(unit_id, display = null, bottom = null) {
@@ -433,6 +442,9 @@
 		$('#type_selected').val('unit');
 		$('#type_selected_value').val(unit_id);
 		updateAmenitiesIcon('unit');
+		if($('#findings-location').hasClass('uk-active')){
+			$('#finding-modal-audit-stream-refresh').trigger('click');
+		}
 	}
 
 	function loadAnimation() {
