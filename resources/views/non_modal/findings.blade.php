@@ -642,7 +642,7 @@
 	  				console.log('Filtering project-level amenities {{ $audit->project_ref }}');
 	  				filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
 	  			@endif
-	  	@else
+	  	@elseif(!is_null($passedBuilding))
 	  		console.log('Filtering project-level amenities {{ $audit->project_ref }}');
 				filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
 		  		//console.log('filtering by project-level');
