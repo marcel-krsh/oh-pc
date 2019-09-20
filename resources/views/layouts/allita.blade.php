@@ -495,7 +495,7 @@ if ($allowPageLoad) {
 				search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 				var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
 
-				var output = '<div class="autocomplete-suggestion" data-item-id="'+item[8]+'" data-val="'+search+'">';
+				var output = '<div class="autocomplete-suggestion" data-audit-id="'+item[5]+'" data-item-id="'+item[8]+'" data-val="'+search+'">';
 				output = output + item[4]+'<br />';
 				output = output + 'Project ID: '+item[7]+'<br />';
 				output = output + 'PM: '+item[6]+'<br />';
@@ -507,7 +507,8 @@ if ($allowPageLoad) {
 			},
 			onSelect: function(e, term, item){
 				e.preventDefault();
-				loadTab('/projects/'+item.getAttribute('data-item-id'), '4', 1, 1, '', 1);
+				openProject(item.getAttribute('data-item-id'), item.getAttribute('data-audit-id'));
+				// loadTab('/projects/'+item.getAttribute('data-item-id'), '4', 1, 1, '', 1);
 		    	//loadDetailTab('/parcel/',item.getAttribute('data-item-id'),'1',0,0);
 		    	$('#quick-lookup-box').val('');
 		    }

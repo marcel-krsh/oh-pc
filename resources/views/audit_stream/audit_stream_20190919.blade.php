@@ -1,5 +1,35 @@
 <div class="" uk-filter="target: .js-findings">
 	<div uk-grid>
+		{{-- <div class="uk-width-1-1 filter-button-set-right js-findings-buttons" uk-grid>
+			<div class="uk-width-1-5 uk-active findinggroup" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter; " onclick="clickingOnFindingFilter(this);">
+				<button class="uk-button uk-button-default button-filter button-filter-border-left" >My finding</button>
+				<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
+					<a class="sort-asc"></a>
+				</span>
+			</div>
+			<div class="uk-width-1-5 findinggroup" uk-filter-control="filter: [data-finding-filter*='all']; group: findingfilter;" onclick="clickingOnFindingFilter(this);">
+				<button class="uk-button uk-button-default button-filter" style="padding-left: 5px; padding-right: 5px;">All findings</button>
+				<span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
+					<a class="sort-asc"></a>
+				</span>
+			</div>
+			<div class="uk-width-1-5 uk-active auditgroup" uk-filter-control="filter: [data-audit-filter*='this-audit']; group: auditfilter;" onclick="clickingOnFindingFilter(this);">
+				<button class="uk-button uk-button-default button-filter">this audit</button>
+				<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
+					<a class="sort-asc"></a>
+				</span>
+			</div>
+			<div class="uk-width-1-5 auditgroup" uk-filter-control="filter: [data-audit-filter*='all']; group: auditfilter; " onclick="clickingOnFindingFilter(this);">
+				<button class="uk-button uk-button-default button-filter">all audits</button>
+				<span style="display:none" data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" title="">
+					<a class="sort-asc"></a>
+				</span>
+			</div>
+			<div class="uk-width-1-5 auditgroup">
+				<button id="finding-modal-audit-stream-refresh" class="uk-button uk-button-default button-filter"  onclick="refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});">REFRESH</button>
+			</div>
+		</div> --}}
+
 		<div class="uk-width-1-1 filter-button-set-right js-findings-buttons uk-grid uk-first-column" uk-grid="">
 			<div class="uk-width-1-6 uk-active findinggroup uk-first-column" uk-filter-control="filter: [data-finding-filter*='my-finding']; group: findingfilter; " id="findings-mine" onclick="clickingOnFindingFilter(this, 0, 'mine');">
 				<button id="findings-mine-button" class="uk-button uk-button-default button-filter button-filter-border-left" uk-tooltip title="ONLY DISPLAY YOUR FINDINGS">MINE</button>
@@ -41,22 +71,12 @@
 			<div class="inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-padding-remove js-findings" style="    height: 400px;">
 				@if(count($findings))
 				@foreach($findings as $finding)
-				@php
-					$type = $finding->finding_type->type;
-	        if($type == "nlt"){
-	            $finding_icon = "a-booboo";
-	        }elseif($type == "lt"){
-	            $finding_icon = "a-skull";
-	        }elseif($type == "file"){
-	            $finding_icon = "a-folder";
-	        }
-				@endphp
-				<div id="inspec-tools-tab-finding-{{ $finding->id }}" class="inspec-tools-tab-finding @if($finding->cancelled_at) cancelled @endif" @if($finding->cancelled_at) data-ordering-finding="x{{ $finding->id }}" @else data-ordering-finding="{{ $finding->id }}" @endif data-finding-id="{{ $finding->id }}" data-audit-filter="@if($finding->audit_id == $audit->audit_id) this-audit @endif all" data-finding-filter="@if($current_user->id == $finding->user_id) my-finding @endif all" @if(!$finding->audit_id == $audit->audit_id || $current_user->id != $finding->user_id) style="display:none" @endif uk-grid>
+				<div id="inspec-tools-tab-finding-{{ $finding->id }}" class="inspec-tools-tab-finding @if($finding->cancelled_at) cancelled @endif" @if($finding->cancelled_at) data-ordering-finding="x{{ $finding->id }}" @else data-ordering-finding="{{ $finding->id }}" @endif data-finding-id="{{ $finding->id }}" data-audit-filter="@if($finding->is_current_audit()) this-audit @endif all" data-finding-filter="@if(Auth::user()->id == $finding->user_id) my-finding @endif all" @if(!$finding->is_current_audit() || Auth::user()->id != $finding->user_id) style="display:none" @endif uk-grid>
 					<div id="inspec-tools-tab-finding-sticky-{{ $finding->id }}" class="inspec-tools-tab-finding-sticky uk-width-1-1 uk-padding-remove findingstatus" style="display:none">
 						<div class="uk-grid-match" uk-grid>
 							<div class="uk-width-1-4 uk-padding-remove-top uk-padding-remove-left">
 								<div>
-									<i class="uk-inline {{ $finding_icon }}"></i> <i class="uk-inline a-menu" onclick="expandFindingItems(this);"></i>
+									<i class="uk-inline {{ $finding->icon() }}"></i> <i class="uk-inline a-menu" onclick="expandFindingItems(this);"></i>
 								</div>
 							</div>
 							<div class="uk-width-3-4 uk-padding-remove-top uk-padding-remove-right">
@@ -70,12 +90,11 @@
 						<div class="uk-grid-match" uk-grid>
 							<div class="uk-width-1-4 uk-padding-remove-top uk-padding-remove-left">
 								<div class="uk-display-block">
-									<i class="{{ $finding_icon }}"></i><br>
+									<i class="{{ $finding->icon() }}"></i><br>
 									<span class="auditinfo">AUDIT {{ $finding->audit_id }}</span>
 								</div>
-
 								<div id="as-inspec-tools-finding-resolve-{{ $finding->id }}" class="uk-display-block" style="margin: 15px 0;">
-									@if($auditor_access)
+									@can('access_auditor')
 									@if(!$finding->cancelled_at)
 									@if($finding->auditor_approved_resolution != 1)
 									<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFindingAS({{ $finding->id }})"><span class="a-circle"></span> RESOLVE</button>
@@ -87,9 +106,8 @@
 									@if($finding->auditor_approved_resolution == 1)
 									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};"><span class="a-circle-checked"></span> RESOLVED</button>
 									@endif
-									@endif
+									@endcan
 								</div>
-
 								<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
 									<i class="a-bell"></i> <span id="inspec-tools-tab-finding-stat-reminders">{{ count($finding->followups) }}</span><br />
 									<i class="a-comment"></i> {{ count($finding->comments) }}<br />
@@ -103,7 +121,6 @@
 									@endif
 								</div>
 							</div>
-							{{-- Cancelled --}}
 							<div class="uk-width-3-4 uk-padding-remove-right uk-padding-remove">
 								@if(!$finding->cancelled_at)
 								<div class="inspec-tools-tab-finding-top-actions" style="z-index:10">
@@ -127,33 +144,10 @@
 									CANCELLED
 								</div>
 								@endif
-								@php
-								if($finding->amenity_inspection) {
-									 if ($finding->amenity_inspection->unit_id) {
-							      $unit_name     = $finding->amenity_inspection->unit->unit_name;
-							      $building_name = $finding->amenity_inspection->unit->building->building_name;
-							      $building_unit_name = $building_name . ":" . $unit_name;
-							    } elseif ($finding->amenity_inspection->building_id) {
-							      $building_name = $finding->amenity_inspection->building->building_name;
-							      $building_unit_name = $building_name;
-							    } else {
-							    	$building_unit_name = '';
-							    }
-								}
-								if($finding->level == 1){
-				            $finding_level = $finding->finding_type->one_description;
-				        }elseif($finding->level == 2){
-				            $finding_level = $finding->finding_type->two_description;
-				        }elseif($finding->level == 3){
-				            $finding_level = $finding->finding_type->three_description;
-				        } else {
-				        	$finding_level = '';
-				        }
-								@endphp
 								<div class="uk-width-1-1 uk-display-block uk-padding-remove inspec-tools-tab-finding-description"  style="z-index:auto">
 									<p><small>{{ formatDate($finding->date_of_finding, "F j, Y") }}: FN#{{ $finding->id }}</small><br />
 										<small>By {{ $finding->auditor->full_name() }}</small><br>
-										@if($finding->amenity_inspection)<strong>{{ $building_unit_name }}</strong>@endif<br />
+										@if($finding->amenity_inspection)<strong>{{ $finding->amenity_inspection->building_unit_name()}}</strong>@endif<br />
 										@if($finding->amenity_inspection)
 										{!! $finding->amenity_inspection->address() !!}
 										@endIf
@@ -183,7 +177,6 @@
 										if($index == 0) {
 											$index = '';
 										}
-
 										@endphp
 										{{ $finding->amenity_inspection->building_unit_amenity_names() }} {{ $index }}<br />
 										@endIf
@@ -192,9 +185,9 @@
 										@endIf
 									</p>
 									<p>
-										{{ $finding_level }}
+										{{$finding->level_description()}}
 									</p>
-									@if($auditor_access)
+									@can('access_auditor')
 									<div class="inspec-tools-tab-finding-actions">
 										@if(!$finding->cancelled_at)
 										<button class="uk-button uk-link" onclick="dynamicModalLoad('edit/finding/{{ $finding->id }}',0,0,0,2)"><i class="a-pencil-2"></i> EDIT</button>
@@ -205,7 +198,7 @@
 										<button class="uk-button uk-link" onclick="cancelFindingAS({{ $finding->id }})"><i class="a-trash-3"></i> CANCEL</button>
 										@endif
 									</div>
-									@endif
+									@endcan
 								</div>
 							</div>
 						</div>
@@ -262,7 +255,7 @@
 			}
 		});
 
-	@if($auditor_access)
+	@can('access_auditor')
 	function resolveFindingAS(findingid){
 		$.post('/findings/'+findingid+'/resolve', {
 			'_token' : '{{ csrf_token() }}'
@@ -316,7 +309,7 @@
 			console.log('Rejected.')
 		});
 	}
-	@endif
+	@endcan
 
 	$(".inspec-tools-tab-findings-container").on( 'scroll', function(){
 

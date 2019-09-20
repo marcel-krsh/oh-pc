@@ -26,6 +26,7 @@ use App\Models\User;
 use Auth;
 use Carbon;
 use Illuminate\Http\Request;
+use View;
 
 class FindingController extends Controller
 {
@@ -38,6 +39,8 @@ class FindingController extends Controller
             //Auth::onceUsingId(286); // TEST BRIAN
             Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
         }
+        $current_user = Auth::user();
+        view::share('current_user');
     }
 
     public function addFindingForm($findingtypeid, AmenityInspection $amenityinspectionid, Request $request)
@@ -697,7 +700,11 @@ class FindingController extends Controller
         //// "type:nlt auditid:6410 buildingid:16721 unitid:1005379 amenityid:"
 
         // the selected one that opened this modal
-        if (Auth::user()->auditor_access()) {
+        $current_user = Auth::user();
+        // return $audit;
+        // return $findings;
+        $auditor_access = $current_user->auditor_access();
+        if ($auditor_access) {
             $audit = null;
             $building = null;
             $unit = null;
@@ -771,9 +778,11 @@ class FindingController extends Controller
 	           //      ->get();
             if($location_selected == 'unit' || $location_selected == 'building' || $location_selected == 'site') {
             	$findings = Finding::where('project_id', $audit->project_id)
+            			->with('finding_type', 'followups', 'comments', 'documents', 'photos', 'auditor', 'amenity_inspection.unit', 'amenity_inspection.building')
 	                ->whereNull('cancelled_at')
 	                ->orderBy('updated_at', 'desc');
 	            $cancelled_findings = Finding::where('project_id', $audit->project_id)
+            			->with('finding_type', 'followups', 'comments', 'documents', 'photos', 'auditor', 'amenity_inspection.unit', 'amenity_inspection.building')
 	                ->whereNotNull('cancelled_at')
 	                ->orderBy('updated_at', 'desc');
             	if($location_selected == 'building') {
@@ -789,10 +798,12 @@ class FindingController extends Controller
             	}
             } else {
 	            $findings = Finding::where('project_id', $audit->project_id)
+            			->with('finding_type', 'followups', 'comments', 'documents', 'photos', 'auditor', 'amenity_inspection.unit', 'amenity_inspection.building')
 	                ->whereNull('cancelled_at')
 	                ->orderBy('updated_at', 'desc')
 	                ->get();
 	            $cancelled_findings = Finding::where('project_id', $audit->project_id)
+            			->with('finding_type', 'followups', 'comments', 'documents', 'photos', 'auditor', 'amenity_inspection.unit', 'amenity_inspection.building')
 	                ->whereNotNull('cancelled_at')
 	                ->orderBy('updated_at', 'desc')
 	                ->get();
@@ -823,20 +834,16 @@ class FindingController extends Controller
                 $type = 'all';
             }
             $checkDoneAddingFindings = 1;
-            $current_user = Auth::user();
 
-
-            $passedAmenity = $amenity;
-						$passedBuilding = $building;
-						$passedUnit = $unit;
-						if ($amenity && $passedAmenity->building_id) {
-							return $buildingName = $passedAmenity->building_inspection()->building_name;
-						}
-
+            // $findings = $findings->take(50);
+            // foreach ($findings as $key => $fin) {
+            // 	return $fin->finding_type;
+            // }
             if ($refresh_stream) {
-                return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'current_user'));
+                return view('audit_stream.audit_stream', compact('audit', 'checkDoneAddingFindings', 'type', 'comments', 'findings', 'documents', 'unit', 'building', 'amenity', 'project', 'followups', 'audits', 'units', 'buildings', 'amenities', 'allFindingTypes', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'current_user','auditor_access'));
             } else {
-                return view('non_modal.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'findings', 'unit', 'building', 'amenity', 'audits', 'units', 'buildings', 'amenities', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site', 'current_user'));
+            		$findings = [];
+                return view('non_modal.findings', compact('audit', 'checkDoneAddingFindings', 'type', 'findings', 'unit', 'building', 'amenity', 'audits', 'units', 'buildings', 'amenities', 'auditid', 'buildingid', 'unitid', 'amenityid', 'toplevel', 'site', 'current_user', 'auditor_access'));
             }
 
         } else {
@@ -1072,6 +1079,7 @@ class FindingController extends Controller
         $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
         $amenities = $amenities_query->get();
         $site = $amenities_query->whereNotNull('project_id')->whereNull('completed_date_time')->get();
+        $current_user = Auth::user();
         return view('modals.partials.finding-site-amenities', compact('audit', 'buildings', 'units', 'site', 'amenities'));
     }
 

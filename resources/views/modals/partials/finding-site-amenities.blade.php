@@ -35,7 +35,7 @@
 				$amenityIncrement[$amenity->amenity_id]++;
 			}
 			@endphp
-			<li id="amenity-inspection-{{ $amenity->id }}" class="building s-{{ $audit->project_ref }} aa-{{ $amenity->amenity_id }} amenity-inspection-{{ $amenity->id }} amenity-list-item finding-modal-list-items uid-{{ $amenity->auditor_id }}" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
+			<li id="amenity-inspection-{{ $amenity->id }}" class="building s-{{ $audit->project_ref }} aa-{{ $amenity->amenity_id }} amenity-inspection-{{ $amenity->id }} amenity-list-item finding-modal-list-items uid-{{ $amenity->auditor_id }} {{ $current_user && ($amenity->auditor_id == $current_user->id) ? '' : 'not-mine-items' }}" style="color : @if(is_null($amenity->completed_date_time)) #50b8ec @else #000 @endIf ">
 				<div class="uk-inline uk-padding-remove" style="margin-top:6px; flex:140px;">
 					<i onclick="markSiteAmenityComplete({{ $audit->audit_id }}, 0, 0, {{ $amenity->id }},'markcomplete', 1)" class="{{ is_null($amenity->completed_date_time) ? 'a-circle completion-icon use-hand-cursor' : 'a-circle-checked ok-actionable completion-icon use-hand-cursor'}} " style="font-size: 26px;">
 					</i>

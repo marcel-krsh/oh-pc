@@ -65,7 +65,8 @@
 	}
 </style>
 <script>
-	window.findingModalRightLocation = false;
+	window.findingModalRightLocation = true;
+	window.findingModalSelectedMine = 'true';
 	window.findingModalSelectedType = '{{ $type }}';
 	<?php
 	$passedAmenity = $amenity;
@@ -93,7 +94,6 @@
 <div uk-grid>
 	<div class="uk-width-1-1">
 		<div id="modal-findings" class="uk-margin-top"  >
-
 			<div uk-grid>
 				<div class="uk-width-1-2">
 					<div uk-grid >
@@ -194,22 +194,20 @@
 									</div>
 								</div>
 							</div>
-					    <div class="uk-margin-remove" uk-grid>
-					    	<div class="uk-width-1-3 uk-first-column">
-					    		<button class="uk-button " onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary/{{ $audit->id }}',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button>
-					    	</div>
-					    	<div class="uk-width-2-3">
-					    		<button class="uk-button uk-button-success uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="if($('#project-detail-tab-1').hasClass('uk-active') || window.project_detail_tab_1 != '1'){$('#project-detail-tab-1').trigger('click')} dynamicModalClose()">DONE ADDING FINDINGS</button>
-					    	</div>
-					    </div>
-					  </div>
+							<div class="uk-margin-remove" uk-grid>
+								<div class="uk-width-1-3 uk-first-column">
+									<button class="uk-button " onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary/{{ $audit->id }}',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button>
+								</div>
+								<div class="uk-width-2-3">
+									<button class="uk-button uk-button-success uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="if($('#project-detail-tab-1').hasClass('uk-active') || window.project_detail_tab_1 != '1'){$('#project-detail-tab-1').trigger('click')} dynamicModalClose()">DONE ADDING FINDINGS</button>
+								</div>
+							</div>
+						</div>
 
 					</div>
 				</div>
 				<div id="modal-findings-items-container" class="uk-width-1-2">
-
 					@include('audit_stream.audit_stream')
-
 				</div>
 			</div>
 
@@ -249,6 +247,9 @@
 			</div>
 		</div>
 	</div>
+
+
+
 	<script>
 
 		// $( document ).ready(function() {
@@ -257,540 +258,557 @@
 		// });
 		{{-- This is to open locations and if amenities are open make the icon to close --}}
 		function typeList(){
-		// debugger;
-		// If amenity is open close this.
-		// if($('#amenity-selection-icon').hasClass('a-arrow-small-up ')){
-		// 	$('#amenity-selection-icon').addClass('a-grid');
-		// 	$('#amenity-selection-icon').removeClass('a-arrow-small-up ');
-		// }
-		// Toggle locations
-		if($('#type-selection-icon').hasClass('a-grid')){
-			$('#type-selection-icon').removeClass('a-grid');
-			$('#type-selection-icon').addClass('a-arrow-small-up ');
-			loadTypes();
-			// $('#select-type-text').text('Select Location');
+			// debugger;
+			// If amenity is open close this.
+			// if($('#amenity-selection-icon').hasClass('a-arrow-small-up ')){
+			// 	$('#amenity-selection-icon').addClass('a-grid');
+			// 	$('#amenity-selection-icon').removeClass('a-arrow-small-up ');
+			// }
+			// Toggle locations
+			if($('#type-selection-icon').hasClass('a-grid')){
+				$('#type-selection-icon').removeClass('a-grid');
+				$('#type-selection-icon').addClass('a-arrow-small-up ');
+				loadTypes();
+				// $('#select-type-text').text('Select Location');
 
-		} else {
-			// $('#type-selection-icon').addClass('a-grid');
-			// $('#type-selection-icon').removeClass('a-arrow-small-up');
-			// removeDynamicData();
-			// loadTypes();
-			// $('#select-type-text').text('Select Location');
-		}
-		$('#select-type-text').text('Select Location');
-		$('#amenity-selection-icon').addClass('a-grid');
-		$('#amenity-selection-icon').removeClass('a-arrow-small-up');
-		window.findingModalSelectedLocationType = 'empty';
-		$('#select-amenity-text').text('Select Amenity');
-		$('#type_selected').val('empty');
-		if($('#type_selected_value').val() != '') {
-			//$('#finding-modal-audit-stream-refresh').trigger('click');
-		}
-		//window.findingModalRightLocation = false;
-		//$('#location-findings-filter').hide();
-		//$('#findings-location').removeClass('uk-active');
-		$('#type_selected_value').val("");
-		// amenityList();
-		// $('#select-type-text').text('Select Location From Above');
-	}
-
-	{{-- Selecting one of the type/location would trigger this. Opens amenities and change both button icons --}}
-	// filterUnitAmenities(164868 ,'Unit 217 in BIN:OH-02-00472 ')
-	function amenityList(locationType = '') {
-		//check if locationType is set thorugh Location selection
-		if(window.findingModalSelectedLocationType != '') {
-			locationType = window.findingModalSelectedLocationType;
-
-		}
-
-		// If locations is active, make it inactive
-		if($('#type-selection-icon').hasClass('a-arrow-small-up ok-actionable')){
-			$('#type-selection-icon').removeClass('a-arrow-small-up ');
-			$('#type-selection-icon').addClass('a-grid');
-		}
-		// debugger;
-		// toggle amenities
-		// //$('#amenity_selected_value').val(
-		if(window.findingModalSelectedLocationType == 'empty') {
-			//do nothing
-		} else if($('#amenity-selection-icon').hasClass('a-grid')){
-			$('#amenity-selection-icon').removeClass('a-grid');
-			$('#amenity-selection-icon').addClass('a-arrow-small-up');
-			$('#select-amenity-text').text('Select Amenity');
-			if($('#type_selected').val() == 'site' || locationType == 'site') {
-				filterSiteAmenities($('#type_selected_value').val());
+			} else {
+				// $('#type-selection-icon').addClass('a-grid');
+				// $('#type-selection-icon').removeClass('a-arrow-small-up');
+				// removeDynamicData();
+				// loadTypes();
+				// $('#select-type-text').text('Select Location');
 			}
-			if($('#type_selected').val() == 'building' || locationType == 'building') {
-				filterBuildingAmenities($('#type_selected_value').val());
-			}
-			if($('#type_selected').val() == 'unit' || locationType == 'unit') {
-				filterUnitAmenities($('#type_selected_value').val());
-			}
-			if($('#type_selected').val() == '' || locationType == '') {
-				filterAmenities();
-			}
-		} else {
+			$('#select-type-text').text('Select Location');
 			$('#amenity-selection-icon').addClass('a-grid');
 			$('#amenity-selection-icon').removeClass('a-arrow-small-up');
-			// $('#dynamic-data').empty();
-			if($('#type_selected').val() == 'site' || locationType == 'site') {
-				filterSiteAmenities($('#type_selected_value').val());
+			window.findingModalSelectedLocationType = 'empty';
+			$('#select-amenity-text').text('Select Amenity');
+			$('#type_selected').val('empty');
+			if($('#type_selected_value').val() != '') {
+				//$('#finding-modal-audit-stream-refresh').trigger('click');
 			}
-			if($('#type_selected').val() == 'building' || locationType == 'building') {
-				filterBuildingAmenities($('#type_selected_value').val());
-			}
-			if($('#type_selected').val() == 'unit' || locationType == 'unit') {
-				filterUnitAmenities($('#type_selected_value').val());
-			}
-			if($('#type_selected').val() == '' || locationType == '') {
-				filterAmenities();
-			}
+			//window.findingModalRightLocation = false;
+			//$('#location-findings-filter').hide();
+			//$('#findings-location').removeClass('uk-active');
+			$('#type_selected_value').val("");
+			// amenityList();
+			// $('#select-type-text').text('Select Location From Above');
 		}
 
-	}
+		{{-- Selecting one of the type/location would trigger this. Opens amenities and change both button icons --}}
+		// filterUnitAmenities(164868 ,'Unit 217 in BIN:OH-02-00472 ')
+		function amenityList(locationType = '') {
+			//check if locationType is set thorugh Location selection
+			if(window.findingModalSelectedLocationType != '') {
+				locationType = window.findingModalSelectedLocationType;
 
-	function updateAmenitiesIcon(locationType = '') {
-		$('#amenity-selection-icon').removeClass('a-grid');
-		$('#amenity-selection-icon').addClass('a-arrow-small-up ');
-		$('#select-amenity-text').text('Select Amenity'); // Replace the text in Select Amenity button to default text
-		$('#type-selection-icon').removeClass('a-arrow-small-up ');
-		$('#type-selection-icon').addClass('a-grid');
-		window.findingModalSelectedLocationType = locationType; //Used to determine the type of location chosen
-	}
+			}
 
-	function filterAmenities(display = null) {
-		loadAnimation();
-		var url = '/findings/modals/amenities/{{ $audit->audit_id }}';
-		$.get(url, {
-		}, function(data, display) {
-			if(data=='0'){
-				UIkit.modal.alert("There was a problem getting the project information.");
+			// If locations is active, make it inactive
+			if($('#type-selection-icon').hasClass('a-arrow-small-up ok-actionable')){
+				$('#type-selection-icon').removeClass('a-arrow-small-up ');
+				$('#type-selection-icon').addClass('a-grid');
+			}
+			// debugger;
+			// toggle amenities
+			// //$('#amenity_selected_value').val(
+			if(window.findingModalSelectedLocationType == 'empty') {
+				//do nothing
+			} else if($('#amenity-selection-icon').hasClass('a-grid')){
+				$('#amenity-selection-icon').removeClass('a-grid');
+				$('#amenity-selection-icon').addClass('a-arrow-small-up');
+				$('#select-amenity-text').text('Select Amenity');
+				if($('#type_selected').val() == 'site' || locationType == 'site') {
+					filterSiteAmenities($('#type_selected_value').val());
+				}
+				if($('#type_selected').val() == 'building' || locationType == 'building') {
+					filterBuildingAmenities($('#type_selected_value').val());
+				}
+				if($('#type_selected').val() == 'unit' || locationType == 'unit') {
+					filterUnitAmenities($('#type_selected_value').val());
+				}
+				if($('#type_selected').val() == '' || locationType == '') {
+					filterAmenities();
+				}
 			} else {
-				$('#dynamic-data').html(data);
-				scrollTo('amenities');
+				$('#amenity-selection-icon').addClass('a-grid');
+				$('#amenity-selection-icon').removeClass('a-arrow-small-up');
+				// $('#dynamic-data').empty();
+				if($('#type_selected').val() == 'site' || locationType == 'site') {
+					filterSiteAmenities($('#type_selected_value').val());
+				}
+				if($('#type_selected').val() == 'building' || locationType == 'building') {
+					filterBuildingAmenities($('#type_selected_value').val());
+				}
+				if($('#type_selected').val() == 'unit' || locationType == 'unit') {
+					filterUnitAmenities($('#type_selected_value').val());
+				}
+				if($('#type_selected').val() == '' || locationType == '') {
+					filterAmenities();
+				}
 			}
-		});
-		if(display != null) {
-			$('#select-type-text').text(display);
 		}
-		updateAmenitiesIcon();
-	}
 
-	function filterSiteAmenities(project_ref, display = null) {
-		loadAnimation();
-		var url = '/findings/modals/site-amenities/{{ $audit->audit_id }}/'+project_ref;
-		$.get(url, {
-		}, function(data, display) {
-			if(data=='0'){
-				UIkit.modal.alert("There was a problem getting the project information.");
-			} else {
-				$('#dynamic-data').html(data);
-			}
-		});
-		if(display != null) {
-			$('#select-type-text').text(display);
+		function updateAmenitiesIcon(locationType = '') {
+			$('#amenity-selection-icon').removeClass('a-grid');
+			$('#amenity-selection-icon').addClass('a-arrow-small-up ');
+			$('#select-amenity-text').text('Select Amenity'); // Replace the text in Select Amenity button to default text
+			$('#type-selection-icon').removeClass('a-arrow-small-up ');
+			$('#type-selection-icon').addClass('a-grid');
+			window.findingModalSelectedLocationType = locationType; //Used to determine the type of location chosen
 		}
-		$('#type_selected').val('site');
-		$('#type_selected_value').val(project_ref);
-		updateAmenitiesIcon('site');
-		if($('#findings-location').hasClass('uk-active')){
-			$('#finding-modal-audit-stream-refresh').trigger('click');
-		}
-	}
 
-	function filterBuildingAmenities(building_id, display = null) {
-		window.scrollPosType = $('#left-side-dynamic-data').scrollTop();
-		loadAnimation();
-		var url = '/findings/modals/building-amenities/{{ $audit->audit_id }}/'+building_id;
-		$.get(url, {
-		}, function(data, display) {
-			if(data=='0'){
-				UIkit.modal.alert("There was a problem getting the project information.");
-			} else {
-				$('#dynamic-data').html(data);
-			}
-		});
-		if(display != null) {
-			$('#select-type-text').text(display);
-		}
-		$('#type_selected').val('building');
-		$('#type_selected_value').val(building_id);
-		updateAmenitiesIcon('building');
-		if($('#findings-location').hasClass('uk-active')){
-			$('#finding-modal-audit-stream-refresh').trigger('click');
-		}
-	}
-
-	function filterUnitAmenities(unit_id, display = null, bottom = null) {
-		window.scrollPosType = $('#left-side-dynamic-data').scrollTop();
-		// debugger;
-		loadAnimation();
-		var url = '/findings/modals/unit-amenities/{{ $audit->audit_id }}/'+unit_id;
-		$.get(url, {
-		}, function(data, display) {
-			if(data=='0'){
-				UIkit.modal.alert("There was a problem getting the project information.");
-			} else {
-				$('#dynamic-data').html(data);
-				scrollTo();
-			}
-		});
-		if(display != null) {
-			$('#select-type-text').text(display);
-		}
-		// debugger;
-		$('#type_selected').val('unit');
-		$('#type_selected_value').val(unit_id);
-		updateAmenitiesIcon('unit');
-		if($('#findings-location').hasClass('uk-active')){
-			$('#finding-modal-audit-stream-refresh').trigger('click');
-		}
-	}
-
-	function loadAnimation() {
-		$('#dynamic-data').empty();
-		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-		$('#dynamic-data').html(tempdiv);
-	}
-
-	function removeDynamicData() {
-		$('#dynamic-data').empty();
-		var tempdiv = '';
-		$('#dynamic-data').html(tempdiv);
-	}
-
-	function loadTypes(refresh = 0, justFetch = 0) {
-		// debugger;
-		window.scrollPosType = $('#left-side-dynamic-data').scrollTop();
-		if(refresh == 1 || justFetch == 1) {
-			loadTypeView = '';
-		}
-		if(loadTypeView == '') {
-			if(justFetch == 0) {
-				loadAnimation();
-			}
-			var url = '/findings/modals/locations/{{ $audit->audit_id }}';
+		function filterAmenities(display = null) {
+			loadAnimation();
+			var url = '/findings/modals/amenities/{{ $audit->audit_id }}';
 			$.get(url, {
-			}, function(data) {
+			}, function(data, display) {
 				if(data=='0'){
 					UIkit.modal.alert("There was a problem getting the project information.");
 				} else {
-					loadTypeView = data;
-					if(justFetch == 0) {
-						$('#dynamic-data').html(data);
-						toggleMineSticky();
-						scrollTo('type');
-					}
+					$('#dynamic-data').html(data);
+					toggleMineSticky();
+					window.donotRefresh = false;
+					scrollTo('amenities');
 				}
 			});
-		} else {
-			$('#dynamic-data').html(loadTypeView);
-			toggleMineSticky();
-			// scrollPosType = $('#left-side-dynamic-data').scrollTop();
-			scrollTo('type');
-		}
-		toggleMineSticky();
-	}
-
-	function scrollTo(element = null, bottom = null) {
-		// debugger;
-		if(element == 'type') {
-			$('#left-side-dynamic-data').scrollTop(scrollPosType);
-		} else {
-			$('#amenity-list').scrollTop(scrollPosAmenity);
-		}
-	}
-
-	// $(document).ready(function() {
-	// 	$('a[href^="#"]').click(function() {
-	// 		var target = $(this.hash);
-	// 		if (target.length == 0) target = $('a[name="' + this.hash.substr(1) + '"]');
-	// 		if (target.length == 0) target = $('html');
-	// 		$('html, body').animate({ scrollTop: target.offset().top }, 500);
-	// 		return false;
-	// 	});
-	// });
-
-
-
-	// function loadAmenities(location) {
-	// 	$('#dynamic-data').empty();
-	// 	var url = '/findings/modals/locations/{{ $audit->audit_id }}';
-	// 	$.get(url, {
-	// 	}, function(data) {
-	// 		if(data=='0'){
-	// 			UIkit.modal.alert("There was a problem getting the project information.");
-	// 		} else {
-	// 			$('#dynamic-data').html(data);
-	// 		}
-	// 	});
-	// }
-
-	function selectAmenity(amenity_id, amenity_inspection_class, amenity_inspection_id, display = 'selected', amenity_increment = '') {
-		//$('.modal-findings-left-main-container').slideDown();
-		// amenityList();
-		// filter the findings to the selection
-		$('#select-amenity-text').text(display);
-		$('#amenity_selected_value').val(amenity_id);
-		console.log('Selected '+amenity_id);
-		window.findingModalSelectedAmenity = amenity_id;
-		window.findingModalSelectedAmenityIncrement = amenity_increment;
-		window.findingModalSelectedAmenityInspection = amenity_inspection_class;
-		window.selectedAmenityInspection = amenity_inspection_id;
-		loadAnimation();
-		filterFindingTypes();
-	}
-
-	function filterFindingTypes(){
-		var searchString = $('#finding-description').val();
-		//debugger;
-		// load into the div
-		console.log('loading /modals/findings_list/'+window.findingModalSelectedType+'/'+window.selectedAmenityInspection+'?search='+searchString);
-		removeDynamicData();
-		$('#dynamic-data').load('/modals/findings_list/'+window.findingModalSelectedType+'/'+window.selectedAmenityInspection+'?search='+searchString, function(response, status, xhr) {
-			if (status == "error") {
-				if(xhr.status == "401") {
-					var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
-				} else if( xhr.status == "500"){
-					var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
-				} else {
-					var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
-				}
-				UIkit.modal.alert(msg);
-			} else {
-				$('.modal-findings-left-main-container').fadeIn();
+			if(display != null) {
+				$('#select-type-text').text(display);
 			}
-		});
-	}
+			updateAmenitiesIcon();
+		}
 
-	//Need to check this ..not sure about the responsibility!
-	function clickDefault() {
-		// debugger;
-		passedAmenity = {{ is_null($passedAmenity) ? 'null' : $passedAmenity->id }} // this was null by default
-		passedUnit = {{ is_null($passedUnit) ? 'null' : $passedUnit->id }} // this was null by default
-		passedBuilding = {{ is_null($passedBuildingId) ? 'null' : $passedBuildingId }} // this was null by default
-		toplevel = {{ $toplevel }}
-		@if(!is_null($passedAmenity))
-			// set filter text for amenity
-			window.findingModalSelectedAmenity = 'a-{{ $passedAmenity->amenity_id }}';
-			window.findingModalSelectedAmenityInspection = 'amenity-inspection-{{ $passedAmenity->id }}';
-			window.selectedAmenityInspection = '{{ $passedAmenity->id }}';
-			<?php
-				if ($passedAmenity->project_id) { // is a project type
-					$locationType = 's-' . $passedAmenity->project_ref;
-					$locationText = "Site picked";
-				} elseif ($passedAmenity->building_id) { // is a building
-					$locationType = 'b-' . $passedAmenity->building_id;
-					$locationText = "BIN: " . addslashes($buildingName);
-					if ($passedAmenity->building->address) {
-						$locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
-					} else {
-						$locationText .= ", NO ADDRESSS SET IN DEVCO.";
-					}
-					echo "console.log('Passed amenity is a building type');";
-				} else { // is a unit
-					$locationType = 'u-' . $passedAmenity->unit_id;
-					$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_name;
-					if ($passedAmenity->unit->building->address) {
-						$locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
-					} else {
-						$locationText .= ", NO ADDRESSS SET IN DEVCO.";
-					}
+		function filterSiteAmenities(project_ref, display = null) {
+			loadAnimation();
+			var url = '/findings/modals/site-amenities/{{ $audit->audit_id }}/'+project_ref;
+			$.get(url, {
+			}, function(data, display) {
+				if(data=='0'){
+					UIkit.modal.alert("There was a problem getting the project information.");
+				} else {
+					$('#dynamic-data').html(data);
+					toggleMineSticky();
+					window.donotRefresh = false;
 				}
-			?>
-				// load the findings of selected amenities
-			@if(!is_null($passedUnit))
-				$.ajax({
-					url:filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_name }}'),
-					success:function(){
-						selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
-					}
-				})
+			});
+			if(display != null) {
+				$('#select-type-text').text(display);
+			}
+			$('#type_selected').val('site');
+			$('#type_selected_value').val(project_ref);
+			updateAmenitiesIcon('site');
+			if($('#findings-location').hasClass('uk-active') && !(window.donotRefresh)){
+				$('#finding-modal-audit-stream-refresh').trigger('click');
+			}
+		}
 
-			@elseif(!is_null($passedBuildingId))
-				$.ajax({
-					url:filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf'),
-					success:function(){
-						selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
-					}
-				})
-			@endif
+		function filterBuildingAmenities(building_id, display = null) {
+			window.scrollPosType = $('#left-side-dynamic-data').scrollTop();
+			loadAnimation();
+			var url = '/findings/modals/building-amenities/{{ $audit->audit_id }}/'+building_id;
+			$.get(url, {
+			}, function(data, display) {
+				if(data=='0'){
+					UIkit.modal.alert("There was a problem getting the project information.");
+				} else {
+					$('#dynamic-data').html(data);
+					toggleMineSticky();
+					window.donotRefresh = false;
+				}
+			});
+			if(display != null) {
+				$('#select-type-text').text(display);
+			}
+			$('#type_selected').val('building');
+			$('#type_selected_value').val(building_id);
+			updateAmenitiesIcon('building');
+			if($('#findings-location').hasClass('uk-active') && !(window.donotRefresh)){
+				$('#finding-modal-audit-stream-refresh').trigger('click');
+			}
+		}
 
-			// Set the building name in selected type button
-			console.log('Filtering to amenity id:a-{{ $passedAmenity->amenity_id }} ({{ $passedAmenity->amenity->amenity_description }}) for amenity inspection {{ $passedAmenity->id }} with a location type target of '+window.findingModalSelectedLocationType+' further filtered to show '+window.findingModalSelectedType+' findings.');
-			@elseif(!is_null($passedUnit))
+		function filterUnitAmenities(unit_id, display = null, bottom = null) {
+			window.scrollPosType = $('#left-side-dynamic-data').scrollTop();
+			// debugger;
+			loadAnimation();
+			var url = '/findings/modals/unit-amenities/{{ $audit->audit_id }}/'+unit_id;
+			$.get(url, {
+			}, function(data, display) {
+				if(data=='0'){
+					UIkit.modal.alert("There was a problem getting the project information.");
+				} else {
+					$('#dynamic-data').html(data);
+					scrollTo();
+					toggleMineSticky();
+					window.donotRefresh = false;
+				}
+			});
+			if(display != null) {
+				$('#select-type-text').text(display);
+			}
+			// debugger;
+			$('#type_selected').val('unit');
+			$('#type_selected_value').val(unit_id);
+			updateAmenitiesIcon('unit');
+			if($('#findings-location').hasClass('uk-active') && !(window.donotRefresh)){
+				$('#finding-modal-audit-stream-refresh').trigger('click');
+			}
+
+		}
+
+		function loadAnimation() {
+			$('#dynamic-data').empty();
+			var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+			$('#dynamic-data').html(tempdiv);
+		}
+
+		function removeDynamicData() {
+			$('#dynamic-data').empty();
+			var tempdiv = '';
+			$('#dynamic-data').html(tempdiv);
+		}
+
+		function loadTypes(refresh = 0, justFetch = 0) {
+			// debugger;
+			window.scrollPosType = $('#left-side-dynamic-data').scrollTop();
+			if(refresh == 1 || justFetch == 1) {
+				loadTypeView = '';
+			}
+			if(loadTypeView == '') {
+				if(justFetch == 0) {
+					loadAnimation();
+				}
+				var url = '/findings/modals/locations/{{ $audit->audit_id }}';
+				$.get(url, {
+				}, function(data) {
+					if(data=='0'){
+						UIkit.modal.alert("There was a problem getting the project information.");
+					} else {
+						loadTypeView = data;
+						if(justFetch == 0) {
+							$('#dynamic-data').html(data);
+							toggleMineSticky();
+							scrollTo('type');
+						}
+					}
+				});
+			} else {
+				$('#dynamic-data').html(loadTypeView);
+				toggleMineSticky();
+				// scrollPosType = $('#left-side-dynamic-data').scrollTop();
+				scrollTo('type');
+			}
+			toggleMineSticky();
+		}
+
+		function scrollTo(element = null, bottom = null) {
+			// debugger;
+			if(element == 'type') {
+				$('#left-side-dynamic-data').scrollTop(scrollPosType);
+			} else {
+				$('#amenity-list').scrollTop(scrollPosAmenity);
+			}
+		}
+
+		// $(document).ready(function() {
+		// 	$('a[href^="#"]').click(function() {
+		// 		var target = $(this.hash);
+		// 		if (target.length == 0) target = $('a[name="' + this.hash.substr(1) + '"]');
+		// 		if (target.length == 0) target = $('html');
+		// 		$('html, body').animate({ scrollTop: target.offset().top }, 500);
+		// 		return false;
+		// 	});
+		// });
+
+
+
+		// function loadAmenities(location) {
+		// 	$('#dynamic-data').empty();
+		// 	var url = '/findings/modals/locations/{{ $audit->audit_id }}';
+		// 	$.get(url, {
+		// 	}, function(data) {
+		// 		if(data=='0'){
+		// 			UIkit.modal.alert("There was a problem getting the project information.");
+		// 		} else {
+		// 			$('#dynamic-data').html(data);
+		// 		}
+		// 	});
+		// }
+
+		function selectAmenity(amenity_id, amenity_inspection_class, amenity_inspection_id, display = 'selected', amenity_increment = '') {
+			//$('.modal-findings-left-main-container').slideDown();
+			// amenityList();
+			// filter the findings to the selection
+			$('#select-amenity-text').text(display);
+			$('#amenity_selected_value').val(amenity_id);
+			console.log('Selected '+amenity_id);
+			window.findingModalSelectedAmenity = amenity_id;
+			window.findingModalSelectedAmenityIncrement = amenity_increment;
+			window.findingModalSelectedAmenityInspection = amenity_inspection_class;
+			window.selectedAmenityInspection = amenity_inspection_id;
+			loadAnimation();
+			filterFindingTypes();
+		}
+
+		function filterFindingTypes(){
+			var searchString = $('#finding-description').val();
+			//debugger;
+			// load into the div
+			console.log('loading /modals/findings_list/'+window.findingModalSelectedType+'/'+window.selectedAmenityInspection+'?search='+searchString);
+			removeDynamicData();
+			$('#dynamic-data').load('/modals/findings_list/'+window.findingModalSelectedType+'/'+window.selectedAmenityInspection+'?search='+searchString, function(response, status, xhr) {
+				if (status == "error") {
+					if(xhr.status == "401") {
+						var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+					} else if( xhr.status == "500"){
+						var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+					} else {
+						var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+					}
+					UIkit.modal.alert(msg);
+				} else {
+					$('.modal-findings-left-main-container').fadeIn();
+				}
+			});
+		}
+
+		//Need to check this ..not sure about the responsibility!
+		function clickDefault() {
+			// debugger;
+			passedAmenity = {{ is_null($passedAmenity) ? 'null' : $passedAmenity->id }} // this was null by default
+			passedUnit = {{ is_null($passedUnit) ? 'null' : $passedUnit->id }} // this was null by default
+			passedBuilding = {{ is_null($passedBuildingId) ? 'null' : $passedBuildingId }} // this was null by default
+			toplevel = {{ $toplevel }}
+			@if(!is_null($passedAmenity))
+				// set filter text for amenity
+				window.findingModalSelectedAmenity = 'a-{{ $passedAmenity->amenity_id }}';
+				window.findingModalSelectedAmenityInspection = 'amenity-inspection-{{ $passedAmenity->id }}';
+				window.selectedAmenityInspection = '{{ $passedAmenity->id }}';
+				<?php
+					if ($passedAmenity->project_id) { // is a project type
+						$locationType = 's-' . $passedAmenity->project_ref;
+						$locationText = "Site picked";
+					} elseif ($passedAmenity->building_id) { // is a building
+						$locationType = 'b-' . $passedAmenity->building_id;
+						$locationText = "BIN: " . addslashes($buildingName);
+						if ($passedAmenity->building->address) {
+							$locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
+						} else {
+							$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+						}
+						echo "console.log('Passed amenity is a building type');";
+					} else { // is a unit
+						$locationType = 'u-' . $passedAmenity->unit_id;
+						$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_name;
+						if ($passedAmenity->unit->building->address) {
+							$locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
+						} else {
+							$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+						}
+					}
+					?>
+					// load the findings of selected amenities
+					@if(!is_null($passedUnit))
+					$.ajax({
+						url:filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building_name }}'),
+						success:function(){
+							selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
+						}
+					})
+
+					@elseif(!is_null($passedBuildingId))
+					$.ajax({
+						url:filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf'),
+						success:function(){
+							selectAmenity(window.findingModalSelectedAmenity, window.findingModalSelectedAmenityInspection, window.selectedAmenityInspection, '@if($passedAmenity->auditor_id) {{ $passedAmenity->user->initials() }} @else NA @endIf : {{ $passedAmenity->amenity->amenity_description }}', amenity_increment = '');
+						}
+					})
+					@endif
+
+				// Set the building name in selected type button
+				console.log('Filtering to amenity id:a-{{ $passedAmenity->amenity_id }} ({{ $passedAmenity->amenity->amenity_description }}) for amenity inspection {{ $passedAmenity->id }} with a location type target of '+window.findingModalSelectedLocationType+' further filtered to show '+window.findingModalSelectedType+' findings.');
+				@elseif(!is_null($passedUnit))
 				@if($toplevel != 1)
-					console.log('Filtering to unit id:u-{{ $passedUnit->unit_id }}');
-		    	// set filter test for type
-		    	<?php
-		    		$locationType = 'u-' . $passedUnit->unit_id;
-		    	?>
-					// set filter text for type
-					window.findingModalSelectedLocationType = '{{ $locationType }}';
-					// filterAmenities('u-{{ $passedUnit->unit_id }}', 'Unit NAME: {{ $passedUnit->unit_name }} in Building BIN:{{ $passedUnit->building_key }} ADDRESS: @if($passedUnit->building->address) {{ $passedUnit->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf',0);
-					filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building->building_name }}');
-		    	// filter to type and allita type (nlt, lt, file)
-		    @else
-		    	console.log('Filtering building-level amenities {{ $passedBuilding->building_id }}}');
-		    	filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
-		    @endif
-		  @elseif(!is_null($passedBuildingId))
-		    	@if($toplevel != 1)
+				console.log('Filtering to unit id:u-{{ $passedUnit->unit_id }}');
+			    	// set filter test for type
+			    	<?php
+			    	$locationType = 'u-' . $passedUnit->unit_id;
+			    	?>
+						// set filter text for type
+						window.findingModalSelectedLocationType = '{{ $locationType }}';
+						// filterAmenities('u-{{ $passedUnit->unit_id }}', 'Unit NAME: {{ $passedUnit->unit_name }} in Building BIN:{{ $passedUnit->building_key }} ADDRESS: @if($passedUnit->building->address) {{ $passedUnit->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf',0);
+						filterUnitAmenities({{ $passedUnit->unit_id }} ,'Unit {{ $passedUnit->unit_name }} in BIN:{{ $passedUnit->building->building_name }}');
+			    	// filter to type and allita type (nlt, lt, file)
+			    	@else
+			    	console.log('Filtering building-level amenities {{ $passedBuilding->building_id }}}');
+			    	filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+			    	@endif
+			    	@elseif(!is_null($passedBuildingId))
+			    	@if($toplevel != 1)
 			    	console.log('Filtering to Building BIN: {{ $passedBuilding->building_name }}, ADDRESS: {{ $passedBuilding->address }}');
 			    	<?php
 			    	$locationType = 'b-' . $passedBuilding->building_id;
 			    	?>
-						// set filter text for type
-						window.findingModalSelectedLocationType = '{{ $locationType }}';
-			    	// set filter test for type
-		    		@if($passedBuilding->building)
-			    		filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
-			    	@else
-			  			//need to check when this condition will be true - Div 20190403, not seeing much difference from true and false
-			  			filterAmenities('b-{{ $passedBuilding->building_id }}', 'BIN:{{ $passedBuilding->building_name }}',0,1);
+							// set filter text for type
+							window.findingModalSelectedLocationType = '{{ $locationType }}';
+				    	// set filter test for type
+				    	@if($passedBuilding->building)
+				    	filterBuildingAmenities('{{ $passedBuilding->building_id }}','BIN: {{ $passedBuilding->building_name }}, ADDRESS: @if($passedBuilding->building->address){{ $passedBuilding->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf');
+				    	@else
+				  			//need to check when this condition will be true - Div 20190403, not seeing much difference from true and false
+				  			filterAmenities('b-{{ $passedBuilding->building_id }}', 'BIN:{{ $passedBuilding->building_name }}',0,1);
+				  			@endif
+			  			// filter to type and allita type (nlt, lt, file)
+			  			@else
+			  			console.log('Filtering project-level amenities {{ $audit->project_ref }}');
+			  			filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
+			  			@endif
+			  			@elseif(!is_null($passedBuilding))
+			  			console.log('Filtering project-level amenities {{ $audit->project_ref }}');
+			  			filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
+			  		//console.log('filtering by project-level');
+			  		// setTimeout(function() {
+			  		// 	typeList();
+			  		// }, .7);
+
 			  		@endif
-		  			// filter to type and allita type (nlt, lt, file)
-	  			@else
-	  				console.log('Filtering project-level amenities {{ $audit->project_ref }}');
-	  				filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
-	  			@endif
-	  	@elseif(!is_null($passedBuilding))
-	  		console.log('Filtering project-level amenities {{ $audit->project_ref }}');
-				filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
-		  		//console.log('filtering by project-level');
-		  		// setTimeout(function() {
-		  		// 	typeList();
-		  		// }, .7);
+	  		// toggleMine();
 
-  		@endif
-  		// toggleMine();
+	  	}
 
-  	}
+	  	function toggleMineSticky() {
+	  		// debugger;
+	  		if(window.findingModalSelectedMine == 'true'){
+					// $('#mine-filter-button').addClass('uk-active');
+					// only already visible elements?
+					$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
+					$('.not-mine-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
+					$('#mine-findings-filter').show();
+				} else {
+					$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
+					$('.not-mine-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
+					$('#mine-findings-filter').hide();
+					// $('#mine-filter-button').removeClass('uk-active');
+				}
+			}
 
-  	function toggleMineSticky() {
-  		// debugger;
-  		if(window.findingModalSelectedMine == 'true'){
-				// $('#mine-filter-button').addClass('uk-active');
-				// only already visible elements?
-				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
-				$('.not-mine-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
+			function toggleMine() {
+	  		// Find in which selection they are in
+	  		// Top level
+	  			// Show Site if site or internal ones are on his name
+	  			// Show Building if Building or internal/units are
+	  		// Site level
+	  		// Building Level
+	  		// Unit Level
+	  		window.findingModalSelectedAmenityDate = $('#finding-date').val();
+				//$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
+				// debugger;
+				console.log("select mine: "+window.findingModalSelectedMine);
+				if(window.findingModalSelectedMine == 'true'){
+					window.findingModalSelectedMine = 'false';
+
+					$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
+					$('.not-mine-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
+					$('#mine-filter-button').removeClass('uk-active');
+					$('#mine-findings-filter').hide();
+				} else {
+					window.findingModalSelectedMine = 'true';
+
+					$('#mine-filter-button').addClass('uk-active');
+					// only already visible elements?
+					$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
+					$('.not-mine-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
+					$('#mine-findings-filter').show();
+				}
+			}
+
+			function refreshLocationFindingStream(type,auditId,buildingId,unitId,amenityId, toggle = 0) {
+				debugger;
+				typeSelected = $('#type_selected').val();
+				typeSelectedValue = $('#type_selected_value').val();
+				// debugger;
+				if(window.findingModalRightLocation && !window.addFindingFlag) {
+					window.findingModalRightLocation = false;
+					window.addFindingFlag = true;
+					$('#location-findings-filter').hide();
+					$('#findings-location').removeClass('uk-active');
+					if(typeSelectedValue != '') {
+						refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});
+						return;
+					}
+				} else if(typeSelectedValue != '' && !window.findingModalRightLocation) {
+					window.findingModalRightLocation = true;
+					window.addFindingFlag = false;
+					$('#location-findings-filter').show();
+				} else{
+					window.findingModalRightLocation = false;
+					$('#findings-location').removeClass('uk-active');
+					$('#location-findings-filter').hide();
+					if(typeSelectedValue != '')
+					$('#finding-modal-audit-stream-refresh').trigger('click');
+				}
+				// debugger;
+				if(typeSelectedValue != '') {
+					if(typeSelected == 'building') {
+						buildingId = typeSelectedValue;
+						// type = typeSelected;
+					} else if(typeSelected == 'unit') {
+						unitId = typeSelectedValue;
+						// type = typeSelected;
+					}
+					loc = typeSelected;
+					refreshLocationFindingStreamFetch(type,auditId,buildingId,unitId,amenityId,0,loc);
+				}
+			}
+
+			function refreshLocationFindingStreamSticky(type,auditId,buildingId,unitId,amenityId, toggle = 0) {
+				typeSelected = $('#type_selected').val();
+				typeSelectedValue = $('#type_selected_value').val();
+				// debugger;
+				if(typeSelectedValue != '') {
+					if(typeSelected == 'building') {
+						buildingId = typeSelectedValue;
+						// type = typeSelected;
+					} else if(typeSelected == 'unit') {
+						unitId = typeSelectedValue;
+						// type = typeSelected;
+					}
+					loc = typeSelected;
+					refreshLocationFindingStreamFetch(type,auditId,buildingId,unitId,amenityId,0,loc);
+				}
+			}
+
+
+		// A $( document ).ready() block.
+		$( document ).ready(function() {
+			console.log( "Modal Loaded!" );
+			clickDefault();
+			// debugger;
+			// window.findingModalSelectedMine = 'false';
+			// $('#mine-filter-button').removeClass('uk-active');
+			// $('#mine-findings-filter').hide();
+			if(window.findingModalSelectedMine == "true"){
+				$('#mine-filter-button').addClass('uk-active');
 				$('#mine-findings-filter').show();
 			} else {
-				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
-				$('.not-mine-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
-				$('#mine-findings-filter').hide();
-				// $('#mine-filter-button').removeClass('uk-active');
-			}
-		}
-
-		function toggleMine() {
-  		// Find in which selection they are in
-  		// Top level
-  			// Show Site if site or internal ones are on his name
-  			// Show Building if Building or internal/units are
-  		// Site level
-  		// Building Level
-  		// Unit Level
-  		window.findingModalSelectedAmenityDate = $('#finding-date').val();
-			//$('#'+window.findingModalSelectedType+'-filter-button').trigger('click');
-			// debugger;
-			console.log("select mine: "+window.findingModalSelectedMine);
-			if(window.findingModalSelectedMine == 'true'){
-				window.findingModalSelectedMine = 'false';
-
-				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
-				$('.not-mine-items').not('.uid-{{ $current_user->id }}').removeClass('notmine');
 				$('#mine-filter-button').removeClass('uk-active');
 				$('#mine-findings-filter').hide();
-			} else {
-				window.findingModalSelectedMine = 'true';
-
-				$('#mine-filter-button').addClass('uk-active');
-				// only already visible elements?
-				$('.amenity-list-item.finding-modal-list-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
-				$('.not-mine-items').not('.uid-{{ $current_user->id }}').addClass('notmine');
-				$('#mine-findings-filter').show();
 			}
-		}
+			// refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});
+			// toggleMineSticky();
+		});
 
-		function refreshLocationFindingStream(type,auditId,buildingId,unitId,amenityId, toggle = 0) {
-			typeSelected = $('#type_selected').val();
-			typeSelectedValue = $('#type_selected_value').val();
+		// filter findings based on class
+		$('#finding-description').on('keyup', function () {
 			// debugger;
-			if(window.findingModalRightLocation && !window.addFindingFlag) {
-				window.findingModalRightLocation = false;
-				window.addFindingFlag = true;
-				$('#location-findings-filter').hide();
-				if(typeSelectedValue != '') {
-					refreshFindingStream('{{ $type }}',{{ $auditid }},{{ $buildingid }},{{ $unitid }},{{ $amenityid }});
-					return;
-				}
-			} else if(typeSelectedValue != '') {
-				window.findingModalRightLocation = true;
-				window.addFindingFlag = false;
-				$('#location-findings-filter').show();
+			if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
+				filterFindingTypes();
+			}else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
+				filterFindingTypes();
 			}
-			// debugger;
-			if(typeSelectedValue != '') {
-				if(typeSelected == 'building') {
-					buildingId = typeSelectedValue;
-					// type = typeSelected;
-				} else if(typeSelected == 'unit') {
-					unitId = typeSelectedValue;
-					// type = typeSelected;
-				}
-				loc = typeSelected;
-				refreshLocationFindingStreamFetch(type,auditId,buildingId,unitId,amenityId,0,loc);
-			}
-		}
-
-		function refreshLocationFindingStreamSticky(type,auditId,buildingId,unitId,amenityId, toggle = 0) {
-			typeSelected = $('#type_selected').val();
-			typeSelectedValue = $('#type_selected_value').val();
-			// debugger;
-			if(typeSelectedValue != '') {
-				if(typeSelected == 'building') {
-					buildingId = typeSelectedValue;
-					// type = typeSelected;
-				} else if(typeSelected == 'unit') {
-					unitId = typeSelectedValue;
-					// type = typeSelected;
-				}
-				loc = typeSelected;
-				refreshLocationFindingStreamFetch(type,auditId,buildingId,unitId,amenityId,0,loc);
-			}
-		}
-
-
-	// A $( document ).ready() block.
-	$( document ).ready(function() {
-		console.log( "Modal Loaded!" );
-		clickDefault();
-		// debugger;
-		// window.findingModalSelectedMine = 'false';
-		// $('#mine-filter-button').removeClass('uk-active');
-		// $('#mine-findings-filter').hide();
-		if(window.findingModalSelectedMine == "true"){
-			$('#mine-filter-button').addClass('uk-active');
-			$('#mine-findings-filter').show();
-		} else {
-			$('#mine-filter-button').removeClass('uk-active');
-			$('#mine-findings-filter').hide();
-		}
-		// toggleMineSticky();
-	});
-
-	// filter findings based on class
-	$('#finding-description').on('keyup', function () {
-		// debugger;
-		if($('#finding-description').val().length > 2 && window.findingModalSelectedAmenity != ''){
-			filterFindingTypes();
-		}else if($('#finding-description').val().length == 0 && window.findingModalSelectedAmenity != ''){
-			filterFindingTypes();
-		}
-	});
+		});
 
 
 
 
-</script>
+	</script>

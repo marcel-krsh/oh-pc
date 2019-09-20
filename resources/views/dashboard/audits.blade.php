@@ -1625,6 +1625,9 @@ function updateAuditStepSelection(e){
                 dynamicModalLoad('projects/'+projectId+'/contact',0,0,0);
             }
     function openProject (projectKey,auditId) {
+    	// debugger;
+    				window.selectedProjectKey = projectKey;
+    				window.selectedAuditId = auditId;
             	loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
             }
     function openProjectDetails (auditId, total_buildings) {

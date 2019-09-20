@@ -86,15 +86,20 @@ function clickTab(){
 }
 
 // works for main tabs and also sub tabs using prefix
+function loadProjectTab() {
+	loadTab('/projects/view/'+window.selectedProjectKey+'/'+window.selectedAuditId, '4', 0, 0, '', 1);
+}
+
 function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceReload=0, audit=0) {
 	// check if tab already exist, if not create it
+	// debugger;
 	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').length == 0){
 		var newTabContent = '<li><div id="'+prefix+'detail-tab-'+tabNumber+'-content"></div></li>';
         $( newTabContent ).appendTo( $('#tabs') );
 	}
 	if($('#'+prefix+'detail-tab-'+tabNumber).length == 0){
 
-		var newTabTitle = '<li id="'+prefix+'detail-tab-'+tabNumber+'" onclick="if($(\'#detail-tab-'+tabNumber+'\').hasClass(\'uk-active\')){loadTab(\''+route+'\', \''+tabNumber+'\', 0, 0,\''+'\',1);}" class="detail-tab-'+tabNumber+'" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" >';
+		var newTabTitle = '<li id="'+prefix+'detail-tab-'+tabNumber+'" onclick="if($(\'#detail-tab-'+tabNumber+'\').hasClass(\'uk-active\')){loadProjectTab();}" class="detail-tab-'+tabNumber+'" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" >';
 		newTabTitle = newTabTitle + '<a href=""></a>';
 		newTabTitle = newTabTitle + '</li>';
         $( newTabTitle ).appendTo( $('#'+prefix+'top-tabs') );
