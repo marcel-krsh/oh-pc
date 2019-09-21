@@ -184,16 +184,17 @@
 		</div>
 	</div>
 </template>
+
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-1-1 uk-margin-top">
 			<div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{count($audits)}}  Audits </div>
 			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
-				@can('access_auditor')
+				@if($auditor_access)
 				<a onClick="filterAudits('audit-my-audits',0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
 				@else
-				@endcan
+				@endif
 			</div>
 			@endif
 			@if(isset($auditFilterProjectId) && $auditFilterProjectId != 0)
@@ -531,14 +532,14 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-					<th @can('access_auditor') style="width:185px;" @else style="max-width:50px;" @endcan>
+					<th @if($auditor_access) style="width:185px;" @else style="max-width:50px;" @endif>
 						<div uk-grid>
 							<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid>
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
-								<span class="@can('access_auditor') uk-width-1-2 @else uk-width-1-1 @endcan uk-text-center uk-padding-remove-top uk-margin-remove-top">
+								<span class="@if($auditor_access) uk-width-1-2 @else uk-width-1-1 @endif uk-text-center uk-padding-remove-top uk-margin-remove-top">
 									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
 								</span>
-								@can('access_auditor')
+								@if($auditor_access)
 								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
 									<i id="assignmentselectionbutton" class="a-buildings"></i>
 								</span>
@@ -569,16 +570,16 @@
 									</div>
 								</span>
 
-								@endcan
+								@endif
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-2 @else uk-width-1-1 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@if($auditor_access) uk-width-1-2 @else uk-width-1-1 @endif uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
 								@if($sort_by == 'audit-sort-scheduled-date')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-scheduled-date',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
 								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-scheduled-date', 1);"></a>
 								@endif
 							</span>
-							@can('access_auditor')
+							@if($auditor_access)
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
 								@if($sort_by == 'audit-sort-assigned-areas')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-assigned-areas',  @php echo 1-$sort_order; @endphp);"></a>
@@ -594,10 +595,10 @@
 								@endif
 							</span>
 
-							@endcan
+							@endif
 						</div>
 					</th>
-					<th style="@can('access_auditor') width:165px; @else max-width: 50px @endcan">
+					<th style="@if($auditor_access) width:165px; @else max-width: 50px @endif">
 						<div uk-grid>
 							<div class="filter-box filter-date-expire uk-vertical-align uk-width-1-1 uk-text-center">
 								<span>
@@ -613,7 +614,7 @@
 							</span>
 						</div>
 					</th>
-					<th style="@can('access_auditor') width: 100px; @else max-width: 103px; @endcan ">
+					<th style="@if($auditor_access) width: 100px; @else max-width: 103px; @endif ">
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
 								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -756,10 +757,10 @@
 							</span>
 						</div>
 					</th>
-					<th  @can('access_auditor') style="width: 140px;" @else style="max-width: 70px;" @endcan >
+					<th  @if($auditor_access) style="width: 140px;" @else style="max-width: 70px;" @endif >
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
-								@can('access_auditor')
+								@if($auditor_access)
 								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
 									<i id="complianceselectionbutton" class="a-circle-checked"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
@@ -820,8 +821,8 @@
 
 									</div>
 								</span>
-								@endcan
-								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								@endif
+								<span class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-envelope-4"></i>
 									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right; animation: uk-animation-slide-top-small; mode: click" style="top: 26px; left: 0px;">
 										<ul class="uk-nav uk-nav-dropdown uk-text-small uk-list">
@@ -875,12 +876,12 @@
 										</ul>
 									</div>
 								</span>
-								<span class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top uk-link">
 									<i class="a-files"></i>
 								</span>
 
 							</div>
-							@can('access_auditor')
+							@if($auditor_access)
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY COMPLIANCE STATUS">
 								@if($sort_by == 'audit-sort-compliance-status')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status',  @php echo 1-$sort_order; @endphp);"></a>
@@ -896,14 +897,14 @@
 								@endif
 							</span>
 							@endif
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
 								@if($sort_by == 'audit-sort-status-message')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
 								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="@can('access_auditor') uk-width-1-4 @else uk-width-1-2 @endcan uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
+							<span data-uk-tooltip="{pos:'bottom'}" class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
 								@if($sort_by == 'audit-sort-status-document')
 								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
@@ -915,7 +916,7 @@
 						</div>
 
 					</th>
-					@can('access_auditor')
+					@if($auditor_access)
 					<th >
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link">
@@ -959,7 +960,8 @@
 							</span>
 
 						</div>
-					</th>@endcan
+					</th>
+					@endif
 					@if(1==0)
 					<th style="vertical-align:top;">
 						<div uk-grid>
@@ -996,7 +998,7 @@ The following div is defined in this particular tab and pushed to the main layou
 */
 ?>
 <div id="footer-actions" hidden>
-	@can('access_auditor')
+	@if($auditor_access)
 	@if(session('audit-hidenoncritical') != 1)
 	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
 	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
@@ -1004,7 +1006,7 @@ The following div is defined in this particular tab and pushed to the main layou
 	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
 	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
 	@endif
-	@endcan
+	@endif
 	<a href="#top" id="smoothscrollLink" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
 </div>
 
@@ -1025,7 +1027,7 @@ The following div is defined in this particular tab and pushed to the main layou
 				$(this).keyup();
 			}
 		});
-		@can('access_auditor')
+		@if($auditor_access)
 		$('#step-all').click(function() {
 			if($('#step-all').prop('checked')){
 				$('input.stepselector').prop('checked', false);
@@ -1037,7 +1039,7 @@ The following div is defined in this particular tab and pushed to the main layou
 				$('#step-all').prop('checked', false);
 			}
 		});
-		@endcan
+		@endif
 
 		$("#filter-by-project").keypress(function(event) {
 			if (event.which == 13) {
@@ -1126,7 +1128,7 @@ The following div is defined in this particular tab and pushed to the main layou
 
 	});
 
-	@can('access_auditor')
+	@if($auditor_access)
 	function rerunCompliance(audit){
 
 		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>RERUN COMPLIANCE SELECTION?</h2></div><div class="uk-width-2-3"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to rerun the automated compliance selection? <br /><br />Depending on how many are currently being processed, this could take up to 10 minutes to complete.</h3><p><strong>Why does it take up to 10 minutes?</strong> When a compliance selection is run, it performs all the unit selections based on the criteria for each program used by the project. Because each selection process uses an element of randomness, the total number of units that need inspected may be different each time it is run due to overlaps of programs to units. So, we run the process 10 times, and pick the one that has the highest amount of program overlap to units. This keeps the audit federally compliant while also making the most efficient use of your time.</p></div><div class="uk-width-1-3"><hr class="dashed-hr uk-margin-bottom"><h3><em style="color:#ca3a8d">WARNING!</em></h3><p style="color:#ca3a8d"> While this will not affect the days and times you have auditors scheduled for your audit, it will remove any auditor assignments to inspect specific areas and units.<br /><br /><small>PLEASE NOTE THAT THIS WILL NOT RUN ON AUDITS WITH FINDINGS RECORDED. YOU WILL NEED TO DO YOUR SELECTION MANUALY.</small></p></div><div class="uk-width-1-1"></div></div>').then(function() {
@@ -1148,9 +1150,6 @@ The following div is defined in this particular tab and pushed to the main layou
 			console.log('Rejected.')
 		});
 	}
-	@endcan
-
-	@can('access_auditor')
 	function assignAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element, fullscreen=null,warnAboutSave=null,fixedHeight=0,inmodallevel=0){
 		if(inmodallevel)
 			dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element+'/1', fullscreen,warnAboutSave,fixedHeight,inmodallevel);
@@ -1325,7 +1324,7 @@ The following div is defined in this particular tab and pushed to the main layou
 			});
 	@endif
 	}
-@endcan
+@endif
 
 
 function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0){
@@ -1584,7 +1583,7 @@ function updateAuditComplianceStatus(e){
 	} );
 }
 
-@can('access_auditor')
+@if($auditor_access)
 function updateAuditStepSelection(e){
 	e.preventDefault();
 	var form = $('#audit_steps_selection');
@@ -1680,7 +1679,7 @@ function updateAuditStepSelection(e){
 
 
 
-@endcan
+@endif
 </script>
 <script>
 	@if(0)

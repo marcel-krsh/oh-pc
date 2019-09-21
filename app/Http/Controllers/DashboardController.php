@@ -12,6 +12,7 @@ use Auth;
 use Carbon;
 use Illuminate\Http\Request;
 use Session;
+use View;
 
 class DashboardController extends Controller
 {
@@ -31,7 +32,20 @@ class DashboardController extends Controller
     //     $current_user->socket_id = $token;
     //     $current_user->save();
     //   }
-    // }
+    $this->middleware(function ($request, $next) {
+        $current_user = Auth::user();
+		    $auditor_access = Auth::user()->auditor_access();
+		    view::share('current_user');
+		    view::share('auditor_access');
+
+		    return $next($request);
+    });
+
+    view()->composer('*', function ($view) {
+        $view->with('current_user', auth()->user());
+        $view->with('auditor_access', auth()->user()->auditor_access());
+    });
+
   }
 
   public function login()
@@ -633,6 +647,7 @@ class DashboardController extends Controller
   }
   public function audits(Request $request, $page = 0)
   {
+  	ini_set('max_execution_time', 1800); //3 minutes
 
         // TEST EVENT
         // $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
@@ -986,8 +1001,8 @@ class DashboardController extends Controller
             $audits = $audits->orWhere('step_id', '=', $step->id);
           }
         }
-        $audits = $audits->orderBy($sort_by_field, $sort_order_query)->get();
-
+        $audits = $audits->with('audit.findings', 'audit.unique_unit_inspections')->orderBy($sort_by_field, $sort_order_query)->get();
+        // $audits = $audits->take(5);
         $data = [];
 
         $audits_to_remove = []; // ids of audits to remove after filtering by auditor

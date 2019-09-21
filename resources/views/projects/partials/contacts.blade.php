@@ -413,12 +413,15 @@ $thisProjectHtml = '';
 							<span uk-tooltip title="This person may be associated with an organization, however I can only see if they are a default contact for an organization.">NA</span>
 							@endIf
 						</td>
-						<td>@if(count($contact->person->projects)>0)
+						<td>@if(count($contact->person->projects) > 0)
 							<span onclick="$('#contact-{{ $contact->id }}-projects').slideToggle();" class="use-hand-cursor"><i class="a-info-circle"></i>
 								Total Projects: {{ count($contact->person->projects) }}
 							</span>
 							<div id="contact-{{ $contact->id }}-projects" style="display: none;">
 								<ul>
+									@php
+									$projectIds = [];
+									@endphp
 									@forEach($contact->person->projects as $p)
 									<li @if($p->id == $project->id) style="font-weight:bold" @endIf>
 										{{ $p->project_number }} : {{ $p->project_name }}
@@ -443,7 +446,7 @@ $thisProjectHtml = '';
 							<div uk-dropdown="mode:click; pos: top-right">
 								<ul class="uk-nav uk-dropdown-nav">
 									<li ><a onclick="dynamicModalLoad('createuser_for_contact?contact={{ $contact->id }}&on_project={{ $project->id }}&project={{ $project->id }}&multiple=0');">Create User & Add to This Project</a></li>
-									@if(count($contact->person->projects)>1)
+									@if(count($contact->person->projects) > 1)
 									<li><a onclick="dynamicModalLoad('createuser_for_contact?contact={{ $contact->id }}&on_project={{ json_encode($projectIds) }}&project={{ $project->id }}&multiple=1');">Create User & Add to All Their Projects</a></li>
 									@endif
 									<li ><a onclick='removePersonFromThisProject({{ $contact->id }}, {{ $project->id }}, 0, "{{ $thisProjectHtml }}")'>Remove Person From This Project</a></li>
