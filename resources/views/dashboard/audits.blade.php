@@ -1686,7 +1686,7 @@ function updateAuditStepSelection(e){
 @endif
 </script>
 <script>
-		window.onPageAudits = [@forEach($audits as $audit)["{{$audit->audit_id}}","{{$audit->updated_at}}"] @if(!$loop->last),@endIf @endForEach ];
+		window.onPageAudits = {@forEach($audits as $audit) '{{$audit->audit_id}}' :["{{$audit->audit_id}}","{{$audit->updated_at}}"] @if(!$loop->last),@endIf @endForEach };
 		function checkForAudit(audit_id){
 			// 
 			//console.log('Checking to see if audit '+audit_id+' is on this page.');
@@ -1698,11 +1698,12 @@ function updateAuditStepSelection(e){
 
 		}
 
-		function updateAuditRow(audit_id){
+		function updateAuditRow(audit_id,date_time_stamp){
 			// update the audit row with new info
 			
 			$("#audit-r-" + audit_id).load('/updated_cached_audit/'+audit_id,function(audit_id){
 				console.log('Updated audit row '+audit_id);
+				
 			});
 		}
 
