@@ -30,7 +30,8 @@ class update_audit_caches implements ShouldQueue
      */
     public function handle()
     {
-        $audits = CachedAudit::where('step_id'< 67){
+        $audits = CachedAudit::where('step_id'< 67)->get();
+
             // processing only active audits.
             foreach ($audits as $audit) {
                $audit->update_cached_audit();
