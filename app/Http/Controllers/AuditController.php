@@ -6463,4 +6463,25 @@ class AuditController extends Controller
 
     }
 
+    public function cachedAuditCheck(Request $request){
+        if($request->date){
+            $auditCheck = CachedAudit::select('audit_id')->where('updated_at','>',date('Y-m-d H:i:s', strtotime($request->date)))->pluck('audit_id');
+            if(count($auditCheck)){
+                return json_encode($auditCheck);
+            }else{
+                return 0;
+            }
+
+        }
+    }
+
+    public function singleCachedAudit($audit_id){
+        $audit = CachedAudit::where('audit_id',int($audit_id))->first();
+        if($audit !== null){
+            return view('dashboard.partials.audit_row',compact($audit));
+        }else{
+            return 0;
+        }
+    }
+
 }
