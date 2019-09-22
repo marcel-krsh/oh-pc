@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Models\CachedAudit;
+use App\Models\CachedAudit;
 
 class update_audit_caches implements ShouldQueue
 {
