@@ -1720,7 +1720,8 @@ function updateAuditStepSelection(e){
 							});
 							window.checking_latest_cached_audit = 0;
 						}else{
-							console.log('No Audits')
+							console.log('No Audits');
+							window.checking_latest_cached_audit = 0;
 						}
 					} );
 				}
