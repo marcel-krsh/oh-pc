@@ -6480,7 +6480,7 @@ class AuditController extends Controller
     }
 
     public function singleCachedAudit($audit_id){
-        $audit = CachedAudit::where('audit_id',int($audit_id))->first();
+        $audit = CachedAudit::where('audit_id',intval($audit_id))->first();
         if($audit !== null){
             return view('dashboard.partials.audit_row',compact($audit));
         }else{
