@@ -41,7 +41,7 @@ class CrrReport extends Model
     }
 
     public function template(){
-
+    	// return $this->hasOne('App\Models\CrrReport','id','from_template_id');
         $template = CrrReport::whereId($this->from_template_id)->first();
         //dd($template);
         //dd($this, $this->from_template_id,$template);

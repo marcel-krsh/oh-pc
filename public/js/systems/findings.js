@@ -39,6 +39,7 @@ function searchFilterTerm(valThis) {
 }
 
 $('#finding-description').keyup(function(){
+	debugger;
    var valThis = $(this).val().toLowerCase();
    searchFilterTerm(valThis);
 });
