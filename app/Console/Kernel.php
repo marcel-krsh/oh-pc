@@ -108,7 +108,7 @@ class Kernel extends ConsoleKernel
                 $check = \DB::table('jobs')->where('queue','cache_update')->count();
 
                 if($check<1){
-                    update_audit_caches::dispatch($audit)->onQueue('cache_update');
+                    update_audit_caches::dispatch()->onQueue('cache_update');
                 }
 
                 time_sleep_until($dt->addSeconds($seconds)->timestamp);
