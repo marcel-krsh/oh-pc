@@ -99,7 +99,7 @@ class Kernel extends ConsoleKernel
         /// laravel's shortest span is 1 minute - we want to check our audit caches every 5 seconds.
         $schedule->call(function () use ($seconds) {
 
-            $dt = Carbon\Carbon::now();
+            $dt = Carbon::now();
 
             $x=60/$seconds;
 
