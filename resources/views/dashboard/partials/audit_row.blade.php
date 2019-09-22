@@ -1,10 +1,10 @@
 <?php
 $lead = $audit->lead_json;
 
-if($audit->update_cached_audit()){
-	//refreshed - update values.
-	$audit->refresh();
-}
+// if($audit->update_cached_audit()){
+// 	//refreshed - update values.
+// 	$audit->refresh();
+// }
 ?>
 
 <td id="'audit-c-1-'{{$audit->audit_id}}" class="uk-text-center audit-td-lead use-hand-cursor" >
