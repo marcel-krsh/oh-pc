@@ -1670,7 +1670,7 @@ function updateAuditStepSelection(e){
 					    pos: 'top-right',
 					    timeout: 1500
 						});
-						$('#detail-tab-1').trigger('click');
+						//$('#detail-tab-1').trigger('click');
 
 	                }
 		} );
