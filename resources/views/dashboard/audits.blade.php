@@ -1702,7 +1702,7 @@ function updateAuditStepSelection(e){
 			// update the audit row with new info
 			
 			$("#audit-r-" + audit_id).load('/updated_cached_audit/'+audit_id,function(audit_id){
-				console.log('Updated audit row '+audit_id);
+				console.log('Updated audit row ');
 				
 			});
 		}
