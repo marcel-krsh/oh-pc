@@ -52,6 +52,7 @@ use App\Jobs\SyncHouseHoldSizesJob;
 use App\Jobs\SyncProjectDatesJob;
 use App\Jobs\SyncUnitIdentitiesJob;
 use App\Jobs\ComplianceProjectionJob;
+use App\Jobs\update_audit_caches;
 
 use App\Jobs\SyncIdsJob;
 use App\Models\Projection;
@@ -92,11 +93,40 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        
+
+        $seconds = 5;
+        /// laravel's shortest span is 1 minute - we want to check our audit caches every 5 seconds.
+        $schedule->call(function () use ($seconds) {
+
+            $dt = Carbon\Carbon::now();
+
+            $x=60/$seconds;
+
+            do{
+
+                $check = \DB::table('jobs')->where('queue','cache_update')->count();
+
+                if($check<1){
+                    update_audit_caches::dispatch($audit)->onQueue('cache_update');
+                }
+
+                time_sleep_until($dt->addSeconds($seconds)->timestamp);
+
+            } while($x-- > 0);
+        })->everyMinute();
+
+        
         /////////////////
         ////// SYNC JOBS
         ////
 
-        if(!env('APP_DEBUG_NO_DEVCO') && (intval(date('G',time())) < 10 || intval(date('G',time()) > 3))){
+        if(!env('APP_DEBUG_NO_DEVCO') && (intval(date('G',time())) < 22 || intval(date('G',time()) > 3))){
+
+            // it is befor 10:00 pm and after 3 am -- backup time.
+
+                
+
             $test = DB::table('jobs')->where('payload', 'like', '%SyncAddresses%')->first();
             if (is_null($test)) {
                 $schedule->job(new SyncAddressesJob)->everyMinute();
