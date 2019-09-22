@@ -333,7 +333,7 @@ $thisProjectHtml = '';
 								<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles) }}"></i>  | </span>
 								<span class="use-hand-cursor" data-uk-tooltip title="{{ $allita_user_text }}"> <i onclick='addAllitaAccess({{ $user->id }}, "{{ in_array($user->id, $allita_user_ids) }}", "{{ $allita_modal_text }}", "{{ $allita_modal_heading }}")' class="{{ in_array($user->id, $allita_user_ids) ? 'a-mail-chart-up' : 'a-mail-chart-up uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
 								</span>
-								<span class="" data-uk-tooltip title="THE USER HAVE ACCESS TO REPORTS VIA THEIR DEVCO USER ACCESS"> <i class="a-file-approve"></i>
+								<span class="" data-uk-tooltip title="THIS USER HAS ACCESS TO REPORTS VIA THEIR DEVCO USER ACCESS"> <i class="a-file-approve"></i>
 								</span>
 							</div>
 						</td>
@@ -346,7 +346,7 @@ $thisProjectHtml = '';
 								@endphp
 								<span class="use-hand-cursor" data-uk-tooltip title="{{ $project_user_text }}" onclick='removeUserFromProject({{ $user->id }})'><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i> |
 								</span>
-								<span class="" data-uk-tooltip title="THE USER HAS ACCESS TO REPORTS VIA THEIR ALLITA USER ACCESS"> <i class="a-file-approve"></i>
+								<span class="" data-uk-tooltip title="THIS USER HAS ACCESS TO REPORTS VIA THEIR ALLITA USER ACCESS"> <i class="a-file-approve"></i>
 								</span>
 							</div>
 						</td>

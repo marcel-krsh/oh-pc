@@ -32,14 +32,14 @@ class DashboardController extends Controller
     //     $current_user->socket_id = $token;
     //     $current_user->save();
     //   }
-    $this->middleware(function ($request, $next) {
-        $current_user = Auth::user();
-		    $auditor_access = Auth::user()->auditor_access();
-		    view::share('current_user');
-		    view::share('auditor_access');
+    // $this->middleware(function ($request, $next) {
+    //     $current_user = Auth::user();
+		  //   $auditor_access = Auth::user()->auditor_access();
+		  //   view::share('current_user');
+		  //   view::share('auditor_access');
 
-		    return $next($request);
-    });
+		  //   return $next($request);
+    // });
 
     view()->composer('*', function ($view) {
         $view->with('current_user', auth()->user());

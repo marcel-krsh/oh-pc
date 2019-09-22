@@ -93,7 +93,7 @@ $crrTypeSelection    = 'all';
                 @endCan
     </div>
     <hr class="dashed-hr">
-    <input type="hidden" id="reports-current-page" value="{{$reports->currentPage()}}">
+    {{-- <input type="hidden" id="reports-current-page" value="{{$reports->currentPage()}}"> --}}
     <div uk-grid class="uk-margin-top ">
 
         <div class="uk-width-1-1">

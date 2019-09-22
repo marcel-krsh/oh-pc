@@ -423,7 +423,7 @@ class ReportsController extends Controller
     }
     //dd($reports,$approvalTypeVal,$projectVal,$leadVal);
     //return \view('dashboard.index'); //, compact('user')
-
+    // return $reports = $reports;
     if ($request->get('check')) {
       if (count($reports)) {
         return json_encode($reports);
