@@ -1741,7 +1741,7 @@ function updateAuditStepSelection(e){
 	    console.log( "ready!" );
 		window.setInterval(function(){
 		  checkForUpdatedAudits(window.onPageAudits);
-		}, 1000);
+		}, 5000);
 
 	});
 </script>
