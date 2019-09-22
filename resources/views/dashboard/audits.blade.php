@@ -1698,7 +1698,7 @@ function updateAuditStepSelection(e){
 
 		}
 
-		function updateAuditRow(audit_id,date_time_stamp){
+		function updateAuditRow(audit_id){
 			// update the audit row with new info
 			
 			$("#audit-r-" + audit_id).load('/updated_cached_audit/'+audit_id,function(audit_id){
