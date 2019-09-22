@@ -36,6 +36,6 @@ class update_audit_caches implements ShouldQueue
             foreach ($audits as $audit) {
                $audit->update_cached_audit();
             }
-        }
     }
+    
 }
