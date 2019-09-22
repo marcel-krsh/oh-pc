@@ -1700,10 +1700,10 @@ function updateAuditStepSelection(e){
 
 		function updateAuditRow(audit_id){
 			// update the audit row with new info
-			console.log('Updating audit row '+audit_id);
-			$("#audit-r-" + audit_id).load('')
 			
-
+			$("#audit-r-" + audit_id).load('/updated_cached_audit/'+audit_id,function(audit_id){
+				console.log('Updated audit row '+audit_id);
+			});
 		}
 
 		function checkForUpdatedAudits(){
