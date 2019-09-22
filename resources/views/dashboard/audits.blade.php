@@ -1646,7 +1646,7 @@ function updateAuditStepSelection(e){
                 loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
                 // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
             }
-    function submitNewReportAL(audit_id,template_id) {
+    function submitNewReportAL(audit_id,template_id,target) {
 		console.log('Submitting Request for New Report.');
 		$.post('/new-report', {
 	            'template_id' : template_id,
@@ -1671,6 +1671,8 @@ function updateAuditStepSelection(e){
 					    timeout: 1500
 						});
 						//$('#detail-tab-1').trigger('click');
+						$(target).removeClass('a-file-plus');
+						$(target).addClass('uk-icon uk-spinner');
 
 	                }
 		} );
