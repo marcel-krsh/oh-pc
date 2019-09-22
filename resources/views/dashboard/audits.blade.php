@@ -1686,12 +1686,14 @@ function updateAuditStepSelection(e){
 @endif
 </script>
 <script>
-	function checkForAudit(audit_id){
+		window.onPageAudits = [@forEach($audits as $audit)["{{$audit->audit_id}}","{{$audit->updated_at}}"] @if(!$loop->last),@endIf @endForEach ];
+		function checkForAudit(audit_id){
 			// 
 			//console.log('Checking to see if audit '+audit_id+' is on this page.');
 			if($("#audit-r-" + audit_id).length > 0) {
 			// route: /updated_cached_audit/{audit_id}
 				console.log('Found audit '+audit_id+' on the page');
+				updateAuditRow(audit_id);
 			}
 
 		}
@@ -1699,6 +1701,7 @@ function updateAuditStepSelection(e){
 		function updateAuditRow(audit_id){
 			// update the audit row with new info
 			console.log('Updating audit row '+audit_id);
+			$("#audit-r-" + audit_id).load('')
 			
 
 		}
@@ -1708,8 +1711,11 @@ function updateAuditStepSelection(e){
 				// the audits tab is active - so we can check things.
 				if(window.checking_latest_cached_audit == 0){
 					window.checking_latest_cached_audit = 1;
-					$.get("/cached_audit_check", {
-						'date' : window.latest_cached_audit,
+					var audits = JSON.stringify(window.onPageAudits);
+					//console.log('CHECKING '+onPageAudits+' and '+audits);
+					$.post("/cached_audit_check", {
+						'audits' : audits,
+						'dude' : 'stuff',
 						'_token' : '{{ csrf_token() }}'
 					}, function(data) {
 						if(data !== '0'){
@@ -1734,7 +1740,7 @@ function updateAuditStepSelection(e){
 	$( document ).ready(function() {
 	    console.log( "ready!" );
 		window.setInterval(function(){
-		  checkForUpdatedAudits();
+		  checkForUpdatedAudits(window.onPageAudits);
 		}, 1000);
 
 	});

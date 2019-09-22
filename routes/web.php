@@ -74,7 +74,7 @@
             Route::get('/reports','PC\Mobile\ReportController@index');
         });
         Route::group(['prefix'=>'','middleware'=>'can:access_auditor'], function ()  {
-            Route::get('/cached_audit_check','AuditController@cachedAuditCheck');
+            Route::post('/cached_audit_check','AuditController@cachedAuditCheck');
             Route::get('/updated_cached_audit/{audit_id}','AuditController@singleCachedAudit');
             Route::get('/modals/household/{unit_id}','AuditController@householdInfo');
             Route::get('/change_log','PagesController@changeLog');
