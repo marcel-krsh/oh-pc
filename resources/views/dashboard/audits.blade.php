@@ -1712,7 +1712,7 @@ function updateAuditStepSelection(e){
 						'date' : window.latest_cached_audit,
 						'_token' : '{{ csrf_token() }}'
 					}, function(data) {
-						if(data !== 0){
+						if(data !== '0'){
 							data = JSON.parse(data);
 							//console.log(window.latest_cached_audit,data);
 							data.forEach(function(audit_id){
