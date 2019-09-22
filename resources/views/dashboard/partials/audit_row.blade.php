@@ -147,7 +147,9 @@ $lead = $audit->lead_json;
 			<i class="{{$audit->step_status_icon}} use-hand-cursor {{$audit->step_status}}" uk-tooltip title="{{$audit->step_status}}" onClick="updateStep({{$audit->audit_id}})"></i>
 		</div>
 		<script>
-			window.onPageAudits[{{$audit->audit_id}}] = ['{{$audit->audit_id}}','{{$audit->updated_at}}'];
+			if(window.onPageAudits !== undefined){
+				window.onPageAudits[{{$audit->audit_id}}] = ['{{$audit->audit_id}}','{{$audit->updated_at}}'];
+			}
 		</script>
 	</div>
 </td>
