@@ -1672,7 +1672,10 @@ function updateAuditStepSelection(e){
 						});
 						//$('#detail-tab-1').trigger('click');
 						$(target).removeClass('a-file-plus');
-						$(target).addClass('uk-icon uk-spinner');
+						
+						$(target).addClass('a-file-repeat attention');
+						$(target).attr("title","GENERATING YOUR REPORT");
+						$(target).attr("onclick","");
 
 	                }
 		} );
