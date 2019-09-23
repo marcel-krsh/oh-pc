@@ -977,8 +977,12 @@
 				</tr>
 			</thead>
 			<tbody>
-
+				<?php $latestCachedAudit = '2000-01-01 12:00:00'; ?>
 				@foreach($audits as $audit)
+				<?php if(strtotime($audit->updated_at) > strtotime($latestCachedAudit)){
+					$latestCachedAudit = $audit->updated_at;
+				}
+				?>
 				<tr id="audit-r-{{$audit->audit_id}}" class="{{$audit['status']}} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
 					@include('dashboard.partials.audit_row')
 				</tr>
@@ -1642,7 +1646,7 @@ function updateAuditStepSelection(e){
                 loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
                 // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
             }
-    function submitNewReportAL(audit_id,template_id) {
+    function submitNewReportAL(audit_id,template_id,target) {
 		console.log('Submitting Request for New Report.');
 		$.post('/new-report', {
 	            'template_id' : template_id,
@@ -1666,7 +1670,12 @@ function updateAuditStepSelection(e){
 					    pos: 'top-right',
 					    timeout: 1500
 						});
-						$('#detail-tab-1').trigger('click');
+						//$('#detail-tab-1').trigger('click');
+						$(target).removeClass('a-file-plus');
+						
+						$(target).addClass('a-file-repeat attention');
+						$(target).attr("title","GENERATING YOUR REPORT");
+						$(target).attr("onclick","");
 
 	                }
 		} );
@@ -1676,94 +1685,70 @@ function updateAuditStepSelection(e){
 
 	}
 
-
+	
 
 
 @endif
 </script>
 <script>
-	@if(0)
-	new Vue({
-		el: '#auditstable',
+		window.onPageAudits = {@forEach($audits as $audit) '{{$audit->audit_id}}' :["{{$audit->audit_id}}","{{$audit->updated_at}}"] @if(!$loop->last),@endIf @endForEach };
+		function checkForAudit(audit_id){
+			// 
+			//console.log('Checking to see if audit '+audit_id+' is on this page.');
+			if($("#audit-r-" + audit_id).length > 0) {
+			// route: /updated_cached_audit/{audit_id}
+				console.log('Found audit '+audit_id+' on the page');
+				updateAuditRow(audit_id);
+			}
 
-		data: function() {
-			return {
-				audits: {!! json_encode($data) !!},
+		}
 
-                // page: 1,
-                // loading: 1,
-                // busy: false
+		function updateAuditRow(audit_id){
+			// update the audit row with new info
+			
+			$("#audit-r-" + audit_id).load('/updated_cached_audit/'+audit_id,function(audit_id){
+				console.log('Updated audit row ');
+				
+			});
+		}
 
-              }
-            },
-            created: function() {
-            	this.loading = 0;
-            },
-            methods: {
+		function checkForUpdatedAudits(){
+			if($('#detail-tab-1').hasClass('uk-active')){
+				// the audits tab is active - so we can check things.
+				if(window.checking_latest_cached_audit == 0){
+					window.checking_latest_cached_audit = 1;
+					var audits = JSON.stringify(window.onPageAudits);
+					//console.log('CHECKING '+onPageAudits+' and '+audits);
+					$.post("/cached_audit_check", {
+						'audits' : audits,
+						'dude' : 'stuff',
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						if(data !== '0'){
+							data = JSON.parse(data);
+							//console.log(window.latest_cached_audit,data);
+							data.forEach(function(audit_id){
+								checkForAudit(audit_id);
+							});
+							window.checking_latest_cached_audit = 0;
+						}else{
+							console.log('No Audits');
+							window.checking_latest_cached_audit = 0;
+						}
+					} );
+				}
+			}
+		}
+		// set the base variables.
+		window.latest_cached_audit = '{{$latestCachedAudit}}';
+		window.checking_latest_cached_audit = 0;
 
+	$( document ).ready(function() {
+	    console.log( "ready!" );
+		window.setInterval(function(){
+		  checkForUpdatedAudits(window.onPageAudits);
+		}, 5000);
 
-            },
-
-            mounted: function() {
-            	console.log("Audits Mounted");
-            	Echo.private('updates.{{Auth::user()->id}}')
-            	.listen('UpdateEvent', (payload) => {
-            		if(payload.data.event == 'audit'){
-            			console.log('Audit event received.');
-			                // if(data.is_reply){
-			                //     console.log("user " + data.userId + " received a new reply for message "+data.id);
-			                //     var updateddata = [{
-			                //         id: data.id,
-			                //         parentId: data.parent_id,
-			                //         staffId: data.staff_class,
-			                //         programId: data.program_class,
-			                //         hasAttachment: data.attachment_class,
-			                //         communicationId: data.communication_id,
-			                //         communicationUnread: data.communication_unread_class,
-			                //         createdDate: data.created,
-			                //         createdDateRight: data.created_right,
-			                //         recipients: data.recipients,
-			                //         userBadgeColor: data.user_badge_color,
-			                //         tooltip: data.tooltip,
-			                //         unseen: data.unseen,
-			                //         auditId: data.audit_id,
-			                //         tooltipOrganization: data.tooltip_organization,
-			                //         organizationAddress: data.organization_address,
-			                //         tooltipFilenames: data.tooltip_filenames,
-			                //         subject: data.subject,
-			                //         summary: data.summary
-			                //     }];
-			                //     this.messages = this.messages.map(obj => updateddata.find(o => o.id === obj.id) || obj);
-			                // }else{
-			                //     console.log("audit " + data.id + " has been updated.");
-			                //     this.messages.push({
-			                //         id: data.id,
-			                //         parentId: data.parent_id,
-			                //         staffId: data.staff_class,
-			                //         programId: data.program_class,
-			                //         hasAttachment: data.attachment_class,
-			                //         communicationId: data.communication_id,
-			                //         communicationUnread: data.communication_unread_class,
-			                //         createdDate: data.created,
-			                //         createdDateRight: data.created_right,
-			                //         recipients: data.recipients,
-			                //         userBadgeColor: data.user_badge_color,
-			                //         tooltip: data.tooltip,
-			                //         unseen: data.unseen,
-			                //         auditId: data.audit_id,
-			                //         tooltipOrganization: data.tooltip_organization,
-			                //         organizationAddress: data.organization_address,
-			                //         tooltipFilenames: data.tooltip_filenames,
-			                //         subject: data.subject,
-			                //         summary: data.summary
-			                //     });
-			                // }
-			              }
-			            });
-
-            }
-          });
-		@endIf
-        </script>
-
-        <script>window.auditsLoaded = 1; </script>
+	});
+</script>
+<script>window.auditsLoaded = 1; </script>
