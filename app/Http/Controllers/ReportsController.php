@@ -212,6 +212,12 @@ class ReportsController extends Controller
     $messages = []; //this is to send messages back to the view confirming actions or errors.
     // set values - ensure this single request works for both dashboard and project details
     $prefix = '';
+
+    $current_user = Auth::user();
+    $auditor_access = $current_user->auditor_access();
+    $admin_access = $current_user->admin_access();
+    $manager_access = $current_user->manager_access();
+    $pm_access = $current_user->pm_access();
     if (!is_null($project)) {
       // this sets values for if it is a project details view
       $project = Project::find($project);
@@ -243,13 +249,13 @@ class ReportsController extends Controller
     if (session('crr_first_load') !== 1) {
       // session(['crr_report_status_id' => 1]);
       // set some default parameters
-      if (Auth::user()->can('access_manager')) {
+      if ($manager_access) {
         // session(['crr_report_status_id' => 2]);
         // pending manager review
-      } elseif (Auth::user()->can('access_auditor')) {
-        session([$prefix . 'crr_report_lead_id' => Auth::user()->id]);
+      } elseif ($auditor_access) {
+        session([$prefix . 'crr_report_lead_id' => $current_user->id]);
         // show this auditors reports
-      } elseif (Auth::user()->can('access_pm')) {
+      } elseif ($pm_access) {
         // session(['crr_report_status_id' => 6]);
         // @todo
       }
@@ -292,7 +298,7 @@ class ReportsController extends Controller
     } elseif (is_null(session('crr_report_status_id'))) {
       session([$prefix . 'crr_report_status_id' => 'all']);
     }
-    if (Auth::user()->can('access_auditor')) {
+    if ($auditor_access) {
       if (session($prefix . 'crr_report_status_id') !== 'all') {
         $approvalTypeEval = '=';
         $approvalTypeVal  = intval(session($prefix . 'crr_report_status_id'));
@@ -356,7 +362,7 @@ class ReportsController extends Controller
 
     if (!$request->get('check')) {
       // if this is just a check - we do not need this information.
-      if (Auth::user()->can('access_auditor')) {
+      if ($auditor_access) {
         $auditLeads      = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
         $auditProjects   = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
         $crr_types_array = CrrReport::select('id', 'template_name')->groupBy('template_name')->whereNotNull('template')->get()->all();
@@ -364,8 +370,8 @@ class ReportsController extends Controller
         $projects_array  = [];
       } else {
         $auditLeads    = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
-        $auditProjects = CrrReport::select('*')->when(Auth::user()->cannot('access_auditor'), function ($query) {
-	        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', Auth::user()->person_id)->get()->toArray();
+        $auditProjects = CrrReport::select('*')->when($auditor_access, function ($query) {
+	        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', $current_user->person_id)->get()->toArray();
 	          //dd(Auth::user()->person_id,$userProjects);
 	          return $query->whereIn('project_id', $userProjects);
 	        })->with('project')->groupBy('project_id')->get();
@@ -389,7 +395,7 @@ class ReportsController extends Controller
       $projects_array = array_values(Arr::sort($projects_array, function ($value) {
         return $value['project_name'];
       }));
-      if (Auth::user()->can('access_auditor')) {
+      if ($auditor_access) {
         $crrApprovalTypes = CrrApprovalType::orderBy('order')->get();
       } else {
         $crrApprovalTypes = CrrApprovalType::where('id', '>', 5)->orderBy('order')->get();
@@ -397,7 +403,7 @@ class ReportsController extends Controller
     }
     //dd($hfa_users_array);
     //dd($searchVal,$searchEval,session('crr_search'),intval($request->get('search')));
-    $report_projects = ReportAccess::where('user_id', Auth::user()->id)->allita()->pluck('project_id');
+    $report_projects = ReportAccess::where('user_id', $current_user->id)->allita()->pluck('project_id');
     $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
       ->whereNull('template')
       ->where('project_id', $projectEval, $projectVal)
@@ -405,8 +411,8 @@ class ReportsController extends Controller
       ->where('updated_at', '>', $newerThan)
       ->where('from_template_id', $typeEval, $typeVal)
       ->where('id', $searchEval, $searchVal)
-      ->when(Auth::user()->cannot('access_auditor'), function ($query) {
-        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', Auth::user()->person_id)->get()->toArray();
+      ->when(!$auditor_access, function ($query) {
+        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', $current_user->person_id)->get()->toArray();
         //dd(Auth::user()->person_id,$userProjects);
         return $query->whereIn('project_id', $userProjects);
       })
@@ -431,9 +437,9 @@ class ReportsController extends Controller
         return 1;
       }
     } else if ($request->get('rows_only')) {
-      return view('dashboard.partials.reports-row', compact('reports', 'prefix'));
+      return view('dashboard.partials.reports-row', compact('reports', 'prefix', 'current_user', 'auditor_access', 'manager_access', 'admin_access'));
     } else {
-      return view('dashboard.reports', compact('reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'projects_array', 'crr_types_array', 'messages', 'newest', 'prefix'));
+      return view('dashboard.reports', compact('reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'projects_array', 'crr_types_array', 'messages', 'newest', 'prefix', 'current_user', 'auditor_access', 'admin_access', 'manager_access'));
     }
   }
 

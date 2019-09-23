@@ -41,10 +41,10 @@ class DashboardController extends Controller
 		  //   return $next($request);
     // });
 
-    view()->composer('*', function ($view) {
-        $view->with('current_user', auth()->user());
-        $view->with('auditor_access', auth()->user()->auditor_access());
-    });
+    // view()->composer('*', function ($view) {
+    //     $view->with('current_user', auth()->user());
+    //     $view->with('auditor_access', auth()->user()->auditor_access());
+    // });
 
   }
 
@@ -1016,11 +1016,12 @@ class DashboardController extends Controller
             //   $auditor_names[$auditor->id] = $auditor->name;
             // }
             // array_multisort($auditor_names, SORT_ASC, $auditors_array);
-
+        $current_user = Auth::user();
+        $auditor_access = Auth::user()->auditor_access();
         if ($page > 0) {
           return response()->json($data);
         } else {
-          return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditors', 'audits', 'sort_by', 'sort_order', 'steps'));
+          return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditors', 'audits', 'sort_by', 'sort_order', 'steps', 'current_user', 'auditor_access'));
         }
   }
 
