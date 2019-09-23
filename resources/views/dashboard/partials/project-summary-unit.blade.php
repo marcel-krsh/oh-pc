@@ -2,9 +2,9 @@
 	@php
 
 	$extra_programs = array();
-	$assigned_temp_programs = ($unitprogram->pluck('program_key'));
+	$assigned_temp_programs = ($unitprogram->pluck('program'));
 	if(!empty($assigned_temp_programs)) {
-		$assigned_temp_program_keys = $assigned_temp_programs;
+		$assigned_temp_program_keys = $assigned_temp_programs->pluck('program_key');
 		$substitute_programs = collect($actual_programs)->whereNotIn('program_key', $assigned_temp_program_keys);
 	} else {
 		$substitute_programs = $actual_programs;
