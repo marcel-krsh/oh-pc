@@ -2281,7 +2281,7 @@ class AuditController extends Controller
                     ],
                 ]);
 
-                return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules'));
+                return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules', 'audit'));
 
                 break;
             case 'findings':
