@@ -2513,7 +2513,7 @@ class ComplianceSelectionJob implements ShouldQueue
         // inspection status and schedule date set to default when creating a new audit
         $inspection_status_text = 'AUDIT NEEDS SCHEDULED'; 
         $inspection_schedule_date = null; // Y-m-d H:i:s
-        $inspection_schedule_text = 'CLICK TO SCHEDULE AUDIT'; 
+        $inspection_schedule_text = 'SCHEDULED AUDITS/TOTAL AUDITS'; 
         $inspection_status = 'action-needed'; 
         $inspection_icon = 'a-mobile-clock'; 
 

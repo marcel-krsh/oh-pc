@@ -560,6 +560,12 @@ class DashboardController extends Controller
             $audit['step_status']         = '';
             $stepStatusText               = '';
           } elseif (Auth::user()->auditor_access()) {
+
+            // to change existing records (tooltip wording)
+            if($audit['inspection_schedule_text'] == 'CLICK TO SCHEDULE AUDIT') {
+                $audit['inspection_schedule_text'] = 'SCHEDULED AUDITS/TOTAL AUDITS';
+            }
+
             $inpectionScheduleIcon     = 'a-calendar-7';
             $inspectionScheduleIcon    = ''; // @todo need to put in icon here
             $tooltipInspectionSchedule = 'title:' . $audit['inspection_schedule_text'];
@@ -1001,7 +1007,14 @@ class DashboardController extends Controller
             $audits = $audits->orWhere('step_id', '=', $step->id);
           }
         }
-        $audits = $audits->with('audit.findings', 'audit.unique_unit_inspections')->orderBy($sort_by_field, $sort_order_query)->get();
+        $audits = $audits->with('audit.findings', 'audit.unique_unit_inspections')->orderBy($sort_by_field, $sort_order_query)->get()
+            ->map(function ($audit) {
+                if($audit->inspection_schedule_text == 'CLICK TO SCHEDULE AUDIT'){
+                    $audit->inspection_schedule_text = 'SCHEDULED AUDITS/TOTAL AUDITS';
+                }
+
+                return $audit;
+            });
         // $audits = $audits->take(5);
         $data = [];
 

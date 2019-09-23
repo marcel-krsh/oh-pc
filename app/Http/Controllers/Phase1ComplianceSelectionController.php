@@ -2807,7 +2807,7 @@ class Phase1ComplianceSelection extends Controller
             $inspection_icon = 'a-mobile-clock'; 
         } else {
             $auditInspectionDate = null;
-            $inspection_schedule_text = 'CLICK TO SCHEDULE AUDIT';
+            $inspection_schedule_text = 'SCHEDULED AUDITS/TOTAL AUDITS';
             $inspection_status = 'action-needed'; 
             $inspection_icon = 'a-mobile-clock'; 
 
@@ -2866,9 +2866,17 @@ class Phase1ComplianceSelection extends Controller
             // $inspection_status = $inspection_schedule_checks['inspection_status']; 
             // $inspection_icon = $inspection_schedule_checks['inspection_icon'];
             
-            $inspection_status_text = $cached_audit->inspection_status_text; 
-            $inspection_schedule_date = $cached_audit->inspection_schedule_date;
+
+            $inspection_status_text = $cached_audit->inspection_status_text;
             $inspection_schedule_text = $cached_audit->inspection_schedule_text;
+             
+
+            // to change existing records (tooltip wording)
+            if($inspection_schedule_text == 'CLICK TO SCHEDULE AUDIT') {
+                $inspection_schedule_text = 'SCHEDULED AUDITS/TOTAL AUDITS';
+            }
+            
+            $inspection_schedule_date = $cached_audit->inspection_schedule_date;
             $inspection_status = $cached_audit->inspection_status; 
             $inspection_icon = $cached_audit->inspection_icon;
 
