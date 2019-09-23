@@ -149,7 +149,7 @@ $lead = $audit->lead_json;
 		<script>
 			if(window.onPageAudits !== undefined){
 				window.onPageAudits[{{$audit->audit_id}}] = ['{{$audit->audit_id}}','{{$audit->updated_at}}'];
-				UIKit.modal.alert('<h1>Report Completed</h1><h2>Your Report is Ready to View.</h2>');
+				
 			}
 		</script>
 	</div>
