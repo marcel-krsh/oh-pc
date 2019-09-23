@@ -427,7 +427,7 @@
 	</div>
 
 	<div id="auditstable" class="uk-width-1-1 uk-overflow-auto" style="min-height: 700px;">
-		<table class="uk-table uk-table-striped uk-table-hover uk-table-small uk-table-divider" style="min-width: 1320px;">
+		<table class="uk-table @if(count($audits) < 50) uk-table-striped uk-table-hover @endIf uk-table-small uk-table-divider" style="min-width: 1320px;">
 			<thead>
 				<tr>
 					<th  style="width:48px;">
