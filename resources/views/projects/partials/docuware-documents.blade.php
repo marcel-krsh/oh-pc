@@ -82,7 +82,7 @@
 					</div>
 					<div class="uk-align-center uk-margin-top">
 						<label for="notes">NOTES:</label>
-						<textarea class="uk-textarea uk-width-1-1" placeholder="Enter a breif note about this document."></textarea>
+						<textarea class="uk-textarea uk-width-1-1" placeholder="Enter a brief note about this document."></textarea>
 					</div>
 					<div class="uk-align-center uk-margin-top">
 						<div id="list-item-upload-step-2">
