@@ -358,7 +358,7 @@
 	<div id="project-details-general" class="uk-width-1-1">
 		<div uk-grid>
 			<div class="uk-width-2-3">
-				<h3>{{$project->project_name}}<br /><small>Project {{$project->project_number}} @if($project->currentAudit())| Current Audit {{$project->currentAudit()->audit_id}}@endif</small></h3>
+				<h3>{{$project->project_name}}<br /><small>Project {{$project->project_number}} @if($selected_audit->audit_id)| Current Audit {{ $selected_audit->audit_id }}@endif</small></h3>
 			</div>
 			<div class="uk-width-1-3">
 				<div class="audit-info" style="width: 80%;float: left;">
