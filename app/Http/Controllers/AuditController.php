@@ -2281,7 +2281,7 @@ class AuditController extends Controller
                     ],
                 ]);
 
-                return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules'));
+                return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules', 'audit'));
 
                 break;
             case 'findings':
@@ -3668,6 +3668,7 @@ class AuditController extends Controller
             $query->orWhere('role_id', '=', 3);
         })
         ->where('active','=',1)
+        ->orderBy('name','asc')
         ->get();
 
         return view('modals.project-assignment-add-auditor', compact('day', 'auditor', 'audit', 'auditors'));

@@ -176,7 +176,7 @@
 												</div><br /><small>CAR #{{$car->id}}</small>
 
 						            		@else
-						            		<i  @if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) class="a-file-plus" uk-tooltip="title:GENERATE THIS AUDIT'S CAR" onclick="submitNewReportPD({{$selected_audit->id}},1)" @else class="a-file-fail" uk-tooltip="title:SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A CAR TO BE GENERATED." @endIf></i><br /><small>CAR</small>
+						            		<i  @if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) class="a-file-plus" uk-tooltip="title:GENERATE THIS AUDIT'S CAR" onclick="submitNewReportPD({{$selected_audit->audit_id}},1)" @else class="a-file-fail" uk-tooltip="title:SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A CAR TO BE GENERATED." @endIf></i><br /><small>CAR</small>
 							            	@endIf
 							            </div><div class="uk-width-1-3">
 							            	@if(($ehs))
@@ -358,7 +358,7 @@
 	<div id="project-details-general" class="uk-width-1-1">
 		<div uk-grid>
 			<div class="uk-width-2-3">
-				<h3>{{$project->project_name}}<br /><small>Project {{$project->project_number}} @if($project->currentAudit())| Current Audit {{$project->currentAudit()->audit_id}}@endif</small></h3>
+				<h3>{{$project->project_name}}<br /><small>Project {{$project->project_number}} @if($selected_audit->audit_id)| Current Audit {{ $selected_audit->audit_id }}@endif</small></h3>
 			</div>
 			<div class="uk-width-1-3">
 				<div class="audit-info" style="width: 80%;float: left;">

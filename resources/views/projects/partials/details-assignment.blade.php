@@ -10,18 +10,18 @@
 			<div class="uk-width-1-2">
 				@if($data['summary']['estimated'] != ':' || !$data['summary']['estimated'])
 				<h3 class="estHour">
-					It will take an <span class=" italic">ESTIMATED </span> @if(Auth::user()->id == $project->selected_audit()->lead_auditor->id || Auth::user()->can('access_manager')) <i class="a-pencil-2 use-hand-cursor"  onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>@endIf <span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.
+					It will take an <span class=" italic">ESTIMATED </span> @if(Auth::user()->id == $audit->lead_auditor->id || Auth::user()->can('access_manager')) <i class="a-pencil-2 use-hand-cursor"  onclick=" $('.estHour').toggle();" uk-tooltip="title:EDIT ESTIMATED HOURS;"></i>@endIf <span id="estimated_hours_field">{{$data['summary']['estimated']}}</span> to complete this audit.
 					@if($data['summary']['needed'])<br />
 					<span id="estimated_hours_needed">{{$data['summary']['needed']}}</span> Need Assigned @endif
 				</h3>
-				@elseif(($project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id) || Auth::user()->can('access_manager'))
+				@elseif(($audit->lead_auditor && Auth::user()->id == $audit->lead_auditor->id) || Auth::user()->can('access_manager'))
 				<h3 class="estHour">
 					Enter an estimated number of hours for this audit.
 				</h3>
 				@else
 				<h3 class="estHour">
-					@if($project->selected_audit()->lead_auditor )
-					Sorry, no assignments have been made available yet. {{$project->selected_audit()->lead_auditor->full_name()}} needs to enter the estimated time for this audit, and then assign auditors to each day of the inspection.
+					@if($audit->lead_auditor )
+					Sorry, no assignments have been made available yet. {{$audit->lead_auditor->full_name()}} needs to enter the estimated time for this audit, and then assign auditors to each day of the inspection.
 					@else
 					Sorry, no assignments have been made and no lead auditor has been named.
 					@endif
@@ -29,7 +29,7 @@
 
 				@endif
 
-				@if(($project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id) || Auth::user()->can('access_manager'))
+				@if(($audit->lead_auditor && Auth::user()->id == $audit->lead_auditor->id) || Auth::user()->can('access_manager'))
 				<h3 class="estHour estHourForm" @if($data['summary']['estimated'] != ':' || !$data['summary']['estimated']) style="display:none" @else style="margin-top: 0;" @endif>
 					<form id="estimated_hours_form" method="post" class="uk-width-1-1 uk-margin-bottom">
 						<div class="uk-grid-small" uk-grid>
@@ -69,7 +69,7 @@
 				</ul>
 			</div>
 
-			@if(($project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id) || Auth::user()->can('access_manager'))
+			@if(($audit->lead_auditor && Auth::user()->id == $audit->lead_auditor->id) || Auth::user()->can('access_manager'))
 				<div id="project-details-assignment-buttons" class="uk-width-1-1 uk-margin-large-top project-details-buttons ">
 					<div class="project-details-button-container" id="addadaybutton">
 						<!-- <input type="text" id="addaday" name="addaday" class="flatpickr-input"  data-input style="display:none">
@@ -84,7 +84,7 @@
 
 		<div class="project-details-info-assignment-schedule uk-position-relative uk-visible-toggle uk-margin-right uk-margin-left">
 			<div class="uk-overflow-auto">
-				@foreach($project->selected_audit()->days as $day)
+				@foreach($audit->days as $day)
 
 				<div class="divTable divTableFixed">
 					<div class="divTableBody">
@@ -94,19 +94,19 @@
 
 							</div>
 							<div class="divTableCell">
-								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($project->selected_audit()->lead_auditor->full_name())}} {{$project->selected_audit()->lead}};" title="" aria-expanded="false" class="user-badge user-badge-{{$project->selected_audit()->lead_auditor->badge_color}} no-float uk-link" >{{$project->selected_audit()->lead_auditor->initials()}}</span>
+								<span uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($audit->lead_auditor->full_name())}} {{$audit->lead}};" title="" aria-expanded="false" class="user-badge user-badge-{{$audit->lead_auditor->badge_color}} no-float uk-link" >{{$audit->lead_auditor->initials()}}</span>
 							</div>
-							@foreach($project->selected_audit()->auditors as $auditor)
-							@if($auditor->user_id != $project->selected_audit()->lead_auditor->id && Auth::user()->can('access_manager'))
+							@foreach($audit->auditors as $auditor)
+							@if($auditor->user_id != $audit->lead_auditor->id && Auth::user()->can('access_manager'))
 							<div class="divTableCell">
-								<span @if(Auth::user()->id == $project->selected_audit()->lead_auditor->id || Auth::user()->can('access_manager'))
+								<span @if(Auth::user()->id == $audit->lead_auditor->id || Auth::user()->can('access_manager'))
 								 uk-tooltip="title:VIEW STATS & DETAILED SCHEDULE FOR {{strtoupper($auditor->user->full_name())}} {{$auditor->user_id}};" title="" onclick="removeAuditorFromAudit({{$auditor->user_id}});" aria-expanded="false" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" @else uk-tooltip title="{{strtoupper($auditor->user->full_name())}}" class="user-badge user-badge-{{$auditor->user->badge_color}} no-float uk-link" @endIf >{{$auditor->user->initials()}}</span>
 							</div>
 							@endif
 							@endforeach
 
 							<div class="divTableCell">
-								@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id || Auth::user()->can('access_manager'))
+								@if(Auth::user()->id == $audit->lead_auditor->id || Auth::user()->can('access_manager'))
 								<i class="a-circle-plus use-hand-cursor" style="font-size:34px;" onclick="addAssignmentAuditor({{$day->id}});" uk-tooltip="title:CLICK TO ADD AUDITORS;"></i>
 								@endIf
 							</div>
@@ -115,11 +115,11 @@
 
 						<div class="divTableRow isLead">
 							<div class="divTableCell">
-								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small>@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id || Auth::user()->can('access_manager')) <i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i>@endIf</small></h3>
+								<h3 style="margin-top:5px;text-align: left;"> {{formatDate($day->date, 'l F d, Y')}} <small>@if(Auth::user()->id == $audit->lead_auditor->id || Auth::user()->can('access_manager')) <i class="a-trash-4 use-hand-cursor" onclick="deleteDay({{$day->id}});"></i>@endIf</small></h3>
 							</div>
 							@foreach($auditors_key as $auditor_id)
 							<div class="divTableCell isLead" style="padding-top:14px">
-								@if($auditor_id == $project->selected_audit()->lead) <i class="a-star-3 corner"></i> @endif
+								@if($auditor_id == $audit->lead) <i class="a-star-3 corner"></i> @endif
 								<i class="a-circle" style="font-size:34px;"></i>
 							</div>
 							@endforeach
@@ -163,7 +163,7 @@
 										<div class="event beforetime" data-start="{{$daily_schedule['content']['before_time_start']}}" data-span="{{$daily_schedule['content']['before_time_span']}}"></div>
 										@endif
 										@foreach($daily_schedule['content']['events'] as $event)
-										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['tooltip']}}" @if(Auth::user()->id == $project->selected_audit()->lead_auditor->id || Auth::user()->can('access_manager')) @if($event['modal_type'] != '' && $event['modal_type'] != "removeschedule") uk-toggle="target: #eventmodal-{{$event['id']}}" @endif @if($event['modal_type'] == "removeschedule") onclick="removeSchedule('{{$event['id']}}');" @endif @endif>
+										<div class="event {{$event['status']}} {{$event['class']}}" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title:{{$event['tooltip']}}" @if(Auth::user()->id == $audit->lead_auditor->id || Auth::user()->can('access_manager')) @if($event['modal_type'] != '' && $event['modal_type'] != "removeschedule") uk-toggle="target: #eventmodal-{{$event['id']}}" @endif @if($event['modal_type'] == "removeschedule") onclick="removeSchedule('{{$event['id']}}');" @endif @endif>
 											@if($event['icon'] != '')
 												@if($event['span'] < 3)
 												<i class="{{$event['icon']}}" style="font-size:10px;"></i>
@@ -171,9 +171,9 @@
 												<i class="{{$event['icon']}}"></i>
 												@endif
 											@endif
-											@if((Auth::user()->id == $project->selected_audit()->lead || Auth::user()->can('access_manager')) && $event['icon'] != '' && $event['modal_type'] != '')
+											@if((Auth::user()->id == $audit->lead || Auth::user()->can('access_manager')) && $event['icon'] != '' && $event['modal_type'] != '')
 												@if($event['modal_type'] == 'addschedule')
-													@if(Auth::user()->id == $project->selected_audit()->lead_auditor->id || Auth::user()->can('access_manager'))
+													@if(Auth::user()->id == $audit->lead_auditor->id || Auth::user()->can('access_manager'))
 													<div id="eventmodal-{{$event['id']}}" uk-modal>
 													    <div class="uk-modal-dialog uk-modal-body">
 													        <a class="uk-modal-close-default" uk-close></a>
@@ -264,8 +264,8 @@
 				@endforeach
 			</div>
 			<hr />
-			@if($project->selected_audit()->lead_auditor)
-			<span class="italic">NOTE: Only lead auditors and managers and above can change a shedule. If you have any questions about your schedule please contact {{$project->selected_audit()->lead_auditor->full_name()}}.</span>
+			@if($audit->lead_auditor)
+			<span class="italic">NOTE: Only lead auditors and managers and above can change a shedule. If you have any questions about your schedule please contact {{$audit->lead_auditor->full_name()}}.</span>
 			@else
 			<span class="italic">NOTE: Only lead auditors can change a shedule.</span>
 			@endif
@@ -512,7 +512,7 @@
 </script>
 
 <script>
-	@if(($project->selected_audit()->lead_auditor && Auth::user()->id == $project->selected_audit()->lead_auditor->id) || Auth::user()->can('access_manager'))
+	@if(($audit->lead_auditor && Auth::user()->id == $audit->lead_auditor->id) || Auth::user()->can('access_manager'))
 	function scheduleTime(eventid, dayid, auditorid){
 		var travel = parseInt($('#travel-'+eventid).val(), 10);
 		var start = parseInt($('#start-'+eventid).val(), 10);

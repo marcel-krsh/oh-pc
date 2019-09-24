@@ -124,7 +124,7 @@
 				</div>
 				<div class="uk-align-center uk-margin-top">
 						<label for="comment">Comment:</label>
-						<textarea name="local-comment" id="local-comment" class="uk-textarea uk-width-1-1" placeholder="Enter a breif note about this document."></textarea>
+						<textarea name="local-comment" id="local-comment" class="uk-textarea uk-width-1-1" placeholder="Enter a brief note about this document."></textarea>
 					</div>
 				<div class="uk-align-center uk-margin-top">
 					<div id="list-item-upload-step-2" class="noclick">

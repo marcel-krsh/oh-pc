@@ -2808,7 +2808,7 @@ class ComplianceSelectionJobJune19Optimized implements ShouldQueue
             $inspection_icon = 'a-mobile-clock'; 
         } else {
             $auditInspectionDate = null;
-            $inspection_schedule_text = 'CLICK TO SCHEDULE AUDIT';
+            $inspection_schedule_text = 'SCHEDULED AUDITS/TOTAL AUDITS';
             $inspection_status = 'action-needed'; 
             $inspection_icon = 'a-mobile-clock'; 
 
