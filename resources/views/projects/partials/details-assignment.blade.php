@@ -235,7 +235,7 @@
 										                        	</li>
 										                        	<li onclick="">
 																        <div class="uk-form-controls">
-																        	<button class="uk-button uk-button-primary" onclick="scheduleTime('{{$event['id']}}', '{{$day->id}}', '{{$event['auditor_id']}}');">Schedule</button>
+																        	<button class="uk-button uk-button-primary" onclick="scheduleTime('{{$event['id']}}', '{{$day->id}}', '{{$event['auditor_id']}}');$(this).attr('disabled', true);">Schedule</button>
 																        </div>
 																    </li>
 											                    </ul>
