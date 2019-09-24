@@ -2575,7 +2575,7 @@ class AuditController extends Controller
             }
         }else{
             return "Event not found.";
-        } 
+        }
     }
 
     public function scheduleAuditor(Request $request, $audit_id, $day_id, $auditor_id)
@@ -3459,7 +3459,7 @@ class AuditController extends Controller
                                                                 ->orderBy('units.unit_name','asc')
           														->get();
           $actual_programs = $unitprograms->pluck('program')->unique()->toArray();
-          // return $unitprograms = $unitprograms->groupBy('unit_id');
+          $unitprograms = $unitprograms->groupBy('unit_id');
           foreach ($actual_programs as $key => $actual_program) {
           	$group_names = array_column($actual_program['related_groups'], 'group_name');
           	$group_ids = array_column($actual_program['related_groups'], 'id');
