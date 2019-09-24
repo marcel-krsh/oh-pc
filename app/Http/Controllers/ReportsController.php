@@ -89,6 +89,18 @@ class ReportsController extends Controller
   public function reportAction(CrrReport $report, $data)
   {
     $note = 'Attempted an Action, but no action was taken.';
+    $notified_text = '';
+    if(!is_null($data['notified_receipients'])) {
+    	$notified_receipients = User::whereIn('id', $data['notified_receipients'])->get();
+    	$names = '';
+    	foreach ($notified_receipients as $key => $receipent) {
+    		if($key == 0)
+    			$names = $names . $receipent->full_name();
+    		else
+    			$names = $names . ', ' . $receipent->full_name();
+    	}
+    	$notified_text = ' Notified to ' . $names . '.';
+    }
     if (Auth::user()->can('access_auditor')) {
       switch ($data['action']) {
         case 1:
@@ -97,7 +109,7 @@ class ReportsController extends Controller
           $note = "Changed report status from " . $report->status_name() . " to Draft.";
           if (!is_null($report->manager_id)) {
             $report->update(['crr_approval_type_id' => 1, 'manager_id' => null]);
-            $note = ' Removed prior manager approval, and refreshed report to reflect the change.';
+            $note .= ' Removed prior manager approval, and refreshed report to reflect the change.';
             $this->generateReport($report, 0, 1);
           } else {
             $report->update(['crr_approval_type_id' => 1, 'manager_id' => null]);
@@ -160,7 +172,8 @@ class ReportsController extends Controller
           # Sent...
           if ($report->project->pm() && strlen($report->project->pm()['email']) > 3) {
             // send notification that report is ready to be viewed.
-            $note = "Changed report status from " . $report->status_name() . " to Sent and sent notification to " . $report->project->pm()['email'] . ".";
+            $note = "Changed report status from " . $report->status_name() . " to Sent.";
+            //and sent notification to " . $report->project->pm()['email'] . ".";
             $report->update(['crr_approval_type_id' => 6]);
           } else {
             $note = "Unable to send report. There is no default email for a property manager on this project. Status will remain:" . $report->status_name() . ".";
@@ -174,6 +187,7 @@ class ReportsController extends Controller
             $report->update(['crr_approval_type_id' => 7]);
           } else {
             $note = "Viewed by OHFA staff.";
+            $report->update(['crr_approval_type_id' => 7]);
           }
           break;
         case 8:
@@ -201,7 +215,7 @@ class ReportsController extends Controller
       }
     }
 
-    $history = ['date' => date('m-d-Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => $note];
+    $history = ['date' => date('m-d-Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => $note . $notified_text];
     $this->reportHistory($report, $history);
     return $note;
   }
@@ -241,6 +255,11 @@ class ReportsController extends Controller
 
       //dd($data);
       $report     = CrrReport::find($request->get('id'));
+      if($request->has('receipents') && !empty($request->has('receipents'))) {
+      	$data['notified_receipients'] = $request->receipents;
+      } else {
+      	$data['notified_receipients'] = null;
+      }
       $messages[] = $this->reportAction($report, $data);
       //dd($messages);
     }
@@ -775,6 +794,7 @@ class ReportsController extends Controller
   public function getReport(CrrReport $report, Request $request)
   {
     if ($report) {
+    	// return $report->status_name();
       $oneColumn    = null;
       $current_user = Auth::user();
       // check if logged in user has access to this report if they are not an auditor:

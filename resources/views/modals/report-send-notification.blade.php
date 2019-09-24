@@ -211,9 +211,11 @@
     	var form = $('#newOutboundEmailForm');
     	var no_alert = 1;
     	var recipients_array = [];
+    	window.recipients_array = [];
     	$("input[name='recipients[]']:checked").each(function (){
     		recipients_array.push(parseInt($(this).val()));
     	});
+    	window.recipients_array = recipients_array;
     	if(recipients_array.length === 0){
     		no_alert = 0;
     		UIkit.modal.alert('You must select a recipient.',{stack: true});
@@ -226,11 +228,12 @@
     			if(data!=1){
     				UIkit.modal.alert(data,{stack: true});
     			} else {
-    				
+
             if($('#project-detail-tab-1').hasClass('uk-active')){
                         $('#project-detail-tab-1').trigger('click');
                     }else{
-                        updateStatus({{ $report_id }}, {{ $status }});
+                    	// debugger;
+                        updateStatus({{ $report_id }}, {{ $status }}, window.recipients_array);
                     }
     			}
     		} );

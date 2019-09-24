@@ -183,10 +183,12 @@ $crrTypeSelection    = 'all';
       		});
       	});
       	@if($auditor_access)
-      	function updateStatus(report_id, action) {
+      	function updateStatus(report_id, action, receipents = []) {
+      		// debugger;
       		$.get('/dashboard/reports', {
       			'id' : report_id,
       			'action' : action,
+      			'receipents' : receipents,
       			'check' : 1
       		}, function(data2) {
 
@@ -200,7 +202,7 @@ $crrTypeSelection    = 'all';
         	if(action == 6) {
         		dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
         	} else if(action == 2) {
-        		debugger;
+        		// debugger;
         		dynamicModalLoad('report-send-to-manager/' + reportId + '/' + project_id);
         	} else if(action == 3) {
         		dynamicModalLoad('report-decline/' + reportId + '/' + project_id);

@@ -3448,7 +3448,7 @@ class AuditController extends Controller
           $datasets = $get_project_details['datasets'];
           $project = $get_project_details['project'];
           $programs = $get_project_details['programs'];
-          //@divyam We need to make it so the swap unit modal shows all units regardless of the unit status type and if there are no programs on it but the program exists on the project, show it as a substitution option.
+          //@divyam We need to make it so the swap unit modal shows all units regardless of the unit status type and if there are no programs on it but the program exists on the project, show it as a substitution option. -NOT IMPLEMENTED YET 09/23/2019
           // $unit_ids = UnitGroup::where('audit_id', $audit->id)->get()->pluck('unit_id');
           $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)
                 ->join('units','units.id','unit_programs.unit_id')
