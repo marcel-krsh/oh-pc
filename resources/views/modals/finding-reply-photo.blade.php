@@ -20,7 +20,9 @@
 						<span class="a-higher"></span>
 						<span class="uk-text-middle"> Please upload your photos by dropping them here or</span>
 						<div uk-form-custom>
+
 							<input type="file" multiple accept="image/*;capture=camera">
+
 							<span class="uk-link uk-text-primary">by browsing and selecting them here.</span>
 						</div>
 					</div>
