@@ -75,7 +75,7 @@
 								</div>
 
 								<div id="as-inspec-tools-finding-resolve-{{ $finding->id }}" class="uk-display-block" style="margin: 15px 0;">
-									@if($auditor_access)
+									@if(Auth::user()->auditor_access())
 									@if(!$finding->cancelled_at)
 									@if($finding->auditor_approved_resolution != 1)
 									<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFindingAS({{ $finding->id }})"><span class="a-circle"></span> RESOLVE</button>
@@ -194,7 +194,7 @@
 									<p>
 										{{ $finding_level }}
 									</p>
-									@if($auditor_access)
+									@if(Auth::user()->auditor_access())
 									<div class="inspec-tools-tab-finding-actions">
 										@if(!$finding->cancelled_at)
 										<button class="uk-button uk-link" onclick="dynamicModalLoad('edit/finding/{{ $finding->id }}',0,0,0,2)"><i class="a-pencil-2"></i> EDIT</button>
@@ -262,7 +262,7 @@
 			}
 		});
 
-	@if($auditor_access)
+	@if(Auth::user()->auditor_access())
 	function resolveFindingAS(findingid){
 		$.post('/findings/'+findingid+'/resolve', {
 			'_token' : '{{ csrf_token() }}'

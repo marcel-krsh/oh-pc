@@ -643,7 +643,13 @@ class CachedAudit extends Model
     {
         if($this->estimated_time_needed){
             $time = explode(':', $this->estimated_time_needed);
-            return $time[0].":".$time[1];
+            if(intval($time[0]) > 0 || intval($time[1]) > 0){
+
+                $time = explode(':', $this->estimated_time_needed);
+                return $time[0].":".$time[1];
+            }else{
+                return '00:00';
+            }
         }else{
             return null;
         }

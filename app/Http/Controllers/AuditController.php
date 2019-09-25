@@ -2320,7 +2320,11 @@ class AuditController extends Controller
         // $day = ScheduleDay::where('id','=',$day_id)->first();
 
         $schedules = ScheduleTime::where('auditor_id', '=', $auditor_id)
-            ->where('day_id', '=', $day_id)
+            ->whereHas('day', function($q) use($date)
+            {
+                $q->whereDate('date', '=', $date);
+
+            })
             ->orderBy('start_slot', 'asc')
             ->get();
 
