@@ -6483,8 +6483,9 @@ class AuditController extends Controller
     public function singleCachedAudit($audit_id){
         $audit = CachedAudit::where('audit_id',intval($audit_id))->first();
         $auditor_access = Auth::user()->auditor_access();
+        $audits = $audit->toArray();
         if($audit !== null){
-            return view('dashboard.partials.audit_row',compact('audit','auditor_access'));
+            return view('dashboard.partials.audit_row',compact('audit','auditor_access', 'audits'));
         }else{
             return 0;
         }

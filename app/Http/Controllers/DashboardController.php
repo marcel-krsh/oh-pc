@@ -662,7 +662,7 @@ class DashboardController extends Controller
         // $request will contain filters
         // $auditFilterMineOnly
         // $auditFilterMineOnly
-
+  	// return $request->all();
         $filter    = $request->get('filter');
         $filter_id = $request->get('filterId');
 
@@ -948,6 +948,8 @@ class DashboardController extends Controller
             session(['total_inspection_filter' => 0]);
             $auditFilterInspection = "";
         }
+                // return session()->all();
+
 
         if(session()->has('compliance-status-all') && session('compliance-status-all') != 0){
             $auditFilterComplianceRR = 0;
@@ -997,16 +999,40 @@ class DashboardController extends Controller
                                     });
                                 });
         }
+                // return $audits->whereNotNull('car_status')->get();
+
 
         // load to list steps filtering and check for session variables
         $steps = GuideStep::where('guide_step_type_id', '=', 1)->orderBy('order', 'asc')->get();
-
+        $multi = 0;
         foreach ($steps as $step) {
           // for each step, check for filter in session variable
           if (session()->has($step->session_name) && session($step->session_name) == 1) {
-            $audits = $audits->orWhere('step_id', '=', $step->id);
+          	if($multi == 0) {
+          		$audits = $audits->where('step_id', '=', $step->id);
+          		$multi = 1;
+          	} else {
+          		$audits = $audits->orWhere('step_id', '=', $step->id);
+          	}
           }
         }
+
+        $report_config = config('allita.reports');
+        $multi = 0;
+        foreach ($report_config['car_status'] as $key => $value) {
+        	if (session()->has($key) && session($key) == 1) {
+        		if(session('car-report-selection-all') != 1) {
+        			if($multi == 0) {
+	          		//logic to check car report
+	          		$multi = 1;
+	          	} else {
+	          		//logic to check car report
+	          	}
+        		}
+          }
+        }
+        // $audits = $audits->get();
+
         $audits = $audits->with('audit.findings', 'audit.unique_unit_inspections')->orderBy($sort_by_field, $sort_order_query)->get()
             ->map(function ($audit) {
                 if($audit->inspection_schedule_text == 'CLICK TO SCHEDULE AUDIT'){
@@ -1015,6 +1041,24 @@ class DashboardController extends Controller
 
                 return $audit;
             });
+	        if(session()->has('total_building_inspection_amount') && session('total_building_inspection_amount') > 0){
+
+	            $total_building_inspection_amount = session('total_building_inspection_amount');
+
+	            if(session('total_building_inspection_filter') != 1){
+
+	                $auditBuildingFilterInspection = "MORE THAN OR EQUAL TO ".$total_building_inspection_amount." INSPECTABLE BUILDINGS";
+	                $audits = $audits->where('total_buildings', '>=', $total_building_inspection_amount);
+	            }else{
+
+	                $auditBuildingFilterInspection = "LESS THAN OR EQUAL TO ".$total_building_inspection_amount." INSPECTABLE BUILDINGS";
+	                $audits = $audits->where('total_buildings', '<=', $total_building_inspection_amount);
+	            }
+	        }else{
+	            session(['total_building_inspection_amount' => 0]);
+	            session(['total_building_inspection_filter' => 0]);
+	            $auditBuildingFilterInspection = "";
+	        }
         // $audits = $audits->take(5);
         $data = [];
 
@@ -1034,7 +1078,7 @@ class DashboardController extends Controller
         if ($page > 0) {
           return response()->json($data);
         } else {
-          return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditors', 'audits', 'sort_by', 'sort_order', 'steps', 'current_user', 'auditor_access'));
+          return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditBuildingFilterInspection', 'auditors', 'audits', 'sort_by', 'sort_order', 'steps', 'current_user', 'auditor_access', 'report_config'));
         }
   }
 

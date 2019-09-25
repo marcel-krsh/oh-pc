@@ -15,6 +15,7 @@ use App\Models\Finding;
 use App\Models\NotificationsTriggered;
 use App\Models\Project;
 use App\Models\SystemSetting;
+use App\Models\Organization;
 //use App\LogConverter;
 use App\Models\User;
 use Auth;
@@ -130,6 +131,13 @@ class CommunicationController extends Controller
     //dd('Called NewCommunicationEntry');
     //dd($project_id,$audit_id,$report_id,$finding_id,$all_findings);
     $ohfa_id           = SystemSetting::get('ohfa_organization_id');
+    // $ohfa = Organization::where('organization_name', 'OHFA Limited Partnership')->first();
+    // if($ohfa) {
+    // 	$ohfa_id = $ohfa->id;
+    // } else {
+    // 	$ohfa_id = null;
+    // }
+    // return $ohfa_id;
     $single_receipient = false;
 
     $current_user = Auth::user();

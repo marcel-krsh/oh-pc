@@ -64,10 +64,10 @@
 							@endif
 							{{-- @php $currentOrg = ''; @endphp --}}
 							@foreach ($recipients as $key => $orgs)
-                            <hr class="recipient-list-item dashed-hr uk-margin-bottom">
+							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 							<li class="recipient-list-item  {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$key))))) }}"><strong>{{ $key }}</strong>
 							</li>
-							
+
 							@foreach($orgs as $recipient)
 							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
 								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
@@ -76,7 +76,7 @@
 								</label>
 							</li>
 							@endforeach
-                            <hr class="recipient-list-item dashed-hr uk-margin-bottom">
+							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 							{{--  @if($currentOrg != $recipient->organization_name)
 							<li class="recipient-list-item @if(count($recipients_from_hfa) > 0 || $currentOrg != '') uk-margin-large-top @endif {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->organization_name }}</strong></li>
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
@@ -88,9 +88,9 @@
 									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
 								</label>
 							</li>
-							 --}}
+							--}}
 							@endforeach
-                            <hr class="recipient-list-item dashed-hr uk-margin-bottom">
+							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 						</ul>
 					</div>
 					<div class="uk-form-row">
@@ -126,9 +126,9 @@
           <!-- END RECIPIENT LISTING -->
         </div>
         @endif
-        
+
         @if($all_findings > 0 && null !== $findings && count($findings)>0)
-            @include('modals.partials.communication-findings')
+        @include('modals.partials.communication-findings')
         @endif
 
         @if(!is_null($project))
@@ -141,9 +141,9 @@
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
         				@if($all_findings && $single_receipient)
-        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." id="findings_based_subject" value="Finding: {{ $finding->id }}">
+        				<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." id="findings_based_subject" value="Finding: {{ $finding->id }}">
         				@else
-        					<input type="text" id="findings_based_subject" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
+        				<input type="text" id="findings_based_subject" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
         				@endif
         			</div>
         		</div>
@@ -236,7 +236,7 @@
 
     function updateMessage() {
     	@if($audit)
-        var audit = "{{ $audit->id }}";
+    	var audit = "{{ $audit->id }}";
     	var projectNumber = "{{ $project->project_number }}";
     	var projectName = "{{ $project->project_name }}";
     	var findings_array = [];
@@ -256,7 +256,7 @@
     	$('#findings_based_subject').attr('value', subject);
     	$('textarea#message-body').val(message);
     	// debugger;
-        @endIf
+    	@endIf
     }
   </script>
 </div>
