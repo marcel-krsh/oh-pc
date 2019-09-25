@@ -1608,12 +1608,13 @@ function updateAuditBuildingInspection(e) {
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
 			$('#totalbuildinginspectionbutton').trigger( 'click' );
-			UIkit.notification({
-				message: 'Buildings inspection filter applied',
-				status: 'success',
-				pos: 'top-right',
-				timeout: 5000
-			});
+			// UIkit.notification({
+			// 	message: 'Buildings inspection filter applied',
+			// 	status: 'success',
+			// 	pos: 'top-right',
+			// 	timeout: 5000
+			// });
+			loadTab('{{ route('dashboard.audits') }}','1','','','',1);
 		});
 	}
 
@@ -1804,7 +1805,7 @@ function updateAuditBuildingInspection(e) {
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
 				$('#checklist-button').trigger( 'click' );
-				//loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
 			} );
 		} );
 	}
@@ -1832,7 +1833,7 @@ function updateAuditBuildingInspection(e) {
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
 				$('#carselectionbutton').trigger( 'click' );
-				//loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
 			} );
 		} );
 	}
@@ -1888,7 +1889,7 @@ function updateAuditBuildingInspection(e) {
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
 				$('#8823selectionbutton').trigger( 'click' );
-				//loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
 			} );
 		} );
 	}
