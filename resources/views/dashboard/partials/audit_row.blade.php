@@ -28,9 +28,9 @@ $lead = $audit->lead_json;
 	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
 		<i class="a-info-circle uk-text-muted uk-link" onClick="openContactInfo({{ $audit->project_id }})" uk-tooltip title="VIEW CONTACT DETAILS;"></i>
 	</div>
-	<div class="uk-vertical-align-top uk-display-inline-block @if(count($audits) < 50)fadetext @endIf use-hand-cursor"  onClick="openProject({{ $audit->project_key }},{{ $audit->audit_id }});" uk-tooltip title="VIEW PROJECT DETAILS;">
-		<h3 class="uk-margin-bottom-remove filter-search-pm" >{{ $audit->title }}</h3>
-		<small class="uk-text-muted faded filter-search-pm" >{{ $audit->pm }}</small>
+	<div class="uk-vertical-align-top uk-display-inline-block @if(isset($audits) && count($audits) < 50)fadetext @endIf use-hand-cursor"  onClick="openProject({{$audit->project_key}},{{$audit->audit_id}});" uk-tooltip title="VIEW PROJECT DETAILS;">
+		<h3 class="uk-margin-bottom-remove filter-search-pm" >{{$audit->title}}</h3>
+		<small class="uk-text-muted faded filter-search-pm" >{{$audit->pm}}</small>
 	</div>
 </td>
 <td class="hasdivider audit-td-address uk-text-truncate">
@@ -39,9 +39,9 @@ $lead = $audit->lead_json;
 	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
 		<a href="https://maps.google.com/maps?q={{ $audit->address }}+{{ $audit->address2 }}" class="uk-link-mute" target="_blank"><i class="a-marker-basic uk-text-muted uk-link" uk-tooltip title="VIEW ON MAP;"></i></a>
 	</div>
-	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad @if(count($audits) < 50)fadetext @endIf" >
-		<a href="https://maps.google.com/maps?q={{ $audit->address }}+{{ $audit->address2 }}" class="uk-link-mute" target="_blank"><h3 class="uk-margin-bottom-remove filter-search-address">{{ $audit->address }}</h3>
-			<small class="uk-text-muted faded filter-search-address">@if($audit->city){{ $audit->city }}, @endIf {{ $audit->state }} {{ $audit->zip }} </small>
+	<div class="uk-vertical-align-top uk-display-inline-block fullwidthleftpad @if(isset($audits) && count($audits) < 50)fadetext @endIf" >
+		<a href="https://maps.google.com/maps?q={{$audit->address}}+{{$audit->address2}}" class="uk-link-mute" target="_blank"><h3 class="uk-margin-bottom-remove filter-search-address">{{$audit->address}}</h3>
+			<small class="uk-text-muted faded filter-search-address">@if($audit->city){{$audit->city}}, @endIf {{$audit->state}} {{$audit->zip}} </small>
 		</a>
 	</div>
 	@else

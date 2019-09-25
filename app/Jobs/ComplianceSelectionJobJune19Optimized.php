@@ -2337,7 +2337,7 @@ class ComplianceSelectionJobJune19Optimized implements ShouldQueue
                                 $comments[] = ' • '.$pid.' ';
                             }
 
-                    foreach ($this->project->programs->whereIn('project_key',$this->program_htc_ids) as $program) {
+                    foreach ($this->project->programs->whereIn('program_key',$this->program_htc_ids) as $program) {
                             
                             $comments[] = 'Checking '.$program->program->program_name.' with project program key: '.$program->project_program_key;
                         
