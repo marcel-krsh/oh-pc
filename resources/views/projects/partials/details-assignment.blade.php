@@ -795,7 +795,7 @@
 	 //    }
 		// });
 		flatpickr("#addaday", {
-		    mode: "range",
+		    mode: "single",
 		    minDate: "today",
 		    altFormat: "F j, Y",
 		    dateFormat: "F j, Y",
