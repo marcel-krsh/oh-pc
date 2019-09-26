@@ -800,43 +800,50 @@ class DashboardController extends Controller
             $auditFilterProjectName = 0;
         }
 
+        //file
+        // return session()->all();
+        // return $audits->get();
         if(session()->has('file-audit-status-h') && session('file-audit-status-h') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('files');
-                            });
+        		$audits->orWhere('file_findings_count', '>', 0);
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereHas('files');
+            //                 });
         }
 
         if(session()->has('file-audit-status-r') && session('file-audit-status-r') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('files', function( $query ) {
-                                    $query->where('auditor_approved_resolution', '>=', 0 );
-                                });
-                            });
+        		$audits->whereNotNull('file_findings_count')->whereColumn('file_findings_count', 'unresolved_file_findings_count');
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereHas('files', function( $query ) {
+            //                         $query->where('auditor_approved_resolution', '>=', 0 );
+            //                     });
+            //                 });
         }
 
         if(session()->has('file-audit-status-ar') && session('file-audit-status-ar') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('files', function( $query ) {
-                                    $query->where('auditor_approved_resolution', '>=', 0 );
-                                    $query->where('pm_submitted_resolution', '<', 'auditor_approved_resolution' );
-                                });
-                            });
+        		$audits->where('unresolved_file_findings_count', '>', 0);
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereHas('files', function( $query ) {
+            //                         $query->where('auditor_approved_resolution', '>=', 0 );
+            //                         $query->where('pm_submitted_resolution', '<', 'auditor_approved_resolution' );
+            //                     });
+            //                 });
         }
 
-        if(session()->has('file-audit-status-c') && session('file-audit-status-c') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('files', function( $query ) {
-                                    $query->whereHas('followups', function( $query ) {
-                                        $query->whereDate('date_due','<=', \Carbon\Carbon::today()->addHours(24))->whereDate('date_due','>=',\Carbon\Carbon::today());
-                                    });
-                                });
-                            });
-        }
+        // if(session()->has('file-audit-status-c') && session('file-audit-status-c') == 1){
+        //     $audits = $audits->whereHas('audit', function( $query ) {
+        //                         $query->whereHas('files', function( $query ) {
+        //                             $query->whereHas('followups', function( $query ) {
+        //                                 $query->whereDate('date_due','<=', \Carbon\Carbon::today()->addHours(24))->whereDate('date_due','>=',\Carbon\Carbon::today());
+        //                             });
+        //                         });
+        //                     });
+        // }
 
         if(session()->has('file-audit-status-nf') && session('file-audit-status-nf') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereDoesntHave('files');
-                            });
+        		$audits->whereNull('file_findings_count');
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereDoesntHave('files');
+            //                 });
         }
 
 
@@ -863,15 +870,15 @@ class DashboardController extends Controller
                             });
         }
 
-        if(session()->has('nlt-audit-status-c') && session('nlt-audit-status-c') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('nlts', function( $query ) {
-                                    $query->whereHas('followups', function( $query ) {
-                                        $query->whereDate('date_due','<=', \Carbon\Carbon::today()->addHours(24))->whereDate('date_due','>=',\Carbon\Carbon::today());
-                                    });
-                                });
-                            });
-        }
+        // if(session()->has('nlt-audit-status-c') && session('nlt-audit-status-c') == 1){
+        //     $audits = $audits->whereHas('audit', function( $query ) {
+        //                         $query->whereHas('nlts', function( $query ) {
+        //                             $query->whereHas('followups', function( $query ) {
+        //                                 $query->whereDate('date_due','<=', \Carbon\Carbon::today()->addHours(24))->whereDate('date_due','>=',\Carbon\Carbon::today());
+        //                             });
+        //                         });
+        //                     });
+        // }
 
         if(session()->has('nlt-audit-status-nf') && session('nlt-audit-status-nf') == 1){
             $audits = $audits->whereHas('audit', function( $query ) {
@@ -902,15 +909,15 @@ class DashboardController extends Controller
                             });
         }
 
-        if(session()->has('lt-audit-status-c') && session('lt-audit-status-c') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('lts', function( $query ) {
-                                    $query->whereHas('followups', function( $query ) {
-                                        $query->whereDate('date_due','<=', \Carbon\Carbon::today()->addHours(24))->whereDate('date_due','>=',\Carbon\Carbon::today());
-                                    });
-                                });
-                            });
-        }
+        // if(session()->has('lt-audit-status-c') && session('lt-audit-status-c') == 1){
+        //     $audits = $audits->whereHas('audit', function( $query ) {
+        //                         $query->whereHas('lts', function( $query ) {
+        //                             $query->whereHas('followups', function( $query ) {
+        //                                 $query->whereDate('date_due','<=', \Carbon\Carbon::today()->addHours(24))->whereDate('date_due','>=',\Carbon\Carbon::today());
+        //                             });
+        //                         });
+        //                     });
+        // }
 
         if(session()->has('lt-audit-status-nf') && session('lt-audit-status-nf') == 1){
             $audits = $audits->whereHas('audit', function( $query ) {
@@ -948,7 +955,6 @@ class DashboardController extends Controller
             session(['total_inspection_filter' => 0]);
             $auditFilterInspection = "";
         }
-                // return session()->all();
 
 
         if(session()->has('compliance-status-all') && session('compliance-status-all') != 0){
@@ -961,20 +967,20 @@ class DashboardController extends Controller
             $auditFilterComplianceC = session('compliance-status-c');
 
             $audits = $audits->where(function ($query) use ( $auditFilterComplianceRR, $auditFilterComplianceNC, $auditFilterComplianceC ){
-                            if(session()->has('compliance-status-rr') && session('compliance-status-rr') != 0){
+                if(session()->has('compliance-status-rr') && session('compliance-status-rr') != 0){
 
-                                $query->OrWhere('audit_compliance_status_text', '=', 'UNITS REQUIRE REVIEW');
-                            }
-                            if(session()->has('compliance-status-nc') && session('compliance-status-nc') != 0){
+                    $query->OrWhere('audit_compliance_status_text', '=', 'UNITS REQUIRE REVIEW');
+                }
+                if(session()->has('compliance-status-nc') && session('compliance-status-nc') != 0){
 
-                                $query->OrWhere('audit_compliance_status_text', '=', 'AUDIT NOT COMPLIANT');
-                            }
-                            if(session()->has('compliance-status-c') && session('compliance-status-c') != 0){
+                    $query->OrWhere('audit_compliance_status_text', '=', 'AUDIT NOT COMPLIANT');
+                }
+                if(session()->has('compliance-status-c') && session('compliance-status-c') != 0){
 
-                                $query->OrWhere('audit_compliance_status_text', '=', 'AUDIT COMPLIANT');
-                            }
+                    $query->OrWhere('audit_compliance_status_text', '=', 'AUDIT COMPLIANT');
+                }
 
-                        });
+            });
         }
 
         if(session('schedule_assignment_unassigned') == 1){
@@ -1004,34 +1010,43 @@ class DashboardController extends Controller
 
         // load to list steps filtering and check for session variables
         $steps = GuideStep::where('guide_step_type_id', '=', 1)->orderBy('order', 'asc')->get();
-        $multi = 0;
-        foreach ($steps as $step) {
-          // for each step, check for filter in session variable
-          if (session()->has($step->session_name) && session($step->session_name) == 1) {
-          	if($multi == 0) {
-          		$audits = $audits->where('step_id', '=', $step->id);
-          		$multi = 1;
-          	} else {
-          		$audits = $audits->orWhere('step_id', '=', $step->id);
-          	}
-          }
-        }
+        $audits->where(function($query) use ($steps) {
+        	foreach ($steps as $key => $step) {
+        		if (session()->has($step->session_name) && session($step->session_name) == 1) {
+		        	$query->orWhere('step_id', $step->id);
+        		}
+        	}
+       });
 
         $report_config = config('allita.reports');
-        $multi = 0;
-        foreach ($report_config['car_status'] as $key => $value) {
-        	if (session()->has($key) && session($key) == 1) {
-        		if(session('car-report-selection-all') != 1) {
-        			if($multi == 0) {
-	          		//logic to check car report
-	          		$multi = 1;
-	          	} else {
-	          		//logic to check car report
-	          	}
-        		}
-          }
+        if(session('car-report-selection-all') != 1) {
+        	$audits->where(function($query) use ($report_config) {
+	        	foreach ($report_config['car_status'] as $key => $value) {
+	        		if (session()->has($key) && session($key) == 1) {
+			        	$query->orWhere('car_approval_type_id', $report_config['car_approval_type'][$key]);
+	        		}
+	        	}
+	       });
         }
-        // $audits = $audits->get();
+        if(session('ehs-report-selection-all') != 1) {
+        	$audits->where(function($query) use ($report_config) {
+	        	foreach ($report_config['ehs_status'] as $key => $value) {
+	        		if (session()->has($key) && session($key) == 1) {
+			        	$query->orWhere('ehs_approval_type_id', $report_config['ehs_approval_type'][$key]);
+	        		}
+	        	}
+	       });
+        }
+        if(session('8823-report-selection-all') != 1) {
+        	$audits->where(function($query) use ($report_config) {
+	        	foreach ($report_config['8823_status'] as $key => $value) {
+	        		if (session()->has($key) && session($key) == 1) {
+			        	$query->orWhere('_8823_approval_type_id', $report_config['8823_approval_type'][$key]);
+	        		}
+	        	}
+	       });
+        }
+
 
         $audits = $audits->with('audit.findings', 'audit.unique_unit_inspections')->orderBy($sort_by_field, $sort_order_query)->get()
             ->map(function ($audit) {
@@ -1068,11 +1083,8 @@ class DashboardController extends Controller
 
 
         $auditors = User::join('users_roles','user_id','id')->select('users.id','users.name')->where('users.active',1)->where('role_id','>',1)->where('role_id','<',4)->orderBy('name')->get()->all();
-            // $auditor_names = [];
-            // foreach ($auditors_array as $auditor) {
-            //   $auditor_names[$auditor->id] = $auditor->name;
-            // }
-            // array_multisort($auditor_names, SORT_ASC, $auditors_array);
+
+
         $current_user = Auth::user();
         $auditor_access = Auth::user()->auditor_access();
         if ($page > 0) {

@@ -274,21 +274,21 @@
 
 			@if(session('file-audit-status-r') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('file-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED FILE AUDIT FINDINGS</span></a>
+				<a onClick="filterAudits('file-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ALL RESOLVED FILE AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(session('file-audit-status-ar') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('file-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ACTION REQUIRED FILE AUDIT FINDINGS</span></a>
+				<a onClick="filterAudits('file-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS UNRESOLVED FILE AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
-			@if(session('file-audit-status-c') == 1)
+			{{-- @if(session('file-audit-status-c') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('file-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL FILE AUDIT FINDINGS</span></a>
 			</div>
-			@endif
+			@endif --}}
 
 			@if(session('file-audit-status-nf') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
@@ -305,21 +305,21 @@
 
 			@if(session('nlt-audit-status-r') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('nlt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED NLT AUDIT FINDINGS</span></a>
+				<a onClick="filterAudits('nlt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ALL RESOLVED NLT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(session('nlt-audit-status-ar') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('nlt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ACTION REQUIRED NLT AUDIT FINDINGS</span></a>
+				<a onClick="filterAudits('nlt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS UNRESOLVED NLT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
-			@if(session('nlt-audit-status-c') == 1)
+			{{-- @if(session('nlt-audit-status-c') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('nlt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL NLT AUDIT FINDINGS</span></a>
 			</div>
-			@endif
+			@endif --}}
 
 			@if(session('nlt-audit-status-nf') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
@@ -336,21 +336,21 @@
 
 			@if(session('lt-audit-status-r') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('lt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS RESOLVED LT AUDIT FINDINGS</span></a>
+				<a onClick="filterAudits('lt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ALL RESOLVED LT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(session('lt-audit-status-ar') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('lt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ACTION REQUIRED LT AUDIT FINDINGS</span></a>
+				<a onClick="filterAudits('lt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS UNRESOLVED LT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
-
+{{--
 			@if(session('lt-audit-status-c') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
 				<a onClick="filterAudits('lt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL LT AUDIT FINDINGS</span></a>
 			</div>
-			@endif
+			@endif --}}
 
 			@if(session('lt-audit-status-nf') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
@@ -760,15 +760,15 @@
 													<label for="file-audit-status-h"><i class="a-folder "></i><span class="">HAS FILE AUDIT FINDINGS</span></label>
 
 													<input id="file-audit-status-r" class="fileauditselector" type="checkbox" @if(session('file-audit-status-r') == 1) checked @endif/>
-													<label for="file-audit-status-r"><i class="a-folder ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED FILE AUDIT FINDINGS</span></label>
+													<label for="file-audit-status-r"><i class="a-folder ok-actionable divider dividericon"></i><span class="ok-actionable">HAS ALL RESOLVED FILE AUDIT FINDINGS</span></label>
 
 
 
 													<input id="file-audit-status-ar" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-ar') == 1) checked @endif/>
-													<label for="file-audit-status-ar"><i class="a-folder action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED FILE AUDIT FINDINGS</span></label>
+													<label for="file-audit-status-ar"><i class="a-folder action-needed divider dividericon"></i> <span class="action-needed">HAS UNRESOLVED FILE AUDIT FINDINGS</span></label>
 
-													<input id="file-audit-status-c" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-c') == 1) checked @endif/>
-													<label for="file-audit-status-c"><i class="a-folder action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL FILE AUDIT FINDINGS</span></label>
+													{{-- <input id="file-audit-status-c" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-c') == 1) checked @endif/>
+													<label for="file-audit-status-c"><i class="a-folder action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL FILE AUDIT FINDINGS</span></label> --}}
 
 													<input id="file-audit-status-nf" class=" fileauditselector" type="checkbox" @if(session('file-audit-status-nf') == 1) checked @endif/>
 													<label for="file-audit-status-nf"><i class="a-folder"></i> <span class="">DOES NOT HAVE FILE AUDIT FINDINGS</span></label>
@@ -800,13 +800,13 @@
 													<label for="nlt-audit-status-h"><i class="a-booboo  "></i><span class="">HAS NLT AUDIT FINDINGS</span></label>
 
 													<input id="nlt-audit-status-r" class="nltauditselector" type="checkbox" @if(session('nlt-audit-status-r') == 1) checked @endif/>
-													<label for="nlt-audit-status-r"><i class="a-booboo ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED NLT AUDIT FINDINGS</span></label>
+													<label for="nlt-audit-status-r"><i class="a-booboo ok-actionable divider dividericon"></i><span class="ok-actionable">HAS ALL RESOLVED NLT AUDIT FINDINGS</span></label>
 
 													<input id="nlt-audit-status-ar" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-ar') == 1) checked @endif/>
-													<label for="nlt-audit-status-ar"><i class="a-booboo action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED NLT AUDIT FINDINGS</span></label>
+													<label for="nlt-audit-status-ar"><i class="a-booboo action-needed divider dividericon"></i> <span class="action-needed">HAS UNRESOLVED NLT AUDIT FINDINGS</span></label>
 
-													<input id="nlt-audit-status-c" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-c') == 1) checked @endif/>
-													<label for="nlt-audit-status-c"><i class="a-booboo action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL NLT AUDIT FINDINGS</span></label>
+													{{-- <input id="nlt-audit-status-c" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-c') == 1) checked @endif/>
+													<label for="nlt-audit-status-c"><i class="a-booboo action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL NLT AUDIT FINDINGS</span></label> --}}
 
 													<input id="nlt-audit-status-nf" class=" nltauditselector" type="checkbox" @if(session('nlt-audit-status-nf') == 1) checked @endif/>
 													<label for="nlt-audit-status-nf"><i class="a-booboo"></i> <span class="">DOES NOT HAVE NLT AUDIT FINDINGS</span></label>
@@ -838,13 +838,13 @@
 													<label for="lt-audit-status-h"><i class="a-skull "></i><span class="">HAS LT AUDIT FINDINGS</span></label>
 
 													<input id="lt-audit-status-r" class="ltauditselector" type="checkbox" @if(session('lt-audit-status-r') == 1) checked @endif/>
-													<label for="lt-audit-status-r"><i class="a-skull ok-actionable divider dividericon"></i><span class="ok-actionable">HAS RESOLVED LT AUDIT FINDINGS</span></label>
+													<label for="lt-audit-status-r"><i class="a-skull ok-actionable divider dividericon"></i><span class="ok-actionable">HAS ALL RESOLVED LT AUDIT FINDINGS</span></label>
 
 													<input id="lt-audit-status-ar" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-ar') == 1) checked @endif/>
-													<label for="lt-audit-status-ar"><i class="a-skull action-needed divider dividericon"></i> <span class="action-needed">HAS ACTION REQUIRED LT AUDIT FINDINGS</span></label>
+													<label for="lt-audit-status-ar"><i class="a-skull action-needed divider dividericon"></i> <span class="action-needed">HAS UNRESOLVED LT AUDIT FINDINGS</span></label>
 
-													<input id="lt-audit-status-c" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-c') == 1) checked @endif/>
-													<label for="lt-audit-status-c"><i class="a-skull action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL LT AUDIT FINDINGS</span></label>
+													{{-- <input id="lt-audit-status-c" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-c') == 1) checked @endif/>
+													<label for="lt-audit-status-c"><i class="a-skull action-required divider dividericon"></i> <span class="action-required">HAS CRITICAL LT AUDIT FINDINGS</span></label> --}}
 
 													<input id="lt-audit-status-nf" class=" ltauditselector" type="checkbox" @if(session('lt-audit-status-nf') == 1) checked @endif/>
 													<label for="lt-audit-status-nf"><i class="a-skull"></i> <span class="">DOES NOT HAVE LT AUDIT FINDINGS</span></label>
@@ -1861,7 +1861,7 @@ function updateAuditBuildingInspection(e) {
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
 				$('#ehsselectionbutton').trigger( 'click' );
-				//loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
 			} );
 		} );
 	}
