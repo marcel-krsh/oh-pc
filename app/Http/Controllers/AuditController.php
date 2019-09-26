@@ -2325,6 +2325,7 @@ class AuditController extends Controller
                 $q->whereDate('date', '=', $date);
 
             })
+            ->with('audit.project')
             ->orderBy('start_slot', 'asc')
             ->get();
 
@@ -2446,7 +2447,7 @@ class AuditController extends Controller
                         "icon" => "a-mobile-checked",
                         "class" => "schedule " . $thisauditclass . $travelclass,
                         "modal_type" => "removeschedule",
-                        "tooltip" => "SCHEDULED TIME " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['start_time'])->format('h:i A')) . " " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['end_time'])->format('h:i A')),
+                        "tooltip" => "SCHEDULED TIME " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['start_time'])->format('h:i A')) . " " . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['end_time'])->format('h:i A')). " (PROJECT NUMBER: ".$s['audit']['project']['project_number'].")",
                     ];
 
                     // reset slot to the just after the scheduled time
