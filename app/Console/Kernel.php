@@ -93,7 +93,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        
+
 
         $seconds = 5;
         /// laravel's shortest span is 1 minute - we want to check our audit caches every 5 seconds.
@@ -125,7 +125,7 @@ class Kernel extends ConsoleKernel
 
             // it is befor 10:00 pm and after 3 am -- backup time.
 
-                
+
 
             $test = DB::table('jobs')->where('payload', 'like', '%SyncAddresses%')->first();
             if (is_null($test)) {

@@ -97,7 +97,7 @@ class CachedAudit extends Model
         // });
     }
 
-    public function update_auditor_status() 
+    public function update_auditor_status()
     {
         if($this->estimated_time_needed ){
             $time = explode(':', $this->estimated_time_needed);
@@ -108,7 +108,7 @@ class CachedAudit extends Model
                     $this->auditor_status_text ='THERE ARE '.$this->hours_still_needed().' HOURS THAT STILL NEED TO BE SCHEDULED';
                     $this->save();
                     return true;
-                } 
+                }
             } else {
                 if($this->hasAmenityInspectionNotAssigned()){
                     if($this->auditor_status_icon != 'a-avatar-fail'){
@@ -126,7 +126,7 @@ class CachedAudit extends Model
                         $this->save();
                         return true;
                     }
-                } 
+                }
             }
         } else {
             if($this->auditor_status_icon != 'a-clock-5'){
@@ -148,10 +148,10 @@ class CachedAudit extends Model
                 $this->message_status = 'ok-actionable';
                 $unreadByUser = [];
                 forEach($unreadMail as $mail){
-                    
+
                     forEach($mail->message_recipients as $m){
                         if(array_key_exists($m->id, $unreadByUser) && array_key_exists('count', $unreadByUser[$m->id])){
-                          $unreadByUser[$m->id]['count']++;  
+                          $unreadByUser[$m->id]['count']++;
                         }else{
                             if($m){
                               $unreadByUser[$m->id]['count'] = 1;
@@ -161,9 +161,9 @@ class CachedAudit extends Model
                                 dd($m);
                             }
                         }
-                        
+
                     }
-                    
+
                 }
                 $message = '';
                 forEach($unreadByUser as $u){
@@ -199,12 +199,12 @@ class CachedAudit extends Model
         $unCorrectedFileCount = count($this->audit->files->where('auditor_last_approved_resolution_at', null));
         $nltCount = count($this->audit->nlts);
         $unCorrectedNltCount = count($this->audit->nlts->where('auditor_last_approved_resolution_at', null));
-        
+
         $ltCount = count($this->audit->lts);
         $unCorrectedLtCount = count($this->audit->lts->where('auditor_last_approved_resolution_at', null));
         $updated = 0;
        if($fileCount !== $this->file_findings_count || $unCorrectedFileCount !== $this->unresolved_file_findings_count){
-            
+
             if($unCorrectedFileCount > 0){
                 $corrected = $fileCount - $unCorrectedFileCount;
                 $plural = '';
@@ -214,9 +214,9 @@ class CachedAudit extends Model
                 $this->file_audit_icon = 'a-folder attention';
                 $this->file_audit_status = 'action-needed';
                 $this->file_audit_status_text =$corrected.' / '.$fileCount.' FINDING'.$plural.' CORRECTED';
-                
+
                 $updated = 1;
-            } else { 
+            } else {
                 $plural = '';
                 if($fileCount > 1){
                     $plural = 'S';
@@ -228,12 +228,12 @@ class CachedAudit extends Model
                 } else {
                     $this->file_audit_status_text = 'NO FINDINGS';
                 }
-                
-                $updated = 1; 
+
+                $updated = 1;
             }
        }
        if($nltCount !== $this->nlt_findings_count || $unCorrectedNltCount !== $this->unresolved_nlt_findings_count){
-            
+
             if($unCorrectedNltCount > 0){
                 $corrected = $nltCount - $unCorrectedNltCount;
                 $plural = '';
@@ -243,9 +243,9 @@ class CachedAudit extends Model
                 $this->nlt_audit_icon = 'a-booboo attention';
                 $this->nlt_audit_status = 'action-needed';
                 $this->nlt_audit_status_text =$corrected.' / '.$nltCount.' FINDING'.$plural.' CORRECTED';
-               
+
                 $updated = 1;
-            } else { 
+            } else {
                 $plural = '';
                 if($nltCount > 1){
                     $plural = 'S';
@@ -257,12 +257,12 @@ class CachedAudit extends Model
                 } else {
                     $this->nlt_audit_status_text = 'NO FINDINGS';
                 }
-                
-                $updated = 1; 
+
+                $updated = 1;
             }
        }
        if($ltCount !== $this->lt_findings_count || $unCorrectedLtCount !== $this->unresolved_lt_findings_count){
-            
+
             if($unCorrectedLtCount > 0){
                 $corrected = $ltCount - $unCorrectedLtCount;
                 $plural = '';
@@ -272,9 +272,9 @@ class CachedAudit extends Model
                 $this->lt_audit_icon = 'a-skull attention';
                 $this->lt_audit_status = 'action-needed';
                 $this->lt_audit_status_text =$corrected.' / '.$ltCount.' FINDING'.$plural.' CORRECTED';
-                
+
                 $updated = 1;
-            } else { 
+            } else {
                 $plural = '';
                 if($ltCount > 1){
                     $plural = 'S';
@@ -286,8 +286,8 @@ class CachedAudit extends Model
                 } else {
                     $this->lt_audit_status_text = 'NO FINDINGS';
                 }
-                
-                $updated = 1; 
+
+                $updated = 1;
             }
         }
         if($updated){
@@ -295,7 +295,7 @@ class CachedAudit extends Model
             return true;
         }else{
             return false;
-        } 
+        }
     }
     public function update_document_status(){
         if($this->has_documents()){
@@ -305,7 +305,7 @@ class CachedAudit extends Model
                         // we trigger the update each time just in case there are new docs submitted.
                         $this->document_status_icon = 'a-file-mail attention';
                         $this->document_status = 'ok-actionable';
-                        
+
                         $message = '';
                         forEach($uncheckedDocs as $ud){
                             $output = 0;
@@ -314,7 +314,7 @@ class CachedAudit extends Model
                                 $message .= 'AUDIT : '.$ud->audit_id.' | ';
                                 $output = 1;
                             }
-                            
+
                             if(null !== $ud->comment){
                                 $message .= "'".$ud->comment."' | ";
                                 $output = 1;
@@ -355,39 +355,39 @@ class CachedAudit extends Model
     public function update_report_statuses(){
         $updated = 0;
         if(count($this->audit->reports)){
-           
+
             $car = $this->audit->reports->where('from_template_id',1)->first();
-            if(null !== $car){ 
+            if(null !== $car){
                 //dd('CAR!');
                 switch ($car->crr_approval_type_id) {
-                                                    case '1':
-                                                        $carIcon = "a-file-pencil-2"; // draft
-                                                        break;
-                                                    case '2':
-                                                        $carIcon = "a-file-clock"; // pending manager review
-                                                        break;
-                                                    case '3':
-                                                        $carIcon = "a-file-fail manager-fail attention"; // declined by manager
-                                                        break;
-                                                    case '4':
-                                                        $carIcon = "a-file-repeat"; // approved with changes
-                                                        break;
-                                                    case '5':
-                                                        $carIcon = "a-file-certified"; // approved
-                                                        break;
-                                                    case '6':
-                                                        $carIcon = "a-file-mail"; // Unopened by PM
-                                                        break;
-                                                    case '7':
-                                                        $carIcon = "a-file-pen"; // Viewed by a PM
-                                                        break;
-                                                    case '9':
-                                                        $carIcon = "a-file-approve"; // All items resolved
-                                                        break;
-                                                    default:
-                                                        $carIcon = "a-file-fail";
-                                                        break;
-                                                }
+                        case '1':
+                            $carIcon = "a-file-pencil-2"; // draft
+                            break;
+                        case '2':
+                            $carIcon = "a-file-clock"; // pending manager review
+                            break;
+                        case '3':
+                            $carIcon = "a-file-fail manager-fail attention"; // declined by manager
+                            break;
+                        case '4':
+                            $carIcon = "a-file-repeat"; // approved with changes
+                            break;
+                        case '5':
+                            $carIcon = "a-file-certified"; // approved
+                            break;
+                        case '6':
+                            $carIcon = "a-file-mail"; // Unopened by PM
+                            break;
+                        case '7':
+                            $carIcon = "a-file-pen"; // Viewed by a PM
+                            break;
+                        case '9':
+                            $carIcon = "a-file-approve"; // All items resolved
+                            break;
+                        default:
+                            $carIcon = "a-file-fail";
+                            break;
+                    }
                     $unCorrected = count($this->audit->findings->where('auditor_last_approved_resolution_at', null));
                     if($this->car_icon != $carIcon || (time() > strtotime($car->response_due_date) && $car->response_due_date !== null && $unCorrected > 0)){
                         // we trigger the update each time just in case there are new docs submitted.
@@ -403,6 +403,7 @@ class CachedAudit extends Model
                         $this->car_status = $status;
                         $this->car_status_text ='CAR #'.$car->id.' '.strtoupper($car->status_name()).$statusText;
                         $this->car_id = $car->id;
+                        $this->car_approval_type_id = $car->crr_approval_type_id;
                         $updated = 1;
                     }
                 }else{
@@ -411,12 +412,13 @@ class CachedAudit extends Model
                         $this->car_status = null;
                         $this->car_status_text =null;
                         $this->car_id = null;
+                        $this->car_approval_type_id = null;
                         $updated = 1;
                     }
                 }
                 //////////////////////////////////////
                 $ehs = $this->audit->reports->where('from_template_id',2)->first();
-                if(null !== $ehs){ 
+                if(null !== $ehs){
                     //dd('CAR!');
                     switch ($ehs->crr_approval_type_id) {
                                                         case '1':
@@ -461,6 +463,7 @@ class CachedAudit extends Model
                             $this->ehs_status = $status;
                             $this->ehs_status_text ='EHS #'.$ehs->id.' '.strtoupper($ehs->status_name()).$statusText;
                             $this->ehs_id = $ehs->id;
+                            $this->ehs_approval_type_id = $ehs->crr_approval_type_id;
                             $updated = 1;
                         }
                     }else{
@@ -469,12 +472,13 @@ class CachedAudit extends Model
                             $this->ehs_status = null;
                             $this->ehs_status_text =null;
                             $this->ehs_id = null;
+                            $this->ehs_approval_type_id = null;
                             $updated = 1;
                         }
                     }
                     /////////////////////////////////////
                     $_8823 = $this->audit->reports->where('from_template_id',5)->first();
-                    if(null !== $_8823){ 
+                    if(null !== $_8823){
                         //dd('CAR!');
                         switch ($_8823->crr_approval_type_id) {
                                                             case '1':
@@ -520,6 +524,7 @@ class CachedAudit extends Model
                                 $this->_8823_status = $status;
                                 $this->_8823_status_text ='8823 #'.$_8823->id.' '.strtoupper($_8823->status_name()).$statusText;
                                 $this->_8823_id = $_8823->id;
+                                $this->_8823_approval_type_id = $_8823->crr_approval_type_id;
                                 $updated = 1;
                             }
                         }else{
@@ -528,6 +533,7 @@ class CachedAudit extends Model
                                 $this->_8823_status = null;
                                 $this->_8823_status_text =null;
                                 $this->_8823_id = null;
+                                $this->_8823_approval_type_id = null;
                                 $updated = 1;
                             }
                         }
@@ -537,14 +543,17 @@ class CachedAudit extends Model
                     $this->car_status = null;
                     $this->car_status_text = null;
                     $this->car_id = null;
+                    $this->car_approval_type_id = null;
                     $this->ehs_icon = null;
                     $this->ehs_status = null;
                     $this->ehs_status_text =null;
                     $this->ehs_id = null;
+                    $this->ehs_approval_type_id = null;
                     $this->_8823_icon = null;
                     $this->_8823_status = null;
                     $this->_8823_status_text =null;
                     $this->_8823_id = null;
+                    $this->_8823_approval_type_id = null;
                     $updated = 1;
                 }
         }
@@ -556,6 +565,7 @@ class CachedAudit extends Model
         }
     }
     public function update_cached_audit(){
+    	// Log::info('im here');
         $updated = false;
 
         if($this->update_auditor_status()){
@@ -580,7 +590,7 @@ class CachedAudit extends Model
         if($this->project && $this->project->documents){
             $hasDocs = $this->project->documents->count();
         }else{
-            $hasDocs = null;            
+            $hasDocs = null;
         }
         return $hasDocs;
     }

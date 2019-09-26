@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Models\CachedAudit;
+use Log;
 
 class update_audit_caches implements ShouldQueue
 {
@@ -37,5 +38,5 @@ class update_audit_caches implements ShouldQueue
                $audit->update_cached_audit();
             }
     }
-    
+
 }
