@@ -73,7 +73,7 @@
 															@endif
 														</div>
 														<div class="uk-width-1-2 uk-padding-remove">
-															<div class="building-type-icon " uk-tooltip="pos:top-left;title:Building ID {{ $building->id }};">
+															<div class="building-type-icon " style="padding-top: 0px" uk-tooltip="pos:top-left;title:Building ID {{ $building->id }};">
 																@if($building->type == "pool")
 																<i class="a-pool colored"></i>
 																@else

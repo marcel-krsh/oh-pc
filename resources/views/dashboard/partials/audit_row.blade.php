@@ -17,10 +17,10 @@ $lead = $audit->lead_json;
 </td>
 <td id="audit-c-2-{{ $audit->audit_id }}" class="audit-td-project">
 	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		<span id="audit-i-project-detail-{{ $audit->audit_id }}" onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" uk-tooltip title="pos:top-left;title:VIEW BUILDINGS AND COMMON AREAS;" class="uk-link" style="margin-right: 10px; margin-left: 7px; margin-top: 0px !important;"><i class="a-menu uk-text-muted"></i></span>
+		<span id="audit-i-project-detail-{{ $audit->audit_id }}" onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" uk-tooltip="title: VIEW BUILDINGS AND COMMON AREAS; pos: top-left;" class="uk-link" style="margin-right: 10px; margin-left: 7px; margin-top: 0px !important;"><i class="a-menu uk-text-muted"></i></span>
 	</div>
 	<div class="uk-vertical-align-middle uk-display-inline-block use-hand-cursor"  onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" >
-		<h3 id="audit-project-name-{{ $audit->audit_id }}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip title="VIEW BUILDINGS AND COMMON AREAS;"><span >{{ $audit->project_ref }}</span></h3>
+		<h3 id="audit-project-name-{{ $audit->audit_id }}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip title="VIEW BUILDINGS AND COMMON AREAS"><span >{{ $audit->project_ref }}</span></h3>
 		<small id="audit-project-aid-{{ $audit->audit_id }}" class="uk-text-muted faded filter-search-project" uk-tooltip title="VIEW BUILDINGS AND COMMON AREAS;">AUDIT <span >{{ $audit->audit_id }}</span></small>
 	</div>
 </td>
@@ -28,7 +28,7 @@ $lead = $audit->lead_json;
 	<div class="uk-vertical-align-top uk-display-inline-block uk-margin-small-top uk-margin-small-left">
 		<i class="a-info-circle uk-text-muted uk-link" onClick="openContactInfo({{ $audit->project_id }})" uk-tooltip title="VIEW CONTACT DETAILS;"></i>
 	</div>
-	<div class="uk-vertical-align-top uk-display-inline-block @if(isset($audits) && count($audits) < 50)fadetext @endIf use-hand-cursor"  onClick="openProject({{$audit->project_key}},{{$audit->audit_id}});" uk-tooltip title="VIEW PROJECT DETAILS;">
+	<div class="uk-vertical-align-top uk-display-inline-block @if(isset($audits) && count($audits) < 50)fadetext @endIf use-hand-cursor"  onClick="openProject({{$audit->project_key}},{{$audit->audit_id}});" uk-tooltip title="VIEW AUDIT DETAILS">
 		<h3 class="uk-margin-bottom-remove filter-search-pm" >{{$audit->title}}</h3>
 		<small class="uk-text-muted faded filter-search-pm" >{{$audit->pm}}</small>
 	</div>

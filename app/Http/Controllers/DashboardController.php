@@ -663,6 +663,7 @@ class DashboardController extends Controller
         // $auditFilterMineOnly
         // $auditFilterMineOnly
   	// return $request->all();
+  	// return session()->all();
         $filter    = $request->get('filter');
         $filter_id = $request->get('filterId');
 
@@ -996,15 +997,18 @@ class DashboardController extends Controller
         if(session('schedule_assignment_too_many') == 1){
             $audits = $audits->whereDate('estimated_time_needed', '=', 0)->orWhereNull('estimated_time_needed');
         }
+
         if(session()->has('assignment-auditor') && is_array(session('assignment-auditor'))){
             //$audits = $audits->whereIn('lead', session('assignment-auditor'));
             $audits = $audits->where(function ($query) {
-                            $query->whereIn('lead',session('assignment-auditor'))
-                                    ->orWhereHas('auditors', function( $query2 ){
-                                        $query2->whereIn('user_id', session('assignment-auditor') );
-                                    });
-                                });
+                            $query->whereIn('lead',session('assignment-auditor'));
+                              $query->orWhereHas('auditors', function( $query2 ){
+                                  $query2->whereIn('user_id', session('assignment-auditor') );
+                              });
+                          });
         }
+
+        // return $audits->with('auditors')->get();
                 // return $audits->whereNotNull('car_status')->get();
 
 

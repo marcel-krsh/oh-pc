@@ -1,6 +1,6 @@
 @forEach($reports as $report)
 <tr id="crr-report-row-{{$report->id}}">
-	<td><a href="/report/{{$report->id}}" target="report-{{$report->id}}" class="uk-mute"><i class="a-file-chart-3"></i> #{{$report->id}}</a></td>
+	<td><a href="/report/{{$report->id}}" target="{{$report->template()->template_name}}-report-{{$report->id}}" class="uk-mute"><i class="a-file-chart-3"></i> #{{$report->id}}</a></td>
 	<td>@if($auditor_access)<a onclick="loadTab('/projects/{{$report->project->project_key}}', '4', 1, 1,'',1);" class="uk-mute"> @endif {{$report->project->project_number}} : {{$report->project->project_name}}@if($auditor_access)</a>@endif</td>
 	<td>{{$report->audit_id}}</td>
 	@if($auditor_access)<td>{{$report->lead->person->first_name}} {{$report->lead->person->last_name}}</td>@endif

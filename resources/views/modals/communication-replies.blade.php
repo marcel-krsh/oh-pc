@@ -43,7 +43,7 @@
 						@endif
 					@endif
 				@endif
-			@endforeach		
+			@endforeach
 			@endif
 		</div>
 		{{-- Dcouments section --}}
@@ -115,7 +115,7 @@
 				</span>
 			</div>
 			<div class="uk-width-1-1 uk-width-2-5@s communication-item-excerpt">
-				
+
 				<p>{!! str_replace('<br />','</p><p>',nl2br($reply->message)) !!}</p>
 			</div>
 			<div class="uk-width-1-1 uk-width-2-5@s">
@@ -234,6 +234,7 @@
 
 	    	@if($project && Auth::user()->can('access_auditor'))
 	    		var id = {{$project->id}};
+	    		debugger;
 	        loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
 	        //loadParcelSubTab('communications',id);
 	        @else
@@ -245,7 +246,12 @@
 
 
 		// refresh communications tabs
-		  $('#project-detail-tab-2').trigger('click');
-		  $('#detail-tab-2').trigger('click');
+		@if($project)
+			$('#project-detail-tab-2').trigger('click');
+		@else
+			$('#detail-tab-2').trigger('click');
+		@endif
+
+
     </script>
   </div>
