@@ -1639,6 +1639,7 @@ function updateAuditBuildingInspection(e) {
 		var myAudits = 0;
 		if(selected.includes({{$current_user->id}})){
 			myAudits = 1;
+			alert('my-audits-triggered');
 		}
 		$.post("/session/", {
 			'data' : [['assignment-auditor', selected],['audit-my-audits',myAudits]],
