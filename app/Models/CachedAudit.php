@@ -229,8 +229,11 @@ class CachedAudit extends Model
                     $this->file_audit_status_text = 'NO FINDINGS';
                 }
 
+
                 $updated = 1;
             }
+            $this->unresolved_file_findings_count = $unCorrectedFileCount;
+            $this->file_findings_count = $fileCount;
        }
        if($nltCount !== $this->nlt_findings_count || $unCorrectedNltCount !== $this->unresolved_nlt_findings_count){
 
@@ -260,6 +263,8 @@ class CachedAudit extends Model
 
                 $updated = 1;
             }
+            $this->unresolved_nlt_findings_count = $unCorrectedNltCount;
+            $this->nlt_findings_count = $nltCount;
        }
        if($ltCount !== $this->lt_findings_count || $unCorrectedLtCount !== $this->unresolved_lt_findings_count){
 
@@ -289,6 +294,8 @@ class CachedAudit extends Model
 
                 $updated = 1;
             }
+            $this->unresolved_lt_findings_count = $unCorrectedLtCount;
+            $this->lt_findings_count = $ltCount;
         }
         if($updated){
             $this->save();
@@ -352,6 +359,20 @@ class CachedAudit extends Model
         }
         return false;
     }
+
+    public function update_unit_statuses() {
+    	if($this->audit && $this->audit->unique_unit_inspections) {
+    		$unit_inspections_count = $this->audit->unique_unit_inspections->count();
+    		$this->inspectable_items = $this->audit->unique_unit_inspections->count();
+    		$this->save();
+    	} else {
+    		//do nothing
+    	}
+
+    		return true;
+
+    }
+
     public function update_report_statuses(){
         $updated = 0;
         if(count($this->audit->reports)){
@@ -580,7 +601,10 @@ class CachedAudit extends Model
         if($this->update_finding_stats()){
             $updated = true;
         }
-        if($this-> update_report_statuses()){
+        if($this->update_report_statuses()){
+            $updated = true;
+        }
+        if($this->update_unit_statuses()){
             $updated = true;
         }
         return $updated;

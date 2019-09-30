@@ -70,7 +70,7 @@ $lead = $audit->lead_json;
 		</div>
 
 		<div class="uk-width-1-4 uk-text-center uk-padding-remove" style="margin-top: -4px;" uk-tooltip title="INSPECTING {{ $audit->total_buildings }} @if($audit->total_buildings > 1 || $audit->total_buildings < 1) BUILDINGS @else BUILDING @endIf">{{ $audit->total_buildings }}</div>
-		<div class="uk-width-1-4 uk-text-center uk-padding-remove" style="margin-top: -4px;" uk-tooltip title="INSPECTING {{ $audit->audit->unique_unit_inspections->count() }} @if($audit->audit->unique_unit_inspections->count() > 1 || $audit->audit->unique_unit_inspections->count() < 1) UNITS @else UNIT @endIf">{{ $audit->audit->unique_unit_inspections->count() }}</div>
+		<div class="uk-width-1-4 uk-text-center uk-padding-remove" style="margin-top: -4px;" uk-tooltip title="INSPECTING {{ $audit->inspectable_items }} @if($audit->inspectable_items > 1 || $audit->inspectable_items < 1) UNITS @else UNIT @endIf">{{ $audit->inspectable_items }}</div>
 	</div>
 </td>
 <td class="hasdivider audit-td-due">
@@ -94,6 +94,7 @@ $lead = $audit->lead_json;
 				@endIf
 			</div>
 		</div>
+		@if(env('APP_ENV') != 'production')
 		<div class="uk-width-1-3  uk-remove-margin uk-padding-remove audit-list-report-holder" style="overflow: hidden;">
 			<div class="audit-list-report-icons">
 				@if($audit->_8823_id)
@@ -103,6 +104,7 @@ $lead = $audit->lead_json;
 				@endIf
 			</div>
 		</div>
+		@endif
 	</div>
 </td>
 <td class="hasdivider">

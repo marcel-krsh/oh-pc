@@ -805,14 +805,14 @@ class DashboardController extends Controller
         // return session()->all();
         // return $audits->get();
         if(session()->has('file-audit-status-h') && session('file-audit-status-h') == 1){
-        		$audits->orWhere('file_findings_count', '>', 0);
+        		$audits->whereNotNull('file_findings_count')->where('file_findings_count', '>', 0);
             // $audits = $audits->whereHas('audit', function( $query ) {
             //                     $query->whereHas('files');
             //                 });
         }
 
         if(session()->has('file-audit-status-r') && session('file-audit-status-r') == 1){
-        		$audits->whereNotNull('file_findings_count')->whereColumn('file_findings_count', 'unresolved_file_findings_count');
+        		$audits->whereNotNull('file_findings_count')->where('file_findings_count', '>', 0)->whereColumn('file_findings_count', 'unresolved_file_findings_count');
             // $audits = $audits->whereHas('audit', function( $query ) {
             //                     $query->whereHas('files', function( $query ) {
             //                         $query->where('auditor_approved_resolution', '>=', 0 );
@@ -841,7 +841,11 @@ class DashboardController extends Controller
         // }
 
         if(session()->has('file-audit-status-nf') && session('file-audit-status-nf') == 1){
-        		$audits->whereNull('file_findings_count');
+        	$audits = $audits->where(function ($query) {
+                            $query->whereNull('file_findings_count')
+                                    ->orWhere('file_findings_count', 0);
+                        });
+        		// $audits->whereNull('file_findings_count')->orWhere('file_findings_count', 0);
             // $audits = $audits->whereHas('audit', function( $query ) {
             //                     $query->whereDoesntHave('files');
             //                 });
@@ -849,26 +853,29 @@ class DashboardController extends Controller
 
 
         if(session()->has('nlt-audit-status-h') && session('nlt-audit-status-h') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('nlts');
-                            });
+        		$audits->whereNotNull('nlt_findings_count')->where('nlt_findings_count', '>', 0);
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereHas('nlts');
+            //                 });
         }
 
         if(session()->has('nlt-audit-status-r') && session('nlt-audit-status-r') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('nlts', function( $query ) {
-                                    $query->where('auditor_approved_resolution', '>=', 0 );
-                                });
-                            });
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereHas('nlts', function( $query ) {
+            //                         $query->where('auditor_approved_resolution', '>=', 0 );
+            //                     });
+            //                 });
+        		$audits->whereNotNull('nlt_findings_count')->where('nlt_findings_count', '>', 0)->whereColumn('nlt_findings_count', 'unresolved_nlt_findings_count');
         }
 
         if(session()->has('nlt-audit-status-ar') && session('nlt-audit-status-ar') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('nlts', function( $query ) {
-                                    $query->where('auditor_approved_resolution', '>=', 0 );
-                                    $query->where('pm_submitted_resolution', '<', 'auditor_approved_resolution' );
-                                });
-                            });
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereHas('nlts', function( $query ) {
+            //                         $query->where('auditor_approved_resolution', '>=', 0 );
+            //                         $query->where('pm_submitted_resolution', '<', 'auditor_approved_resolution' );
+            //                     });
+            //                 });
+        		$audits->where('unresolved_nlt_findings_count', '>', 0);
         }
 
         // if(session()->has('nlt-audit-status-c') && session('nlt-audit-status-c') == 1){
@@ -882,32 +889,36 @@ class DashboardController extends Controller
         // }
 
         if(session()->has('nlt-audit-status-nf') && session('nlt-audit-status-nf') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereDoesntHave('nlts');
-                            });
+        		$audits->whereNull('nlt_findings_count')->orWhere('nlt_findings_count', 0);
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereDoesntHave('nlts');
+            //                 });
         }
 
         if(session()->has('lt-audit-status-h') && session('lt-audit-status-h') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('lts');
-                            });
+        		$audits->whereNotNull('lt_findings_count')->where('lt_findings_count', '>', 0);
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereHas('lts');
+            //                 });
         }
 
         if(session()->has('lt-audit-status-r') && session('lt-audit-status-r') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('lts', function( $query ) {
-                                    $query->where('auditor_approved_resolution', '>=', 0 );
-                                });
-                            });
+        		$audits->where('unresolved_lt_findings_count', '>', 0);
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereHas('lts', function( $query ) {
+            //                         $query->where('auditor_approved_resolution', '>=', 0 );
+            //                     });
+            //                 });
         }
 
         if(session()->has('lt-audit-status-ar') && session('lt-audit-status-ar') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereHas('lts', function( $query ) {
-                                    $query->where('auditor_approved_resolution', '>=', 0 );
-                                    $query->where('pm_submitted_resolution', '<', 'auditor_approved_resolution' );
-                                });
-                            });
+        		$audits->where('unresolved_lt_findings_count', '>', 0);
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereHas('lts', function( $query ) {
+            //                         $query->where('auditor_approved_resolution', '>=', 0 );
+            //                         $query->where('pm_submitted_resolution', '<', 'auditor_approved_resolution' );
+            //                     });
+            //                 });
         }
 
         // if(session()->has('lt-audit-status-c') && session('lt-audit-status-c') == 1){
@@ -921,9 +932,10 @@ class DashboardController extends Controller
         // }
 
         if(session()->has('lt-audit-status-nf') && session('lt-audit-status-nf') == 1){
-            $audits = $audits->whereHas('audit', function( $query ) {
-                                $query->whereDoesntHave('lts');
-                            });
+        		$audits->whereNull('lt_findings_count')->orWhere('lt_findings_count', 0);
+            // $audits = $audits->whereHas('audit', function( $query ) {
+            //                     $query->whereDoesntHave('lts');
+            //                 });
         }
 
         if(session()->has('filter-search-address') && session('filter-search-address') != ''){
@@ -938,24 +950,7 @@ class DashboardController extends Controller
             $auditFilterAddress = '';
         }
 
-        if(session()->has('total_inspection_amount') && session('total_inspection_amount') > 0){
 
-            $total_inspection_amount = session('total_inspection_amount');
-
-            if(session('total_inspection_filter') != 1){
-
-                $auditFilterInspection = "MORE THAN ".$total_inspection_amount." INSPECTABLE ITEMS";
-                $audits = $audits->where('inspectable_items', '>=', $total_inspection_amount);
-            }else{
-
-                $auditFilterInspection = "LESS THAN ".$total_inspection_amount." INSPECTABLE ITEMS";
-                $audits = $audits->where('inspectable_items', '<=', $total_inspection_amount);
-            }
-        }else{
-            session(['total_inspection_amount' => 0]);
-            session(['total_inspection_filter' => 0]);
-            $auditFilterInspection = "";
-        }
 
 
         if(session()->has('compliance-status-all') && session('compliance-status-all') != 0){
@@ -1060,25 +1055,49 @@ class DashboardController extends Controller
 
                 return $audit;
             });
-	        if(session()->has('total_building_inspection_amount') && session('total_building_inspection_amount') > 0){
+        if(session()->has('total_building_inspection_amount') && session('total_building_inspection_amount') > 0){
 
-	            $total_building_inspection_amount = session('total_building_inspection_amount');
+            $total_building_inspection_amount = session('total_building_inspection_amount');
 
-	            if(session('total_building_inspection_filter') != 1){
+            if(session('total_building_inspection_filter') != 1){
 
-	                $auditBuildingFilterInspection = "MORE THAN OR EQUAL TO ".$total_building_inspection_amount." INSPECTABLE BUILDINGS";
-	                $audits = $audits->where('total_buildings', '>=', $total_building_inspection_amount);
-	            }else{
+                $auditBuildingFilterInspection = "MORE THAN OR EQUAL TO ".$total_building_inspection_amount." INSPECTABLE BUILDINGS";
+                $audits = $audits->where('total_buildings', '>=', $total_building_inspection_amount);
+            }else{
 
-	                $auditBuildingFilterInspection = "LESS THAN OR EQUAL TO ".$total_building_inspection_amount." INSPECTABLE BUILDINGS";
-	                $audits = $audits->where('total_buildings', '<=', $total_building_inspection_amount);
-	            }
-	        }else{
-	            session(['total_building_inspection_amount' => 0]);
-	            session(['total_building_inspection_filter' => 0]);
-	            $auditBuildingFilterInspection = "";
-	        }
-        // $audits = $audits->take(5);
+                $auditBuildingFilterInspection = "LESS THAN OR EQUAL TO ".$total_building_inspection_amount." INSPECTABLE BUILDINGS";
+                $audits = $audits->where('total_buildings', '<=', $total_building_inspection_amount);
+            }
+        }else{
+            session(['total_building_inspection_amount' => 0]);
+            session(['total_building_inspection_filter' => 0]);
+            $auditBuildingFilterInspection = "";
+        }
+
+        if(session()->has('total_inspection_amount') && session('total_inspection_amount') > 0){
+
+            $total_inspection_amount = session('total_inspection_amount');
+
+            if(session('total_inspection_filter') != 1){
+
+                $auditFilterInspection = "MORE THAN OR EQUAL TO ".$total_inspection_amount." INSPECTABLE UNITS";
+                $audits = $audits->where('inspectable_items', '>=', $total_inspection_amount);
+            }else{
+
+                $auditFilterInspection = "LESS THAN OR EQUAL TO ".$total_inspection_amount." INSPECTABLE UNITS";
+                $audits = $audits->where('inspectable_items', '<=', $total_inspection_amount);
+            }
+        }else{
+            session(['total_inspection_amount' => 0]);
+            session(['total_inspection_filter' => 0]);
+            $auditFilterInspection = "";
+        }
+
+
+         // $audits = $audits->take(5);
+        // foreach ($audits as $key => $value) {
+        // 	//$value->update_cached_audit();
+        // }
         $data = [];
 
         $audits_to_remove = []; // ids of audits to remove after filtering by auditor

@@ -16,7 +16,6 @@ return [
   'ehs_status'        => [
     'ehs-report-selection-all'                   => 'ALL EHS REPORT STATUSES',
     'ehs-report-selection-draft'                 => 'DRAFT',
-    'ehs-report-selection-to-manager'            => 'SENT TO MANAGER REVIEW',
     'ehs-report-selection-declined'              => 'DECLINED',
     'ehs-report-selection-approved-with-changes' => 'APPROVED WITH CHANGES',
     'ehs-report-selection-approved'              => 'APPROVED',

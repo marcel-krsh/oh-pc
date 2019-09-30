@@ -515,7 +515,7 @@
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-					<th class="uk-table-shrink">
+					<th>
 						<div uk-grid>
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" value="@if(session()->has('filter-search-pm')){{ session('filter-search-pm') }}@endif">
@@ -663,7 +663,7 @@
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
 								@if($auditor_access)
 								<span class="uk-width-1-3 uk-remove-margin uk-padding-remove uk-text-center uk-link">
-									<i id="carselectionbutton" class="a-file-pen"></i>
+									<i id="carselectionbutton" class="a-file-chart-3"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="car_report_selection" method="post">
 											<fieldset class="uk-fieldset">
@@ -687,7 +687,7 @@
 								</span>
 
 								<span class="uk-width-1-3 uk-remove-margin uk-padding-remove uk-text-center uk-link">
-									<i id="ehsselectionbutton" class="a-file-pen"></i>
+									<i id="ehsselectionbutton" class="a-file-chart-3"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="ehs_report_selection" method="post">
 											<fieldset class="uk-fieldset">
@@ -709,9 +709,9 @@
 										</form>
 									</div>
 								</span>
-
+								@if(env('APP_ENV') != 'production')
 								<span class="uk-width-1-3 uk-remove-margin uk-padding-remove uk-text-center uk-link">
-									<i id="8823selectionbutton" class="a-file-pen"></i>
+									<i id="8823selectionbutton" class="a-file-chart-3"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="8823_report_selection" method="post">
 											<fieldset class="uk-fieldset">
@@ -733,6 +733,8 @@
 										</form>
 									</div>
 								</span>
+								@endif
+
 								@endif
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FOLLOW-UP DATE">
@@ -959,17 +961,7 @@
 											<li>
 												<span style="padding-left:10px; border-bottom: 1px solid #ddd;display: block;padding-bottom: 5px;color: #bbb;margin-bottom: 0px;margin-top: 5px;">MESSAGES</span>
 											</li>
-											<li>
-												<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-message',0);">
-													@if(session('audit-message') == 0)
-													<span class="a-checkbox-checked"></span>
-													@else
-													<span class="a-checkbox"></span>
-													@endif
-													All messages
-												</button>
 
-											</li>
 											<li>
 												<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-message',1);">
 													@if(session('audit-message') == 1)
@@ -991,6 +983,16 @@
 												</button>
 											</li>
 											<li>
+												<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-message',0);">
+													@if(session('audit-message') == 0)
+													<span class="a-checkbox-checked"></span>
+													@else
+													<span class="a-checkbox"></span>
+													@endif
+													Has no unread messages
+												</button>
+											</li>
+											{{-- <li>
 												<span style="padding-left:10px; border-bottom: 1px solid #ddd;padding-top: 5px;display: block;padding-bottom: 5px;color: #bbb;margin-bottom: 0px;margin-top: 5px;">WHO</span>
 											</li>
 											<li>
@@ -1002,7 +1004,7 @@
 													@endif
 													Only messages for me
 												</button>
-											</li>
+											</li> --}}
 										</ul>
 									</div>
 								</span>
@@ -1047,7 +1049,7 @@
 
 					</th>
 					@if($auditor_access)
-					<th >
+					<th  class="uk-table-shrink">
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link">
 								<i class="a-checklist" id="checklist-button"></i>
