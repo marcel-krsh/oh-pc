@@ -762,6 +762,11 @@ class DashboardController extends Controller
         }
 
         $audits = CachedAudit::with('auditors');
+        if($request->get('my_audits') && $request->get('my_audits') == 1){
+            session(['audit-my-audits'=>1]);
+        }elseif($request->get('my_audits') && $request->get('my_audits') == 0){
+            session(['audit-my-audits'=> 0]);
+        }
 
         if(!session()->has('first_load')){
             // my default we load only their audits.
@@ -1093,7 +1098,8 @@ class DashboardController extends Controller
             $auditFilterInspection = "";
         }
 
-
+        // do not show audits being rerun
+        $audits = $audits->where('rerun_compliance','<>',1);
          // $audits = $audits->take(5);
         // foreach ($audits as $key => $value) {
         // 	//$value->update_cached_audit();
