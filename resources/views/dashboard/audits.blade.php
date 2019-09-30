@@ -478,7 +478,7 @@
 												<hr class="dashed-hr uk-margin-bottom">
 												@foreach($auditors as $auditor)
 												<input id="assignment-auditor-{{ $auditor->id }}" user-id="{{ $auditor->id }}" class="assignmentauditor" type="checkbox" @if(is_array(session('assignment-auditor'))) @if(in_array($auditor->id, session('assignment-auditor')) == 1) checked @endif @endif/>
-												<label for="assignment-auditor-{{ $auditor->id }}">{{ $auditor->name }}</label>
+												<label for="assignment-auditor-{{ $auditor->id }}">{{ $auditor->name }} (My Audits)</label>
 												@endforeach
 											</div>
 											<div class="uk-margin-remove" uk-grid>
