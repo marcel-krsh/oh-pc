@@ -473,8 +473,8 @@
 										<fieldset class="uk-fieldset">
 											<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
 												<h5>AUDITS FOR:</h5>
-												<input id="assignment-auditor-{{ Auth::user()->id }}" user-id="{{ Auth::user()->id }}" class="assignmentauditor" type="checkbox" @if(session('audit-my-audits')) @if(session('audit-my-audits') == 1) checked @endif @endif/>
-												<label for="assignment-auditor-{{ Auth::user()->id }}">{{ Auth::user()->name }}  (My Audits)</label>
+												<input id="assignment-auditor-{{ $current_user->id }}" user-id="{{ $current_user->id }}" class="assignmentauditor" type="checkbox" @if(session('audit-my-audits')) @if(session('audit-my-audits') == 1) checked @endif @endif/>
+												<label for="assignment-auditor-{{ $current_user->id }}">{{ $current_user->name }}  (My Audits)</label>
 												<hr class="dashed-hr uk-margin-bottom uk-width-1-1">
 												@foreach($auditors as $auditor)
 												<input id="assignment-auditor-{{ $auditor->id }}" user-id="{{ $auditor->id }}" class="assignmentauditor" type="checkbox" @if(is_array(session('assignment-auditor'))) @if(in_array($auditor->id, session('assignment-auditor')) == 1) checked @endif @endif/>
@@ -1635,9 +1635,13 @@ function updateAuditBuildingInspection(e) {
 		if(selected.length == 0){
 			selected = 0;
 		}
-
+		//trigger audits-my-audits if logged in user is selected
+		var myAudits = 0;
+		if(selected.includes({{$current_user->id}})){
+			myAudits = 1;
+		}
 		$.post("/session/", {
-			'data' : [['assignment-auditor', selected]],
+			'data' : [['assignment-auditor', selected],['audit-my-audits',myAudits]],
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
 			$('#assignmentselectionbutton').trigger( 'click' );

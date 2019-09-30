@@ -762,6 +762,7 @@ class DashboardController extends Controller
         }
 
         $audits = CachedAudit::with('auditors');
+        
         if($request->get('my_audits') && $request->get('my_audits') == 1){
             session(['audit-my-audits'=>1]);
         }elseif($request->get('my_audits') && $request->get('my_audits') == 0){

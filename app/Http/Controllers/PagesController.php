@@ -51,8 +51,12 @@ class PagesController extends Controller
   }
 
   public function changeLog(Request $request)
-  {
-    return view('pages.change-log');
+  { 
+    if (!Auth::check()) {
+      return redirect()->to('login');
+    }else{
+      return view('pages.change-log');
+    }
   }
 
   public function codes(Request $request)
