@@ -1639,7 +1639,7 @@ function updateAuditBuildingInspection(e) {
 					for( var i = 0; i < selected.length; i++){ 
 					   if ( selected[i] === "{{$current_user->id}}") {
 					     selected.splice(i, 1); 
-					     alert('selected: '+selected);
+					     
 					   }
 					}
 		}
