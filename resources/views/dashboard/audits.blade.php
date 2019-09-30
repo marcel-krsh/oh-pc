@@ -1631,20 +1631,22 @@ function updateAuditBuildingInspection(e) {
 		$('#audit_assignment_selection input:checked').each(function() {
 			selected.push($(this).attr('user-id'));
 		});
+		//trigger audits-my-audits if logged in user is selected
+		var myAudits = 0;
 		if(selected.includes("{{$current_user->id}}")){
 					myAudits = 1;
 					//remove from array
 					for( var i = 0; i < selected.length; i++){ 
 					   if ( selected[i] === {{$current_user->id}}) {
 					     selected.splice(i, 1); 
+					     alert('selected: '+selected);
 					   }
 					}
 		}
 		if(selected.length == 0){
 			selected = 0;
 		}
-		//trigger audits-my-audits if logged in user is selected
-		var myAudits = 0;
+		
 		
 		$.post("/session/", {
 			'data' : [['assignment-auditor', selected],['audit-my-audits',myAudits]],
