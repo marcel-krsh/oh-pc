@@ -1637,7 +1637,7 @@ function updateAuditBuildingInspection(e) {
 					myAudits = 1;
 					//remove from array
 					for( var i = 0; i < selected.length; i++){ 
-					   if ( selected[i] === {{$current_user->id}}) {
+					   if ( selected[i] === "{{$current_user->id}}") {
 					     selected.splice(i, 1); 
 					     alert('selected: '+selected);
 					   }
