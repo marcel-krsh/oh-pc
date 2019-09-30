@@ -1637,7 +1637,7 @@ function updateAuditBuildingInspection(e) {
 		}
 		//trigger audits-my-audits if logged in user is selected
 		var myAudits = 0;
-		if(selected.includes({{$current_user->id}})){
+		if(selected.includes("{{$current_user->id}}")){
 			myAudits = 1;
 			alert('my-audits-triggered');
 		}
