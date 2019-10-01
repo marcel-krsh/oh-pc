@@ -762,7 +762,7 @@ class DashboardController extends Controller
         }
 
         $audits = CachedAudit::with('auditors');
-        
+
         if($request->get('my_audits') && $request->get('my_audits') == 1){
             session(['audit-my-audits'=>1]);
         }elseif($request->get('my_audits') && $request->get('my_audits') == 0){
@@ -1087,11 +1087,11 @@ class DashboardController extends Controller
             if(session('total_inspection_filter') != 1){
 
                 $auditFilterInspection = "MORE THAN OR EQUAL TO ".$total_inspection_amount." INSPECTABLE UNITS";
-                $audits = $audits->where('inspectable_items', '>=', $total_inspection_amount);
+                $audits = $audits->where('total_units', '>=', $total_inspection_amount);
             }else{
 
                 $auditFilterInspection = "LESS THAN OR EQUAL TO ".$total_inspection_amount." INSPECTABLE UNITS";
-                $audits = $audits->where('inspectable_items', '<=', $total_inspection_amount);
+                $audits = $audits->where('total_units', '<=', $total_inspection_amount);
             }
         }else{
             session(['total_inspection_amount' => 0]);
@@ -1103,7 +1103,7 @@ class DashboardController extends Controller
         $audits = $audits->where('rerun_compliance','<>',1);
          // $audits = $audits->take(5);
         // foreach ($audits as $key => $value) {
-        // 	//$value->update_cached_audit();
+        // 	$value->update_cached_audit();
         // }
         $data = [];
 

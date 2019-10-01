@@ -362,8 +362,8 @@ class CachedAudit extends Model
 
     public function update_unit_statuses() {
     	if($this->audit && $this->audit->unique_unit_inspections) {
-    		$unit_inspections_count = $this->audit->unique_unit_inspections->count();
-    		$this->inspectable_items = $this->audit->unique_unit_inspections->count();
+    		$unit_count = $this->audit->unique_unit_inspections->count();
+    		$this->total_units = $this->audit->unique_unit_inspections->count();
     		$this->save();
     	} else {
     		//do nothing

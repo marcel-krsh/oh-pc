@@ -1636,18 +1636,18 @@ function updateAuditBuildingInspection(e) {
 		if(selected.includes("{{$current_user->id}}")){
 					myAudits = 1;
 					//remove from array
-					for( var i = 0; i < selected.length; i++){ 
+					for( var i = 0; i < selected.length; i++){
 					   if ( selected[i] === "{{$current_user->id}}") {
-					     selected.splice(i, 1); 
-					     
+					     selected.splice(i, 1);
+
 					   }
 					}
 		}
 		if(selected.length == 0){
 			selected = 0;
 		}
-		
-		
+
+
 		$.post("/session/", {
 			'data' : [['assignment-auditor', selected],['audit-my-audits',myAudits]],
 			'_token' : '{{ csrf_token() }}'
@@ -2044,7 +2044,7 @@ function updateAuditBuildingInspection(e) {
 			console.log( "ready!" );
 			window.setInterval(function(){
 				checkForUpdatedAudits(window.onPageAudits);
-			}, 5000);
+			}, 500000);
 
 		});
 	</script>
