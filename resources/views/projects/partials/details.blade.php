@@ -601,12 +601,20 @@ $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')
   }
 
 
-  $( document ).ready(function() {
+  $(document ).ready(function() {
   	if($('#project-details-info-container').html() == ''){
   		$('#project-details-button-3').trigger("click");
   	}
+  	if(window.subtab == 'communications') {
+  		openCommunication();
+  		window.subtab = '';
+  	} else if(window.subtab == 'documents') {
+  		openDocuments();
+  		window.subtab = '';
+  	}
   	loadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
   	UIkit.dropdown('#car-dropdown-{{$selected_audit->audit_id}}', 'mode:click');
+
   });
 
 

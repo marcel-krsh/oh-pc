@@ -383,9 +383,46 @@
 			</div>
 			@endif
 
-			@if(session('schedule_assignment_too_many') == 1)
+			@if(session('schedule_assignment_no_estimated') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('schedule_assignment_too_many', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH TOO MANY HOURS SCHEDULED</span></a>
+				<a onClick="filterAudits('schedule_assignment_no_estimated', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NO ESTIMATED HOURS ENTERED</span></a>
+			</div>
+			@endif
+
+			@if(session('documents_all') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('documents_all', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>ALL DOCUMENT STATUSES</span></a>
+			</div>
+			@endif
+			@if(session('documents_reviewd') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('documents_reviewd', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOCUMENTS REVIEWED</span></a>
+			</div>
+			@endif
+			@if(session('documents_needs_review') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('documents_needs_review', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOCUMENTS NEED REVIEW</span></a>
+			</div>
+			@endif
+			@if(session('documents_not_found') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('documents_not_found', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOCUMENTS NOT AVAILABLE</span></a>
+			</div>
+			@endif
+
+			@if(session('messages_unread') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('messages_unread', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>UNREAD MESSAGES</span></a>
+			</div>
+			@endif
+			@if(session('messages_all_read') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('messages_all_read', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NO UNREAD MESSAGES</span></a>
+			</div>
+			@endif
+			@if(session('messages_not_available') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('messages_not_available', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NO MESSAGES</span></a>
 			</div>
 			@endif
 
@@ -573,8 +610,30 @@
 						<div uk-grid>
 							<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid>
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
-								<span class="@if($auditor_access) uk-width-1-2 @else uk-width-1-1 @endif uk-text-center uk-padding-remove-top uk-margin-remove-top">
-									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
+								<span class="@if($auditor_access) uk-width-1-2 @else uk-width-1-1 @endif uk-text-center uk-padding-remove-top uk-margin-remove-top" >
+									<span id="daterangefilter use-hand-cursor" >
+										<i class="a-calendar-8 uk-vertical-align-middle  use-hand-cursor"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text  use-hand-cursor"></i> <i class="a-calendar-8 uk-vertical-align-middle  use-hand-cursor"></i>
+									</span>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="daterange_filter" method="post">
+											<fieldset class="uk-fieldset">
+												<div class="uk-width-1-1 uk-margin-bottom">
+													<label class="uk-form-label" for="daterange">DATE RANGE</label>
+													<div class="uk-form-controls">
+														<input type="text" id="daterange" name="daterange" value="" class="uk-input flatpickr flatpickr-input active"/>
+													</div>
+												</div>
+												<div class="uk-margin-remove" uk-grid>
+													<div class="uk-width-1-2">
+														<button onclick="updateAuditScheduleDate(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+													</div>
+													<div class="uk-width-1-2">
+														<button onclick="$('#totalbuildinginspectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+													</div>
+												</div>
+											</fieldset>
+										</form>
+									</div>
 								</span>
 								@if($auditor_access)
 								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
@@ -939,8 +998,8 @@
 													<label for="schedule_assignment_unassigned">UNASSIGNED AMENITIES</label>
 													<input id="schedule_assignment_not_enough" class="" type="checkbox" @if(session('schedule_assignment_not_enough') == 1) checked @endif/>
 													<label for="schedule_assignment_not_enough">NOT ENOUGH HOURS SCHEDULED</label>
-													<input id="schedule_assignment_too_many" class="" type="checkbox" @if(session('schedule_assignment_too_many') == 1) checked @endif/>
-													<label for="schedule_assignment_too_many">TOO MANY HOURS SCHEDULED</label>
+													<input id="schedule_assignment_no_estimated" class="" type="checkbox" @if(session('schedule_assignment_no_estimated') == 1) checked @endif/>
+													<label for="schedule_assignment_no_estimated">NO ESTIMATED HOURS ENTERED</label>
 
 												</div>
 												<div class="uk-margin-remove" uk-grid>
@@ -953,11 +1012,36 @@
 												</div>
 											</fieldset>
 										</form>
-
 									</div>
 								</span>
 								@endif
 								<span class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top uk-link">
+									<i id="messagesfilter" class="a-envelope-4"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="messages_filter" method="post">
+											<fieldset class="uk-fieldset">
+												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+													<input id="messages_unread" class="" type="checkbox" @if(session('messages_unread') == 1) checked @endif/>
+													<label for="messages_unread">UNREAD MESSAGES</label>
+													<input id="messages_not_available" class="messagesselector" type="checkbox" @if(session('messages_not_available') == 1) checked @endif/>
+													<label for="messages_not_available">HAS NO MESSAGES</label>
+													<input id="messages_all_read" class="messagesselector" type="checkbox" @if(session('messages_all_read') == 1) checked @endif/>
+													<label for="messages_all_read">HAS NO UNREAD MESSAGES</label>
+												</div>
+												<div class="uk-margin-remove" uk-grid>
+													<div class="uk-width-1-2">
+														<button onclick="updateAuditMessages(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+													</div>
+													<div class="uk-width-1-2">
+														<button onclick="$('#messagesfilter').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+													</div>
+												</div>
+											</fieldset>
+										</form>
+									</div>
+
+
+{{--
 									<i class="a-envelope-4"></i>
 									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right; animation: uk-animation-slide-top-small; mode: click" style="top: 26px; left: 0px;">
 										<ul class="uk-nav uk-nav-dropdown uk-text-small uk-list">
@@ -994,8 +1078,7 @@
 													@endif
 													Has no unread messages
 												</button>
-											</li>
-											{{-- <li>
+											</li><li>
 												<span style="padding-left:10px; border-bottom: 1px solid #ddd;padding-top: 5px;display: block;padding-bottom: 5px;color: #bbb;margin-bottom: 0px;margin-top: 5px;">WHO</span>
 											</li>
 											<li>
@@ -1007,12 +1090,36 @@
 													@endif
 													Only messages for me
 												</button>
-											</li> --}}
+											</li>
 										</ul>
-									</div>
+									</div> --}}
 								</span>
 								<span class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i class="a-files"></i>
+									<i id="documentfilter" class="a-files"></i>
+									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
+										<form id="document_filter" method="post">
+											<fieldset class="uk-fieldset">
+												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
+													<input id="documents_all" class="" type="checkbox" @if(session('documents_all') == 1) checked @endif/>
+													<label for="documents_all">ALL DOCUMENT STATUSES</label>
+													<input id="documents_needs_review" class="documentselector" type="checkbox" @if(session('documents_needs_review') == 1) checked @endif/>
+													<label for="documents_needs_review">DOCUMENT NEEDS REVIEW</label>
+													<input id="documents_reviewd" class="documentselector" type="checkbox" @if(session('documents_reviewd') == 1) checked @endif/>
+													<label for="documents_reviewd">DOCUMENTS REVIEWD</label>
+													<input id="documents_not_found" class="documentselector" type="checkbox" @if(session('documents_not_found') == 1) checked @endif/>
+													<label for="documents_not_found">DOCUMENTS NOT FOUND</label>
+												</div>
+												<div class="uk-margin-remove" uk-grid>
+													<div class="uk-width-1-2">
+														<button onclick="updateAuditDocuments(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+													</div>
+													<div class="uk-width-1-2">
+														<button onclick="$('#documentfilterbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+													</div>
+												</div>
+											</fieldset>
+										</form>
+									</div>
 								</span>
 
 							</div>
@@ -1166,6 +1273,21 @@ The following div is defined in this particular tab and pushed to the main layou
 				$(this).keyup();
 			}
 		});
+
+		$('#documents_all').click(function() {
+			if($('#documents_all').prop('checked')){
+				$('input.documentselector').prop('checked', false);
+			}
+		});
+
+		$('.documentselector').click(function() {
+			if($(this).prop('checked') && $('#documents_all').prop('checked')){
+				$('#documents_all').prop('checked', false);
+			}
+		});
+
+
+
 		@if($auditor_access)
 		$('#step-all').click(function() {
 			if($('#step-all').prop('checked')){
@@ -1303,74 +1425,74 @@ The following div is defined in this particular tab and pushed to the main layou
 
 	});
 
-	@if($auditor_access)
-	function rerunCompliance(audit){
+@if($auditor_access)
+function rerunCompliance(audit){
 
-		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>RERUN COMPLIANCE SELECTION?</h2></div><div class="uk-width-2-3"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to rerun the automated compliance selection? <br /><br />Depending on how many are currently being processed, this could take up to 10 minutes to complete.</h3><p><strong>Why does it take up to 10 minutes?</strong> When a compliance selection is run, it performs all the unit selections based on the criteria for each program used by the project. Because each selection process uses an element of randomness, the total number of units that need inspected may be different each time it is run due to overlaps of programs to units. So, we run the process 10 times, and pick the one that has the highest amount of program overlap to units. This keeps the audit federally compliant while also making the most efficient use of your time.</p></div><div class="uk-width-1-3"><hr class="dashed-hr uk-margin-bottom"><h3><em style="color:#ca3a8d">WARNING!</em></h3><p style="color:#ca3a8d"> While this will not affect the days and times you have auditors scheduled for your audit, it will remove any auditor assignments to inspect specific areas and units.<br /><br /><small>PLEASE NOTE THAT THIS WILL NOT RUN ON AUDITS WITH FINDINGS RECORDED. YOU WILL NEED TO DO YOUR SELECTION MANUALY.</small></p></div><div class="uk-width-1-1"></div></div>').then(function() {
-			console.log('Re-running Audit.');
+	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>RERUN COMPLIANCE SELECTION?</h2></div><div class="uk-width-2-3"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to rerun the automated compliance selection? <br /><br />Depending on how many are currently being processed, this could take up to 10 minutes to complete.</h3><p><strong>Why does it take up to 10 minutes?</strong> When a compliance selection is run, it performs all the unit selections based on the criteria for each program used by the project. Because each selection process uses an element of randomness, the total number of units that need inspected may be different each time it is run due to overlaps of programs to units. So, we run the process 10 times, and pick the one that has the highest amount of program overlap to units. This keeps the audit federally compliant while also making the most efficient use of your time.</p></div><div class="uk-width-1-3"><hr class="dashed-hr uk-margin-bottom"><h3><em style="color:#ca3a8d">WARNING!</em></h3><p style="color:#ca3a8d"> While this will not affect the days and times you have auditors scheduled for your audit, it will remove any auditor assignments to inspect specific areas and units.<br /><br /><small>PLEASE NOTE THAT THIS WILL NOT RUN ON AUDITS WITH FINDINGS RECORDED. YOU WILL NEED TO DO YOUR SELECTION MANUALY.</small></p></div><div class="uk-width-1-1"></div></div>').then(function() {
+		console.log('Re-running Audit.');
 
-			$.post('/audit/'+audit+'/rerun', {
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				if(data == 1){
-					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection In Progress', {pos:'top-right', timeout:1000, status:'success'});
+		$.post('/audit/'+audit+'/rerun', {
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			if(data == 1){
+				UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection In Progress', {pos:'top-right', timeout:1000, status:'success'});
 
-					$('#audit-r-'+audit).remove();
-				}else{
-					UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed. Findings were found.', {pos:'top-right', timeout:5000, status:'warning'});
-				}
-			});
-
-		}, function () {
-			console.log('Rejected.')
+				$('#audit-r-'+audit).remove();
+			}else{
+				UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed. Findings were found.', {pos:'top-right', timeout:5000, status:'warning'});
+			}
 		});
-	}
-	function assignAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element, fullscreen=null,warnAboutSave=null,fixedHeight=0,inmodallevel=0){
-		if(inmodallevel)
-			dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element+'/1', fullscreen,warnAboutSave,fixedHeight,inmodallevel);
-		else
-			dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element, fullscreen,warnAboutSave,fixedHeight,inmodallevel);
+
+	}, function () {
+		console.log('Rejected.')
+	});
+}
+function assignAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element, fullscreen=null,warnAboutSave=null,fixedHeight=0,inmodallevel=0){
+	if(inmodallevel)
+		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element+'/1', fullscreen,warnAboutSave,fixedHeight,inmodallevel);
+	else
+		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element, fullscreen,warnAboutSave,fixedHeight,inmodallevel);
+}
+
+function swapAuditor(auditor_id, audit_id, building_id, unit_id, element, amenity_id=0){
+	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/swap/'+auditor_id+'/'+element);
+}
+
+function deleteAmenity(element, audit_id, building_id, unit_id, amenity_id, has_findings = 0, toplevel=0){
+	if(has_findings){
+		UIkit.modal.alert('<p class="uk-modal-body">This amenity has some findings and cannot be deleted.</p>').then(function () {  });
+	}else{
+		console.log('element '+element);
+		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/delete/'+element);
 	}
 
-	function swapAuditor(auditor_id, audit_id, building_id, unit_id, element, amenity_id=0){
-		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/swap/'+auditor_id+'/'+element);
-	}
+}
 
-	function deleteAmenity(element, audit_id, building_id, unit_id, amenity_id, has_findings = 0, toplevel=0){
-		if(has_findings){
-			UIkit.modal.alert('<p class="uk-modal-body">This amenity has some findings and cannot be deleted.</p>').then(function () {  });
-		}else{
-			console.log('element '+element);
-			dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/delete/'+element);
-		}
-
-	}
-
-	function copyAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel=0) {
-		@if(!session()->has('hide_confirm_modal'))
-		var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
-		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>MAKE A DUPLICATE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to make a duplicate?</h3>'+modal_confirm_input+'</div>').then(function() {
+function copyAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel=0) {
+	@if(!session()->has('hide_confirm_modal'))
+	var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
+	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>MAKE A DUPLICATE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to make a duplicate?</h3>'+modal_confirm_input+'</div>').then(function() {
+		@endif
+		var newAmenities = [];
+		hide_confirm_modal = $("#hide_confirm_modal").is(':checked');
+		$.post('/modals/amenities/save', {
+			'project_id' : 0,
+			'audit_id' : audit_id,
+			'building_id' : building_id,
+			'unit_id' : unit_id,
+			'new_amenities' : newAmenities,
+			'amenity_id' : amenity_id,
+			'toplevel': toplevel,
+			@if(!session()->has('hide_confirm_modal'))
+			'hide_confirm_modal': hide_confirm_modal,
 			@endif
-			var newAmenities = [];
-			hide_confirm_modal = $("#hide_confirm_modal").is(':checked');
-			$.post('/modals/amenities/save', {
-				'project_id' : 0,
-				'audit_id' : audit_id,
-				'building_id' : building_id,
-				'unit_id' : unit_id,
-				'new_amenities' : newAmenities,
-				'amenity_id' : amenity_id,
-				'toplevel': toplevel,
-				@if(!session()->has('hide_confirm_modal'))
-				'hide_confirm_modal': hide_confirm_modal,
-				@endif
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				hide_confirm_modal_js = data.hide_confirm_modal;
-				if(toplevel == 1){
-					projectDetails(audit_id, audit_id, 10, 1);
-				} else {
-					console.log('unit or building');
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			hide_confirm_modal_js = data.hide_confirm_modal;
+			if(toplevel == 1){
+				projectDetails(audit_id, audit_id, 10, 1);
+			} else {
+				console.log('unit or building');
 					// locate where to update data
 					var mainDivId = '';
 					if(unit_id != ''){
@@ -1634,313 +1756,379 @@ function updateAuditBuildingInspection(e) {
 		//trigger audits-my-audits if logged in user is selected
 		var myAudits = 0;
 		if(selected.includes("{{$current_user->id}}")){
-					myAudits = 1;
+			myAudits = 1;
 					//remove from array
 					for( var i = 0; i < selected.length; i++){
-					   if ( selected[i] === "{{$current_user->id}}") {
-					     selected.splice(i, 1);
+						if ( selected[i] === "{{$current_user->id}}") {
+							selected.splice(i, 1);
 
-					   }
+						}
 					}
-		}
-		if(selected.length == 0){
-			selected = 0;
-		}
+				}
+				if(selected.length == 0){
+					selected = 0;
+				}
 
 
-		$.post("/session/", {
-			'data' : [['assignment-auditor', selected],['audit-my-audits',myAudits]],
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$('#assignmentselectionbutton').trigger( 'click' );
-			loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-		} );
+				$.post("/session/", {
+					'data' : [['assignment-auditor', selected],['audit-my-audits',myAudits]],
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$('#assignmentselectionbutton').trigger( 'click' );
+					loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				} );
 
-	}
+			}
 
-	function updateAuditScheduleAssignment(e){
-		e.preventDefault();
-		var form = $('#schedule_assignment_filter');
+			function updateAuditScheduleAssignment(e){
+				e.preventDefault();
+				var form = $('#schedule_assignment_filter');
 
-		var alloptions = [];
-		$('#schedule_assignment_filter input').each(function() {
-			alloptions.push([$(this).attr('id'), 0]);
-		});
+				var alloptions = [];
+				$('#schedule_assignment_filter input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
 
-		var selected = [];
-		$('#schedule_assignment_filter input:checked').each(function() {
-			selected.push([$(this).attr('id'), 1]);
-		});
+				var selected = [];
+				$('#schedule_assignment_filter input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
 
-		$.post("/session/", {
-			'data' : alloptions,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$.post("/session/", {
-				'data' : selected,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#scheduleassignmentfilterbutton').trigger( 'click' );
-				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-			} );
-		} );
-	}
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#scheduleassignmentfilterbutton').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
 
-	function updateFileAuditStatus(e){
-		e.preventDefault();
-		var form = $('#file_audit_status_selection');
+			function updateFileAuditStatus(e){
+				e.preventDefault();
+				var form = $('#file_audit_status_selection');
 
-		var alloptions = [];
-		$('#file_audit_status_selection input').each(function() {
-			alloptions.push([$(this).attr('id'), 0]);
-		});
+				var alloptions = [];
+				$('#file_audit_status_selection input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
 
-		var selected = [];
-		$('#file_audit_status_selection input:checked').each(function() {
-			selected.push([$(this).attr('id'), 1]);
-		});
+				var selected = [];
+				$('#file_audit_status_selection input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
 
-		$.post("/session/", {
-			'data' : alloptions,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$.post("/session/", {
-				'data' : selected,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#file_audit_status_button').trigger( 'click' );
-				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-			} );
-		} );
-	}
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#file_audit_status_button').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
 
-	function updateNLTAuditStatus(e){
-		e.preventDefault();
-		var form = $('#nlt_audit_status_selection');
+			function updateNLTAuditStatus(e){
+				e.preventDefault();
+				var form = $('#nlt_audit_status_selection');
 
-		var alloptions = [];
-		$('#nlt_audit_status_selection input').each(function() {
-			alloptions.push([$(this).attr('id'), 0]);
-		});
+				var alloptions = [];
+				$('#nlt_audit_status_selection input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
 
-		var selected = [];
-		$('#nlt_audit_status_selection input:checked').each(function() {
-			selected.push([$(this).attr('id'), 1]);
-		});
+				var selected = [];
+				$('#nlt_audit_status_selection input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
 
-		$.post("/session/", {
-			'data' : alloptions,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$.post("/session/", {
-				'data' : selected,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#nlt_audit_status_button').trigger( 'click' );
-				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-			} );
-		} );
-	}
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#nlt_audit_status_button').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
 
-	function updateLTAuditStatus(e){
-		e.preventDefault();
-		var form = $('#lt_audit_status_selection');
+			function updateLTAuditStatus(e){
+				e.preventDefault();
+				var form = $('#lt_audit_status_selection');
 
-		var alloptions = [];
-		$('#lt_audit_status_selection input').each(function() {
-			alloptions.push([$(this).attr('id'), 0]);
-		});
+				var alloptions = [];
+				$('#lt_audit_status_selection input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
 
-		var selected = [];
-		$('#lt_audit_status_selection input:checked').each(function() {
-			selected.push([$(this).attr('id'), 1]);
-		});
+				var selected = [];
+				$('#lt_audit_status_selection input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
 
-		$.post("/session/", {
-			'data' : alloptions,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$.post("/session/", {
-				'data' : selected,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#lt_audit_status_button').trigger( 'click' );
-				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-			} );
-		} );
-	}
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#lt_audit_status_button').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
 
-	function updateAuditComplianceStatus(e){
-		e.preventDefault();
-		var form = $('#audit_compliance_status_selection');
+			function updateAuditComplianceStatus(e){
+				e.preventDefault();
+				var form = $('#audit_compliance_status_selection');
 
-		var alloptions = [];
-		$('#audit_compliance_status_selection input').each(function() {
-			alloptions.push([$(this).attr('id'), 0]);
-		});
+				var alloptions = [];
+				$('#audit_compliance_status_selection input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
 
-		var selected = [];
-		$('#audit_compliance_status_selection input:checked').each(function() {
-			selected.push([$(this).attr('id'), 1]);
-		});
+				var selected = [];
+				$('#audit_compliance_status_selection input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
 
-		$.post("/session/", {
-			'data' : alloptions,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$.post("/session/", {
-				'data' : selected,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#checklist-button').trigger( 'click' );
-				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-			} );
-		} );
-	}
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#checklist-button').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
 
-	@if($auditor_access)
-	function updateAuditStepSelection(e){
-		e.preventDefault();
-		var form = $('#audit_steps_selection');
+			function updateAuditDocuments(e){
+				e.preventDefault();
+				var form = $('#document_filter');
 
-		var alloptions = [];
-		$('#audit_steps_selection input').each(function() {
-			alloptions.push([$(this).attr('id'), 0]);
-		});
+				var alloptions = [];
+				$('#document_filter input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
 
-		var selected = [];
-		$('#audit_steps_selection input:checked').each(function() {
-			selected.push([$(this).attr('id'), 1]);
-		});
+				var selected = [];
+				$('#document_filter input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
 
-		$.post("/session/", {
-			'data' : alloptions,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$.post("/session/", {
-				'data' : selected,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#checklist-button').trigger( 'click' );
-				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-			} );
-		} );
-	}
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#documentfilterbutton').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
 
-	function updateCarFilter(e){
-		e.preventDefault();
-		var form = $('#car_report_selection');
+			function updateAuditMessages(e){
+				e.preventDefault();
+				var form = $('#messages_filter');
 
-		var alloptions = [];
-		$('#car_report_selection input').each(function() {
-			alloptions.push([$(this).attr('id'), 0]);
-		});
+				var alloptions = [];
+				$('#messages_filter input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
 
-		var selected = [];
-		$('#car_report_selection input:checked').each(function() {
-			selected.push([$(this).attr('id'), 1]);
-		});
+				var selected = [];
+				$('#messages_filter input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
 
-		$.post("/session/", {
-			'data' : alloptions,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$.post("/session/", {
-				'data' : selected,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#carselectionbutton').trigger( 'click' );
-				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-			} );
-		} );
-	}
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#messagesfilter').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
 
-	function updateEhsFilter(e){
-		e.preventDefault();
-		var form = $('#ehs_report_selection');
+			function setDate(date, name){
+				$('#daterange').val(date);
+				// also make sure the day of the week is selected
+				if(!$("input[name='"+name+"']:checkbox").is(':checked')){
+					selectday(".dayselector-"+name, name);
+				}
+			}
 
-		var alloptions = [];
-		$('#ehs_report_selection input').each(function() {
-			alloptions.push([$(this).attr('id'), 0]);
-		});
+			@if($auditor_access)
+			function updateAuditStepSelection(e){
+				e.preventDefault();
+				var form = $('#audit_steps_selection');
 
-		var selected = [];
-		$('#ehs_report_selection input:checked').each(function() {
-			selected.push([$(this).attr('id'), 1]);
-		});
+				var alloptions = [];
+				$('#audit_steps_selection input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
 
-		$.post("/session/", {
-			'data' : alloptions,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$.post("/session/", {
-				'data' : selected,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#ehsselectionbutton').trigger( 'click' );
-				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-			} );
-		} );
-	}
+				var selected = [];
+				$('#audit_steps_selection input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
 
-	function update8823Filter(e){
-		e.preventDefault();
-		var form = $('#8823_report_selection');
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#checklist-button').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
 
-		var alloptions = [];
-		$('#8823_report_selection input').each(function() {
-			alloptions.push([$(this).attr('id'), 0]);
-		});
+			function updateCarFilter(e){
+				e.preventDefault();
+				var form = $('#car_report_selection');
 
-		var selected = [];
-		$('#8823_report_selection input:checked').each(function() {
-			selected.push([$(this).attr('id'), 1]);
-		});
+				var alloptions = [];
+				$('#car_report_selection input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
 
-		$.post("/session/", {
-			'data' : alloptions,
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			$.post("/session/", {
-				'data' : selected,
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#8823selectionbutton').trigger( 'click' );
-				loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-			} );
-		} );
-	}
+				var selected = [];
+				$('#car_report_selection input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
+
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#carselectionbutton').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
+
+			function updateEhsFilter(e){
+				e.preventDefault();
+				var form = $('#ehs_report_selection');
+
+				var alloptions = [];
+				$('#ehs_report_selection input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
+
+				var selected = [];
+				$('#ehs_report_selection input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
+
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#ehsselectionbutton').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
+
+			function update8823Filter(e){
+				e.preventDefault();
+				var form = $('#8823_report_selection');
+
+				var alloptions = [];
+				$('#8823_report_selection input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
+
+				var selected = [];
+				$('#8823_report_selection input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
+
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#8823selectionbutton').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
 
 
 
 
-	function openFindings (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
-		dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
-	}
+			function openFindings (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
+				dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
+			}
 
-	function updateStep (auditId) {
-		dynamicModalLoad('audits/'+auditId+'/updateStep',0,0,0);
-	}
-	function openContactInfo (projectId) {
-		dynamicModalLoad('projects/'+projectId+'/contact',0,0,0);
-	}
-	function openProject (projectKey,auditId) {
-    	// debugger;
-    	window.selectedProjectKey = projectKey;
-    	window.selectedAuditId = auditId;
-    	loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
-    }
-    function openProjectDetails (auditId, total_buildings) {
-    	projectDetails(auditId, auditId, total_buildings);
-    }
-    function scheduleAudit (projectRef,auditId) {
-    	loadTab('/projects/view/'+projectRef+'/'+auditId, '4', 1, 1, '', 1, auditId);
-    }
-    function openMapLink (mapLink) {
-    	window.open(mapLink);
-    }
-    function openAssignment (projectKey, auditId) {
-    	loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
+			function updateStep (auditId) {
+				dynamicModalLoad('audits/'+auditId+'/updateStep',0,0,0);
+			}
+			function openContactInfo (projectId) {
+				dynamicModalLoad('projects/'+projectId+'/contact',0,0,0);
+			}
+			function openProject (projectKey,auditId, subtab = 0) {
+				window.selectedProjectKey = projectKey;
+				window.selectedAuditId = auditId;
+				loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
+				if(subtab != 0) {
+					window.subtab = subtab;
+				}
+			}
+			function openProjectDetails (auditId, total_buildings) {
+				projectDetails(auditId, auditId, total_buildings);
+			}
+			function scheduleAudit (projectRef,auditId) {
+				loadTab('/projects/view/'+projectRef+'/'+auditId, '4', 1, 1, '', 1, auditId);
+			}
+			function openMapLink (mapLink) {
+				window.open(mapLink);
+			}
+			function openAssignment (projectKey, auditId) {
+				loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
                 // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
               }
               function submitNewReportAL(audit_id,template_id,target) {
@@ -2036,16 +2224,63 @@ function updateAuditBuildingInspection(e) {
 				}
 			}
 		}
+
+		function loadCalendar(target=null) {
+			if(target == null){
+				var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/';
+				$.get(url, {}, function(data) {
+					if(data=='0'){
+						UIkit.modal.alert("There was a problem getting the calendar.");
+					} else {
+						$('#auditor-availability-calendar').html(data);
+						fillSpacers();
+					}
+				});
+			}else{
+				var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target;
+				$('#auditor-availability-calendar').fadeOut("fast", function() {
+					$('#auditor-availability-calendar').html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
+					$('#auditor-availability-calendar').fadeIn("fast");
+					$.get(url, {}, function(data) {
+						if(data=='0'){
+							UIkit.modal.alert("There was a problem getting the calendar.");
+						} else {
+							loadCalendar();
+						}
+					});
+				});
+			}
+		}
 		// set the base variables.
 		window.latest_cached_audit = '{{ $latestCachedAudit }}';
 		window.checking_latest_cached_audit = 0;
 
 		$( document ).ready(function() {
+			loadCalendar();
 			console.log( "ready!" );
 			window.setInterval(function(){
 				checkForUpdatedAudits(window.onPageAudits);
-			}, 500000);
+			}, 5000);
 
 		});
+	</script>
+	<script>
+			flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+
+			flatpickr("#daterange", {
+				mode: "range",
+				minDate: "today",
+				altFormat: "F j, Y",
+				dateFormat: "F j, Y",
+				"locale": {
+		        "firstDayOfWeek": 1 // start week on Monday
+		      }
+		    });
+
+		  </script>
+	<script>
+		function openProjectSubtab(project_key, audit_id, subtab = 0) {
+			openProject(project_key, audit_id, subtab);
+		}
 	</script>
 	<script>window.auditsLoaded = 1; </script>

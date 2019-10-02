@@ -1303,10 +1303,11 @@ class CommunicationController extends Controller
     //         ];
     //     }
     // }
-    // return $messages;
+    // return $messages->last()->message_recipients;
     if (count($messages) > 0) {
       $owners_array   = $messages->pluck('owner')->unique();
       $projects_array = $messages->pluck('project')->filter()->unique();
+      $message_recipients = $messages->pluck('message_recipients')->unique('id')->flatten();
     }
 
     //$owners_array = collect($owners_array)->sortBy('name')->toArray();
@@ -1316,9 +1317,9 @@ class CommunicationController extends Controller
       if ($project) {
         // get the project
         $project = Project::where('id', '=', $project->id)->first();
-        return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit', 'projects_array'));
+        return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit', 'projects_array', 'message_recipients'));
       } else {
-        return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array'));
+        return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array', 'message_recipients'));
       }
     }
   }

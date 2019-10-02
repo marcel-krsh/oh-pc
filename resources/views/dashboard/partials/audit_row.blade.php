@@ -135,10 +135,10 @@ $lead = $audit->lead_json;
 			<i  onClick="openAssignment({{ $audit->project_key }},{{ $audit->audit_id }})" class="{{ $audit->auditor_status_icon }} use-hand-cursor {{ $audit->auditor_status }}" uk-tooltip title="{{ $audit->auditor_status_text }}"></i>
 		</div>
 		<div class="uk-width-1-4">
-			<i onClick="openAssignment({{ $audit->project_key }},{{ $audit->audit_id }})" class="{{ $audit->message_status_icon }} use-hand-cursor {{ $audit->message_status }}" uk-tooltip title="{{ $audit->message_status_text }}"></i>
+			<i onClick="openProjectSubtab({{ $audit->project_key }},{{ $audit->audit_id }}, 'communications')" class="{{ $audit->message_status_icon }} use-hand-cursor {{ $audit->message_status }}" uk-tooltip title="{{ $audit->message_status_text }}"></i>
 		</div>
 		<div class="uk-width-1-4">
-			<i onClick="openAssignment({{ $audit->project_key }},{{ $audit->audit_id }})" class="{{ $audit->document_status_icon }} use-hand-cursor {{ $audit->document_status }}" uk-tooltip title="{{ $audit->document_status_text }}"></i>
+			<i onClick="openProjectSubtab({{ $audit->project_key }},{{ $audit->audit_id }}, 'documents')" class="{{ $audit->document_status_icon }} use-hand-cursor {{ $audit->document_status }}" uk-tooltip title="{{ $audit->document_status_text }}"></i>
 		</div>
 
 	</div>
