@@ -1024,6 +1024,53 @@ class DashboardController extends Controller
       });
     }
 
+    // return $daterange    = session('daterange');
+			 //    $date_array = explode(" to ", $daterange);
+			 //    if (count($date_array) != 2) {
+			 //      // make it work for a single day
+			 //      $date_array[0] = $daterange;
+			 //      $date_array[1] = $date_array[0];
+			 //    }
+			 //    $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+			 //    $enddate   = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
+	   // 			$query->orWhereBetween('inspection_schedule_date', [$startdate, $enddate]);
+	   // 			return 21;
+
+    if(session()->has('schedule_no_date') || session()->has('schedule_date')) {
+    	$audits->where(function ($query) {
+    		if(session('schedule_date') == 1 && session('daterange') != '') {
+    			$daterange    = session('daterange');
+			    $date_array = explode(" to ", $daterange);
+			    if (count($date_array) != 2) {
+			      // make it work for a single day
+			      $date_array[0] = $daterange;
+			      $date_array[1] = $date_array[0];
+			    }
+			    $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+			    $enddate   = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
+	   			$query->orWhereBetween('inspection_schedule_date', [$startdate, $enddate]);
+    		}
+    		if (session()->has('schedule_no_date') && session('schedule_no_date') == 1) {
+          $query->orWhereNull('inspection_schedule_date');
+        }
+    	});
+    }
+
+    // if(session()->has('schedule_date') && session('schedule_date') == 1 && session('daterange') != '') {
+    // 	$daterange    = session('daterange');
+	   //  $date_array = explode(" to ", $daterange);
+	   //  if (count($date_array) != 2) {
+	   //    // make it work for a single day
+	   //    $date_array[0] = $daterange;
+	   //    $date_array[1] = $date_array[0];
+	   //  }
+
+	   //  $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+	   //  $enddate   = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
+	   //  $audits->whereBetween('inspection_schedule_date', [$startdate, $enddate]);
+    // }
+    // return $audits->get();
+
     // if (session()->has('documents_reviewd') && session('documents_reviewd') == 1) {
     //   $audits->where('document_status_icon', 'a-file-approve');
     // }

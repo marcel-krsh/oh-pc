@@ -425,6 +425,16 @@
 				<a onClick="filterAudits('messages_not_available', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NO MESSAGES</span></a>
 			</div>
 			@endif
+			@if(session('schedule_date') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('schedule_date', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>SCHEDULE DATE: {{ strtoupper(session('daterange')) }}</span></a>
+			</div>
+			@endif
+			@if(session('schedule_no_date') == 1)
+			<div class="uk-badge uk-text-right@s badge-filter">
+				<a onClick="filterAudits('schedule_no_date', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NO SCHEDULED DATE</span></a>
+			</div>
+			@endif
 
 
 			<div id="audit-filter-date" class="uk-badge uk-text-right@s badge-filter" hidden>
@@ -611,16 +621,20 @@
 							<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid>
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
 								<span class="@if($auditor_access) uk-width-1-2 @else uk-width-1-1 @endif uk-text-center uk-padding-remove-top uk-margin-remove-top" >
-									<span id="daterangefilter use-hand-cursor" >
-										<i class="a-calendar-8 uk-vertical-align-middle  use-hand-cursor"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text  use-hand-cursor"></i> <i class="a-calendar-8 uk-vertical-align-middle  use-hand-cursor"></i>
+									<span id="daterangefilterbutton" class="use-hand-cursor">
+										<i class="a-calendar-8 uk-vertical-align-middle  use-hand-cursor"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text  use-hand-cursor"></i> <i class="a-calendar-8 uk-vertical-align-middle  use-hand-cursor" onclick="$('#daterange').trigger( 'click' );"></i>
 									</span>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="daterange_filter" method="post">
 											<fieldset class="uk-fieldset">
-												<div class="uk-width-1-1 uk-margin-bottom">
-													<label class="uk-form-label" for="daterange">DATE RANGE</label>
+												<div class="uk-margin uk-child-width-auto uk-grid">
+													<input id="schedule_no_date" class="" type="checkbox" @if(session('schedule_no_date') == 1) checked @endif/>
+													<label for="schedule_no_date">NO SCHEDULED DATE</label>
+													<input id="schedule_date" class="" type="checkbox" @if(session('schedule_date') == 1) checked @endif/>
+													<label for="schedule_date">DATE RANGE</label>
 													<div class="uk-form-controls">
-														<input type="text" id="daterange" name="daterange" value="" class="uk-input flatpickr flatpickr-input active"/>
+														{{-- October 3, 2019 to October 17, 2019 --}}
+														<input type="text" id="daterange" name="daterange" value="{{ session('schedule_date') == 1 ? session('daterange') : '' }}" class="uk-input flatpickr flatpickr-input active"/>
 													</div>
 												</div>
 												<div class="uk-margin-remove" uk-grid>
@@ -628,9 +642,10 @@
 														<button onclick="updateAuditScheduleDate(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
 													</div>
 													<div class="uk-width-1-2">
-														<button onclick="$('#totalbuildinginspectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
+														<button onclick="$('#daterangefilterbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
 													</div>
 												</div>
+
 											</fieldset>
 										</form>
 									</div>
@@ -1948,6 +1963,55 @@ function updateAuditBuildingInspection(e) {
 				} );
 			}
 
+			function updateAuditScheduleDate(e){
+				e.preventDefault();
+
+				var form = $('#daterange_filter');
+				debugger;
+
+				var alloptions = [];
+				$('#daterange_filter input').each(function() {
+					alloptions.push([$(this).attr('id'), 0]);
+				});
+
+				var selected = [];
+				$('#daterange_filter input:checked').each(function() {
+					selected.push([$(this).attr('id'), 1]);
+				});
+
+				if(!$('#schedule_no_date').is(":checked")) {
+					if($("#daterange").val().length === 0) {
+						$("#daterange").addClass('uk-form-danger');
+						return false;
+					}else{
+						$("#daterange").removeClass('uk-form-danger');
+					}
+				}
+				if($('#schedule_date').is(":checked")) {
+					alloptions.push(['daterange', $('#daterange').val()]);
+				}
+				// var alloptions = [];
+				// alloptions.push(['daterange', $('#daterange').val()]);
+				// var selected = [];
+				// selected.push(['schedule_date', 1]);
+
+				$.post("/session/", {
+					'data' : alloptions,
+					'_token' : '{{ csrf_token() }}'
+				}, function(data) {
+					$.post("/session/", {
+						'data' : selected,
+						'_token' : '{{ csrf_token() }}'
+					}, function(data) {
+						$('#daterangefilterbutton').trigger( 'click' );
+						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					} );
+				} );
+			}
+
+
+
+
 			function updateAuditMessages(e){
 				e.preventDefault();
 				var form = $('#messages_filter');
@@ -2265,22 +2329,23 @@ function updateAuditBuildingInspection(e) {
 		});
 	</script>
 	<script>
-			flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
+		flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
-			flatpickr("#daterange", {
-				mode: "range",
-				minDate: "today",
-				altFormat: "F j, Y",
-				dateFormat: "F j, Y",
-				"locale": {
+		flatpickr("#daterange", {
+			inline: true,
+			mode: "range",
+			// minDate: "today",
+			altFormat: "F j, Y",
+			dateFormat: "F j, Y",
+			"locale": {
 		        "firstDayOfWeek": 1 // start week on Monday
 		      }
 		    });
 
 		  </script>
-	<script>
-		function openProjectSubtab(project_key, audit_id, subtab = 0) {
-			openProject(project_key, audit_id, subtab);
-		}
-	</script>
-	<script>window.auditsLoaded = 1; </script>
+		  <script>
+		  	function openProjectSubtab(project_key, audit_id, subtab = 0) {
+		  		openProject(project_key, audit_id, subtab);
+		  	}
+		  </script>
+		  <script>window.auditsLoaded = 1; </script>
