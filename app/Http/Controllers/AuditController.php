@@ -1841,10 +1841,11 @@ class AuditController extends Controller
     {
         // types: compliance, assignment, findings, followups, reports, documents, comments, photos
         // project: project_id?
-
         $project = Project::where('id', '=', $id)->first();
-        $audit = CachedAudit::where('audit_id',$audit)->first();
+        $audit = CachedAudit::with('auditors')->where('audit_id',$audit)->first();
         //dd($project->selected_audit());
+        $current_user   = Auth::user();
+    		$manager_access = Auth::user()->manager_access();
 
         switch ($type) {
             case 'compliance':
@@ -2281,7 +2282,7 @@ class AuditController extends Controller
                     ],
                 ]);
 
-                return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules', 'audit'));
+                return view('projects.partials.details-assignment', compact('data', 'project', 'chart_data', 'auditors_key', 'daily_schedules', 'audit', 'current_user', 'manager_access'));
 
                 break;
             case 'findings':
@@ -3459,7 +3460,7 @@ class AuditController extends Controller
                 ->join('units','units.id','unit_programs.unit_id')
                 ->join('buildings','buildings.id','units.building_id')
           														//->where('unit_id', 151063)
-          														->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected')
+          														->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected', 'project_program')
           														->orderBy('buildings.building_name', 'asc')
                                                                 ->orderBy('units.unit_name','asc')
           														->get();
@@ -3476,6 +3477,7 @@ class AuditController extends Controller
                 $actual_programs[$key]['group_ids'] = [];
             }
           }
+          // return $unitprograms;
           return view('modals.project-summary-composite', compact('data', 'project', 'audit', 'programs', 'unitprograms', 'datasets', 'actual_programs'));
         } else {
             //dd($selection_summary['programs'][$program_id-1]);
@@ -6431,6 +6433,7 @@ class AuditController extends Controller
     }
 
     public function ajaxAuditRequiredUnits(Request $request){
+    	// return $request->building_key;
         $audit_id = $request->post('id');
         $name=$request->post('name');
         $req_type=$request->post('req_type');
@@ -6446,10 +6449,18 @@ class AuditController extends Controller
         if(null !== $selection_summary){
             foreach ($selection_summary['programs'] as $key => $program) {
                 $selection_summary['programs'][$key]['name'];
-                if($selection_summary['programs'][$key]['name']== $name){
+                //need to check if building exists
+                if($request->building_key != null && $request->building_key != '') {
+                	$has_building = 1;
+                } else {
+                	$has_building = 0;
+                }
+                if($selection_summary['programs'][$key]['name']== $name && !$has_building){
                     @$selection_summary['programs'][$key]['comments'][]=date('m/d/Y h:i:s a',time()).': '.Auth::user()->name.' ( user id: '.Auth::user()->id.' ) changed the '.$requiredTypeDisplay.' required amount from '.$selection_summary['programs'][$key][$req_type].' to '.$value;
                     @$selection_summary['programs'][$key][$req_type]=$value;
-
+                } elseif($selection_summary['programs'][$key]['name']== $name && $has_building && $selection_summary['programs'][$key]['building_key'] == $request->building_key) {
+                		@$selection_summary['programs'][$key]['comments'][]=date('m/d/Y h:i:s a',time()).': '.Auth::user()->name.' ( user id: '.Auth::user()->id.' ) changed the '.$requiredTypeDisplay.' required amount from '.$selection_summary['programs'][$key][$req_type].' to '.$value;
+                    @$selection_summary['programs'][$key][$req_type]=$value;
                 }
             }
             $audit_details->selection_summary=json_encode($selection_summary);

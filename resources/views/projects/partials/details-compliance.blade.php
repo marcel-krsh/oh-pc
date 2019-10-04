@@ -1,6 +1,6 @@
 @include('projects.templates.details-compliance')
 <style type="text/css">
-	
+
 	.editing {
 		border:1px dotted;
 	}
@@ -81,7 +81,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div class="uk-width-2-5">
+			{{-- <div class="uk-width-2-5">
 				<table class="uk-table uk-table-small noline small-padding">
 					<tbody>
 						<tr>
@@ -119,13 +119,14 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>
+			</div> --}}
 		</div>
 
 		<div class="project-details-info-compliance-programs uk-position-relative uk-visible-toggle uk-margin-top"  >
     		<ul class="uk-list uk-margin-top">
     			@if(array_key_exists('programs',$data))
-	        		@foreach($data['programs'] as $program)
+	        		@foreach($data['programs'] as $key => $program)
+	        		{{-- {{ dd($data['programs']) }} --}}
 	        		@if($program['required_units'] != 0)
 			        <li>
 						<div class="project-details-info-compliance-program uk-panel uk-grid-match" style="height:180px" uk-grid>
@@ -153,14 +154,14 @@
 											</td>
 											<td class="uk-text-center border-right">
 												{{-- {{$program['required_units']}} --}}
-												<div ondblclick="enableEditField('#required_units_{{$program_id}}','{{$program['name']}}','required_units','{{$program_id}}',{{$auditID}});">
-													<input  name="required_units[{{$program_id}}]" id="required_units_{{$program_id}}" type="text" value="{{$program['required_units']}}" class="change-watch" onblur="disableEditField('#required_units_{{$program_id}}','{{$program['name']}}','required_units','{{$program_id}}',{{$auditID}});" style="text-align: center;background: transparent;border: none;color: #333;width: 50px; font-size: 14px" disabled='true'>
+												<div ondblclick="enableEditField('#required_units_{{$program_id}}_{{ $key }}','{{$program['name']}}','required_units','{{$program_id}}',{{$auditID}});">
+													<input  name="required_units[{{$program_id}}]" id="required_units_{{$program_id}}_{{ $key }}" type="text" value="{{$program['required_units']}}" class="change-watch" onblur="disableEditField('#required_units_{{$program_id}}_{{ $key }}','{{$program['name']}}','required_units','{{$program_id}}',{{$auditID}},'{{ $program['building_key'] }}');" style="text-align: center;background: transparent;border: none;color: #333;width: 50px; font-size: 14px" disabled='true'>
 												</div>
 											</td>
 											<td class="uk-text-center">
 												{{-- {{$program['required_units_file']}} --}}
-												<div ondblclick="enableEditField('#required_units_file_{{$program_id}}','{{$program['name']}}','required_units_file','{{$program_id}},{{$auditID}}');">
-													<input  name="required_units_file[{{$program_id}}]" id="required_units_file_{{$program_id}}" type="text" value="{{$program['required_units_file']}}" class="change-watch" onblur="disableEditField('#required_units_file_{{$program_id}}','{{$program['name']}}','required_units_file','{{$program_id}}',{{$auditID}});" style="text-align: center;background: transparent;border: none;color: #333;width: 50px; font-size: 14px;" disabled="true">
+												<div ondblclick="enableEditField('#required_units_file_{{$program_id}}_{{ $key }}','{{$program['name']}}','required_units_file','{{$program_id}},{{$auditID}}');">
+													<input  name="required_units_file[{{$program_id}}]" id="required_units_file_{{$program_id}}_{{ $key }}" type="text" value="{{$program['required_units_file']}}" class="change-watch" onblur="disableEditField('#required_units_file_{{$program_id}}_{{ $key }}','{{$program['name']}}','required_units_file','{{$program_id}}',{{$auditID}},'{{ $program['building_key'] }}');" style="text-align: center;background: transparent;border: none;color: #333;width: 50px; font-size: 14px;" disabled="true">
 												</div>
 											</td>
 										</tr>
@@ -474,7 +475,7 @@ function enableEditField(fieldId,fieldName,fieldUnitType,Id){
 	$(fieldId).focus();
 	console.log('Enabled field '+fieldId);
 }
-function disableEditField(fieldId,fieldName,fieldUnitType,Id,auditID) {
+function disableEditField(fieldId,fieldName,fieldUnitType,Id,auditID,buildingKey = '') {
 	console.log($(fieldId).val());
 	$(fieldId).prop('disabled', true);
 	$(fieldId).removeClass('editing');
@@ -484,12 +485,13 @@ function disableEditField(fieldId,fieldName,fieldUnitType,Id,auditID) {
 		'name' : fieldName,
 		'req_type' : fieldUnitType,
 		'req_val' : $(fieldId).val(),
+		'building_key' : buildingKey,
 		'_token' : '{{ csrf_token() }}'
 	}, function(data) {
 		$("#project-details-button-1").trigger("click");
 		// if(data){
 		// UIkit.modal.alert("");
-		// } 
+		// }
 	});
 
 

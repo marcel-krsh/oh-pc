@@ -115,7 +115,7 @@
 	function projectSummarySelection(element, unitid, programid=null, grouptypes=null, type="both", buildingkey="none"){
 		// ajax call here
 		var spinner = '<div style="height:127px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-
+		debugger;
 		if(buildingkey != 'none') {
 			var targetRow = '#program-selection-'+grouptypes+'-'+buildingkey;
 			var targetClass = '.program-selection-'+grouptypes+'-'+buildingkey;
@@ -140,7 +140,7 @@
 			$(targetRow).fadeOut( "slow", function() {
 				$(targetRow).replaceWith(data).fadeIn();
 			});
-			loadTypes(1);
+			//loadTypes(1);
 			//filterProgramSummary();
 		}
 		);
