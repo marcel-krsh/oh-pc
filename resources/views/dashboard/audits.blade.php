@@ -1970,9 +1970,14 @@ function updateAuditBuildingInspection(e) {
 				debugger;
 
 				var alloptions = [];
+
 				$('#daterange_filter input').each(function() {
 					alloptions.push([$(this).attr('id'), 0]);
 				});
+				if($('#daterange').val() != '') {
+					alloptions.push(['daterange', $('#daterange').val()]);
+			    $("#schedule_date").prop('checked', true);
+				}
 
 				var selected = [];
 				$('#daterange_filter input:checked').each(function() {
@@ -1987,9 +1992,10 @@ function updateAuditBuildingInspection(e) {
 						$("#daterange").removeClass('uk-form-danger');
 					}
 				}
-				if($('#schedule_date').is(":checked")) {
-					alloptions.push(['daterange', $('#daterange').val()]);
-				}
+
+				// if($('#schedule_date').is(":checked")) {
+				// 	alloptions.push(['daterange', $('#daterange').val()]);
+				// }
 				// var alloptions = [];
 				// alloptions.push(['daterange', $('#daterange').val()]);
 				// var selected = [];
