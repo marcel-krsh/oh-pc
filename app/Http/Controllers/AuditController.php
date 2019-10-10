@@ -1842,10 +1842,10 @@ class AuditController extends Controller
         // types: compliance, assignment, findings, followups, reports, documents, comments, photos
         // project: project_id?
         $project = Project::where('id', '=', $id)->first();
-        $audit = CachedAudit::with('auditors')->where('audit_id',$audit)->first();
+        $audit = CachedAudit::with('auditors', 'audit', 'lead_auditor')->where('audit_id',$audit)->first();
         //dd($project->selected_audit());
         $current_user   = Auth::user();
-    		$manager_access = Auth::user()->manager_access();
+    		$manager_access = $current_user->manager_access();
 
         switch ($type) {
             case 'compliance':
@@ -3283,10 +3283,14 @@ class AuditController extends Controller
         return view('dashboard.partials.project-summary-unit', compact('unitprograms', 'actual_programs'));
     }
 
-    private function projectSummaryComposite($project_id)
+    private function projectSummaryComposite($project_id, $audit_id = 0)
     {
       $project = Project::where('id', '=', $project_id)->first();
-      $audit = $project->selected_audit()->audit;
+      if($audit_id) {
+	      $audit = $project->selected_audit($audit_id)->audit;
+      } else {
+	      $audit = $project->selected_audit()->audit;
+      }
       $selection_summary = json_decode($audit->selection_summary, 1);
       session(['audit-' . $audit->id . '-selection_summary' => $selection_summary]);
       $programs = array();
@@ -3438,7 +3442,7 @@ class AuditController extends Controller
         return $send_project_details;
     }
 
-    public function modalProjectProgramSummary($project_id, $program_id = 0)
+    public function modalProjectProgramSummary($project_id, $program_id = 0, $audit_id = 0)
     {
   		if ($program_id == 0) {
 	        // if program_id == 0 we display all the programs (Here these are actually gorups not programs!)
@@ -3447,7 +3451,7 @@ class AuditController extends Controller
 	        // then user can adjust selection for that program
 
           // get all the units in the selected audit
-          $get_project_details = $this->projectSummaryComposite($project_id);
+          $get_project_details = $this->projectSummaryComposite($project_id, $audit_id);
           collect($get_project_details['all_program_keys'])->flatten()->unique();
           $audit = $get_project_details['audit'];
           $data = $get_project_details['data'];
@@ -6187,7 +6191,7 @@ class AuditController extends Controller
         }
     }
 
-    public function saveProgramUnitInspection($project_id, Request $request)
+     public function saveProgramUnitInspection($project_id, Request $request)
     {
     	//return $inputs = $request->all();
     	//Unit_id, program_id, group_ids, type
@@ -6199,8 +6203,13 @@ class AuditController extends Controller
 		$program_key = $request->get('program_key');
 		$group_ids = $request->get('group_ids');
 		$type = $request->get('type');
+		$audit_id = $request->get('audit_id');
 		$project = Project::where('id', '=', $project_id)->first();
-      	$audit = $project->selected_audit()->audit;
+		if(!is_null($audit_id)) {
+			$audit = $project->selected_audit($audit_id)->audit;
+		} else {
+			$audit = $project->selected_audit()->audit;
+		}
 
 
         //dd($unit_id, $program_key, $group_ids, $type, $project->id, $audit->id);

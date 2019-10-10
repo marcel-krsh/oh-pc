@@ -47,7 +47,12 @@ function sortAuditList(sortBy, sortOrder, inputClass='') {
 
 function filterAudits(type, value=''){
 	$.get( '/session/filters/'+type+'/'+value, function( data ) {
-       loadTab("dashboard/audits", "1", 0, 0, '', 1);
+		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+			$('#auditstable').html(tempdiv);
+		setTimeout(function () {
+		    loadTab("dashboard/audits", "1", 0, 0, '', 1);
+		}, 1000);
+
     });
 }
 

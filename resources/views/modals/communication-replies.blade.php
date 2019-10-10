@@ -55,6 +55,7 @@
 			</a>
 			<br>
 			@endforeach
+			{{-- Docueare docs --}}
 			@foreach($message->docuware_documents as $document)
 			<a href="{{ url('/document', $document->docuware_doc_id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file<br />{{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}">
 				<i class="a-paperclip-2"></i> {{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }}
@@ -140,7 +141,11 @@
 
 <hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 <div class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" uk-grid style="position: relative; height: 222.5px; border-bottom:0px;">
-	<button class="uk-button uk-button-success uk-width-1-3@m uk-width-1-1@s toggle-form" onclick="this.style.visibility = 'hidden';" uk-toggle="target: #newOutboundEmailForm">Write a reply</button>
+	@if(is_null($project))
+	<button class="uk-button uk-button-success uk-width-1-3@m uk-width-1-1@s toggle-form" onclick="this.style.visibility = 'hidden';" uk-toggle="target: #newOutboundEmailForm" >Write a reply</button>
+	@else
+		<button class="uk-button uk-button-success uk-width-1-3@m uk-width-1-1@s toggle-form" onclick="this.style.visibility = 'hidden'; communicationDocuments({{ $project->id }});" uk-toggle="target: #newOutboundEmailForm" >Write a reply</button>
+	@endif
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post" class="uk-margin-top toggle-form uk-width-1-1" hidden>
 		@if($audit)<input type="hidden" name="audit" value="{{ $audit->id }}">@endif
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
@@ -163,8 +168,9 @@
 				</div>
 			</div>
 			@if($audit)
-			<div uk-grid>
-				@include('modals.partials.communication-documents')
+			<div id="communication-documents-container" uk-grid>
+				{{-- Load this whern write a reply is clicked --}}
+				{{-- @include('modals.partials.communication-documents') --}}
 			</div>
 			@endif
 		</div>
@@ -252,6 +258,21 @@
 			$('#detail-tab-2').trigger('click');
 		@endif
 
+		function communicationDocuments(projectId) {
+			var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+			$('#communication-documents-container').html(tempdiv);
+
+			var url = '/projects/'+projectId+'/reply-communications/documents';
+		    $.get(url, {
+		        }, function(data) {
+		            if(data=='0'){
+		                UIkit.modal.alert("There was a problem getting the project documents.");
+		            } else {
+
+						$('#communication-documents-container').html(data);
+		        	}
+		    });
+		}
 
     </script>
   </div>

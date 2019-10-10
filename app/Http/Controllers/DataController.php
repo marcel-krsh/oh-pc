@@ -36,30 +36,58 @@ class DataController extends Controller
         switch ($ref) {
             case "auditor.availability_max_hours":
                 $user->availability_max_hours = $data;
-                $user->save();             
+                $user->save();
                 return 1; break;
             case "auditor.availability_lunch":
                 $user->availability_lunch = $data;
-                $user->save();             
+                $user->save();
                 return 1; break;
             case "auditor.availability_max_driving":
                 $user->availability_max_driving = $data;
-                $user->save();             
+                $user->save();
                 return 1; break;
 
             case "auditor.allowed_tablet":
                 if(Auth::user()->admin_access()){
                  $user->allowed_tablet = $data;
-                 $user->save();             
+                 $user->save();
                  return 'I stored this '.$data.' on user '.$user->id; break;
                 } else {
                     return 'Sorry, you must be an admin to adjust tablet access for users.';
                 }
-               
+
 
             default:
                return "There was a problem with your request.";
         }
+    }
+
+    public function removeSession($type, $value = null)
+    {
+    	if (null !== $value) {
+        session([$type => $value]);
+        $new_filter = session($type);
+        return $new_filter;
+      } else {
+        if (!session()->has($type)) {
+          if ('' != $value) {
+            session([$type => 1]);
+          } else {
+            session([$type => '']);
+          }
+        } else {
+          if (session($type) == 0 || session($type) === null) {
+            if ('' != $value) {
+              session([$type => 1]);
+            } else {
+              session([$type => '']);
+            }
+          } else {
+            session()->forget($type);
+          }
+        }
+        return 1;
+      }
     }
 
     public function setSession(Request $request, $name=null, $value=null){
@@ -89,7 +117,7 @@ class DataController extends Controller
                 return Session::get($name);
             }
         }
-        
+
     }
 
     // public function testSockets()
@@ -101,7 +129,7 @@ class DataController extends Controller
     //     //
     //     // 3. Use Socket.io to emit to all clients
     //     //
-        
+
     //     $data = [
     //         'event' => 'UserSignedUp',
     //         'data' => [

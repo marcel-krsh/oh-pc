@@ -431,6 +431,10 @@ class CommunicationController extends Controller
 
     if ($audit) {
       $project = Project::find($audit->project_id);
+      }
+
+    /*if ($audit) {
+      $project = Project::find($audit->project_id);
       if (local()) {
         $docuware_documents = Document::where('id', -100)->get();
       } else {
@@ -452,7 +456,7 @@ class CommunicationController extends Controller
     } else {
       $documents           = null;
       $document_categories = null;
-    }
+    }*/
     $owner_name_trimmed = rtrim($message->owner->name);
     $words              = explode(" ", $owner_name_trimmed);
     $initials           = "";
@@ -540,6 +544,68 @@ class CommunicationController extends Controller
     }
 
     // help build the upload category list
+    /*if (null !== $documents && count($documents)) {
+      // create an associative array to simplify category references for each document
+      foreach ($documents as $document) {
+        $categories = []; // store the new associative array cat id, cat name
+
+        if ($document->categories) {
+          $categories_decoded = json_decode($document->categories, true); // cats used by the doc
+          $categories_used    = array_merge($categories_used, $categories_decoded); // merge document categories
+        } else {
+          $categories_decoded = [];
+        }
+
+        foreach ($document_categories as $document_category) {
+          $document_categories_key[$document_category->id] = $document_category->document_category_name;
+
+          // sub key for each document's categories for quick reference
+          if (in_array($document_category->id, $categories_decoded)) {
+            $categories[$document_category->id] = $document_category->document_category_name;
+          }
+        }
+        $document->categoriesarray = $categories;
+      }
+    } else {
+      $documents = [];
+    }*/
+
+    //prevents the UIkit notify to show up after reading the message
+    $user_needs_to_read_more = CommunicationRecipient::where('communication_id', $message->id)
+      ->where('user_id', $current_user->id)
+      ->where('seen', 0)
+      ->update(['seen' => 1]);
+      // return $project;
+    return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit', 'project', 'report_notification'));
+  }
+
+  public function getCommunicationDocuments($project_id = 0) {
+  	if ($project_id) {
+      $project = Project::find($project_id);
+      if (local()) {
+        $docuware_documents = Document::where('id', -100)->get();
+      } else {
+        $docuware_documents = $this->projectDocuwareDocumets($project);
+      }
+      $local_documents = Document::where('project_id', $project->id)
+        ->with('assigned_categories')
+        ->orderBy('created_at', 'desc')
+        ->get();
+      $document_categories = DocumentCategory::where('parent_id', '<>', 0)
+        ->active()
+        ->orderby('document_category_name', 'asc')
+        ->with('parent')
+        ->get();
+        $documents = [];
+        if(null !== $docuware_documents){
+          $documents = $docuware_documents->merge($local_documents);
+        }
+    } else {
+      $documents           = null;
+      $document_categories = null;
+      $project = null;
+    }
+
     if (null !== $documents && count($documents)) {
       // create an associative array to simplify category references for each document
       foreach ($documents as $document) {
@@ -565,14 +631,10 @@ class CommunicationController extends Controller
     } else {
       $documents = [];
     }
+    return view('modals.partials.communication-documents', compact('documents', 'document_categories', 'project'));
 
-    //prevents the UIkit notify to show up after reading the message
-    $user_needs_to_read_more = CommunicationRecipient::where('communication_id', $message->id)
-      ->where('user_id', $current_user->id)
-      ->where('seen', 0)
-      ->update(['seen' => 1]);
-    return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit', 'project', 'report_notification'));
   }
+
 
   public function create(Request $request)
   {
@@ -1132,7 +1194,7 @@ class CommunicationController extends Controller
       //return $messages->first()->message_recipients;
     }
 
-    //return $messages;
+    // return $messages;
 
     $owners_array   = [];
     $projects_array = [];
