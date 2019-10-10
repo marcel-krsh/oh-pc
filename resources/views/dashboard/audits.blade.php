@@ -1714,7 +1714,7 @@ function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element
 function updateAuditInspection(e){
 	e.preventDefault();
 	var form = $('#total_inspection_filter');
-	debugger;
+	// debugger;
 	if($('#total_inspection_more').prop('checked')){
 		var total_inspection_filter = 0;
 	}else{
@@ -1967,7 +1967,7 @@ function updateAuditBuildingInspection(e) {
 				e.preventDefault();
 
 				var form = $('#daterange_filter');
-				debugger;
+				// debugger;
 
 				var alloptions = [];
 

@@ -149,7 +149,7 @@
 		// we need to know which unit, which program, if file or physical audit and whether it is checked or unchecked
 
 		// icon clicked at the unit level to toggle all inspectable programs on/off
-		debugger;
+		// debugger;
 		if(programid == null){
 			// change element's color and icon
 			$(element).closest('.modal-project-summary-unit').addClass('inspectable-selected');
