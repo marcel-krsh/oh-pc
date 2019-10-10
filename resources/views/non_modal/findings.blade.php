@@ -196,7 +196,7 @@
 							</div>
 							<div class="uk-margin-remove" uk-grid>
 								<div class="uk-width-1-3 uk-first-column">
-									<button class="uk-button " onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary/{{ $audit->id }}',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button>
+									<button class="uk-button " onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary/{{ $audit->audit_id }}',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button>
 								</div>
 								<div class="uk-width-2-3">
 									<button class="uk-button uk-button-success uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="if($('#project-detail-tab-1').hasClass('uk-active') || window.project_detail_tab_1 != '1'){$('#project-detail-tab-1').trigger('click')} dynamicModalClose()">DONE ADDING FINDINGS</button>
