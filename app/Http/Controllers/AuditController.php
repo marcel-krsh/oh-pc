@@ -2303,7 +2303,7 @@ class AuditController extends Controller
                 break;
             default:
         }
-
+        // return $data['programs'];
         return view('projects.partials.details-' . $type, compact('data', 'project'));
     }
 
