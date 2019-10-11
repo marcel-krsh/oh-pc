@@ -35,6 +35,7 @@ use App\Models\SystemSetting;
 use App\Models\Unit;
 use App\Models\UnitAmenity;
 use App\Models\UnitInspection;
+use App\Models\ProjectProgram;
 use App\Models\ProjectDetail;
 use App\Models\UnitProgram;
 use App\Models\UnitGroup;
@@ -3442,6 +3443,46 @@ class AuditController extends Controller
         return $send_project_details;
     }
 
+    public function fixMultiBuildingElection()
+    {
+    	$project_pps = ProjectProgram::with('program.relatedGroups')->get()->groupBy('project_id');//->groupBy('program_key');
+      foreach ($project_pps as $key => $pps) {
+        $pps = $pps->groupBy('program_key');
+      	foreach ($pps as $key => $pp) {
+          $pp = $pp->first();
+        	if($pp->program) {
+        		$pp_program = $pp->program;
+        		// return $pp->first();
+        		if(count($pp->program->relatedGroups) > 0) {
+        			$program_group = $pp->program->relatedGroups->first();
+        			if($program_group->id == 7 && $pp->multiple_building_election_key == 2) {
+        				 $unitprograms = UnitProgram::where('unit_programs.project_id', '=', $pp->project_id)
+											                ->join('units','units.id','unit_programs.unit_id')
+											                ->join('buildings','buildings.id','units.building_id')
+				  														->where('program_key', $pp_program->program_key)
+				  														->with('unit', 'program.relatedGroups','unit.building', 'unit.building.address', 'unitInspected', 'project_program')
+				  														->get();
+				  			if(count($unitprograms) > 0) {
+										$unitprograms = $unitprograms->groupBy('building_id');
+										foreach ($unitprograms as $key => $unitprogram) {
+											// return ProjectProgram::where('program_key', $unitprogram->first()->program_key)->where('project_id', $pp->project_id)->get();
+											// return $unitprogram;
+											foreach ($unitprogram as $key => $up) {
+												if($up->unitInspected) {
+													// return $up;
+												}
+											}
+										}
+				  				}
+        			}
+        		} else {
+        			// return 'no program group';
+        		}
+        	}
+        }
+      }
+    }
+
     public function modalProjectProgramSummary($project_id, $program_id = 0, $audit_id = 0)
     {
   		if ($program_id == 0) {
@@ -3451,6 +3492,8 @@ class AuditController extends Controller
 	        // then user can adjust selection for that program
 
           // get all the units in the selected audit
+
+
           $get_project_details = $this->projectSummaryComposite($project_id, $audit_id);
           collect($get_project_details['all_program_keys'])->flatten()->unique();
           $audit = $get_project_details['audit'];

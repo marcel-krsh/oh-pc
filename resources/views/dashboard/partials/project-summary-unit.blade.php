@@ -84,8 +84,6 @@
 		// dd($htc_program_selected);
 		@endphp
 
-
-
 		<div class="unit-group modal-project-summary-unit-programs uk-margin-remove uk-width-1-1  summary-unit-programs-{{ $each_program->unit_id }} {{ $selected_units_count > 0 ? 'has-selected' : 'no-selection' }} building-{{$unit->unit->building_key}}">
 			<div class="modal-project-summary-unit-program uk-visible-toggle">
 				<div class="uk-invisible-hover modal-project-summary-unit-program-quick-toggle {{ $unit_program_selected_count > 0 ? 'inspectable-selected' : '' }}" data-unitid="{{ $each_program->unit_id }}">
