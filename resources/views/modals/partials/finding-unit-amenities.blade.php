@@ -99,34 +99,41 @@
 
 	function copyUnitAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel=0, fromfinding=0){
 		loadTypeView = '';
-		@if(!session()->has('hide_confirm_modal'))
-		var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
-		UIkit.modal.confirm('<div uk-modal-dialog class="uk-grid"><div class="uk-width-1-1"><h2>MAKE A DUPLICATE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to make a duplicate?</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
-			var hide_confirm_modal = $("#hide_confirm_modal").is(':checked');
-		@endif
-			var newAmenities = [];
-			$.post('/modals/amenities/save', {
-				'project_id' : 0,
-				'audit_id' : audit_id,
-				'building_id' : building_id,
-				'unit_id' : unit_id,
-				'new_amenities' : newAmenities,
-				'amenity_id' : amenity_id,
-				'toplevel': toplevel,
-				@if(!session()->has('hide_confirm_modal'))
-				'hide_confirm_modal': hide_confirm_modal,
-				@endif
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				$('#amenity-list').scroll(function(){
-					scrollPosAmenity = $('#amenity-list').scrollBottom();
-					console.log(scrollPosAmenity);
-				});
-				filterUnitAmenities(unit_id, null, 1);
+		if(window.hide_confirm_modal_flag) {
+			postCopyUnitAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel, fromfinding, window.hide_confirm_modal_flag);
+		} else {
+			var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
+			UIkit.modal.confirm('<div uk-modal-dialog class="uk-grid"><div class="uk-width-1-1"><h2>MAKE A DUPLICATE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to make a duplicate?</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
+				if(window.hide_confirm_modal_flag || $("#hide_confirm_modal").is(':checked')) {
+					var hide_confirm_modal = 1;
+					window.hide_confirm_modal_flag = 1;
+				} else {
+					var hide_confirm_modal = 0;
+				}
+				postCopyUnitAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel, fromfinding, hide_confirm_modal);
 			});
-		@if(!session()->has('hide_confirm_modal'))
+		}
+	}
+
+	function postCopyUnitAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel, fromfinding, hide_confirm_modal) {
+		var newAmenities = [];
+		$.post('/modals/amenities/save', {
+			'project_id' : 0,
+			'audit_id' : audit_id,
+			'building_id' : building_id,
+			'unit_id' : unit_id,
+			'new_amenities' : newAmenities,
+			'amenity_id' : amenity_id,
+			'toplevel': toplevel,
+			'hide_confirm_modal': hide_confirm_modal,
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			$('#amenity-list').scroll(function(){
+				scrollPosAmenity = $('#amenity-list').scrollBottom();
+				console.log(scrollPosAmenity);
+			});
+			filterUnitAmenities(unit_id, null, 1);
 		});
-		@endif
 	}
 
 	function assignUnitAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element, fullscreen=null,warnAboutSave=null,fixedHeight=0,inmodallevel=0){
@@ -146,48 +153,28 @@
 		}
 	}
 
-	function markUnitAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0) {
-		loadTypeView = '';
-		@if(!session()->has('hide_confirm_modal'))
-		if(element){
-			if($('#'+element).hasClass('a-circle-checked')){
-				var title = 'MARK THIS INCOMPLETE?';
-				var message = 'Are you sure you want to mark this incomplete?';
-			}else{
-				var title = 'MARK THIS COMPLETE?';
-				var message = 'Are you sure you want to mark this complete?';
-			}
-		}else{
-			var title = 'MARK THIS COMPLETE?';
-			var message = 'Are you sure you want to mark this complete?';
-		}
-		var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
-		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
-			var hide_confirm_modal = $("#hide_confirm_modal").is(':checked');
-		@endif
-			$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
-				@if(!session()->has('hide_confirm_modal'))
-				'hide_confirm_modal': hide_confirm_modal,
-				@endif
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				if(data==0){
-					UIkit.modal.alert(data,{stack: true});
-				} else {
-					console.log(data.status);
-					if(data.status == 'complete'){
-						if(toplevel == 1){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-							$('#'+element).toggleClass('a-circle');
-							$('#'+element).toggleClass('a-circle-checked');
-						}else if(amenity_id == 0){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-							$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle');
-							$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle-checked');
-						}else{
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-							$('#'+element).toggleClass('a-circle');
-							$('#'+element).toggleClass('a-circle-checked');
+	function postUnitAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel, hide_confirm_modal) {
+		$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
+			'_token' : '{{ csrf_token() }}',
+			'hide_confirm_modal': hide_confirm_modal
+		}, function(data) {
+			if(data==0){
+				UIkit.modal.alert(data,{stack: true});
+			} else {
+				console.log(data.status);
+				if(data.status == 'complete'){
+					if(toplevel == 1){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+						$('#'+element).toggleClass('a-circle');
+						$('#'+element).toggleClass('a-circle-checked');
+					}else if(amenity_id == 0){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+						$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle');
+						$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle-checked');
+					}else{
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+						$('#'+element).toggleClass('a-circle');
+						$('#'+element).toggleClass('a-circle-checked');
 							// $('#'+element).removeAttr("style");
 
 						}
@@ -209,10 +196,38 @@
 				}
 				//filterUnitAmenities(unit_id);
 			});
-		@if(!session()->has('hide_confirm_modal'))
-		}, function () {
-			console.log('Rejected.')
-		});
-		@endif
+	}
+
+	function markUnitAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0) {
+		loadTypeView = '';
+		if(window.hide_confirm_modal_flag) {
+			postUnitAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel, window.hide_confirm_modal_flag)
+		} else {
+			if(element){
+				if($('#'+element).hasClass('a-circle-checked')){
+					var title = 'MARK THIS INCOMPLETE?';
+					var message = 'Are you sure you want to mark this incomplete?';
+				}else{
+					var title = 'MARK THIS COMPLETE?';
+					var message = 'Are you sure you want to mark this complete?';
+				}
+			}else{
+				var title = 'MARK THIS COMPLETE?';
+				var message = 'Are you sure you want to mark this complete?';
+			}
+			var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
+			UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
+				if(window.hide_confirm_modal_flag || $("#hide_confirm_modal").is(':checked')) {
+					var hide_confirm_modal = 1;
+					window.hide_confirm_modal_flag = 1;
+				} else {
+					var hide_confirm_modal = 0;
+				}
+				postUnitAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel, hide_confirm_modal)
+			}, function () {
+				console.log('Rejected.')
+			});
+		}
+
 	}
 </script>

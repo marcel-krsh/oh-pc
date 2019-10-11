@@ -5826,8 +5826,12 @@ class AuditController extends Controller
                     ->where('audit_id', '=', $audit->audit_id)
                     ->where('building_id', '=', $building_id)
                     ->orderBy('order', 'desc')
-                    ->first()
-                    ->order;
+                    ->first();
+                if($latest_ordering) {
+                	$latest_ordering = $latest_ordering->order;
+                } else {
+                	$latest_ordering = 0;
+                }
 
                         // if(is_object($latest_ordering)){
                         //     $latest_ordering = $latest_ordering->order;
@@ -5906,8 +5910,12 @@ class AuditController extends Controller
                 $latest_ordering = OrderingBuilding::where('user_id', '=', Auth::user()->id)
                     ->where('audit_id', '=', $audit->audit_id)
                     ->orderBy('order', 'desc')
-                    ->first()
-                    ->order;
+                    ->first();
+                if($latest_ordering) {
+                	$latest_ordering = $latest_ordering->order;
+                } else {
+                	$latest_ordering = 0;
+                }
                 // save the ordering
                 $ordering = new OrderingBuilding([
                     'user_id' => Auth::user()->id,

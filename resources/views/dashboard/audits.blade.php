@@ -2326,6 +2326,9 @@ function updateAuditBuildingInspection(e) {
 		window.checking_latest_cached_audit = 0;
 
 		$( document ).ready(function() {
+			if (window.hide_confirm_modal_flag === undefined) {
+				window.hide_confirm_modal_flag = 0;
+			}
 			loadCalendar();
 			console.log( "ready!" );
 			window.setInterval(function(){

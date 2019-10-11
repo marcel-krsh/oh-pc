@@ -6,7 +6,7 @@
 	});
 </script>
 <div id="type-list" class="uk-width-1-1 uk-panel">
-@endIf
+	@endIf
 	<h3 class="uk-text-uppercase uk-text-emphasis uk-margin-top">Select Location</h3>
 	<div class="uk-column-1-3@m uk-column-1-2@s ">
 		<ul class="uk-list uk-list-divider uk-margin-left">
@@ -52,30 +52,31 @@
 			@foreach($buildings as $type)
 			@if(!is_null($type->building_id))
 
-				@php
+			@php
 					// $building_auditors = $type->auditors($audit->audit_id);
         		// return $type;
-        		$building_auditors = $amenities->where('building_id', '=', $type->building_id)->where('auditor_id', '<>', null);
-						$buildingUnits = $units->where('building_id', $type->building_id);
+			$building_auditors = $amenities->where('building_id', '=', $type->building_id)->where('auditor_id', '<>', null);
+			$buildingUnits = $units->where('building_id', $type->building_id);
 						// return $buildingUnits->pluck('unit_id');
-						$mine = [];
-						if($buildingUnits) {
-						 $bu_all_units = $amenities->whereIn('unit_id', $buildingUnits->pluck('unit_id'))->where('auditor_id', '<>', null);
-							if($bu_all_units) {
-								$all_auditors = $bu_all_units->merge($building_auditors);
-								$bu_all_units_users = $all_auditors->pluck('user')->unique();
-								$mine = $bu_all_units_users->where('id', Auth::user()->id);
-							}
-						}
-						if(count($building_auditors)) {
-							$b_units = $building_auditors->pluck('building')->first();
-							$unit_ids = $b_units->units->pluck('id');
-							$unit_auditors = $amenities->whereIn('unit_id', $unit_ids)->where('auditor_id', '<>', null);
-							$combined_auditors = $building_auditors->merge($unit_auditors);
-							$building_auditors = $combined_auditors->pluck('user')->unique();
+			$mine = [];
+			if($buildingUnits) {
+				$bu_all_units = $amenities->whereIn('unit_id', $buildingUnits->pluck('unit_id'))->where('auditor_id', '<>', null);
+				if($bu_all_units) {
+					$all_auditors = $bu_all_units->merge($building_auditors);
+					$bu_all_units_users = $all_auditors->pluck('user')->unique();
+					$mine = $bu_all_units_users->where('id', Auth::user()->id);
+				}
+			}
+			if(count($building_auditors)) {
+				$b_units = $building_auditors->pluck('building')->first();
+				$unit_ids = $b_units->units->pluck('id');
+				$unit_auditors = $amenities->whereIn('unit_id', $unit_ids)->where('auditor_id', '<>', null);
+				$combined_auditors = $building_auditors->merge($unit_auditors);
+				$building_auditors = $combined_auditors->pluck('user')->unique();
 							// $mine = $bu_unit_auditors->where('id', Auth::user()->id);
-						}
-				@endphp
+			}
+			$buildingUnits = $buildingUnits->sortBy('unit_name')
+			@endphp
 			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor {{ (count($mine)) ? '' : 'not-mine-items' }}" style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf ">
 				<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
 					<i @if($type->complete == 0 || is_null($type->complete)) onclick="markBuildingCompleteModal({{ $audit->audit_id }}, {{ $type->building_id }}, 0, 0,'markcomplete', 0)" @endif class="{{ ($type->complete)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
@@ -143,7 +144,7 @@
 
 				{{-- 	@if($bu->auditors($audit->audit_id) && count($bu->auditors($audit->audit_id)) > 0)
 					@foreach($bu->auditors($audit->audit_id) as $auditor) --}}
-				@if($bu_unit_auditors && count($bu_unit_auditors) > 0)
+					@if($bu_unit_auditors && count($bu_unit_auditors) > 0)
 					@foreach($bu_unit_auditors as $auditor)
 					<div class="amenity-auditor uk-margin-remove">
 						<div id="unit-{{ $bu->unit_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ $auditor->full_name() }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $audit->audit_id }}, {{ $bu->building_id }}, {{ $bu->unit_id }}, 'unit-auditors-{{ $bu->unit_id }}')">
@@ -175,7 +176,7 @@
 			@endforeach
 		</ul>
 	</div>
-@if(!isset($loadingAjax))
+	@if(!isset($loadingAjax))
 </div>
 <!-- This is the modal -->
 @endIf
@@ -195,64 +196,105 @@
 		dynamicModalLoad('property-amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', 0,0,0,2);
 	}
 
+	function postUnitComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel, hide_confirm_modal) {
+		$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
+			'hide_confirm_modal': hide_confirm_modal,
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			if(data==0){
+				UIkit.modal.alert(data,{stack: true});
+			} else {
+				console.log(data.status);
+				if(data.status == 'complete'){
+					if(toplevel == 1){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}else if(amenity_id == 0){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}else{
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}
+				} else{
+					if(toplevel == 1){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}else if(amenity_id == 0){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}else{
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}
+				}
+			}
+			loadTypeView = '';
+			loadTypes();
+		});
+	}
+
 	function markUnitComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0) {
-		@if(!session()->has('hide_confirm_modal'))
-		if(element){
-			if($('#'+element).hasClass('a-circle-checked')){
-				var title = 'MARK THIS INCOMPLETE?';
-				var message = 'Are you sure you want to mark this incomplete?';
+		if(window.hide_confirm_modal_flag) {
+			postUnitComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel, window.hide_confirm_modal_flag)
+		} else {
+			if(element){
+				if($('#'+element).hasClass('a-circle-checked')){
+					var title = 'MARK THIS INCOMPLETE?';
+					var message = 'Are you sure you want to mark this incomplete?';
+				}else{
+					var title = 'MARK THIS COMPLETE?';
+					var message = 'Are you sure you want to mark this complete?';
+				}
 			}else{
 				var title = 'MARK THIS COMPLETE?';
 				var message = 'Are you sure you want to mark this complete?';
 			}
-		}else{
-			var title = 'MARK THIS COMPLETE?';
-			var message = 'Are you sure you want to mark this complete?';
-		}
-		var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
-		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
-			var hide_confirm_modal = $("#hide_confirm_modal").is(':checked');
-			@endif
-			$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
-				@if(!session()->has('hide_confirm_modal'))
-				'hide_confirm_modal': hide_confirm_modal,
-				@endif
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				if(data==0){
-					UIkit.modal.alert(data,{stack: true});
+			var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
+			UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
+				if(window.hide_confirm_modal_flag || $("#hide_confirm_modal").is(':checked')) {
+					var hide_confirm_modal = 1;
+					window.hide_confirm_modal_flag = 1;
 				} else {
-					console.log(data.status);
-					if(data.status == 'complete'){
-						if(toplevel == 1){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}else if(amenity_id == 0){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}else{
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}
-					} else{
-						if(toplevel == 1){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}else if(amenity_id == 0){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}else{
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}
+					var hide_confirm_modal = 0;
+				}
+				postUnitComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel, hide_confirm_modal)
+			}, function () {
+				console.log('Rejected.')
+			});
+		}
+	}
+
+	function postSiteComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel, hide_confirm_modal) {
+		$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
+			'hide_confirm_modal': hide_confirm_modal,
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			if(data==0){
+				UIkit.modal.alert(data,{stack: true});
+			} else {
+				console.log(data.status);
+				if(data.status == 'complete'){
+					if(toplevel == 1){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}else if(amenity_id == 0){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}else{
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}
+				} else{
+					if(toplevel == 1){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}else if(amenity_id == 0){
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
+					}else{
+						UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
 					}
 				}
-				loadTypeView = '';
-				loadTypes();
-			});
-			@if(!session()->has('hide_confirm_modal'))
-		}, function () {
-			console.log('Rejected.')
+			}
+			loadTypeView = '';
+			loadTypes();
 		});
-		@endif
 	}
 
 	function markSiteComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0) {
-		@if(!session()->has('hide_confirm_modal'))
+		if(window.hide_confirm_modal_flag) {
+			postSiteComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel, window.hide_confirm_modal_flag)
+		} else {
 		if(element){
 			if($('#'+element).hasClass('a-circle-checked')){
 				var title = 'MARK THIS INCOMPLETE?';
@@ -267,44 +309,17 @@
 		}
 		var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
 		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
-			var hide_confirm_modal = $("#hide_confirm_modal").is(':checked');
-			@endif
-			$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
-				@if(!session()->has('hide_confirm_modal'))
-				'hide_confirm_modal': hide_confirm_modal,
-				@endif
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				if(data==0){
-					UIkit.modal.alert(data,{stack: true});
+			if(window.hide_confirm_modal_flag || $("#hide_confirm_modal").is(':checked')) {
+					var hide_confirm_modal = 1;
+					window.hide_confirm_modal_flag = 1;
 				} else {
-					console.log(data.status);
-					if(data.status == 'complete'){
-						if(toplevel == 1){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}else if(amenity_id == 0){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}else{
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}
-					} else{
-						if(toplevel == 1){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}else if(amenity_id == 0){
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}else{
-							UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
-						}
-					}
+					var hide_confirm_modal = 0;
 				}
-				loadTypeView = '';
-				loadTypes();
-			});
-			@if(!session()->has('hide_confirm_modal'))
+				postSiteComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel, hide_confirm_modal)
 		}, function () {
 			console.log('Rejected.')
 		});
-		@endif
+	}
 	}
 
 </script>

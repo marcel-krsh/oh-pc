@@ -648,7 +648,7 @@ class DashboardController extends Controller
     // TEST EVENT
     // $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
     // Event::fire('audit.created', $testaudit);
-
+// session()->flush();
     // $request will contain filters
     // $auditFilterMineOnly
     // $auditFilterMineOnly
