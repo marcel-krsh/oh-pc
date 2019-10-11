@@ -644,6 +644,8 @@ class CommunicationController extends Controller
     $audit  = null;
     $report = null;
 
+    // return $forminputs;
+
     if (isset($forminputs['audit'])) {
       try {
         $audit_id = (int) $forminputs['audit'];
@@ -854,7 +856,7 @@ class CommunicationController extends Controller
           // we sent a notification about the report
           // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
           //$report->update(['crr_approval_type_id' =>$forminputs['report_approval_type'] ]);
-          //$report_status = $this->reportStatusUpdate($forminputs, $report);
+          $report_status = $this->reportStatusUpdate($forminputs, $report);
         }
         return 1;
       } else {
