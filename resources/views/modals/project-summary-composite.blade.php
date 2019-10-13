@@ -99,7 +99,7 @@
 				programsSelected.push($(this).val());
 			});
 
-			$.post('/modals/projects/{{$data["project"]["id"]}}/programs/0/summary', {
+			$.post('/modals/projects/{{$data["project"]["id"]}}/programs/0/summary/{{$audit->id}}', {
 				'programs' : programsSelected,
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {

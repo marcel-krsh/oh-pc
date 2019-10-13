@@ -291,8 +291,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/modals/projects/{project}/contact', 'AuditController@getProjectContact')->name('project.contact');
 
     Route::get('/modals/projects/{id}/programs/{programid}/summary/{audit}', 'AuditController@modalProjectProgramSummary');
-    Route::post('/modals/projects/{id}/programs/{programid}/summary', 'AuditController@modalProjectProgramSummaryFilterProgram');
+    Route::post('/modals/projects/{id}/programs/{programid}/summary/{audit}', 'AuditController@modalProjectProgramSummaryFilterProgram');
     Route::post('/modals/projects/{project_id}/programs/save-program-unit-inspections', 'AuditController@saveProgramUnitInspection');
+    // Route::get('fix', 'AuditController@fixMultiBuildingElection');
 
     Route::get('/modals/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@modalFindings');
     Route::get('/findings/{type}/audit/{auditid}/building/{buildingid?}/unit/{unitid?}/amenity/{amenityid?}/{toplevel?}', 'FindingController@nonModalFindings');
