@@ -1,3 +1,11 @@
+<style type="text/css">
+	.CMT-edit {
+		display: inline-block;
+	}
+	.FLWUP-edit, .PIC-edit, .DOC-edit {
+		display: none;
+	}
+</style>
 <template class="uk-hidden" id="inspec-tools-tab-finding-item-template">
 	<div id="inspec-tools-tab-finding-item-tplItemId" class="inspec-tools-tab-finding-item tplIsReply tplStatus inspec-tools-tab-finding-info uk-width-1-1 uk-margin-remove" data-finding-id="tplFindingId" data-parent-id="tplItemId">
 		<div id="inspec-tools-tab-finding-reply-sticky-tplItemId" class="inspec-tools-tab-finding-reply-sticky tplStatus uk-width-1-1 uk-padding-remove" style="display:none">
@@ -41,7 +49,7 @@
 					    </div>
     				</div>
 				<div class="uk-width-1-1 uk-display-inline-block uk-padding-remove inspec-tools-tab-finding-description">
-    				<p><small>tplDate: tplType#tplRef</small><br />
+    				<p><small>tplDate: tplType#tplRef</small> <i class="tplType-edit a-pencil use-hand-cursor" onclick="addChildItem(tplItemId, 'comment-edit', 'comment')"></i><br />
     					By tplName</p>
     				<p>tplContent</p>
 
