@@ -32,7 +32,7 @@
 			</div>
 			<div class="uk-width-3-4 borderedcomment">
 				<p>tplCommentCreatedAt: By tplCommentUserName<br />
-					<span class="finding-comment">tplCommentContent</span><i class="a-pencil use-hand-cursor" onclick="addChildItem(tplItemId, 'comment-edit', 'comment')"></i>
+					<span class="finding-comment">tplCommentContent</span>
 				</p>
 				<button class="uk-button inspec-tools-tab-finding-reply uk-link">
 					<i class="a-comment-pencil"></i> REPLY

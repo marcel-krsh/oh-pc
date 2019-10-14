@@ -43,7 +43,7 @@
 				<div class="uk-width-1-1 uk-display-inline-block uk-padding-remove inspec-tools-tab-finding-description">
     				<p><small>tplDate: tplType#tplRef</small><br />
     					By tplName</p>
-    				<p>tplContent</p>
+    				<p>tplContent</p><i class="a-pencil use-hand-cursor" onclick="addChildItem(tplItemId, 'tplType-edit', 'tplType')"></i>
 
     			</div>
     		</div>
