@@ -90,6 +90,64 @@
 </script>
 @can('access_auditor')
 <script type="text/javascript">
+	
+      	function updateStatus(report_id, action, receipents = []) {
+      		// debugger;
+      		$.get('/dashboard/reports', {
+      			'id' : report_id,
+      			'action' : action,
+      			'receipents' : receipents,
+      			'check' : 1
+      		}, function(data2) {
+
+      		});
+      		UIkit.modal.alert('Your message has been saved.',{stack: true});
+      		window.location.href ='/report/{{ $report->id }}';
+
+      	}
+
+      	function reportAction(reportId,action,project_id = null){
+      		window.crrActionReportId = reportId;
+        	//Here goes the notification code
+        	if(action == 6) {
+        		dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
+        	} else if(action == 2) {
+        		// debugger;
+        		dynamicModalLoad('report-send-to-manager/' + reportId + '/' + project_id);
+        	} else if(action == 3) {
+        		dynamicModalLoad('report-decline/' + reportId + '/' + project_id);
+        	} else if(action == 4) {
+        		dynamicModalLoad('report-approve-with-changes/' + reportId + '/' + project_id);
+        	} else if(action == 5) {
+        		dynamicModalLoad('report-approve/' + reportId + '/' + project_id);
+        	} else if(action == 9) {
+        		dynamicModalLoad('report-resolved/' + reportId + '/' + project_id);
+        	} else if(action != 8){
+        		UIkit.modal.alert('Updating status... please wait a moment.');
+        		$.get('/dashboard/reports', {
+        			'id' : reportId,
+        			'action' : action
+        		}, function(data2) {
+        			window.location.href ='/report/{{ $report->id }}';
+
+        		});
+          	//loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
+          }else if(action == 8){
+          	UIkit.modal.confirm('Refreshing the dynamic data will set the report back to Draft status - are you sure you want to do this?').then(function(){
+          		$.get('/dashboard/reports', {
+          			'id' : window.crrActionReportId,
+          			'action' : 8
+          		}, function(data2) {
+
+          		});
+          	},function(){
+            //nope
+          });
+          }
+          $('#crr-report-action-'+reportId).val(0);
+          // $('#crr-report-row-'+reportId).slideUp(); //commented by Div on 20190922 - While modal is open, this row is hinding, any reason?
+        }
+        
 	function markApproved(id,catid){
 		UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
 			$.post('{{ URL::route("documents.local-approve", 0) }}', {
@@ -322,6 +380,11 @@
 	#crr-panel .note-list-item { padding: 10px 0; border-bottom: 1px solid #ddd;}
 	#crr-panel .property-summary {margin-top:0;}
 	#main-window { padding-top:0px !important; padding-bottom: 0px !important; max-width: 1362px !important; min-width: 1362px !important; }
+	#report-actions-footer{
+		position: fixed;
+		top:0px;
+		right:0px;
+	}
 </style>
 
 <div uk-grid >
@@ -519,7 +582,37 @@ $(".sendfaxbtn").click(function(){
 </script>
 
 </div>
-@can('access_auditor')<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
+@can('access_auditor')
+@can('access_auditor')
+                                    @if($report->crr_approval_type_id !== 8)
+                                    <div id="report-actions-footer">
+                                    <select class="uk-form uk-select" id="crr-report-action-{{$report->id}}" onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});" style="width: 184px;">
+                                        <option value="0">ACTION</option>
+                                        <option value="1">DRAFT</option>
+                                        @if($report->requires_approval)
+                                        <option value="2">SEND TO MANAGER REVIEW</option>
+                                        @endIf
+                                        @can('access_manager')
+	                                        @if($report->requires_approval)
+	                                        <option value="3">DECLINE</option>
+	                                        <option value="4">APPROVE WITH CHANGES</option>
+	                                        <option value="5">APPROVE</option>
+	                                        @endIf
+                                        @endCan
+                                        @if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
+                                        <option value="6">SEND TO PROPERTY CONTACT</option>
+                                        <option value="7">PROPERTY VIEWED IN PERSON</option>
+                                        <option value="9">ALL ITEMS RESOLVED</option>
+                                        @endIf
+                                        
+
+                                    </select>
+                                	</div>
+                                    @else
+                                    <div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
+                                    @endIf
+                        @endCan
+<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
 
 </div>
 @else

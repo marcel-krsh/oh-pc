@@ -3175,19 +3175,24 @@ class AuditController extends Controller
             session([$prefix.'report_order_by' => 'updated_at']);
         }
 
-        $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
+        $reports = CrrReport::select('id','audit_id','project_id','lead_id','manager_id','response_due_date','version','crr_approval_type_id','created_at','updated_at','default','template','from_template_id','last_updated_by','created_by','report_history','signed_by','signed_by_id','signed_version','date_signed','requires_approval','viewed_by_property_date','all_ehs_resolved_date','all_findings_resolved_date','all_findings_resolved_date','date_ehs_resolutions_due','date_all_resolutions_due')
+        ->where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
         ->whereNull('template')
         ->where('project_id', '=', $id)
         ->where('lead_id', $leadEval, $leadVal)
         ->where('updated_at', '>', $newerThan)
         ->where('from_template_id', $typeEval, $typeVal)
         ->where('id', $searchEval, $searchVal)
+        ->with('lead')
+          ->with('project')
+          ->with('crr_approval_type')
+          ->with('cached_audit')
         // ->when(Auth::user()->cannot('access_auditor'), function ($query) {
         //         $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();
         //         return $query->whereIn('project_id', $userProjects);
         // })
         ->orderBy(session($prefix.'report_order_by'), session($prefix.'report_asc_desc'))
-        ->paginate(3);
+        ->paginate(100);
 
         if (count($reports)) {
             $newest = $reports->sortByDesc('updated_at');

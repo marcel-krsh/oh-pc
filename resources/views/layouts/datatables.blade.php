@@ -5,7 +5,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Laravel DataTables Tutorial</title>
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js{{ asset_version() }}"></script>
         <script src="https://js.pusher.com/4.3/pusher.min.js{{ asset_version() }}"></script>
           <script>
 

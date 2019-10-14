@@ -181,9 +181,7 @@ if ($allowPageLoad) {
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css{{ asset_version() }}" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js{{ asset_version() }}"></script>
 
-		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.min.js{{ asset_version() }}"></script> -->
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js{{ asset_version() }}"></script>
-		<!--     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js{{ asset_version() }}"></script>  -->
+		
 		<script src="{{ mix('js/app.js') }}"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 		{{-- <script src="/HemantNegi-jquery.sumoselect-a1d8d68/jquery.sumoselect.min.js"><script> --}}
@@ -557,43 +555,7 @@ if ($allowPageLoad) {
 
 
 
-		new Vue({
-			el: '#top-tabs',
-			data: {
-				statsAuditsTotal: statsAuditsTotal,
-				statsCommunicationTotal: statsCommunicationTotal,
-				statsReportsTotal: statsReportsTotal
-			},
-
-			mounted: function() {
-				console.log("Tabs Working");
-
-		    	//Echo.join('communications.'+uid+'.'+sid);
-		    	Echo.private('updates.{{Auth::user()->id}}')
-		    	.listen('UpdateEvent', (payload) => {
-		    		@if(env('APP_DEBUG'))
-		    		console.log('Update received with:');
-		    		console.log(payload);
-		    		@endIf
-
-		    		if(payload.data.event == 'tab'){
-		    			console.log("Tab event received.");
-		    			this.statsCommunicationTotal = payload.data.communicationTotal;
-		    		}
-		    	});
-
-		            // console.log("new total "+data.communicationTotal);
-
-
-		        // socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
-		        //     // console.log("user " + data.userId + " is getting a message because a new message has been sent.");
-		        //     // console.log("new total "+data.communicationTotal);
-		        //     this.statsCommunicationTotal = data.communicationTotal;
-
-
-
-		      }
-		    });
+		
 
 	</script>
 
