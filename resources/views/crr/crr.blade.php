@@ -123,6 +123,7 @@
         	} else if(action == 9) {
         		dynamicModalLoad('report-resolved/' + reportId + '/' + project_id);
         	} else if(action != 8){
+        		UIkit.alert('Updating status... please wait a moment.');
         		$.get('/dashboard/reports', {
         			'id' : reportId,
         			'action' : action
