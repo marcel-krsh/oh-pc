@@ -138,7 +138,7 @@ ul.leaders li {
 										}
 										?>
 										@if($piece->blade == 'crr_parts.crr_inspections')
-											@include($piece->blade, [$inspections_type = 'site', $audit_id = $report->audit->id]])
+											@include($piece->blade, [$inspections_type = 'site', $audit_id = $report->audit->id])
 										@endif
 										<?php
 										if (array_key_exists(3, $pieceData)) {
@@ -148,7 +148,7 @@ ul.leaders li {
 										}
 										?>
 										@if($piece->blade == 'crr_parts.crr_inspections')
-											@include($piece->blade, [$inspections_type = 'building', $audit_id = $report->audit->id]])
+											@include($piece->blade, [$inspections_type = 'building', $audit_id = $report->audit->id])
 										@endif
 
 
@@ -159,7 +159,7 @@ ul.leaders li {
 											$bladeData = null;
 										}
 										?>
-										@include($piece->blade, [$inspections_type = 'unit', $audit_id = $report->audit->id]])
+										@include($piece->blade, [$inspections_type = 'unit', $audit_id = $report->audit->id])
 
 
 									@endIf
