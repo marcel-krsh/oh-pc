@@ -90,7 +90,7 @@ class ReportsController extends Controller
   {
     $note = 'Attempted an Action, but no action was taken.';
     $notified_text = '';
-    if(!is_null($data['notified_receipients'])) {
+    if(isset($data['notified_receipients']) && !is_null($data['notified_receipients'])) {
     	$notified_receipients = User::whereIn('id', $data['notified_receipients'])->get();
     	$names = '';
     	foreach ($notified_receipients as $key => $receipent) {
