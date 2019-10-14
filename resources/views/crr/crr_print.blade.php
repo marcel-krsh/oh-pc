@@ -138,7 +138,7 @@ ul.leaders li {
 										}
 										?>
 										@if($piece->blade == 'crr_parts.crr_inspections')
-											@include($piece->blade, [$inspections_type = 'site'])
+											@include($piece->blade, [$inspections_type = 'site', $audit_id = $report->audit->id])
 										@endif
 										<?php
 										if (array_key_exists(3, $pieceData)) {
@@ -148,7 +148,7 @@ ul.leaders li {
 										}
 										?>
 										@if($piece->blade == 'crr_parts.crr_inspections')
-											@include($piece->blade, [$inspections_type = 'building'])
+											@include($piece->blade, [$inspections_type = 'building', $audit_id = $report->audit->id])
 										@endif
 
 
@@ -159,7 +159,7 @@ ul.leaders li {
 											$bladeData = null;
 										}
 										?>
-										@include($piece->blade, [$inspections_type = 'unit'])
+										@include($piece->blade, [$inspections_type = 'unit', $audit_id = $report->audit->id])
 
 
 									@endIf
@@ -170,15 +170,15 @@ ul.leaders li {
             		@endIf
             	</div>
             	@endForEach
-            	
+
             </div>
             <div class=" uk-width-1-1" >
-				
+
 	            	<div class="uk-background-default uk-padding uk-panel">
 			            <p class="uk-h4" align="center">To View All Ohio Violation Codes Please Visit:
 			            <a href="{{URL::to('/codes')}}" class="uk-link uk-text-center uk-h4">{{URL::to('/codes')}}</a></p>
 			        </div>
-			   
+
 			</div>
 
 
