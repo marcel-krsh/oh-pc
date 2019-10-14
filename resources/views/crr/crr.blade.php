@@ -102,6 +102,8 @@
 
       		});
       		UIkit.modal.alert('Your message has been saved.',{stack: true});
+      		window.location.href ='/report/{{ $report->id }}';
+
       	}
 
       	function reportAction(reportId,action,project_id = null){
@@ -125,6 +127,7 @@
         			'id' : reportId,
         			'action' : action
         		}, function(data2) {
+
 
         		});
           	//loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
@@ -600,10 +603,7 @@ $(".sendfaxbtn").click(function(){
                                         <option value="7">PROPERTY VIEWED IN PERSON</option>
                                         <option value="9">ALL ITEMS RESOLVED</option>
                                         @endIf
-                                        {{-- @if(!$report->audit->is_archived() || Auth::user()->can('access_manager'))
-                                        <option value="8">REFRESH DYNAMIC DATA</option>
-                                        @endIf --}}
-                                        {{-- Commented above code to have refresh reports only from rports page and link in reports -Div 20190610 --}}
+                                        
 
                                     </select>
                                 	</div>
