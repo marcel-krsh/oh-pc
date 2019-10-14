@@ -90,7 +90,7 @@
 </script>
 @can('access_auditor')
 <script type="text/javascript">
-	@if($auditor_access)
+	
       	function updateStatus(report_id, action, receipents = []) {
       		// debugger;
       		$.get('/dashboard/reports', {
