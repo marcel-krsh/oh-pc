@@ -3175,7 +3175,7 @@ class AuditController extends Controller
             session([$prefix.'report_order_by' => 'updated_at']);
         }
 
-        $reports = CrrReport::->select('id','audit_id','project_id','lead_id','manager_id','response_due_date','version','crr_approval_type_id','created_at','updated_at','default','template','from_template_id','last_updated_by','created_by','report_history','signed_by','signed_by_id','signed_version','date_signed','requires_approval','viewed_by_property_date','all_ehs_resolved_date','all_findings_resolved_date','all_findings_resolved_date','date_ehs_resolutions_due','date_all_resolutions_due')
+        $reports = CrrReport::select('id','audit_id','project_id','lead_id','manager_id','response_due_date','version','crr_approval_type_id','created_at','updated_at','default','template','from_template_id','last_updated_by','created_by','report_history','signed_by','signed_by_id','signed_version','date_signed','requires_approval','viewed_by_property_date','all_ehs_resolved_date','all_findings_resolved_date','all_findings_resolved_date','date_ehs_resolutions_due','date_all_resolutions_due')
         ->where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
         ->whereNull('template')
         ->where('project_id', '=', $id)
