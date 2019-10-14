@@ -555,43 +555,7 @@ if ($allowPageLoad) {
 
 
 
-		new Vue({
-			el: '#top-tabs',
-			data: {
-				statsAuditsTotal: statsAuditsTotal,
-				statsCommunicationTotal: statsCommunicationTotal,
-				statsReportsTotal: statsReportsTotal
-			},
-
-			mounted: function() {
-				console.log("Tabs Working");
-
-		    	//Echo.join('communications.'+uid+'.'+sid);
-		    	Echo.private('updates.{{Auth::user()->id}}')
-		    	.listen('UpdateEvent', (payload) => {
-		    		@if(env('APP_DEBUG'))
-		    		console.log('Update received with:');
-		    		console.log(payload);
-		    		@endIf
-
-		    		if(payload.data.event == 'tab'){
-		    			console.log("Tab event received.");
-		    			this.statsCommunicationTotal = payload.data.communicationTotal;
-		    		}
-		    	});
-
-		            // console.log("new total "+data.communicationTotal);
-
-
-		        // socket.on('communications.'+uid+'.'+sid+':NewRecipient', function(data){
-		        //     // console.log("user " + data.userId + " is getting a message because a new message has been sent.");
-		        //     // console.log("new total "+data.communicationTotal);
-		        //     this.statsCommunicationTotal = data.communicationTotal;
-
-
-
-		      }
-		    });
+		
 
 	</script>
 
