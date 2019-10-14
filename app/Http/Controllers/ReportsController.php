@@ -424,6 +424,7 @@ class ReportsController extends Controller
     //dd($searchVal,$searchEval,session('crr_search'),intval($request->get('search')));
     $report_projects = ReportAccess::where('user_id', $current_user->id)->allita()->pluck('project_id');
     $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
+      ->select('id','audit_id','project_id','lead_id','manager_id','response_due_date','version','crr_approval_type_id','created_at','updated_at','default','template','from_template_id','last_updated_by','created_by','report_history','signed_by','signed_by_id','signed_version','date_signed','requires_approval')
       ->whereNull('template')
       ->where('project_id', $projectEval, $projectVal)
       ->where('lead_id', $leadEval, $leadVal)
