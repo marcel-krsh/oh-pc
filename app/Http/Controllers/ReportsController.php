@@ -424,7 +424,7 @@ class ReportsController extends Controller
     //dd($searchVal,$searchEval,session('crr_search'),intval($request->get('search')));
     $report_projects = ReportAccess::where('user_id', $current_user->id)->allita()->pluck('project_id');
     $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
-      ->select('id','audit_id','project_id','lead_id','manager_id','response_due_date','version','crr_approval_type_id','created_at','updated_at','default','template','from_template_id','last_updated_by','created_by','report_history','signed_by','signed_by_id','signed_version','date_signed','requires_approval')
+      ->select('id','audit_id','project_id','lead_id','manager_id','response_due_date','version','crr_approval_type_id','created_at','updated_at','default','template','from_template_id','last_updated_by','created_by','report_history','signed_by','signed_by_id','signed_version','date_signed','requires_approval','viewed_by_property_date','all_ehs_resolved_date','all_findings_resolved_date','all_findings_resolved_date','date_ehs_resolutions_due','date_all_resolutions_due')
       ->whereNull('template')
       ->where('project_id', $projectEval, $projectVal)
       ->where('lead_id', $leadEval, $leadVal)
@@ -432,7 +432,12 @@ class ReportsController extends Controller
       ->where('from_template_id', $typeEval, $typeVal)
       ->where('id', $searchEval, $searchVal)
       ->when(!$auditor_access, function ($query) {
-        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', $current_user->person_id)->get()->toArray();
+        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', $current_user->person_id)
+      ->with('lead')
+      ->with('project')
+      ->with('crr_approval_type')
+      ->with('status_name')
+      ->get()->toArray();
         //dd(Auth::user()->person_id,$userProjects);
         return $query->whereIn('project_id', $userProjects);
       })
