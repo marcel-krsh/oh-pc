@@ -90,9 +90,11 @@
                                         <option value="2">SEND TO MANAGER REVIEW</option>
                                         @endIf
                                         @can('access_manager')
-                                        <option value="3">DECLINE</option>
-                                        <option value="4">APPROVE WITH CHANGES</option>
-                                        <option value="5">APPROVE</option>
+                                            @if($report->requires_approval)
+                                            <option value="3">DECLINE</option>
+                                            <option value="4">APPROVE WITH CHANGES</option>
+                                            <option value="5">APPROVE</option>
+                                            @endIf
                                         @endCan
                                         @if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
                                         <option value="6">SEND TO PROPERTY CONTACT</option>
