@@ -29,7 +29,11 @@ class CrrReport extends Model
 
     public function status_name(): string {
         $statusName = CrrApprovalType::find($this->crr_approval_type_id);
-        return $statusName->name;
+        if($statusName !== null){
+            return $statusName->name;
+        }else{
+            return 'NA';
+        }
     }
 
     public function crr_approval_type(): HasOne{
