@@ -5,31 +5,31 @@
 // insert JS dependencies
 require('./bootstrap');
 
-window.Vue = require('vue');
-import Vue from 'vue'
+// window.Vue = require('vue');
+// import Vue from 'vue'
 
-// for notifications
-import Toaster from 'v-toaster'
-import 'v-toaster/dist/v-toaster.css'
-Vue.use(Toaster, {timeout: 5000})
+// // for notifications
+// import Toaster from 'v-toaster'
+// import 'v-toaster/dist/v-toaster.css'
+// Vue.use(Toaster, {timeout: 5000})
 
-//chat
-//Vue.component('message', require('./components/message.vue').default);
+// //chat
+// //Vue.component('message', require('./components/message.vue').default);
 
 
-// load all components
-//Vue.component('example', require('./components/Example.vue').default);
-Vue.component('auditrow', require('./components/AuditRow.vue').default, {
-    name: 'auditrow'
-});
-// Vue.component('communication-row', require('./components/CommunicationRow.vue').default);
-// Vue.component('chat-messages', require('./components/ChatMessages.vue').default);
-// Vue.component('chat-form', require('./components/ChatForm.vue').default);
-Vue.component('address-row', require('./components/AuditorAddress.vue').default);
+// // load all components
+// //Vue.component('example', require('./components/Example.vue').default);
+// Vue.component('auditrow', require('./components/AuditRow.vue').default, {
+//     name: 'auditrow'
+// });
+// // Vue.component('communication-row', require('./components/CommunicationRow.vue').default);
+// // Vue.component('chat-messages', require('./components/ChatMessages.vue').default);
+// // Vue.component('chat-form', require('./components/ChatForm.vue').default);
+// Vue.component('address-row', require('./components/AuditorAddress.vue').default);
 
-// https://github.com/ElemeFE/vue-infinite-scroll
-var infiniteScroll =  require('vue-infinite-scroll');
-Vue.use(infiniteScroll);
+// // https://github.com/ElemeFE/vue-infinite-scroll
+// var infiniteScroll =  require('vue-infinite-scroll');
+// Vue.use(infiniteScroll);
 
 // each page will be its own main Vue instance
 
