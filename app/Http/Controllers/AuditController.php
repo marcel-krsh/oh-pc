@@ -3186,7 +3186,7 @@ class AuditController extends Controller
         ->with('lead')
           ->with('project')
           ->with('crr_approval_type')
-          ->with('status_name')
+          //->with('status_name')
         ->with('')
         // ->when(Auth::user()->cannot('access_auditor'), function ($query) {
         //         $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id',Auth::user()->person_id)->get()->toArray();
