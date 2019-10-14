@@ -90,6 +90,27 @@ class DataController extends Controller
       }
     }
 
+    public function setSessionNew(Request $request, $name=null, $value=null){
+
+        // we can pass an array if needed [ [name,val],[name,val] ]
+      if($request->has('data')){
+          $names = $request->get('data');
+          $selected = $request->get('selected');
+
+          if(is_array($names)){
+              foreach($names as $n){
+                  Session::put($n[0], $n[1]);
+              }
+          }
+          if(is_array($selected)) {
+          	foreach($selected as $n){
+                Session::put($n[0], $n[1]);
+            }
+            return 1;
+          }
+      }
+    }
+
     public function setSession(Request $request, $name=null, $value=null){
 
         // we can pass an array if needed [ [name,val],[name,val] ]

@@ -184,6 +184,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/session/filters/{type}/{value?}', 'DataController@removeSession')->name('session.setfilter');
 
     Route::post('/session/{name?}/{value?}', 'DataController@setSession');
+    Route::post('/session-new/{name?}/{value?}', 'DataController@setSessionNew')->name('session.auditfilters');
 
     Route::get('/modals/audits/{id}/updateStep', 'AuditController@updateStep')->name('audits.updatestep');
     Route::post('audits/{id}/saveStep', 'AuditController@saveStep')->name('audits.savestep');

@@ -1120,7 +1120,7 @@
 													<input id="documents_needs_review" class="documentselector" type="checkbox" @if(session('documents_needs_review') == 1) checked @endif/>
 													<label for="documents_needs_review">DOCUMENT NEEDS REVIEW</label>
 													<input id="documents_reviewd" class="documentselector" type="checkbox" @if(session('documents_reviewd') == 1) checked @endif/>
-													<label for="documents_reviewd">DOCUMENTS REVIEWD</label>
+													<label for="documents_reviewd">DOCUMENTS REVIEWED</label>
 													<input id="documents_not_found" class="documentselector" type="checkbox" @if(session('documents_not_found') == 1) checked @endif/>
 													<label for="documents_not_found">DOCUMENTS NOT FOUND</label>
 												</div>
@@ -1808,19 +1808,20 @@ function updateAuditBuildingInspection(e) {
 				$('#schedule_assignment_filter input:checked').each(function() {
 					selected.push([$(this).attr('id'), 1]);
 				});
+				setSession(alloptions, selected, '#scheduleassignmentfilterbutton');
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#scheduleassignmentfilterbutton').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#scheduleassignmentfilterbutton').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 			function updateFileAuditStatus(e){
@@ -1836,19 +1837,20 @@ function updateAuditBuildingInspection(e) {
 				$('#file_audit_status_selection input:checked').each(function() {
 					selected.push([$(this).attr('id'), 1]);
 				});
+				setSession(alloptions, selected, '#file_audit_status_button');
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#file_audit_status_button').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#file_audit_status_button').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 			function updateNLTAuditStatus(e){
@@ -1864,19 +1866,20 @@ function updateAuditBuildingInspection(e) {
 				$('#nlt_audit_status_selection input:checked').each(function() {
 					selected.push([$(this).attr('id'), 1]);
 				});
+				setSession(alloptions, selected, '#nlt_audit_status_button');
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#nlt_audit_status_button').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#nlt_audit_status_button').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 			function updateLTAuditStatus(e){
@@ -1892,19 +1895,20 @@ function updateAuditBuildingInspection(e) {
 				$('#lt_audit_status_selection input:checked').each(function() {
 					selected.push([$(this).attr('id'), 1]);
 				});
+				setSession(alloptions, selected, '#lt_audit_status_button');
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#lt_audit_status_button').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#lt_audit_status_button').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 			function updateAuditComplianceStatus(e){
@@ -1921,18 +1925,54 @@ function updateAuditBuildingInspection(e) {
 					selected.push([$(this).attr('id'), 1]);
 				});
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
+				setSession(alloptions, selected, '#checklist-button');
+
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#checklist-button').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
+			}
+
+			// function setSessionOld(alloptions, selected) {
+			// 	debugger;
+			// 	$.post("/session/", {
+			// 		'data' : alloptions,
+			// 		'_token' : '{{ csrf_token() }}'
+			// 	}, function(data) {
+			// 		$.post("/session/", {
+			// 			'data' : selected,
+			// 			'_token' : '{{ csrf_token() }}'
+			// 		}, function(data) {
+			// 			console.log('Applied session');
+			// 			// return true;
+			// 		});
+			// 	});
+			// }
+
+			function setSession(alloptions, selected, clickbutton) {
+				jQuery.ajax({
+					url: "{{ URL::route("session.auditfilters") }}",
+					method: 'post',
+					data: {
+						data: alloptions,
+				    selected: selected,
 						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#checklist-button').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+					},
+					success: function(data){
+						if(data) {
+							$(clickbutton).trigger( 'click' );
+							loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+						}
+					}
+				});
 			}
 
 			function updateAuditDocuments(e){
@@ -1948,19 +1988,7 @@ function updateAuditBuildingInspection(e) {
 				$('#document_filter input:checked').each(function() {
 					selected.push([$(this).attr('id'), 1]);
 				});
-
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#documentfilterbutton').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+				setSession(alloptions, selected, '#documentfilterbutton');
 			}
 
 			function updateAuditScheduleDate(e){
@@ -2000,19 +2028,21 @@ function updateAuditBuildingInspection(e) {
 				// alloptions.push(['daterange', $('#daterange').val()]);
 				// var selected = [];
 				// selected.push(['schedule_date', 1]);
+				setSession(alloptions, selected, '#daterangefilterbutton');
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#daterangefilterbutton').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#daterangefilterbutton').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 
@@ -2031,19 +2061,19 @@ function updateAuditBuildingInspection(e) {
 				$('#messages_filter input:checked').each(function() {
 					selected.push([$(this).attr('id'), 1]);
 				});
-
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#messagesfilter').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+				setSession(alloptions, selected, '#messagesfilter');
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#messagesfilter').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 			function setDate(date, name){
@@ -2068,19 +2098,21 @@ function updateAuditBuildingInspection(e) {
 				$('#audit_steps_selection input:checked').each(function() {
 					selected.push([$(this).attr('id'), 1]);
 				});
+				setSession(alloptions, selected, '#checklist-button');
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#checklist-button').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#checklist-button').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 			function updateCarFilter(e){
@@ -2097,18 +2129,20 @@ function updateAuditBuildingInspection(e) {
 					selected.push([$(this).attr('id'), 1]);
 				});
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#carselectionbutton').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+				setSession(alloptions, selected, '#carselectionbutton');
+
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#carselectionbutton').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 			function updateEhsFilter(e){
@@ -2125,18 +2159,20 @@ function updateAuditBuildingInspection(e) {
 					selected.push([$(this).attr('id'), 1]);
 				});
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#ehsselectionbutton').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+				setSession(alloptions, selected, '#ehsselectionbutton');
+
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#ehsselectionbutton').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 			function update8823Filter(e){
@@ -2153,18 +2189,20 @@ function updateAuditBuildingInspection(e) {
 					selected.push([$(this).attr('id'), 1]);
 				});
 
-				$.post("/session/", {
-					'data' : alloptions,
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					$.post("/session/", {
-						'data' : selected,
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						$('#8823selectionbutton').trigger( 'click' );
-						loadTab('{{ route('dashboard.audits') }}','1','','','',1);
-					} );
-				} );
+				setSession(alloptions, selected, '#8823selectionbutton');
+
+				// $.post("/session/", {
+				// 	'data' : alloptions,
+				// 	'_token' : '{{ csrf_token() }}'
+				// }, function(data) {
+				// 	$.post("/session/", {
+				// 		'data' : selected,
+				// 		'_token' : '{{ csrf_token() }}'
+				// 	}, function(data) {
+				// 		$('#8823selectionbutton').trigger( 'click' );
+				// 		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+				// 	} );
+				// } );
 			}
 
 
@@ -2333,7 +2371,7 @@ function updateAuditBuildingInspection(e) {
 			console.log( "ready!" );
 			window.setInterval(function(){
 				checkForUpdatedAudits(window.onPageAudits);
-			}, 5000);
+			}, 500000);
 
 		});
 	</script>
