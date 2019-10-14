@@ -127,7 +127,7 @@
         			'id' : reportId,
         			'action' : action
         		}, function(data2) {
-
+        			window.location.href ='/report/{{ $report->id }}';
 
         		});
           	//loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
