@@ -519,7 +519,38 @@ $(".sendfaxbtn").click(function(){
 </script>
 
 </div>
-@can('access_auditor')<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
+@can('access_auditor')
+@can('access_auditor')
+                                    @if($report->crr_approval_type_id !== 8)
+                                    <div id="report-actions-footer">
+                                    <select class="uk-form uk-select" id="crr-report-action-{{$report->id}}" onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});" style="width: 184px;">
+                                        <option value="0">ACTION</option>
+                                        <option value="1">DRAFT</option>
+                                        @if($report->requires_approval)
+                                        <option value="2">SEND TO MANAGER REVIEW</option>
+                                        @endIf
+                                        @can('access_manager')
+                                        <option value="3">DECLINE</option>
+                                        <option value="4">APPROVE WITH CHANGES</option>
+                                        <option value="5">APPROVE</option>
+                                        @endCan
+                                        @if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
+                                        <option value="6">SEND TO PROPERTY CONTACT</option>
+                                        <option value="7">PROPERTY VIEWED IN PERSON</option>
+                                        <option value="9">ALL ITEMS RESOLVED</option>
+                                        @endIf
+                                        {{-- @if(!$report->audit->is_archived() || Auth::user()->can('access_manager'))
+                                        <option value="8">REFRESH DYNAMIC DATA</option>
+                                        @endIf --}}
+                                        {{-- Commented above code to have refresh reports only from rports page and link in reports -Div 20190610 --}}
+
+                                    </select>
+                                	</div>
+                                    @else
+                                    <div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
+                                    @endIf
+                        @endCan
+<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
 
 </div>
 @else

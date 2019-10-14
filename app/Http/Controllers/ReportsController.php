@@ -436,7 +436,7 @@ class ReportsController extends Controller
       ->with('lead')
       ->with('project')
       ->with('crr_approval_type')
-      //->with('status_name')
+      ->with('cached_audit')
       ->get()->toArray();
         //dd(Auth::user()->person_id,$userProjects);
         return $query->whereIn('project_id', $userProjects);

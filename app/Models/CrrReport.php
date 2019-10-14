@@ -44,6 +44,10 @@ class CrrReport extends Model
     	return $this->hasOne('App\Models\Audit','id','audit_id');
     }
 
+    public function cached_audit(): HasOne{
+        return $this->hasOne('App\Models\CachedAudit','audit_id','audit_id');
+    }
+
     public function template(){
     	// return $this->hasOne('App\Models\CrrReport','id','from_template_id');
         $template = CrrReport::whereId($this->from_template_id)->first();
