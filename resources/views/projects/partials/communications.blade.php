@@ -96,7 +96,6 @@
 										<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">
 											{{ $recipient->user->name }}</strong>@else {{ $recipient->user->name }}@endif{{ !$loop->last ? ', ': '' }}
 									@endforeach
-
 								@else
 									Me
 								@endIf
