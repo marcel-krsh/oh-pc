@@ -170,15 +170,15 @@ ul.leaders li {
             		@endIf
             	</div>
             	@endForEach
-            	
+
             </div>
             <div class=" uk-width-1-1" >
-				
+
 	            	<div class="uk-background-default uk-padding uk-panel">
 			            <p class="uk-h4" align="center">To View All Ohio Violation Codes Please Visit:
 			            <a href="{{URL::to('/codes')}}" class="uk-link uk-text-center uk-h4">{{URL::to('/codes')}}</a></p>
 			        </div>
-			   
+
 			</div>
 
 
