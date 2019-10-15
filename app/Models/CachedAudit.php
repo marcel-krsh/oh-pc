@@ -151,10 +151,15 @@ class CachedAudit extends Model
 
                     forEach($mail->message_recipients as $m){
                         if(array_key_exists($m->id, $unreadByUser) && array_key_exists('count', $unreadByUser[$m->id])){
+                        	if($m->pivot->seen == 0)
                           $unreadByUser[$m->id]['count']++;
                         }else{
                             if($m){
-                              $unreadByUser[$m->id]['count'] = 1;
+                            	if($m->pivot->seen == 0)
+                              	$unreadByUser[$m->id]['count'] = 1;
+                            	else
+                              	$unreadByUser[$m->id]['count'] = 0;
+
                               //dd($m);
                               $unreadByUser[$m->id]['name'] = $m->name;
                             } else {
@@ -874,7 +879,7 @@ class CachedAudit extends Model
     }
     public function unread_mail()
     {
-        $unreadMail = Communication::select('communications.*')->join('communication_recipients','communication_id','communications.id')->where('project_id',$this->project_id)->where('seen',0)->with('message_recipients')->get();
+        $unreadMail = Communication::select('communications.*')->join('communication_recipients','communication_id','communications.id')->where('project_id',$this->project_id)->where('seen',0)->groupBy('id')->with('message_recipients')->get();
         return $unreadMail;
     }
     public function myUnread_mail()

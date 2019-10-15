@@ -126,7 +126,7 @@ class Communication extends Model
 
   public function message_recipients()
   {
-    return $this->belongsToMany('App\Models\User', 'communication_recipients', 'communication_id', 'user_id');
+    return $this->belongsToMany('App\Models\User', 'communication_recipients', 'communication_id', 'user_id')->withPivot('seen', 'seen_at');
   }
 
   public function local_documents()
