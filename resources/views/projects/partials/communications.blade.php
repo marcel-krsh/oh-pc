@@ -22,7 +22,7 @@
 		--}}
 
 		{{-- Group 2, Attachments and conversation list view --}}
-		
+
 		<div class=" uk-width-1-1@s uk-width-2-5@m">
 			<div uk-grid>
 				<button class="uk-button-large uk-button-default filter-attachments-button uk-width-1-6" uk-tooltip="pos:top-left;title:Show results with attachments">
@@ -50,9 +50,9 @@
   		</a>
   	</div>
   	<div class=" uk-width-1-1@s uk-width-1-6@m uk-text-right">
-			
+
 				<div class="uk-align-right uk-label  uk-margin-top ">{{count($messages)}}  MESSAGES </div>
-		
+
 	</div>
 </div>
 
@@ -87,17 +87,16 @@
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small><br>
 					<span>
-						FROM: Me<hr class="dashed-hr uk-margin-bottom uk-width-1-1"> 
-							@if(count($message->message_recipients))TO: 
-								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id); ?>
+						FROM: Me<hr class="dashed-hr uk-margin-bottom uk-width-1-1">
+							@if(count($message->recipients))TO:
+								<?php $recipients = $message->recipients->where('user_id', '<>', $current_user->id); ?>
 								@if(count($recipients)>0)
 									@foreach($recipients as $recipient)
-										@if($recipient->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf 
-											{{ $recipient->full_name() }}
-										@if($recipient->seen == null)</strong>@endIf
-										{{ !$loop->last ? ', ': '' }}
-									@endforeach 
-								
+										@if($recipient->seen == null)
+										<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">
+											{{ $recipient->user->name }}</strong>@else {{ $recipient->user->name }}@endif{{ !$loop->last ? ', ': '' }}
+									@endforeach
+
 								@else
 									Me
 								@endIf

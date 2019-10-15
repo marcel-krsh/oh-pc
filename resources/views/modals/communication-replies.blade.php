@@ -243,16 +243,16 @@
 	    		debugger;
 	        loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
 	        //loadParcelSubTab('communications',id);
-	        @else
-	        //loadDashBoardSubTab('dashboard','communications');
-	        @endif
-	        dynamicModalClose();
-      	}
+        @else
+        //loadDashBoardSubTab('dashboard','communications');
+        @endif
+        dynamicModalClose();
+    	}
 
 
-
+    	// debugger;
 		// refresh communications tabs
-		@if($project)
+		@if($project && Auth::user()->can('access_auditor'))
 			$('#project-detail-tab-2').trigger('click');
 		@else
 			$('#detail-tab-2').trigger('click');
