@@ -62,9 +62,10 @@ $correctedLtCount = count($selected_audit->audit->lts->where('auditor_last_appro
 
 $car = collect($selected_audit->audit->reports)->where('from_template_id','1')->first();
 $ehs = collect($selected_audit->audit->reports)->where('from_template_id','2')->first();
+if(env('APP_ENV') != 'production'){
 $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')->first();
 	//dd($selected_audit->audit->reports,collect($selected_audit->audit->reports)->where('from_template_id','1')->first());
-
+}
 ?>
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
@@ -241,6 +242,7 @@ $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')
 						            				@endIf
 						            			</div>
 						            			<div class="uk-width-1-3">
+						            			@if(env('APP_ENV') != 'production')	
 						            				@if(($_8823))
 						            				<?php
 						            				switch ($_8823->crr_approval_type_id) {
@@ -302,6 +304,7 @@ $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')
 						            				@else
 						            				@if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S 8823" onclick="submitNewReportPD({{$selected_audit->audit_id}},5)"><i  class="a-file-plus"></i><br /><small>8823</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A 8823 TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
 						            				@endIf
+						            			@endIf
 						            			</div>
 						            		</div>
 						            	</div>
