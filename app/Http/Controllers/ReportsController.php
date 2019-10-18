@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Audit;
-use App\Models\cachedAudit;
+use App\Models\CachedAudit;
 use App\Models\CrrApprovalType;
 use App\Models\CrrPart;
 use App\Models\CrrPartOrder;

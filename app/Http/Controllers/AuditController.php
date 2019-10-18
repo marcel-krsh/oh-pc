@@ -1619,6 +1619,7 @@ class AuditController extends Controller
     public function getProject($id = null, $audit_id = 0)
     {
         $project = Project::where('project_key', '=', $id)->first();
+        if($project) {
         $projectId = $project->id;
 
         // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
@@ -1639,6 +1640,10 @@ class AuditController extends Controller
         $tab = 'project-detail-tab-1';
 
         return view('projects.project', compact('tab', 'projectTabs', 'projectId', 'audit_id','project'));
+      } else {
+      	$error = "I was not able to find the project from the link you clicked. Please let the Allita Support Team know what link you clicked on to arrive at this error.";
+        abort(403, $error);
+      }
     }
 
     public function getProjectTitle($id = null)

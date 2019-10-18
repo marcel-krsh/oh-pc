@@ -97,7 +97,9 @@ class UserController extends Controller
       $date_array[0] = $daterange;
       $date_array[1] = $date_array[0];
     }
-
+    if(empty($date_array)) {
+      return "Date range provided is not in correct format. Please let the Allita Support Team know date range you have selected";
+    }
     $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
     $enddate   = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
 

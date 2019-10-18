@@ -15,7 +15,7 @@ use App\Models\User;
 use DB;
 use DateTime;
 use Illuminate\Support\Facades\Hash;
-
+use Log;
 use App\Models\SyncPeople;
 use App\Models\People;
 
@@ -103,9 +103,9 @@ class SyncPeopleJob implements ShouldQueue
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-                                
+
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-                                
+
                             if ($devcoDateEval > $allitaDateEval) {
                                 if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.

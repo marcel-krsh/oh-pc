@@ -8,6 +8,7 @@
 		@php
 			$findings = session()->get('selected_findings');
 		@endphp
+		@if(count($findings) > 0)
 		@foreach ($findings as $f)
 		@if($f->finding_type->type == 'nlt')
 			@php
@@ -59,6 +60,7 @@
 			</label>
 		</li>
 		@endforeach
+		@endif
 	</ul>
 </div>
 {{-- <div class="uk-form-row">

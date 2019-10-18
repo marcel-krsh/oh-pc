@@ -1,15 +1,15 @@
+	@php $days=[0=>'MON',1=>'TUE',2=>'WED',3=>'THU',4=>'FRI',5=>'SAT',6=>'SUN']; $day = 0; @endphp
 	@if($beforeafter != 'before' && $beforeafter != 'after')
 	<div>
 		<ul id="auditor-calendar" class="uk-child-width-1-1 uk-grid">
-			
+
 			<li id="auditor-calendar-{{$data['summary']['ref-previous']}}" class="grid-schedule-availability" style="display:none;">
 				<div class="auditor-calendar-header grid-schedule-availability-header">
 					<div class="week-spacer"></div>
-					@php $days=[0=>'MON',1=>'TUE',2=>'WED',3=>'THU',4=>'FRI',5=>'SAT',6=>'SUN']; $day = 0; @endphp
 					@foreach($data['calendar-previous']['header'] as $header_date)
 					<div class="week-day">{{$days[$day]}} @php $day++; if($day > 6){$day = 0;} @endphp {{$header_date}}</div>
 					<div class="week-spacer"></div>
-					
+
 					@endforeach
 				</div>
 				<div class="grid-schedule-availability-sidebar">
@@ -38,18 +38,18 @@
 							<i class="a-circle-cross"></i>
 						</div>
 						@else
-						
+
 						@foreach($day['events'] as $event)
 						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title: {{$event['start_time']}} - {{$event['end_time']}}">
 							@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
 							@endif
 						</div>
 						@endforeach
-						
+
 						@endif
 					</div>
 					<div class="day-spacer"></div>
-					@endforeach		
+					@endforeach
 				</div>
 				<div class="grid-schedule-availability-footer">
 					<div uk-grid>
@@ -95,18 +95,18 @@
 							<i class="a-circle-plus"></i>
 						</div>
 						@else
-						
+
 						@foreach($day['events'] as $event)
 						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title: {{$event['start_time']}} - {{$event['end_time']}}">
 							@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
 							@endif
 						</div>
 						@endforeach
-						
+
 						@endif
 					</div>
 					<div class="day-spacer"></div>
-					@endforeach		
+					@endforeach
 				</div>
 				<div class="grid-schedule-availability-footer">
 					<div uk-grid>
@@ -166,18 +166,18 @@
 							<i class="a-circle-cross"></i>
 						</div>
 						@else
-						
+
 						@foreach($day['events'] as $event)
 						<div class="event {{$event['status']}} {{$event['class']}} @if(Auth::user()->id == $event['lead']) isLead @endif" data-start="{{$event['start']}}" data-span="{{$event['span']}}" uk-tooltip="title: {{$event['start_time']}} - {{$event['end_time']}}">
 							@if($event['icon'] != '')<i class="{{$event['icon']}}" onclick="deleteAvailability({{$event['id']}})"></i>
 							@endif
 						</div>
 						@endforeach
-						
+
 						@endif
 					</div>
 					<div class="day-spacer"></div>
-					@endforeach		
+					@endforeach
 				</div>
 				<div class="grid-schedule-availability-footer">
 					<div uk-grid>
@@ -187,7 +187,7 @@
 					</div>
 				</div>
 			</li>
-			
+
 		</ul>
 	</div>
 	@endif
