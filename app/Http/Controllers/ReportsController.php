@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Audit;
 use App\Models\cachedAudit;
 use App\Models\CrrApprovalType;
-use App\Models\GuideStep;
-use App\Models\GuideProgress;
 use App\Models\CrrPart;
 use App\Models\CrrPartOrder;
 use App\Models\CrrReport;
 use App\Models\CrrSection;
 use App\Models\CrrSectionOrder;
+use App\Models\GuideProgress;
+use App\Models\GuideStep;
 use App\Models\People;
 use App\Models\Project;
 use App\Models\ProjectProgram;
@@ -71,11 +71,13 @@ class ReportsController extends Controller
           // Record Historical Record.
           $history = ['date' => date('m-d-Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Updated due date from ' . $oldDate . ' to ' . date('M d, Y', strtotime($report->response_due_date))];
           $this->reportHistory($report, $history);
+
           return 'Due Date Updated for Report ' . intval($data['id']) . ' to ' . $dateM . '/' . $dateD . '/' . $dateY;
         } else {
           // Record Historical Record.
           $history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Attempted update to due date failed - value submitted: ' . $data['due']];
           $this->reportHistory($report, $history);
+
           return 'I was not able to update Report #' . intval($data['id']) . ' due date to ' . $dateY . '-' . $dateM . '-' . $dateD . ' 18:00:00';
         }
       } else {
@@ -88,25 +90,26 @@ class ReportsController extends Controller
 
   public function reportAction(CrrReport $report, $data)
   {
-    $note = 'Attempted an Action, but no action was taken.';
+    $note          = 'Attempted an Action, but no action was taken.';
     $notified_text = '';
-    if(isset($data['notified_receipients']) && !is_null($data['notified_receipients'])) {
-    	$notified_receipients = User::whereIn('id', $data['notified_receipients'])->get();
-    	$names = '';
-    	foreach ($notified_receipients as $key => $receipent) {
-    		if($key == 0)
-    			$names = $names . $receipent->full_name();
-    		else
-    			$names = $names . ', ' . $receipent->full_name();
-    	}
-    	$notified_text = ' Notified to ' . $names . '.';
+    if (isset($data['notified_receipients']) && !is_null($data['notified_receipients'])) {
+      $notified_receipients = User::whereIn('id', $data['notified_receipients'])->get();
+      $names                = '';
+      foreach ($notified_receipients as $key => $receipent) {
+        if (0 == $key) {
+          $names = $names . $receipent->full_name();
+        } else {
+          $names = $names . ', ' . $receipent->full_name();
+        }
+      }
+      $notified_text = ' Notified to ' . $names . '.';
     }
     if (Auth::user()->can('access_auditor')) {
       switch ($data['action']) {
         case 1:
-          # DRAFT
+          // DRAFT
           //send manager notification
-          $note = "Changed report status from " . $report->status_name() . " to Draft.";
+          $note = 'Changed report status from ' . $report->status_name() . ' to Draft.';
           if (!is_null($report->manager_id)) {
             $report->update(['crr_approval_type_id' => 1, 'manager_id' => null]);
             $note .= ' Removed prior manager approval, and refreshed report to reflect the change.';
@@ -116,8 +119,8 @@ class ReportsController extends Controller
           }
           break;
         case 2:
-          # Pending Manager Review...
-          $note = "Changed report status from " . $report->status_name() . " to Pending Manger Review.";
+          // Pending Manager Review...
+          $note = 'Changed report status from ' . $report->status_name() . ' to Pending Manger Review.';
           if (!is_null($report->manager_id)) {
             $report->update(['crr_approval_type_id' => 2, 'manager_id' => null]);
             $note .= ' Removed prior manager approval, and refreshed report to reflect the change.';
@@ -127,9 +130,9 @@ class ReportsController extends Controller
           }
           break;
         case 3:
-          # Declined By Manager...
+          // Declined By Manager...
           if (Auth::user()->can('access_manager')) {
-            $note = "Changed report status from " . $report->status_name() . " to Declined by Manager.";
+            $note = 'Changed report status from ' . $report->status_name() . ' to Declined by Manager.';
             if (!is_null($report->manager_id)) {
               $report->update(['crr_approval_type_id' => 3, 'manager_id' => null]);
               $note .= ' Removed prior manager approval, and refreshed report to reflect the change.';
@@ -138,26 +141,26 @@ class ReportsController extends Controller
               $report->update(['crr_approval_type_id' => 3, 'manager_id' => null]);
             }
           } else {
-            $note = "Attempted change to Declined by Manger can only be done by a manager or higher.";
+            $note = 'Attempted change to Declined by Manger can only be done by a manager or higher.';
           }
           break;
         case 4:
-          # Approved with Changes...
+          // Approved with Changes...
           if (Auth::user()->can('access_manager')) {
-            $note = "Changed report status from " . $report->status_name() . " to Approved with Changes.";
+            $note = 'Changed report status from ' . $report->status_name() . ' to Approved with Changes.';
             if (is_null($report->manager_id) || Auth::user()->id != $report->manger_id) {
               $note .= ' Updated manager approval, and refreshed report to reflect the change.';
             }
             $report->update(['crr_approval_type_id' => 4, 'manager_id' => Auth::user()->id]);
             $this->generateReport($report, 0, 1);
           } else {
-            $note = "Attempted change to Approved with Changes can only be done by a manager or higher.";
+            $note = 'Attempted change to Approved with Changes can only be done by a manager or higher.';
           }
           break;
         case 5:
-          # Approved...
+          // Approved...
           if (Auth::user()->can('access_manager')) {
-            $note = "Changed report status from " . $report->status_name() . " to Approved.";
+            $note = 'Changed report status from ' . $report->status_name() . ' to Approved.';
             if (is_null($report->manager_id) || Auth::user()->id != $report->manger_id) {
               $note .= ' Updated prior manager approval, and refreshed report to reflect the change.';
               $this->generateReport($report, 0, 1);
@@ -165,38 +168,38 @@ class ReportsController extends Controller
             $report->update(['crr_approval_type_id' => 5, 'manager_id' => Auth::user()->id]);
             $this->generateReport($report, 0, 1);
           } else {
-            $note = "Attempted change to Approved can only be done by a manager or higher.";
+            $note = 'Attempted change to Approved can only be done by a manager or higher.';
           }
           break;
         case 6:
-          # Sent...
+          // Sent...
           if ($report->project->pm() && strlen($report->project->pm()['email']) > 3) {
             // send notification that report is ready to be viewed.
-            $note = "Changed report status from " . $report->status_name() . " to Sent.";
+            $note = 'Changed report status from ' . $report->status_name() . ' to Sent.';
             //and sent notification to " . $report->project->pm()['email'] . ".";
             $report->update(['crr_approval_type_id' => 6]);
           } else {
-            $note = "Unable to send report. There is no default email for a property manager on this project. Status will remain:" . $report->status_name() . ".";
+            $note = 'Unable to send report. There is no default email for a property manager on this project. Status will remain:' . $report->status_name() . '.';
           }
 
           break;
         case 7:
-          # Viewed by PM...
+          // Viewed by PM...
           if (!Auth::user()->isOhfa()) {
-            $note = "Changed report status from " . $report->status_name() . " to Viewed by PM.";
+            $note = 'Changed report status from ' . $report->status_name() . ' to Viewed by PM.';
             $report->update(['crr_approval_type_id' => 7]);
           } else {
-            $note = "Viewed by OHFA staff.";
+            $note = 'Viewed by OHFA staff.';
             $report->update(['crr_approval_type_id' => 7]);
           }
           break;
         case 8:
-          # code...
+          // code...
           break;
         case 9:
-          # All items resolved ...
+          // All items resolved ...
           if (Auth::user()->can('access_manager')) {
-            $note = Auth::user()->name . " updated the status to " . $report->status_name();
+            $note = Auth::user()->name . ' updated the status to ' . $report->status_name();
             if (!is_null($report->manager_id)) {
               $report->update(['crr_approval_type_id' => 9, 'manager_id' => null]);
               $note .= 'Removed prior status, and refreshed report to reflect the change.';
@@ -205,33 +208,34 @@ class ReportsController extends Controller
               $report->update(['crr_approval_type_id' => 9, 'manager_id' => null]);
             }
           } else {
-            $note = "Attempted change to All Items Resolved but something went wrong.";
+            $note = 'Attempted change to All Items Resolved but something went wrong.';
           }
           break;
 
         default:
-          # code...
+          // code...
           break;
       }
     }
 
     $history = ['date' => date('m-d-Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => $note . $notified_text];
     $this->reportHistory($report, $history);
+
     return $note;
   }
 
   public function reports(Request $request, $project = null)
   {
-  	// return 'correct';
+    // return 'correct';
     $messages = []; //this is to send messages back to the view confirming actions or errors.
     // set values - ensure this single request works for both dashboard and project details
     $prefix = '';
 
-    $current_user = Auth::user();
+    $current_user   = Auth::user();
     $auditor_access = $current_user->auditor_access();
-    $admin_access = $current_user->admin_access();
+    $admin_access   = $current_user->admin_access();
     $manager_access = $current_user->manager_access();
-    $pm_access = $current_user->pm_access();
+    $pm_access      = $current_user->pm_access();
     if (!is_null($project)) {
       // this sets values for if it is a project details view
       $project = Project::find($project);
@@ -254,11 +258,11 @@ class ReportsController extends Controller
       $data['action'] = intval($request->get('action'));
 
       //dd($data);
-      $report     = CrrReport::find($request->get('id'));
-      if($request->has('receipents') && !empty($request->has('receipents'))) {
-      	$data['notified_receipients'] = $request->receipents;
+      $report = CrrReport::find($request->get('id'));
+      if ($request->has('receipents') && !empty($request->has('receipents'))) {
+        $data['notified_receipients'] = $request->receipents;
       } else {
-      	$data['notified_receipients'] = null;
+        $data['notified_receipients'] = null;
       }
       $messages[] = $this->reportAction($report, $data);
       //dd($messages);
@@ -390,10 +394,10 @@ class ReportsController extends Controller
       } else {
         $auditLeads    = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
         $auditProjects = CrrReport::select('*')->when($auditor_access, function ($query) {
-	        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', $current_user->person_id)->get()->toArray();
-	          //dd(Auth::user()->person_id,$userProjects);
-	          return $query->whereIn('project_id', $userProjects);
-	        })->with('project')->groupBy('project_id')->get();
+          $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', $current_user->person_id)->get()->toArray();
+          //dd(Auth::user()->person_id,$userProjects);
+          return $query->whereIn('project_id', $userProjects);
+        })->with('project')->groupBy('project_id')->get();
         $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id', '>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
         $hfa_users_array = [];
         $projects_array  = [];
@@ -423,21 +427,21 @@ class ReportsController extends Controller
     //dd($hfa_users_array);
     //dd($searchVal,$searchEval,session('crr_search'),intval($request->get('search')));
     $report_projects = ReportAccess::where('user_id', $current_user->id)->allita()->pluck('project_id');
-    $reports = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
-      ->select('id','audit_id','project_id','lead_id','manager_id','response_due_date','version','crr_approval_type_id','created_at','updated_at','default','template','from_template_id','last_updated_by','created_by','report_history','signed_by','signed_by_id','signed_version','date_signed','requires_approval','viewed_by_property_date','all_ehs_resolved_date','all_findings_resolved_date','all_findings_resolved_date','date_ehs_resolutions_due','date_all_resolutions_due')
+    $reports         = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
+      ->select('id', 'audit_id', 'project_id', 'lead_id', 'manager_id', 'response_due_date', 'version', 'crr_approval_type_id', 'created_at', 'updated_at', 'default', 'template', 'from_template_id', 'last_updated_by', 'created_by', 'report_history', 'signed_by', 'signed_by_id', 'signed_version', 'date_signed', 'requires_approval', 'viewed_by_property_date', 'all_ehs_resolved_date', 'all_findings_resolved_date', 'all_findings_resolved_date', 'date_ehs_resolutions_due', 'date_all_resolutions_due')
       ->whereNull('template')
       ->where('project_id', $projectEval, $projectVal)
       ->where('lead_id', $leadEval, $leadVal)
       ->where('updated_at', '>', $newerThan)
       ->where('from_template_id', $typeEval, $typeVal)
       ->where('id', $searchEval, $searchVal)
-      ->when(!$auditor_access, function ($query) {
+      ->when(!$auditor_access, function ($query) use ($current_user) {
         $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', $current_user->person_id)
-      ->with('lead')
-      ->with('project')
-      ->with('crr_approval_type')
-      ->with('cached_audit')
-      ->get()->toArray();
+          ->with('lead')
+          ->with('project')
+          ->with('crr_approval_type')
+          ->with('cached_audit')
+          ->get()->toArray();
         //dd(Auth::user()->person_id,$userProjects);
         return $query->whereIn('project_id', $userProjects);
       })
@@ -461,7 +465,7 @@ class ReportsController extends Controller
       } else {
         return 1;
       }
-    } else if ($request->get('rows_only')) {
+    } elseif ($request->get('rows_only')) {
       return view('dashboard.partials.reports-row', compact('reports', 'prefix', 'current_user', 'auditor_access', 'manager_access', 'admin_access'));
     } else {
       return view('dashboard.reports', compact('reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'projects_array', 'crr_types_array', 'messages', 'newest', 'prefix', 'current_user', 'auditor_access', 'admin_access', 'manager_access'));
@@ -493,31 +497,31 @@ class ReportsController extends Controller
   public function freeTextPlaceHolders(Audit $audit, $string, CrrReport $report)
   {
     //replace string value with current audit values.
-    $string = str_replace("||REPORT ID||", $report->id, $string);
-    $string = str_replace("||VERSION||", ($report->version + 1), $string);
-    $string = str_replace("||PROJECT NAME||", $audit->project->project_name, $string);
-    $string = str_replace("||AUDIT ID||", $audit->id, $string);
-    $string = str_replace("||PROJECT NUMBER||", $audit->project->project_number, $string);
+    $string = str_replace('||REPORT ID||', $report->id, $string);
+    $string = str_replace('||VERSION||', ($report->version + 1), $string);
+    $string = str_replace('||PROJECT NAME||', $audit->project->project_name, $string);
+    $string = str_replace('||AUDIT ID||', $audit->id, $string);
+    $string = str_replace('||PROJECT NUMBER||', $audit->project->project_number, $string);
     if ($audit->start_date) {
-      $string = str_replace("||REVIEW DATE||", "<strong>" . date('m/d/Y', strtotime($audit->completed_date)) . "</strong>", $string);
+      $string = str_replace('||REVIEW DATE||', '<strong>' . date('m/d/Y', strtotime($audit->completed_date)) . '</strong>', $string);
     } else {
-      $string = str_replace("||REVIEW DATE||", 'START DATE NOT SET', $string);
+      $string = str_replace('||REVIEW DATE||', 'START DATE NOT SET', $string);
     }
     if ($report->response_due_date) {
-      $string = str_replace("||RESPONSE DUE||", "<strong>" . date('m/d/Y', strtotime($report->response_due_date)) . "</strong>", $string);
+      $string = str_replace('||RESPONSE DUE||', '<strong>' . date('m/d/Y', strtotime($report->response_due_date)) . '</strong>', $string);
     } else {
-      $string = str_replace("||RESPONSE DUE||", '<span style="color:red;" class="attention">DATE NOT SET</span>', $string);
+      $string = str_replace('||RESPONSE DUE||', '<span style="color:red;" class="attention">DATE NOT SET</span>', $string);
     }
-    $string = str_replace("||TODAY||", date('M d, Y', time()), $string);
+    $string = str_replace('||TODAY||', date('M d, Y', time()), $string);
     //return ['organization_id'=> $owner_organization_id,'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
     $projectDetails = $audit->project->details($audit->id);
-    $string         = str_replace("||OWNER ORGANIZATION NAME||", $projectDetails->owner_name, $string);
+    $string         = str_replace('||OWNER ORGANIZATION NAME||', $projectDetails->owner_name, $string);
     if ($projectDetails->owner_poc) {
-      $string = str_replace("||OWNER NAME||", $projectDetails->owner_poc, $string);
+      $string = str_replace('||OWNER NAME||', $projectDetails->owner_poc, $string);
     } else {
-      $string = str_replace("||OWNER NAME||", 'Sir or Madam', $string);
+      $string = str_replace('||OWNER NAME||', 'Sir or Madam', $string);
     }
-    if (strpos($string, "||OWNER FORMATTED ADDRESS||")) {
+    if (strpos($string, '||OWNER FORMATTED ADDRESS||')) {
       $address = '';
       if ($projectDetails->owner_address) {
         $address = $projectDetails->owner_address;
@@ -526,7 +530,7 @@ class ReportsController extends Controller
         } else {
           $address .= '<br />';
         }
-      } else if ($projectDetails->owner_address2) {
+      } elseif ($projectDetails->owner_address2) {
         $address = $projectDetails->owner_address2 . '<br />';
       }
       if ($projectDetails->owner_city) {
@@ -539,29 +543,29 @@ class ReportsController extends Controller
         $address .= ' ' . $projectDetails->owner_zip;
       }
       $address .= '<br />';
-      $string = str_replace("||OWNER FORMATTED ADDRESS||", $address, $string);
+      $string = str_replace('||OWNER FORMATTED ADDRESS||', $address, $string);
     }
-    $string = str_replace("||OWNER ADDRESS||", $projectDetails->owner_address, $string);
-    $string = str_replace("||OWNER ADDRESS LINE 1||", $projectDetails->owner_address, $string);
-    $string = str_replace("||OWNER ADDRESS LINE 2||", $projectDetails->owner_address2, $string);
-    $string = str_replace("||OWNER ADDRESS CITY||", $projectDetails->owner_city, $string);
-    $string = str_replace("||OWNER ADDRESS STATE||", $projectDetails->owner_state, $string);
-    $string = str_replace("||OWNER ADDRESS ZIP||", $projectDetails->owner_zip, $string);
+    $string = str_replace('||OWNER ADDRESS||', $projectDetails->owner_address, $string);
+    $string = str_replace('||OWNER ADDRESS LINE 1||', $projectDetails->owner_address, $string);
+    $string = str_replace('||OWNER ADDRESS LINE 2||', $projectDetails->owner_address2, $string);
+    $string = str_replace('||OWNER ADDRESS CITY||', $projectDetails->owner_city, $string);
+    $string = str_replace('||OWNER ADDRESS STATE||', $projectDetails->owner_state, $string);
+    $string = str_replace('||OWNER ADDRESS ZIP||', $projectDetails->owner_zip, $string);
     if ($report->response_due_date) {
-      $string = str_replace("||REPORT RESPONSE DUE||", $report->response_due_date, $string);
+      $string = str_replace('||REPORT RESPONSE DUE||', $report->response_due_date, $string);
     } else {
-      $string = str_replace("||REPORT RESPONSE DUE||", '<span style="color:red;" class="attention">NO DUE DATE SET</span>', $string);
+      $string = str_replace('||REPORT RESPONSE DUE||', '<span style="color:red;" class="attention">NO DUE DATE SET</span>', $string);
     }
     if ($audit->lead_user_id) {
-      $string = str_replace("||LEAD NAME||", $audit->lead->full_name(), $string);
+      $string = str_replace('||LEAD NAME||', $audit->lead->full_name(), $string);
     } else {
-      $string = str_replace("||LEAD NAME||", 'LEAD NOT SET', $string);
+      $string = str_replace('||LEAD NAME||', 'LEAD NOT SET', $string);
     }
 
     if ($report->manager_id) {
-      $string = str_replace("||MANAGER NAME||", $report->manager->full_name(), $string);
+      $string = str_replace('||MANAGER NAME||', $report->manager->full_name(), $string);
     } else {
-      $string = str_replace("||MANAGER NAME||", '<span style="color:red;" class="attention">REPORT NOT APPROVED</span>', $string);
+      $string = str_replace('||MANAGER NAME||', '<span style="color:red;" class="attention">REPORT NOT APPROVED</span>', $string);
     }
 
     // PROGRAMS LIST
@@ -577,28 +581,28 @@ class ReportsController extends Controller
         $programNames .= $program->program->program_name;
 
         if ((count($programs) - 1) == $programCount) {
-          $programNames .= " and ";
+          $programNames .= ' and ';
         } elseif ($totalPrograms > 1 && $programCount !== $totalPrograms) {
-          $programNames .= ", ";
+          $programNames .= ', ';
         }
         $programCount++;
       }
       if ($totalPrograms > 1) {
-        $programNames .= " programs";
+        $programNames .= ' programs';
       } else {
-        $programNames .= " program";
+        $programNames .= ' program';
       }
       if (count($programs)) {
-        $string = str_replace("||PROGRAMS||", $programNames, $string);
+        $string = str_replace('||PROGRAMS||', $programNames, $string);
       } else {
         $programsStatus    = ProjectProgram::where('project_id', $report->project_id)->get();
-        $programStatusText = "<ul>";
+        $programStatusText = '<ul>';
         foreach ($programsStatus as $ps) {
           //dd($ps->program,$ps->status,$ps);
           $programStatusText .= '<li>' . $ps->program->program_name . ' ( id: ' . $ps->program->id . ' key: ' . $ps->program->program_key . ' ) Award Number: ' . $ps->award_number . ' status: ' . $ps->status->status_name . ' ( id: ' . $ps->status->id . ' key: ' . $ps->status->project_program_status_type_key . ' )</li>';
         }
-        $programStatusText .= "</ul>";
-        $string = str_replace("||PROGRAMS||", '<span style="color:red;" class="attention">FAILED TO FIND PROGRAMS</span><br /><p>PROGRAMS ON PROJECT<br />' . $programStatusText . '</p>', $string);
+        $programStatusText .= '</ul>';
+        $string = str_replace('||PROGRAMS||', '<span style="color:red;" class="attention">FAILED TO FIND PROGRAMS</span><br /><p>PROGRAMS ON PROJECT<br />' . $programStatusText . '</p>', $string);
       }
     }
 
@@ -674,50 +678,51 @@ class ReportsController extends Controller
           }
         }
       } else {
-
-        if($audit->cached_audit->step_id < 61){
+        if ($audit->cached_audit->step_id < 61) {
           //dd($audit,$audit->cachedAudit);
-        $cachedAudit = $audit->cached_audit;
-        $step_id = 63; //generate report
-        $step = GuideStep::where('id', '=', $step_id)->first();
-        $progress = new GuideProgress([
-              'user_id' => Auth::user()->id,
-              'audit_id' => $audit->id,
-              'project_id' => $audit->project_id,
-              'guide_step_id' => $step_id,
-              'type_id' => 1,
+          $cachedAudit = $audit->cached_audit;
+          $step_id     = 63; //generate report
+          $step        = GuideStep::where('id', '=', $step_id)->first();
+          $progress    = new GuideProgress([
+            'user_id'       => Auth::user()->id,
+            'audit_id'      => $audit->id,
+            'project_id'    => $audit->project_id,
+            'guide_step_id' => $step_id,
+            'type_id'       => 1,
           ]);
           $progress->save();
 
           // update cachedAudit table with new step info
           $cachedAudit->update([
-              'step_id' => $step->id,
-              'step_status_icon' => $step->icon,
-              'step_status_text' => $step->step_help,
+            'step_id'          => $step->id,
+            'step_status_icon' => $step->icon,
+            'step_status_text' => $step->step_help,
           ]);
         }
+
         return 1;
       }
-      if($audit->cached_audit->step_id < 61){
+      if ($audit->cached_audit->step_id < 61) {
         $cachedAudit = $audit->cached_audit;
-        $step_id = 63; //generate report
-        $step = GuideStep::where('id', '=', $step_id)->first();
-        $progress = new GuideProgress([
-              'user_id' => Auth::user()->id,
-              'audit_id' => $audit->id,
-              'project_id' => $audit->project_id,
-              'guide_step_id' => $step_id,
-              'type_id' => 1,
-          ]);
-          $progress->save();
+        $step_id     = 63; //generate report
+        $step        = GuideStep::where('id', '=', $step_id)->first();
+        $progress    = new GuideProgress([
+          'user_id'       => Auth::user()->id,
+          'audit_id'      => $audit->id,
+          'project_id'    => $audit->project_id,
+          'guide_step_id' => $step_id,
+          'type_id'       => 1,
+        ]);
+        $progress->save();
 
-          // update cachedAudit table with new step info
-          $cachedAudit->update([
-              'step_id' => $step->id,
-              'step_status_icon' => $step->icon,
-              'step_status_text' => $step->step_help,
-          ]);
+        // update cachedAudit table with new step info
+        $cachedAudit->update([
+          'step_id'          => $step->id,
+          'step_status_icon' => $step->icon,
+          'step_status_text' => $step->step_help,
+        ]);
       }
+
       return 1;
     } else {
       return 'Please Select an Audit.';
@@ -774,7 +779,7 @@ class ReportsController extends Controller
       }
       $this->generateReport($report, 1, 0);
     } else {
-      return "Cannot find a matching report, or you do not have sufficient priveledges.";
+      return 'Cannot find a matching report, or you do not have sufficient priveledges.';
     }
   }
 
@@ -800,7 +805,7 @@ class ReportsController extends Controller
   public function getReport(CrrReport $report, Request $request)
   {
     if ($report) {
-    	// return $report->status_name();
+      // return $report->status_name();
       $oneColumn    = null;
       $current_user = Auth::user();
       // check if logged in user has access to this report if they are not an auditor:
@@ -826,6 +831,7 @@ class ReportsController extends Controller
         if (is_null($report->crr_data)) {
           //return 'This report has no data.';
           $this->generateReport($report, 1);
+
           return '<meta http-equiv="refresh" content="0;url=/report/' . $report->id . '" />';
         } else {
           $data    = json_decode($report->crr_data);
@@ -921,24 +927,24 @@ class ReportsController extends Controller
       $this->reportHistory($report, $history);
       $cachedAudit = $report->audit->cached_audit;
 
-      if($cachedAudit->step_id < 61){
-        $step_id = 63; //generate report
-        $step = GuideStep::where('id', '=', $step_id)->first();
+      if ($cachedAudit->step_id < 61) {
+        $step_id  = 63; //generate report
+        $step     = GuideStep::where('id', '=', $step_id)->first();
         $progress = new GuideProgress([
-              'user_id' => Auth::user()->id,
-              'audit_id' => $cachedAudit->id,
-              'project_id' => $cachedAudit->project_id,
-              'guide_step_id' => $step_id,
-              'type_id' => 1,
-          ]);
-          $progress->save();
+          'user_id'       => Auth::user()->id,
+          'audit_id'      => $cachedAudit->id,
+          'project_id'    => $cachedAudit->project_id,
+          'guide_step_id' => $step_id,
+          'type_id'       => 1,
+        ]);
+        $progress->save();
 
-          // update cachedAudit table with new step info
-          $cachedAudit->update([
-              'step_id' => $step->id,
-              'step_status_icon' => $step->icon,
-              'step_status_text' => $step->step_help,
-          ]);
+        // update cachedAudit table with new step info
+        $cachedAudit->update([
+          'step_id'          => $step->id,
+          'step_status_icon' => $step->icon,
+          'step_status_text' => $step->step_help,
+        ]);
       }
       //dd($data);
       //if ($goToView) {
@@ -949,6 +955,7 @@ class ReportsController extends Controller
     } else {
       return 'I was unable to find the requested report to process. Did it get deleted?';
     }
+
     return 'Nothing happened.';
   }
 
@@ -963,6 +970,7 @@ class ReportsController extends Controller
     $response['data']    = $part->data;
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
 
@@ -976,6 +984,7 @@ class ReportsController extends Controller
     $response['data']    = $part->data;
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
 
@@ -1033,6 +1042,7 @@ class ReportsController extends Controller
     $response['data']    = $part->data;
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
 
@@ -1046,6 +1056,7 @@ class ReportsController extends Controller
     $response['data']    = $part->data;
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
 
@@ -1059,6 +1070,7 @@ class ReportsController extends Controller
     $response['data']    = $part->data;
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
 
@@ -1072,8 +1084,10 @@ class ReportsController extends Controller
     $response['data']    = $part->data;
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
+
   public function _8823Header(CrrReport $report, CrrPart $part)
   {
     // calculate data for the header.
@@ -1084,15 +1098,18 @@ class ReportsController extends Controller
     $response['data']    = $part->data;
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
-  public function _8823Rev915(CrrReport $report, CrrPart $part){
+
+  public function _8823Rev915(CrrReport $report, CrrPart $part)
+  {
     // calculate data for the header.
     //dd($part);
     $originalData = json_decode($part->data);
     $data[]       = $originalData[0];
-    $data[1][]       = $report->audit->uncorrectedFindings;
-    $data[1][]     = $report->audit->project->buildings;
+    $data[1][]    = $report->audit->uncorrectedFindings;
+    $data[1][]    = $report->audit->project->buildings;
 
     //dd($data);
 
@@ -1102,9 +1119,12 @@ class ReportsController extends Controller
     $response['data']    = json_encode($data);
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
-  public function uncorrectedFindings(CrrReport $report, CrrPart $part){
+
+  public function uncorrectedFindings(CrrReport $report, CrrPart $part)
+  {
     // calculate data for the header.
     //dd($part);
     $originalData = json_decode($part->data);
@@ -1120,6 +1140,7 @@ class ReportsController extends Controller
     $response['data']    = json_encode($data);
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
 
@@ -1139,6 +1160,7 @@ class ReportsController extends Controller
     $response['data']    = json_encode($data);
     $response['name']    = $part->crr_part_type->name;
     $response['part_id'] = $part->id;
+
     return $response;
   }
 
@@ -1176,9 +1198,11 @@ class ReportsController extends Controller
       $report->save();
       $history = ['date' => date('m-d-Y g:i a'), 'user_id' => $user->id, 'user_name' => $user->full_name(), 'note' => $name . ' signed the report and their response is due ' . date('m-d-Y g:i a', strtotime($report->response_due_date)) . '.'];
       $this->reportHistory($report, $history);
+
       return 1;
     } else {
       $validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Technical Team');
+
       return response()->json(['errors' => $validator->errors()->all()]);
     }
     //last_updated_by
@@ -1191,7 +1215,7 @@ class ReportsController extends Controller
 
   public function sendfax(Request $request)
   {
-    if (!empty(trim(str_replace("-", "", $request->faxnumber)))) {
+    if (!empty(trim(str_replace('-', '', $request->faxnumber)))) {
       $snappy      = \App::make('snappy.pdf');
       $public_path = base_path() . '/public/pdf/';
       $url         = \URL::to('/report/' . $request->report . '?print=1');
@@ -1202,9 +1226,9 @@ class ReportsController extends Controller
       $sid             = env('TWILIO_SID');
       $token           = env('TWILIO_TOKEN');
       $twilio          = new Client($sid, $token);
-      $to_fax_number   = env('TWILIO_FAX_COUNTRY_CODE', '+1') . str_replace("-", "", $request->faxnumber);
+      $to_fax_number   = env('TWILIO_FAX_COUNTRY_CODE', '+1') . str_replace('-', '', $request->faxnumber);
       $from_fax_number = env('TWILIO_FROM');
-      $fax             = $twilio->fax->v1->faxes->create($to_fax_number, $pdf_url, ["from" => $from_fax_number]);
+      $fax             = $twilio->fax->v1->faxes->create($to_fax_number, $pdf_url, ['from' => $from_fax_number]);
       $fax_status      = [
         'queued'     => 'The fax is queued, waiting for processing',
         'processing' => 'The fax is being downloaded, uploaded, or transcoded into a different format',

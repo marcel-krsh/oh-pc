@@ -15,7 +15,6 @@ use App\Models\Finding;
 use App\Models\NotificationsTriggered;
 use App\Models\Project;
 use App\Models\SystemSetting;
-use App\Models\Organization;
 //use App\LogConverter;
 use App\Models\User;
 use Auth;
@@ -130,12 +129,12 @@ class CommunicationController extends Controller
   {
     //dd('Called NewCommunicationEntry');
     //dd($project_id,$audit_id,$report_id,$finding_id,$all_findings);
-    $ohfa_id           = SystemSetting::get('ohfa_organization_id');
+    $ohfa_id = SystemSetting::get('ohfa_organization_id');
     // $ohfa = Organization::where('organization_name', 'OHFA Limited Partnership')->first();
     // if($ohfa) {
-    // 	$ohfa_id = $ohfa->id;
+    //   $ohfa_id = $ohfa->id;
     // } else {
-    // 	$ohfa_id = null;
+    //   $ohfa_id = null;
     // }
     // return $ohfa_id;
     $single_receipient = false;
@@ -192,8 +191,8 @@ class CommunicationController extends Controller
           ->get();
       }
       $documents = [];
-      if(null !== $docuware_documents){
-         $documents = $docuware_documents->merge($local_documents);
+      if (null !== $docuware_documents) {
+        $documents = $docuware_documents->merge($local_documents);
       }
       // build a list of all categories used for uploaded documents in this project
       $categories_used = [];
@@ -285,19 +284,19 @@ class CommunicationController extends Controller
       if (null !== $report_id && Auth::user()->cannot('access_auditor')) {
         $report = CrrReport::with('lead')->find($report_id);
         // if ('CAR' == $report->template()->template_name) {
-          $lead_id    = $report->lead->id;
-          $recipients = User::where('users.id', $lead_id)
-            ->leftJoin('people', 'people.id', 'users.person_id')
-            ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
-            ->join('users_roles', 'users_roles.user_id', 'users.id')
-            ->select('users.*', 'last_name', 'first_name', 'organization_name')
-            ->where('active', 1)
-            ->orderBy('organization_name', 'asc')
-            ->orderBy('last_name', 'asc')
-            ->get();
-          if ($current_user->hasRole(1)) {
-	          $single_receipient = true;
-	        }
+        $lead_id    = $report->lead->id;
+        $recipients = User::where('users.id', $lead_id)
+          ->leftJoin('people', 'people.id', 'users.person_id')
+          ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+          ->join('users_roles', 'users_roles.user_id', 'users.id')
+          ->select('users.*', 'last_name', 'first_name', 'organization_name')
+          ->where('active', 1)
+          ->orderBy('organization_name', 'asc')
+          ->orderBy('last_name', 'asc')
+          ->get();
+        if ($current_user->hasRole(1)) {
+          $single_receipient = true;
+        }
         // }
       }
       $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
@@ -353,10 +352,10 @@ class CommunicationController extends Controller
           ->orderBy('last_name', 'asc')
           ->get();
       }
-      $audit = null;
+      $audit      = null;
       $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
       //dd('Values to modal',$finding,$findings);
-      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient','finding','findings','all_findings'));
+      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings'));
     }
   }
 
@@ -431,31 +430,31 @@ class CommunicationController extends Controller
 
     if ($audit) {
       $project = Project::find($audit->project_id);
-      }
+    }
 
     /*if ($audit) {
-      $project = Project::find($audit->project_id);
-      if (local()) {
-        $docuware_documents = Document::where('id', -100)->get();
-      } else {
-        $docuware_documents = $this->projectDocuwareDocumets($project);
-      }
-      $local_documents = Document::where('project_id', $project->id)
-        ->with('assigned_categories')
-        ->orderBy('created_at', 'desc')
-        ->get();
-      $document_categories = DocumentCategory::where('parent_id', '<>', 0)
-        ->active()
-        ->orderby('document_category_name', 'asc')
-        ->with('parent')
-        ->get();
-        $documents = [];
-        if(null !== $docuware_documents){
-          $documents = $docuware_documents->merge($local_documents);
-        }
+    $project = Project::find($audit->project_id);
+    if (local()) {
+    $docuware_documents = Document::where('id', -100)->get();
     } else {
-      $documents           = null;
-      $document_categories = null;
+    $docuware_documents = $this->projectDocuwareDocumets($project);
+    }
+    $local_documents = Document::where('project_id', $project->id)
+    ->with('assigned_categories')
+    ->orderBy('created_at', 'desc')
+    ->get();
+    $document_categories = DocumentCategory::where('parent_id', '<>', 0)
+    ->active()
+    ->orderby('document_category_name', 'asc')
+    ->with('parent')
+    ->get();
+    $documents = [];
+    if(null !== $docuware_documents){
+    $documents = $docuware_documents->merge($local_documents);
+    }
+    } else {
+    $documents           = null;
+    $document_categories = null;
     }*/
     $owner_name_trimmed = rtrim($message->owner->name);
     $words              = explode(" ", $owner_name_trimmed);
@@ -545,29 +544,29 @@ class CommunicationController extends Controller
 
     // help build the upload category list
     /*if (null !== $documents && count($documents)) {
-      // create an associative array to simplify category references for each document
-      foreach ($documents as $document) {
-        $categories = []; // store the new associative array cat id, cat name
+    // create an associative array to simplify category references for each document
+    foreach ($documents as $document) {
+    $categories = []; // store the new associative array cat id, cat name
 
-        if ($document->categories) {
-          $categories_decoded = json_decode($document->categories, true); // cats used by the doc
-          $categories_used    = array_merge($categories_used, $categories_decoded); // merge document categories
-        } else {
-          $categories_decoded = [];
-        }
-
-        foreach ($document_categories as $document_category) {
-          $document_categories_key[$document_category->id] = $document_category->document_category_name;
-
-          // sub key for each document's categories for quick reference
-          if (in_array($document_category->id, $categories_decoded)) {
-            $categories[$document_category->id] = $document_category->document_category_name;
-          }
-        }
-        $document->categoriesarray = $categories;
-      }
+    if ($document->categories) {
+    $categories_decoded = json_decode($document->categories, true); // cats used by the doc
+    $categories_used    = array_merge($categories_used, $categories_decoded); // merge document categories
     } else {
-      $documents = [];
+    $categories_decoded = [];
+    }
+
+    foreach ($document_categories as $document_category) {
+    $document_categories_key[$document_category->id] = $document_category->document_category_name;
+
+    // sub key for each document's categories for quick reference
+    if (in_array($document_category->id, $categories_decoded)) {
+    $categories[$document_category->id] = $document_category->document_category_name;
+    }
+    }
+    $document->categoriesarray = $categories;
+    }
+    } else {
+    $documents = [];
     }*/
 
     //prevents the UIkit notify to show up after reading the message
@@ -575,12 +574,13 @@ class CommunicationController extends Controller
       ->where('user_id', $current_user->id)
       ->where('seen', 0)
       ->update(['seen' => 1]);
-      // return $project;
+    // return $project;
     return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit', 'project', 'report_notification'));
   }
 
-  public function getCommunicationDocuments($project_id = 0) {
-  	if ($project_id) {
+  public function getCommunicationDocuments($project_id = 0)
+  {
+    if ($project_id) {
       $project = Project::find($project_id);
       if (local()) {
         $docuware_documents = Document::where('id', -100)->get();
@@ -596,14 +596,14 @@ class CommunicationController extends Controller
         ->orderby('document_category_name', 'asc')
         ->with('parent')
         ->get();
-        $documents = [];
-        if(null !== $docuware_documents){
-          $documents = $docuware_documents->merge($local_documents);
-        }
+      $documents = [];
+      if (null !== $docuware_documents) {
+        $documents = $docuware_documents->merge($local_documents);
+      }
     } else {
       $documents           = null;
       $document_categories = null;
-      $project = null;
+      $project             = null;
     }
 
     if (null !== $documents && count($documents)) {
@@ -632,9 +632,7 @@ class CommunicationController extends Controller
       $documents = [];
     }
     return view('modals.partials.communication-documents', compact('documents', 'document_categories', 'project'));
-
   }
-
 
   public function create(Request $request)
   {
@@ -694,7 +692,7 @@ class CommunicationController extends Controller
     if (!is_null($project_id) && Auth::user()->cannot('access_auditor')) {
       // check to see if the user is allowed to access this project
       $onProject = 0;
-      $onProject =  $project->project_users->where('user_id', Auth::user()->id)->count();
+      $onProject = $project->project_users->where('user_id', Auth::user()->id)->count();
       //dd($onProject,Auth::user()->id,$project->project_users);
       //dd($onProject,$project->contactRoles);
       if ($onProject > 0) {
@@ -1369,9 +1367,11 @@ class CommunicationController extends Controller
     // }
     // return $messages->last()->message_recipients;
     if (count($messages) > 0) {
-      $owners_array   = $messages->pluck('owner')->unique();
-      $projects_array = $messages->pluck('project')->filter()->unique();
+      $owners_array       = $messages->pluck('owner')->unique();
+      $projects_array     = $messages->pluck('project')->filter()->unique();
       $message_recipients = $messages->pluck('message_recipients')->unique('id')->flatten();
+    } else {
+      $message_recipients = [];
     }
 
     //$owners_array = collect($owners_array)->sortBy('name')->toArray();
@@ -1506,7 +1506,7 @@ class CommunicationController extends Controller
       $audit             = $report->audit_id;
       $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
         'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {
