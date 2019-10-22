@@ -19,6 +19,7 @@ if ($allowPageLoad) {
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="csrf-token" content="{{ csrf_token() }}">
+
 		<title>
 			@can('access_auditor')
 			Allita Program Compliance
@@ -164,6 +165,7 @@ if ($allowPageLoad) {
 	@endif
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}">
 	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+	<script src="https://unpkg.com/imask"></script>
 	<script>
 		function openUserPreferences(){
 			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
@@ -181,7 +183,7 @@ if ($allowPageLoad) {
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.css{{ asset_version() }}" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/multiple-select/1.2.0/multiple-select.min.js{{ asset_version() }}"></script>
 
-		
+
 		<script src="{{ mix('js/app.js') }}"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
 		{{-- <script src="/HemantNegi-jquery.sumoselect-a1d8d68/jquery.sumoselect.min.js"><script> --}}
@@ -555,7 +557,7 @@ if ($allowPageLoad) {
 
 
 
-		
+
 
 	</script>
 

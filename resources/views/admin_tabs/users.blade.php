@@ -1,4 +1,4 @@
- <a name="organizationtop"></a>
+ <a name="usertop"></a>
  <div class="uk-overflow-container uk-margin-top">
 
  	<div uk-grid class="uk-margin-remove">
@@ -82,7 +82,8 @@
 		</tbody>
 	</table>
 	<a name="userbottom"></a>
-	{{ $users->links() }} <a href="#usertop" id="user-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
+	{{ $users->links() }}
+	<a href="#usertop" id="user-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
 </div>
 <script>
 	$(document).ready(function(){
@@ -137,4 +138,4 @@
     		}
     	});
     });
-  </script>
+  </script>script>

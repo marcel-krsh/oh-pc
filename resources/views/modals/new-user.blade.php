@@ -183,7 +183,6 @@
     </div>
   </form>
 </div>
-<script src="https://unpkg.com/imask"></script>
 <script>
 
 	// $(document).ready(function(){

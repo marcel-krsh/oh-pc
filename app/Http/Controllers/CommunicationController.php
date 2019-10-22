@@ -76,8 +76,8 @@ class CommunicationController extends Controller
     $owners_array = [];
     foreach ($messages as $message) {
       // create initials
-      $words    = explode(" ", $message->owner->name);
-      $initials = "";
+      $words    = explode(' ', $message->owner->name);
+      $initials = '';
       foreach ($words as $w) {
         $initials .= $w[0];
       }
@@ -96,7 +96,7 @@ class CommunicationController extends Controller
         $recipients_array[$recipient->id] = User::find($recipient->user_id);
       }
       $message->recipient_details = $recipients_array;
-      $message->summary           = strlen($message->message) > 400 ? substr($message->message, 0, 200) . "..." : $message->message;
+      $message->summary           = strlen($message->message) > 400 ? substr($message->message, 0, 200) . '...' : $message->message;
       // in case of a search result with replies, the parent message isn't listed
       // if there is parent_id then use it, otherwise use id
       if ($message->parent_id) {
@@ -366,6 +366,7 @@ class CommunicationController extends Controller
     } else {
       Session::forget('communications-search');
     }
+
     return [1];
   }
 
@@ -378,7 +379,7 @@ class CommunicationController extends Controller
   }
 
   /**
-   * View Replies
+   * View Replies.
    *
    * @param null $project_id
    * @param      $message_id
@@ -386,7 +387,7 @@ class CommunicationController extends Controller
    * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
    * @throws \Exception
    */
-  public function viewReplies($audit_id = null, $message_id)
+  public function viewReplies($audit_id, $message_id)
   {
     $message = Communication::with('docuware_documents.assigned_categories.parent', 'local_documents.assigned_categories.parent', 'owner', 'report_notification')
       ->where('id', $message_id)
@@ -457,8 +458,8 @@ class CommunicationController extends Controller
     $document_categories = null;
     }*/
     $owner_name_trimmed = rtrim($message->owner->name);
-    $words              = explode(" ", $owner_name_trimmed);
-    $initials           = "";
+    $words              = explode(' ', $owner_name_trimmed);
+    $initials           = '';
     foreach ($words as $w) {
       $initials .= $w[0];
     }
@@ -497,7 +498,7 @@ class CommunicationController extends Controller
     foreach ($replies as $reply) {
       // create initials
 
-      $words    = explode(" ", $reply->owner->name);
+      $words    = explode(' ', $reply->owner->name);
       $initials = userInitials($reply->owner->name);
       // foreach ($words as $w) {
       //   if(strlen($w[0])>0){
@@ -631,6 +632,7 @@ class CommunicationController extends Controller
     } else {
       $documents = [];
     }
+
     return view('modals.partials.communication-documents', compact('documents', 'document_categories', 'project'));
   }
 
@@ -708,7 +710,8 @@ class CommunicationController extends Controller
     if (!is_null($audit) && !is_null($project)) {
       if ($audit->project_id !== $project->id) {
         $canCreate = 0;
-        return "There is a mismatch in data - please notify support with the project and audit for which you are creating a message.";
+
+        return 'There is a mismatch in data - please notify support with the project and audit for which you are creating a message.';
       }
     }
 
@@ -765,7 +768,7 @@ class CommunicationController extends Controller
           $local_documents = $forminputs['local_documents'];
           $unique_docs     = array_unique($local_documents);
           foreach ($unique_docs as $document_id) {
-            $doc_id                     = explode("-", $document_id);
+            $doc_id                     = explode('-', $document_id);
             $document                   = new CommunicationDocument;
             $document->communication_id = $message->id;
             $document->document_id      = $doc_id[1];
@@ -777,7 +780,7 @@ class CommunicationController extends Controller
           $docuware_documents = $forminputs['docuware_documents'];
           $unique_docs        = array_unique($docuware_documents);
           foreach ($unique_docs as $document_id) {
-            $doc_id   = explode("-", $document_id);
+            $doc_id   = explode('-', $document_id);
             $document = new CommunicationDocument([
               'communication_id' => $message->id,
               'sync_docuware_id' => $doc_id[1],
@@ -856,12 +859,13 @@ class CommunicationController extends Controller
           //$report->update(['crr_approval_type_id' =>$forminputs['report_approval_type'] ]);
           $report_status = $this->reportStatusUpdate($forminputs, $report);
         }
+
         return 1;
       } else {
         return "Something went wrong. We couldn't save your message. Make sure you have at least one recipient and that your message isn't empty.";
       }
     } else {
-      return "Sorry, you do not have permission to send messages for this project.";
+      return 'Sorry, you do not have permission to send messages for this project.';
     }
   }
 
@@ -886,7 +890,7 @@ class CommunicationController extends Controller
         $message['parent_id'] = null;
       }
       $message['communication_id'] = $message_unseen->communication_id;
-      $message['summary']          = strlen($message_unseen->communication->message) > 400 ? substr($message_unseen->communication->message, 0, 200) . "..." : $message_unseen->communication->message;
+      $message['summary']          = strlen($message_unseen->communication->message) > 400 ? substr($message_unseen->communication->message, 0, 200) . '...' : $message_unseen->communication->message;
       $message['owner_name']       = $message_unseen->communication->owner->name;
       if (null !== $message_unseen->communication->audit) {
         $message['audit_id'] = $message_unseen->communication->audit->audit_id;
@@ -927,16 +931,17 @@ class CommunicationController extends Controller
           ->take($delta)
           ->get();
         foreach ($messages_unseen as $message_unseen) {
-          $message_unseen->communication->summary = strlen($message_unseen->communication->message) > 400 ? substr($message_unseen->communication->message, 0, 200) . "..." : $message_unseen->communication->message;
+          $message_unseen->communication->summary = strlen($message_unseen->communication->message) > 400 ? substr($message_unseen->communication->message, 0, 200) . '...' : $message_unseen->communication->message;
         }
 
         session(['last-message' => $current_messages_id->communication_id]);
+
         return $messages_unseen;
       } else {
-        return null;
+        return;
       }
     } else {
-      return null;
+      return;
     }
   }
 
@@ -955,9 +960,10 @@ class CommunicationController extends Controller
       }
     }
     session(['open_project' => '', 'project_subtab' => '', 'dynamicModalLoad' => '']);
-    $message = "You are not authorized to view this message.";
-    $error   = "Looks like you are trying to access a message not sent to you.";
-    $type    = "danger";
+    $message = 'You are not authorized to view this message.';
+    $error   = 'Looks like you are trying to access a message not sent to you.';
+    $type    = 'danger';
+
     return view('pages.error', compact('error', 'message', 'type'));
   }
 
@@ -971,7 +977,7 @@ class CommunicationController extends Controller
   //     //return \view('dashboard.index'); //, compact('user')
   //     return view('dashboard.communications', compact('owners_array', 'programs', 'messages', 'ohfa_id'));
   // }
-  public function setFilterSession($trigger = null, Request $request)
+  public function setFilterSession($trigger, Request $request)
   {
     //return $trigger;
     switch ($trigger) {
@@ -989,6 +995,7 @@ class CommunicationController extends Controller
         }
         break;
     }
+
     return [1];
   }
 
@@ -1088,14 +1095,14 @@ class CommunicationController extends Controller
     } else {
       if ($project) {
         //on project tab - show all messages from all users
-        $user_eval = ">";
-        $user_spec = "0";
+        $user_eval = '>';
+        $user_spec = '0';
       } else {
-        $user_eval = "=";
+        $user_eval = '=';
         $user_spec = Auth::user()->id;
       }
 
-      /**
+      /*
        * We have 6 filters in page, but only 3 comes to backend
        * Session is set based on selection
        *     Inbox: communication_sent = 0
@@ -1369,7 +1376,7 @@ class CommunicationController extends Controller
     if (count($messages) > 0) {
       $owners_array       = $messages->pluck('owner')->unique();
       $projects_array     = $messages->pluck('project')->filter()->unique();
-      $message_recipients = $messages->pluck('message_recipients')->unique('id')->flatten();
+      $message_recipients = $messages->pluck('message_recipients')->flatten()->unique('id');
     } else {
       $message_recipients = [];
     }
@@ -1381,6 +1388,7 @@ class CommunicationController extends Controller
       if ($project) {
         // get the project
         $project = Project::where('id', '=', $project->id)->first();
+
         return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit', 'projects_array', 'message_recipients'));
       } else {
         return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array', 'message_recipients'));
@@ -1388,7 +1396,7 @@ class CommunicationController extends Controller
     }
   }
 
-  public function messageNotification($user_id, $model_id = null, Request $request)
+  public function messageNotification($user_id, $model_id, Request $request)
   {
     /**
      * Check if user is already logged in
@@ -1403,7 +1411,7 @@ class CommunicationController extends Controller
      *         -Batch Communication, send complete email again.
      *             How to track these emails send? Update in notification_triggers? -- Added columns
      *     If token is valid, login user using the token
-     *       Show communication tab and modal of that message
+     *       Show communication tab and modal of that message.
      */
     $token        = $request->get('t');
     $notification = NotificationsTriggered::where('token', $token)->where('model_id', $model_id)->first();
@@ -1418,12 +1426,12 @@ class CommunicationController extends Controller
             return $this->showNotificationMessage($notification->type_id, $model_id);
           }
         } else {
-          $error = "Looks like you are trying to access a message not sent to you.";
+          $error = 'Looks like you are trying to access a message not sent to you.';
           abort(403, $error);
         }
       } else {
         $notification_time   = $notification->deliver_time;
-        $now                 = date("Y-m-d H:i:s");
+        $now                 = date('Y-m-d H:i:s');
         $allowed_access_time = date('Y-m-d H:i:s', strtotime('+1 day', strtotime($notification_time)));
         if ($allowed_access_time > $now) {
           $user = User::find($user_id);
@@ -1438,13 +1446,15 @@ class CommunicationController extends Controller
           }
         } else {
           //if not show WARNING and give a button to generate a new token and email again
-          session(["notification_token" => $token]);
+          session(['notification_token' => $token]);
+
           return view('notifications.expired-link', compact('user_id'));
         }
       }
       //check if the token is valid, within 24 hours
     } else {
       return 'Something went wrong. Try again later or contact Technical Team';
+
       return view('notifications.expired-link', compact('user_id'));
       // show warning message, looks like something went wrong, redirect to login
     }
@@ -1457,14 +1467,15 @@ class CommunicationController extends Controller
      * save sessions
      *   Which tab to open
      *   modal to open
-     *   redirect to home page
+     *   redirect to home page.
      */
     $config     = config('allita.notification');
     $receipents = CommunicationRecipient::find($model_id);
     if (1 == $type_id) {
-      session(["notification_main_tab" => $config['main_tab'][$type_id]]);
-      session(["notification_modal_source" => 'communication/0/replies/' . $receipents->communication_id]);
+      session(['notification_main_tab' => $config['main_tab'][$type_id]]);
+      session(['notification_modal_source' => 'communication/0/replies/' . $receipents->communication_id]);
     }
+
     return $this->goToMessage($receipents->communication_id);
 
     return redirect('/');
@@ -1488,6 +1499,7 @@ class CommunicationController extends Controller
         ->get();
       //dd($project,$report,$user_keys,$recipients);
       $audit = $report->audit_id;
+
       return view('modals.report-ready', compact('audit', 'project', 'recipients', 'report_id', 'report'));
     } else {
       return abort(403, 'No associated project was found');
@@ -1534,6 +1546,7 @@ Please be sure to view your report using the Chrome browser. PLEASE NOTE: If you
       $data   = ['subject' => 'Report has been declined for ' . $project->project_number . ' : ' . $project->project_name,
         'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
       $single_receipient = 1;
+
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {
       return abort(403, 'No associated project was found');
@@ -1560,6 +1573,7 @@ Please be sure to view your report using the Chrome browser. PLEASE NOTE: If you
       $data   = ['subject' => 'Report has been approved with changes for ' . $project->project_number . ' : ' . $project->project_name,
         'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
       $single_receipient = 1;
+
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {
       return abort(403, 'No associated project was found');
@@ -1586,6 +1600,7 @@ Please be sure to view your report using the Chrome browser. PLEASE NOTE: If you
       $data   = ['subject' => 'Report has been approved for ' . $project->project_number . ' : ' . $project->project_name,
         'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
       $single_receipient = 1;
+
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {
       return abort(403, 'No associated project was found');
@@ -1612,6 +1627,7 @@ Please be sure to view your report using the Chrome browser. PLEASE NOTE: If you
       $data   = ['subject' => 'All items for ' . $project->project_number . ' : ' . $project->project_name . ' on report ' . $report->id . ' have been resolved.',
         'message'            => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your resolved report.'];
       $single_receipient = 1;
+
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
     } else {
       return abort(403, 'No associated project was found');
@@ -1624,6 +1640,7 @@ Please be sure to view your report using the Chrome browser. PLEASE NOTE: If you
       session(['notification_triggered_type' => $forminputs['notification_triggered_type']]);
       session(['notification_model_id' => $forminputs['notification_model_id']]);
     }
+
     return 12;
   }
 
@@ -1633,9 +1650,11 @@ Please be sure to view your report using the Chrome browser. PLEASE NOTE: If you
       if ($report) {
         $report->crr_approval_type_id = $forminputs['report_approval_type'];
         $report->save();
+
         return $report;
       }
     }
+
     return 'false';
   }
 

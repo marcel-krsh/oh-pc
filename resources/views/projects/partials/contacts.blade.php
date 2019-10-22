@@ -298,13 +298,10 @@ $thisProjectHtml = '';
 								{{-- Owner --}}
 								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerEmail({{ $email->id }}, {{ $user->id }})" name="owner_email" id="owner-email-{{ $email->email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ $email->owner_default ? 'checked=checked': '' }}>
 							</div>
-							<div class="uk-width-3-4">
 								<small>
 									{{ $email->email_address->email_address }}
 								</small>
 								<i onclick="editEmail({{ $email->id }})" id="project-email-{{ $email->id }}" class="a-pencil" uk-tooltip="" title="EDIT / DELETE EMAIL ADDRESS" aria-expanded="false"></i>
-							</div>
-							<
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@endforeach
 							<small class="use-hand-cursor uk-text-muted" id="add-email-{{ $user->id }}" onclick="addEmail({{ $user->id }})"  uk-tooltip="" title="ADD ANOTHER EMAIL ADDRESS" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> EMAIL</small>
@@ -905,12 +902,5 @@ $thisProjectHtml = '';
 	function loadProjectContacts() {
 		loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
 	}
-
-
-
-
-
-
-
 
 </script>

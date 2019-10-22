@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Audit;
-use App\Models\CachedAudit;
+use App\Models\cachedAudit;
 use App\Models\CrrApprovalType;
 use App\Models\CrrPart;
 use App\Models\CrrPartOrder;
@@ -436,12 +436,8 @@ class ReportsController extends Controller
       ->where('from_template_id', $typeEval, $typeVal)
       ->where('id', $searchEval, $searchVal)
       ->when(!$auditor_access, function ($query) use ($current_user) {
-        $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', $current_user->person_id)
-          ->with('lead')
-          ->with('project')
-          ->with('crr_approval_type')
-          ->with('cached_audit')
-          ->get()->toArray();
+        $userProjects = \App\Models\ProjectContactRole::where('person_id', $current_user->person_id)
+          ->get()->pluck('project_id')->toArray();
         //dd(Auth::user()->person_id,$userProjects);
         return $query->whereIn('project_id', $userProjects);
       })
