@@ -957,3 +957,7 @@ Route::group(['prefix' => 'poc', 'namespace' => 'POC'], function () {
 
   // POC routes for new UI
 });
+
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
+});
