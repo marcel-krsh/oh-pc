@@ -51,10 +51,10 @@ class PagesController extends Controller
   }
 
   public function changeLog(Request $request)
-  { 
+  {
     if (!Auth::check()) {
       return redirect()->to('login');
-    }else{
+    } else {
       return view('pages.change-log');
     }
   }
@@ -1969,15 +1969,15 @@ class PagesController extends Controller
             }
           }
           if ($allowed) {
-            $contact = People::with('phone', 'allita_phone', 'organizations')->with('email')->with('fax')->find(intval($request->contact));
-            $check   = ProjectContactRole::where('person_id', intval($request->contact))->whereIn('project_id', $projectIds)->count();
-            $project_contact_role   = ProjectContactRole::with('organization.address')->where('person_id', intval($request->contact))->whereIn('project_id', $projectIds)->first();
+            $contact              = People::with('phone', 'allita_phone', 'organizations')->with('email')->with('fax')->find(intval($request->contact));
+            $check                = ProjectContactRole::where('person_id', intval($request->contact))->whereIn('project_id', $projectIds)->count();
+            $project_contact_role = ProjectContactRole::with('organization.address')->where('person_id', intval($request->contact))->whereIn('project_id', $projectIds)->first();
             if (null !== $contact && $check > 0) {
-              $roles         = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
-              $organizations = Organization::active()->orderBy('organization_name', 'ASC')->get();
-              $states        = State::get();
+              $roles            = Role::where('id', '<', 2)->active()->orderBy('role_name', 'ASC')->get();
+              $organizations    = Organization::active()->orderBy('organization_name', 'ASC')->get();
+              $states           = State::get();
               $selected_project = $request->project;
-              $org = $project_contact_role->organization;
+              $org              = $project_contact_role->organization;
               return view('modals.new-user', compact('roles', 'organizations', 'states', 'contact', 'projects', 'projectIds', 'multiple', 'selected_project', 'org'));
             } else {
               return '<h1>Sorry!</h1><h3>The contact you provided could not be found in the database or they are not on the projects submitted.</h3>';
@@ -2120,18 +2120,18 @@ class PagesController extends Controller
         $current_user = Auth::user();
         //Phone numbers table
         if ($request->filled('business_phone_number')) {
-          $input_phone_number                 = $request->business_phone_number;
-          $split_number                       = explode('-', $input_phone_number);
-          $phone_number_type                  = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
-          $phone_number                       = new PhoneNumber;
-          $phone_number->phone_number_type_id = $phone_number_type->id;
+          $input_phone_number                  = $request->business_phone_number;
+          $split_number                        = explode('-', $input_phone_number);
+          $phone_number_type                   = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
+          $phone_number                        = new PhoneNumber;
+          $phone_number->phone_number_type_id  = $phone_number_type->id;
           $phone_number->phone_number_type_key = $phone_number_type->phone_number_type_key;
-          $last_record = PhoneNumber::whereNotNull('phone_number_key')->orderBy('id', 'DESC')->first();
-          $phone_number->phone_number_key = $last_record->phone_number_key + 1;
-          $first_half                         = explode(' ', $split_number[0]);
-          $area_code                          = str_replace(['(', ')'], '', $first_half[0]);
-          $phone_number->area_code            = $area_code;
-          $phone_number->phone_number         = $first_half[1] . $split_number[1];
+          $last_record                         = PhoneNumber::whereNotNull('phone_number_key')->orderBy('id', 'DESC')->first();
+          $phone_number->phone_number_key      = $last_record->phone_number_key + 1;
+          $first_half                          = explode(' ', $split_number[0]);
+          $area_code                           = str_replace(['(', ')'], '', $first_half[0]);
+          $phone_number->area_code             = $area_code;
+          $phone_number->phone_number          = $first_half[1] . $split_number[1];
           // $phone_number->area_code            = $split_number[0];
           // $phone_number->phone_number         = $split_number[1] . $split_number[2];
           $phone_number->extension = $request->phone_extension;
@@ -2141,34 +2141,34 @@ class PagesController extends Controller
         }
 
         // Email address table
-        $email_address_type                   = EmailAddressType::where('email_address_type_name', 'Work')->first();
-        $email_address                        = new EmailAddress;
-        $email_address->email_address         = $request->email;
-        $email_address->email_address_type_id = $email_address_type->id;
+        $email_address_type                    = EmailAddressType::where('email_address_type_name', 'Work')->first();
+        $email_address                         = new EmailAddress;
+        $email_address->email_address          = $request->email;
+        $email_address->email_address_type_id  = $email_address_type->id;
         $email_address->email_address_type_key = $email_address_type->email_address_type_key;
-        $last_record = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
-        $email_address->email_address_key = $last_record->email_address_key + 1;
+        $last_record                           = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
+        $email_address->email_address_key      = $last_record->email_address_key + 1;
         $email_address->save();
 
         // People table
-       if ($request->has('from_contact')) {
-       		$people = People::find($request->person_id);
-       		if(!$people) {
-       			return 'Something went wrong, please contact admin';
-       		}
-       } else {
- 	        $people             = new People;
-       }
+        if ($request->has('from_contact')) {
+          $people = People::find($request->person_id);
+          if (!$people) {
+            return 'Something went wrong, please contact admin';
+          }
+        } else {
+          $people = new People;
+        }
         $people->last_name  = $request->last_name;
         $people->first_name = $request->first_name;
         if ($phone_number) {
-          $people->default_phone_number_id = $phone_number->id;
+          $people->default_phone_number_id  = $phone_number->id;
           $people->default_phone_number_key = $phone_number->phone_number_key;
         }
 
-        $people->default_email_address_id = $email_address->id;
+        $people->default_email_address_id  = $email_address->id;
         $people->default_email_address_key = $email_address->email_address_key;
-        $people->is_active                = 1;
+        $people->is_active                 = 1;
         $people->save();
 
         // User table
@@ -2244,7 +2244,7 @@ class PagesController extends Controller
     }
   }
 
-  public function  createUserForContactSave(Request $request)
+  public function createUserForContactSave(Request $request)
   {
     if (Auth::user()->auditor_access() && intval($request->person_id)) {
       // return $request->all();
@@ -2290,19 +2290,24 @@ class PagesController extends Controller
               $request->request->add(['person_id' => $request->person_id]);
               // allita_phone, phone, email, fax exists
               $user = $this->createUserSave($request);
-              if($user && is_int($user)) {
-              	foreach ($projectIds as $key => $project_id) {
-              		$check_user = ReportAccess::where('project_id', $project_id)->where('user_id', $user)->get();
-						      if (count($check_user) == 0) {
-						        $report_user             = new ReportAccess;
-						        $report_user->project_id = $project_id;
-						        $report_user->user_id    = $user;
-						        $report_user->save();
-						      }
-              	}
-              	return 1;
+              if ($user && is_int($user)) {
+                foreach ($projectIds as $key => $project_id) {
+                  $check_user = ReportAccess::where('project_id', $project_id)->where('user_id', $user)->get();
+                  if (count($check_user) == 0) {
+                    $report_user             = new ReportAccess;
+                    $report_user->project_id = $project_id;
+                    $report_user->user_id    = $user;
+                    $report_user->save();
+                    $activate_user = User::find($user);
+                    if (Auth::user()->auditor_access() && !($activate_user->active)) {
+                      $activate_user->active = 1;
+                      $activate_user->save();
+                    }
+                  }
+                }
+                return 1;
               } else {
-      	        	return $user;
+                return $user;
               }
               // return $this->extraCheckErrors($validator);
             } else {

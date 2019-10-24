@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
-use App\Models\People;
 use App\Models\EmailAddress;
 use App\Models\EmailAddressType;
 use App\Models\Organization;
+use App\Models\People;
 use App\Models\PhoneNumber;
 use App\Models\PhoneNumberType;
 use App\Models\Project;
@@ -31,25 +31,25 @@ class ProjectContactsController extends Controller
 
   public function contacts($project)
   {
-  	// return         $last_record = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
-  	// return $project;
-    $project_user_ids      = $this->projectUserIds($project);
-    $allita_user_ids       = $this->allitaUserIds($project);
-    $projectUserPersonIds  = $this->projectUserPersonIds($project);
-    $user_ids              = $this->allUserIdsInProject($project);
+    // return         $last_record = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
+    // return $project;
+    $project_user_ids           = $this->projectUserIds($project);
+    $allita_user_ids            = $this->allitaUserIds($project);
+    $projectUserPersonIds       = $this->projectUserPersonIds($project);
+    $user_ids                   = $this->allUserIdsInProject($project);
     $removed_devco_access_users = array_diff($allita_user_ids, $user_ids);
-    if(!empty($removed_devco_access_users)) {
-    	foreach ($removed_devco_access_users as $key => $dau) {
-    		$dauser = ReportAccess::where('project_id', $project)->where('user_id', $dau)->first();
-    		$dauser->devco = 0;
-    		$dauser->save();
-    	}
-	    $user_ids              = $this->allUserIdsInProject($project);
+    if (!empty($removed_devco_access_users)) {
+      foreach ($removed_devco_access_users as $key => $dau) {
+        $dauser        = ReportAccess::where('project_id', $project)->where('user_id', $dau)->first();
+        $dauser->devco = 0;
+        $dauser->save();
+      }
+      $user_ids = $this->allUserIdsInProject($project);
     }
     // return $user_ids;
-    $contactsWithoutUsers  = ProjectContactRole::join('people','people.id','person_id')->where('project_id',$project)
-                            ->whereNotIn('person_id',$projectUserPersonIds)->with('organization')->with('person.organizations')->with('projectRole')->with('person.email')->with('person.phone')->orderBy('people.last_name')->orderBy('people.id')
-                            ->get();
+    $contactsWithoutUsers = ProjectContactRole::join('people', 'people.id', 'person_id')->where('project_id', $project)
+      ->whereNotIn('person_id', $projectUserPersonIds)->with('organization')->with('person.organizations')->with('projectRole')->with('person.email')->with('person.phone')->orderBy('people.last_name')->orderBy('people.id')
+      ->get();
     $project_report_access = ReportAccess::where('project_id', $project)->get();
     $default_report_user   = $project_report_access->where('default', 1)->first();
     $default_report_owner  = $project_report_access->where('owner_default', 1)->first();
@@ -80,12 +80,12 @@ class ProjectContactsController extends Controller
       $default_owner_id = $default_devco_owner_id = $default_owner->person->user->id;
     }
     // replace joins with relationship
-    $users             = User::whereIn('id', $user_ids)->with('role', 'person.email', 'person.projects', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access.project', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
+    $users = User::whereIn('id', $user_ids)->with('role', 'person.email', 'person.projects', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access.project', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
     // return Project::with('contactRoles.person.user')->find($project);
     // return ProjectContactRole::where('person_id', 23773)->get()->unique();
-     // return $x = $users->where('id', 6380)->first()->person->projects;
-     // $y = $users->where('id', 6380)->first()->report_access->pluck('project');
-     // return $x->merge($y)->unique();
+    // return $x = $users->where('id', 6380)->first()->person->projects;
+    // $y = $users->where('id', 6380)->first()->report_access->pluck('project');
+    // return $x->merge($y)->unique();
     $default_org       = $users->pluck('user_organizations')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
     $default_owner_org = $users->pluck('user_organizations')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
 
@@ -97,7 +97,7 @@ class ProjectContactsController extends Controller
 
     $default_email       = $users->pluck('user_emails')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
     $default_owner_email = $users->pluck('user_emails')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
-    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id', 'default_owner_id', 'default_devco_owner_id', 'default_owner_org', 'default_owner_addr', 'default_owner_phone', 'default_email', 'default_owner_email','contactsWithoutUsers','projectUserPersonIds'));
+    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id', 'default_owner_id', 'default_devco_owner_id', 'default_owner_org', 'default_owner_addr', 'default_owner_phone', 'default_email', 'default_owner_email', 'contactsWithoutUsers', 'projectUserPersonIds'));
   }
 
   protected function projectUserIds($project_id)
@@ -120,8 +120,8 @@ class ProjectContactsController extends Controller
     // Check if they have Devco, else check allita -
     // Test with Charlene Wray
     if ($project->contactRoles) {
-      $project_person_ids = $project->contactRoles->pluck('person_id');
-      $project_user_person_ids   = User::whereIn('person_id', $project_person_ids)->pluck('person_id')->toArray();
+      $project_person_ids      = $project->contactRoles->pluck('person_id');
+      $project_user_person_ids = User::whereIn('person_id', $project_person_ids)->pluck('person_id')->toArray();
     } else {
       $project_user_person_ids = [];
     }
@@ -164,10 +164,10 @@ class ProjectContactsController extends Controller
         ->orderBy('organization_name', 'asc')
         ->orderBy('last_name', 'asc')
         ->get();
-      if($combine) {
-      	return view('modals.combine-contact-with-user', compact('roles', 'organizations', 'states', 'recipients', 'project_id'));
+      if ($combine) {
+        return view('modals.combine-contact-with-user', compact('roles', 'organizations', 'states', 'recipients', 'project_id'));
       } else {
-      	return view('modals.add-user-to-project', compact('roles', 'organizations', 'states', 'recipients', 'project_id'));
+        return view('modals.add-user-to-project', compact('roles', 'organizations', 'states', 'recipients', 'project_id'));
       }
     } else {
       $tuser = Auth::user();
@@ -178,8 +178,8 @@ class ProjectContactsController extends Controller
   public function combineContactWithUser($contact_id, $project_id, $using_project_user = 0)
   {
     if (Auth::user()->auditor_access()) {
-    	$user_ids      = $this->allUserIdsInProject($project_id);
-      $recipients    = User::whereIn('users.id', $user_ids)
+      $user_ids   = $this->allUserIdsInProject($project_id);
+      $recipients = User::whereIn('users.id', $user_ids)
         ->join('people', 'people.id', 'users.person_id')
         ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
         ->join('users_roles', 'users_roles.user_id', 'users.id')
@@ -188,51 +188,50 @@ class ProjectContactsController extends Controller
         ->orderBy('organization_name', 'asc')
         ->orderBy('last_name', 'asc')
         ->get();
-    	return view('modals.combine-contact-with-user', compact('roles', 'organizations', 'states', 'recipients', 'contact_id', 'using_project_user'));
+      return view('modals.combine-contact-with-user', compact('roles', 'organizations', 'states', 'recipients', 'contact_id', 'using_project_user'));
     } else {
       $tuser = Auth::user();
       return 'Sorry you do not have access to this page.';
     }
   }
 
-
   public function saveCombineContactWithUser(Request $request)
   {
-  	// return $request->all();
-  	$validator = \Validator::make($request->all(), [
+    // return $request->all();
+    $validator = \Validator::make($request->all(), [
       'recipients_array' => 'required',
-      'contact_id' => 'required',
+      'contact_id'       => 'required',
     ], [
       'recipients_array.required' => 'Select atleast one user',
-      'contact_id.required' => 'Something went wrong, contact admin',
+      'contact_id.required'       => 'Something went wrong, contact admin',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
     }
-  	$contact = People::with('phone', 'allita_phone')->with('email')->with('fax')->find(intval($request->contact));
-  	$user = User::whereIn('id', $request->recipients_array)->first();
-  	$old_user = $user;
-  	if($user) {
-  		// Email address table
-      $email_address_type                   = EmailAddressType::where('email_address_type_name', 'Work')->first();
-      $email_address                        = $contact->email;
-  		$user->name  = $contact->first_name . ' ' . $contact->last_name;
-      $user->email = $email_address->email_address;
-      $user->person_id   = $contact->id;
+    $contact  = People::with('phone', 'allita_phone')->with('email')->with('fax')->find(intval($request->contact));
+    $user     = User::whereIn('id', $request->recipients_array)->first();
+    $old_user = $user;
+    if ($user) {
+      // Email address table
+      $email_address_type = EmailAddressType::where('email_address_type_name', 'Work')->first();
+      $email_address      = $contact->email;
+      $user->name         = $contact->first_name . ' ' . $contact->last_name;
+      $user->email        = $email_address->email_address;
+      $user->person_id    = $contact->id;
       $user->person_key   = $contact->person_key;
       $user->save();
       $project_contact_roles = ProjectContactRole::where('person_id', $old_user->person_id)->get();
       foreach ($project_contact_roles as $key => $pcr) {
-      	$new_pcr = $pcr->replicate();
-      	$new_pcr->person_id = $user->person_id;
-      	$new_pcr->person_key = $user->person_key;
-      	$new_pcr->save();
-      	$pcr->delete();
+        $new_pcr             = $pcr->replicate();
+        $new_pcr->person_id  = $user->person_id;
+        $new_pcr->person_key = $user->person_key;
+        $new_pcr->save();
+        $pcr->delete();
       }
       return 1;
-  	} else {
-  		return 'Something went wrong, contact admin';
-  	}
+    } else {
+      return 'Something went wrong, contact admin';
+    }
   }
 
   public function saveAddUserToProject($project_id, Request $request)
@@ -249,6 +248,7 @@ class ProjectContactsController extends Controller
       return response()->json(['errors' => ['Something went wrong, contact admin']]);
     }
     $recipients_array = $request->recipients_array;
+    $auditor_access   = Auth::user()->auditor_access();
     foreach ($recipients_array as $key => $recipient) {
       $check_user = ReportAccess::where('project_id', $project_id)->where('user_id', $recipient)->get();
       if (count($check_user) == 0) {
@@ -256,6 +256,11 @@ class ProjectContactsController extends Controller
         $report_user->project_id = $project_id;
         $report_user->user_id    = $recipient;
         $report_user->save();
+        $user = User::find($recipient);
+        if ($auditor_access && !($user->active)) {
+          $user->active = 1;
+          $user->save();
+        }
       }
     }
     return 1;
@@ -1091,22 +1096,19 @@ class ProjectContactsController extends Controller
 
   public function removeContactFromProject(Request $request)
   {
-  	// return $request->all();
+    // return $request->all();
     $validator = \Validator::make($request->all(), [
-      'project_id'       => 'required',
-      'person_id' => 'required',
+      'project_id' => 'required',
+      'person_id'  => 'required',
     ]);
     if ($validator->fails()) {
       return 'Something went wrong, please contact admin';
     }
-    if($request->multiple) {
-    	$project_contact_roles = ProjectContactRole::whereIn('project_id', $request->project_id)->where('person_id', $request->person_id)->delete();
+    if ($request->multiple) {
+      $project_contact_roles = ProjectContactRole::whereIn('project_id', $request->project_id)->where('person_id', $request->person_id)->delete();
     } else {
-    	$project_contact_roles = ProjectContactRole::where('project_id', $request->project_id)->where('person_id', $request->person_id)->delete();
+      $project_contact_roles = ProjectContactRole::where('project_id', $request->project_id)->where('person_id', $request->person_id)->delete();
     }
     return 1;
   }
-
-
-
 }

@@ -75,7 +75,7 @@
         	</select>
         </div>
         <div class="uk-width-1-1 uk-margin-top">
-        	<label for="name">Business Phone Number :</label><br>
+        	<label for="name">Business Phone Number<span class="uk-text-danger uk-text-bold">*</span> :</label><br>
         	<input id="business_phone_number" type="text" class="uk-input uk-width-1-3" name="business_phone_number" placeholder="Format: (xxx) xxx-xxxx" @if(null !== $contact && $contact->phone !== null) value="{{ $contact->phone->number }}"@endIf>
         	<input id="phone_extension" type="number" class="uk-input uk-width-1-3" name="phone_extension" placeholder="xxxx">
         </div>
@@ -208,7 +208,7 @@
 		// var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
 		// $('#project-detail-tab-7-content').html(tempdiv);
 		$("#user_save_button").prop("disabled", true);
-		$("#user_save_button").html('<span uk-spinner"></span>  Procesing');
+		$("#user_save_button").html('<span uk-spinner"></span>  Processing');
 		// $("#user_save_button").css('background-color', 'green');
 		var form = $('#userForm');
 		var data = { };

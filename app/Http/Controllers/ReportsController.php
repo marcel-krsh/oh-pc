@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Audit;
-use App\Models\cachedAudit;
+use App\Models\CachedAudit;
 use App\Models\CrrApprovalType;
 use App\Models\CrrPart;
 use App\Models\CrrPartOrder;
@@ -477,7 +477,7 @@ class ReportsController extends Controller
         $project_id = $request->get('project_id');
       }
 
-      $audits = cachedAudit::when(!empty($project_id), function ($query) use ($project_id) {
+      $audits = CachedAudit::when(!empty($project_id), function ($query) use ($project_id) {
         return $query->where('project_id', $project_id);
       })->where('step_id', '>', 59)->where('step_id', '<', 67)->with('project')->with('audit.reports')
       //->orderBy('projects.project_name', 'asc')
