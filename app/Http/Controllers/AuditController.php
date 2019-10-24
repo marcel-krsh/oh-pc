@@ -1592,26 +1592,31 @@ class AuditController extends Controller
   public function getProject($id = null, $audit_id = 0)
   {
     $project   = Project::where('project_key', '=', $id)->first();
-    $projectId = $project->id;
+    if($project) {
+	    $projectId = $project->id;
 
-    // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
+	    // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
 
-    $projectTabs = collect([
-      ['title' => 'Audits', 'icon' => 'a-mobile-home', 'status' => '', 'badge' => '', 'action' => 'project.details-with-audit'],
-      ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.audit-communications'],
-      ['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
-      ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
-      // ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
-      // ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
-      // ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.findings'],
-      // ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
-      ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.stream'],
-      ['title' => 'Reports', 'icon' => 'a-file-chart-3', 'status' => '', 'badge' => '', 'action' => 'project.reports'],
-      ['title' => 'Contacts', 'icon' => 'a-person-notebook icon', 'status' => '', 'badge' => '', 'action' => 'project.contacts'],
-    ]);
-    $tab = 'project-detail-tab-1';
+	    $projectTabs = collect([
+	      ['title' => 'Audits', 'icon' => 'a-mobile-home', 'status' => '', 'badge' => '', 'action' => 'project.details-with-audit'],
+	      ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.audit-communications'],
+	      ['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
+	      ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
+	      // ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
+	      // ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
+	      // ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.findings'],
+	      // ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
+	      ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.stream'],
+	      ['title' => 'Reports', 'icon' => 'a-file-chart-3', 'status' => '', 'badge' => '', 'action' => 'project.reports'],
+	      ['title' => 'Contacts', 'icon' => 'a-person-notebook icon', 'status' => '', 'badge' => '', 'action' => 'project.contacts'],
+	    ]);
+	    $tab = 'project-detail-tab-1';
 
-    return view('projects.project', compact('tab', 'projectTabs', 'projectId', 'audit_id', 'project'));
+	    return view('projects.project', compact('tab', 'projectTabs', 'projectId', 'audit_id', 'project'));
+	  } else {
+	  	$error = "I was not able to find the project from the link you clicked. Please let the Allita Support Team know what link you clicked on to arrive at this error.";
+        abort(403, $error);
+	  }
   }
 
   public function getProjectTitle($id = null)
@@ -1709,7 +1714,7 @@ class AuditController extends Controller
       // && $default_org->organization->organization_name != $details_new->manager_name
       $details_new->manager_name = $default_org->organization->organization_name;
       $details_new->save();
-    } elseif ($project_default_user && !is_null($project_default_user->person->user->organization_id) && $project_default_user->person->user->organization_details) {
+    } elseif ($project_default_user && $project_default_user->person && $project_default_user->person->user && !is_null($project_default_user->person->user->organization_id) && $project_default_user->person->user->organization_details) {
       $details_new->manager_name = $project_default_user->person->user->organization_details->organization_name;
       $details_new->save();
     }
