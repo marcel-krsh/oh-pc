@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\LogConverter;
 use App\Mail\EmailCreateNewUser;
 use App\Models\Account;
 use App\Models\Address;
@@ -128,8 +127,8 @@ class PagesController extends Controller
   {
     if (Gate::allows('view-all-parcels')) {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'viewstats');
-      $lc->setDesc($tuser->email . ' Viewed stats')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'viewstats');
+      // $lc->setDesc($tuser->email . ' Viewed stats')->setFrom($tuser)->setTo($tuser)->save();
       if (Auth::user()->entity_type == "hfa") {
         $entityTypeOperator = "like";
         $entityTypeValue    = "'%%'";
@@ -352,8 +351,8 @@ class PagesController extends Controller
       return view('pages.stats', compact('stats', 'sumStatData'));
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized viewstats');
-      $lc->setDesc($tuser->email . ' attempted to view stats')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized viewstats');
+      // $lc->setDesc($tuser->email . ' attempted to view stats')->setFrom($tuser)->setTo($tuser)->save();
       return 'Sorry you do not have access to the dashboard.';
     }
   }
@@ -1495,8 +1494,8 @@ class PagesController extends Controller
     $job = new ParcelsExportJob($requestor, $new_report->id, 'paid');
     dispatch($job);
 
-    $lc = new LogConverter('user', 'export paid parcels requested');
-    $lc->setDesc($requestor->email . ' requested a report (export paid parcels)')->setFrom($requestor)->setTo($requestor)->save();
+    // $lc = new LogConverter('user', 'export paid parcels requested');
+    // $lc->setDesc($requestor->email . ' requested a report (export paid parcels)')->setFrom($requestor)->setTo($requestor)->save();
 
     return 1;
   }
@@ -1521,13 +1520,13 @@ class PagesController extends Controller
       }
       $totalUsers = count($myUsers);
       $tuser      = Auth::user();
-      $lc         = new LogConverter('user', 'viewusers');
-      $lc->setDesc($tuser->email . ' Viewed user list')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc         = new LogConverter('user', 'viewusers');
+      // $lc->setDesc($tuser->email . ' Viewed user list')->setFrom($tuser)->setTo($tuser)->save();
       return view('dashboard.users', compact('myUsers', 'totalUsers'));
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized viewusers');
-      $lc->setDesc($tuser->email . ' Attempted to view user list')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized viewusers');
+      // $lc->setDesc($tuser->email . ' Attempted to view user list')->setFrom($tuser)->setTo($tuser)->save();
       return 'Sorry you do not have access to this page.';
     }
   }
@@ -1558,13 +1557,13 @@ class PagesController extends Controller
       }
        */
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'viewuser');
-      $lc->setDesc($tuser->email . ' Viewed user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
+      // $lc    = new LogConverter('user', 'viewuser');
+      // $lc->setDesc($tuser->email . ' Viewed user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
       return view('modals.user', compact('editUser', 'lb_roles', 'hfa_roles', 'entities'));
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized viewuser');
-      $lc->setDesc($tuser->email . ' Attempted to view user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized viewuser');
+      // $lc->setDesc($tuser->email . ' Attempted to view user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
       return 'Sorry you do not have access to view this user.';
     }
   }
@@ -1598,20 +1597,20 @@ class PagesController extends Controller
 
       $roles = $request->get('role');
       $editUser->roles()->detach();
-      $lc         = new LogConverter('user', 'edituser');
+      // $lc         = new LogConverter('user', 'edituser');
       $addedRoles = [];
       if (isset($roles)) {
         foreach ($roles as $rolekey => $rolevalue) {
           $role = Role::find($rolekey);
           array_push($addedRoles, $role->role_name);
-          $lc->addRole($role->role_name);
+          // $lc->addRole($role->role_name);
           $editUser->roles()->save($role);
         }
       }
       $userParams['roles'] = $addedRoles;
       $tuser               = Auth::user();
-      $lc->setDesc($tuser->email . ' edited user ' . $editUser->email)->setFrom($tuser)->setTo($editUser);
-      $lc->save();
+      // $lc->setDesc($tuser->email . ' edited user ' . $editUser->email)->setFrom($tuser)->setTo($editUser);
+      // $lc->save();
       $newToken = $editUser->api_token;
 
       if (is_null($newToken)) {
@@ -1649,14 +1648,14 @@ class PagesController extends Controller
       // NEW TOKEN LOGIC
 
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'edituser');
-      $lc->setDesc($tuser->email . ' edited user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
+      // $lc    = new LogConverter('user', 'edituser');
+      // $lc->setDesc($tuser->email . ' edited user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
       $msg = ['message' => 'I updated ' . $request->name . ' successfully. Their API Token is : ' . $newToken, 'status' => 1];
       return json_encode($msg);
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized edituser');
-      $lc->setDesc($tuser->email . ' attempted to edit user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized edituser');
+      // $lc->setDesc($tuser->email . ' attempted to edit user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
       $msg = ['message' => 'Sorry, but you do not have access to edit users.', 'status' => 0];
       return json_encode($msg);
     }
@@ -1667,8 +1666,8 @@ class PagesController extends Controller
     $editUser = \App\Models\User::find($userId);
     $editUser->activate();
     $tuser = Auth::user();
-    $lc    = new LogConverter('user', 'activateuser');
-    $lc->setDesc($tuser->email . ' Activated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
+    // $lc    = new LogConverter('user', 'activateuser');
+    // $lc->setDesc($tuser->email . ' Activated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
     $msg = ['message' => 'Successfully activated user', 'status' => 1];
     return json_encode($msg);
   }
@@ -1695,16 +1694,16 @@ class PagesController extends Controller
       ) {
         $editUser->activate();
         $tuser = Auth::user();
-        $lc    = new LogConverter('user', 'activate');
-        $lc->setDesc($tuser->email . ' Activated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
+        // $lc    = new LogConverter('user', 'activate');
+        // $lc->setDesc($tuser->email . ' Activated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
         if (1 == $editUser->validate_all) {
           //Activate program and entity
           $entityToActivate = DB::table('entities')->select('*')->where('owner_id', $editUser->id)->first();
           DB::table('entities')->where('id', $entityToActivate->id)->update(['active' => 1]);
           $tuser = Auth::user();
           $e     = Entity::find($entityToActivate->id);
-          $lc    = new LogConverter('entity', 'activate');
-          $lc->setDesc($tuser->email . ' Activated Entity' . $e->entity_name)->setFrom($tuser)->setTo($e)->save();
+          // $lc    = new LogConverter('entity', 'activate');
+          // $lc->setDesc($tuser->email . ' Activated Entity' . $e->entity_name)->setFrom($tuser)->setTo($e)->save();
           DB::table('programs')->where('owner_id', $entityToActivate->id)->update(['active' => 1]);
           // Create and account for the program
           $programToGetAccount = DB::table('programs')->join('counties', 'county_id', '=', 'counties.id')->select('*')->where('programs.owner_id', $entityToActivate->id)->first();
@@ -1716,11 +1715,11 @@ class PagesController extends Controller
             'active'          => 1,
           ]);
           $a  = Account::where('account_name', "Blight " . $programToGetAccount->county_name)->first();
-          $lc = new LogConverter('account', 'create');
-          $lc->setFrom(Auth::user())->setTo($a)->setDesc(Auth::user()->email . ' Created account ' . $a->account_name);
-          $lc->addProperty('owner_id', $entityToActivate->owner_id);
-          $lc->addProperty('entity_id', $entityToActivate->id);
-          $lc->save();
+          // $lc = new LogConverter('account', 'create');
+          // $lc->setFrom(Auth::user())->setTo($a)->setDesc(Auth::user()->email . ' Created account ' . $a->account_name);
+          // $lc->addProperty('owner_id', $entityToActivate->owner_id);
+          // $lc->addProperty('entity_id', $entityToActivate->id);
+          // $lc->save();
         }
         $editUser->resetTries();
         $editUser->update(['email_token' => ""]);
@@ -1746,8 +1745,8 @@ class PagesController extends Controller
           $message = "This user cannot be activated using the quick link. Please go to the users tab from the dashboard and activate them there."; //" Entity ID:".$editUser->entity_id." to User Entity ID ".Auth::user()->entity_id." whose ownership id = ".$entity->owner_id.". With the token of ".$request->query('t')." versus ".$editUser->email_token;
         }
         $tuser = Auth::user();
-        $lc    = new LogConverter('user', 'unauthorized activate');
-        $lc->setDesc($tuser->email . ' Attempted to activate user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
+        // $lc    = new LogConverter('user', 'unauthorized activate');
+        // $lc->setDesc($tuser->email . ' Attempted to activate user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
         return view('pages.error', compact('error', 'message', 'type'));
       }
     }
@@ -1756,14 +1755,14 @@ class PagesController extends Controller
   public function userdeactivate($userId)
   {
     if (Auth::user()->canManageUsers()) {
-      $lc       = new LogConverter('user', 'deactivate');
+      // $lc       = new LogConverter('user', 'deactivate');
       $editUser = \App\Models\User::find($userId);
       $editUser->deactivate();
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'deactivate');
-      $lc->setDesc($tuser->email . ' Deactivated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
+      // $lc    = new LogConverter('user', 'deactivate');
+      // $lc->setDesc($tuser->email . ' Deactivated user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
       $msg = ['message' => 'Successfully deactivated user', 'status' => 1];
-      $lc->setDesc($editUser->email . ' Deactivated')->setFrom(Auth::user())->setTo($editUser)->save();
+      // $lc->setDesc($editUser->email . ' Deactivated')->setFrom(Auth::user())->setTo($editUser)->save();
       return json_encode($msg);
     } else {
       $msg = ['message' => 'Sorry, you don\'t have permission to do that.', 'status' => 1];
@@ -1820,20 +1819,20 @@ class PagesController extends Controller
           if (1 == $editUser->active) {
             //deactivate user
             $editUser->deactivate();
-            $lc = new LogConverter('user', 'deactivate');
-            $lc->setDesc($editUser->email . ' Deactivated')->setFrom(Auth::user())->setTo($editUser)->save();
+            // $lc = new LogConverter('user', 'deactivate');
+            // $lc->setDesc($editUser->email . ' Deactivated')->setFrom(Auth::user())->setTo($editUser)->save();
             $editUser->update(['email_token' => ""]);
             if (1 == $editUser->validate_all) {
               //Delete program and entity
               $entityToActivate = DB::table('entities')->select('id')->where('owner_id', $editUser->id)->first();
               DB::table('entities')->where('id', $entityToActivate->id)->update(['active' => 0]);
               $e        = Entity::find($entityToActivate->id);
-              $lcentity = new LogConverter('entity', 'deactivate');
-              $lcentity->setDesc($e->entity_name . ' Deleted')->setFrom(Auth::user())->setTo($e)->save();
+              // $lcentity = new LogConverter('entity', 'deactivate');
+              // $lcentity->setDesc($e->entity_name . ' Deleted')->setFrom(Auth::user())->setTo($e)->save();
               DB::table('programs')->where('owner_id', $entityToActivate->id)->update(['active' => 0]);
               $p  = Program::where('owner_id', $entityToActivate->id)->first();
-              $lc = new LogConverter('program', 'deactivate');
-              $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->$email . ' Deactivated program ' . $p->program_name)->save();
+              // $lc = new LogConverter('program', 'deactivate');
+              // $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->$email . ' Deactivated program ' . $p->program_name)->save();
             }
           }
           $message = "<h2>Cannot Delete " . ucwords($ownerFirstName) . "!</h2><p>" . ucwords($ownerFirstName) . " has entries in the database elsewhere and cannot be deleted. However, they are now marked inactive, they cannot login and use the system.</p>";
@@ -1842,19 +1841,19 @@ class PagesController extends Controller
           return view('pages.error', compact('error', 'message', 'type'));
         } else {
           DB::table('users')->where('id', $editUser->id)->delete();
-          $lc = new LogConverter('user', 'delete');
-          $lc->setDesc($editUser->email . ' Deleted')->setFrom(Auth::user())->setTo($editUser)->save();
+          // $lc = new LogConverter('user', 'delete');
+          // $lc->setDesc($editUser->email . ' Deleted')->setFrom(Auth::user())->setTo($editUser)->save();
           if (1 == $editUser->validate_all) {
             // remove their entity and their program
             $entityToDelete = DB::table('entities')->select('id')->where('owner_id', $editUser->id)->first();
             $e              = Entity::find($entityToActivate->id);
             DB::table('entities')->where('id', $entityToDelete->id)->delete();
-            $lcentity = new LogConverter('entity', 'deactivate');
-            $lcentity->setDesc($e->entity_name . ' Deleted')->setFrom(Auth::user())->setTo($e)->save();
+            // $lcentity = new LogConverter('entity', 'deactivate');
+            // $lcentity->setDesc($e->entity_name . ' Deleted')->setFrom(Auth::user())->setTo($e)->save();
             $p = Program::where('owner_id', $entityToDelete->id)->first();
             DB::table('programs')->where('owner_id', $entityToDelete->id)->delete();
-            $lc = new LogConverter("program", 'delete');
-            $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . "Deleted program " . $p->program_name)->save();
+            // $lc = new LogConverter("program", 'delete');
+            // $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . "Deleted program " . $p->program_name)->save();
           }
           DB::table('users_roles')->where('user_id', $editUser->id)->delete();
           $ownerFirstNameEnd = strpos($editUser->name, " ");
@@ -1866,15 +1865,15 @@ class PagesController extends Controller
         }
       } else {
         $tuser = Auth::user();
-        $lc    = new LogConverter('user', 'unauthorized delete');
-        $lc->setDesc($tuser->email . ' Attempted to delete user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
+        // $lc    = new LogConverter('user', 'unauthorized delete');
+        // $lc->setDesc($tuser->email . ' Attempted to delete user ' . $editUser->email)->setFrom($tuser)->setTo($editUser)->save();
         $error = "Sorry you don't have permission to delete that user.";
         $editUser->incrementTries();
         $message = "Looks like you may have an old link or perhaps the entire link didn't make it through? You can try again, however too many attempts will lock out the quick deletion for this user.";
         $type    = "danger";
         if ($editUser->tries > 2) {
-          $lc = new LogConverter('user', 'unauthorized delete');
-          $lc->setDesc($tuser->email . ' Attempted to delete user ' . $editUser->email . ' and was locked out due to too many failed attempts. Deletion is no longer an option for this user.')->setFrom($tuser)->setTo($editUser)->save();
+          // $lc = new LogConverter('user', 'unauthorized delete');
+          // $lc->setDesc($tuser->email . ' Attempted to delete user ' . $editUser->email . ' and was locked out due to too many failed attempts. Deletion is no longer an option for this user.')->setFrom($tuser)->setTo($editUser)->save();
           $message = "This user cannot be deleted using the quick link. Please go to the users tab from the dashboard and deactivate them there. Deletion of users is only available when the user first registers. After that, due to database dependencies... I can only deactivate them from accessing the system."; //" Entity ID:".$editUser->entity_id." to User Entity ID ".Auth::user()->entity_id." whose ownership id = ".$entity->owner_id.". With the token of ".$request->query('t')." versus ".$editUser->email_token;
         }
         return view('pages.error', compact('error', 'message', 'type'));
@@ -2033,8 +2032,8 @@ class PagesController extends Controller
       return view('modals.edit-user', compact('roles', 'organizations', 'states', 'user', 'user_role', 'user_phone', 'user_organization', 'default_address'));
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized createuser');
-      $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized createuser');
+      // $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
       return 'Sorry you do not have access to this page.';
     }
   }
@@ -2046,8 +2045,8 @@ class PagesController extends Controller
       return view('modals.reset-password', compact('user'));
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized createuser');
-      $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized createuser');
+      // $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
       return 'Sorry you do not have access to this page.';
     }
   }
@@ -2059,8 +2058,8 @@ class PagesController extends Controller
       return view('modals.deactivate-user', compact('user'));
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized createuser');
-      $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized createuser');
+      // $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
       return 'Sorry you do not have access to this page.';
     }
   }
@@ -2072,8 +2071,8 @@ class PagesController extends Controller
       return view('modals.activate-user', compact('user'));
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized createuser');
-      $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized createuser');
+      // $lc->setDesc($tuser->email . ' Attempted to create a new user ')->setFrom($tuser)->setTo($tuser)->save();
       return 'Sorry you do not have access to this page.';
     }
   }
@@ -2237,8 +2236,8 @@ class PagesController extends Controller
       return $this->extraCheckErrors($validator);
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized createUser');
-      $lc->setDesc($tuser->email . ' attempted to create user.')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized createUser');
+      // $lc->setDesc($tuser->email . ' attempted to create user.')->setFrom($tuser)->setTo($tuser)->save();
       $msg = ['message' => 'Sorry you do not have access to create a user', 'status' => 0];
       return json_encode($msg);
     }
@@ -2486,8 +2485,8 @@ class PagesController extends Controller
       return $this->extraCheckErrors($validator);
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized edituser');
-      $lc->setDesc($tuser->email . ' attempted to edit user.')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized edituser');
+      // $lc->setDesc($tuser->email . ' attempted to edit user.')->setFrom($tuser)->setTo($tuser)->save();
       $msg = ['message' => 'Sorry you do not have access to edit a user', 'status' => 0];
       return json_encode($msg);
     }
@@ -2522,8 +2521,8 @@ class PagesController extends Controller
       return $this->extraCheckErrors($validator);
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized resetUserPassword');
-      $lc->setDesc($tuser->email . ' attempted to reset user password.')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized resetUserPassword');
+      // $lc->setDesc($tuser->email . ' attempted to reset user password.')->setFrom($tuser)->setTo($tuser)->save();
       $msg = ['message' => 'Sorry you do not have access to create a reset user password', 'status' => 0];
       return json_encode($msg);
     }
@@ -2563,8 +2562,8 @@ class PagesController extends Controller
       return $this->extraCheckErrors($validator);
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized deactivateUser');
-      $lc->setDesc($tuser->email . ' attempted to deactivate user.')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized deactivateUser');
+      // $lc->setDesc($tuser->email . ' attempted to deactivate user.')->setFrom($tuser)->setTo($tuser)->save();
       $msg = ['message' => 'Sorry you do not have access to deactivate a user', 'status' => 0];
       return json_encode($msg);
     }
@@ -2600,8 +2599,8 @@ class PagesController extends Controller
       return $this->extraCheckErrors($validator);
     } else {
       $tuser = Auth::user();
-      $lc    = new LogConverter('user', 'unauthorized activateUser');
-      $lc->setDesc($tuser->email . ' attempted to activate user.')->setFrom($tuser)->setTo($tuser)->save();
+      // $lc    = new LogConverter('user', 'unauthorized activateUser');
+      // $lc->setDesc($tuser->email . ' attempted to activate user.')->setFrom($tuser)->setTo($tuser)->save();
       $msg = ['message' => 'Sorry you do not have access to activate a user', 'status' => 0];
       return json_encode($msg);
     }

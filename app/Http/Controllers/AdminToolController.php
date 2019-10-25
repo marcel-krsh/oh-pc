@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\FormsController as Form;
-use App\LogConverter;
+// use App\LogConverter;
 use App\Models\Amenity;
 use App\Models\AmenityHud;
 use App\Models\Boilerplate;
@@ -434,8 +434,8 @@ class AdminToolController extends Controller
         'default_program_rules_id' => Request::get('rule_id'),
         'county_id'                => Request::get('county_id'),
       ]);
-      $lc = new LogConverter('program', 'create');
-      $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . ' Created program ' . $p->program_name)->save();
+      // $lc = new LogConverter('program', 'create');
+      // $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . ' Created program ' . $p->program_name)->save();
 
       return response('We created a program together, and now all it needs is an account! <hr /> <a onclick="dynamicModalLoad(\'admin/account/create\')" class="uk-button uk-width-2-5@m uk-float-right">CREATE NEW ACCOUNT</a>');
     } else {
@@ -451,10 +451,10 @@ class AdminToolController extends Controller
       ]);
       $p    = Program::find($id);
       $pnew = $p->toArray();
-      $lc   = new LogConverter('program', 'update');
-      $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . ' Updated program ' . $p->program_name);
-      $lc->smartAddHistory($pold, $pnew);
-      $lc->save();
+      // $lc   = new LogConverter('program', 'update');
+      // $lc->setFrom(Auth::user())->setTo($p)->setDesc(Auth::user()->email . ' Updated program ' . $p->program_name);
+      // $lc->smartAddHistory($pold, $pnew);
+      // $lc->save();
 
       return response('I updated ' . $p->program_name . ' for you. We are task masters!  <script>$(\'#programs-tab\').trigger(\'click\');</script>');
     }

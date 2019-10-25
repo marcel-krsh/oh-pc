@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Excel;
 use App\Models\Import;
 use App\Models\ImportRow;
-use App\LogConverter;
+// use App\LogConverter;
 use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +20,7 @@ class CostImportController extends Controller
     {
         // $this->middleware('auth');
     }
-    
+
     // Required fields for form
     private $validation = [
         'table' => 'required',
@@ -117,7 +117,7 @@ class CostImportController extends Controller
                     $where = '%%';
                     $whereOperator = "LIKE";
                     break;
-                    
+
                 default:
                     $where = Auth::user()->entity_id;
                     $whereOperator = "=";
@@ -304,8 +304,8 @@ class CostImportController extends Controller
 
                 DB::transaction(function () use ($request, $ic, $ie, $table, &$count_inserted, &$count_updated, &$import) {
                     $import = Import::create(['user_id' => auth()->user()->id]);
-                    $lc = new LogConverter('import', 'create');
-                    $lc->setFrom(Auth::user())->setTo($import)->setDesc(Auth::user()->email . ' created import')->save();
+                    // $lc = new LogConverter('import', 'create');
+                    // $lc->setFrom(Auth::user())->setTo($import)->setDesc(Auth::user()->email . ' created import')->save();
                     foreach ($ic as $r => $row) {
                         $id          = null;
                         $fields      = [];

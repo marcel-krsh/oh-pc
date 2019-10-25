@@ -21,7 +21,7 @@ use App\Models\DocumentRule;
 use App\Models\DocumentRuleEntry;
 use App\Models\Entity;
 use App\Models\Parcel;
-use App\LogConverter;
+// use App\LogConverter;
 use App\Models\Disposition;
 use App\Models\DispositionType;
 use App\Models\ProgramRule;
@@ -63,8 +63,8 @@ class DispositionController extends Controller
     public function dispositionList(Request $request)
     {
         if (Gate::allows('view-disposition')  || Auth::user()->entity_id == 1) {
-            $lc = new LogConverter('dispositionlist', 'view');
-            $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . 'viewed dispositionlist')->save();
+            // $lc = new LogConverter('dispositionlist', 'view');
+            // $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . 'viewed dispositionlist')->save();
             // determine if they are OHFA or not
             if (Auth::user()->entity_id != 1) {
                 // create values for a where clause
@@ -114,7 +114,7 @@ class DispositionController extends Controller
                         session(['dispositions_asc_desc_opposite' => ""]);
                         $dispositionsAscDescOpposite =  $request->session()->get('dispositions_asc_desc_opposite');
                         break;
-                    
+
                     default:
                         session(['dispositions_asc_desc'=> 'asc']);
                         $dispositionsAscDesc =  $request->session()->get('dispositions_asc_desc');
@@ -225,7 +225,7 @@ class DispositionController extends Controller
                 $dispositionsStatusFilter = $request->session()->get('dispositions_status_filter');
                 $dispositionsStatusFilterOperator = $request->session()->get('dispositions_status_filter_operator');
             }
-            
+
             // Insert other Filters here
             $currentUser = Auth::user();
 
@@ -246,7 +246,7 @@ class DispositionController extends Controller
             if ($dispositionssSortBy) {
                 $dispositionsWhereOrder .="ORDER BY ".$dispositionssSortBy." ".$dispositionsAscDesc;
             }
-           
+
             $dispositions = DB::select(
                 DB::raw("
                             SELECT
@@ -260,8 +260,8 @@ class DispositionController extends Controller
                                 parcels.parcel_id  as pid,
                                 invstat.invoice_status_name as status_name,
                                 pr.program_name ,
-                                ent.entity_name 
-                                
+                                ent.entity_name
+
                             FROM
                                 dispositions
 
@@ -291,16 +291,16 @@ class DispositionController extends Controller
         } else {
             $dispositions = Disposition::get();
         }
-        
+
         return view('dashboard.disposition_list', compact('dispositions'));
     }
 
     public function dispositionInvoiceList(Request $request)
     {
         if (Gate::allows('view_disposition') || Auth::user()->entity_id == 1) {
-            $lc = new LogConverter('disposition_invoice', 'view');
-            $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed disposition invoice list')->save();
-            
+            // $lc = new LogConverter('disposition_invoice', 'view');
+            // $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed disposition invoice list')->save();
+
             $query = new DispositionInvoice;
 
             $disposition_invoices_query = DispositionInvoice::with('entity')
@@ -347,7 +347,7 @@ class DispositionController extends Controller
                         session(['disposition_invoices_asc_desc_opposite' => "0"]);
                         $invoicesAscDescOpposite =  $request->session()->get('disposition_invoices_asc_desc_opposite');
                         break;
-                    
+
                     default:
                         session(['disposition_invoices_asc_desc'=> 'asc']);
                         $invoicesAscDesc =  $request->session()->get('disposition_invoices_asc_desc');
@@ -588,13 +588,13 @@ class DispositionController extends Controller
         if (!$parcel) {
             return 'Sorry this parcel cannot be found.';
         }
-        
-        $lc = new LogConverter('dispositions', 'view');
-        if (!is_null($disposition) && $disposition != 'all') {
-            $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed disposition '.$disposition.' for parcel '.$parcel->id)->save();
-        } else {
-            $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed disposition for parcel '.$parcel->id)->save();
-        }
+
+        // $lc = new LogConverter('dispositions', 'view');
+        // if (!is_null($disposition) && $disposition != 'all') {
+        //     $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed disposition '.$disposition.' for parcel '.$parcel->id)->save();
+        // } else {
+        //     $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed disposition for parcel '.$parcel->id)->save();
+        // }
         setlocale(LC_MONETARY, 'en_US');
         $parcel->with('state')->with('county');
 
@@ -689,13 +689,13 @@ class DispositionController extends Controller
             $added_approvers = ApprovalRequest::where('approval_type_id', '=', 1)
                                         ->where('link_type_id', '=', $disposition->id)
                                         ->pluck('user_id as id');
-            
+
             // remove inactive approvers
             $resetAddedApprovers = 0;
 
             foreach ($added_approvers as $approver) {
                 $inactiveUserCheck = User::where('id', $approver)->where('active', 0)->count();
-                
+
                 if ($inactiveUserCheck > 0) {
                     $debug = "Inactive user found";
                     $ARCheck = ApprovalRequest::select('*')->where('approval_type_id', '=', 1)
@@ -726,7 +726,7 @@ class DispositionController extends Controller
             $resetAddedApprovers = 0;
             foreach ($added_approvers_hfa as $approver) {
                 $inactiveUserCheck = User::where('id', $approver)->where('active', 0)->count();
-               
+
                 if ($inactiveUserCheck > 0) {
                     $debug = "Inactive user found";
                     $ARCheck = ApprovalRequest::select('*')->where('approval_type_id', '=', 1)
@@ -831,17 +831,17 @@ class DispositionController extends Controller
                         perform_all_parcel_checks($disposition->parcel);
                         guide_next_pending_step(2, $disposition->parcel->id);
                     }
-                    $lc = new LogConverter('dispositions', 'approved by all HFA');
-                    $lc->setFrom(Auth::user())->setTo($invoice)->setDesc('All HFA approved the disposition.')->save();
+                    // $lc = new LogConverter('dispositions', 'approved by all HFA');
+                    // $lc->setFrom(Auth::user())->setTo($invoice)->setDesc('All HFA approved the disposition.')->save();
                 }
             }
         } else {
             $approvals = [];
-            
+
             $potential_approvers_lb = [];
             $potential_approvers_hfa = [];
         }
-        
+
         // calculation
         $imputed_cost_per_parcel = ProgramRule::first(['imputed_cost_per_parcel']);
         $rule_min_cost = $imputed_cost_per_parcel->imputed_cost_per_parcel;
@@ -861,10 +861,10 @@ class DispositionController extends Controller
             $request_for_recapture = new Request;
             $request_for_recapture->request->add(['income'=>$income, 'cost'=>$transaction_cost]);
 
-            
+
             $payback = $this->computeRecaptureOwed($disposition, $request_for_recapture);
             $demolition = $this->getDemolitionTotal($parcel);
-            
+
             if ($eligible_income > $demolition + $maintenance_array['unused']) {
                 $gain = $eligible_income - $demolition - $maintenance_array['unused'];
             } else {
@@ -884,7 +884,7 @@ class DispositionController extends Controller
             $demolition = 0;
             $gain = 0;
         }
-        
+
         $calculation = [
             'maintenance_total' => number_format($maintenance_total, 2, '.', ''),
             'maintenance_total_formatted' => money_format('%n', $maintenance_total),
@@ -909,7 +909,7 @@ class DispositionController extends Controller
             'gain' => number_format($gain, 2, '.', ''),
             'gain_formatted' => money_format('%n', $gain)
         ];
-        
+
         // compute actual results based on calculation and HFA adjustments
         if ($disposition) {
             // check against the rules
@@ -970,8 +970,8 @@ class DispositionController extends Controller
                     $payback = $eligible_income + $maintenance_to_repay;
                 }
             }
-            
-            
+
+
             if (!is_null($disposition->hfa_calc_gain)) {
                 $gain = $disposition->hfa_calc_gain;
             } else {
@@ -1338,7 +1338,7 @@ class DispositionController extends Controller
         // get dates
         $invoiceid = ParcelsToReimbursementInvoice::where('parcel_id', '=', $parcel->id)->first();
         $invoice = ReimbursementInvoice::where('id', '=', $invoiceid->reimbursement_invoice_id)->first();
-  
+
         if ($invoice->status_id != 6) {
             return 'Sorry it looks like the invoice has not been paid.';
         } else {
@@ -1373,7 +1373,7 @@ class DispositionController extends Controller
                 ]);
             }
         }
-        
+
         $guide_steps = GuideStep::where('guide_step_type_id', '=', 1)->get();
         $guide_help = [];
         $guide_name = [];
@@ -1404,7 +1404,7 @@ class DispositionController extends Controller
                 }
             }
         }
-        
+
 
         if ($format == "invoice" && $disposition) {
             //dd("open Invoice page here.");
@@ -1424,7 +1424,7 @@ class DispositionController extends Controller
             $output['message'] = "Ruh Roh Shaggy! (Scooby Doo fan?)... You do not have access to the disposition. Make sure your manager has given you viewing priveleges.";
             return $output;
         }
-        
+
         if ($parcel) {
             // get all documents
             $documents = Document::where('parcel_id', '=', $parcel->id)->get();
@@ -1481,7 +1481,7 @@ class DispositionController extends Controller
             foreach ($files as $file) {
                 // Create filepath
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
-                
+
                 // sanitize filename
                 $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
@@ -1511,8 +1511,8 @@ class DispositionController extends Controller
                 $document->update([
                     'file_path' => $filepath,
                 ]);
-                $lc=new LogConverter('document', 'create');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
+                // $lc=new LogConverter('document', 'create');
+                // $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
                 // store original file
                 Storage::put($filepath, File::get($file));
 
@@ -1555,8 +1555,8 @@ class DispositionController extends Controller
                 $document->update([
                     'comment' => $comment,
                 ]);
-                $lc = new LogConverter('document', 'comment');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' added comment to document ')->save();
+                // $lc = new LogConverter('document', 'comment');
+                // $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' added comment to document ')->save();
             }
             return 1;
         } else {
@@ -1588,7 +1588,7 @@ class DispositionController extends Controller
             foreach ($files as $file) {
                 // Create filepath
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
-                
+
                 // sanitize filename
                 $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
@@ -1621,8 +1621,8 @@ class DispositionController extends Controller
                 $document->update([
                     'file_path' => $filepath,
                 ]);
-                $lc=new LogConverter('document', 'create');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
+                // $lc=new LogConverter('document', 'create');
+                // $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
                 // store original file
                 Storage::put($filepath, File::get($file));
 
@@ -1677,8 +1677,8 @@ class DispositionController extends Controller
                             ]);
                         $action->save();
 
-                        $lc = new LogConverter('Dispositions', 'approval by proxy');
-                        $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . 'approved the disposition for '.$approver->name)->save();
+                        // $lc = new LogConverter('Dispositions', 'approval by proxy');
+                        // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . 'approved the disposition for '.$approver->name)->save();
 
                         if ($hfa_approval) {
                             /*if($approver_id == 2){ // holly approval
@@ -1713,9 +1713,9 @@ class DispositionController extends Controller
                             'approval_action_type_id' => 1
                         ]);
                     $action->save();
-         
-                    $lc = new LogConverter('Dispositions', 'approval');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . 'approved the disposition.')->save();
+
+                    // $lc = new LogConverter('Dispositions', 'approval');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . 'approved the disposition.')->save();
 
                     if ($hfa_approval) {
                         // if($approver_id == 2){ // holly approval
@@ -1726,7 +1726,7 @@ class DispositionController extends Controller
                     } else {
                         guide_set_progress($disposition->id, 4, $status = 'completed', 1); // step 1 - submitted for internal approval
                     }
-                    
+
 
                     $output['message'] = 'Your disposition was approved. Feels good doesn\'t it?';
                     $output['id'] = $approver_id;
@@ -1765,8 +1765,8 @@ class DispositionController extends Controller
                 $document->update([
                     'comment' => $comment,
                 ]);
-                $lc = new LogConverter('document', 'comment');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' added comment to document ')->save();
+                // $lc = new LogConverter('document', 'comment');
+                // $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' added comment to document ')->save();
             }
             return 1;
         } else {
@@ -1798,7 +1798,7 @@ class DispositionController extends Controller
             foreach ($files as $file) {
                 // Create filepath
                 $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
-                
+
                 // sanitize filename
                 $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
@@ -1831,8 +1831,8 @@ class DispositionController extends Controller
                 $document->update([
                     'file_path' => $filepath,
                 ]);
-                $lc=new LogConverter('document', 'create');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
+                // $lc=new LogConverter('document', 'create');
+                // $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
                 // store original file
                 Storage::put($filepath, File::get($file));
 
@@ -1877,7 +1877,7 @@ class DispositionController extends Controller
         $imputed_cost_per_parcel = $rules->imputed_cost_per_parcel; //200
         $maintenance_max = $rules->maintenance_max; //1200
         $maintenance_recap_pro_rate = $rules->maintenance_recap_pro_rate; //36
-        
+
         if ($disposition->hfa_calc_months_prepaid != null) {
             $maintenance_recap_pro_rate = $disposition->hfa_calc_months_prepaid;
         }
@@ -1916,7 +1916,7 @@ class DispositionController extends Controller
         if ($maintenance_total > $maintenance_max && $maintenance_max != 0) {
             $maintenance_total = $maintenance_max;
         }
-        
+
         return $maintenance_total;
     }
 
@@ -1968,7 +1968,7 @@ class DispositionController extends Controller
 
         $invoiceid = ParcelsToReimbursementInvoice::where('parcel_id', '=', $parcel->id)->first();
         $invoice = ReimbursementInvoice::where('id', '=', $invoiceid->reimbursement_invoice_id)->first();
-  
+
         if ($invoice->status_id != 6) {
             return -1; // has not been paid
         } else {
@@ -2002,7 +2002,7 @@ class DispositionController extends Controller
                 'created_at' => $disposition->updated_at
             ]);
         }
-         
+
 
         $ts1 = strtotime($invoice_payment_date);
         $ts2 = strtotime($disposition_date);
@@ -2090,8 +2090,8 @@ class DispositionController extends Controller
                     ]);
                     $disposition->save();
 
-                    $lc = new LogConverter('Dispositions', 'new');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' created a new disposition.')->save();
+                    // $lc = new LogConverter('Dispositions', 'new');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' created a new disposition.')->save();
                     // set status of parcel to draft for the landbank
                     // Parcel::where('id',$parcel->id)->update(['landbank_property_status_id'=>51]);
                     updateStatus("parcel", $parcel, 'landbank_property_status_id', 51, 0, "");
@@ -2109,7 +2109,7 @@ class DispositionController extends Controller
                     $output['next'] = 0;
                     $output['message'] = "This parcel already has a disposition";
                 }
-                
+
                 break;
 
 
@@ -2164,8 +2164,8 @@ class DispositionController extends Controller
                         "description_use_in_documents" => $description_use_in_documents
                     ]);
 
-                    $lc = new LogConverter('Dispositions', 'saved');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' saved disposition '.$disposition->id)->save();
+                    // $lc = new LogConverter('Dispositions', 'saved');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' saved disposition '.$disposition->id)->save();
 
                     // assuming that this step is completed on the first form save
                     guide_set_progress($disposition->id, 2, $status = 'completed', 1); // step 1 - complete form completed
@@ -2213,7 +2213,7 @@ class DispositionController extends Controller
                     $disposition->parcel()->update([
                         "landbank_property_status_id" => 49 // Disposition Submitted for Internal Approval
                     ]);
-                    
+
                     // session(['next_step'=>'disposition-submitted']);
                     // $output['next'] = "disposition-submitted";
                     // $output['message'] = "I've updated the form!";
@@ -2255,9 +2255,9 @@ class DispositionController extends Controller
                         $output['next'] = "disposition-form";
                         $output['message'] = "I've updated the form, but couldn't submit it for internal approval. Did you select approvers?";
                     } else {
-                        $lc = new LogConverter('Dispositions', 'submitted to LB');
-                        $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' submitted disposition '.$disposition->id.' to LB.')->save();
-                        
+                        // $lc = new LogConverter('Dispositions', 'submitted to LB');
+                        // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' submitted disposition '.$disposition->id.' to LB.')->save();
+
                         // send emails
                         try {
                             foreach ($approvals as $approval) {
@@ -2296,7 +2296,7 @@ class DispositionController extends Controller
                         $transaction_cost = $rule_min_cost;
                     }
                     $special = (isset($input['special']) ? $input['special'] : null);
-                    
+
                     $public_use_political = (isset($input['public_use_political']) ? $input['public_use_political'] : null);
                     $public_use_community = (isset($input['public_use_community']) ? $input['public_use_community'] : null);
                     $public_use_oneyear = (isset($input['public_use_oneyear']) ? $input['public_use_oneyear'] : null);
@@ -2362,8 +2362,8 @@ class DispositionController extends Controller
                         "hfa_calc_months_prepaid" => $calculation['hfa_calc_months_prepaid']
                     ]);
 
-                    $lc = new LogConverter('Dispositions', 'saved');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' saved disposition '.$disposition->id)->save();
+                    // $lc = new LogConverter('Dispositions', 'saved');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' saved disposition '.$disposition->id)->save();
 
                     // make sure step 1 is all done
                     guide_set_progress($disposition->id, 1, $status = 'completed', 0); // step 1 - all done
@@ -2388,9 +2388,9 @@ class DispositionController extends Controller
                 if ($disposition) {
                     $imputed_cost_per_parcel = ProgramRule::first(['imputed_cost_per_parcel']);
                     $rule_min_cost = $imputed_cost_per_parcel->imputed_cost_per_parcel;
-                    
+
                     $transaction_cost = $rule_min_cost;
-                   
+
                     $special = (isset($input['special']) ? $input['special'] : null);
 
                     $public_use_political = (isset($input['public_use_political']) ? $input['public_use_political'] : null);
@@ -2468,11 +2468,11 @@ class DispositionController extends Controller
                         "hfa_property_status_id" => 29
                     ]);
 
-                    $lc = new LogConverter('Dispositions', 'sent to HFA');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' sent the disposition '.$disposition->id.' to HFA for approval.')->save();
+                    // $lc = new LogConverter('Dispositions', 'sent to HFA');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' sent the disposition '.$disposition->id.' to HFA for approval.')->save();
 
                     // Send email notification to LB
-                    
+
                     $recipients = User::where('entity_id', '=', 1)
                                         ->join('users_roles', 'users.id', '=', 'users_roles.user_id')
                                         ->where('users_roles.role_id', '=', 9) // Reviews dispositions for HFA
@@ -2490,7 +2490,7 @@ class DispositionController extends Controller
                     } catch (\Illuminate\Database\QueryException $ex) {
                         dd($ex->getMessage());
                     }
-                    
+
                     guide_set_progress($disposition->id, 5, $status = 'completed', 0); // step 1 - submitted to HFA
                     // all step 1 is done
                     guide_set_progress($disposition->id, 1, $status = 'completed', 0); // step 1
@@ -2538,8 +2538,8 @@ class DispositionController extends Controller
                         ]);
                         $current_invoice->save();
 
-                        $lc = new LogConverter('disposition_invoices', 'create');
-                        $lc->setFrom(Auth::user())->setTo($current_invoice)->setDesc(Auth::user()->email . 'Created a new disposition invoice draft')->save();
+                        // $lc = new LogConverter('disposition_invoices', 'create');
+                        // $lc->setFrom(Auth::user())->setTo($current_invoice)->setDesc(Auth::user()->email . 'Created a new disposition invoice draft')->save();
                     }
 
                     // calculate total maintenance & total of net proceeds owed
@@ -2553,8 +2553,8 @@ class DispositionController extends Controller
                     $request_for_recapture = new Request;
                     $request_for_recapture->request->add(['income'=>$income, 'cost'=>$transaction_cost]);
                     $payback = $this->computeRecaptureOwed($disposition, $request_for_recapture);
-                    
-                    
+
+
                     // check against the rules
                     $rules = ProgramRule::first(['imputed_cost_per_parcel','maintenance_max','maintenance_recap_pro_rate','demolition_max']);
                     $imputed_cost_per_parcel = $rules->imputed_cost_per_parcel; //200
@@ -2670,8 +2670,8 @@ class DispositionController extends Controller
                     perform_all_parcel_checks($parcel);
                     guide_next_pending_step(2, $parcel->id);
 
-                    $lc = new LogConverter('Dispositions', 'added to invoice');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' added disposition '.$disposition->id.' to invoice '.$current_invoice->id)->save();
+                    // $lc = new LogConverter('Dispositions', 'added to invoice');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' added disposition '.$disposition->id.' to invoice '.$current_invoice->id)->save();
 
                     // request approved
                     // make sure step 1 is all done
@@ -2715,7 +2715,7 @@ class DispositionController extends Controller
 
             case "disposition-release-requested":
                 $disposition = Disposition::where('parcel_id', '=', $parcel->id)->first();
-                
+
                 if ($disposition) {
                     $disposition->update([
                         'date_release_requested' => Carbon\Carbon::today()->toDateTimeString()
@@ -2727,8 +2727,8 @@ class DispositionController extends Controller
                     perform_all_parcel_checks($parcel);
                     guide_next_pending_step(2, $parcel->id);
 
-                    $lc = new LogConverter('Dispositions', 'release requested');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' requested the release for disposition '.$disposition->id)->save();
+                    // $lc = new LogConverter('Dispositions', 'release requested');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' requested the release for disposition '.$disposition->id)->save();
 
                     // Send email notification to HFA
                     $recipients = User::where('entity_id', '=', 1)
@@ -2762,7 +2762,7 @@ class DispositionController extends Controller
 
             case "disposition-released":
                 $disposition = Disposition::where('parcel_id', '=', $parcel->id)->first();
-                
+
                 if ($disposition) {
                     if ($request->get('release_date')) {
                         $release_date = $request->get('release_date');
@@ -2777,7 +2777,7 @@ class DispositionController extends Controller
                             'release_date' => Carbon\Carbon::today()->toDateTimeString()
                         ]);
                     }
-                    
+
                     $parcel->update([
                         "landbank_property_status_id" => 17,
                         "hfa_property_status_id" => 33 // released
@@ -2785,8 +2785,8 @@ class DispositionController extends Controller
                     perform_all_parcel_checks($parcel);
                     guide_next_pending_step(2, $parcel->id);
 
-                    $lc = new LogConverter('Dispositions', 'released');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' released disposition '.$disposition->id)->save();
+                    // $lc = new LogConverter('Dispositions', 'released');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' released disposition '.$disposition->id)->save();
 
                     // make sure step 1 & 2 all done
                     guide_set_progress($disposition->id, 1, $status = 'completed', 0); // step 1 - all done
@@ -2802,7 +2802,7 @@ class DispositionController extends Controller
 
             case "disposition-decline":
                 $disposition = Disposition::where('parcel_id', '=', $parcel->id)->first();
-                
+
                 if ($disposition) {
                     $disposition->update([
                         'status_id' => 5 // declined
@@ -2814,8 +2814,8 @@ class DispositionController extends Controller
                     perform_all_parcel_checks($parcel);
                     guide_next_pending_step(2, $parcel->id);
 
-                    $lc = new LogConverter('Dispositions', 'declined');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' declined disposition '.$disposition->id)->save();
+                    // $lc = new LogConverter('Dispositions', 'declined');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' declined disposition '.$disposition->id)->save();
                     session(['next_step'=>'disposition-decline']);
                     $output['next'] = "disposition-decline";
                     $output['message'] = "The disposition was declined.";
@@ -2868,8 +2868,8 @@ class DispositionController extends Controller
             guide_next_pending_step(2, $disposition->parcel->id);
 
             // log converter
-            $lc=new LogConverter('dispositions', 'Removed from invoice');
-            $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' removed disposition ' . $disposition->id.' from invoice '.$invoice_id)->save();
+            // $lc=new LogConverter('dispositions', 'Removed from invoice');
+            // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' removed disposition ' . $disposition->id.' from invoice '.$invoice_id)->save();
 
             // step 2 isn't completed anymore
             guide_set_progress($disposition->id, 6, $status = 'started', 0); // step 2 not all done
@@ -2908,8 +2908,8 @@ class DispositionController extends Controller
                     "user_id" => $approver_id
                 ]);
                 $newApprovalRequest->save();
-                $lc = new LogConverter('dispositions', 'add.lb.approver');
-                $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . 'added an approver.')->save();
+                // $lc = new LogConverter('dispositions', 'add.lb.approver');
+                // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . 'added an approver.')->save();
 
                 // send emails
                 try {
@@ -2955,8 +2955,8 @@ class DispositionController extends Controller
                     "user_id" => $approver_id
                 ]);
                 $newApprovalRequest->save();
-                $lc = new LogConverter('disposition', 'add.hfa.approver');
-                $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . 'added a HFA approver.')->save();
+                // $lc = new LogConverter('disposition', 'add.hfa.approver');
+                // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . 'added a HFA approver.')->save();
 
                 $data['message'] = 'The approver was added.';
                 return $data;
@@ -2988,7 +2988,7 @@ class DispositionController extends Controller
                             ->where('user_id', '=', $approver_id)
                             ->first();
             $approver->delete();
- 
+
             $data['message'] = '';
             $data['id'] = $request->get('id');
             return $data;
@@ -3022,7 +3022,7 @@ class DispositionController extends Controller
                             ->where('user_id', '=', $approver_id)
                             ->first();
             $approver->delete();
- 
+
             $data['message'] = '';
             $data['id'] = $request->get('id');
             return $data;
@@ -3050,7 +3050,7 @@ class DispositionController extends Controller
                             'approval_action_type_id' => 1
                         ]);
                 $action->save();
-     
+
                 $data['message'] = 'Your approval was recorded, stamped, and put in the history books. I know, it sounds pretty epic when I put it that way.';
                 $data['id'] = $approver_id;
                 return $data;
@@ -3083,7 +3083,7 @@ class DispositionController extends Controller
                             'approval_action_type_id' => 1
                         ]);
                 $action->save();
-     
+
                 $data['message'] = 'Your approval was recorded.';
                 $data['id'] = $approver_id;
                 return $data;
@@ -3115,7 +3115,7 @@ class DispositionController extends Controller
                         'approval_action_type_id' => 4
                     ]);
             $action->save();
- 
+
             $data['message'] = 'This disposition has been declined. It pains me too, but we gotta stick to our guns, right?';
             $data['id'] = $approver_id;
             return $data;
@@ -3142,7 +3142,7 @@ class DispositionController extends Controller
                         'approval_action_type_id' => 4
                     ]);
             $action->save();
- 
+
             $data['message'] = 'This disposition has been declined. It is never fun to decline anything... but we must be diligent!';
             $data['id'] = $approver_id;
             return $data;
@@ -3179,7 +3179,7 @@ class DispositionController extends Controller
                 session(['next_step'=>'disposition-form']);
                 $output['next'] = "disposition-form";
             }
-            
+
             $output['message'] = "I've added the payment date for this parcel! Getting things done feels good!";
         } else {
             $output['message'] = '';
@@ -3321,9 +3321,9 @@ class DispositionController extends Controller
             }
         }
 
-        $lc = new LogConverter('disposition_invoices', 'view');
-        $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . 'Viewed disposition invoice')->save();
-        
+        // $lc = new LogConverter('disposition_invoices', 'view');
+        // $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . 'Viewed disposition invoice')->save();
+
         $nip = Entity::where('id', 1)->with('state')->with('user')->first();
 
         //DispositionInvoiceNote
@@ -3390,7 +3390,7 @@ class DispositionController extends Controller
                 $invoice->update(['status_id'=>1]); // Draft
                 $invoice->status_id = 1;
             }
-            
+
             $invoice->load('status');
         }
 
@@ -3442,7 +3442,7 @@ class DispositionController extends Controller
             $invoice->load('status');
             $invoice->load('dispositions'); // reload to make sure they show latest status
         }
-        
+
         // refresh invoice data to use current status
         //$invoice = DispositionInvoice::find($invoice->id); //if we reload, we will loose some of the work done above (formatted total, etc)
 
@@ -3464,8 +3464,8 @@ class DispositionController extends Controller
                     'status_id' => 3
                 ]);
 
-                $lc = new LogConverter('disposition_invoices', 'submitted for approval');
-                $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . ' submitted the disposition invoice '.$invoice->id.' for approval')->save();
+                // $lc = new LogConverter('disposition_invoices', 'submitted for approval');
+                // $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . ' submitted the disposition invoice '.$invoice->id.' for approval')->save();
 
                 $output['message'] = "The disposition invoice has been submitted for approval.";
 
@@ -3511,8 +3511,8 @@ class DispositionController extends Controller
                         perform_all_parcel_checks($disposition->parcel);
                         guide_next_pending_step(2, $disposition->parcel->id);
 
-                        $lc = new LogConverter('Dispositions', 'release requested');
-                        $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' requested the release for disposition '.$disposition->id)->save();
+                        // $lc = new LogConverter('Dispositions', 'release requested');
+                        // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' requested the release for disposition '.$disposition->id)->save();
 
                         $sendemail = 1;
                     }
@@ -3533,7 +3533,7 @@ class DispositionController extends Controller
             } else {
                 // only that particular disposition should have the request
                 $disposition = Disposition::where('id', '=', $disposition_id)->first();
-                
+
                 if ($disposition) {
                     $disposition->update([
                         'date_release_requested' => Carbon\Carbon::today()->toDateTimeString()
@@ -3545,8 +3545,8 @@ class DispositionController extends Controller
                     perform_all_parcel_checks($disposition->parcel);
                     guide_next_pending_step(2, $disposition->parcel->id);
 
-                    $lc = new LogConverter('Dispositions', 'release requested');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' requested the release for disposition '.$disposition->id)->save();
+                    // $lc = new LogConverter('Dispositions', 'release requested');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' requested the release for disposition '.$disposition->id)->save();
 
                     try {
                         foreach ($message_recipients_array as $userToNotify) {
@@ -3561,7 +3561,7 @@ class DispositionController extends Controller
                 }
             }
 
-           
+
             $output['message'] = "I have requested the release. Enjoy the rest of your day!";
             return $output;
         } else {
@@ -3590,8 +3590,8 @@ class DispositionController extends Controller
                         perform_all_parcel_checks($disposition->parcel);
                         guide_next_pending_step(2, $disposition->parcel->id);
 
-                        $lc = new LogConverter('Dispositions', 'released');
-                        $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' released disposition '.$disposition->id)->save();
+                        // $lc = new LogConverter('Dispositions', 'released');
+                        // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' released disposition '.$disposition->id)->save();
 
                         guide_set_progress($disposition->id, 14, $status = 'completed', 0); // step 3 - fiscal agent releases lien
                     }
@@ -3599,7 +3599,7 @@ class DispositionController extends Controller
                 }
             } else {
                 $disposition = Disposition::where('id', '=', $disposition_id)->first();
-                    
+
                 if ($disposition) {
                     $disposition_id = $request->get('disposition_id');
 
@@ -3613,16 +3613,16 @@ class DispositionController extends Controller
 
                     perform_all_parcel_checks($disposition->parcel);
                     guide_next_pending_step(2, $disposition->parcel->id);
-                        
-                    $lc = new LogConverter('Dispositions', 'released');
-                    $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' released disposition '.$disposition->id)->save();
+
+                    // $lc = new LogConverter('Dispositions', 'released');
+                    // $lc->setFrom(Auth::user())->setTo($disposition)->setDesc(Auth::user()->email . ' released disposition '.$disposition->id)->save();
 
                     guide_set_progress($disposition->id, 14, $status = 'completed', 0); // step 3 - fiscal agent releases lien
 
                     $output['message'] = "The disposition was released successfully. Does that not feel great to get that done? It feels good to me!";
                 }
             }
-            
+
             $output['message'] = "Released. Nothing like the sweet release of a disposition. Good times.";
             return $output;
         } else {
@@ -3642,8 +3642,8 @@ class DispositionController extends Controller
                 'note' => $request->get('invoice-note')
             ]);
             $note->save();
-            $lc = new LogConverter('disposition_invoices', 'addnote');
-            $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . ' added note to disposition invoice')->save();
+            // $lc = new LogConverter('disposition_invoices', 'addnote');
+            // $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . ' added note to disposition invoice')->save();
 
             $words = explode(" ", $user->name);
             $initials = "";
@@ -3673,8 +3673,8 @@ class DispositionController extends Controller
                 'status_id' => 8 // submitted to fiscal agent
             ]);
 
-            $lc = new LogConverter('disposition_invoices', 'payment pending');
-            $lc->setFrom(Auth::user())->setTo($invoice)->setDesc('Disposition invoice is pending payment.')->save();
+            // $lc = new LogConverter('disposition_invoices', 'payment pending');
+            // $lc->setFrom(Auth::user())->setTo($invoice)->setDesc('Disposition invoice is pending payment.')->save();
 
             // Send email notification to LB
             $LBDispositionApprovers = User::where('entity_id', '==', $invoice->entity_id)
@@ -3730,8 +3730,8 @@ class DispositionController extends Controller
                     "user_id" => $approver_id
                 ]);
                 $newApprovalRequest->save();
-                $lc = new LogConverter('disposition_invoices', 'add.approver');
-                $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . 'added an approver.')->save();
+                // $lc = new LogConverter('disposition_invoices', 'add.approver');
+                // $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . 'added an approver.')->save();
 
                 $data['message'] = 'The approver was added.';
                 return $data;
@@ -3792,9 +3792,9 @@ class DispositionController extends Controller
                                 'documents' => $documents_json
                             ]);
                         $action->save();
-             
-                        $lc = new LogConverter('reimbursement_invoices', 'approval by proxy');
-                        $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . 'approved the invoice for '.$approver->name)->save();
+
+                        // $lc = new LogConverter('reimbursement_invoices', 'approval by proxy');
+                        // $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . 'approved the invoice for '.$approver->name)->save();
                     }
                 }
                 $data['message'] = 'This request was approved.';
@@ -3812,9 +3812,9 @@ class DispositionController extends Controller
                             'approval_action_type_id' => 1
                         ]);
                     $action->save();
-         
-                    $lc = new LogConverter('disposition_invoices', 'approval');
-                    $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . 'approved the disposition invoice.')->save();
+
+                    // $lc = new LogConverter('disposition_invoices', 'approval');
+                    // $lc->setFrom(Auth::user())->setTo($invoice)->setDesc(Auth::user()->email . 'approved the disposition invoice.')->save();
 
                     $data['message'] = 'Your invoice was approved.';
                     $data['id'] = $approver_id;
@@ -3836,7 +3836,7 @@ class DispositionController extends Controller
         if (app('env') == 'local') {
             app('debugbar')->disable();
         }
-        
+
         if ($request->hasFile('files')) {
             $files = $request->file('files');
             $file_count = count($files);
@@ -3844,7 +3844,7 @@ class DispositionController extends Controller
             $document_ids = '';
 
             $categories_json = json_encode(['39'], true);
-                       
+
             $approvers = explode(",", $request->get('approvers'));
 
             $user = Auth::user();
@@ -3856,7 +3856,7 @@ class DispositionController extends Controller
                 foreach ($files as $file) {
                     // Create filepath
                     $folderpath = 'documents/entity_'. $disposition->parcel->entity_id . '/program_' . $disposition->parcel->program_id . '/parcel_' . $disposition->parcel->id . '/';
-                    
+
                     // sanitize filename
                     $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
@@ -3889,8 +3889,8 @@ class DispositionController extends Controller
                     $document->update([
                         'file_path' => $filepath,
                     ]);
-                    $lc=new LogConverter('document', 'create');
-                    $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
+                    // $lc=new LogConverter('document', 'create');
+                    // $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
                     // store original file
                     Storage::put($filepath, File::get($file));
 
@@ -3930,8 +3930,8 @@ class DispositionController extends Controller
                 $document->update([
                     'comment' => $comment,
                 ]);
-                $lc = new LogConverter('document', 'comment');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' added comment to document ')->save();
+                // $lc = new LogConverter('document', 'comment');
+                // $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' added comment to document ')->save();
             }
             return 1;
         } else {

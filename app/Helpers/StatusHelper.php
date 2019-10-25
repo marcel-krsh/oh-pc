@@ -43,8 +43,8 @@ function updateStatus($type = 'parcel', $item, $field, $status, $withCheck = 0, 
             if ($item) {
                 $explanation = $field.'_explanation';
                 $item->update([$field => $status, $explanation => $comment]);
-                $lc = new App\LogConverter('parcel', 'update');
-                $lc->setFrom(Auth::user())->setTo($item)->setDesc('Parcel '.$item->parcel_id.' had a status updated. '.$comment.' Made visible via '.$explanation)->save();
+                // $lc = new App\LogConverter('parcel', 'update');
+                // $lc->setFrom(Auth::user())->setTo($item)->setDesc('Parcel '.$item->parcel_id.' had a status updated. '.$comment.' Made visible via '.$explanation)->save();
                 return $item;
             }
 
@@ -52,32 +52,32 @@ function updateStatus($type = 'parcel', $item, $field, $status, $withCheck = 0, 
         case "request":
             if ($item) {
                 $item->update([$field => $status]);
-                $lc = new App\LogConverter('request', 'update');
-                $lc->setFrom(Auth::user())->setTo($item)->setDesc('Reimbursement Request '.$item->id.' had a status updated. '.$comment)->save();
+                // $lc = new App\LogConverter('request', 'update');
+                // $lc->setFrom(Auth::user())->setTo($item)->setDesc('Reimbursement Request '.$item->id.' had a status updated. '.$comment)->save();
                 return $item;
             }
             break;
         case "po":
             if ($item) {
                 $item->update([$field => $status]);
-                $lc = new App\LogConverter('po', 'update');
-                $lc->setFrom(Auth::user())->setTo($item)->setDesc('Reimbursement Purchase Order '.$item->id.' had a status updated. '.$comment)->save();
+                // $lc = new App\LogConverter('po', 'update');
+                // $lc->setFrom(Auth::user())->setTo($item)->setDesc('Reimbursement Purchase Order '.$item->id.' had a status updated. '.$comment)->save();
                 return $item;
             }
             break;
         case "invoice":
             if ($item) {
                 $item->update([$field => $status]);
-                $lc = new App\LogConverter('reimbursement_invoices', 'update');
-                $lc->setFrom(Auth::user())->setTo($item)->setDesc('Reimbursement Invoice '.$item->id.' had a status updated. '.$comment)->save();
+                // $lc = new App\LogConverter('reimbursement_invoices', 'update');
+                // $lc->setFrom(Auth::user())->setTo($item)->setDesc('Reimbursement Invoice '.$item->id.' had a status updated. '.$comment)->save();
                 return $item;
             }
             break;
         case "disposition_invoice":
             if ($item) {
                 $item->update([$field => $status]);
-                $lc = new App\LogConverter('dispositions', 'update');
-                $lc->setFrom(Auth::user())->setTo($item)->setDesc('Disposition Invoice '.$item->id.' had a status updated. '.$comment)->save();
+                // $lc = new App\LogConverter('dispositions', 'update');
+                // $lc->setFrom(Auth::user())->setTo($item)->setDesc('Disposition Invoice '.$item->id.' had a status updated. '.$comment)->save();
                 return $item;
             }
             break;

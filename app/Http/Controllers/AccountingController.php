@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon;
 use App\Models\Account;
-use App\LogConverter;
+// use App\LogConverter;
 use App\Models\ReimbursementInvoice;
 use App\Models\ReimbursementPurchaseOrders;
 use App\Models\ReimbursementRequest;
@@ -26,8 +26,8 @@ class AccountingController extends Controller
     public function invoiceList(Request $request)
     {
         if (Gate::allows('view-all-parcels')) {
-            $lc = new LogConverter('invoice', 'view');
-            $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed invoice list')->save();
+            // $lc = new LogConverter('invoice', 'view');
+            // $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed invoice list')->save();
             // determine if they are OHFA or not
             if (Auth::user()->entity_id != 1) {
                 // create values for a where clause
@@ -50,7 +50,7 @@ class AccountingController extends Controller
                 $invoices_sorted_by_query = $request->session()->get('invoices_sorted_by_query');
             } elseif (!is_null($request->session()->get('invoices_sorted_by_query'))) {
                 // use the session value
-                
+
                 $invoices_sorted_by_query = $request->session()->get('invoices_sorted_by_query');
             } else {
                 // set the default
@@ -71,7 +71,7 @@ class AccountingController extends Controller
                         session(['invoices_asc_desc_opposite' => ""]);
                         $invoicesAscDescOpposite =  $request->session()->get('invoices_asc_desc_opposite');
                         break;
-                    
+
                     default:
                         session(['invoices_asc_desc'=> 'asc']);
                         $invoicesAscDesc =  $request->session()->get('invoices_asc_desc');
@@ -194,7 +194,7 @@ class AccountingController extends Controller
             }
 
             // Insert other Filters here
-            
+
             $currentUser = Auth::user();
 
             /*->where('programs.id',$invoicesProgramFilterOperator,$invoicesProgramFilter)
@@ -233,13 +233,13 @@ class AccountingController extends Controller
 											inv.entity_id ,
 											pr.program_name ,
 											ent.entity_name ,
-											pc.total_parcels , 
+											pc.total_parcels ,
 											ra.total_requested,
 										        aa.total_approved,
 											ta.total_amount ,
 											ap.total_paid ,
 											invstat.invoice_status_name
-											
+
 										FROM
 											reimbursement_invoices inv
 
@@ -317,7 +317,7 @@ class AccountingController extends Controller
 												a.po_id,
 												sum(a.amount) AS total_approved
 											FROM
-												po_items a 
+												po_items a
                                             WHERE EXISTS (
                                                     SELECT *
                                                     FROM request_items
@@ -325,7 +325,7 @@ class AccountingController extends Controller
                                                 )
 											GROUP BY
 												a.po_id
-										        
+
 										) aa ON inv.po_id = aa.po_id
 
 
@@ -334,9 +334,9 @@ class AccountingController extends Controller
 												a.rq_id as req_id, a.id as po_id
 											FROM
 												reimbursement_purchase_orders a
-										) aab ON inv.po_id = aab.po_id   
+										) aab ON inv.po_id = aab.po_id
 
-										  
+
 
 										#####################################
 										##### TOTAL  REQUESTED
@@ -346,17 +346,17 @@ class AccountingController extends Controller
 												a.req_id,
 												sum(a.amount) AS total_requested
 											FROM
-												request_items a 
+												request_items a
 											GROUP BY
 												a.req_id
-										        
+
 										) ra ON aab.req_id = ra.req_id
 
 
 
 										".$invoicesWhereOrder."
 
-										
+
 									")
             );
 
@@ -398,8 +398,8 @@ class AccountingController extends Controller
     public function requestList(Request $request)
     {
         if (Gate::allows('view-all-parcels')) {
-            $lc = new LogConverter('requests', 'view');
-            $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed requests')->save();
+            // $lc = new LogConverter('requests', 'view');
+            // $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed requests')->save();
             // determine if they are OHFA or not
             if (Auth::user()->entity_id != 1) {
                 // create values for a where clause
@@ -423,7 +423,7 @@ class AccountingController extends Controller
                 $requests_sorted_by_query = $request->session()->get('requests_sorted_by_query');
             } elseif (!is_null($request->session()->get('requests_sorted_by_query'))) {
                 // use the session value
-                
+
                 $requests_sorted_by_query = $request->session()->get('requests_sorted_by_query');
             } else {
                 // set the default
@@ -444,7 +444,7 @@ class AccountingController extends Controller
                         session(['requests_asc_desc_opposite' => ""]);
                         $requestsAscDescOpposite =  $request->session()->get('requests_asc_desc_opposite');
                         break;
-                    
+
                     default:
                         session(['requests_asc_desc'=> 'asc']);
                         $requestsAscDesc =  $request->session()->get('requests_asc_desc');
@@ -565,9 +565,9 @@ class AccountingController extends Controller
                 $requestsStatusFilter = $request->session()->get('requests_status_filter');
                 $requestsStatusFilterOperator = $request->session()->get('requests_status_filter_operator');
             }
-            
+
             // Insert other Filters here
-            
+
             $currentUser = Auth::user();
 
             /*->where('programs.id',$requestsProgramFilterOperator,$requestsProgramFilter)
@@ -594,7 +594,7 @@ class AccountingController extends Controller
             }
 
 
-           
+
             $requests = DB::select(
                 DB::raw("
         								SELECT
@@ -608,13 +608,13 @@ class AccountingController extends Controller
 											req.entity_id ,
 											pr.program_name ,
 											ent.entity_name ,
-											pc.total_parcels , 
+											pc.total_parcels ,
 											ra.total_requested,
 										    aa.total_approved,
 											ta.total_amount ,
 											ap.total_paid ,
 											reqstat.invoice_status_name
-											
+
 										FROM
 											reimbursement_requests req
 
@@ -652,7 +652,7 @@ class AccountingController extends Controller
 												a.req_id
 										) ta ON req.id = ta.request_id
 
-										
+
 
 										########################################
 										###### Get a po_id
@@ -662,9 +662,9 @@ class AccountingController extends Controller
 
 										#####################################
 										##### TOTAL APPROVED (PO)
-										
 
-											
+
+
 
 											LEFT JOIN(
 												SELECT
@@ -679,7 +679,7 @@ class AccountingController extends Controller
                                                 )
 												GROUP BY
 													a.po_id
-											        
+
 											) aa ON ((pos.po_id IS NOT NULL) AND (pos.po_id = aa.po_id))
 
 										########################################
@@ -690,14 +690,14 @@ class AccountingController extends Controller
 
 										#####################################
 										##### TOTAL INVOICED
-										
+
 
 											LEFT JOIN(
 												SELECT
 													a.invoice_id,
 													sum(a.amount) AS total_invoiced
 												FROM
-													invoice_items a 
+													invoice_items a
                                                 WHERE EXISTS (
                                                     SELECT *
                                                     FROM po_items
@@ -710,7 +710,7 @@ class AccountingController extends Controller
                                                 )
 												GROUP BY
 													a.invoice_id
-											        
+
 											) ia ON ((inv.invoice_id IS NOT NULL) AND (inv.invoice_id = ia.invoice_id))
 
 										#####################################
@@ -732,8 +732,8 @@ class AccountingController extends Controller
 											GROUP BY
 												a.link_to_type_id
 										) ap ON ((inv.invoice_id IS NOT NULL) AND (inv.invoice_id = ap.invoice_id))
-										
-										  
+
+
 
 										#####################################
 										##### TOTAL  REQUESTED
@@ -743,16 +743,16 @@ class AccountingController extends Controller
 												a.req_id,
 												sum(a.amount) AS total_requested
 											FROM
-												request_items a 
+												request_items a
 											GROUP BY
 												a.req_id
-										        
+
 										) ra ON req.id = ra.req_id
 
 
 
 										".$requestsWhereOrder."
-										
+
 									")
             );
             //$count = count($requests);
@@ -788,8 +788,8 @@ class AccountingController extends Controller
     public function poList(Request $request)
     {
         if (Gate::allows('view-all-parcels')) {
-            $lc = new LogConverter('polist', 'view');
-            $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . 'viewed polist')->save();
+            // $lc = new LogConverter('polist', 'view');
+            // $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . 'viewed polist')->save();
             // determine if they are OHFA or not
             if (Auth::user()->entity_id != 1) {
                 // create values for a where clause
@@ -816,7 +816,7 @@ class AccountingController extends Controller
                 $pos_sorted_by_query = $request->session()->get('pos_sorted_by_query');
             } elseif (!is_null($request->session()->get('pos_sorted_by_query'))) {
                 // use the session value
-                
+
                 $pos_sorted_by_query = $request->session()->get('pos_sorted_by_query');
             } else {
                 // set the default
@@ -837,7 +837,7 @@ class AccountingController extends Controller
                         session(['pos_asc_desc_opposite' => ""]);
                         $posAscDescOpposite =  $request->session()->get('pos_asc_desc_opposite');
                         break;
-                    
+
                     default:
                         session(['pos_asc_desc'=> 'asc']);
                         $posAscDesc =  $request->session()->get('pos_asc_desc');
@@ -958,9 +958,9 @@ class AccountingController extends Controller
                 $posStatusFilter = $request->session()->get('pos_status_filter');
                 $posStatusFilterOperator = $request->session()->get('pos_status_filter_operator');
             }
-            
+
             // Insert other Filters here
-            
+
             $currentUser = Auth::user();
 
             /*->where('programs.id',$posProgramFilterOperator,$posProgramFilter)
@@ -987,7 +987,7 @@ class AccountingController extends Controller
             }
 
 
-           
+
             $pos = DB::select(
                 DB::raw("
         								SELECT
@@ -1002,13 +1002,13 @@ class AccountingController extends Controller
 											pos.entity_id ,
 											pr.program_name ,
 											ent.entity_name ,
-											pc.total_parcels , 
+											pc.total_parcels ,
 											ra.total_requested,
 										    aa.total_approved,
 											#ta.total_amount ,
 											ap.total_paid ,
 											postat.invoice_status_name
-											
+
 										FROM
 											reimbursement_purchase_orders pos
 
@@ -1032,7 +1032,7 @@ class AccountingController extends Controller
 												a.purchase_order_id
 										) pc ON pos.id = pc.po_id
 
-										
+
 										#####################################
 										##### TOTAL APPROVED (PO)
 
@@ -1041,7 +1041,7 @@ class AccountingController extends Controller
 													a.po_id,
 													sum(a.amount) AS total_approved
 												FROM
-													po_items a 
+													po_items a
                                                 WHERE EXISTS (
                                                     SELECT *
                                                     FROM request_items
@@ -1049,7 +1049,7 @@ class AccountingController extends Controller
                                                 )
 												GROUP BY
 													a.po_id
-											        
+
 											) aa ON pos.id = aa.po_id
 
 										########################################
@@ -1060,13 +1060,13 @@ class AccountingController extends Controller
 
 										#####################################
 										##### TOTAL INVOICED
-										
+
 											LEFT JOIN(
 												SELECT
 													a.invoice_id,
 													sum(a.amount) AS total_invoiced
 												FROM
-													invoice_items a 
+													invoice_items a
                                                 WHERE EXISTS (
                                                     SELECT *
                                                     FROM po_items
@@ -1079,7 +1079,7 @@ class AccountingController extends Controller
                                                 )
 												GROUP BY
 													a.invoice_id
-											        
+
 											) ia ON ((inv.invoice_id IS NOT NULL) AND (inv.invoice_id = ia.invoice_id))
 
 										#####################################
@@ -1101,7 +1101,7 @@ class AccountingController extends Controller
 											GROUP BY
 												a.link_to_type_id
 										) ap ON ((inv.invoice_id IS NOT NULL) AND (inv.invoice_id = ap.invoice_id))
-										
+
 
 										#####################################
 										##### TOTAL  REQUESTED
@@ -1111,14 +1111,14 @@ class AccountingController extends Controller
 												a.req_id,
 												sum(a.amount) AS total_requested
 											FROM
-												request_items a 
+												request_items a
 											GROUP BY
 												a.req_id
-										        
+
 										) ra ON pos.rq_id = ra.req_id
 
 										".$posWhereOrder."
-										
+
 									")
             );
             //$count = count($requests);
@@ -1169,8 +1169,8 @@ class AccountingController extends Controller
     public function accounting(Request $request)
     {
         if (Gate::allows('view-all-parcels')) {
-            $lc = new LogConverter('accounting', 'view');
-            $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' viewed accounting')->save();
+            // $lc = new LogConverter('accounting', 'view');
+            // $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' viewed accounting')->save();
             /// process filters
             // determine if they are OHFA or not
             if (Auth::user()->entity_id != 1) {
@@ -1195,7 +1195,7 @@ class AccountingController extends Controller
                 $accounting_sorted_by_query = $request->session()->get('accounting_sorted_by');
             } elseif (!is_null($request->session()->get('accounting_sorted_by'))) {
                 // use the session value
-                
+
                 $accounting_sorted_by_query = $request->session()->get('accounting_sorted_by_query');
             } else {
                 // set the default
@@ -1216,7 +1216,7 @@ class AccountingController extends Controller
                         session(['accounting_asc_desc_opposite' => ""]);
                         $accountingAscDescOpposite =  $request->session()->get('accounting_asc_desc_opposite');
                         break;
-                    
+
                     default:
                         session(['accounting_asc_desc'=> 'asc']);
                         $accountingAscDesc =  $request->session()->get('accounting_asc_desc');
@@ -1337,12 +1337,12 @@ class AccountingController extends Controller
                 $accountingStatusFilter = $request->session()->get('accounting_status_filter');
                 $accountingStatusFilterOperator = $request->session()->get('accounting_status_filter_operator');
             }
-            
+
             // Insert other Filters here
-            
+
             $currentUser = Auth::user();
 
-            
+
 
             /// run query
             $accounting = Transaction::select('transactions.*', 'accounts.account_name', 'program_name', 'entity_name', 'type_name', 'status_name', 'category_name')
@@ -1361,7 +1361,7 @@ class AccountingController extends Controller
                  ->where('accounts.entity_id', $where_entity_id_operator, $where_entity_id)
                  ->get()
                  ->all();
-            
+
             $accountingTotals = DB::select(DB::raw("
                 SELECT p.program_name,
 	               p.id as program_id,
@@ -1542,7 +1542,7 @@ class AccountingController extends Controller
                     }
                 }
             }
-            
+
             $programs = Transaction::join('programs', 'transactions.owner_id', '=', 'programs.id')->select('programs.program_name', 'programs.id')->where('programs.entity_id', $where_entity_id_operator, $where_entity_id)->groupBy('programs.id', 'programs.program_name')->orderBy('program_name')->get()->all();
             $statuses = Transaction::join('transaction_statuses', 'transactions.status_id', '=', 'transaction_statuses.id')->select('transaction_statuses.status_name', 'transaction_statuses.id')->groupBy('transaction_statuses.id', 'transaction_statuses.status_name')->get()->all();
 
@@ -1590,7 +1590,7 @@ class AccountingController extends Controller
             ->sortBy(function ($invoice) {
                 return $invoice->program->program_name;
             });
-            
+
 
             $accounts = $accounts->keyBy('id');
             //dd($accounts[34]->account_name);
@@ -1682,7 +1682,7 @@ class AccountingController extends Controller
                 'amount'=>$forminputs['amount'],
                 'status_id' => $forminputs['status_id']
                 ]);
-             
+
             return 1;
         } else {
             return "Sorry, you are not allowed to see this transaction.";
@@ -1701,22 +1701,22 @@ class AccountingController extends Controller
     {
         $stat = 1;
         if ($stat == 1) {
-            $lc = new LogConverter('stats', 'view');
-            $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed statBreakDown')->save();
+            // $lc = new LogConverter('stats', 'view');
+            // $lc->setFrom(Auth::user())->setTo(Auth::user())->setDesc(Auth::user()->email . ' Viewed statBreakDown')->save();
 
             $program = \App\Models\Program::select('id as program_id')->where('id', $program)->first();
-            
+
             if (is_numeric($program->program_id)) {
                 $averageData = DB::select(
                     DB::raw("
-		                SELECT 
+		                SELECT
 			               	p.id as program_id,
 			            	p.entity_id,
 			               	tc.*,
 			               	tr.*,
 			               	tp.*,
 			               	ti.*
-		              
+
 
 				        FROM programs p
 
@@ -1738,13 +1738,13 @@ class AccountingController extends Controller
 				            FROM accounts a
 				            LEFT JOIN cost_items c
 				                ON a.id = c.account_id
-				             
+
 				            GROUP BY a.id
 
 				        ) tc
 				            ON a.id = tc.cost_account_id
 
-				        
+
 
 
 
@@ -1805,18 +1805,18 @@ class AccountingController extends Controller
 				            GROUP BY a.id
 				        ) ti
 				            ON a.id = ti.inv_account_id
-				        
+
 				        WHERE p.id = $program->program_id
-		            
+
 		            ")
                 );
-                
+
                 $dropTempTables = DB::unprepared(
-                
+
                     DB::raw("
 						#########################################################
 						#####################################
-						###DROP COST TABLES IF THEY EXIST					
+						###DROP COST TABLES IF THEY EXIST
 						DROP TABLE IF EXISTS nip_loan_cost_table_temp_a ;
 						DROP TABLE IF EXISTS nip_loan_cost_table_temp_b ;
 
@@ -1931,250 +1931,250 @@ class AccountingController extends Controller
 						DROP TABLE IF EXISTS total_invoice_table_temp_a ;
 						DROP TABLE IF EXISTS total_invoice_table_temp_b ;
 
-						
+
 
 					")
                 );
                 $createTempTables = DB::unprepared(
                     DB::raw("
-						
+
 
 						#########################################################
 						#####################################
 						###NIP LOAN PAYOFF COST
-						CREATE TEMPORARY TABLE nip_loan_cost_table_temp_a 
+						CREATE TEMPORARY TABLE nip_loan_cost_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 9 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 9 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE nip_loan_cost_table_temp_b 
+						CREATE TEMPORARY TABLE nip_loan_cost_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 9 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 9 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###ACQUISITION COST
-						CREATE TEMPORARY TABLE acquisition_cost_table_temp_a 
+						CREATE TEMPORARY TABLE acquisition_cost_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 2 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 2 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE acquisition_cost_table_temp_b 
+						CREATE TEMPORARY TABLE acquisition_cost_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 2 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 2 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###PRE-DEMO COST
-						CREATE TEMPORARY TABLE pre_demo_cost_table_temp_a 
+						CREATE TEMPORARY TABLE pre_demo_cost_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 3 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 3 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE pre_demo_cost_table_temp_b 
+						CREATE TEMPORARY TABLE pre_demo_cost_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 3 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 3 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
-						###DEMOLITION COST	
-						CREATE TEMPORARY TABLE demolition_cost_table_temp_a 
+						###DEMOLITION COST
+						CREATE TEMPORARY TABLE demolition_cost_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 4 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 4 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE demolition_cost_table_temp_b 
+						CREATE TEMPORARY TABLE demolition_cost_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 4 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 4 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###GREENING COST
-						CREATE TEMPORARY TABLE greening_cost_table_temp_a 
+						CREATE TEMPORARY TABLE greening_cost_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 5 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 5 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE greening_cost_table_temp_b 
+						CREATE TEMPORARY TABLE greening_cost_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 5 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 5 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
-						###MAINTENANCE COST	
-						CREATE TEMPORARY TABLE maintenance_cost_table_temp_a 
+						###MAINTENANCE COST
+						CREATE TEMPORARY TABLE maintenance_cost_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 6 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 6 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE maintenance_cost_table_temp_b 
+						CREATE TEMPORARY TABLE maintenance_cost_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 6 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 6 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###ADMINISTRATION COST
-						CREATE TEMPORARY TABLE administration_cost_table_temp_a 
+						CREATE TEMPORARY TABLE administration_cost_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 7 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 7 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE administration_cost_table_temp_b 
+						CREATE TEMPORARY TABLE administration_cost_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 7 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 7 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###OTHER COST
-						CREATE TEMPORARY TABLE other_cost_table_temp_a 
+						CREATE TEMPORARY TABLE other_cost_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 8 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 8 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE other_cost_table_temp_b 
+						CREATE TEMPORARY TABLE other_cost_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE expense_category_id = 8 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE expense_category_id = 8 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###TOTAL COST
-						CREATE TEMPORARY TABLE total_cost_table_temp_a 
+						CREATE TEMPORARY TABLE total_cost_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE total_cost_table_temp_b 
+						CREATE TEMPORARY TABLE total_cost_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM cost_items 
-							WHERE program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM cost_items
+							WHERE program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
@@ -2189,239 +2189,239 @@ class AccountingController extends Controller
 						#########################################################
 						#####################################
 						###NIP LOAN PAYOFF REQUEST
-						CREATE TEMPORARY TABLE nip_loan_request_table_temp_a 
+						CREATE TEMPORARY TABLE nip_loan_request_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 9 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 9 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE nip_loan_request_table_temp_b 
+						CREATE TEMPORARY TABLE nip_loan_request_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 9 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 9 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###ACQUISITION REQUEST
-						CREATE TEMPORARY TABLE acquisition_request_table_temp_a 
+						CREATE TEMPORARY TABLE acquisition_request_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 2 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 2 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE acquisition_request_table_temp_b 
+						CREATE TEMPORARY TABLE acquisition_request_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 2 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 2 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###PRE-DEMO REQUEST
-						CREATE TEMPORARY TABLE pre_demo_request_table_temp_a 
+						CREATE TEMPORARY TABLE pre_demo_request_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 3 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 3 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE pre_demo_request_table_temp_b 
+						CREATE TEMPORARY TABLE pre_demo_request_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 3 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 3 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
-						###DEMOLITION REQUEST	
-						CREATE TEMPORARY TABLE demolition_request_table_temp_a 
+						###DEMOLITION REQUEST
+						CREATE TEMPORARY TABLE demolition_request_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 4 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 4 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE demolition_request_table_temp_b 
+						CREATE TEMPORARY TABLE demolition_request_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 4 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 4 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###GREENING REQUEST
-						CREATE TEMPORARY TABLE greening_request_table_temp_a 
+						CREATE TEMPORARY TABLE greening_request_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 5 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 5 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE greening_request_table_temp_b 
+						CREATE TEMPORARY TABLE greening_request_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 5 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 5 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
-						###MAINTENANCE REQUEST	
-						CREATE TEMPORARY TABLE maintenance_request_table_temp_a 
+						###MAINTENANCE REQUEST
+						CREATE TEMPORARY TABLE maintenance_request_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 6 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 6 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE maintenance_request_table_temp_b 
+						CREATE TEMPORARY TABLE maintenance_request_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 6 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 6 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###ADMINISTRATION REQUEST
-						CREATE TEMPORARY TABLE administration_request_table_temp_a 
+						CREATE TEMPORARY TABLE administration_request_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 7 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 7 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE administration_request_table_temp_b 
+						CREATE TEMPORARY TABLE administration_request_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 7 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 7 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###OTHER REQUEST
-						CREATE TEMPORARY TABLE other_request_table_temp_a 
+						CREATE TEMPORARY TABLE other_request_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 8 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 8 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE other_request_table_temp_b 
+						CREATE TEMPORARY TABLE other_request_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE expense_category_id = 8 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE expense_category_id = 8 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###TOTAL REQUEST
-						CREATE TEMPORARY TABLE total_request_table_temp_a 
+						CREATE TEMPORARY TABLE total_request_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE total_request_table_temp_b 
+						CREATE TEMPORARY TABLE total_request_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM request_items 
-							WHERE program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM request_items
+							WHERE program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
@@ -2436,239 +2436,239 @@ class AccountingController extends Controller
 						#########################################################
 						#####################################
 						###NIP LOAN PAYOFF PO
-						CREATE TEMPORARY TABLE nip_loan_po_table_temp_a 
+						CREATE TEMPORARY TABLE nip_loan_po_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 9 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 9 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE nip_loan_po_table_temp_b 
+						CREATE TEMPORARY TABLE nip_loan_po_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 9 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 9 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###ACQUISITION PO
-						CREATE TEMPORARY TABLE acquisition_po_table_temp_a 
+						CREATE TEMPORARY TABLE acquisition_po_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 2 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 2 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE acquisition_po_table_temp_b 
+						CREATE TEMPORARY TABLE acquisition_po_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 2 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 2 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###PRE-DEMO PO
-						CREATE TEMPORARY TABLE pre_demo_po_table_temp_a 
+						CREATE TEMPORARY TABLE pre_demo_po_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 3 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 3 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE pre_demo_po_table_temp_b 
+						CREATE TEMPORARY TABLE pre_demo_po_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 3 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 3 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
-						###DEMOLITION PO	
-						CREATE TEMPORARY TABLE demolition_po_table_temp_a 
+						###DEMOLITION PO
+						CREATE TEMPORARY TABLE demolition_po_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 4 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 4 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE demolition_po_table_temp_b 
+						CREATE TEMPORARY TABLE demolition_po_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 4 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 4 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###GREENING PO
-						CREATE TEMPORARY TABLE greening_po_table_temp_a 
+						CREATE TEMPORARY TABLE greening_po_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 5 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 5 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE greening_po_table_temp_b 
+						CREATE TEMPORARY TABLE greening_po_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 5 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 5 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
-						###MAINTENANCE PO	
-						CREATE TEMPORARY TABLE maintenance_po_table_temp_a 
+						###MAINTENANCE PO
+						CREATE TEMPORARY TABLE maintenance_po_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 6 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 6 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE maintenance_po_table_temp_b 
+						CREATE TEMPORARY TABLE maintenance_po_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 6 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 6 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###ADMINISTRATION PO
-						CREATE TEMPORARY TABLE administration_po_table_temp_a 
+						CREATE TEMPORARY TABLE administration_po_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 7 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 7 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE administration_po_table_temp_b 
+						CREATE TEMPORARY TABLE administration_po_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 7 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 7 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###OTHER PO
-						CREATE TEMPORARY TABLE other_po_table_temp_a 
+						CREATE TEMPORARY TABLE other_po_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 8 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 8 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE other_po_table_temp_b 
+						CREATE TEMPORARY TABLE other_po_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE expense_category_id = 8 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE expense_category_id = 8 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###TOTAL PO
-						CREATE TEMPORARY TABLE total_po_table_temp_a 
+						CREATE TEMPORARY TABLE total_po_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE total_po_table_temp_b 
+						CREATE TEMPORARY TABLE total_po_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM po_items 
-							WHERE program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM po_items
+							WHERE program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
@@ -2683,239 +2683,239 @@ class AccountingController extends Controller
 						#########################################################
 						#####################################
 						###NIP LOAN PAYOFF INVOICE
-						CREATE TEMPORARY TABLE nip_loan_invoice_table_temp_a 
+						CREATE TEMPORARY TABLE nip_loan_invoice_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 9 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 9 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE nip_loan_invoice_table_temp_b 
+						CREATE TEMPORARY TABLE nip_loan_invoice_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 9 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 9 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###ACQUISITION INVOICE
-						CREATE TEMPORARY TABLE acquisition_invoice_table_temp_a 
+						CREATE TEMPORARY TABLE acquisition_invoice_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 2 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 2 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE acquisition_invoice_table_temp_b 
+						CREATE TEMPORARY TABLE acquisition_invoice_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 2 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 2 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###PRE-DEMO INVOICE
-						CREATE TEMPORARY TABLE pre_demo_invoice_table_temp_a 
+						CREATE TEMPORARY TABLE pre_demo_invoice_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 3 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 3 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE pre_demo_invoice_table_temp_b 
+						CREATE TEMPORARY TABLE pre_demo_invoice_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 3 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 3 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
-						###DEMOLITION INVOICE	
-						CREATE TEMPORARY TABLE demolition_invoice_table_temp_a 
+						###DEMOLITION INVOICE
+						CREATE TEMPORARY TABLE demolition_invoice_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 4 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 4 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE demolition_invoice_table_temp_b 
+						CREATE TEMPORARY TABLE demolition_invoice_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 4 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 4 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 						#########################################################
 						#####################################
 						###GREENING INVOICE
-						CREATE TEMPORARY TABLE greening_invoice_table_temp_a 
+						CREATE TEMPORARY TABLE greening_invoice_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 5 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 5 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE greening_invoice_table_temp_b 
+						CREATE TEMPORARY TABLE greening_invoice_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 5 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 5 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
-						###MAINTENANCE INVOICE	
-						CREATE TEMPORARY TABLE maintenance_invoice_table_temp_a 
+						###MAINTENANCE INVOICE
+						CREATE TEMPORARY TABLE maintenance_invoice_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 6 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 6 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE maintenance_invoice_table_temp_b 
+						CREATE TEMPORARY TABLE maintenance_invoice_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 6 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 6 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###ADMINISTRATION INVOICE
-						CREATE TEMPORARY TABLE administration_invoice_table_temp_a 
+						CREATE TEMPORARY TABLE administration_invoice_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 7 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 7 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE administration_invoice_table_temp_b 
+						CREATE TEMPORARY TABLE administration_invoice_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 7 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 7 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###OTHER INVOICE
-						CREATE TEMPORARY TABLE other_invoice_table_temp_a 
+						CREATE TEMPORARY TABLE other_invoice_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 8 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 8 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE other_invoice_table_temp_b 
+						CREATE TEMPORARY TABLE other_invoice_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE expense_category_id = 8 AND program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE expense_category_id = 8 AND program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 
 						#########################################################
 						#####################################
 						###TOTAL INVOICE
-						CREATE TEMPORARY TABLE total_invoice_table_temp_a 
+						CREATE TEMPORARY TABLE total_invoice_table_temp_a
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
-						CREATE TEMPORARY TABLE total_invoice_table_temp_b 
+						CREATE TEMPORARY TABLE total_invoice_table_temp_b
 						AS (
-							SELECT 
-								parcel_id, 
-								program_id, 
-								sum(amount) as amount 
-							FROM invoice_items 
-							WHERE program_id = $program->program_id 
+							SELECT
+								parcel_id,
+								program_id,
+								sum(amount) as amount
+							FROM invoice_items
+							WHERE program_id = $program->program_id
 							AND amount > 0
-							GROUP BY parcel_id 
+							GROUP BY parcel_id
 							);
 
 					")
@@ -2930,7 +2930,7 @@ class AccountingController extends Controller
 						#########################################################
 						#####################################
 						###SELECTION
-						SELECT 
+						SELECT
 
 						p.id as program_id,
 						nc.median_nip_loan_cost,
@@ -2981,7 +2981,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_nip_loan_cost
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3010,7 +3010,7 @@ class AccountingController extends Controller
 										floor((t2.total_rows + 1) / 2) ,
 										floor((t2.total_rows + 2) / 2)
 										)
-								
+
 							)nc on 1 = 1
 
 						LEFT JOIN(
@@ -3018,7 +3018,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_acquisition_cost
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3054,7 +3054,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_pre_demo_cost
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3092,7 +3092,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_demolition_cost
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3128,7 +3128,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_greening_cost
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3164,7 +3164,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_maintenance_cost
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3200,7 +3200,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_administration_cost
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3236,7 +3236,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_other_cost
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3272,7 +3272,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_total_cost
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3309,7 +3309,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_nip_loan_request
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3338,7 +3338,7 @@ class AccountingController extends Controller
 										floor((t2.total_rows + 1) / 2) ,
 										floor((t2.total_rows + 2) / 2)
 										)
-								
+
 							)nr on 1 = 1
 
 						LEFT JOIN(
@@ -3346,7 +3346,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_acquisition_request
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3382,7 +3382,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_pre_demo_request
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3420,7 +3420,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_demolition_request
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3456,7 +3456,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_greening_request
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3492,7 +3492,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_maintenance_request
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3528,7 +3528,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_administration_request
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3564,7 +3564,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_other_request
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3600,7 +3600,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_total_request
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3638,7 +3638,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_nip_loan_po
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3667,7 +3667,7 @@ class AccountingController extends Controller
 										floor((t2.total_rows + 1) / 2) ,
 										floor((t2.total_rows + 2) / 2)
 										)
-								
+
 							)npo on 1 = 1
 
 						LEFT JOIN(
@@ -3675,7 +3675,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_acquisition_po
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3711,7 +3711,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_pre_demo_po
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3749,7 +3749,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_demolition_po
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3785,7 +3785,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_greening_po
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3821,7 +3821,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_maintenance_po
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3857,7 +3857,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_administration_po
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3893,7 +3893,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_other_po
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3929,7 +3929,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_total_po
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3967,7 +3967,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_nip_loan_invoice
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -3996,7 +3996,7 @@ class AccountingController extends Controller
 										floor((t2.total_rows + 1) / 2) ,
 										floor((t2.total_rows + 2) / 2)
 										)
-								
+
 							)ni on 1 = 1
 
 						LEFT JOIN(
@@ -4004,7 +4004,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_acquisition_invoice
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -4040,7 +4040,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_pre_demo_invoice
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -4078,7 +4078,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_demolition_invoice
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -4114,7 +4114,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_greening_invoice
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -4150,7 +4150,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_maintenance_invoice
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -4186,7 +4186,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_administration_invoice
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -4222,7 +4222,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_other_invoice
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -4258,7 +4258,7 @@ class AccountingController extends Controller
 							SELECT
 								avg(t1.amount) AS median_total_invoice
 									FROM
-										( 
+										(
 											SELECT
 												@rownum :=@rownum + 1 AS `row_number` ,
 												d.amount,
@@ -4294,7 +4294,7 @@ class AccountingController extends Controller
 						WHERE p.id = $program->program_id
 
 						#GROUP BY p.id;
-						
+
 					")
                     );
                 } else {
@@ -4304,7 +4304,7 @@ class AccountingController extends Controller
                     DB::raw("
 						#########################################################
 						#####################################
-						###DROP COST TABLES IF THEY EXIST					
+						###DROP COST TABLES IF THEY EXIST
 						DROP TABLE IF EXISTS nip_loan_cost_table_temp_a ;
 						DROP TABLE IF EXISTS nip_loan_cost_table_temp_b ;
 
