@@ -51,7 +51,7 @@ $crrTypeSelection    = 'all';
 				</option>
 				@if(!is_null($hfa_users_array))
 				@foreach ($hfa_users_array as $user)
-				<option value="{{$user->id}}">@if(session('crr_report_lead_id') == $user->id)<?php $crrLeadSelection = $user->person->first_name . ' ' . $user->person->last_name;?>  @endIf<a  class="uk-dropdown-close">{{$user->person->first_name}} {{$user->person->last_name}}</a></option>
+				<option value="{{$user->id}}">@if(session('crr_report_lead_id') == $user->id)<?php $crrLeadSelection = $user->name;?>  @endIf<a  class="uk-dropdown-close">{{$user->name}}</a></option>
 				@endforeach
 				@endIf
 			</select>

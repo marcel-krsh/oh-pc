@@ -4,13 +4,14 @@ $crrStatusSelection  = 'all';
 $crrProjectSelection = 'all';
 $crrLeadSelection    = 'all';
 $crrTypeSelection    = 'all';
+
 ?>
 
 <div id="detail-project-reports" uk-grid>
     <div class="uk-width-1-1" id="note-filters">
-                <!-- Begin Tools and Filters --> 
-        
-        <div uk-grid class="uk-margin-top">                        
+                <!-- Begin Tools and Filters -->
+
+        <div uk-grid class="uk-margin-top">
             <input type="hidden" id="project-crr-newest" name="project-crr-newest">
             <div class="uk-width-1-1@s uk-width-1-4@m" id="recipient-dropdown" style="vertical-align: top;">
                     <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/projects/{{$id}}/reports?crr_report_status_id='+this.value, '6','','','project-',1);">
@@ -25,9 +26,9 @@ $crrTypeSelection    = 'all';
                             <option value="{{$status->id}}" @if(session($prefix.'crr_report_status_id') == $status->id) <?php $crrStatusSelection = $status->name;?> @endIf><a class="uk-dropdown-close">{{$status->name}}</a></option>
                             @endforeach
                         @endIf
-                    </select>      
+                    </select>
             </div>
-            
+
             @can('access_auditor')
                 <div class="uk-width-1-5" style="vertical-align: top;">
                     <select id="filter-by-program" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/projects/{{$id}}/reports?crr_report_lead_id='+this.value, '6','','','project-',1);">
@@ -39,7 +40,7 @@ $crrTypeSelection    = 'all';
                         </option>
                             @if(!is_null($hfa_users_array))
 	                            @foreach ($hfa_users_array as $user)
-	                            <option value="{{$user->id}}">@if(session($prefix.'crr_report_lead_id') == $user->id)<?php $crrLeadSelection = $user->person->first_name . ' ' . $user->person->last_name;?>  @endIf<a  class="uk-dropdown-close">{{$user->person->first_name}} {{$user->person->last_name}}</a></option>
+	                            <option value="{{$user->id}}">@if(session($prefix.'crr_report_lead_id') == $user->id)<?php $crrLeadSelection = $user->name;?>  @endIf<a  class="uk-dropdown-close">{{$user->name}}</a></option>
 	                            @endforeach
 	                        @endIf
                         </select>
@@ -69,14 +70,14 @@ $crrTypeSelection    = 'all';
 
         </div>
 
-    </div>        
+    </div>
 </div>
 <hr class="dashed-hr">
 <input type="hidden" id="project-reports-current-page" value="{{$reports->currentPage()}}">
 <div uk-grid class="uk-margin-top ">
 
         <div class="uk-width-1-1">
-            <div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{$reports->total()}} @if($reports->total() == 1) REPORT @else REPORTS @endif</div>                        
+            <div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{$reports->total()}} @if($reports->total() == 1) REPORT @else REPORTS @endif</div>
             @can('access_auditor')
             <div id="crr-filter-mine" class="uk-button uk-text-right@s uk-margin-right" style="background-color:#1B9A56">
             <a class="uk-contrast" onclick="dynamicModalLoad('new-report?project_id={{$id}}')">
@@ -122,7 +123,7 @@ $crrTypeSelection    = 'all';
         .sort-neutral1 {
             display: inline-block;
             width: 99%;
-            height: 18px;            
+            height: 18px;
             background-position: center;
             background-repeat: no-repeat;
         }
@@ -181,7 +182,7 @@ $crrTypeSelection    = 'all';
                         </span>
                     </th>
 
-                    
+
 
                     <th width="120px"><strong>CREATED</strong>
                         <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
@@ -228,9 +229,9 @@ $crrTypeSelection    = 'all';
         $(document).ready(function(){
             $('.sortingcolumn').click(function(){
                 $("#project-detail-tab-6-content").html('');
-                $.get('/projects/'+project_id+'/reports?order_by=' + encodeURIComponent($(this).data('sorting')), function(data) {                                                                        
+                $.get('/projects/'+project_id+'/reports?order_by=' + encodeURIComponent($(this).data('sorting')), function(data) {
                         $("#project-detail-tab-6-content").html(data);
-                } );                
+                } );
             }),
 
             $('.page-link').click(function(){
@@ -241,16 +242,16 @@ $crrTypeSelection    = 'all';
 
             // on doc ready we allow updates to start:
             $('#project-crr-newest').val('{{$newest}}');
-            
+
             $('#project-report-checking').val('0');
 
 
 
             });
 
-            function searchReports(project_id){                     
-                $.get('/projects/'+project_id+'/reports?order_by=' + encodeURIComponent($("#project-reports-search").val()), function(data) {                
-                            // $('#project-detail-tab-6').load('/projects/'+project_id+'/reports');                            
+            function searchReports(project_id){
+                $.get('/projects/'+project_id+'/reports?order_by=' + encodeURIComponent($("#project-reports-search").val()), function(data) {
+                            // $('#project-detail-tab-6').load('/projects/'+project_id+'/reports');
                             $('#project-detail-tab-6').trigger("click");
                 } );
             }
@@ -258,7 +259,7 @@ $crrTypeSelection    = 'all';
             // process search
             $(document).ready(function() {
                 $('#project-reports-search').keydown(function (e) {
-                if (e.keyCode == 13) {                             
+                if (e.keyCode == 13) {
                     searchReports(project_id);
                     e.preventDefault();
                     return false;
