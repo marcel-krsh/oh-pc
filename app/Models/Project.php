@@ -202,7 +202,7 @@ class Project extends Model
                     $selected_audit = $selected_audit->with('audit.reports');
                 }
                 $selected_audit = $selected_audit->first();
-                
+
             Session::put('project.'.$this->id.'.selectedaudit', $selected_audit->audit_id);
         }
 

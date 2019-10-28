@@ -2,8 +2,8 @@
 $lead = $audit->lead_json;
 
 // if($audit->update_cached_audit()){
-// 	//refreshed - update values.
-// 	$audit->refresh();
+//   //refreshed - update values.
+//   $audit->refresh();
 // }
 ?>
 
@@ -125,11 +125,11 @@ $lead = $audit->lead_json;
 	<div class="divider"></div>
 	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
 		<div class="uk-width-1-4 ">
-			@if(!$audit->audit->findings->count())
+			@if($audit->audit && !$audit->audit->findings->count())
 			<i class="a-rotate-left {{ $audit->audit_compliance_status }} use-hand-cursor" onClick="rerunCompliance({{ $audit->audit_id }})" uk-tooltip title="{{ $audit->audit_compliance_status_text }} : YOU CAN CLICK TO RERUN COMPLIANCE SELECTION"></i>
 			@else
 			<i class="{{ $audit->audit_compliance_icon }} {{ $audit->audit_compliance_status }}" uk-tooltip title="{{ $audit->audit_compliance_status_text }}" ></i>
-			@endIf
+			@endif
 		</div>
 		<div class="uk-width-1-4">
 			<i  onClick="openAssignment({{ $audit->project_key }},{{ $audit->audit_id }})" class="{{ $audit->auditor_status_icon }} use-hand-cursor {{ $audit->auditor_status }}" uk-tooltip title="{{ $audit->auditor_status_text }}"></i>
@@ -156,6 +156,3 @@ $lead = $audit->lead_json;
 		</script>
 	</div>
 </td>
-
-
-

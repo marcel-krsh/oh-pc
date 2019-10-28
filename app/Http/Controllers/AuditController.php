@@ -952,7 +952,7 @@ class AuditController extends Controller
           $amenity_inspection->delete();
         } else {
           $unit_amenity = null;
-          $unit_amenity->delete();
+          // $unit_amenity->delete();
         }
 
         if (null !== $ordering_amenities) {

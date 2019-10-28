@@ -43,7 +43,7 @@
 				@endif
 
 				<div class="uk-inline uk-padding-remove" style="flex:140px;">
-					<a onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address->basic_address() }}')" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf ">  Site: <strong style="color : @if($site_status == 0) #000 @else #50b8ec @endIf ">{{ $audit->project->address->basic_address() }}</strong>
+					<a onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address ? $audit->project->address->basic_address() : 'NA' }}')" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf ">  Site: <strong style="color : @if($site_status == 0) #000 @else #50b8ec @endIf ">{{ $audit->project->address ?  $audit->project->address->basic_address() : '' }}</strong>
 					</a>
 				</div>
 			</li>

@@ -648,7 +648,7 @@ class DashboardController extends Controller
     // TEST EVENT
     // $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
     // Event::fire('audit.created', $testaudit);
-// session()->flush();
+    // session()->flush();
     // $request will contain filters
     // $auditFilterMineOnly
     // $auditFilterMineOnly
@@ -752,7 +752,6 @@ class DashboardController extends Controller
     }
 
     $audits = CachedAudit::with('auditors');
-
     if ($request->get('my_audits') && $request->get('my_audits') == 1) {
       session(['audit-my-audits' => 1]);
     } elseif ($request->get('my_audits') && $request->get('my_audits') == 0) {
@@ -1119,6 +1118,7 @@ class DashboardController extends Controller
 
     $current_user   = Auth::user();
     $auditor_access = Auth::user()->auditor_access();
+    // return $audits;
     if ($page > 0) {
       return response()->json($data);
     } else {
