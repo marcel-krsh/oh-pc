@@ -485,8 +485,12 @@ class User extends Authenticatable
   {
     $address = $this->default_address();
     if ($address != '') {
-      $audit           = Audit::where('id', '=', $audit_id)->first();
-      $project_address = $audit->project->address->formatted_address();
+      $audit = Audit::where('id', '=', $audit_id)->first();
+      if ($audit->project->address) {
+        $project_address = $audit->project->address->formatted_address();
+      } else {
+        $project_address = 'No Address';
+      }
 
       $address = urlencode($address);
 
