@@ -38,12 +38,17 @@ class Organization extends Model
 
     public function phone_number_formatted() : string
     {
-        $endNumber = substr($this->phone->phone_number, 0,3). '-'.substr($this->phone->phone_number, 3,6);
+    	if($this->phone) {
+    		$endNumber = substr($this->phone->phone_number, 0,3). '-'.substr($this->phone->phone_number, 3,6);
         $number = '('.$this->phone->area_code.') '.$endNumber;
         if(!is_null($this->phone->extension) && $this->phone->extension !=''){
             $number .= ' ext:'.$this->phone->extension;
         }
         return $number;
+    	} else {
+    		return 'Not Available';
+    	}
+
     }
 
     /**

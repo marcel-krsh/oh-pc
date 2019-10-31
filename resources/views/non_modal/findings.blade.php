@@ -723,7 +723,7 @@
 			}
 
 			function refreshLocationFindingStream(type,auditId,buildingId,unitId,amenityId, toggle = 0) {
-				debugger;
+				// debugger;
 				typeSelected = $('#type_selected').val();
 				typeSelectedValue = $('#type_selected_value').val();
 				// debugger;

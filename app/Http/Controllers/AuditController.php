@@ -1583,7 +1583,7 @@ class AuditController extends Controller
           $initials = $amenity->user->initials();
           $color    = 'auditor-badge-' . $amenity->user->badge_color;
 
-          return ['initials' => $initials, 'color' => $color, 'id' => $user->id, 'name' => $user->full_name(), 'unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => $cached_unit_id, 'building_id' => $building->building_id];
+          return ['initials' => $initials, 'color' => $color, 'id' => $user->id, 'name' => $user->full_name(), 'unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => $cached_unit_id, 'building_id' => $building_id];
         }
       }
     }

@@ -62,6 +62,10 @@ class DocumentController extends Controller
         if (app('env') == 'local') {
             app('debugbar')->disable();
         }
+        // return $request->all();
+        if(!$request->has('categories') || is_null($request->categories)) {
+        	return 'You must select at least one category!';
+        }
         if ($request->hasFile('files')) {
 
             $data = array();

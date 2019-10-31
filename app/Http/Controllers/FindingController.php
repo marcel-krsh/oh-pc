@@ -74,10 +74,10 @@ class FindingController extends Controller
             parse_str($inputs, $inputs);
 
             $error = '';
-            if ($inputs['finding_type_id'] == '') {
+            if (array_key_exists('finding_type_id', $inputs) || $inputs['finding_type_id'] == '') {
                 $error .= '<p>I am having trouble with the finding type you selected. Please refresh your page and try again.</p>';
             }
-            if ($inputs['level'] == '') {
+            if (array_key_exists('level', $inputs) || $inputs['level'] == '') {
                 $error .= '<p>Please select a level.</p>';
             }
 
