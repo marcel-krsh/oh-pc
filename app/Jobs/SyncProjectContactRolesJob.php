@@ -103,9 +103,9 @@ class SyncProjectContactRolesJob implements ShouldQueue
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-                                
+
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-                                
+
                             if ($devcoDateEval > $allitaDateEval) {
                                 if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
@@ -148,7 +148,7 @@ class SyncProjectContactRolesJob implements ShouldQueue
                                         'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                         'person_key'=>$v['attributes']['personKey'],
                                         'project_role_key'=>$v['attributes']['developmentRoleKey'],
-                                            
+
                                         'organization_key'=>$v['attributes']['organizationKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
@@ -159,11 +159,12 @@ class SyncProjectContactRolesJob implements ShouldQueue
                                         'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                         'person_key'=>$v['attributes']['personKey'],
                                         'project_role_key'=>$v['attributes']['developmentRoleKey'],
-                                            
+
                                         'organization_key'=>$v['attributes']['organizationKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                     ]);
+                                    $syncTableRecord = SyncProjectContactRole::find($updateRecord['id']);
                                     // Update the Allita Table Record with the Sync Table's updated at date
                                     $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
                                 }
@@ -178,7 +179,7 @@ class SyncProjectContactRolesJob implements ShouldQueue
                                     'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                     'person_key'=>$v['attributes']['personKey'],
                                     'project_role_key'=>$v['attributes']['developmentRoleKey'],
-                                            
+
                                     'organization_key'=>$v['attributes']['organizationKey'],
                             ]);
                             // Create the sync table entry with the allita id
@@ -188,7 +189,7 @@ class SyncProjectContactRolesJob implements ShouldQueue
                                     'project_program_key'=>$v['attributes']['developmentProgramKey'],
                                     'person_key'=>$v['attributes']['personKey'],
                                     'project_role_key'=>$v['attributes']['developmentRoleKey'],
-                                            
+
                                     'organization_key'=>$v['attributes']['organizationKey'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
                                 'allita_id'=>$allitaTableRecord->id,
