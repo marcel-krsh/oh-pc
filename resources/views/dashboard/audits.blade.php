@@ -1723,7 +1723,7 @@ function updateAuditInspection(e){
 
 	var amount = $('#total_inspection_amount').val();
 
-	$.post("/session/", {
+	$.post("/session-new/", {
 		'data' : [['total_inspection_amount', amount], ['total_inspection_filter', total_inspection_filter]],
 		'_token' : '{{ csrf_token() }}'
 	}, function(data) {
@@ -1745,7 +1745,7 @@ function updateAuditBuildingInspection(e) {
 	var amount = $('#total_building_inspection_amount').val();
 		// $('#totalbuildinginspectionbutton').trigger( 'click' );
 
-		$.post("/session/", {
+		$.post("/session-new/", {
 			'data' : [['total_building_inspection_amount', amount], ['total_building_inspection_filter', total_building_inspection_filter]],
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
@@ -1785,7 +1785,7 @@ function updateAuditBuildingInspection(e) {
 				}
 
 
-				$.post("/session/", {
+				$.post("/session-new/", {
 					'data' : [['assignment-auditor', selected],['audit-my-audits',myAudits]],
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
@@ -2371,7 +2371,7 @@ function updateAuditBuildingInspection(e) {
 			console.log( "ready!" );
 			window.setInterval(function(){
 				checkForUpdatedAudits(window.onPageAudits);
-			}, 5000);
+			}, 500000);
 
 		});
 	</script>
