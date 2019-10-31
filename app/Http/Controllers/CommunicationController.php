@@ -1198,7 +1198,7 @@ class CommunicationController extends Controller
 
       //return $messages->pluck('project_id');
       //$messages = $messages->reverse();
-      //return $messages->first()->message_recipients;
+      // return $messages->first()->message_recipients->first()->pivot->seen;
     }
 
     // return $messages;

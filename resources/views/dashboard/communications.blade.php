@@ -156,9 +156,10 @@
 				FROM: {{ $message->owner->full_name() }}<hr class="dashed-hr uk-margin-bottom uk-width-1-1"> @if(count($message->message_recipients))TO:
 					@foreach ($message->message_recipients->where('id', '<>', $message->owner_id) as $recipient)
 						@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != '')
-							@if($recipient->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
+					{{-- {{ dd($recipient) }} --}}
+							@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
 								{{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}
-							@if($recipient->seen == null)</strong>@endIf
+							@if($recipient->pivot->seen == null)</strong>@endIf
 						@elseif($recipient->id == $current_user->id)
 							Me{{ !$loop->last ? ', ': '' }}
 						@endIf
