@@ -277,7 +277,7 @@ $thisProjectHtml = '';
 								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="owner_email" id="owner-email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ (($exists_in_ue_owner) || (!$default_owner_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
 							</div>
 							<div style="display:inline-table; min-width:100px;">
-								<small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->person->email->email_address }}">{{ $user->person->email->email_address }}</a>
+								<small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->email }}">{{ $user->email }}</a>
 								</small>
 							</div>
 
