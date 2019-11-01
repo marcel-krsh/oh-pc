@@ -230,6 +230,8 @@ class ReportsController extends Controller
     $messages = []; //this is to send messages back to the view confirming actions or errors.
     // set values - ensure this single request works for both dashboard and project details
     $prefix = '';
+
+    $projects_ids_array = [];
     // return $request->all();
     $current_user   = Auth::user();
     $auditor_access = $current_user->auditor_access();
@@ -409,7 +411,6 @@ class ReportsController extends Controller
           $hfa_users_array[] = $hfa->lead;
         }
       }
-      $projects_ids_array = [];
       foreach ($auditProjects as $hfa) {
         if ($hfa->project) {
           $projects_array[] = $hfa->project;
