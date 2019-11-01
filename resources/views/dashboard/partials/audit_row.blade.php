@@ -81,7 +81,7 @@ $lead = $audit->lead_json;
 				@if($audit->car_id)
 				<a href="/report/{{ $audit->car_id }}" target="car{{ $audit->car_id }}"><i class="{{ $audit->car_icon }} {{ $audit->car_status }}" uk-tooltip title="{{ $audit->car_status_text }}"></i></a><br /><small>CAR</small>
 				@else
-				<i  @if($audit->step_id > 59 && $audit->step_id < 67) class="a-file-plus use-hand-cursor" uk-tooltip title="GENERATE THIS AUDIT'S CAR" onclick="submitNewReportAL({{ $audit->audit_id }},1,this)" @else class="a-file-fail gray-text" uk-tooltip title="SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A CAR TO BE GENERATED." @endIf></i><br /><small class="gray-text">CAR</small>
+				<i  @if($audit->step_id > 59 && $audit->step_id < 67) class="a-file-plus use-hand-cursor" uk-tooltip title="GENERATE THIS AUDIT'S CAR" onclick="submitNewReportAL({{ $audit->audit_id }},1,this)" @else class="a-file-fail gray-text" uk-tooltip title="SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A CAR TO BE GENERATED." @endIf></i><br /><small class="gray-text">CAR</small>
 				@endIf
 			</div>
 		</div>
@@ -90,7 +90,7 @@ $lead = $audit->lead_json;
 				@if($audit->ehs_id)
 				<a href="/report/{{ $audit->ehs_id }}" target="ehs{{ $audit->ehs_id }}"><i class="{{ $audit->ehs_icon }} {{ $audit->ehs_status }}" uk-tooltip title="{{ $audit->ehs_status_text }}"></i></a><br /><small>EHS</small>
 				@else
-				<i  @if($audit->step_id > 59 && $audit->step_id < 67) class="a-file-plus use-hand-cursor" uk-tooltip title="GENERATE THIS AUDIT'S EHS" onclick="submitNewReportAL({{ $audit->audit_id }},2,this)" @else class="a-file-fail gray-text" uk-tooltip title="SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A EHS TO BE GENERATED." @endIf></i><br /><small class="gray-text">EHS</small>
+				<i  @if($audit->step_id > 59 && $audit->step_id < 67) class="a-file-plus use-hand-cursor" uk-tooltip title="GENERATE THIS AUDIT'S EHS" onclick="submitNewReportAL({{ $audit->audit_id }},2,this)" @else class="a-file-fail gray-text" uk-tooltip title="SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A EHS TO BE GENERATED." @endIf></i><br /><small class="gray-text">EHS</small>
 				@endIf
 			</div>
 		</div>
@@ -100,7 +100,7 @@ $lead = $audit->lead_json;
 				@if($audit->_8823_id)
 				<a href="/report/{{ $audit->_8823_id }}" target="_8823{{ $audit->_8823_id }}"><i class="{{ $audit->_8823_icon }} {{ $audit->_8823_status }}" uk-tooltip title="{{ $audit->_8823_status_text }}"></i></a><br /><small>8823</small>
 				@else
-				<i  @if($auditor_access)@if($audit->step_id > 59 && $audit->step_id < 67) class="a-file-plus use-hand-cursor" uk-tooltip title="GENERATE THIS AUDIT'S 8823" onclick="submitNewReportAL({{ $audit->audit_id }},5,this)" @else class="a-file-fail gray-text" uk-tooltip title="SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A 8823 TO BE GENERATED." @endIf @else class="a-file-fail use-hand-cursor"uk-tooltip title="SORRRY, THE 8823 GENERATOR IS NOT AVAILABLE YET."@endif></i><br /><small class="gray-text">8823</small>
+				<i  @if($auditor_access)@if($audit->step_id > 59 && $audit->step_id < 67) class="a-file-plus use-hand-cursor" uk-tooltip title="GENERATE THIS AUDIT'S 8823" onclick="submitNewReportAL({{ $audit->audit_id }},5,this)" @else class="a-file-fail gray-text" uk-tooltip title="SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A 8823 TO BE GENERATED." @endIf @else class="a-file-fail use-hand-cursor"uk-tooltip title="SORRY, THE 8823 GENERATOR IS NOT AVAILABLE YET."@endif></i><br /><small class="gray-text">8823</small>
 				@endIf
 			</div>
 		</div>
