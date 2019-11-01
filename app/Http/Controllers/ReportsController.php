@@ -230,7 +230,7 @@ class ReportsController extends Controller
     $messages = []; //this is to send messages back to the view confirming actions or errors.
     // set values - ensure this single request works for both dashboard and project details
     $prefix = '';
-
+    // return $request->all();
     $current_user   = Auth::user();
     $auditor_access = $current_user->auditor_access();
     $admin_access   = $current_user->admin_access();
@@ -393,8 +393,10 @@ class ReportsController extends Controller
         $projects_array  = [];
       } else {
         $auditLeads    = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
-        $auditProjects = CrrReport::select('*')->when($auditor_access, function ($query) {
-          $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', $current_user->person_id)->get()->toArray();
+        // $userProjects = \App\Models\ProjectContactRole::where('person_id', $current_user->person_id)->pluck('project_id');
+        //return $auditProjects = CrrReport::whereIn('project_id', $userProjects)->with('project')->get();
+        $auditProjects = CrrReport::when(!$auditor_access, function ($query) use($current_user) {
+          $userProjects = \App\Models\ProjectContactRole::where('person_id', $current_user->person_id)->pluck('project_id');
           //dd(Auth::user()->person_id,$userProjects);
           return $query->whereIn('project_id', $userProjects);
         })->with('project')->groupBy('project_id')->get();
@@ -407,9 +409,11 @@ class ReportsController extends Controller
           $hfa_users_array[] = $hfa->lead;
         }
       }
+      $projects_ids_array = [];
       foreach ($auditProjects as $hfa) {
         if ($hfa->project) {
           $projects_array[] = $hfa->project;
+          $projects_ids_array[] = $hfa->project->id;
         }
       }
       $hfa_users_array = array_values(Arr::sort($hfa_users_array, function ($value) {
@@ -424,9 +428,14 @@ class ReportsController extends Controller
         $crrApprovalTypes = CrrApprovalType::where('id', '>', 5)->orderBy('order')->get();
       }
     }
+    // return $projects_ids_array;
+    // return $projects_array;
     //dd($hfa_users_array);
     //dd($searchVal,$searchEval,session('crr_search'),intval($request->get('search')));
-    $report_projects = ReportAccess::where('user_id', $current_user->id)->allita()->pluck('project_id');
+    $report_projects_data = ReportAccess::where('user_id', $current_user->id)->allita()->get();
+    $report_projects = $report_projects_data->pluck('project_id');
+    $all_project_ids = array_merge($report_projects->toArray(), $projects_ids_array);
+    $projects_array = Project::whereIn('id', $all_project_ids)->get();
     $reports         = CrrReport::where('crr_approval_type_id', $approvalTypeEval, $approvalTypeVal)
       ->select('id', 'audit_id', 'project_id', 'lead_id', 'manager_id', 'response_due_date', 'version', 'crr_approval_type_id', 'created_at', 'updated_at', 'default', 'template', 'from_template_id', 'last_updated_by', 'created_by', 'report_history', 'signed_by', 'signed_by_id', 'signed_version', 'date_signed', 'requires_approval', 'viewed_by_property_date', 'all_ehs_resolved_date', 'all_findings_resolved_date', 'all_findings_resolved_date', 'date_ehs_resolutions_due', 'date_all_resolutions_due')
       ->whereNull('template')
@@ -443,8 +452,16 @@ class ReportsController extends Controller
       })
 
       ->orWhereIn('project_id', $report_projects)
-      ->orderBy('updated_at', 'desc')
-      ->paginate(10);
+      ->orderBy('updated_at', 'desc');
+      // return $reports->get();
+      // return session()->all();
+      if(session()->has('crr_report_project_id') && session()->get('crr_report_project_id') != 'all') {
+      	$reports = $reports->where('project_id', session()->get('crr_report_project_id'));
+      }
+      if(session()->has('crr_report_status_id') && session()->get('crr_report_status_id') != 'all') {
+      	$reports = $reports->where('crr_approval_type_id', session()->get('crr_report_status_id'));
+      }
+      $reports = $reports->paginate(10);
 
     if (count($reports)) {
       $newest = $reports->sortByDesc('updated_at');
