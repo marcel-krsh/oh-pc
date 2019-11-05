@@ -69,7 +69,7 @@
 			}
 		});
 	}
-
+	@if($up)
 	function submitRemoveEmail() {
 		jQuery.ajaxSetup({
 			headers: {
@@ -103,6 +103,7 @@
 			}
 		});
 	}
+	@endIf
 
 
 </script>
