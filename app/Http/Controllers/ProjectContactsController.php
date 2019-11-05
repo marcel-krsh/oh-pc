@@ -80,7 +80,7 @@ class ProjectContactsController extends Controller
       $default_owner_id = $default_devco_owner_id = $default_owner->person->user->id;
     }
     // replace joins with relationship
-    $users = User::whereIn('id', $user_ids)->with('role', 'person.email', 'person.projects', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access.project', 'user_phone_numbers.phone', 'user_emails.email_address')->orderBy('name')->get(); //->paginate(25);
+    $users = User::whereIn('id', $user_ids)->with('role', 'person.email', 'person.projects', 'organization_details', 'user_addresses.address', 'user_organizations.organization', 'report_access.project', 'user_phone_numbers.phone', 'user_emails.email_address', 'email_address')->orderBy('name')->get(); //->paginate(25);
     // return Project::with('contactRoles.person.user')->find($project);
     // return ProjectContactRole::where('person_id', 23773)->get()->unique();
     // return $x = $users->where('id', 6380)->first()->person->projects;
@@ -753,7 +753,7 @@ class ProjectContactsController extends Controller
     return view('modals.user-project-email', compact('user', 'project_id', 'states'));
   }
 
-  public function saveEmailToUser($user_id, Request $request)
+  public function saveEmailToUser($user_id, Request $request, $internal = 0)
   {
     $validator = \Validator::make($request->all(), [
       'user_id'       => 'required',
@@ -778,6 +778,9 @@ class ProjectContactsController extends Controller
     $ua->project_id       = $request->project_id;
     $ua->email_address_id = $email_address->id;
     $ua->save();
+    if ($internal) {
+      return $ua;
+    }
     return 1;
   }
 
@@ -793,6 +796,11 @@ class ProjectContactsController extends Controller
       return 'Something went wrong, please contact admin';
     }
     $selected = $request->email_address_id;
+    if (!$selected && $request->email_address != '') {
+      $ua       = $this->saveEmailToUser($request->user_id, $request, 1);
+      $selected = $ua->id;
+    }
+    // return 'didn';
     // Check if it is devco user and exists in project emails
     if ($request->devco) {
       $devco = UserEmail::where('project_id', $request->project_id)
@@ -848,6 +856,42 @@ class ProjectContactsController extends Controller
     $email_address->email_address = $input_email_address;
     $email_address->last_edited   = \Carbon\Carbon::now();
     $email_address->save();
+    return 1;
+  }
+
+  public function editEmailOfUserMain($user_id, $project_id)
+  {
+    $user = User::find($user_id);
+    //check if this email exists in emailaddress and UserEmail
+    $up = UserEmail::with('email_address', 'user')->where('user_id', $user_id)->where('project_id', $project_id)->first();
+    return view('modals.edit-user-project-email-main', compact('up', 'project_id', 'user'));
+  }
+
+  public function saveEditEmailOfUserMain($user_id, Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'user_id'          => 'required',
+      'email_address'    => 'required|email',
+      'project_id'       => 'required',
+      'email_address_id' => 'required',
+    ], [
+      'user_id.required'          => 'Something went wrong, please contact admin',
+      'project_id.required'       => 'Something went wrong, please contact admin',
+      'email_address_id.required' => 'Something went wrong, please contact admin',
+    ]);
+    $user = User::with('email_address')->find($user_id);
+    if($user->email_address) {
+    	$email_address = $user->email_address;
+    } else {
+    	$email_address = new EmailAddress;
+    }
+  	$input_email_address          = $request->email_address;
+    $email_address_type           = EmailAddressType::where('email_address_type_name', 'Work')->first();
+    $email_address->email_address = $input_email_address;
+    $email_address->last_edited   = \Carbon\Carbon::now();
+    $email_address->save();
+    $user->email = $input_email_address;
+    $user->save();
     return 1;
   }
 
@@ -1063,6 +1107,10 @@ class ProjectContactsController extends Controller
       return 'Something went wrong, please contact admin';
     }
     $selected = $request->email_address_id;
+    if (!$selected && $request->email_address != '') {
+      $ua       = $this->saveEmailToUser($request->user_id, $request, 1);
+      $selected = $ua->id;
+    }
     // Check if it is devco user and exists in project emails
     if ($request->devco) {
       $devco = UserEmail::where('project_id', $request->project_id)

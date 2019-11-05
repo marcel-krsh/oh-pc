@@ -556,4 +556,9 @@ class User extends Authenticatable
   {
     return $this->hasMany(UserEmail::class, 'user_id', 'id');
   }
+
+  public function email_address()
+  {
+    return $this->hasOne(EmailAddress::class, 'email_address', 'email');
+  }
 }

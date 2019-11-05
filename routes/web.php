@@ -257,6 +257,10 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/modals/make-project-default-email', 'ProjectContactsController@defaultEmailOfUserForProject')->name('user.make-project-default-email');
     Route::get('/modals/edit-email-of-user/{address}/{project}', 'ProjectContactsController@editEmailOfUser');
     Route::post('/modals/{email}/edit-email-of-user', 'ProjectContactsController@saveEditEmailOfUser')->name('user.edit-email-of-user');
+
+    Route::get('/modals/edit-email-of-user-main/{user}/{project}', 'ProjectContactsController@editEmailOfUserMain');
+    Route::post('/modals/{email}/edit-email-of-user-main', 'ProjectContactsController@saveEditEmailOfUserMain')->name('user.edit-email-of-user-main');
+
     Route::post('/modals/{email}/remove-email-of-user', 'ProjectContactsController@removeEmailOfUser')->name('user.remove-email-of-user');
 
     // owner
@@ -495,7 +499,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
     Route::get('/projects/{project}/audit-communications/{audit}/{page?}', 'CommunicationController@auditCommunicationsFromProjectTab')->name('project.audit-communications');
     Route::get('/projects/{project_id}/reply-communications/documents', 'CommunicationController@getCommunicationDocuments')->name('project.communication.documents');
-
 
     // notifications trigger
     Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');
@@ -959,5 +962,5 @@ Route::group(['prefix' => 'poc', 'namespace' => 'POC'], function () {
 });
 
 Route::get('/debug-sentry', function () {
-    throw new Exception('My first Sentry error!');
+  throw new Exception('My first Sentry error!');
 });

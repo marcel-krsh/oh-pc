@@ -1115,7 +1115,7 @@ class FindingController extends Controller
         if (is_null($audit)) {
             return "alert('No audit found for ID:" . $auditid . "');";
         }
-        $amenities_query = AmenityInspection::where('audit_id', $auditid)->with('amenity');
+        $amenities_query = AmenityInspection::with('unit')->where('audit_id', $auditid)->with('amenity');
         $amenities = $amenities_query->get();
 
         $amenities = $amenities->where('unit_id', $unit_id)->sortBy('unit_id')->sortBy('amenity_id')->sortBy('id');

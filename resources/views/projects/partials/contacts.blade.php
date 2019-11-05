@@ -215,7 +215,6 @@ $thisProjectHtml = '';
 							@endphp
 							{{-- Ie none of the phone number is marked as default, we mark default devco contact phone number as default --}}
 							{{-- Manager --}}
-
 							<div  style="display:inline-table; min-width: 50px;">
 								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultPhonenumber({{ $user->organization_details->default_phone_number_id }}, {{ $user->id }},  1)" name="phone_number" id="phone_number-{{ $user->organization_details->default_phone_number_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER PHONE NUMBER" aria-expanded="false" {{ (($exists_in_up) || (!$default_phone && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
 								{{-- Owner --}}
@@ -261,23 +260,74 @@ $thisProjectHtml = '';
 						$user_emails = $user->user_emails->where('project_id', $project->id);
 						@endphp
 						<td>
-							{{-- {{ dd($user->person) }} --}}
-							@if($user->person && $user->person->email)
 							@php
-							// Check if this user phone emails exists in user emails
-							$exists_in_ue = $user_emails->where('devco', 1)->where('email_address_id', $user->person->default_email_address_id)->where('default', 1)->first();
-							// dd($user->person->default_email_address_id);
-							$exists_in_ue_owner = $user_emails->where('devco', 1)->where('email_address_id', $user->person->default_email_address_id)->where('owner_default', 1)->first();
+							// Check if the user email exists in emailAddresss and exists in UserEmail
+							if($user->email_address) {
+								$exists_in_ue = $user_emails->where('email_address_id', $user->email_address->id)->where('default', 1)->first();
+								$exists_in_ue_owner = $user_emails->where('email_address_id', $user->email_address->id)->where('owner_default', 1)->first();
+								$default_email_id = $user_emails->where('email_address_id', $user->email_address->id)->first();
+								if($default_email_id) {
+									$default_email_id = $default_email_id->id;
+								} else {
+									$default_email_id = 0;
+								}
+							} else {
+								$exists_in_ue = 0;
+								$exists_in_ue_owner = 0;
+								$default_email_id = 0;
+							}
+							if($user->id == 7965) {
+								// dd($user->email_address);
+							}
 							@endphp
-							{{-- Manager --}}
-
+							{{-- {{ dd($default_devco_user_id) }} --}}
 							<div style="display: inline-table; min-width: 40px;">
-								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="email" id="email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER EMAIL" aria-expanded="false" {{ (($exists_in_ue) || (!$default_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
+								<input style="margin-top: .1px" class="uk-radio" onchange='makeDefaultEmail({{ $default_email_id }}, {{ $user->id }}, 0, "{{ $user->email }}")' name="email" id="email-{{ $default_email_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER EMAIL" aria-expanded="false" {{ (($exists_in_ue) || (!$default_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
 								{{-- Owner --}}
-								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="owner_email" id="owner-email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ (($exists_in_ue_owner) || (!$default_owner_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+								<input style="margin-top: .1px" class="uk-radio" onchange='makeDefaultOwnerEmail({{ $default_email_id }}, {{ $user->id }}, 0, "{{ $user->email }}")' name="owner_email" id="owner-email-{{ $default_email_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ (($exists_in_ue_owner) || (!$default_owner_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
 							</div>
 							<div style="display:inline-table; min-width:100px;">
 								<small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->email }}">{{ $user->email }}</a>
+								</small>
+								<i onclick="editUserEmail({{ $user->id }})" id="project-email-{{ $user->id }}" class="a-pencil" uk-tooltip="" title="EDIT / DELETE EMAIL ADDRESS" aria-expanded="false"></i>
+							</div>
+
+							<hr class="dashed-hr  uk-margin-small-bottom">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+							{{-- {{ dd($user->person) }} --}}
+							{{-- @if($user->person && $user->person->email)
+							@php
+							// Check if this user  emails exists in user emails
+							$exists_in_ue = $user_emails->where('devco', 1)->where('email_address_id', $user->person->default_email_address_id)->where('default', 1)->first();
+							// dd($user->person->default_email_address_id);
+							$exists_in_ue_owner = $user_emails->where('devco', 1)->where('email_address_id', $user->person->default_email_address_id)->where('owner_default', 1)->first();
+							@endphp --}}
+							{{-- Manager --}}
+
+							{{-- <div style="display: inline-table; min-width: 40px;">
+								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="email" id="email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER EMAIL" aria-expanded="false" {{ (($exists_in_ue) || (!$default_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> |
+								Owner --}}
+								{{-- <input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerEmail({{ $user->person->default_email_address_id }}, {{ $user->id }},  1)" name="owner_email" id="owner-email-{{ $user->person->default_email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ (($exists_in_ue_owner) || (!$default_owner_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
+							</div>
+							<div style="display:inline-table; min-width:100px;">
+								<small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->person->email->email_address }}">{{ $user->person->email->email_address }}</a>
 								</small>
 							</div>
 
@@ -285,10 +335,19 @@ $thisProjectHtml = '';
 							@else
 							<div class="uk-text-muted uk-align-left"><small>NA</small></div>
 							<hr class="dashed-hr  uk-margin-small-bottom">
-							@endif
+							@endif  --}}
+
+
+
 							@php
 								// Non devco emails
-							$user_emails = $user_emails->where('devco', '!=', 1);
+							if($default_email_id) {
+								$user_emails = $user_emails->where('devco', '!=', 1)->where('id', '<>', $default_email_id);
+							} else {
+								$user_emails = $user_emails->where('devco', '!=', 1);
+							}
+
+
 							@endphp
 							@foreach($user_emails as $email)
 							{{-- Manager --}}
@@ -298,10 +357,10 @@ $thisProjectHtml = '';
 								{{-- Owner --}}
 								<input style="margin-top: .1px" class="uk-radio" onchange="makeDefaultOwnerEmail({{ $email->id }}, {{ $user->id }})" name="owner_email" id="owner-email-{{ $email->email_address_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ $email->owner_default ? 'checked=checked': '' }}>
 							</div>
-								<small>
-									{{ $email->email_address->email_address }}
-								</small>
-								<i onclick="editEmail({{ $email->id }})" id="project-email-{{ $email->id }}" class="a-pencil" uk-tooltip="" title="EDIT / DELETE EMAIL ADDRESS" aria-expanded="false"></i>
+							<small>
+								{{ $email->email_address->email_address }}
+							</small>
+							<i onclick="editEmail({{ $email->id }})" id="project-email-{{ $email->id }}" class="a-pencil" uk-tooltip="" title="EDIT / DELETE EMAIL ADDRESS" aria-expanded="false"></i>
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@endforeach
 							<small class="use-hand-cursor uk-text-muted" id="add-email-{{ $user->id }}" onclick="addEmail({{ $user->id }})"  uk-tooltip="" title="ADD ANOTHER EMAIL ADDRESS" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> EMAIL</small>
@@ -323,9 +382,9 @@ $thisProjectHtml = '';
 						<td style="min-width: 85px;">
 							<div class="uk-margin-left">
 								@php
-									$allita_user_text = in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO ADD)';
-									$allita_modal_text = in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK OK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK OK TO ADD)';
-									$allita_modal_heading = in_array($user->id, $allita_user_ids) ? 'REMOVE ALLITA ACCESS FOR THIS USER' : 'ADD ALLITA ACCESS TO THIS USER';
+								$allita_user_text = in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO ADD)';
+								$allita_modal_text = in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK OK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK OK TO ADD)';
+								$allita_modal_heading = in_array($user->id, $allita_user_ids) ? 'REMOVE ALLITA ACCESS FOR THIS USER' : 'ADD ALLITA ACCESS TO THIS USER';
 								@endphp
 								<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles) }}"></i>  | </span>
 								<span class="use-hand-cursor" data-uk-tooltip title="{{ $allita_user_text }}"> <i onclick='addAllitaAccess({{ $user->id }}, "{{ in_array($user->id, $allita_user_ids) }}", "{{ $allita_modal_text }}", "{{ $allita_modal_heading }}")' class="{{ in_array($user->id, $allita_user_ids) ? 'a-mail-chart-up' : 'a-mail-chart-up uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
@@ -339,7 +398,7 @@ $thisProjectHtml = '';
 							<div class="uk-margin-left">
 								<span><i class="uk-text-muted a-file-gear_1" data-uk-tooltip title="USER DOES NOT HAVE ACCESS TO THIS PROJECT VIA DEVCO"></i> | </span>
 								@php
-									$project_user_text = $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS';
+								$project_user_text = $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS';
 								@endphp
 								<span class="use-hand-cursor" data-uk-tooltip title="{{ $project_user_text }}" onclick='removeUserFromProject({{ $user->id }})'><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i> |
 								</span>
@@ -630,37 +689,37 @@ $thisProjectHtml = '';
 	function addAllitaAccess(userId, hasAccess, projectsHtml = '', projectsHtmlHeading = '') {
 		var modalText = '<h2 class="uk-text-uppercase uk-text-emphasis">'+projectsHtmlHeading+'</h2><hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">' + projectsHtml;
 		UIkit.modal.confirm(modalText).then(function() {
-		jQuery.ajaxSetup({
-			headers: {
-				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-			}
-		});
-		var data = { };
-		jQuery.ajax({
-			url: "{{ URL::route("user.add-allita-access-to-user") }}",
-			method: 'post',
-			data: {
-				user_id : userId,
-				project_id : {{ $project->id }},
-				'_token' : '{{ csrf_token() }}'
-			},
-			success: function(data){
-				$('.alert-danger' ).empty();
-				if(data == 1) {
-					if(hasAccess) {
-						UIkit.notification('<span uk-icon="icon: check"></span> Removed allita access to user', {pos:'top-right', timeout:1000, status:'success'});
-						loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
-					} else {
-						UIkit.notification('<span uk-icon="icon: check"></span> Added allita access to user', {pos:'top-right', timeout:1000, status:'success'});
-						loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
-					}
+			jQuery.ajaxSetup({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
 				}
-				jQuery.each(data.errors, function(key, value){
-					jQuery('.alert-danger').show();
-					jQuery('.alert-danger').append('<p>'+value+'</p>');
-				});
-			}
-		});
+			});
+			var data = { };
+			jQuery.ajax({
+				url: "{{ URL::route("user.add-allita-access-to-user") }}",
+				method: 'post',
+				data: {
+					user_id : userId,
+					project_id : {{ $project->id }},
+					'_token' : '{{ csrf_token() }}'
+				},
+				success: function(data){
+					$('.alert-danger' ).empty();
+					if(data == 1) {
+						if(hasAccess) {
+							UIkit.notification('<span uk-icon="icon: check"></span> Removed allita access to user', {pos:'top-right', timeout:1000, status:'success'});
+							loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
+						} else {
+							UIkit.notification('<span uk-icon="icon: check"></span> Added allita access to user', {pos:'top-right', timeout:1000, status:'success'});
+							loadTab('/project/'+{{ $project->id }}+'/contacts/', '7', 0, 0, 'project-', 1);
+						}
+					}
+					jQuery.each(data.errors, function(key, value){
+						jQuery('.alert-danger').show();
+						jQuery('.alert-danger').append('<p>'+value+'</p>');
+					});
+				}
+			});
 		}, function () {
 			console.log('Rejected.')
 		});
@@ -674,7 +733,11 @@ $thisProjectHtml = '';
 		dynamicModalLoad('edit-email-of-user/'+emailId+'/{{ $project->id }}');
 	}
 
-	function makeDefaultEmail(emailId, userId, devco = 0) {
+	function editUserEmail(userId) {
+		dynamicModalLoad('edit-email-of-user-main/'+userId+'/{{ $project->id }}');
+	}
+
+	function makeDefaultEmail(emailId, userId, devco = 0, email = '') {
 		jQuery.ajaxSetup({
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -689,6 +752,7 @@ $thisProjectHtml = '';
 				user_id : userId,
 				project_id : {{ $project->id }},
 				devco : devco,
+				email_address : email,
 				'_token' : '{{ csrf_token() }}'
 			},
 			success: function(data){
@@ -825,7 +889,7 @@ $thisProjectHtml = '';
 		});
 	}
 
-	function makeDefaultOwnerEmail(emailId, userId, devco = 0) {
+	function makeDefaultOwnerEmail(emailId, userId, devco = 0, email = '') {
 		jQuery.ajaxSetup({
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -840,6 +904,7 @@ $thisProjectHtml = '';
 				user_id : userId,
 				project_id : {{ $project->id }},
 				devco : devco,
+				email_address : email,
 				'_token' : '{{ csrf_token() }}'
 			},
 			success: function(data){
