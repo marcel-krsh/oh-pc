@@ -418,19 +418,19 @@ if ($allowPageLoad) {
 	<div id="dynamic-modal" uk-modal uk-overflow-auto>
 		<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content">
 			<a class="uk-modal-close-default" uk-close></a>
-			<div id="dynamic-modal-content" style="height: 100%; overflow-y: scroll;"></div>
+			<div id="dynamic-modal-content" class="uk-modal-body" style="height: 100%; overflow-y: scroll;"></div>
 		</div>
 	</div>
 	<div id="dynamic-modal-2" uk-modal uk-overflow-auto>
 		<div id="modal-size-2" class="uk-modal-dialog uk-modal-body uk-modal-content">
 			<a class="uk-modal-close-default" uk-close></a>
-			<div id="dynamic-modal-content-2" style="height: 100%; overflow-y: scroll;"></div>
+			<div id="dynamic-modal-content-2" class="uk-modal-body" style="height: 100%; overflow-y: scroll;"></div>
 		</div>
 	</div>
 	<div id="dynamic-modal-3" uk-modal uk-overflow-auto>
 		<div id="modal-size-3" class="uk-modal-dialog uk-modal-body uk-modal-content">
 			<a class="uk-modal-close-default" uk-close></a>
-			<div id="dynamic-modal-content-3" style="height: 100%; overflow-y: scroll;"></div>
+			<div id="dynamic-modal-content-3" class="uk-modal-body" style="height: 100%; overflow-y: scroll;"></div>
 		</div>
 	</div>
 
