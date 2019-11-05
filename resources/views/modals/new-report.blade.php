@@ -1,5 +1,5 @@
 
-	<div id="dynamic-modal-content">
+
 
 		<form name="newReportForm" id="newReportForm" method="post">
 			<input type="hidden" id="project_id" value="{{$project_id}}">
@@ -51,7 +51,7 @@
 				</div>
 			</div>
 		</form>
-	</div>
+
 
 	
 	<script type="text/javascript">

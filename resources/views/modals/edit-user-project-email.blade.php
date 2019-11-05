@@ -7,8 +7,8 @@
 	</ul>
 </div>
 @endif
-<div id="dynamic-modal-content">
-	<h2 class="uk-text-uppercase uk-text-emphasis">Edit User Email Address <a class="uk-button uk-button-danger uk-margin-large-left" onclick="submitRemoveEmail()"><span uk-icon="save"></span> CLICK TO REMOVE EMAIL</a></h2>
+
+	<h2 class="uk-text-uppercase uk-text-emphasis">@if($up->email_address->email_address)Edit @else Add @endIf User Email Address <a class="uk-button uk-button-danger uk-margin-large-left" onclick="submitRemoveEmail()"><span uk-icon="save"></span> CLICK TO REMOVE EMAIL</a></h2>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 		<p>Click the remove email button above to remove this email from the user OR edit the email below </p>
 	<div class="alert alert-danger uk-text-danger" style="display:none"></div>
@@ -31,7 +31,7 @@
 			</div>
 		</div>
 	</form>
-</div>
+
 <script type="text/javascript">
 
 	function submitNewEmail() {

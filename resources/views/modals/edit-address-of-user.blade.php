@@ -7,7 +7,7 @@
 	</ul>
 </div>
 @endif
-<div id="dynamic-modal-content">
+
 	<h2 class="uk-text-uppercase uk-text-emphasis">Edit/Remove User Address <a class="uk-button uk-button-danger uk-margin-large-left" onclick="submitRemoveAddress()"><span uk-icon="save"></span> CLICK TO REMOVE ADDRESS</a>
 	</h2>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
@@ -66,7 +66,6 @@
 		</div>
 	</div> --}}
 
-</div>
 <script type="text/javascript">
 
 	function submitEditAddress() {

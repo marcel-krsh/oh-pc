@@ -1,7 +1,7 @@
 <script>
 	resizeModal(80);
 </script>
-<div id="dynamic-modal-content">
+
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
 		@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit }}">@endif
@@ -184,7 +184,7 @@
       </div>
     </div>
   </form>
-</div>
+
 
 
 {{-- </div></div></div></div> --}}

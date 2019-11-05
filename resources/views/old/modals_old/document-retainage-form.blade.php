@@ -1,4 +1,4 @@
-<div id="dynamic-modal-content">
+
 		<script>
 		resizeModal(60);
 		</script>
@@ -49,7 +49,7 @@
 				</div>
 			</div>
 		</form>
-	</div>	
+	
 	
 	<script type="text/javascript">
 	function associateRetainage() {

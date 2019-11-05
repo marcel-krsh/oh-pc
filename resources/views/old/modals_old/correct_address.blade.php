@@ -1,4 +1,4 @@
-<div id="dynamic-modal-content">
+
 	<script>
 	resizeModal(60);
 	</script>
@@ -74,4 +74,3 @@
 		</div>
 	</div>
 	
-</div>

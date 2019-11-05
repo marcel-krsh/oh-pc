@@ -7,7 +7,7 @@
 	</ul>
 </div>
 @endif
-<div id="dynamic-modal-content">
+
 	<h2 class="uk-text-uppercase uk-text-emphasis">
 		@if($using_project_user)
 		Combine this Contact with a Project User (Using Project User's Information)
@@ -94,7 +94,7 @@
     	</div>
     </div>
   </form>
-</div>
+
 
 
 <script type="text/javascript">

@@ -7,7 +7,7 @@
   </ul>
 </div>
 @endif
-<div id="dynamic-modal-content">
+
 	@if(is_null($uo->organization->organization_key))
   <h2 class="uk-text-uppercase uk-text-emphasis">Edit/Remove User Organization</h2>
   <hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
@@ -42,7 +42,7 @@
     </div>
   </div>
 
-</div>
+
 <script type="text/javascript">
 
   function submitEditOrganization() {

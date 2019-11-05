@@ -1,5 +1,5 @@
 
-	<div id="dynamic-modal-content">
+
 
 		<form name="newNoteForm" id="newNoteForm" method="post">
 			<input type="hidden" name="project" value="{{$project->id}}">
@@ -26,7 +26,7 @@
 				</div>
 			</div>
 		</form>
-	</div>	
+
 	
 	<script type="text/javascript">
 	function submitNewNote(id) {

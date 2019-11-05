@@ -1,4 +1,4 @@
-<div id="dynamic-modal-content">
+
 	<script>
 		$('#modal-size').css('width', '70%');
 	</script>
@@ -84,4 +84,3 @@
 
 	}
 </script>
-</div>

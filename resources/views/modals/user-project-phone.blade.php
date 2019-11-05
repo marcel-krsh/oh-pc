@@ -7,7 +7,7 @@
 	</ul>
 </div>
 @endif
-<div id="dynamic-modal-content">
+
 	<h2 class="uk-text-uppercase uk-text-emphasis">Edit User Phone Number</h2>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 	<div class="alert alert-danger uk-text-danger" style="display:none"></div>
@@ -31,7 +31,7 @@
 			</div>
 		</div>
 	</form>
-</div>
+
 <script type="text/javascript">
 
 	function submitNewPhone() {

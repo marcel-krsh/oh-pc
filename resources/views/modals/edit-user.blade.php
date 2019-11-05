@@ -20,7 +20,7 @@
 		</ul>
 	</div>
 @endif
-<div id="dynamic-modal-content">
+
 	<h3 class="uk-text-uppercase">Edit User: <span class="uk-text-primary">{{ $user->name }}</span></h3>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
 	<div class="alert alert-danger uk-text-danger" style="display:none"></div>
@@ -132,7 +132,7 @@
     	</div>
     </div>
   </form>
-</div>
+
 <script type="text/javascript">
 
  $( document ).ready(function() {

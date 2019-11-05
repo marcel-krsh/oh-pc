@@ -19,7 +19,7 @@
 	</ul>
 </div>
 @endif
-<div id="dynamic-modal-content">
+
 	@if(null == $contact)
 	<h2 class="uk-text-uppercase uk-text-emphasis">Create New User</h2>
 	@else
@@ -182,7 +182,7 @@
     	</div>
     </div>
   </form>
-</div>
+
 <script>
 
 	// $(document).ready(function(){
