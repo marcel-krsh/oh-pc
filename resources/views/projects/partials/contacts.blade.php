@@ -287,7 +287,7 @@ $thisProjectHtml = '';
 								<input style="margin-top: .1px" class="uk-radio" onchange='makeDefaultOwnerEmail({{ $default_email_id }}, {{ $user->id }}, 0, "{{ $user->email }}")' name="owner_email" id="owner-email-{{ $default_email_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ (($exists_in_ue_owner) || (!$default_owner_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}>
 							</div>
 							<div style="display:inline-table; min-width:100px;">
-								<small><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->email }}">{{ $user->email }}</a>
+								<small uk-tooltip title="This is the email address that notifications are sent to, as well as the email address used by the user to login to Allita directly."><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->email }}">{{ $user->email }} <i class="a-avatar-approve"></i></a>
 								</small>
 								<i onclick="editUserEmail({{ $user->id }})" id="project-email-{{ $user->id }}" class="a-pencil" uk-tooltip="" title="EDIT / DELETE EMAIL ADDRESS" aria-expanded="false"></i>
 							</div>
