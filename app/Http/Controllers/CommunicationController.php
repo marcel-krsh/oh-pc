@@ -15,6 +15,15 @@ use App\Models\Finding;
 use App\Models\NotificationsTriggered;
 use App\Models\Project;
 use App\Models\SystemSetting;
+
+use App\Models\ProjectContactRole;
+use App\Models\ReportAccess;
+use App\Models\Role;
+use App\Models\State;
+use App\Models\UserAddresses;
+use App\Models\UserEmail;
+use App\Models\UserOrganization;
+use App\Models\UserPhoneNumber;
 //use App\LogConverter;
 use App\Models\User;
 use Auth;
