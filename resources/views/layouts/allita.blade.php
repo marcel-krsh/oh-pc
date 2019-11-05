@@ -384,7 +384,7 @@ if ($allowPageLoad) {
 					<script>
 						 $(function() {
 						    // Handler for .ready() called.
-						    $('#dynamic-modal-content').css({"min-height":"500px","max-height":"800px"});
+						    $('#dynamic-modal-content').css({"min-height":"800px","max-height":"800px"});
 						  });
 					</script>
 				</div>
@@ -396,7 +396,7 @@ if ($allowPageLoad) {
 					<script>
 						 $(function() {
 						    // Handler for .ready() called.
-						    $('#dynamic-modal-content-2').css({"min-height":"500px","max-height":"800px"});
+						    $('#dynamic-modal-content-2').css({"min-height":"800px","max-height":"800px"});
 						  });
 					</script>
 				</div>
@@ -408,7 +408,7 @@ if ($allowPageLoad) {
 					<script>
 						 $(function() {
 						    // Handler for .ready() called.
-						    $('#dynamic-modal-content-3').css({"min-height":"500px","max-height":"800px"});
+						    $('#dynamic-modal-content-3').css({"min-height":"800px","max-height":"800px"});
 						  });
 					</script>
 				</div>

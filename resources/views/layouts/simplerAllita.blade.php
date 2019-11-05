@@ -285,7 +285,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 		<script>
 			 $(function() {
 			    // Handler for .ready() called.
-			    $('#dynamic-modal-content').css({"min-height":"500px","max-height":"800px"});
+			    $('#dynamic-modal-content').css({"min-height":"800px","max-height":"800px"});
 			  });
 		</script>
 	</div>
