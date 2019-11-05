@@ -164,7 +164,7 @@ resizeModal(95);
 				</div>
 			</div>
 		</div>
-		<div class="modal-project-summary-right-top">
+		<div class="modal-project-summary-right-top" style="background-color: white;">
 			<div class="uk-padding-remove uk-margin-top uk-flex uk-flex-between" >
 				<button id="summary-btn-all" class="uk-button uk-button-default uk-button-small button-filter button-filter-selected button-filter-wide" onclick="filterAll();" type="button">ALL</button>
 				<button id="summary-btn-selected" class="uk-button uk-button-default uk-button-small button-filter button-filter-wide" onclick="filterSelected();" type="button">SELECTED</button>
