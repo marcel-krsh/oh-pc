@@ -695,7 +695,7 @@ class CommunicationController extends Controller
       // check to see if the user is allowed to access this project
       $onProject = 0;
       $onProject = $project->is_project_contact(Auth::user()->id);
-      dd($onProject,Auth::user()->id,is_project_contact(Auth::user()->id));
+      dd($onProject,Auth::user()->id,$project->is_project_contact(Auth::user()->id));
       //dd($onProject,$project->contactRoles);
       if ($onProject) {
         /// if they are on the contact roles
