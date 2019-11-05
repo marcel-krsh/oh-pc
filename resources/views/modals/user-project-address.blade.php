@@ -54,6 +54,7 @@
 	</form>
 
 <script type="text/javascript">
+	
 	function submitNewAddress() {
 		jQuery.ajaxSetup({
 			headers: {

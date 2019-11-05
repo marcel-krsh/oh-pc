@@ -380,18 +380,37 @@ if ($allowPageLoad) {
 						<a class="uk-modal-close-default" uk-close></a>
 						<div id="dynamic-modal-content" class="uk-modal-body" style="height: 100%; overflow-y: scroll;" uk-overflow-auto></div>
 					</div>
+
+					<script>
+						 $(function() {
+						    // Handler for .ready() called.
+						    $('#dynamic-modal-content').css({"min-height":"500px","max-height":"800px"});
+						  });
+					</script>
 				</div>
 				<div id="dynamic-modal-2" uk-modal>
 					<div  class="uk-modal-dialog uk-modal-body uk-modal-content"  uk-overflow-auto>
 						<a class="uk-modal-close-default" uk-close></a>
 						<div id="dynamic-modal-content-2" class="uk-modal-body" style="height: 100%; overflow-y: scroll;" uk-overflow-auto></div>
 					</div>
+					<script>
+						 $(function() {
+						    // Handler for .ready() called.
+						    $('#dynamic-modal-content-2').css({"min-height":"500px","max-height":"800px"});
+						  });
+					</script>
 				</div>
 				<div id="dynamic-modal-3" uk-modal>
 					<div  class="uk-modal-dialog uk-modal-body uk-modal-content"  uk-overflow-auto>
 						<a class="uk-modal-close-default" uk-close></a>
 						<div id="dynamic-modal-content-3" class="uk-modal-body" style="height: 100%; overflow-y: scroll;" uk-overflow-auto></div>
 					</div>
+					<script>
+						 $(function() {
+						    // Handler for .ready() called.
+						    $('#dynamic-modal-content-3').css({"min-height":"500px","max-height":"800px"});
+						  });
+					</script>
 				</div>
 			</div>
 

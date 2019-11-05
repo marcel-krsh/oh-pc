@@ -42,6 +42,9 @@
 <script type="text/javascript">
 	$(document).ready(function() {
     $('#organization').select2();
+
+   
+ 
 	});
   function submitNewOrganization() {
    jQuery.ajaxSetup({

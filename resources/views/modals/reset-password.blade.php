@@ -36,6 +36,7 @@
 	</form>
 
 <script type="text/javascript">
+	
 	function submitResetPasword() {
 		jQuery.ajaxSetup({
 			headers: {

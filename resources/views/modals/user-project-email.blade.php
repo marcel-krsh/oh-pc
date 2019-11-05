@@ -32,7 +32,7 @@
 	</form>
 
 <script type="text/javascript">
-
+	
 	function submitNewEmail() {
 		jQuery.ajaxSetup({
 			headers: {

@@ -282,6 +282,12 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 			<a class="uk-modal-close-default" uk-close></a>
 			<div id="dynamic-modal-content" class="uk-modal-body" uk-overflow-auto></div>
 		</div>
+		<script>
+			 $(function() {
+			    // Handler for .ready() called.
+			    $('#dynamic-modal-content').css({"min-height":"500px","max-height":"800px"});
+			  });
+		</script>
 	</div>
 
 </div>
