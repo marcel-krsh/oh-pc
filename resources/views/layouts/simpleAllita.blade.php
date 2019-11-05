@@ -354,7 +354,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 	<div id="dynamic-modal" uk-modal>
 		<div id="modal-size" class="uk-modal-dialog uk-modal-body uk-modal-content">
 			<a class="uk-modal-close-default" uk-close></a>
-			<div id="dynamic-modal-content"></div>
+			<div id="dynamic-modal-content" uk-overflow-auto></div>
 		</div>
 	</div>
 </div>
