@@ -7,7 +7,7 @@
 	</ul>
 </div>
 @endif
-<div id="dynamic-modal-content">
+
 	<h2 class="uk-text-uppercase uk-text-emphasis">Add user to the project</h2>
   <small class="uk-margin-top uk-margin-bottom">PRESS CONTROL + F TO SEARCH NAMES IN USER LIST</small>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
@@ -86,7 +86,7 @@
     	</div>
     </div>
   </form>
-</div>
+
 
 
 <script type="text/javascript">
