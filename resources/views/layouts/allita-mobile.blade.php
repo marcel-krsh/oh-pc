@@ -416,7 +416,7 @@ if ($allowPageLoad) {
 
 	<a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
 	<div id="dynamic-modal" >
-		<div  class="uk-modal-dialog uk-modal-body uk-modal-content">
+		<div  class="uk-modal-dialog uk-modal-body uk-modal-content" >
 			<a class="uk-modal-close-default" uk-close></a>
 			<div id="dynamic-modal-content" class="uk-modal-body" style="height: 100%; overflow-y: scroll;"></div>
 		</div>

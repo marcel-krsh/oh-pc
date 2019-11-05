@@ -278,7 +278,7 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 
 <a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
 	<div id="dynamic-modal" uk-modal>
-		<div  class="uk-modal-dialog uk-modal-body uk-modal-content">
+		<div  class="uk-modal-dialog uk-modal-body uk-modal-content" style="min-width: 1250px; min-height: 500px; max-height: 800px">
 			<a class="uk-modal-close-default" uk-close></a>
 			<div id="dynamic-modal-content" class="uk-modal-body"></div>
 		</div>
