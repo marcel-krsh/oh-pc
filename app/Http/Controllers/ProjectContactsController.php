@@ -846,10 +846,11 @@ class ProjectContactsController extends Controller
       'project_id'       => 'required',
       'email_address_id' => 'required',
     ], [
-      'user_id.required'          => 'Something went wrong, please contact admin',
-      'project_id.required'       => 'Something went wrong, please contact admin',
-      'email_address_id.required' => 'Something went wrong, please contact admin',
+      'user_id.required'          => 'Error 849: User Id was not provided. Please let an admin know this happened and how you got here.',
+      'project_id.required'       => 'Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.',
+      'email_address_id.required' => 'Error 851: Email Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
+    // make sure email is not already used by a user
     $email_address                = EmailAddress::find($request->email_address_id);
     $input_email_address          = $request->email_address;
     $email_address_type           = EmailAddressType::where('email_address_type_name', 'Work')->first();
@@ -875,9 +876,9 @@ class ProjectContactsController extends Controller
       'project_id'       => 'required',
       'email_address_id' => 'required',
     ], [
-      'user_id.required'          => 'Something went wrong, please contact admin',
-      'project_id.required'       => 'Something went wrong, please contact admin',
-      'email_address_id.required' => 'Something went wrong, please contact admin',
+      'user_id.required'          => 'Error 849: User Id was not provided. Please let an admin know this happened and how you got here.',
+      'project_id.required'       => 'Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.',
+      'email_address_id.required' => 'Error 851: Email Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     $user = User::with('email_address')->find($user_id);
     if($user->email_address) {
@@ -886,13 +887,19 @@ class ProjectContactsController extends Controller
     	$email_address = new EmailAddress;
     }
   	$input_email_address          = $request->email_address;
-    $email_address_type           = EmailAddressType::where('email_address_type_name', 'Work')->first();
-    $email_address->email_address = $input_email_address;
-    $email_address->last_edited   = \Carbon\Carbon::now();
-    $email_address->save();
-    $user->email = $input_email_address;
-    $user->save();
-    return 1;
+    // check email is unique:
+    $check_email_address = User::where('email',$input_email_address)->first();
+    if(!$check_email_address){
+      $email_address_type           = EmailAddressType::where('email_address_type_name', 'Work')->first();
+      $email_address->email_address = $input_email_address;
+      $email_address->last_edited   = \Carbon\Carbon::now();
+      $email_address->save();
+      $user->email = $input_email_address;
+      $user->save();
+      return 1;
+    } else {
+      return 'That email is already in use by '.$check_email_address->name.'. Please choose another email address.';
+    }
   }
 
   public function removeEmailOfUser($email_id, Request $request)
