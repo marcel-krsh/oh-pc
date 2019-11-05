@@ -323,7 +323,7 @@ class CommunicationController extends Controller
           ->orderBy('organization_name', 'asc')
           ->orderBy('last_name', 'asc')
           ->get();
-        $project_users = $this->allUserIdsInProject; //$project->project_users;
+        $project_users = $this->allUserIdsInProject($project->id); //$project->project_users;
 
         if ($project_users) {
           $project_user_ids   = $project_users;
