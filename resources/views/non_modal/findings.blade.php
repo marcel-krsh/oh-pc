@@ -93,7 +93,7 @@
 
 <div uk-grid>
 	<div class="uk-width-1-1">
-		<div id="modal-findings" class="uk-margin-top"  >
+		<div id="modal-findings" class=""  >
 			<div uk-grid>
 				<div class="uk-width-1-2">
 					<div uk-grid >
