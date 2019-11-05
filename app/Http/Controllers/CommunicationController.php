@@ -44,6 +44,55 @@ class CommunicationController extends Controller
    * @param  int  $project_id
    * @return Response
    */
+
+  protected function projectUserIds($project_id)
+  {
+    $project = Project::with('contactRoles.person.user')->find($project_id); //DEVCO
+    // Check if they have Devco, else check allita -
+    // Test with Charlene Wray
+    if ($project->contactRoles) {
+      $project_person_ids = $project->contactRoles->pluck('person_id');
+      $project_user_ids   = User::whereIn('person_id', $project_person_ids)->pluck('id')->toArray();
+    } else {
+      $project_user_ids = [];
+    }
+    return $project_user_ids;
+  }
+
+  protected function projectUserPersonIds($project_id)
+  {
+    $project = Project::with('contactRoles.person')->find($project_id); //DEVCO
+    // Check if they have Devco, else check allita -
+    // Test with Charlene Wray
+    if ($project->contactRoles) {
+      $project_person_ids      = $project->contactRoles->pluck('person_id');
+      $project_user_person_ids = User::whereIn('person_id', $project_person_ids)->pluck('person_id')->toArray();
+    } else {
+      $project_user_person_ids = [];
+    }
+    return $project_user_person_ids;
+  }
+
+  protected function allitaOnlyUserIds($project_id)
+  {
+    $report_user_ids = ReportAccess::where('project_id', $project_id)->where('devco', '!=', 1)->get()->pluck('user_id')->toArray(); //Allita
+    return $report_user_ids;
+  }
+
+  protected function allitaUserIds($project_id)
+  {
+    $report_user_ids = ReportAccess::where('project_id', $project_id)->get()->pluck('user_id')->toArray(); //Allita
+    return $report_user_ids;
+  }
+
+  protected function allUserIdsInProject($project_id)
+  {
+    $project_user_ids = $this->projectUserIds($project_id);
+    $report_user_ids  = $this->allitaOnlyUserIds($project_id);
+    $user_ids         = array_merge($project_user_ids, $report_user_ids);
+    return $user_ids;
+  }
+
   public function showTabFromProjectId(Project $project)
   {
     //Search (in session)
@@ -694,7 +743,7 @@ class CommunicationController extends Controller
     if (!is_null($project_id) && Auth::user()->cannot('access_auditor')) {
       // check to see if the user is allowed to access this project
       $onProject = 0;
-      $onProject = $project->is_project_contact(Auth::user()->id);
+      $onProject = in_array(Auth::user()->id,$this->allUserIdsInProject($project_id));
       dd($onProject,Auth::user()->id,$project->is_project_contact(Auth::user()->id));
       //dd($onProject,$project->contactRoles);
       if ($onProject) {
