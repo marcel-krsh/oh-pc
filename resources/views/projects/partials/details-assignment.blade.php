@@ -796,7 +796,6 @@
 		// });
 		flatpickr("#addaday", {
 		    mode: "single",
-		    minDate: "today",
 		    altFormat: "F j, Y",
 		    dateFormat: "F j, Y",
 		    onChange: function(selectedDates, dateStr, instance) {
