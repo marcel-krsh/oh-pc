@@ -15,13 +15,15 @@
 		<input type="hidden" name="_token" value="{{ csrf_token() }}">
 		<div class="uk-grid">
 			<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;SELECT USERS</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING USERS</div>
+				
 				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
 					'recipient-name'></span>
 				</div>
 			</div>
+
 			<div class="uk-width-1-5 recipient-list" style="display: none;"></div>
-			<div class="uk-width-4-5 recipient-list" id='recipients' style="border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:18px; padding-left:25px; position: relative;top:0px; display: none">
+      <small class="uk-margin-top uk-margin-bottom">PRESS CNTRL+F TO SEARCH NAMES IN USER LIST</small>
+			<div class="uk-width-4-5 recipient-list" id='recipients' style="border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:18px; padding-left:25px; position: relative;top:0px;">
 				<!-- RECIPIENT LISTING -->
 				<div class="communication-selector uk-scrollable-box">
 					<ul class="uk-list document-menu">
@@ -35,7 +37,7 @@
 						<li class="recipient-list-item {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
 							<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'ID: {{ $recipient->id }} | NAME: {{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
 							<label for="recipient-id-{{ $recipient->id }}">
-							ID: {{ $recipient->id }} | NAME: {{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
+							ID: {{ $recipient->id }} | NAME: {{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }} | {{ ucwords($recipient->email_address) }}
 							</label>
 						</li>
 						@endforeach
