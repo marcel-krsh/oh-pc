@@ -323,9 +323,10 @@ class CommunicationController extends Controller
           ->orderBy('organization_name', 'asc')
           ->orderBy('last_name', 'asc')
           ->get();
-        $project_users = $project->project_users;
+        $project_users = $this->allUserIdsInProject; //$project->project_users;
+
         if ($project_users) {
-          $project_user_ids   = $project_users->pluck('user_id');
+          $project_user_ids   = $project_users;
           $project_recipients = User::whereIn('users.id', $project_user_ids)
             ->leftJoin('people', 'people.id', 'users.person_id')
             ->leftJoin('organizations', 'organizations.id', 'users.organization_id')
