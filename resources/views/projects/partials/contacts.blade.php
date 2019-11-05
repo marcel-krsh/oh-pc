@@ -382,13 +382,13 @@ $thisProjectHtml = '';
 						<td style="min-width: 85px;">
 							<div class="uk-margin-left">
 								@php
-								$allita_user_text = in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO ADD)';
+								/* $allita_user_text = in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO ADD)';
 								$allita_modal_text = in_array($user->id, $allita_user_ids) ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK OK TO REMOVE)' : 'USER DOES NOT HAVE ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK OK TO ADD)';
-								$allita_modal_heading = in_array($user->id, $allita_user_ids) ? 'REMOVE ALLITA ACCESS FOR THIS USER' : 'ADD ALLITA ACCESS TO THIS USER';
+								$allita_modal_heading = in_array($user->id, $allita_user_ids) ? 'REMOVE ALLITA ACCESS FOR THIS USER' : 'ADD ALLITA ACCESS TO THIS USER'; */
 								@endphp
-								<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles) }}"></i>  | </span>
-								<span class="use-hand-cursor" data-uk-tooltip title="{{ $allita_user_text }}"> <i onclick='addAllitaAccess({{ $user->id }}, "{{ in_array($user->id, $allita_user_ids) }}", "{{ $allita_modal_text }}", "{{ $allita_modal_heading }}")' class="{{ in_array($user->id, $allita_user_ids) ? 'a-mail-chart-up' : 'a-mail-chart-up uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
-								</span>
+						<span><i class="a-file-gear_1" data-uk-tooltip title="{{ strtoupper($user_roles) }}"></i>  | </span>
+						{{-- <span class="use-hand-cursor" data-uk-tooltip title="{{ $allita_user_text }}"> <i onclick='addAllitaAccess({{ $user->id }}, "{{ in_array($user->id, $allita_user_ids) }}", "{{ $allita_modal_text }}", "{{ $allita_modal_heading }}")' class="{{ in_array($user->id, $allita_user_ids) ? 'a-mail-chart-up' : 'a-mail-chart-up uk-text-muted' }}" style="position: relative;top: -1px;"></i>  |
+								</span> --}}
 								<span class="" data-uk-tooltip title="THIS USER HAS ACCESS TO REPORTS VIA THEIR DEVCO USER ACCESS"> <i class="a-file-approve"></i>
 								</span>
 							</div>
@@ -398,10 +398,10 @@ $thisProjectHtml = '';
 							<div class="uk-margin-left">
 								<span><i class="uk-text-muted a-file-gear_1" data-uk-tooltip title="USER DOES NOT HAVE ACCESS TO THIS PROJECT VIA DEVCO"></i> | </span>
 								@php
-								$project_user_text = $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS';
+								/* $project_user_text = $pm_access ? 'USER HAS ALLITA SPECIFIC ACCESS TO COMMUNICATIONS AND REPORTS (CLICK TO REMOVE - DOING SO WILL REMOVE USER FROM PROJECT COMPLETELY)' : 'USER HAS NO ACCESS TO REPORTS NOR CAN THEY BE SENT COMMUNICATIONS'; */
 								@endphp
-								<span class="use-hand-cursor" data-uk-tooltip title="{{ $project_user_text }}" onclick='removeUserFromProject({{ $user->id }})'><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i> |
-								</span>
+								{{-- <span class="use-hand-cursor" data-uk-tooltip title="{{ $project_user_text }}" onclick='removeUserFromProject({{ $user->id }})'><i class="{{ $pm_access ? 'a-mail-chart-up' : 'a-mail-chart-up' }}"></i> |
+								</span> --}}
 								<span class="" data-uk-tooltip title="THIS USER HAS ACCESS TO REPORTS VIA THEIR ALLITA USER ACCESS"> <i class="a-file-approve"></i>
 								</span>
 							</div>
