@@ -426,6 +426,10 @@ class MakeSuperTestFriendlyCommand extends Command
                 if ($userNewEmail !== 0) {
                     User::where('id', $user->id)->update(['email'=> $userNewEmail, 'password'=> bcrypt('password1234'),'name'=>$user->person->first_name.' '.$user->person->last_name]);
                 }
+                $org = Organization::find($user->organization_id);
+                if($org){
+                    $user->organization = $org->organization_name;
+                }
                 $processBar->advance();
             }
             $this->line('All users now have password "password1234".');
