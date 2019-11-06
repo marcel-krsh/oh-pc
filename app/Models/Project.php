@@ -276,6 +276,11 @@ class Project extends Model
         }
 
         $last_audit = $this->lastAudit();
+        if($last_audit){
+            $last_audit_completed_date = $last_audit->completed_date
+        }else{
+            $last_audit_completed_date = null;
+        }
         if(is_null($audit_id)){
             $audit_id = $this->selected_audit()->audit_id;
         }
@@ -295,7 +300,7 @@ class Project extends Model
         $details = new ProjectDetail([
                 'project_id' => $this->id,
                 'audit_id' => $audit_id,
-                'last_audit_completed' => $last_audit->completed_date,
+                'last_audit_completed' => $last_audit_completed_date,
                 'next_audit_due' => $next_inspection,
                 'score_percentage' => null,
                 'score' => 'N/A',
