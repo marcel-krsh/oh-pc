@@ -361,12 +361,25 @@ class MakeSuperTestFriendlyCommand extends Command
     {
         
        
-        $people = People::where('id','<>','7859')->get()->all();
+        
        
+       
+
+        $emails = EmailAddress::get()->all();
+        $this->line(PHP_EOL.'We are changing the emails next..');
+        $processBar = $this->output->createProgressBar(count($emails));
+        foreach ($emails as $email) {
+            $faker = Faker::create();
+            $email->email_address = $faker->userName.'@allita.org';
+            $email->save();
+            $processBar->advance();
+        }
         $email = '@allita.org';
         $password = 'password1234';
+        unset($emails);
 
-        $this->line('We are changing the names of all the people first..');
+        $people = People::where('id','<>','7859')->get()->all();
+        $this->line(PHP_EOL.'We are changing the names of all the people first..');
         $processBar = $this->output->createProgressBar(count($people));
         foreach ($people as $person) {
             $faker = Faker::create();
@@ -415,17 +428,7 @@ class MakeSuperTestFriendlyCommand extends Command
         
         unset($organizations);
 
-        $emails = EmailAddress::get()->all();
-        $this->line(PHP_EOL.'We are changing the emails next..');
-        $processBar = $this->output->createProgressBar(count($emails));
-        foreach ($emails as $email) {
-            $faker = Faker::create();
-            $email->email = $faker->userName.'@allita.org';
-            $email->save();
-            $processBar->advance();
-        }
         
-        unset($organizations);
 
         
         $users = User::get()->all();
