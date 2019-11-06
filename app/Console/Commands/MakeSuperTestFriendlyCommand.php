@@ -48,10 +48,10 @@ class MakeSuperTestFriendlyCommand extends Command
      */
     public function handle()
     {
-        $users = User::get()->all();
-        $properties = Project::get()->all();
-        $people = People::where('user_id','<>','7859')->get()->all();
-        $addresses = Address::get()->all();
+        
+       
+        $people = People::where('id','<>','7859')->get()->all();
+       
         $email = '@allita.org';
         $password = 'password1234';
 
@@ -64,7 +64,8 @@ class MakeSuperTestFriendlyCommand extends Command
             $person->save();
             $processBar->advance();
         }
-
+        unset($people);
+        $properties = Project::get()->all();
         $this->line(PHP_EOL.'We are changing the names of all the properties next..');
         $processBar = $this->output->createProgressBar(count($properties));
         foreach ($properties as $property) {
@@ -73,7 +74,8 @@ class MakeSuperTestFriendlyCommand extends Command
             $property->save();
             $processBar->advance();
         }
-
+        unset($addresses);
+        $addresses = Address::get()->all();
         $this->line(PHP_EOL.'We are changing the addresses of all the properties next..');
         $processBar = $this->output->createProgressBar(count($addresses));
         foreach ($addresses as $property) {
@@ -86,7 +88,8 @@ class MakeSuperTestFriendlyCommand extends Command
             $property->save();
             $processBar->advance();
         }
-
+        unset($addresses);
+        $users = User::get()->all();
         if($this->confirm('Would you like to set all emails to @allita.org with a password of "password1234" ?'.PHP_EOL.'Enter "no" to set a custom email and password.')){
             $i = 0;
             $this->line(PHP_EOL.'We will set each login email to be first initial + last name + plus their user_id number @allita.org - ie "bgreenwood1234@allita.org".'.PHP_EOL.'(NOTE: we remove spaces and () characters from last names)');
