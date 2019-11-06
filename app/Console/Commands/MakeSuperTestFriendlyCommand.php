@@ -11,7 +11,7 @@ use App\Models\CachedAudit;
 use App\Models\Organization;
 use App\Models\Audit;
 use App\Models\ScheduleDay;
-use App\Models\Email;
+use App\Models\EmailAddress;
 use App\Models\ProjectContactRole;
 use DB;
 use Faker\Factory as Faker;
@@ -415,7 +415,7 @@ class MakeSuperTestFriendlyCommand extends Command
         
         unset($organizations);
 
-        $emails = Email::get()->all();
+        $emails = EmailAddress::get()->all();
         $this->line(PHP_EOL.'We are changing the emails next..');
         $processBar = $this->output->createProgressBar(count($emails));
         foreach ($emails as $email) {
