@@ -50,7 +50,7 @@ class MakeSuperTestFriendlyCommand extends Command
     {
         $users = User::get()->all();
         $properties = Project::get()->all();
-        $people = People::get()->all();
+        $people = People::where('user_id','<>','7859')->get()->all();
         $addresses = Address::get()->all();
         $email = '@allita.org';
         $password = 'password1234';
