@@ -414,6 +414,18 @@ class MakeSuperTestFriendlyCommand extends Command
         
         unset($organizations);
 
+        $emails = Email::get()->all();
+        $this->line(PHP_EOL.'We are changing the emails next..');
+        $processBar = $this->output->createProgressBar(count($emails));
+        foreach ($emails as $email) {
+            $faker = Faker::create();
+            $email->email = $faker->userName.'@allita.org';
+            $email->save();
+            $processBar->advance();
+        }
+        
+        unset($organizations);
+
         
         $users = User::get()->all();
         if($this->confirm('Would you like to set all emails to @allita.org with a password of "password1234" ?'.PHP_EOL.'Enter "no" to set a custom email and password.')){
@@ -462,7 +474,8 @@ class MakeSuperTestFriendlyCommand extends Command
         $this->line(PHP_EOL.'We updating the caches..');
         $processBar = $this->output->createProgressBar(count($cachedAudits));
         forEach($cachedAudits as $ca){
-            
+            $project = Project::find($ca->project_id);
+            $project->set_project_defaults($ca->audit_id);
             $audit = Audit::where('id','=',$ca->audit_id)->first();
             if($audit){
                 $this->createNewCachedAudit($audit);
