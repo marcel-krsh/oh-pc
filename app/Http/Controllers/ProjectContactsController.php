@@ -886,10 +886,10 @@ class ProjectContactsController extends Controller
     } else {
     	$email_address = new EmailAddress;
     }
-  	$input_email_address          = $request->email_address;
+  	$input_email_address = $request->email_address;
     // check email is unique:
     $check_email_address = User::where('email',$input_email_address)->first();
-    if(!$check_email_address){
+    if(!$check_email_address && strlen($input_email_address) > 4){
       $email_address_type           = EmailAddressType::where('email_address_type_name', 'Work')->first();
       $email_address->email_address = $input_email_address;
       $email_address->last_edited   = \Carbon\Carbon::now();
@@ -897,8 +897,10 @@ class ProjectContactsController extends Controller
       $user->email = $input_email_address;
       $user->save();
       return 1;
-    } else {
+    } else if($check_email_address){
       return 'That email is already in use by '.$check_email_address->name.'. Please choose another email address.';
+    } else {
+      return 'Please enter a valid email address.';
     }
   }
 
