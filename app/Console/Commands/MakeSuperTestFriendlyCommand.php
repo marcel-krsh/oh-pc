@@ -447,6 +447,7 @@ class MakeSuperTestFriendlyCommand extends Command
                 $org = Organization::find($user->organization_id);
                 if($org){
                     $user->organization = $org->organization_name;
+                    $user->save();
                 }
                 $processBar->advance();
             }
