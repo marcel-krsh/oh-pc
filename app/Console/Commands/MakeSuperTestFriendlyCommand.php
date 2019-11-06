@@ -94,18 +94,7 @@ class MakeSuperTestFriendlyCommand extends Command
         
         unset($addresses);
 
-        $cachedAudits = CachedAudit::get()->all();
-        $this->line(PHP_EOL.'We updating the caches..');
-        $processBar = $this->output->createProgressBar(count($cachedAudits));
-        forEach($cachedAudits as $ca){
-            $this->info('Working on audit '.$ca->audit_id);
-
-            $audit = Audit::where('id','=',$ca->audit_id)->first();
-            if($audit){
-                Event::fire('audit.cache', $audit);
-            }else{
-            }
-        }
+        
         $users = User::get()->all();
         if($this->confirm('Would you like to set all emails to @allita.org with a password of "password1234" ?'.PHP_EOL.'Enter "no" to set a custom email and password.')){
             $i = 0;
@@ -140,6 +129,18 @@ class MakeSuperTestFriendlyCommand extends Command
             }
             $this->line('All users now have password "'.$password.'".');
         }
-        
+        unset($users);
+        $cachedAudits = CachedAudit::get()->all();
+        $this->line(PHP_EOL.'We updating the caches..');
+        $processBar = $this->output->createProgressBar(count($cachedAudits));
+        forEach($cachedAudits as $ca){
+            $this->info('Working on audit '.$ca->audit_id);
+
+            $audit = Audit::where('id','=',$ca->audit_id)->first();
+            if($audit){
+                Event::fire('audit.cache', $audit);
+            }else{
+            }
+        }
     }
 }
