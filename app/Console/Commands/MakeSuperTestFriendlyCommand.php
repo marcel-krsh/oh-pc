@@ -11,6 +11,7 @@ use App\Models\CachedAudit;
 use App\Models\Organization;
 use App\Models\Audit;
 use App\Models\ScheduleDay;
+use App\Models\Email;
 use App\Models\ProjectContactRole;
 use DB;
 use Faker\Factory as Faker;
