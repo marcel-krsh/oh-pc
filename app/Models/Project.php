@@ -277,7 +277,7 @@ class Project extends Model
 
         $last_audit = $this->lastAudit();
         if($last_audit){
-            $last_audit_completed_date = $last_audit->completed_date
+            $last_audit_completed_date = $last_audit->completed_date;
         }else{
             $last_audit_completed_date = null;
         }
