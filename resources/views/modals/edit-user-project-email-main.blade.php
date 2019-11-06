@@ -95,6 +95,8 @@
 					UIkit.modal.alert('I have removed email from user',{stack: true});
 					dynamicModalClose();
 					loadTab('/project/'+{{ $project_id }}+'/contacts/', '7', 0, 0, 'project-', 1);
+				} else {
+					alert('There was a problem.\n\n'+data+'\n\nPlease check your form for more information.');
 				}
 				jQuery.each(data.errors, function(key, value){
 					jQuery('.alert-danger').show();
