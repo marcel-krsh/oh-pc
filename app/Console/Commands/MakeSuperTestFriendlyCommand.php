@@ -11,6 +11,7 @@ use App\Models\CachedAudit;
 use App\Models\Audit;
 use DB;
 use Faker\Factory as Faker;
+use Event;
 
 /**
  * MakeTestFriendly Command
