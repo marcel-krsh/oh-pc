@@ -14,18 +14,10 @@ use App\Models\DocumentCategory;
 use App\Models\Finding;
 use App\Models\NotificationsTriggered;
 use App\Models\Project;
-use App\Models\SystemSetting;
-
-use App\Models\ProjectContactRole;
 use App\Models\ReportAccess;
-use App\Models\Role;
-use App\Models\State;
-use App\Models\UserAddresses;
-use App\Models\UserEmail;
-use App\Models\UserOrganization;
-use App\Models\UserPhoneNumber;
-//use App\LogConverter;
+use App\Models\SystemSetting;
 use App\Models\User;
+//use App\LogConverter;
 use Auth;
 use Config;
 use Illuminate\Http\Request;
@@ -224,6 +216,27 @@ class CommunicationController extends Controller
           $audit = Audit::find($audit_details->audit_id);
         }
       }
+
+      $canCreate = 0;
+      if (!is_null($project_id) && Auth::user()->cannot('access_auditor')) {
+        // check to see if the user is allowed to access this project
+        $onProject = 0;
+        $onProject = in_array(Auth::user()->id, $this->allUserIdsInProject($project_id));
+        //dd($onProject,Auth::user()->id,$project->is_project_contact(Auth::user()->id));
+        //dd($onProject,$project->contactRoles);
+        if ($onProject) {
+          /// if they are on the contact roles
+          $canCreate = 1;
+        }
+      } else {
+        // this is either not a project comm or they are an auditor or above... hence
+        $canCreate = 1;
+      }
+
+      if (!$canCreate) {
+        return 'Sorry, you do not have permission to send messages for this project.';
+      }
+
       if (local()) {
         $docuware_documents = Document::where('id', -100)->get();
       } else {
@@ -700,6 +713,7 @@ class CommunicationController extends Controller
     $canCreate  = 0;
     $forminputs = $request->get('inputs');
     parse_str($forminputs, $forminputs);
+    // return $forminputs;
     $audit  = null;
     $report = null;
 
@@ -753,7 +767,7 @@ class CommunicationController extends Controller
     if (!is_null($project_id) && Auth::user()->cannot('access_auditor')) {
       // check to see if the user is allowed to access this project
       $onProject = 0;
-      $onProject = in_array(Auth::user()->id,$this->allUserIdsInProject($project_id));
+      $onProject = in_array(Auth::user()->id, $this->allUserIdsInProject($project_id));
       //dd($onProject,Auth::user()->id,$project->is_project_contact(Auth::user()->id));
       //dd($onProject,$project->contactRoles);
       if ($onProject) {

@@ -203,7 +203,7 @@ class ProjectContactsController extends Controller
       'contact_id'       => 'required',
     ], [
       'recipients_array.required' => 'Select atleast one user',
-      'contact_id.required'       => 'Something went wrong, contact admin',
+      'contact_id.required'       => 'Error 852: Contact Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -230,7 +230,7 @@ class ProjectContactsController extends Controller
       }
       return 1;
     } else {
-      return 'Something went wrong, contact admin';
+      return 'Error 849: User not availble. Please let an admin know this happened and how you got here.';
     }
   }
 
@@ -245,7 +245,7 @@ class ProjectContactsController extends Controller
       return response()->json(['errors' => $validator->errors()->all()]);
     }
     if ('' == $project_id || is_null($project_id)) {
-      return response()->json(['errors' => ['Something went wrong, contact admin']]);
+      return response()->json(['errors' => ['Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.']]);
     }
     $recipients_array = $request->recipients_array;
     $auditor_access   = Auth::user()->auditor_access();
@@ -272,8 +272,8 @@ class ProjectContactsController extends Controller
       'user_id'    => 'required',
       'project_id' => 'required',
     ], [
-      'project_id.required' => 'Something went wrong, please contact admin',
-      'user_id.required'    => 'Something went wrong, please contact admin',
+      'project_id.required' => 'Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.',
+      'user_id.required'    => 'Error 849: User Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -298,7 +298,7 @@ class ProjectContactsController extends Controller
       $message = 'Are you sure you want to remove access';
       $status  = 1;
     } else {
-      $message = 'Something went wrong, contact admin';
+      $message = 'Error 852: User has no project access. Please let an admin know this happened and how you got here.';
       $status  = 0;
     }
     return view('modals.remove-user-from-project', compact('project_id', 'user_id', 'message', 'status'));
@@ -311,7 +311,7 @@ class ProjectContactsController extends Controller
       'user_id'    => 'required',
     ]);
     if ($validator->fails()) {
-      return response()->json(['errors' => ['Something went wrong, contact admin']]);
+      return response()->json(['errors' => ['Error 849: Either User or Project Id was not provided. Please let an admin know this happened and how you got here.']]);
     }
     $user_access = ReportAccess::where('project_id', $request->project_id)->where('user_id', $request->user_id)->delete();
     return 1;
@@ -363,7 +363,7 @@ class ProjectContactsController extends Controller
       'organization_id'   => 'required',
       'organization_name' => 'required',
     ], [
-      'organization_id.required' => 'Something went wrong, please contact admin',
+      'organization_id.required' => 'Error 854: Organization Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -379,7 +379,7 @@ class ProjectContactsController extends Controller
     $validator = \Validator::make($request->all(), [
       'organization_id' => 'required',
     ], [
-      'organization_id.required' => 'Something went wrong, please contact admin',
+      'organization_id.required' => 'Error 854: Organization Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -398,7 +398,7 @@ class ProjectContactsController extends Controller
       'user_id'         => 'required',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 849: Either project Id, Organization Id or User Id was not provided. Please let an admin know this happened and how you got here.';
     }
     $selected_org = $request->organization_id;
     // Check if it is devco user and exists in project orgs
@@ -444,7 +444,7 @@ class ProjectContactsController extends Controller
       'user_id'   => 'required',
       'user_name' => 'required',
     ], [
-      'user_id.required' => 'Something went wrong, please contact admin',
+      'user_id.required' => 'Error 849: User Id or User Name was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -462,11 +462,11 @@ class ProjectContactsController extends Controller
       'project_id' => 'required',
       'user_id'    => 'required',
     ], [
-      'user_id.required'    => 'Something went wrong, please contact admin',
-      'project_id.required' => 'Something went wrong, please contact admin',
+      'user_id.required'    => 'Error 849: User Id was not provided. Please let an admin know this happened and how you got here.',
+      'project_id.required' => 'Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 849: Either User Id or Project Id was not provided. Please let an admin know this happened and how you got here.';
       // return response()->json(['errors' => $validator->errors()->all()]);
     }
     $selected_user = $request->user_id;
@@ -516,9 +516,9 @@ class ProjectContactsController extends Controller
       'zip'            => 'required',
       'project_id'     => 'required',
     ], [
-      'user_id.required'    => 'Something went wrong, please contact admin',
+      'user_id.required'    => 'Error 849: User Id was not provided. Please let an admin know this happened and how you got here.',
       'state_id.required'   => 'State field is required',
-      'project_id.required' => 'Something went wrong, please contact admin',
+      'project_id.required' => 'Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -601,8 +601,8 @@ class ProjectContactsController extends Controller
       'zip'            => 'required',
       'project_id'     => 'required',
     ], [
-      'address_id.required' => 'Something went wrong, please contact admin',
-      'project_id.required' => 'Something went wrong, please contact admin',
+      'address_id.required' => 'Error 855: Address Id was not provided. Please let an admin know this happened and how you got here.',
+      'project_id.required' => 'Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -626,7 +626,7 @@ class ProjectContactsController extends Controller
     $validator = \Validator::make($request->all(), [
       'address_id' => 'required',
     ], [
-      'address_id.required' => 'Something went wrong, please contact admin',
+      'address_id.required' => 'Error 855: Address Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -650,8 +650,8 @@ class ProjectContactsController extends Controller
       'project_id'            => 'required',
       'business_phone_number' => 'required|min:12',
     ], [
-      'user_id.required'          => 'Something went wrong, please contact admin',
-      'project_id.required'       => 'Something went wrong, please contact admin',
+      'user_id.required'          => 'Error 849: User Id was not provided. Please let an admin know this happened and how you got here.',
+      'project_id.required'       => 'Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.',
       'business_phone_number.min' => 'Enter a valid phone number',
     ]);
     if ($validator->fails()) {
@@ -682,7 +682,7 @@ class ProjectContactsController extends Controller
       'user_id'         => 'required',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 849: Either User Id, Project Id or Phone Number Id was not provided. Please let an admin know this happened and how you got here.';
     }
     $selected = $request->phone_number_id;
     // Check if it is devco user and exists in project phones
@@ -731,9 +731,9 @@ class ProjectContactsController extends Controller
       'project_id'            => 'required',
       'phone_number_id'       => 'required',
     ], [
-      'user_id.required'         => 'Something went wrong, please contact admin',
-      'project_id.required'      => 'Something went wrong, please contact admin',
-      'phone_number_id.required' => 'Something went wrong, please contact admin',
+      'user_id.required'         => 'Error 849: User Id was not provided. Please let an admin know this happened and how you got here.',
+      'project_id.required'      => 'Error 849: Project Id was not provided. Please let an admin know this happened and how you got here.',
+      'phone_number_id.required' => 'Error 856: Phone Number Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     $phone_number                       = PhoneNumber::find($request->phone_number_id);
     $input_phone_number                 = $request->business_phone_number;
@@ -760,14 +760,21 @@ class ProjectContactsController extends Controller
       'email_address' => 'required|email',
       'project_id'    => 'required',
     ], [
-      'user_id.required'    => 'Something went wrong, please contact admin',
-      'project_id.required' => 'Something went wrong, please contact admin',
+      'user_id.required'    => 'Error 849: User Id was not provided. Please let an admin know this happened and how you got here.',
+      'project_id.required' => 'Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
     }
-    $input_email_address                   = $request->email_address;
-    $email_address_type                    = EmailAddressType::where('email_address_type_name', 'Work')->first();
+    $input_email_address = $request->email_address;
+    $email_address_type  = EmailAddressType::where('email_address_type_name', 'Work')->first();
+
+    $check_email = EmailAddress::where('email_address', $request->email_address)->first();
+    if ($check_email) {
+      $validator->getMessageBag()->add('email', 'This email address is already assigned to other user');
+      return response()->json(['errors' => $validator->errors()->all()]);
+    }
+
     $email_address                         = new EmailAddress;
     $email_address->email_address_type_id  = $email_address_type->id;
     $email_address->email_address_type_key = $email_address_type->email_address_key;
@@ -793,7 +800,7 @@ class ProjectContactsController extends Controller
       'user_id'          => 'required',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 849: Either User Id, Project Id or Email address ID was not provided. Please let an admin know this happened and how you got here.';
     }
     $selected = $request->email_address_id;
     if (!$selected && $request->email_address != '') {
@@ -881,15 +888,16 @@ class ProjectContactsController extends Controller
       'email_address_id.required' => 'Error 851: Email Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     $user = User::with('email_address')->find($user_id);
-    if($user->email_address) {
-    	$email_address = $user->email_address;
+    if ($user->email_address) {
+      $email_address = $user->email_address;
     } else {
-    	$email_address = new EmailAddress;
+      $email_address = new EmailAddress;
     }
-  	$input_email_address = $request->email_address;
+    $input_email_address = $request->email_address;
+
     // check email is unique:
-    $check_email_address = User::where('email',$input_email_address)->first();
-    if(!$check_email_address && strlen($input_email_address) > 4){
+    $check_email_address = User::where('email', $input_email_address)->first();
+    if (!$check_email_address && strlen($input_email_address) > 4) {
       $email_address_type           = EmailAddressType::where('email_address_type_name', 'Work')->first();
       $email_address->email_address = $input_email_address;
       $email_address->last_edited   = \Carbon\Carbon::now();
@@ -897,8 +905,8 @@ class ProjectContactsController extends Controller
       $user->email = $input_email_address;
       $user->save();
       return 1;
-    } else if($check_email_address){
-      return 'That email is already in use by '.$check_email_address->name.'. Please choose another email address.';
+    } else if ($check_email_address) {
+      return 'That email is already in use by ' . $check_email_address->name . '. Please choose another email address.';
     } else {
       return 'Please enter a valid email address.';
     }
@@ -909,7 +917,7 @@ class ProjectContactsController extends Controller
     $validator = \Validator::make($request->all(), [
       'email_id' => 'required',
     ], [
-      'email_id.required' => 'Something went wrong, please contact admin',
+      'email_id.required' => 'Error 857: Email Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -924,7 +932,7 @@ class ProjectContactsController extends Controller
     $validator = \Validator::make($request->all(), [
       'phone_number_id' => 'required',
     ], [
-      'phone_number_id.required' => 'Something went wrong, please contact admin',
+      'phone_number_id.required' => 'Error 858: Phone number Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
       return response()->json(['errors' => $validator->errors()->all()]);
@@ -942,11 +950,11 @@ class ProjectContactsController extends Controller
       'project_id' => 'required',
       'user_id'    => 'required',
     ], [
-      'user_id.required'    => 'Something went wrong, please contact admin',
-      'project_id.required' => 'Something went wrong, please contact admin',
+      'user_id.required'    => 'Error 849: User Id was not provided. Please let an admin know this happened and how you got here.',
+      'project_id.required' => 'Error 850: Project Id was not provided. Please let an admin know this happened and how you got here.',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 849: Either User Id or Project Id was not provided. Please let an admin know this happened and how you got here.';
     }
     $selected_user = $request->user_id;
     if ($request->devco) {
@@ -985,7 +993,7 @@ class ProjectContactsController extends Controller
       'user_id'         => 'required',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 849: Either User Id, Project Id or Organization Id was not provided. Please let an admin know this happened and how you got here.';
     }
     $selected_org = $request->organization_id;
     // Check if it is devco user and exists in project orgs
@@ -1028,7 +1036,7 @@ class ProjectContactsController extends Controller
       'user_id'    => 'required',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 849: Either User Id, Address Id, or Address Id was not provided. Please let an admin know this happened and how you got here.';
     }
     $selected = $request->address_id;
     // Check if it is devco user and exists in project orgs
@@ -1070,7 +1078,7 @@ class ProjectContactsController extends Controller
       'user_id'         => 'required',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 849: Either User Id, Project Id or Phone Number Id was not provided. Please let an admin know this happened and how you got here.';
     }
     $selected = $request->phone_number_id;
     // Check if it is devco user and exists in project phones
@@ -1113,7 +1121,7 @@ class ProjectContactsController extends Controller
       'user_id'          => 'required',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 849: Either User Id, Project Id or Email address Id was not provided. Please let an admin know this happened and how you got here.';
     }
     $selected = $request->email_address_id;
     if (!$selected && $request->email_address != '') {
@@ -1159,7 +1167,7 @@ class ProjectContactsController extends Controller
       'person_id'  => 'required',
     ]);
     if ($validator->fails()) {
-      return 'Something went wrong, please contact admin';
+      return 'Error 850: Either Person Id or Project Id was not provided. Please let an admin know this happened and how you got here.';
     }
     if ($request->multiple) {
       $project_contact_roles = ProjectContactRole::whereIn('project_id', $request->project_id)->where('person_id', $request->person_id)->delete();

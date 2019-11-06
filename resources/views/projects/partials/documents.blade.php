@@ -30,10 +30,11 @@
 <script>
 
 	$( document ).ready(function() {
-		if($('#docuware-documents').html() == ''){
-			$('#project-documents-button-1').trigger("click");
-		}
-		documentsDocuware('{{$project->id}}')
+		$('#project-documents-button-2').trigger("click");
+
+		// if($('#docuware-documents').html() == ''){
+		// 	$('#project-documents-button-1').trigger("click");
+		// }
+		// documentsDocuware('{{$project->id}}')
 	});
 </script>
-
