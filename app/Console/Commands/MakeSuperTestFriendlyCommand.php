@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Models\Project;
 use App\Models\People;
 use App\Models\Address;
+use App\Models\CachedAudit;
+use App\Models\Audit;
 use DB;
 use Faker\Factory as Faker;
 
@@ -88,7 +90,22 @@ class MakeSuperTestFriendlyCommand extends Command
             $property->save();
             $processBar->advance();
         }
+        $addresses = Address::get()->all();
+        
         unset($addresses);
+
+        $cachedAudits = CachedAudit::get()->all();
+        $this->line(PHP_EOL.'We updating the caches..');
+        $processBar = $this->output->createProgressBar(count($cachedAudits));
+        forEach($cachedAudits as $ca){
+            $this->info('Working on audit '.$ca->audit_id);
+
+            $audit = Audit::where('id','=',$ca->audit_id)->first();
+            if($audit){
+                Event::fire('audit.cache', $audit);
+            }else{
+            }
+        }
         $users = User::get()->all();
         if($this->confirm('Would you like to set all emails to @allita.org with a password of "password1234" ?'.PHP_EOL.'Enter "no" to set a custom email and password.')){
             $i = 0;
