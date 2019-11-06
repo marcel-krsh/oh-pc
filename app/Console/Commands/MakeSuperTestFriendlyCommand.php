@@ -70,7 +70,7 @@ class MakeSuperTestFriendlyCommand extends Command
 
 
         if ($audit->user_key) {
-            $lead_user = User::where('devco_key', '=', $this->audit->user_key)->first();
+            $lead_user = User::where('devco_key', '=', $audit->user_key)->first();
             //$this->processes++;
         }else{
             $lead_user = null;
