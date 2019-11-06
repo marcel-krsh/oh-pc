@@ -172,7 +172,7 @@ class MakeSuperTestFriendlyCommand extends Command
         // build amenities array using amenity_inspections table
 
         // save summary
-        $audit->selection_summary = json_encode($summary);
+        // $audit->selection_summary = json_encode($summary);
         //$this->audit->save();
 
         // create or update
