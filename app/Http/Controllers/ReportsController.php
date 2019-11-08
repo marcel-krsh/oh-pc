@@ -389,7 +389,7 @@ class ReportsController extends Controller
       // if this is just a check - we do not need this information.
       if ($auditor_access) {
         $auditLeads      = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
-        $auditProjects   = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
+        $auditProjects   = CrrReport::select('project_id')->with('project')->groupBy('project_id')->get();
         $crr_types_array = CrrReport::select('id', 'template_name')->groupBy('template_name')->whereNotNull('template')->get()->all();
         $hfa_users_array = [];
         $projects_array  = [];
@@ -401,7 +401,7 @@ class ReportsController extends Controller
           $userProjects = \App\Models\ProjectContactRole::where('person_id', $current_user->person_id)->pluck('project_id');
           //dd(Auth::user()->person_id,$userProjects);
           return $query->whereIn('project_id', $userProjects);
-        })->with('project')->groupBy('project_id')->get();
+        })->select('project_id')->with('project')->groupBy('project_id')->get();
         $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id', '>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
         $hfa_users_array = [];
         $projects_array  = [];

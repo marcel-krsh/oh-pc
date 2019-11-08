@@ -2865,10 +2865,10 @@ class AuditController extends Controller
     return view('projects.partials.stream', compact('type', 'findings', 'auditid', 'buildingid', 'unitid', 'amenityid'));
   }
 
-  public function getProjectReports(Request $request, $project = null)
+  public function getProjectReports(Request $request, $project_id = null)
   {
-    $id       = $project;
-    $project  = Project::find($project);
+    $id       = $project_id;
+    $project  = Project::find($project_id);
     $prefix   = 'project' . $project->id;
     $messages = [];
     // Perform Actions First.
@@ -2991,14 +2991,22 @@ class AuditController extends Controller
     }
 
     if (Auth::user()->can('access_auditor')) {
-      $auditLeads      = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
-      $auditProjects   = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
+
+      if(!is_null($project_id)) {
+      	$auditLeads      = Audit::where('project_id', $project_id)->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+      	$auditProjects   = CrrReport::where('project_id', $project_id)->select('project_id')->with('project')->groupBy('project_id')->get();
+      } else {
+      	$auditLeads      = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+      	$auditProjects   = CrrReport::select('project_id')->with('project')->groupBy('project_id')->get();
+      }
+
+      //$auditProjects   = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
       $crr_types_array = CrrReport::select('id', 'template_name')->groupBy('template_name')->whereNotNull('template')->get()->all();
       $hfa_users_array = [];
       $projects_array  = [];
     } else {
       $auditLeads    = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
-      $auditProjects = CrrReport::select('*')->when(Auth::user()->cannot('access_auditor'), function ($query) {
+      $auditProjects = CrrReport::select('project_id')->when(Auth::user()->cannot('access_auditor'), function ($query) {
         $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', Auth::user()->person_id)->get()->toArray();
 
         return $query->whereIn('project_id', $userProjects);

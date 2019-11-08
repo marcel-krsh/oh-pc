@@ -339,7 +339,7 @@ class AllitaAuth
                 $currentlyBlocked->last_locked_time = $lastLockedTime;
                 $currentlyBlocked->last_failed_reason = $failedLoginReason;
                 $currentlyBlocked->save();
-                            
+
             }
         }
 
@@ -422,10 +422,10 @@ class AllitaAuth
         }
 
         // creation of a fresh socket_id for that user
-        $current_user = Auth::user();
-        $token = str_random(10);
-        $current_user->socket_id = $token;
-        $current_user->save();
+        // $current_user = Auth::user();
+        // $token = str_random(10);
+        // $current_user->socket_id = $token;
+        // $current_user->save();
 
 
         //////////////// OLD STUFF ///////////////////
