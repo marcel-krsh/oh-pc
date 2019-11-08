@@ -40,7 +40,7 @@ class Project extends Model
         return $this->hasMany('\App\Models\ProjectAmenity');
     }
 
-    public function currentAudit() : CachedAudit
+    public function currentAudit()
     {
         $audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
         return $audit;
@@ -203,7 +203,7 @@ class Project extends Model
                 }
                 $selected_audit = $selected_audit->first();
 
-            Session::put('project.'.$this->id.'.selectedaudit', $selected_audit->audit_id);
+            Session::put('project.'.$this->id.'.selectedaudit', $audit_id);
         }
 
         return $selected_audit;
@@ -281,9 +281,9 @@ class Project extends Model
         }else{
             $last_audit_completed_date = null;
         }
-        if(is_null($audit_id)){
-            $audit_id = $this->selected_audit()->audit_id;
-        }
+        // if(is_null($audit_id)){
+        //     $audit_id = $this->selected_audit()->audit_id;
+        // }
 
         if($this->complianceContacts()->first()){
             $next_inspection = $this->complianceContacts()->first()->next_inspection;

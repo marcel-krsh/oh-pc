@@ -50,6 +50,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Session;
 use View;
+use Sentry;
 
 class AuditController extends Controller
 {
@@ -1637,26 +1638,32 @@ class AuditController extends Controller
   public function getProjectDetails($id = null, $audit_id = 0)
   {
     // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
+  	try {
+	    $project = Project::where('id', '=', $id)->first();
+	    //return Session::get('project.'.$id.'.selectedaudit');
+	    // if($audit_id) {
+	    //   $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
+	    // } else {
+	    //  $selected_audit = $project->selected_audit();
+	    // }
+	    $selected_audit = $project->selected_audit($audit_id, 1);
+	    //dd($id, $project, $selected_audit);
+	    // get that audit's stats and contact info from the project_details table
+	    $details = $project->details();
+	    // get the list of all audits for this project
+	    $audits = $project->audits;
+	    //dd($selected_audit->checkStatus('schedules'));
+	    return view('projects.partials.details', compact('details', 'audits', 'project', 'selected_audit'));
+  	} catch (\Exception $e) {
+  		app('sentry')->captureException($e);
+  		if(!$selected_audit) {
+	    	$error = 'Audit not found';
+		    $message   = 'Looks like you are trying to access an audit that is not available.';
+		    $code    = 404;
+		    return view('errors.message', compact('error', 'message', 'code'));
+		  }
+    }
 
-    $project = Project::where('id', '=', $id)->first();
-
-    //return Session::get('project.'.$id.'.selectedaudit');
-    // if($audit_id) {
-    //   $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
-    // } else {
-    //  $selected_audit = $project->selected_audit();
-    // }
-    $selected_audit = $project->selected_audit($audit_id, 1);
-    //dd($id, $project, $selected_audit);
-
-    // get that audit's stats and contact info from the project_details table
-    $details = $project->details();
-
-    // get the list of all audits for this project
-    $audits = $project->audits;
-    //dd($selected_audit->checkStatus('schedules'));
-
-    return view('projects.partials.details', compact('details', 'audits', 'project', 'selected_audit'));
   }
 
   public function getProjectDetailsAjax(Request $request)
