@@ -893,8 +893,9 @@ class ReportsController extends Controller
 
   /// the following methods should be moved to a trait and then accessed via job
 
-  public function generateReport(CrrReport $report, $goToView = 1, $noStatusChange = 0)
+  public function generateReport($report, $goToView = 1, $noStatusChange = 0)
   {
+  	$report = CrrReport::find($report);
     if ($report) {
       $data = [];
       if (!is_null($report->crr_data)) {

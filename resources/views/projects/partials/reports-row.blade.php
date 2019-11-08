@@ -4,10 +4,10 @@
                     <td><a href="/report/{{$report->id}}" target="report-{{$report->id}}" class="uk-mute"><i class="a-file-chart-3"></i> #{{$report->id}}</a></td>
                     <td>@can('access_auditor')<a onclick="loadTab('/projects/{{$report->project->project_key}}', '4', 1, 1,'',1);" class="uk-mute"> @endCan {{$report->project->project_number}} : {{$report->project->project_name}}@can('access_auditor')</a>@endCan</td>
                     <td>{{$report->audit_id}}</td>
-                    @can('access_auditor')<td>{{$report->lead->person->first_name}} {{$report->lead->person->last_name}}</td>@endCan
+                    @can('access_auditor')<td>@if($report->lead->person){{$report->lead->person->first_name}} {{$report->lead->person->last_name}}@else NA @endif</td>@endCan
                     <td>{{$report->template()->template_name}}</td>
                     <td>{{$report->crr_approval_type->name}}</td>
-                    
+
                     <td>{{ date('M d, Y',strtotime($report->created_at)) }}</td>
                     <td>{{ ucfirst($report->updated_at->diffForHumans()) }}</td>
                     <td>@if(!is_null($report->response_due_date))
@@ -64,7 +64,7 @@
                                         pos: 'top-right',
                                         timeout: 1500
                                     });
-                                }, 
+                                },
                                     function () {
                                         console.log('Delete Cancelled.')
                                 });

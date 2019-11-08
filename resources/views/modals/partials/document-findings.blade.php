@@ -8,7 +8,7 @@
 		@php
 			$findings = session()->get('selected_findings');
 		@endphp
-		@if(count($findings) > 0)
+		@if(!empty($findings) && count($findings) > 0)
 		@foreach ($findings as $f)
 		@if($f->finding_type->type == 'nlt')
 			@php
