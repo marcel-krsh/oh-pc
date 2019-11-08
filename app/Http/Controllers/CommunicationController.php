@@ -17,6 +17,7 @@ use App\Models\Project;
 use App\Models\ReportAccess;
 use App\Models\SystemSetting;
 use App\Models\User;
+use App\Models\CommunicationDraft;
 //use App\LogConverter;
 use Auth;
 use Config;
@@ -175,8 +176,21 @@ class CommunicationController extends Controller
     return view('projects.pproject_communications', compact('project', 'messages', 'owners', 'owners_array'));
   }
 
+  public function createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings, $recipients = null, $documents = null)
+  {
+  	$draft = new CommunicationDraft;
+  	$draft->project_id = $project_id;
+  	$draft->audit_id = $audit_id;
+  	$draft->report_id = $report_id;
+  	$draft->finding_id = $finding_id;
+  	$draft->owner_id = Auth::user()->id;
+  	$draft->save();
+  	return $draft;
+  }
+
   public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0)
   {
+    $draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
     //dd('Called NewCommunicationEntry');
     //dd($project_id,$audit_id,$report_id,$finding_id,$all_findings);
     $ohfa_id = SystemSetting::get('ohfa_organization_id');
@@ -207,6 +221,7 @@ class CommunicationController extends Controller
       $findings = null;
     }
     //dd($finding,$findings);
+
     if (null !== $project_id) {
       $project = Project::with('project_users')->where('id', '=', intval($project_id))->first();
 
@@ -1591,7 +1606,7 @@ class CommunicationController extends Controller
       $audit             = $report->audit_id;
       $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
         'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {
