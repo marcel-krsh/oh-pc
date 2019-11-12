@@ -47,14 +47,14 @@
 							@php $currentOrg = ''; @endphp
 							@foreach ($recipients as $recipient)
 							@if($currentOrg != $recipient->organization_name)
-							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->organization_name }}</strong></li>
+							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->id }} | {{ $recipient->organization_name }} | {{ $recipient->email }}</strong></li>
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 							@php $currentOrg = $recipient->organization_name; @endphp
 							@endIf
 							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->name) }}">
 								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} ')">
 								<label for="recipient-id-{{ $recipient->id }}">
-									{{ ucwords($recipient->name) }}
+									{{ ucwords($recipient->name) }} | {{ $recipient->email }}
 								</label>
 							</li>
 							@endforeach
