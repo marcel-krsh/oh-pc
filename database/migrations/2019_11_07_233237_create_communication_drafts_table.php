@@ -25,6 +25,7 @@ class CreateCommunicationDraftsTable extends Migration
       $table->text('finding_ids')->nullable();
       $table->text('recipients')->nullable();
       $table->text('documents')->nullable();
+      $table->softDeletes();
       // doc category
       // document name
       // saved path

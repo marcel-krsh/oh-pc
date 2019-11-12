@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 /**
  * Communication Model
@@ -15,6 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class CommunicationDraft extends Model
 {
+	use SoftDeletes;
+
   protected $fillable = [
     'owner_id',
     'audit_id',

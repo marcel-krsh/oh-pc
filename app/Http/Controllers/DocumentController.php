@@ -14,6 +14,8 @@ use Carbon\Carbon;
 use File;
 use Illuminate\Http\Request;
 use Storage;
+use App\Models\CommunicationDraft;
+
 
 class DocumentController extends Controller
 {
@@ -714,6 +716,92 @@ class DocumentController extends Controller
             }
         }
         return $document_info_array;
+    }
+
+    public function localUploadDraft(Project $project, Request $request)
+    {
+        if (app('env') == 'local') {
+            app('debugbar')->disable();
+        }
+        $communication_draft = CommunicationDraft::find($request->draft_id);
+        if(!$communication_draft) {
+        	return 'No associated communication draft was found, try again by closing communication modal or contact admin.';
+        }
+        $document_draft_info = [];
+        // return $request->all();
+        if(!$request->has('categories') || is_null($request->categories)) {
+        	return 'You must select at least one category!';
+        }
+        if ($request->hasFile('files')) {
+
+            $data = array();
+            $user = Auth::user();
+            $files = $request->file('files');
+
+            foreach($files as $file){
+                // $file = $request->file('files')[0];
+                $selected_audit = 'non-audit-files';
+                $categories = DocumentCategory::with('parent')->find($request->categories);
+                //document_category_name
+                $parent_cat_folder = snake_case(strtolower($categories->parent->document_category_name));
+                $cat_folder = snake_case(strtolower($categories->document_category_name));
+                $folderpath = 'documents/project_' . $project->project_number . '/audit_' . $selected_audit . '/class_' . $parent_cat_folder . '/description_' . $cat_folder . '/';
+                $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
+                $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
+                $file_extension = $file->getClientOriginalExtension();
+                $filename = pathinfo($original_filename, PATHINFO_FILENAME);
+                $document = new Document([
+                    'user_id' => $user->id,
+                    'project_id' => $project->id,
+                    'comment' => $request->comment,
+                ]);
+                $document->save();
+                //Parent
+                $document_categories = new LocalDocumentCategory;
+                $document_categories->document_id = $document->id;
+                $document_categories->document_category_id = $categories->parent->id;
+                $document_categories->project_id = $project->id;
+                $document_categories->save();
+                //Category
+                $document_categories = new LocalDocumentCategory;
+                $document_categories->document_id = $document->id;
+                $document_categories->document_category_id = $categories->id;
+                $document_categories->project_id = $project->id;
+                $document_categories->save();
+                // Sanitize filename and append document id to make it unique
+                $filename = snake_case(strtolower($filename)) . '_' . $document->id . '.' . $file_extension;
+                $filepath = $folderpath . $filename;
+                if ($request->has('ohfa_file')) {
+                    $document->update([
+                        'file_path' => $filepath,
+                        'filename' => $filename,
+                        'ohfa_file_path' => $filepath,
+                    ]);
+                } else {
+                    $document->update([
+                        'file_path' => $filepath,
+                        'filename' => $filename,
+                    ]);
+                }
+
+                // store original file
+                Storage::put($filepath, File::get($file));
+                $data[] = $document->id;
+                $data['document_ids'] = [$document->id];
+            }
+            if(!is_null($communication_draft->documents)) {
+            	$docs = json_decode($communication_draft->documents, true);
+	            $docs = array_merge(array($data), $docs);
+              $communication_draft->documents = json_encode($docs);
+            } else {
+              $communication_draft->documents = json_encode(array($data));
+            }
+            $communication_draft->save();
+            return json_encode($data);
+        } else {
+            // shouldn't happen - UIKIT shouldn't send empty files
+            // nothing to do here
+        }
     }
 
     /**

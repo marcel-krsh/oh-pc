@@ -490,7 +490,7 @@ Route::group(['middleware' => 'web'], function () {
     // communications
     Route::get('dashboard/communications/{page?}', 'CommunicationController@communicationsTab')->name('communication.tab');
     Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
-    Route::get('/modals/new-outbound-email-entry/{project_id?}/{audit_id?}/{report_id?}/{finding_id?}/{all_findings?}', 'CommunicationController@newCommunicationEntry');
+    Route::get('/modals/new-outbound-email-entry/{project_id?}/{audit_id?}/{report_id?}/{finding_id?}/{all_findings?}/{draft?}', 'CommunicationController@newCommunicationEntry');
     Route::get('/modals/communication/{audit_id}/replies/{message}', 'CommunicationController@viewReplies');
     Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
     Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
@@ -499,6 +499,12 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
     Route::get('/projects/{project}/audit-communications/{audit}/{page?}', 'CommunicationController@auditCommunicationsFromProjectTab')->name('project.audit-communications');
     Route::get('/projects/{project_id}/reply-communications/documents', 'CommunicationController@getCommunicationDocuments')->name('project.communication.documents');
+
+    Route::post('/commmunication-draft/{draft_id}/delete', 'CommunicationController@deleteDraftSave')->name('communication.delete-draft-save');
+    Route::post('/documents/{project}/documentinfo-draft', 'DocumentController@localUploadDraft')->name('documents.local-upload-draft');
+
+        // Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
+
 
     // notifications trigger
     Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');

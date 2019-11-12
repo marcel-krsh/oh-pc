@@ -279,25 +279,13 @@ $('#main-option-icon').attr('uk-icon','bars');UIkit.offcanvas.hide();" style="di
 <a id="smoothscrollLink" href="#top" uk-scroll="{offset: 90}"></a>
 	<div id="dynamic-modal" uk-modal>
 		<div  class="uk-modal-dialog uk-modal-body uk-modal-content" style="min-width: 1250px; min-height: 800px; max-height: 800px">
-			<a class="uk-modal-close-default" uk-close></a>
+			<a class="uk-padding-small uk-position-right" onclick="communicationClose()"><svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><line fill="none" stroke="#939598" stroke-width="1.1" x1="1" y1="1" x2="13" y2="13"></line><line fill="none" stroke="#939598" stroke-width="1.1" x1="13" y1="1" x2="1" y2="13"></line></svg></a>
 			<div id="dynamic-modal-content" class="uk-modal-body"></div>
 		</div>
 		<script>
 			 $(function() {
 			    // Handler for .ready() called.
 			    $('#dynamic-modal-content').css({"min-height":"500px","max-height":"680px"});
-			  });
-		</script>
-	</div>
-	<div id="dynamic-modal-communications" uk-modal>
-		<div  class="uk-modal-dialog uk-modal-body uk-modal-content" style="min-width: 1250px; min-height: 800px; max-height: 800px">
-			<a class="uk-padding-small uk-position-right" onclick="communicationClose()"><svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg"><line fill="none" stroke="#939598" stroke-width="1.1" x1="1" y1="1" x2="13" y2="13"></line><line fill="none" stroke="#939598" stroke-width="1.1" x1="13" y1="1" x2="1" y2="13"></line></svg></a>
-			<div id="dynamic-modal-content-communications" class="uk-modal-body"></div>
-		</div>
-		<script>
-			 $(function() {
-			    // Handler for .ready() called.
-			    $('#dynamic-modal-content-communications').css({"min-height":"500px","max-height":"680px"});
 			  });
 		</script>
 	</div>

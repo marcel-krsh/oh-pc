@@ -7,6 +7,7 @@ use App\Models\Audit;
 use App\Models\CachedAudit;
 use App\Models\Communication;
 use App\Models\CommunicationDocument;
+use App\Models\CommunicationDraft;
 use App\Models\CommunicationRecipient;
 use App\Models\CrrReport;
 use App\Models\Document;
@@ -15,9 +16,10 @@ use App\Models\Finding;
 use App\Models\NotificationsTriggered;
 use App\Models\Project;
 use App\Models\ReportAccess;
+use App\Models\LocalDocumentCategory;
+use Storage;
 use App\Models\SystemSetting;
 use App\Models\User;
-use App\Models\CommunicationDraft;
 //use App\LogConverter;
 use Auth;
 use Config;
@@ -178,19 +180,51 @@ class CommunicationController extends Controller
 
   public function createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings, $recipients = null, $documents = null)
   {
-  	$draft = new CommunicationDraft;
-  	$draft->project_id = $project_id;
-  	$draft->audit_id = $audit_id;
-  	$draft->report_id = $report_id;
-  	$draft->finding_id = $finding_id;
-  	$draft->owner_id = Auth::user()->id;
-  	$draft->save();
-  	return $draft;
+    try {
+      $draft             = new CommunicationDraft;
+      $draft->project_id = $project_id;
+      $draft->audit_id   = $audit_id;
+      $draft->report_id  = $report_id;
+      $draft->finding_id = $finding_id;
+      $draft->owner_id   = Auth::user()->id;
+      $draft->save();
+      return $draft;
+    } catch (\Exception $e) {
+      app('sentry')->captureException($e);
+    }
   }
 
-  public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0)
+  public function deleteDraftSave($draft_id)
   {
-    $draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
+    $communication_draft = CommunicationDraft::find($draft_id);
+    //Document
+    //LocalDocumentCategory
+    if(!$communication_draft) {
+    	return 'Communication draft not found, please contact admin';
+    }
+    if(!is_null($communication_draft->documents)) {
+    	$document_ids = json_decode($communication_draft->documents, true);
+    	foreach ($document_ids as $key => $document_id) {
+    		$document = Document::find($document_id[0]);
+	    	if($document) {
+	    		$categories = LocalDocumentCategory::where('document_id', $document->id)->delete();
+	    		$document->delete();
+	    		Storage::delete($document->file_path);
+	    	}
+    	}
+
+    }
+    $communication_draft->delete();
+    return 1;
+  }
+
+  public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0, $save_draft = 0)
+  {
+  	if($save_draft) {
+	    $draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
+  	} else {
+  		$draft = null;
+  	}
     //dd('Called NewCommunicationEntry');
     //dd($project_id,$audit_id,$report_id,$finding_id,$all_findings);
     $ohfa_id = SystemSetting::get('ohfa_organization_id');
@@ -390,7 +424,10 @@ class CommunicationController extends Controller
 
       // return $recipients;
       //dd('values before modal',$finding,$findings);
-      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings'));
+      if ($save_draft) {
+        return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+      }
+      return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
     } else {
       $project             = null;
       $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -442,7 +479,10 @@ class CommunicationController extends Controller
       $audit      = null;
       $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
       //dd('Values to modal',$finding,$findings);
-      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings'));
+      if ($save_draft) {
+        return view('modals.new-communication-draft', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft'));
+      }
+      return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft'));
     }
   }
 
@@ -725,6 +765,11 @@ class CommunicationController extends Controller
 
   public function create(Request $request)
   {
+  	if($request->has('draft_id')) {
+	    $communication_draft = CommunicationDraft::find($request->draft_id);
+  	} else {
+  		$communication_draft = 0;
+  	}
     $canCreate  = 0;
     $forminputs = $request->get('inputs');
     parse_str($forminputs, $forminputs);
@@ -946,6 +991,9 @@ class CommunicationController extends Controller
           // right now we can assume this is to the pm - will need to add logic for notifications sent to managers?
           //$report->update(['crr_approval_type_id' =>$forminputs['report_approval_type'] ]);
           $report_status = $this->reportStatusUpdate($forminputs, $report);
+        }
+        if($communication_draft) {
+	        $communication_draft->delete();
         }
 
         return 1;
@@ -1606,7 +1654,7 @@ class CommunicationController extends Controller
       $audit             = $report->audit_id;
       $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
         'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {

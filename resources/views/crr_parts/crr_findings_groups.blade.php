@@ -7,66 +7,66 @@
 			border: none;
 		}
 	</style>
-	@php 
+	@php
 		$findingHeader = "";
-		
+
 	@endphp
 @forEach($findings as $f)
-		
+
 		@if(!is_null($f->building_id))
-			
+
 			@if ($findingHeader !== $f->building->building_name)
-				
+
 
 				@php $findingHeader = $f->building->building_name; $columnCount = 1; $findingsRun = 1; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast" style="background: #4e4e4e; padding-top: 11px; padding-bottom: 11px; @if($oneColumn  && !$print) margin-bottom: 0px !important; @endIf">
 					@if(!$print)<h3 class="uk-margin-remove">BUILDING FINDINGS FOR BIN: {{$f->building->building_name}}</h3>@else <small>BUILDING FINDINGS FOR BIN: {{$f->building->building_name}}</small> @endIf
 					@if(!is_null($f->building->address))
-						<small style="text-transform: uppercase;">{{$f->building->address->line_1}} {{$f->building->address->line_2}} | 
+						<small style="text-transform: uppercase;">{{$f->building->address->line_1}} {{$f->building->address->line_2}} |
 						{{$f->building->address->city}}, {{$f->building->address->state}} {{$f->building->address->zip}}</small>
 					@endIf
-					
-				</div> 
+
+				</div>
 			@endif
-			
+
 
 		@elseIf(!is_null($f->unit_id))
 			@if ($findingHeader !== $f->unit->unit_name)
 				@php $findingHeader = $f->unit->unit_name; $columnCount = 1; $findingsRun = 1; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast"  style="background: #4e4e4e; padding-top: 11px; padding-bottom: 11px; @if($oneColumn  && !$print) margin-bottom: 0px !important; @endIf">
 					@if(!$print)
-						<h3 class="uk-margin-remove">UNIT FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3> 
-							@if(!is_null($f->unit->building_id))IN BIN: {{$f->unit->building->building_name}} <br /> 
-							@endIf 
-					@else 	<small>UNIT FINDINGS FOR UNIT: {{$f->unit->unit_name}} 
-						@if(!is_null($f->unit->building_id))IN BIN: {{$f->unit->building->building_name}} 
+						<h3 class="uk-margin-remove">UNIT FINDINGS FOR UNIT: {{$f->unit->unit_name}}</h3>
+							@if(!is_null($f->unit->building_id))IN BIN: {{$f->unit->building->building_name}} <br />
+							@endIf
+					@else 	<small>UNIT FINDINGS FOR UNIT: {{$f->unit->unit_name}}
+						@if(!is_null($f->unit->building_id))IN BIN: {{$f->unit->building->building_name}}
 						@endIf
 							</small>
-					@endIf 
+					@endIf
 						@if(!is_null($f->unit->building->address))
-							<small style="text-transform: uppercase;">{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}} | 
+							<small style="text-transform: uppercase;">{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}} |
 							{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}</small>
 						@endIf
-					
-					
-				</div> 
+
+
+				</div>
 			@endif
-			
+
 		@else
 			@if ($findingHeader !== $f->project->project_name)
 				@php $findingHeader = $f->project->project_name; $columnCount = 1; $findingsRun = 1; @endphp
 				<div class="uk-width-1-1 uk-margin-bottom @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group uk-contrast"  style="background: #4e4e4e; padding-top: 11px; padding-bottom: 11px; @if($oneColumn  && !$print) margin-bottom: 0px !important; @endIf">
 					<h3 class="uk-margin-remove">SITE FINDINGS FOR: {{$f->project->project_name}}</h3>
 					@if($f->project->address)
-						<small style="text-transform: uppercase;"> {{$f->project->address->line_1}} {{$f->project->address->line_2}} | 
+						<small style="text-transform: uppercase;"> {{$f->project->address->line_1}} {{$f->project->address->line_2}} |
 						{{$f->project->address->city}}, {{$f->project->address->state}} {{$f->project->address->zip}} </small>
 					@endIf
 					@if($print)<hr class="dashed-hr uk-margin-bottom"> @endif
-				</div> 
+				</div>
 			@endif
-			
+
 		@endIf
-		
+
 	<div id="cancelled-finding-{{$f->id}}" class="@if($print || $oneColumn) uk-width-1-1 @else uk-width-1-3 @endIf crr-blocks @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding building-{{$f->unit->building_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" style=" @if(!$print && !$oneColumn) @if($columnCount < 3 && count($findings) > $columnCount && count($findings) > $findingsRun) border-right:1px dotted #3c3c3c; @endIf @elseIf($oneColumn && !$print) border: 1px solid; !!;margin-top:0px; margin-bottom:0px; @endIf @if(!$print) padding-top:12px; padding-bottom: 18px; @else margin-top:11px !important;  @endIf page-break-inside: avoid; break-inside: avoid;">
 
 		<div style="break-inside:avoid" @if($print || $oneColumn) uk-grid @endIf>
@@ -90,7 +90,7 @@
 							<!-- <div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $f->id }}, 'followup')"><i class="a-bell-plus"></i></div>
 							 --><div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'comment')"><i class="a-comment-plus"></i></div>
 							@endCan
-							<div class="icon-circle use-hand-cursor" onclick="dynamicModalLoad('new-outbound-email-entry/{{$report->project_id}}/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}/{{ $f->id }}')" ><i class="a-envelope-4"></i>
+							<div class="icon-circle use-hand-cursor" onclick="dynamicModalLoadLocal('new-outbound-email-entry/{{$report->project_id}}/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}/{{ $f->id }}/1')" ><i class="a-envelope-4"></i>
 							</div>
 							@can('access_auditor')
 							<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'document')"><i class="a-file-plus"></i></div>
@@ -106,7 +106,7 @@
 			 <hr @if($oneColumn && !$print) class="uk-width-1-1 uk-margin-small-top" @endIf />
 			@if(!is_null($f->building_id))
 			{{-- <strong>{{$f->building->building_name}}</strong> <br /> --}}
-			
+
 
 			@elseIf(!is_null($f->unit_id))
 			{{-- {{$f->unit->building->building_name}} <br /> --}}
@@ -129,11 +129,11 @@
 				<!-- LINE 77 -->
 				<div class="inspec-tools-tab-finding-actions  @if($oneColumn  && !$print) uk-width-1-5 @endIf uk-margin-small-top " @if(!$oneColumn) uk-grid @endIf>
 
-					
-					
+
+
 					@if(!$f->cancelled_at)
 						<div id="inspec-tools-finding-resolve-{{ $f->id }}" class="@if($oneColumn  && !$print)  @else uk-width-1-2 uk-margin-remove @endIf">
-							
+
 								@if($f->auditor_approved_resolution == 1)
 
 								<button class="uk-button uk-link uk-margin-small-left " style="width: 100%;"  onclick="resolveFinding({{ $f->id }})"><span class="a-circle-cross"></span> DATE</button>
@@ -143,23 +143,23 @@
 						</div>
 						<div  class="@if($oneColumn  && !$print) uk-margin-top @else uk-width-1-2 uk-margin-remove @endIf">
 							<input id="resolved-date-finding-{{$f->id}}" class="uk-input " style="width:100%;" readonly type="text" placeholder="DATE" onchange="resolveFinding({{ $f->id }},$(this).val());"  >
-							
+
 							@push('flatPickers')
 								$('#resolved-date-finding-{{$f->id}}').flatpickr('{dateFormat: "m-d-Y"}');
 								@if(null !== $f->auditor_last_approved_resolution_at)
-									$('#resolved-date-finding-{{$f->id}}').val('{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}'); 
+									$('#resolved-date-finding-{{$f->id}}').val('{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}');
 								@endIf
 							@endpush
-							
-							
+
+
 
 						  {{-- @push('flatPickers')
-    
+
 						  		///////////////////////////////////////////////////////////////////////////////////////////////////
 						  		flatpickr flatpickr-input
 
 								flatpickr("#resolved-date-finding-{{$f->id}}", {
-									
+
 									altFormat: "F j, Y G:i K",
 									dateFormat: "F j, Y G:i K",
 									enableTime: true,
@@ -170,17 +170,17 @@
 							      	//var setDefaultTo = instance.parseDate(dateStr)
 							      	//alert(setDefaultTo);
 							      	//resolveFinding({{ $f->id }},dateStr);
-							      	
+
 							      	alert(selectedDates+' '+dateStr+' '+instance);
 							      	//loadTab('dashboard/calls?order_by=date&dates='+encodeURIComponent(dateStr),'1','','','',1);
 							      }
 							    });
 
-							    
+
 						  @endpush --}}
 
 						</div>
-						
+
 					@endif
 					@if($oneColumn  && !$print)
 								<hr class="uk-margin-top dashed-hr uk-margin-bottom">
@@ -199,9 +199,9 @@
 					@endIf
 
 				</div>
-			
+
 			@else
-				
+
 
 					@if($f->auditor_approved_resolution == 1)
 						<p>RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }}</p>
@@ -211,7 +211,7 @@
 
 			<!-- LINE 123 -->
 			@endif
-		
+
 		@else
 			@if($f->auditor_approved_resolution == 1)
 			<!-- LINE 127 -->
@@ -220,18 +220,18 @@
 						<strong><p class="attention" style="color:red">UNCORRECTED</p></strong>
 			@endIf
 		@endcan
-		@if(!$print && !$oneColumn) 
-			</div> 
-		@elseif($print) 
-			</div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;"> 
-		@elseif($oneColumn) 
-			<div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid; margin-top: 11px;"> 
+		@if(!$print && !$oneColumn)
+			</div>
+		@elseif($print)
+			</div> <div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid;">
+		@elseif($oneColumn)
+			<div class="uk-width-4-5" style="page-break-inside: avoid; break-inside: avoid; margin-top: 11px;">
 		@endIf
 
-		
-			
 
-		
+
+
+
 		<!-- LINE 131 -->
 		@if($print)<h5 style="page-break-inside: avoid; break-inside: avoid;"> @else
 			<h2 style="page-break-inside: avoid; break-inside: avoid;">
@@ -306,7 +306,7 @@
 
 		@if(is_null($c->deleted_at))
 		@if($c->hide_on_reports != 1)
-		@if(!$print)<span style="page-break-inside: avoid; break-inside: avoid; color: black">@can('access_auditor')<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endcan @else <span style="page-break-inside: avoid; break-inside: avoid; color: black">  @endif <i class="a-person-chat-2" ></i></span> <div style="display:inline-table;margin-left: 2px;color:black;line-height: 23px;">{!!  nl2br($c->comment) !!}</div> 
+		@if(!$print)<span style="page-break-inside: avoid; break-inside: avoid; color: black">@can('access_auditor')<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endcan @else <span style="page-break-inside: avoid; break-inside: avoid; color: black">  @endif <i class="a-person-chat-2" ></i></span> <div style="display:inline-table;margin-left: 2px;color:black;line-height: 23px;">{!!  nl2br($c->comment) !!}</div>
 		{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
 		@endIf
 		@endif
@@ -317,8 +317,8 @@
 		@if(property_exists($f,'photos') && !is_null($f->photos))
 		@forEach($f->photos as $p)
 		@if(!$p->deleted)
-		 <hr class="dashed-hr uk-margin-bottom"> 
-			
+		 <hr class="dashed-hr uk-margin-bottom">
+
 		<div class="photo-gallery uk-slider uk-slider-container" uk-slider="">
 			<div class="uk-position-relative uk-visible-toggle uk-light">
 				<ul class="uk-slider-items uk-child-width-1-1" style="transform: translateX(0px);">
@@ -337,7 +337,7 @@
 
 		<hr class="dashed-hr uk-margin-bottom">
 		@if($f->amenity_inspection)
-		<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id',$report->audit_id); ?>
+		<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id', $report->audit_id);?>
 		@if(count($piecePrograms)>0 && Auth::user()->can('access_auditor'))
 		<div style="min-height: 80px;">
 			<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span>
@@ -385,12 +385,12 @@
 
 		{{-- Communications --}}
 		@if(count($communications))
-		
+
 		@foreach($communications as $message)
 		@if($print || $oneColumn)
 			<hr class="uk-width-1-1">
 				<div class="uk-width-1-5">
-			@endIf 
+			@endIf
 		{!! $loop->first && !$print && !$oneColumn ? '<hr class="uk-width-1-1 uk-margin-bottom">': '' !!}
 		<strong class="a-envelope-4" @if($print || $oneColumn) style="margin-top: 4px !important" @endIf></strong> : {{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }} @if($print || $oneColumn)</div><div class="uk-width-4-5"> @else <br> @endIf
 		<span {{-- style="margin-left: 20px" --}}>
@@ -482,9 +482,9 @@
 		{{-- Documents --}}
 		@if(count($documents))
 			@if($print || $oneColumn)
-			
+
 				<div class="uk-width-1-5" style="margin-top: 10px;"><i class="a-paperclip-2"></i> Other Documents</div><div class="uk-width-4-5" style="margin-top: 10px;">
-			@endIf 
+			@endIf
 		@foreach($documents as $document)
 		{!! $loop->first && !$print && !$oneColumn ? '<span class="uk-margin-top"><hr></span>':'' !!}
 		<span class="finding-documents-{{ $document->id }}">
@@ -529,33 +529,32 @@
 		@endforeach
 			@if($print || $oneColumn)
 				</div>
-			@endIf 
+			@endIf
 		@endIf
 		{{-- End documents --}}
-		@endif 
+		@endif
 
 		@if($oneColumn  && !$print)
 			</div>
 		@endIf
-		
+
 		@if($print )<hr class="dashed-hr uk-width-1-1" style="margin-top: 0px !important;"> @endIf
 	</div>
 		<?php
-				// using column count to put in center lines rather than rely on css which breaks.
-		
-			$columnCount++;
-			$findingsRun++;
-		
-		if($columnCount > 3){
-			$columnCount = 1;
-			if(!$print && !$oneColumn){
-			?>
+// using column count to put in center lines rather than rely on css which breaks.
+
+$columnCount++;
+$findingsRun++;
+
+if ($columnCount > 3) {
+  $columnCount = 1;
+  if (!$print && !$oneColumn) {
+    ?>
 				<hr class="dashed-hr uk-margin-bottom uk-width-1-1 @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" >
-			<?php  
-			}
-			
-		}
-		?>
-		
+			<?php
+}
+}
+?>
+
 
 	@endForEach
