@@ -13,7 +13,7 @@ class AdminOnlyActionsController extends Controller
     	if(\Auth::user()->can('access_admin')){
     		if(is_object($audit)){
     			/// change the audit status so compliance doesn't rerun
-    			if($audit->findings->whereNull('cancelled_at')->count() < 1){
+    			if($audit->reportableFindings->count() < 1){
 	    			$audit->monitoring_status_type_key = 3;
 	    			$audit->save();
 	    			/// remove all the parts of the audit allita has:
