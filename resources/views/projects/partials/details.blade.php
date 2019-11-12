@@ -178,7 +178,7 @@ $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')
 						            				</div><br /><small>CAR #{{$car->id}}</small>
 
 						            				@else
-						            				<i  @if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) class="a-file-plus" uk-tooltip="title:GENERATE THIS AUDIT'S CAR" onclick="submitNewReportPD({{$selected_audit->audit_id}},1)" @else class="a-file-fail" uk-tooltip="title:SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A CAR TO BE GENERATED." @endIf></i><br /><small>CAR</small>
+						            				<i  @if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) class="a-file-plus" uk-tooltip="title:GENERATE THIS AUDIT'S CAR" onclick="submitNewReportPD({{$selected_audit->audit_id}},1)" @else class="a-file-fail" uk-tooltip="title:SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A CAR TO BE GENERATED." @endIf></i><br /><small>CAR</small>
 						            				@endIf
 						            			</div><div class="uk-width-1-3">
 						            				@if(($ehs))
@@ -238,7 +238,7 @@ $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')
 						            				</div>
 						            				<br /><small>EHS #{{$ehs->id}}</small></a>
 						            				@else
-						            				@if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S EHS" onclick="submitNewReportPD({{$selected_audit->audit_id}},2)"><i  class="a-file-plus"></i><br /><small>EHS</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A EHS TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
+						            				@if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S EHS" onclick="submitNewReportPD({{$selected_audit->audit_id}},2)"><i  class="a-file-plus"></i><br /><small>EHS</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A EHS TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
 						            				@endIf
 						            			</div>
 						            			<div class="uk-width-1-3">
@@ -302,7 +302,7 @@ $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')
 						            				</div>
 						            				<br /><small>8823 #{{$_8823->id}}</small></a>
 						            				@else
-						            				@if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S 8823" onclick="submitNewReportPD({{$selected_audit->audit_id}},5)"><i  class="a-file-plus"></i><br /><small>8823</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRRY, THE AUDIT'S STATUS DOES NOT ALLOW A 8823 TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
+						            				@if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S 8823" onclick="submitNewReportPD({{$selected_audit->audit_id}},5)"><i  class="a-file-plus"></i><br /><small>8823</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A 8823 TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
 						            				@endIf
 						            			@endIf
 						            			</div>
