@@ -52,9 +52,9 @@
 							@php $currentOrg = $recipient->organization_name; @endphp
 							@endIf
 							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->name) }}">
-								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} ')">
+								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} | {{ $recipient->email }} ')">
 								<label for="recipient-id-{{ $recipient->id }}">
-									{{ ucwords($recipient->name) }} | {{ $recipient->email }}
+									{{ $recipient->id }} | {{ ucwords($recipient->name) }} | {{ $recipient->email }}
 								</label>
 							</li>
 							@endforeach
