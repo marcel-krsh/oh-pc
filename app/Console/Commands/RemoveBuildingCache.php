@@ -71,7 +71,7 @@ class RemoveBuildingCache extends Command
         if($audit){
             $buildingIds = $audit->building_inspections->pluck('building_id')->toArray();
             $buildings = $audit->building_inspections->pluck('building_id','building_name','address')->toArray(); 
-            if($this->confirm('Would you like to see a list of the buildings?'){
+            if($this->confirm('Would you like to see a list of the buildings?')){
                      
 
                      $headers = ['Building ID','Building Name', 'Address'];
@@ -111,10 +111,10 @@ class RemoveBuildingCache extends Command
                     }
                 }
 
-                if(!$this->confirm('Do you have another Building to delete from this audit?'){
+                if(!$this->confirm('Do you have another Building to delete from this audit?')){
                     $stop = 1;
                 } else {
-                    if($this->confirm('Would you like to see an updated list of the buildings?'){
+                    if($this->confirm('Would you like to see an updated list of the buildings?')){
                                  
                                  $this->table($headers,$buildings);
                                 
