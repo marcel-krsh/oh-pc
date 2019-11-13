@@ -13,12 +13,13 @@ class AdminOnlyActionsController extends Controller
     	if(\Auth::user()->can('access_admin')){
     		if(is_object($audit)){
     			/// change the audit status so compliance doesn't rerun
-    			if($audit->findings->count() < 1){
+    			if($audit->reportableFindings->count() < 1){
 	    			$audit->monitoring_status_type_key = 3;
 	    			$audit->save();
 	    			/// remove all the parts of the audit allita has:
 	    			\App\Models\UnitInspection::where('audit_id',$audit->id)->delete();
 	    			/// \App\Models\SiteInspection::where('audit_id',$audit->id)->delete();
+	    			\App\Models\Finding::where('audit_id',$audit->id)->delete();
 	    			\App\Models\BuildingInspection::where('audit_id',$audit->id)->delete();
 	    			\App\Models\UnitProgram::where('audit_id',$audit->id)->delete();
 	    			\App\Models\AmenityInspection::where('audit_id',$audit->id)->delete();
@@ -41,9 +42,10 @@ class AdminOnlyActionsController extends Controller
 	    			\App\Models\OrderingUnit::where('audit_id',$audit->id)->delete();
 	    			\App\Models\ScheduleDay::where('audit_id',$audit->id)->delete();
 	    			\App\Models\ScheduleTime::where('audit_id',$audit->id)->delete();
+	    			\App\Models\Communication::where('audit_id',$audit->id)->update(['audit_id' => null]);
 
 	    		}else{
-	    			return '<h2>Sorry, this audit has findings recorded and cannot be deleted.</h2>';
+	    			return '<h2>Sorry, this audit has uncancelled findings recorded and cannot be deleted. Please cancel the findings and try again.</h2>';
 	    		}
 
 
