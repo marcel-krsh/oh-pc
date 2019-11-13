@@ -68,4 +68,39 @@ class CommunicationDraft extends Model
     return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');
   }
 
+  public function getAttachedDocuments() {
+  	$document_json = $this->documents;
+  	if(!is_null($document_json)) {
+  		$document_array = json_decode($this->documents, true);
+  		$document_ids = [];
+    	foreach ($document_ids as $key => $document_id) {
+    		array_push($document_ids, $document_id[0]);
+	    	// if($document) {
+	    	// 	$categories = LocalDocumentCategory::where('document_id', $document->id)->get();
+	    	// }
+    	}
+    	return $document = Document::whereIn('id', $document_ids)->get();
+  	} else {
+  		return [];
+  	}
+  }
+
+  public function getSelectedDocuments() {
+  	$document_json = $this->selected_documents;
+  	if(!is_null($document_json)) {
+  		$document_array = json_decode($this->selected_documents, true);
+  		$document_ids = [];
+    	foreach ($document_array as $key => $document_id) {
+    		array_push($document_ids, $document_id[0]);
+	    	// if($document) {
+	    	// 	$categories = LocalDocumentCategory::where('document_id', $document->id)->get();
+	    	// }
+    	}
+    	// return $document_ids;
+    	return $document = Document::whereIn('id', $document_ids)->get();
+  	} else {
+  		return [];
+  	}
+  }
+
 }

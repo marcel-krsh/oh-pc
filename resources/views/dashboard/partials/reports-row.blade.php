@@ -16,11 +16,11 @@
 			<option value="2">SEND TO MANAGER REVIEW</option>
 			@endIf
 			@if($manager_access)
-				@if($report->requires_approval)
-	                <option value="3">DECLINE</option>
-	                <option value="4">APPROVE WITH CHANGES</option>
-	                <option value="5">APPROVE</option>
-                @endIf
+			@if($report->requires_approval)
+			<option value="3">DECLINE</option>
+			<option value="4">APPROVE WITH CHANGES</option>
+			<option value="5">APPROVE</option>
+			@endIf
 			@endif
 			@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
 			<option value="6">SEND TO PROPERTY CONTACT</option>

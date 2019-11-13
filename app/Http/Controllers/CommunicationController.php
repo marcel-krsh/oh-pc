@@ -13,18 +13,18 @@ use App\Models\CrrReport;
 use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Models\Finding;
+use App\Models\LocalDocumentCategory;
 use App\Models\NotificationsTriggered;
 use App\Models\Project;
 use App\Models\ReportAccess;
-use App\Models\LocalDocumentCategory;
-use Storage;
 use App\Models\SystemSetting;
 use App\Models\User;
-//use App\LogConverter;
 use Auth;
+//use App\LogConverter;
 use Config;
 use Illuminate\Http\Request;
 use Session;
+use Storage;
 
 class CommunicationController extends Controller
 {
@@ -194,37 +194,75 @@ class CommunicationController extends Controller
     }
   }
 
+  public function updateDraft($draft_id, Request $request)
+  {
+    $draft = CommunicationDraft::find($draft_id);
+    if ($draft) {
+      $forminputs = $request->get('inputs');
+      parse_str($forminputs, $forminputs);
+      //DON't update the DOCS as they might select already uploaded
+      $document_data = [];
+      if (isset($forminputs['local_documents']) && $forminputs['local_documents'] > 0) {
+        $local_documents = $forminputs['local_documents'];
+        $unique_docs     = array_unique($local_documents);
+        foreach ($unique_docs as $key => $document_id) {
+          $doc_id                              = explode('-', $document_id);
+          $document_data[$key][0]              = $doc_id[1];
+          $document_data[$key]['document_ids'] = [$doc_id[1]];
+        }
+      }
+      // return $forminputs;
+      $draft->subject = $forminputs['subject'];
+      $draft->message = $forminputs['messageBody'];
+      if (array_key_exists('findings', $forminputs)) {
+        $draft->finding_ids = json_encode($forminputs['findings']);
+      }
+      if (array_key_exists('recipients', $forminputs)) {
+        $draft->recipients = json_encode($forminputs['recipients']);
+      }
+
+      if (!empty($document_data)) {
+        $draft->selected_documents = json_encode($document_data);
+      }
+      $draft->save();
+      return 1;
+    } else {
+      return 0;
+    }
+  }
+
   public function deleteDraftSave($draft_id)
   {
     $communication_draft = CommunicationDraft::find($draft_id);
     //Document
     //LocalDocumentCategory
-    if(!$communication_draft) {
-    	return 'Communication draft not found, please contact admin';
+    if (!$communication_draft) {
+      return 'Communication draft not found, please contact admin';
     }
-    if(!is_null($communication_draft->documents)) {
-    	$document_ids = json_decode($communication_draft->documents, true);
-    	foreach ($document_ids as $key => $document_id) {
-    		$document = Document::find($document_id[0]);
-	    	if($document) {
-	    		$categories = LocalDocumentCategory::where('document_id', $document->id)->delete();
-	    		$document->delete();
-	    		Storage::delete($document->file_path);
-	    	}
-    	}
-
+    if (!is_null($communication_draft->documents)) {
+      $document_ids = json_decode($communication_draft->documents, true);
+      foreach ($document_ids as $key => $document_id) {
+        $document = Document::find($document_id[0]);
+        if ($document) {
+          $categories = LocalDocumentCategory::where('document_id', $document->id)->delete();
+          $document->delete();
+          Storage::delete($document->file_path);
+        }
+      }
     }
     $communication_draft->delete();
     return 1;
   }
 
-  public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0, $save_draft = 0)
+  public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0, $save_draft = 0, $draft_id = 0)
   {
-  	if($save_draft) {
-	    $draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
-  	} else {
-  		$draft = null;
-  	}
+    if ($save_draft == 1) {
+      $draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
+    } elseif($save_draft == 2) {
+      $draft = CommunicationDraft::find($draft_id);
+    } else {
+      $draft = null;
+    }
     //dd('Called NewCommunicationEntry');
     //dd($project_id,$audit_id,$report_id,$finding_id,$all_findings);
     $ohfa_id = SystemSetting::get('ohfa_organization_id');
@@ -424,8 +462,10 @@ class CommunicationController extends Controller
 
       // return $recipients;
       //dd('values before modal',$finding,$findings);
-      if ($save_draft) {
+      if ($save_draft == 1) {
         return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+      } elseif($save_draft == 2) {
+      	return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
       }
       return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
     } else {
@@ -479,8 +519,10 @@ class CommunicationController extends Controller
       $audit      = null;
       $recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
       //dd('Values to modal',$finding,$findings);
-      if ($save_draft) {
-        return view('modals.new-communication-draft', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft'));
+      if ($save_draft == 1) {
+        return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+      } elseif($save_draft == 2) {
+      	return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
       }
       return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft'));
     }
@@ -495,6 +537,18 @@ class CommunicationController extends Controller
     }
 
     return [1];
+  }
+
+  public function showDraftMessages($page = 0, Request $request)
+  {
+    $number_per_page = 100;
+    $skip            = $number_per_page * $page;
+    $current_user    = Auth::user();
+
+    $messages = CommunicationDraft::where('owner_id', $current_user->id)->skip($skip)->take($number_per_page)->get();
+    // $msg = $messages->where('id', 5)->first();
+    // return $msg->getSelectedDocuments();
+    return view('dashboard.communications-drafts', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project'));
   }
 
   public function communicationsFromProjectIdJson(Project $project)
@@ -765,11 +819,11 @@ class CommunicationController extends Controller
 
   public function create(Request $request)
   {
-  	if($request->has('draft_id')) {
-	    $communication_draft = CommunicationDraft::find($request->draft_id);
-  	} else {
-  		$communication_draft = 0;
-  	}
+    if ($request->has('draft_id')) {
+      $communication_draft = CommunicationDraft::find($request->draft_id);
+    } else {
+      $communication_draft = 0;
+    }
     $canCreate  = 0;
     $forminputs = $request->get('inputs');
     parse_str($forminputs, $forminputs);
@@ -992,8 +1046,8 @@ class CommunicationController extends Controller
           //$report->update(['crr_approval_type_id' =>$forminputs['report_approval_type'] ]);
           $report_status = $this->reportStatusUpdate($forminputs, $report);
         }
-        if($communication_draft) {
-	        $communication_draft->delete();
+        if ($communication_draft) {
+          $communication_draft->delete();
         }
 
         return 1;
@@ -1530,6 +1584,26 @@ class CommunicationController extends Controller
         return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array', 'message_recipients'));
       }
     }
+  }
+
+  public function openDraftMessage($draft_id) {
+  	$draft = CommunicationDraft::with('project', 'audit')->find($draft_id);
+  	if($draft) {
+  		return $this->newCommunicationEntry($draft->project_id, $draft->audit_id, $draft->report_id, $draft->finding_id, $draft->finding_ids, 2, $draft_id);
+
+	    $current_user    = Auth::user();
+	    return view('dashboard.communications-drafts', compact('draft'));
+  	} else {
+  		return 'No message was found with the information provided, please contact admin';
+  	}
+  }
+
+  public function saveDrfatToCommunication($draft_id, Request $request)
+  {
+  	if($draft_id) {
+	  	$draft = CommunicationDraft::with('project', 'audit')->find($draft_id);
+  	}
+  	return 1;
   }
 
   public function messageNotification($user_id, $model_id, Request $request)

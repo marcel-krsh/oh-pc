@@ -502,9 +502,16 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::post('/commmunication-draft/{draft_id}/delete', 'CommunicationController@deleteDraftSave')->name('communication.delete-draft-save');
     Route::post('/documents/{project}/documentinfo-draft', 'DocumentController@localUploadDraft')->name('documents.local-upload-draft');
+    Route::post('/documents/{project}/documentinfo-draft', 'DocumentController@localUploadDraft')->name('documents.local-upload-draft');
+    Route::post('/commmunication/drafts/{page?}', 'CommunicationController@showDraftMessages')->name('communications.show-drafts');
+    Route::post('/commmunication/update-draft/{draft}', 'CommunicationController@updateDraft')->name('communication.update-draft');
+    Route::get('/commmunication/drafts/{page?}', 'CommunicationController@showDraftMessages')->name('communications.show-draft-messages');
+    Route::get('modals/communication/open-draft/{draft_id}', 'CommunicationController@openDraftMessage')->name('communications.open-draft-message');
+    Route::post('/commmunication/draft-save/{draft}', 'CommunicationController@saveDrfatToCommunication')->name('communication.draft-save');
 
-        // Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
 
+
+    // Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
 
     // notifications trigger
     Route::post('user/notification-preference/{id}', 'Notifications\UserNotificationController@postNotificationPreference');

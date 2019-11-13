@@ -2371,7 +2371,7 @@ function updateAuditBuildingInspection(e) {
 			console.log( "ready!" );
 			window.setInterval(function(){
 				checkForUpdatedAudits(window.onPageAudits);
-			}, 500000);
+			}, 5000);
 
 		});
 	</script>

@@ -26,6 +26,9 @@
 				<button id="user-comm-read-toggle" class="uk-button-large" onclick="toggleReadMessages(this);" aria-checked="false" uk-tooltip="pos:top-left;title:SHOW / HIDE READ MESSAGES">
 					<i class="a-star"></i>
 				</button>
+				<button class="uk-button-large @if(session('communication_draft'))uk-button-success @else uk-button-default @endif" onclick="showDraftMessages();" aria-checked="false" uk-tooltip="pos:top-left;title:View draft messages">
+					<i class="a-file-pencil-2"></i>
+				</button>
 				<button class="uk-button-large @if(session('communication_sent'))uk-button-default @else uk-button-success @endif" onclick="switchInbox();" aria-checked="false" uk-tooltip="pos:top-left;title:VIEW INBOX">
 					<i class="a-folder-box"></i>
 				</button>
@@ -81,15 +84,15 @@
 		<div class="uk-width-1-1 uk-margin-remove uk-text-right">
 
 				<?php // get unread count for this user
-					$unreadCount = 0;
+$unreadCount = 0;
 
-					forEach($messages as $urc){
-						if($urc->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()){
-							$unreadCount++;
-						}
-					}
+foreach ($messages as $urc) {
+  if ($urc->recipients->where('user_id', Auth::User()->id)->where('seen', null)->count()) {
+    $unreadCount++;
+  }
+}
 
-				?>
+?>
 				<div class="uk-align-right uk-label  uk-margin-top ">{{$unreadCount}} UNREAD MESSAGES </div>
 
 
@@ -131,7 +134,7 @@
 					<span>
 						FROM: Me<hr class="dashed-hr uk-margin-bottom uk-width-1-1">
 							@if(count($message->message_recipients))TO:
-								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id); ?>
+								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id);?>
 								@if(count($recipients)>0)
 									@foreach($recipients as $recipient)
 										@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
@@ -301,6 +304,21 @@
 				$('#detail-tab-2').trigger('click');
 			}
 		} );
+	}
+
+	function showDraftMessages(){
+		loadTab("{{ URL::route('communications.show-draft-messages') }}", '2','','','',1);
+
+		// $.post('{{ URL::route("communications.show-drafts") }}', {
+		// 	'_token' : '{{ csrf_token() }}'
+		// }, function(data) {
+		// 	if(data[0]!='1'){
+		// 		UIkit.modal.alert(data);
+		// 	} else {
+		// 		$('#detail-tab-2').trigger('click');
+		// 	}
+		// });
+
 	}
 
 

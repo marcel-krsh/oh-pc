@@ -24,8 +24,6 @@ session(['old_communication_modal' => $random]);
 		window.currentCommunicationModal = "{{ $random }}";
 	</script>
 
-
-
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
 		@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit->id }}">@endif
@@ -150,13 +148,25 @@ session(['old_communication_modal' => $random]);
           <!-- END RECIPIENT LISTING -->
         </div>
         @endif
-
-        @if($all_findings > 0 && null !== $findings && count($findings)>0)
-        @include('modals.partials.communication-findings')
+        @if(null !== $findings && count($findings)>0 && ($all_findings > 0 || !empty($all_findings)))
+        <div class="uk-width-1-5 " style="padding:18px;">
+        	<div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;FINDINGS:
+        </div>
+        <div class="uk-width-4-5 "  id="findings-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+        	@foreach(json_decode($all_findings) as $finding_id)
+        	Finding-{{ $finding_id }}{{ $loop->last ? '':', ' }}
+        	@endforeach
+        </div>
         @endif
 
-        @if(!is_null($project))
-        @include('modals.partials.communication-documents-draft')
+        @if(!is_null($draft->documents))
+        <div class="uk-width-1-5 " style="padding:18px;">
+        	<div style="width:25px;display: inline-block;"><i uk-icon="a-paperclip-2" class=""></i></div> &nbsp;DOCUMENTS:
+        </div>
+        <div class="uk-width-4-5 "  id="findings-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+        	@foreach($draft->getSelectedDocuments() as $document) {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} <br>
+        	@endforeach
+        </div>
         @endif
 
         <div class="uk-width-1-5 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
@@ -164,30 +174,25 @@ session(['old_communication_modal' => $random]);
         	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
-        				@if($all_findings && $single_receipient)
-        				<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." id="findings_based_subject" value="Finding: {{ $finding->id }}">
-        				@else
-        				<input type="text" id="findings_based_subject" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications.">
-        				@endif
+        				<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." id="findings_based_subject" value="{{ $draft->subject }}">
         			</div>
         		</div>
         	</fieldset>
         </div>
-
         <div class="uk-width-1-5 " style="padding:18px; padding-top:40px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div>
         <div class="uk-width-4-5 " style="padding:18px;">
         	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
         		<div uk-grid class="uk-grid-collapse">
         			<div class="uk-width-1-1">
-        				<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message.">@if($all_findings && $single_receipient)Owner response for finding {{ $finding->id }} on audit # {{ $audit->id }} for {{ $project->project_number }} : {{ $project->project_name }}@endif</textarea>
+        				<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message.">{{ $draft->message }}</textarea>
         			</div>
         		</div>
         	</fieldset>
         </div>
         <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
         <div class="uk-width-1-3">&nbsp;</div>
-        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="communicationClose();"><i class="a-circle-cross"></i> Delete Draft</a></div>
-        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="submitNewCommunication()"><i class="a-paper-plane"></i> SEND</a>
+        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="dynamicModalClose();"><i class="a-circle-cross"></i> CANCEL</a></div>
+        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="submitNewDraftCommunication()"><i class="a-paper-plane"></i> SEND</a>
         </div>
       </div>
     </div>
@@ -221,7 +226,7 @@ session(['old_communication_modal' => $random]);
     	$('#done-adding-documents-button').toggle();
     }
 
-    function submitNewCommunication() {
+    function submitNewDraftCommunication() {
     	var form = $('#newOutboundEmailForm');
     	var no_alert = 1;
     	var recipients_array = [];
@@ -233,7 +238,7 @@ session(['old_communication_modal' => $random]);
     		UIkit.modal.alert('You must select a recipient.',{stack: true});
     	}
     	if(no_alert){
-    		$.post('{{ URL::route("communication.create") }}', {
+    		$.post('{{ URL::route("communication.draft-save") }}', {
     			'inputs' : form.serialize(),
     			'draft_id' : "{{ $draft->id }}",
     			'_token' : '{{ csrf_token() }}'
@@ -309,36 +314,36 @@ session(['old_communication_modal' => $random]);
   	}
   </script>
   <script>
-  	function updateCommunicationDraft() {
-  		if(window.communicationActive) {
-  			var form = $('#newOutboundEmailForm');
-	    	var no_alert = 1;
-	    	var recipients_array = [];
-	    	$("input[name='recipients[]']:checked").each(function (){
-	    		recipients_array.push(parseInt($(this).val()));
-	    	});
-  			$.post('{{ URL::route("communication.update-draft", $draft->id) }}', {
-  				'inputs' : form.serialize(),
-  				'_token' : '{{ csrf_token() }}'
-  			}, function(data) {
-  				if(data==1){
-  					console.log( "updated draft!" );
-  				} else {
-  					console.log( "updated NOT draft!" );
-  				}
-  			});
-  		}
-  	}
+  	// function updateCommunicationDraft() {
+  	// 	if(window.communicationActive) {
+  	// 		var form = $('#newOutboundEmailForm');
+  	// 		var no_alert = 1;
+  	// 		var recipients_array = [];
+  	// 		$("input[name='recipients[]']:checked").each(function (){
+  	// 			recipients_array.push(parseInt($(this).val()));
+  	// 		});
+  	// 		$.post('{{ URL::route("communication.update-draft", $draft->id) }}', {
+  	// 			'inputs' : form.serialize(),
+  	// 			'_token' : '{{ csrf_token() }}'
+  	// 		}, function(data) {
+  	// 			if(data==1){
+  	// 				console.log( "updated draft!" );
+  	// 			} else {
+  	// 				console.log( "updated NOT draft!" );
+  	// 			}
+  	// 		});
+  	// 	}
+  	// }
 
 
 
-  	$( document ).ready(function() {
-  		window.communicationActive = 1;
-  		console.log( "update sraft!" );
-  		window.setInterval(function(){
-  			updateCommunicationDraft();
-  		}, 5000);
+  	// $( document ).ready(function() {
+  	// 	window.communicationActive = 1;
+  	// 	console.log( "update sraft!" );
+  	// 	window.setInterval(function(){
+  	// 		updateCommunicationDraft();
+  	// 	}, 5000);
 
-  	});
+  	// });
   </script>
 </div>
