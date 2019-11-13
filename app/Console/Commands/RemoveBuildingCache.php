@@ -95,7 +95,7 @@ class RemoveBuildingCache extends Command
 
                         if($check){ 
                             if($this->confirm('You want to delete '.$check->building_name.'? (This will remove everything including findings associated with this building for this audit).')){
-                                $units = $check->building->units->pluck('id')->to_array();
+                                $units = $check->building->units->pluck('id');
                                 $check->delete();
                                 // remove inspection items for that building on this audit
                                 AmenityInspection::where('audit_id',$audit->id)->where('building_id',$buildingId)->delete();
