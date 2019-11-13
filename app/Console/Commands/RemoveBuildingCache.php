@@ -70,7 +70,7 @@ class RemoveBuildingCache extends Command
 
         if($audit){
             $buildingIds = $audit->building_inspections->pluck('building_id')->toArray();
-            $buildings = BuildingInspection::where('audit_id',$audit->id)->select('building_id','building_name','address')->toArray(); 
+            $buildings = BuildingInspection::where('audit_id',$audit->id)->select('building_id','building_name','address')->get()->toArray(); 
             if($this->confirm('Would you like to see a list of the buildings?')){
                      
 
