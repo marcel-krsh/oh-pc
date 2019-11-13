@@ -83,8 +83,9 @@ class RemoveBuildingCache extends Command
                      }
                     
             }
-            $this->line(PHP_EOL.'Please note that you are only removing the building from the audit'.$audit->id.'. We are NOT removing the building(s) from the property for future audits.'.PHP_EOL);
+            
             if($stop == 0){
+                $this->line(PHP_EOL.'Please note that you are only removing the building from the audit'.$audit->id.'. We are NOT removing the building(s) from the property for future audits.'.PHP_EOL);
                 do{
                    
                     $buildingId = $this->anticipate('What is the building id of the building you would like to remove from the audit?',$buildingIds);
