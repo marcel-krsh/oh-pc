@@ -366,15 +366,28 @@ class CachedAudit extends Model
     }
 
     public function update_unit_statuses() {
-    	if($this->audit && $this->audit->unique_unit_inspections) {
+    	if($this->audit && $this->audit->unique_unit_inspections->count() !== $this->total_units) {
     		$unit_count = $this->audit->unique_unit_inspections->count();
-    		$this->total_units = $this->audit->unique_unit_inspections->count();
+    		$this->total_units = $unit_count;
     		$this->save();
     	} else {
     		//do nothing
     	}
 
     		return true;
+
+    }
+
+    public function update_building_statuses() {
+        if($this->audit && $this->audit->building_inspections->count !== $this->total_buildings) {
+            $building_count = $this->audit->building_inspections->count();
+            $this->total_buildings = $building_count;
+            $this->save();
+        } else {
+            //do nothing
+        }
+
+            return true;
 
     }
 
@@ -610,6 +623,9 @@ class CachedAudit extends Model
             $updated = true;
         }
         if($this->update_unit_statuses()){
+            $updated = true;
+        }
+        if($this->update_building_statuses()){
             $updated = true;
         }
         return $updated;
