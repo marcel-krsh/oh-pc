@@ -69,8 +69,8 @@ class RemoveBuildingCache extends Command
         $audit = $this->getAudit();
 
         if($audit){
-            $buildingIds = $audit->building_inspections->pluck('building_id')->toArray();
-            $buildings = $audit->building_inspections->pluck('building_id','building_name','address')->toArray(); 
+            $buildingIds = $audit->building_inspections->select('building_id')->toArray();
+            $buildings = $audit->building_inspections->select('building_id','building_name','address')->toArray(); 
             if($this->confirm('Would you like to see a list of the buildings?')){
                      
 
@@ -102,7 +102,7 @@ class RemoveBuildingCache extends Command
                             Finding::where('audit_id',$audit->id)->whereIn('unit_id',$units)->delete();
 
                             $this->line('Building Removed From Audit.'.PHP_EOL);
-                            $buildings = $audit->building_inspections->pluck('building_id','building_name','address')->toArray();
+                            $buildings = $audit->building_inspections->select('building_id','building_name','address')->toArray();
                         }
 
                     } else {
