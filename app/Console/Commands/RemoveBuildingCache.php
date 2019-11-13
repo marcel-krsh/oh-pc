@@ -10,6 +10,7 @@ use App\Models\AmenityInspection;
 use App\Models\UnitInspection;
 use App\Models\CachedBuilding;
 use App\Models\CachedUnit;
+use App\Models\Finding;
 
 class RemoveBuildingCache extends Command
 {
