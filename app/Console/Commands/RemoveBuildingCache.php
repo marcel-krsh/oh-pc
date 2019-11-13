@@ -66,7 +66,7 @@ class RemoveBuildingCache extends Command
     {
         $audit = null;
         $stop = 0;
-        $audit = $this->getAudit;
+        $audit = $this->getAudit();
 
         if($audit){
             $buildingIds = $audit->building_inspections->pluck('building_id')->toArray();
