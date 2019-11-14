@@ -191,7 +191,7 @@ session(['old_communication_modal' => $random]);
         </div>
         <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
         <div class="uk-width-1-3">&nbsp;</div>
-        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="dynamicModalClose();"><i class="a-circle-cross"></i> CANCEL</a></div>
+        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="dynamicModalCommunicationClose();"><i class="a-circle-cross"></i> CANCEL</a></div>
         <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="submitNewDraftCommunication()"><i class="a-paper-plane"></i> SEND</a>
         </div>
       </div>
@@ -238,7 +238,7 @@ session(['old_communication_modal' => $random]);
     		UIkit.modal.alert('You must select a recipient.',{stack: true});
     	}
     	if(no_alert){
-    		$.post('{{ URL::route("communication.draft-save") }}', {
+    		$.post('{{ URL::route("communication.draft-save", $draft->id) }}', {
     			'inputs' : form.serialize(),
     			'draft_id' : "{{ $draft->id }}",
     			'_token' : '{{ csrf_token() }}'
@@ -246,9 +246,7 @@ session(['old_communication_modal' => $random]);
     			if(data!=1){
     				UIkit.modal.alert(data,{stack: true});
     			} else {
-    				@if(!$project || Auth::user()->cannot('access_auditor'))
-    				$('#detail-tab-2').trigger('click');
-    				@endIf
+    				$('#user-draft-messages').trigger('click');
     				UIkit.modal.alert('Your message has been saved.',{stack: true});
     			}
     		} );
@@ -310,7 +308,7 @@ session(['old_communication_modal' => $random]);
   	}
 
   	function dynamicModalCommunicationClose() {
-  		UIkit.modal('#dynamic-modal-communications').hide();
+  		UIkit.modal('#dynamic-modal').hide();
   	}
   </script>
   <script>

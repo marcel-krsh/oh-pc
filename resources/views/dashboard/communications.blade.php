@@ -26,7 +26,7 @@
 				<button id="user-comm-read-toggle" class="uk-button-large" onclick="toggleReadMessages(this);" aria-checked="false" uk-tooltip="pos:top-left;title:SHOW / HIDE READ MESSAGES">
 					<i class="a-star"></i>
 				</button>
-				<button class="uk-button-large @if(session('communication_draft'))uk-button-success @else uk-button-default @endif" onclick="showDraftMessages();" aria-checked="false" uk-tooltip="pos:top-left;title:View draft messages">
+				<button id="user-draft-messages" class="uk-button-large @if(session('communication_draft'))uk-button-success @else uk-button-default @endif" onclick="showDraftMessages();" aria-checked="false" uk-tooltip="pos:top-left;title:View draft messages">
 					<i class="a-file-pencil-2"></i>
 				</button>
 				<button class="uk-button-large @if(session('communication_sent'))uk-button-default @else uk-button-success @endif" onclick="switchInbox();" aria-checked="false" uk-tooltip="pos:top-left;title:VIEW INBOX">

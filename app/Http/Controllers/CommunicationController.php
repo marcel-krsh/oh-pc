@@ -21,7 +21,9 @@ use App\Models\SystemSetting;
 use App\Models\User;
 use Auth;
 //use App\LogConverter;
+use Carbon\Carbon;
 use Config;
+use DB;
 use Illuminate\Http\Request;
 use Session;
 use Storage;
@@ -258,7 +260,7 @@ class CommunicationController extends Controller
   {
     if ($save_draft == 1) {
       $draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
-    } elseif($save_draft == 2) {
+    } elseif ($save_draft == 2) {
       $draft = CommunicationDraft::find($draft_id);
     } else {
       $draft = null;
@@ -464,8 +466,8 @@ class CommunicationController extends Controller
       //dd('values before modal',$finding,$findings);
       if ($save_draft == 1) {
         return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
-      } elseif($save_draft == 2) {
-      	return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+      } elseif ($save_draft == 2) {
+        return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
       }
       return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
     } else {
@@ -521,8 +523,8 @@ class CommunicationController extends Controller
       //dd('Values to modal',$finding,$findings);
       if ($save_draft == 1) {
         return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
-      } elseif($save_draft == 2) {
-      	return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+      } elseif ($save_draft == 2) {
+        return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
       }
       return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft'));
     }
@@ -1586,24 +1588,74 @@ class CommunicationController extends Controller
     }
   }
 
-  public function openDraftMessage($draft_id) {
-  	$draft = CommunicationDraft::with('project', 'audit')->find($draft_id);
-  	if($draft) {
-  		return $this->newCommunicationEntry($draft->project_id, $draft->audit_id, $draft->report_id, $draft->finding_id, $draft->finding_ids, 2, $draft_id);
+  public function openDraftMessage($draft_id)
+  {
+    $draft = CommunicationDraft::with('project', 'audit')->find($draft_id);
+    if ($draft) {
+      return $this->newCommunicationEntry($draft->project_id, $draft->audit_id, $draft->report_id, $draft->finding_id, $draft->finding_ids, 2, $draft_id);
 
-	    $current_user    = Auth::user();
-	    return view('dashboard.communications-drafts', compact('draft'));
-  	} else {
-  		return 'No message was found with the information provided, please contact admin';
-  	}
+      $current_user = Auth::user();
+      return view('dashboard.communications-drafts', compact('draft'));
+    } else {
+      return 'No message was found with the information provided, please contact admin';
+    }
   }
 
   public function saveDrfatToCommunication($draft_id, Request $request)
   {
-  	if($draft_id) {
-	  	$draft = CommunicationDraft::with('project', 'audit')->find($draft_id);
-  	}
-  	return 1;
+    $draft = CommunicationDraft::find($draft_id);
+    if ($draft) {
+      try {
+        DB::beginTransaction();
+        $forminputs = $request->get('inputs');
+        parse_str($forminputs, $forminputs);
+
+        $message = new Communication([
+          'owner_id'    => $draft->owner_id,
+          'audit_id'    => $draft->audit_id,
+          'project_id'  => $draft->project_id,
+          'message'     => $forminputs['messageBody'],
+          'subject'     => $forminputs['subject'],
+          'finding_ids' => $draft->finding_ids,
+        ]);
+        $message->save();
+        $documents = $draft->getSelectedDocuments();
+
+        foreach ($documents as $key => $draft_doc) {
+          $document                   = new CommunicationDocument;
+          $document->communication_id = $message->id;
+          $document->document_id      = $draft_doc->id;
+          $document->created_at       = Carbon::now();
+          $document->updated_at       = Carbon::now();
+          $document->save();
+        }
+
+        if (isset($forminputs['recipients'])) {
+          $message_recipients_array = $forminputs['recipients'];
+          foreach ($message_recipients_array as $recipient_id) {
+            if ($recipient_id > 0) {
+              $notification_sessions = $this->notificationSessions($forminputs);
+              $recipient             = new CommunicationRecipient([
+                'communication_id' => $message->id,
+                'user_id'          => (int) $recipient_id,
+              ]);
+              $recipient->save();
+            } else {
+              dd('Recipient id failed to pass - value received:' . $recipient_id, $message_recipients_array);
+            }
+          }
+        }
+        $draft->delete();
+        DB::commit();
+        return 1;
+      } catch (\Exception $e) {
+        DB::rollBack();
+        return 0;
+      }
+
+      $draft = CommunicationDraft::with('project', 'audit')->find($draft_id);
+    }
+    return 1;
   }
 
   public function messageNotification($user_id, $model_id, Request $request)
@@ -1728,7 +1780,7 @@ class CommunicationController extends Controller
       $audit             = $report->audit_id;
       $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
         'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {

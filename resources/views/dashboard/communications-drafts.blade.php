@@ -26,7 +26,7 @@
 				<button id="user-comm-read-toggle" class="uk-button-large" onclick="toggleReadMessages(this);" aria-checked="false" uk-tooltip="pos:top-left;title:SHOW / HIDE READ MESSAGES">
 					<i class="a-star"></i>
 				</button>
-				<button class="uk-button-large uk-button-success" onclick="showDraftMessages();" aria-checked="false" uk-tooltip="pos:top-left;title:View draft messages">
+				<button id="user-draft-messages" class="uk-button-large uk-button-success" onclick="showDraftMessages();" aria-checked="false" uk-tooltip="pos:top-left;title:View draft messages">
 					<i class="a-file-pencil-2"></i>
 				</button>
 				<button class="uk-button-large uk-button-default " onclick="switchInbox();" aria-checked="false" uk-tooltip="pos:top-left;title:VIEW INBOX">
@@ -35,7 +35,7 @@
 				<button class="uk-button-large uk-button-default" onclick="switchListView();" aria-checked="false" uk-tooltip="pos:top-left;title:SWITCH CONVERSATOIN VIEW/LIST VIEW">
 					<i class="a-file-hierarchy"></i>
 				</button>
-				<button class="uk-button-large @if(session('communication_sent'))uk-button-success @else uk-button-default @endif  uk-margin-right"  onclick="switchSentMessages();" aria-checked="false" uk-tooltip="pos:top-left;title:View sent messages">
+				<button class="uk-button-large uk-button-default  uk-margin-right"  onclick="switchSentMessages();" aria-checked="false" uk-tooltip="pos:top-left;title:View sent messages">
 					<i class="a-paper-plane"></i>
 				</button>
 			</div>
@@ -50,13 +50,13 @@
 				</button>
 			</div>
 		</div>
-		</div>
 	</div>
+</div>
 
-	@if(count($messages))
-	<div uk-grid class="uk-margin-top uk-visible@m">
-		<div class="uk-width-1-1">
-			<div uk-grid>
+@if(count($messages))
+<div uk-grid class="uk-margin-top uk-visible@m">
+	<div class="uk-width-1-1">
+		<div uk-grid>
 			{{-- <div class=" uk-width-1-5@m uk-width-1-1@s">
 				<div class="uk-margin-small-left"><small><strong>RECIPIENTS</strong></small></div>
 			</div> --}}
@@ -104,15 +104,15 @@
 			</div>
 
 			{{-- report --}}
-				<div class="uk-width-1-5@s communication-type-and-who uk-text-right " >
-					<div class="uk-margin-right">
-						@if(!is_null($message->report_id))
-							<small><a target="report-{{ $message->report_id }}" href="{{ url('report/' . $message->report_id) }}"><i class="a-file-chart-3"></i> #{{ $message->report_id }}</a></small>
-						@else
-							NA
-						@endif
-					</div>
+			<div class="uk-width-1-5@s communication-type-and-who uk-text-right " >
+				<div class="uk-margin-right">
+					@if(!is_null($message->report_id))
+					<small><a target="report-{{ $message->report_id }}" href="{{ url('report/' . $message->report_id) }}"><i class="a-file-chart-3"></i> #{{ $message->report_id }}</a></small>
+					@else
+					NA
+					@endif
 				</div>
+			</div>
 
 			{{-- Documents --}}
 			<div class="uk-width-1-5@m communication-item-excerpt " onclick="dynamicModalLoad('communication/open-draft/{{ $message->id }}'); " >
@@ -127,94 +127,99 @@
 					</div>
 				</div>
 				@endif
-				</div>
-
 			</div>
+
 		</div>
-
-		@endforeach
-		@endif
-	</div>
-	<div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
-		<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
 	</div>
 
-	<script>
+	@endforeach
 
-		function switchInbox(){
-			var trigger = 'communication_inbox';
-			$.get( "/communication/session/"+trigger, function(data) {
-				if(data[0]!='1'){
-					UIkit.modal.alert(data);
-				} else {
-					$('#detail-tab-2').trigger('click');
-				}
-			});
-		}
+	@else
+	<div uk-grid class="communication-summary ">
+		<strong>No drafts found</strong>
+	</div>
+	@endif
+</div>
+<div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
+	<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
+</div>
 
-		function switchSentMessages(){
-			var trigger = 'communication_sent';
-			$.get( "/communication/session/"+trigger, function(data) {
-				if(data[0]!='1'){
-					UIkit.modal.alert(data);
-				} else {
-					$('#detail-tab-2').trigger('click');
-				}
-			});
-		}
+<script>
 
-		function switchListView(){
-			var trigger = 'communication_list';
-			$.get( "/communication/session/"+trigger, function(data) {
-				if(data[0]!='1'){
-					UIkit.modal.alert(data);
-				} else {
-					$('#detail-tab-2').trigger('click');
-				}
-			});
-		}
-
-
-		function filterElement(filterVal, filter_element){
-			if (filterVal === 'all') {
-				$(filter_element).show();
+	function switchInbox(){
+		var trigger = 'communication_inbox';
+		$.get( "/communication/session/"+trigger, function(data) {
+			if(data[0]!='1'){
+				UIkit.modal.alert(data);
+			} else {
+				$('#detail-tab-2').trigger('click');
 			}
-			else {
-				$(filter_element).hide().filter('.' + filterVal).show();
+		});
+	}
+
+	function switchSentMessages(){
+		var trigger = 'communication_sent';
+		$.get( "/communication/session/"+trigger, function(data) {
+			if(data[0]!='1'){
+				UIkit.modal.alert(data);
+			} else {
+				$('#detail-tab-2').trigger('click');
 			}
-			UIkit.update(event = 'update');
-		}
+		});
+	}
 
-		function showDraftMessages(){
-			loadTab("{{ URL::route('communications.show-draft-messages') }}", '2','','','',1);
-		}
-
-
-		function closeOpenMessage(){
-			$('.communication-list-item').removeClass('communication-open');
-			$('.communication-details').addClass('uk-hidden');
-			$('.communication-summary').removeClass('uk-hidden');
-		}
-
-		function openMessage(communicationId){
-			closeOpenMessage();
-			$("#communication-"+communicationId).addClass('communication-open');
-			$("#communication-"+communicationId+"-details").removeClass('uk-hidden');
-			$("#communication-"+communicationId+"-summary").addClass('uk-hidden');
-		}
-
-		function toggleReadMessages(target){
-			console.log('Toggling read messages on/off');
-			if(window.user_comms_read == 1){
-				window.user_comms_read = 0;
-				$(target).removeClass('uk-button-success');
-				$('.user_comms_read').slideDown();
-			}else{
-				window.user_comms_read = 1;
-				$(target).addClass('uk-button-success');
-				$('.user_comms_read').slideUp();
+	function switchListView(){
+		var trigger = 'communication_list';
+		$.get( "/communication/session/"+trigger, function(data) {
+			if(data[0]!='1'){
+				UIkit.modal.alert(data);
+			} else {
+				$('#detail-tab-2').trigger('click');
 			}
+		});
+	}
+
+
+	function filterElement(filterVal, filter_element){
+		if (filterVal === 'all') {
+			$(filter_element).show();
 		}
+		else {
+			$(filter_element).hide().filter('.' + filterVal).show();
+		}
+		UIkit.update(event = 'update');
+	}
+
+	function showDraftMessages(){
+		loadTab("{{ URL::route('communications.show-draft-messages') }}", '2','','','',1);
+	}
+
+
+	function closeOpenMessage(){
+		$('.communication-list-item').removeClass('communication-open');
+		$('.communication-details').addClass('uk-hidden');
+		$('.communication-summary').removeClass('uk-hidden');
+	}
+
+	function openMessage(communicationId){
+		closeOpenMessage();
+		$("#communication-"+communicationId).addClass('communication-open');
+		$("#communication-"+communicationId+"-details").removeClass('uk-hidden');
+		$("#communication-"+communicationId+"-summary").addClass('uk-hidden');
+	}
+
+	function toggleReadMessages(target){
+		console.log('Toggling read messages on/off');
+		if(window.user_comms_read == 1){
+			window.user_comms_read = 0;
+			$(target).removeClass('uk-button-success');
+			$('.user_comms_read').slideDown();
+		}else{
+			window.user_comms_read = 1;
+			$(target).addClass('uk-button-success');
+			$('.user_comms_read').slideUp();
+		}
+	}
 	 // process search
 	 $(document).ready(function() {
 	 	$('.filter-attachments-button').click(function () {
