@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ config('app.name', 'Laravel') }}</title>
+
+    <!-- Styles -->
+    <link href="/css/app.css{{ asset_version() }}" rel="stylesheet">
+
+    <!-- resources/views/layouts/app.blade.php -->
+    <style>
+      .chat {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .chat li {
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px dotted #B3A9A9;
+      }
+
+      .chat li .chat-body p {
+        margin: 0;
+        color: #777777;
+      }
+
+      .panel-body {
+        overflow-y: scroll;
+        height: 350px;
+      }
+
+      ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        background-color: #F5F5F5;
+      }
+
+      ::-webkit-scrollbar {
+        width: 12px;
+        background-color: #F5F5F5;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #555;
+      }
+    </style>
+
+    <!-- Scripts -->
+    <script>
+        window.Laravel = <?php echo json_encode([
+  'csrfToken' => csrf_token(),
+]); ?>
+    </script>
+    <script src="/js/app.js{{ asset_version() }}"></script>
+</head>
+<body>
+    <div id="ohfa-universal-header"><div id="apcsv-ul-bar">  <div id="apcsv-logo"><img src="https://devco.ohiohome.org/AuthorityOnlineALT/Unified/devco_logo_reversed.png" alt="Site Logo"></div>  <div id="apcsv-list-left"></div>  <div id="apcsv-avatar" title="AmeliaAtchinson (OSM Test)" onclick="openUserPreferences();">{{Auth::user()->initials()}}</div>  <div id="apcsv-menu-icon" class="hvr-grow"><a id="apcsv-toggle" class="pcsv-toggle" onclick="return false;" href="#apcsv-menu-items">APPS</a>    <div id="apcsv-menu-items" class="hidden">      <div class="apcsv-menu-item"> <a href="https://devco.ohiohome.org/AuthorityOnlineALT/">DEV|CO Compliance</a></div>      <div class="apcsv-menu-item"> <a href="https://pcinspectdev.ohiohome.org/">DEV|CO Inspection</a></div>    </div>  </div>  <div id="apcsv-list-right"></div></div></div>
+    <div id="app">
+        <nav class="navbar navbar-default navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <!-- Collapsed Hamburger -->
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
+                        <span class="sr-only">Toggle Navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                    <!-- Branding Image -->
+                    <a class="navbar-brand" href="{{ url('/') }}">
+                        {{ config('app.name', 'Allita Blight Management') }}
+                    </a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                    <!-- Left Side Of Navbar -->
+                    <ul class="nav navbar-nav">
+                        &nbsp;
+                    </ul>
+
+                    <!-- Right Side Of Navbar -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <!-- Authentication Links -->
+                        @if (Auth::guest())
+                            <li><a href="{{ url('/login') }}">Login</a></li>
+                            <li><a href="{{ url('/register') }}">Register</a></li>
+                        @else
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                </a>
+
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a href="{{ url('/logout') }}"
+                                            onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                            Logout
+                                        </a>
+
+                                        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+                                            {{ csrf_field() }}
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        @yield('content')
+    </div>
+
+    <!-- Scripts -->
+
+</body>
+</html>

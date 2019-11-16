@@ -1,0 +1,62 @@
+[{
+	"historyId":"1",
+	"staffId":"0",
+	"staffName":"System",
+	"staffInitials":"<i class=\"uk-icon-server\"></i>",
+	"staffBadgeColor":"black",
+	"dateTimeOfHistory":"6/25/2016  <br class='print-only' />12:33 PM",
+	"historyContent":"<span class='history-type'>FILE: Updated File Record:</span><br />Updated field <strong>Tier1</strong> field to True"
+	
+},
+{
+	"historyId":"2",
+	"staffId":"123",
+	"staffName":"Holly Swisher",
+	"staffInitials":"HS",
+	"staffBadgeColor":"pink",
+	"dateTimeOfHistory":"6/24/2016  <br class='print-only' />3:43 PM",
+	"historyContent":"<span class='history-type'>USER: User/View Log:</span><br /> Opened file."
+	
+},
+{
+	"historyId":"3",
+	"staffId":"123",
+	"staffName":"Holly Swisher",
+	"staffInitials":"HS",
+	"staffBadgeColor":"pink",
+	"dateTimeOfHistory":"6/23/2016 <br class='print-only' />1:05 PM",
+	"userId":"1234",
+	"userName":"John Homeowner",
+	
+	"historyContent":"<span class='history-type'>DOCUMENTS: Created Upload Record With Values:</span><br /><strong>FileId:</strong> '123456',<br /> <strong>CategoryId:</strong> '12',<br /> <strong>Category:</strong> 'Primary Job Paystub 1',<br /> <strong>ForApplicantId:</strong> '123',<br /> <strong>ForAppplicantName:</strong> 'John Homeowner',<br /> <strong>UploadDate:</strong> '09/10/2016 13:21:33',<br /> <strong>FileUrlReference:</strong> 'https://savethedreamohio.org/file/1234568901',<br /> <strong>FileLocation:</strong> 'WebServer'"	
+},
+{
+	"historyId":"4",
+	"staffId":"789",
+	"staffName":"Eric Corthell",
+	"staffInitials":"EC",
+	"staffBadgeColor":"green",
+	"dateTimeOfHistory":"6/22/2016  <br class='print-only' />6:33 AM",
+	"historyContent":"<span class='history-type'>CDF: Created CDF Record With Values:</span><br /><strong>FileId:</strong> '123456',<br /> <strong>TypeId:</strong> 'B',<br /> <strong>ServicerId:</strong> '12345',<br /> <strong>CDFColumn1:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn2:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn3:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn4:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn5:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn6:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn7:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn8:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn9:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn10:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn11:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn12:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn13:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn14:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn15:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn16:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn17:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn18:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn19:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn20:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn21:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn22:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn23:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn24:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn25:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn26:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn27:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn28:</strong> 'Lorem Ipsum',<br /> <strong>CDFColumn29:</strong> 'Lorem Ipsum' "	
+},
+{
+	"historyId":"5",
+	"staffId":"123",
+	"staffName":"Holly Swisher",
+	"staffInitials":"HS",
+	"staffBadgeColor":"pink",
+	"dateTimeOfHistory":"6/21/2016  <br class='print-only' />12:33 PM",
+	"historyContent":"<span class='history-type'>FILE: Updated Applicant Record:</span><br />Updated field <strong>Applicant1FirstName</strong> from 'John' to 'Brian'<br /> Updated field <strong>Applicant 1 Last Name</strong> from 'Doe' to 'Greenwood'<br /> Updated field <strong>Applicant1SSN</strong> from <a uk-tooltip=\"Sorry, I cannot display any SSN information in the history log.\">XXX-XX-XXXX</a> to <a uk-tooltip=\"Sorry, I cannot display any SSN information in the history log.\">XXX-XX-XXXX</a> "	
+},
+
+{
+	"historyId":"6",
+	"staffId":"123",
+	"staffName":"Andi Clark",
+	"staffInitials":"AC",
+	"staffBadgeColor":"blue",
+	"dateTimeOfHistory":"6/20/2016  <br class='print-only' />12:33 PM",
+	"historyContent":"<span class='history-type'>NOTE: Created Note Record:</span><br /><strong>NoteDate</strong> 09/30/16 15:33:02<br /><strong>FileId:</strong> '123456'<br /><strong>Note:</strong>  'Untiumque nobis andam volor a culpari busdandae. Nit inti aut aut quideratquos eveligniatem fugiatem hicipicipsam et hiciur? Nat voluptat eat. Atente eos volo tecabor mil int volor rest, officiae re nihicid essum, sinvelis sedi nulpa porporecto odia sim verspid magnit eture voluptam dis rectio tem es ullest occum iur am es autem. Ut volori dellor min earum dolorit aectem haristiuntur molupide nonsed minus que volut et aliqui corunt acerferibus verernatem quia veniatiati restem vollania aut aut labo. Nemo beruptia enieni volorum quaeptas id ma aut evenimaione veriantes doloris sam sit vendellorro qui quam simaion nosandisqui con eatempo rporepero enditio inciis aut pro occuptatur? Harum ut dem fugitia delloris vellorum que nem re nos di quide minus qui dolum, sitat ut am, asi aditae excerepudis eum voluptae et quatatus endipsus doluptatium etur, el incto te quis dolores eum exerio cus mod quides experro vent excesti dolore nobit, quis doluptur aut velis molutae. Nequibusam faccum sitaquis quat lit el incipit exero bera verum imagnam facesto core sent offictenis aut ilique nobis everiae et, aut eicabo. Ti autet accusanda quam quae lam, eaquide lesecto tatureiusam conecto et aut dolupta tusam.'"	
+}
+
+]

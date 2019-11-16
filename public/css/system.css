@@ -1,0 +1,1382 @@
+/* CSS Document */
+/* PACE - Page Loader CSS */
+body > :not(.pace),body:before,body:after {
+  -webkit-transition:opacity .2s ease-in-out;
+  -moz-transition:opacity .2s ease-in-out;
+  -o-transition:opacity .2s ease-in-out;
+  -ms-transition:opacity .2s ease-in-out;
+  transition:opacity .2s ease-in-out
+}
+
+body:not(.pace-done) > :not(.pace),body:not(.pace-done):before,body:not(.pace-done):after {
+  opacity:0;
+}
+.g-recaptcha {
+    display: inline-block;
+    margin: 34px;
+}
+
+.pace {
+  -webkit-pointer-events: none;
+  pointer-events: none;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+
+  z-index: 2000;
+  position: fixed;
+  margin: auto;
+  top: 12px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 200px;
+  height: 50px;
+  overflow: hidden;
+}
+
+.pace .pace-progress {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding;
+  background-clip: padding-box;
+
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+
+  display: block;
+  position: absolute;
+  right: 100%;
+  margin-right: -7px;
+  width: 93%;
+  top: 7px;
+  height: 14px;
+  font-size: 15px;
+  background: #fff;
+  color: #fff;
+  line-height: 60px;
+  font-weight: bold;
+  font-family: Helvetica, Arial, "Lucida Grande", sans-serif;
+
+  -webkit-box-shadow: 120px 0 rgba(0,0,0,0), 240px 0 rgba(0,0,0,0);
+  -ms-box-shadow: 120px 0 rgba(0,0,0,0), 240px 0 rgba(0,0,0,0);
+  box-shadow: 120px 0 rgba(0,0,0,0), 240px 0 rgba(0,0,0,0);
+}
+
+.pace .pace-progress:after {
+  content: attr(data-progress-text);
+  display: inline-block;
+  position: fixed;
+  width: 45px;
+  text-align: center;
+  right: 0;
+  padding-right: 16px;
+  top: 4px;
+}
+
+.pace .pace-progress[data-progress-text="0%"]:after { right: -200px }
+.pace .pace-progress[data-progress-text="1%"]:after { right: -198.14px }
+.pace .pace-progress[data-progress-text="2%"]:after { right: -196.28px }
+.pace .pace-progress[data-progress-text="3%"]:after { right: -194.42px }
+.pace .pace-progress[data-progress-text="4%"]:after { right: -192.56px }
+.pace .pace-progress[data-progress-text="5%"]:after { right: -190.7px }
+.pace .pace-progress[data-progress-text="6%"]:after { right: -188.84px }
+.pace .pace-progress[data-progress-text="7%"]:after { right: -186.98px }
+.pace .pace-progress[data-progress-text="8%"]:after { right: -185.12px }
+.pace .pace-progress[data-progress-text="9%"]:after { right: -183.26px }
+.pace .pace-progress[data-progress-text="10%"]:after { right: -181.4px }
+.pace .pace-progress[data-progress-text="11%"]:after { right: -179.54px }
+.pace .pace-progress[data-progress-text="12%"]:after { right: -177.68px }
+.pace .pace-progress[data-progress-text="13%"]:after { right: -175.82px }
+.pace .pace-progress[data-progress-text="14%"]:after { right: -173.96px }
+.pace .pace-progress[data-progress-text="15%"]:after { right: -172.1px }
+.pace .pace-progress[data-progress-text="16%"]:after { right: -170.24px }
+.pace .pace-progress[data-progress-text="17%"]:after { right: -168.38px }
+.pace .pace-progress[data-progress-text="18%"]:after { right: -166.52px }
+.pace .pace-progress[data-progress-text="19%"]:after { right: -164.66px }
+.pace .pace-progress[data-progress-text="20%"]:after { right: -162.8px }
+.pace .pace-progress[data-progress-text="21%"]:after { right: -160.94px }
+.pace .pace-progress[data-progress-text="22%"]:after { right: -159.08px }
+.pace .pace-progress[data-progress-text="23%"]:after { right: -157.22px }
+.pace .pace-progress[data-progress-text="24%"]:after { right: -155.36px }
+.pace .pace-progress[data-progress-text="25%"]:after { right: -153.5px }
+.pace .pace-progress[data-progress-text="26%"]:after { right: -151.64px }
+.pace .pace-progress[data-progress-text="27%"]:after { right: -149.78px }
+.pace .pace-progress[data-progress-text="28%"]:after { right: -147.92px }
+.pace .pace-progress[data-progress-text="29%"]:after { right: -146.06px }
+.pace .pace-progress[data-progress-text="30%"]:after { right: -144.2px }
+.pace .pace-progress[data-progress-text="31%"]:after { right: -142.34px }
+.pace .pace-progress[data-progress-text="32%"]:after { right: -140.48px }
+.pace .pace-progress[data-progress-text="33%"]:after { right: -138.62px }
+.pace .pace-progress[data-progress-text="34%"]:after { right: -136.76px }
+.pace .pace-progress[data-progress-text="35%"]:after { right: -134.9px }
+.pace .pace-progress[data-progress-text="36%"]:after { right: -133.04px }
+.pace .pace-progress[data-progress-text="37%"]:after { right: -131.18px }
+.pace .pace-progress[data-progress-text="38%"]:after { right: -129.32px }
+.pace .pace-progress[data-progress-text="39%"]:after { right: -127.46px }
+.pace .pace-progress[data-progress-text="40%"]:after { right: -125.6px }
+.pace .pace-progress[data-progress-text="41%"]:after { right: -123.74px }
+.pace .pace-progress[data-progress-text="42%"]:after { right: -121.88px }
+.pace .pace-progress[data-progress-text="43%"]:after { right: -120.02px }
+.pace .pace-progress[data-progress-text="44%"]:after { right: -118.16px }
+.pace .pace-progress[data-progress-text="45%"]:after { right: -116.3px }
+.pace .pace-progress[data-progress-text="46%"]:after { right: -114.44px }
+.pace .pace-progress[data-progress-text="47%"]:after { right: -112.58px }
+.pace .pace-progress[data-progress-text="48%"]:after { right: -110.72px }
+.pace .pace-progress[data-progress-text="49%"]:after { right: -108.86px }
+.pace .pace-progress[data-progress-text="50%"]:after { right: -107px }
+.pace .pace-progress[data-progress-text="51%"]:after { right: -105.14px }
+.pace .pace-progress[data-progress-text="52%"]:after { right: -103.28px }
+.pace .pace-progress[data-progress-text="53%"]:after { right: -101.42px }
+.pace .pace-progress[data-progress-text="54%"]:after { right: -99.56px }
+.pace .pace-progress[data-progress-text="55%"]:after { right: -97.7px }
+.pace .pace-progress[data-progress-text="56%"]:after { right: -95.84px }
+.pace .pace-progress[data-progress-text="57%"]:after { right: -93.98px }
+.pace .pace-progress[data-progress-text="58%"]:after { right: -92.12px }
+.pace .pace-progress[data-progress-text="59%"]:after { right: -90.26px }
+.pace .pace-progress[data-progress-text="60%"]:after { right: -88.4px }
+.pace .pace-progress[data-progress-text="61%"]:after { right: -86.53999999999999px }
+.pace .pace-progress[data-progress-text="62%"]:after { right: -84.68px }
+.pace .pace-progress[data-progress-text="63%"]:after { right: -82.82px }
+.pace .pace-progress[data-progress-text="64%"]:after { right: -80.96000000000001px }
+.pace .pace-progress[data-progress-text="65%"]:after { right: -79.1px }
+.pace .pace-progress[data-progress-text="66%"]:after { right: -77.24px }
+.pace .pace-progress[data-progress-text="67%"]:after { right: -75.38px }
+.pace .pace-progress[data-progress-text="68%"]:after { right: -73.52px }
+.pace .pace-progress[data-progress-text="69%"]:after { right: -71.66px }
+.pace .pace-progress[data-progress-text="70%"]:after { right: -69.8px }
+.pace .pace-progress[data-progress-text="71%"]:after { right: -67.94px }
+.pace .pace-progress[data-progress-text="72%"]:after { right: -66.08px }
+.pace .pace-progress[data-progress-text="73%"]:after { right: -64.22px }
+.pace .pace-progress[data-progress-text="74%"]:after { right: -62.36px }
+.pace .pace-progress[data-progress-text="75%"]:after { right: -60.5px }
+.pace .pace-progress[data-progress-text="76%"]:after { right: -58.64px }
+.pace .pace-progress[data-progress-text="77%"]:after { right: -56.78px }
+.pace .pace-progress[data-progress-text="78%"]:after { right: -54.92px }
+.pace .pace-progress[data-progress-text="79%"]:after { right: -53.06px }
+.pace .pace-progress[data-progress-text="80%"]:after { right: -51.2px }
+.pace .pace-progress[data-progress-text="81%"]:after { right: -49.34px }
+.pace .pace-progress[data-progress-text="82%"]:after { right: -47.480000000000004px }
+.pace .pace-progress[data-progress-text="83%"]:after { right: -45.62px }
+.pace .pace-progress[data-progress-text="84%"]:after { right: -43.76px }
+.pace .pace-progress[data-progress-text="85%"]:after { right: -41.9px }
+.pace .pace-progress[data-progress-text="86%"]:after { right: -40.04px }
+.pace .pace-progress[data-progress-text="87%"]:after { right: -38.18px }
+.pace .pace-progress[data-progress-text="88%"]:after { right: -36.32px }
+.pace .pace-progress[data-progress-text="89%"]:after { right: -34.46px }
+.pace .pace-progress[data-progress-text="90%"]:after { right: -32.6px }
+.pace .pace-progress[data-progress-text="91%"]:after { right: -30.740000000000002px }
+.pace .pace-progress[data-progress-text="92%"]:after { right: -28.880000000000003px }
+.pace .pace-progress[data-progress-text="93%"]:after { right: -27.02px }
+.pace .pace-progress[data-progress-text="94%"]:after { right: -25.16px }
+.pace .pace-progress[data-progress-text="95%"]:after { right: -23.3px }
+.pace .pace-progress[data-progress-text="96%"]:after { right: -21.439999999999998px }
+.pace .pace-progress[data-progress-text="97%"]:after { right: -19.58px }
+.pace .pace-progress[data-progress-text="98%"]:after { right: -17.72px }
+.pace .pace-progress[data-progress-text="99%"]:after { right: -15.86px }
+.pace .pace-progress[data-progress-text="100%"]:after { right: -14px }
+
+
+.pace .pace-activity {
+  position: absolute;
+  width: 100%;
+  height: 28px;
+  z-index: 2001;
+  box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 7px #5c5d60;
+  border-radius: 10px;
+}
+
+.pace.pace-inactive {
+  display: none;
+}
+/*Normal styles applied in style tag */
+.display-block {
+	display: block !important;
+}
+.color-red {
+	color:red !important;
+}
+.color-gray {
+  color:lightgray !important;
+}
+
+/*file upload styling */
+input[type="file"] {
+    width:1px;
+    height:1px;
+    position: absolute;
+    left: 1px;
+    top: 1px;
+}
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+/*Invoice List page Sorts */
+.invoices-date-arrow-1, .invoices-date-arrow-2, .invoices-date-arrow-3, .invoices-date-arrow-4, .invoices-date-arrow-5, .invoices-date-arrow-6, .invoices-date-arrow-7, .invoices-date-arrow-8, .invoices-date-arrow-9, .invoices-date-arrow-10, .invoices-date-arrow-11, .invoices-date-arrow-12,
+.invoices-invoice-number-arrow-1, .invoices-invoice-number-arrow-2, .invoices-invoice-number-arrow-3, .invoices-invoice-number-arrow-4, .invoices-invoice-number-arrow-5, .invoices-invoice-number-arrow-6, .invoices-invoice-number-arrow-7, .invoices-invoice-number-arrow-8, .invoices-invoice-number-arrow-9, .invoices-invoice-number-arrow-10, .invoices-invoice-number-arrow-11, .invoices-invoice-number-arrow-12,
+.invoices-account-arrow-1, .invoices-account-arrow-2, .invoices-account-arrow-3, .invoices-account-arrow-4, .invoices-account-arrow-5, .invoices-account-arrow-6, .invoices-account-arrow-7, .invoices-account-arrow-8, .invoices-account-arrow-9, .invoices-account-arrow-10, .invoices-account-arrow-11, .invoices-account-arrow-12,
+.invoices-program-arrow-1, .invoices-program-arrow-2, .invoices-program-arrow-3, .invoices-program-arrow-4, .invoices-program-arrow-5, .invoices-program-arrow-6, .invoices-program-arrow-7, .invoices-program-arrow-8, .invoices-program-arrow-9, .invoices-program-arrow-10, .invoices-program-arrow-11, .invoices-program-arrow-12,
+.invoices-entity-arrow-1, .invoices-entity-arrow-2, .invoices-entity-arrow-3, .invoices-entity-arrow-4, .invoices-entity-arrow-5, .invoices-entity-arrow-6, .invoices-entity-arrow-7, .invoices-entity-arrow-8, .invoices-entity-arrow-9, .invoices-entity-arrow-10, .invoices-entity-arrow-11, .invoices-entity-arrow-12,
+.invoices-number-parcels-arrow-1, .invoices-number-parcels-arrow-2, .invoices-number-parcels-arrow-3, .invoices-number-parcels-arrow-4, .invoices-number-parcels-arrow-5, .invoices-number-parcels-arrow-6, .invoices-number-parcels-arrow-7, .invoices-number-parcels-arrow-8, .invoices-number-parcels-arrow-9, .invoices-number-parcels-arrow-10, .invoices-number-parcels-arrow-11, .invoices-number-parcels-arrow-12,
+.invoices-requested-arrow-1, .invoices-requested-arrow-2, .invoices-requested-arrow-3, .invoices-requested-arrow-4, .invoices-requested-arrow-5, .invoices-requested-arrow-6, .invoices-requested-arrow-7, .invoices-requested-arrow-8, .invoices-requested-arrow-9, .invoices-requested-arrow-10, .invoices-requested-arrow-11, .invoices-requested-arrow-12,
+.invoices-approved-arrow-1, .invoices-approved-arrow-2, .invoices-approved-arrow-3, .invoices-approved-arrow-4, .invoices-approved-arrow-5, .invoices-approved-arrow-6, .invoices-approved-arrow-7, .invoices-approved-arrow-8, .invoices-approved-arrow-9, .invoices-approved-arrow-10, .invoices-approved-arrow-11, .invoices-approved-arrow-12,
+.invoices-total-arrow-1, .invoices-total-arrow-2, .invoices-total-arrow-3, .invoices-total-arrow-4, .invoices-total-arrow-5, .invoices-total-arrow-6, .invoices-total-arrow-7, .invoices-total-arrow-8, .invoices-total-arrow-9, .invoices-total-arrow-10, .invoices-total-arrow-11, .invoices-total-arrow-12,
+.invoices-status-arrow-1, .invoices-status-arrow-2, .invoices-status-arrow-3, .invoices-status-arrow-4, .invoices-status-arrow-5, .invoices-status-arrow-6, .invoices-status-arrow-7, .invoices-status-arrow-8, .invoices-status-arrow-9, .invoices-status-arrow-10, .invoices-status-arrow-11, .invoices-status-arrow-12,
+.invoices-paid-arrow-1, .invoices-paid-arrow-2, .invoices-paid-arrow-3, .invoices-paid-arrow-4, .invoices-paid-arrow-5, .invoices-paid-arrow-6, .invoices-paid-arrow-7, .invoices-paid-arrow-8, .invoices-paid-arrow-9, .invoices-paid-arrow-10, .invoices-paid-arrow-11, .invoices-paid-arrow-12 {
+	display: none;
+}
+
+
+
+.invoices-date-arrow-1, .invoices-invoice-number-arrow-2, .invoices-account-arrow-3, .invoices-program-arrow-4, .invoices-entity-arrow-5, .invoices-number-parcels-arrow-6, .invoices-requested-arrow-7, .invoices-approved-arrow-8, .invoices-total-arrow-9, .invoices-status-arrow-11, .invoices-paid-arrow-10 {
+	display: inline-block !important;
+}
+
+/*Request & PO List page Sorts */
+.requests-pos-date-arrow-1, .requests-pos-date-arrow-2, .requests-pos-date-arrow-3, .requests-pos-date-arrow-4, .requests-pos-date-arrow-5, .requests-pos-date-arrow-6, .requests-pos-date-arrow-7, .requests-pos-date-arrow-8, .requests-pos-date-arrow-9, .requests-pos-date-arrow-10, .requests-pos-date-arrow-11, .requests-pos-date-arrow-12,
+.requests-pos-invoice-number-arrow-1, .requests-pos-invoice-number-arrow-2, .requests-pos-invoice-number-arrow-3, .requests-pos-invoice-number-arrow-4, .requests-pos-invoice-number-arrow-5, .requests-pos-invoice-number-arrow-6, .requests-pos-invoice-number-arrow-7, .requests-pos-invoice-number-arrow-8, .requests-pos-invoice-number-arrow-9, .requests-pos-invoice-number-arrow-10, .requests-pos-invoice-number-arrow-11, .requests-pos-invoice-number-arrow-12,
+.requests-pos-account-arrow-1, .requests-pos-account-arrow-2, .requests-pos-account-arrow-3, .requests-pos-account-arrow-4, .requests-pos-account-arrow-5, .requests-pos-account-arrow-6, .requests-pos-account-arrow-7, .requests-pos-account-arrow-8, .requests-pos-account-arrow-9, .requests-pos-account-arrow-10, .requests-pos-account-arrow-11, .requests-pos-account-arrow-12,
+.requests-pos-program-arrow-1, .requests-pos-program-arrow-2, .requests-pos-program-arrow-3, .requests-pos-program-arrow-4, .requests-pos-program-arrow-5, .requests-pos-program-arrow-6, .requests-pos-program-arrow-7, .requests-pos-program-arrow-8, .requests-pos-program-arrow-9, .requests-pos-program-arrow-10, .requests-pos-program-arrow-11, .requests-pos-program-arrow-12,
+.requests-pos-entity-arrow-1, .requests-pos-entity-arrow-2, .requests-pos-entity-arrow-3, .requests-pos-entity-arrow-4, .requests-pos-entity-arrow-5, .requests-pos-entity-arrow-6, .requests-pos-entity-arrow-7, .requests-pos-entity-arrow-8, .requests-pos-entity-arrow-9, .requests-pos-entity-arrow-10, .requests-pos-entity-arrow-11, .requests-pos-entity-arrow-12,
+.requests-pos-number-parcels-arrow-1, .requests-pos-number-parcels-arrow-2, .requests-pos-number-parcels-arrow-3, .requests-pos-number-parcels-arrow-4, .requests-pos-number-parcels-arrow-5, .requests-pos-number-parcels-arrow-6, .requests-pos-number-parcels-arrow-7, .requests-pos-number-parcels-arrow-8, .requests-pos-number-parcels-arrow-9, .requests-pos-number-parcels-arrow-10, .requests-pos-number-parcels-arrow-11, .requests-pos-number-parcels-arrow-12,
+.requests-pos-requested-arrow-1, .requests-pos-requested-arrow-2, .requests-pos-requested-arrow-3, .requests-pos-requested-arrow-4, .requests-pos-requested-arrow-5, .requests-pos-requested-arrow-6, .requests-pos-requested-arrow-7, .requests-pos-requested-arrow-8, .requests-pos-requested-arrow-9, .requests-pos-requested-arrow-10, .requests-pos-requested-arrow-11, .requests-pos-requested-arrow-12,
+.requests-pos-approved-arrow-1, .requests-pos-approved-arrow-2, .requests-pos-approved-arrow-3, .requests-pos-approved-arrow-4, .requests-pos-approved-arrow-5, .requests-pos-approved-arrow-6, .requests-pos-approved-arrow-7, .requests-pos-approved-arrow-8, .requests-pos-approved-arrow-9, .requests-pos-approved-arrow-10, .requests-pos-approved-arrow-11, .requests-pos-approved-arrow-12,
+.requests-pos-total-arrow-1, .requests-pos-total-arrow-2, .requests-pos-total-arrow-3, .requests-pos-total-arrow-4, .requests-pos-total-arrow-5, .requests-pos-total-arrow-6, .requests-pos-total-arrow-7, .requests-pos-total-arrow-8, .requests-pos-total-arrow-9, .requests-pos-total-arrow-10, .requests-pos-total-arrow-11, .requests-pos-total-arrow-12,
+.requests-pos-status-arrow-1, .requests-pos-status-arrow-2, .requests-pos-status-arrow-3, .requests-pos-status-arrow-4, .requests-pos-status-arrow-5, .requests-pos-status-arrow-6, .requests-pos-status-arrow-7, .requests-pos-status-arrow-8, .requests-pos-status-arrow-9, .requests-pos-status-arrow-10, .requests-pos-status-arrow-11, .requests-pos-status-arrow-12,
+.requests-pos-paid-arrow-1, .requests-pos-paid-arrow-2, .requests-pos-paid-arrow-3, .requests-pos-paid-arrow-4, .requests-pos-paid-arrow-5, .requests-pos-paid-arrow-6, .requests-pos-paid-arrow-7, .requests-pos-paid-arrow-8, .requests-pos-paid-arrow-9, .requests-pos-paid-arrow-10, .requests-pos-paid-arrow-11, .requests-pos-paid-arrow-12 {
+	display: none;
+}
+
+
+
+.requests-pos-date-arrow-1, .requests-pos-invoice-number-arrow-2, .requests-pos-account-arrow-3, .requests-pos-program-arrow-4, .requests-pos-entity-arrow-5, .requests-pos-number-parcels-arrow-6, .requests-pos-requested-arrow-7, .requests-pos-approved-arrow-8, .requests-pos-total-arrow-9, .requests-pos-status-arrow-10, .requests-pos-paid-arrow-12 {
+	display: inline-block !important;
+}
+/*TOP STICKY BANNER */
+.stacked-nav-bars {
+	background: none;
+	margin: 0px;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.stacked-nav-bars li {
+	margin-left:0px;
+}
+.attention {
+    -webkit-animation: pulsate 1s ease-out;
+    -webkit-animation-iteration-count: infinite; 
+    opacity: 0.0
+}
+.uk-navbar-nav > li.uk-active > a {
+    background-color: #fafafa;
+    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,fafafa+100 */
+	background: #fafafa; /* Old browsers */
+	background: -moz-linear-gradient(top,  #ffffff 0%, #fafafa 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top,  #ffffff 0%,#fafafa 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,  #ffffff 0%,#fafafa 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#fafafa',GradientType=0 ); /* IE6-9 */
+
+	border-bottom: 1px solid white;
+    margin-top: 3px;
+    position: relative;
+    bottom: -1px;
+}
+.uk-navbar-nav > li > a{
+	margin-top:3px;
+	border-radius: 4px 4px 0 0;
+	}
+@-webkit-keyframes pulsate {
+    0% {opacity: 0.0;}
+    50% {opacity: 1.0;}
+    100% {opacity: 0.0;}
+}
+.menu-toggle {
+    font-size: 24px;
+    font-weight: 100;
+    line-height: 28px;
+    color: white;
+}
+stickynav {
+	width:100%;
+	height:55px;
+	position:fixed;
+	top:0px;
+	z-index:1000;
+	background-color:#005186;
+}
+#logged-in-user-info {
+	font-size: 10px;
+    line-height: 15px;
+    color: white;
+    width: 386px;
+    font-weight: 100;
+    font-kerning: normal;
+    letter-spacing: 1.3px;	
+	margin-top:8px;
+}
+#logged-in-user-badge {
+float: left;
+    height: 40px;
+    width: 40px;
+    font-size: 18px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    background-color: #7A7A7A;
+    color: white;
+    font-weight: 100;
+    line-height: 40px;
+    position: relative;
+    top: -4px;
+    margin-right: 10px;
+}
+.user-badge {
+float: left;
+    height: 25px;
+    width: 25px;
+    font-size: 12px;
+    text-align: center;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    background-color: #7A7A7A;
+    color: white;
+    font-weight: 100;
+    line-height: 25px;
+    margin-right: 3px;
+}
+.user-badge-green {
+	background-color: #56aa80 !important;	
+}
+.user-badge-pink {
+	background-color: #FC00A4 !important;	
+}
+.user-badge-pink-special{
+  background: repeating-linear-gradient(
+      45deg,
+      #606dbc,
+      #606dbc 10px,
+      #465298 10px,
+      #465298 20px
+    );
+}
+.user-badge-red {
+	background-color: #C10003 !important;	
+}
+.user-badge-blue {
+	background-color: #4064BF !important;	
+}
+.user-badge-sky {
+	background-color: #009AC0 !important;	
+}
+.user-badge-purple {
+	background-color: #6A3D98 !important;	
+}
+.user-badge-orange {
+	background-color: #F36900 !important;	
+}
+.user-badge-yellow {
+	background-color: #FFD221 !important;
+	color:#372510 !important;	
+}
+
+.uk-navbar {
+     background: none; 
+    color: #7f7f7f;
+    border:none;
+    border-radius: 0px;
+    border-bottom: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+    border-left: 1px solid #dddddd;
+}
+
+.uk-navbar-nav i.uk-icon-bars, .uk-navbar-nav i.uk-icon-arrow-circle-o-left {
+	margin-right:17px;
+	font-size: 16px;
+}
+
+html {
+	background-color:#5c5d60 !important;	
+}
+a:hover.uk-contrast  {
+	color:#d0fcff;
+	text-decoration: none;
+}
+.uk-link-muted:hover, .uk-link-muted a:hover {
+	text-decoration:none !important;	
+}
+.uk-modal {
+z-index:1050;	
+}
+.uk-offcanvas-bar{
+z-index:1051;	
+}
+.uk-table-middle {
+	opacity:0;
+	/*doing this for the fade in */	
+}
+.dashed-hr {
+	clear: both;
+    margin-top:15px;
+    margin-bottom: 15px;
+    border-top: 1px dashed #ddd;
+    -webkit-margin-after: 0px;
+}
+#main-window {
+	max-width:1450px;
+	min-height:100vh;	
+	background-color:white;
+	-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+	margin-left:auto;
+	margin-right:auto;
+	padding-top:78px;
+	padding-left:15px;
+	padding-right:15px;
+	padding-bottom:40px;
+	margin-bottom:15px;
+}
+#quick-lookup-box {
+	border-radius: 0px;
+	background-color: #005186;
+	border:none;	
+	color:#D8DADD;	
+	width:375px;
+	
+	margin-right:10px;
+
+}
+.quick-lookup-box {
+	margin-top:-10px;
+}
+
+.small-table-text th, .small-table-text td,  {
+	font-size: 10px;
+}
+
+.parcel-options-mobile-header {
+	display: block;
+    background: aliceblue;
+    padding: 10px;
+}
+.uk-subnav>*>a:focus, .uk-subnav>*>a:hover {
+    color: #ddd;
+}
+
+
+@media(max-width: 1366px){
+	#logged-in-user-badge{
+		float: left;
+		height: 30px;
+
+		width: 30px;
+		font-size: 15px;
+		text-align: center;
+		border-radius: 50%;
+		border: 1px solid #fff;
+		background-color: #7A7A7A;
+		color: white;
+		font-weight: 100;
+		line-height: 30px;
+		position: relative;
+		top: 0px;
+		margin-right: 10px;
+	}
+	#logged-in-user-info,#logged-in-user-links{
+		font-size: 14px;
+		line-height: 13px;
+		color: white;
+		width: 386px;
+		font-weight: 200;
+		font-kerning: normal;
+		letter-spacing: 1.1px;
+		 margin-top: 9px; 
+	}
+	#logged-in-user-links{
+		font-size: 10px;
+	}
+	.uk-container{
+		padding: 0px !important;
+	}
+}
+
+#logged-in-user-links .uk-subnav > * {
+  padding-left: 0px;
+  padding-right: 5px;
+  line-height: 18px;
+  margin-top: 10px;
+}
+.uk-container{
+		padding: 0px;
+		max-width: 1500px !important;
+	}
+
+	#login-panel {
+		width:40%;
+	}
+@media (max-width: 1024px){
+	.uk-container{
+		padding: 0px;
+	}
+	#login-panel {
+		width:45%;
+	}
+}
+@media (max-width: 736px) {
+	.uk-navbar {
+     background: none; 
+    color: #7f7f7f;
+    border:none;
+    border-radius: 0px;
+    border-bottom: 1px solid #dddddd;
+    border-right: none;
+    border-left: none;
+}
+	.quick-lookup-box {
+    margin-top: 0px;
+    margin-left:7px;
+}
+	#quick-lookup-box {
+		width:577px;
+	}
+	.uk-container{
+		padding: 0px;
+	}
+	#login-panel {
+		width:70%;
+	}
+	stickynav {
+		height: 38px;
+	}
+	stickynav .menu-toggle {
+		font-size: 16px;
+		padding-left: 3px;
+		margin-right:4px !important;
+
+	}
+	stickynav .uk-width-2-10 {
+		width: 16%;
+	}
+	.allita-nav-bar-margin {
+		margin-top: -1px !important;
+	}
+	#main-window {
+		padding-top: 40px !important;
+		padding-left: 4px;
+		padding-right: 4px;
+	}
+}
+
+@media (max-width: 694px) {
+	#quick-lookup-box {
+		width:460px;
+	}
+	.uk-container{
+		padding: 0px;
+	}
+	#login-panel {
+		width:70%;
+	}
+	.parcel-donut-chart {
+	padding-top: 0px;
+}
+}
+@media (max-width: 667px) {
+	#quick-lookup-box {
+		width:521px;
+	}
+	.uk-container{
+		padding: 0px;
+	}
+	#login-panel {
+		width:70%;
+	}
+	#list-tab-bottom-bar{
+		position: relative !important;
+	    height: 93px !important;
+	    text-align: center !important;
+	}
+	span.uk-align-left.uk-contrast.use-hand-cursor {
+		float: none !important;
+		text-align: center !important;
+		margin-top: 5px;
+	}
+	a.uk-button.uk-button-mini.uk-align-right.uk-margin-right {
+		float: none !important;
+		text-align: center !important;
+	}
+}
+@media (max-width: 639px) {
+	#quick-lookup-box {
+		width:200px;
+	}
+	.uk-container{
+		padding: 0px;
+	}
+	#login-panel {
+		width:70%;
+	}
+}
+@media (max-width: 568px) {
+	
+	#login-panel {
+		width:70%;
+	}
+}
+@media (max-width: 507px) {
+	
+	#login-panel {
+		width:70%;
+	}
+}
+@media (max-width: 504px) {
+	
+	#login-panel {
+		width:70%;
+	}
+}
+@media (max-width: 503px) {
+	
+	#login-panel {
+		width:70%;
+	}
+}
+@media (max-width: 502px) {
+	
+	#login-panel {
+		width:70%;
+	}
+}
+@media (max-width: 501px) {
+	
+	#login-panel {
+		width:70%;
+	}
+}
+@media (max-width: 500px) {
+	
+	#login-panel {
+		width:70%;
+	}
+  #list-tab-content-b .uk-navbar-content:before
+{
+    display: inline;
+}
+#list-tab-content-b .uk-navbar-content a
+{
+    margin-top:0;
+}
+}
+@media (max-width: 499px) {
+	
+	#login-panel {
+		width:70%;
+	}
+}
+@media (max-width: 498px) {
+	
+	#login-panel {
+		width:80%;
+	}
+}
+@media (max-width: 493px) {
+	
+	#login-panel {
+		width:85%;
+	}
+}
+@media (max-width: 414px) {
+	
+	#login-panel {
+		width:85%;
+	}
+	stickynav {
+		height: 38px;
+	}
+	stickynav .menu-toggle {
+		font-size: 16px;
+		padding-left: 3px;
+		margin-right:17px !important;
+
+	}
+	stickynav .uk-width-2-10 {
+		width: 16%;
+	}
+	.allita-nav-bar-margin {
+		margin-top: -1px !important;
+	}
+
+}
+@media (max-width: 412px) {
+	
+	#login-panel {
+		width:85%;
+	}
+	stickynav {
+		height: 38px;
+	}
+	stickynav .menu-toggle {
+		font-size: 16px;
+		padding-left: 3px;
+		margin-right:15px !important;
+
+	}
+	stickynav .uk-width-2-10 {
+		width: 16%;
+	}
+	.allita-nav-bar-margin {
+		margin-top: -1px !important;
+	}
+	
+}
+@media (max-width: 375px) {
+	
+	#login-panel {
+		width:85%;
+	}
+	stickynav {
+		height: 38px;
+	}
+	stickynav .menu-toggle {
+		font-size: 16px;
+		padding-left: 3px;
+		margin-right:15px !important;
+
+	}
+	stickynav .uk-width-2-10 {
+		width: 16%;
+	}
+	.allita-nav-bar-margin {
+		margin-top: -1px !important;
+	}
+	
+}
+@media (max-width: 360px) {
+	
+	#login-panel {
+		width:85%;
+	}
+	stickynav {
+		height: 38px;
+	}
+	stickynav .menu-toggle {
+		font-size: 16px;
+		padding-left: 3px;
+		margin-right:15px !important;
+
+	}
+	stickynav .uk-width-2-10 {
+		width: 16%;
+	}
+	.allita-nav-bar-margin {
+		margin-top: -1px !important;
+	}
+	
+}
+@media (max-width: 320px) {
+	
+	#login-panel {
+		width:85%;
+	}
+	stickynav {
+		height: 38px;
+	}
+	stickynav .menu-toggle {
+		font-size: 16px;
+		padding-left: 4px;
+		margin-right:12px !important;
+
+	}
+	stickynav .uk-width-2-10 {
+		width: 16%;
+	}
+	.allita-nav-bar-margin {
+		margin-top: -1px !important;
+	}
+	
+}
+.dark-button {
+	border-radius: 0px;
+	background-color: #c6c8ca;
+	font-size:12px;
+	line-height: 30px;
+	border:none;	
+	color:#000;	
+	text-shadow: none;
+	margin-right:10px;
+
+}
+.allita-nav-bar-margin {
+margin-top:10px;
+}
+#quick-lookup-box: focus, #quick-lookup-box: active {
+ color:#D8DADD;	
+}
+
+.use-hand-cursor {
+	cursor: pointer;
+}
+.acquisition-aggregate-hovered td{
+	background: rgba(0, 81, 134,.3);
+	color:black;
+}
+.acquisition-advance-aggregate-hovered td{
+  background: rgba(90, 124, 146,.3);
+  color:black;
+}
+.nip-loan-payoff-aggregate-hovered td{
+	background: rgba(178, 145, 47,.3);
+	color:black;
+}
+.nip-loan-payoff-advance-aggregate-hovered td{
+  background: rgba(191, 178, 140,.3);
+  color:black;
+}
+.pre-demo-aggregate-hovered td{
+	background: rgba(77, 77, 77,.3);
+	color:black;
+}
+.pre-demo-advance-aggregate-hovered td{
+  background: rgba(105, 104, 104,.3);
+  color:black;
+}
+.demo-aggregate-hovered td{
+	background: rgba(93, 165, 218,.3);
+	color:black;
+}
+.demo-advance-aggregate-hovered td{
+  background: rgba(173, 199, 218,.3);
+  color:black;
+}
+.greening-advance-aggregate-hovered td{
+	background: rgba(139, 173, 142,.3);
+	color:black;
+}
+.greening-aggregate-hovered td{
+	background: rgba(96, 189, 104,.3);
+	color:black;
+}
+.maintenance-advance-aggregate-hovered td{
+  background: rgba(208, 177, 138,.3);
+  color:black;
+}
+.maintenance-aggregate-hovered td{
+	background: rgba(250, 164, 58,.3);
+	color:black;
+}
+.admin-advance-aggregate-hovered td{
+  background: rgba(234, 154, 167,.3);
+  color:black;
+}
+.admin-aggregate-hovered td{
+	background: rgba(241, 124, 176,.3);
+	color:black;
+}
+.other-advance-aggregate-hovered td{
+  background: rgba(195, 176, 195,.3);
+  color:black;
+}
+.other-aggregate-hovered td{
+	background: rgba(178, 118, 178,.3);
+	color:black;
+}
+#detail-tab-1-content ul li a,#detail-tab-2-content ul li a {
+	
+	/*margin-left:10px;
+	min-width:110px;	
+	text-align:center;
+	margin-top:5px;*/
+}
+.parcel-district-format {
+	border-bottom: 1px dotted rgba(0,0,0,0.6);
+    width: 100%;
+    display: inline-block;
+}
+.parcel-district-format-number {
+	float: right;
+}
+
+#tabs {
+	margin:0px;	
+}
+#parcel-tabs,#dashboard-tabs{
+	margin-top:0px;	
+	background-color:#e6e6e6;
+	padding-top:7px;
+	padding-left:10px;
+	padding-right:10px;
+}
+.parcel-donut-chart {
+	padding-top: 20px;
+}
+#parcel-tabs a,#dashboard-tabs a{
+	color:darkgray;
+	text-align: center;
+}
+.parcel-bottom-bar {
+	height: 50px;
+}
+#top-tabs a {
+	color:#97afa3;
+}
+#top-tabs > li.uk-active > a{
+	background-color:white;
+	color:black;
+}
+#parcel-tabs > li.uk-active > a,#dashboard-tabs > li.uk-active > a{
+	background-color:#white;
+	color:black;
+	-webkit-box-shadow: 0px -4px 8px 0px rgba(0,0,0,0.22);
+	-moz-box-shadow: 0px -4px 8px 0px rgba(0,0,0,0.22);
+	box-shadow: 0px -4px 8px 0px rgba(0,0,0,0.22);
+}
+
+#parcel-tabs,#dashboard-tabs {
+	padding-left:10px;
+}
+li.uk-tab-responsive.uk-active {
+	width: 100% !important;
+}
+.styled-select {
+   overflow: hidden;
+   background: url('/images/select-down-arrow-gray.png') no-repeat right #fff;
+   
+}
+.styled-select select {
+	background: transparent;	
+	width: 100%;
+	
+}
+.styled-select select::-ms-expand {
+    display: none;
+}
+.styled-select select:hover {
+	background: rgba(245,245,245,0.43);	
+}
+.styled-select select:focus {
+	background: rgba(245,251,254,0.43);	
+}
+
+.styled-select-tabbed {
+	overflow: hidden;
+	background: url('/images/select-down-arrow-gray.png') no-repeat right rgba(245, 255, 255, .7);
+	width: 250px;
+	margin-right: 6px;
+	margin-top: 6px;
+	border: none;
+	border-radius: 0px;
+   
+}
+.styled-select-tabbed select {
+	background: transparent;	
+	width: 100%;
+	border-radius:0px;
+	color:#000;
+	height:30px;
+	padding-left:12px;
+}
+.styled-select-tabbed select:hover {
+	background: rgba(245,245,245,0.43);	
+}
+.styled-select-tabbed select:focus {
+	background: rgba(245,251,254,0.43);	
+}
+.uk-modal-content {
+/*background-image:url(../images/apple-touch-icon.png);*/
+background-size: 80px;
+background-repeat:no-repeat;
+padding-left:100px;
+min-height: 80px;	
+}
+/*List Pages */
+.sticky-over {
+	/*background-color:rgba(255,255,255,0.8);*/	
+}
+.tiny-middle-text {
+	font-size:.5rem;
+	line-height:1rem;	
+}
+.filter-box {
+	border: none;
+    background-color: aliceblue;
+    font-size: 12px;
+    color: black;
+    padding-left: 14px;
+    border-radius: 0;
+	height:30px;
+}
+.filter-file {
+	width: 120px;	
+}
+.filter-name {
+	width:213px;	
+}
+.filter-address {
+	width:582px;	
+}
+.filter-date-aging, .filter-date-expire, .filter-icons {
+	height:32px;	
+}
+.filter-date-aging {
+	width:93px;	
+}
+.filter-date-expire {
+	width:58px;	
+}
+.filter-date-aging i, .filter-date-expire i, .filter-icons i{
+	color:#919191;	
+}
+.filter-servicers {
+	padding-left: 0px;
+    width: 39px !important;	
+	
+}
+.filter-servicers select {
+	
+	color:#919191;	
+}
+.filter-box-32 {
+	height:32px;	
+}
+.sort-asc{
+	display:inline-block;
+	width:99%;
+	height:18px;
+	background-image:url(../images/filter-sort-asc.png);
+	background-position:center;
+	background-repeat:no-repeat;	
+}
+.sort-desc{
+	display:inline-block;
+	width:99%;
+	height:18px;
+	background-image:url(../images/filter-sort-desc.png);
+	background-position:center;
+	background-repeat:no-repeat;	
+}
+.sort-neutral{
+	display:inline-block;
+	width:99%;
+	height:18px;
+	background-image:url(../images/filter-sort-neutral.png);
+	background-position:center;
+	background-repeat:no-repeat;	
+}
+#first-name-sort {
+	width:48%;
+	margin-right:2%;	
+}
+#last-name-sort {
+	width:48%;
+}
+#sort-by-city {
+	width:20%;
+	margin-right:1%;	
+}
+#sort-by-street {
+	width:60%;
+	margin-right:1%;	
+}
+#sort-by-zip {
+	width:16%;
+	
+}
+
+#date-aging-range-sort {
+	width:60%;
+	margin-right:1%;	
+}
+#date-aging-days-sort {
+	width:33%;
+}
+#date-expire-sort, #servicer-sort {
+	width:99%;
+	
+}
+
+#info-documents-waiting-sort, #info-file-status-sort, #info-home-owner-replied-sort, #info-confidential-sort {
+	    width: 21%;
+    margin-left: 1.2%;
+}
+
+thead.uk-active {
+	background-color:white;	
+	border-bottom:1px solid #919B9E;
+
+}
+.tab-refresh {
+	color:light-gray;
+	margin-left:30px;
+	margin-right:8px;	
+}
+.tab-refresh: hover {
+	color: darkgray;	
+}
+.date-applied {
+    width: 60px;
+    display: inline-block;
+    margin-left: 18px;		
+}
+.days-aging {
+	width: 20px;
+    display: inline-block;
+    text-align: center;
+}
+.status {
+	display: inline-block;
+    width: 22px;
+    margin-left: 4px;	
+}
+.confidential-off, .confidential-on, .home-ower-reply-off, .home-owner-reply-on, .documents-waiting-on, .documents-waiting-off {
+	width:18px;
+}
+.confidential-off, .home-owner-reply-off, .documents-waiting-off {
+	color:#C0C0C0;	
+}
+.list-item-upload-file {
+	margin-left:10px;
+	
+}
+#list-tab-bottom-bar {
+position:fixed;
+bottom:0;
+left:0;
+height:40px;
+background-color:rgba(0,0,0,0.74);
+width:100%;
+z-index:1000;	
+}
+.editing {
+background-color:#D2E4FC !important;
+color:#00178F !important;
+height:32px !important;
+padding-left:5px;	
+}
+#detail-tab-bottom-bar {
+position:fixed;
+bottom:0;
+left:0;
+height:70px;
+background-color:rgba(0,0,0,0.74);
+width:100%;
+z-index:1000;	
+}
+
+/*Styles used on all tabs */
+a.blue-link {
+	color:#77e0ff;
+	
+}
+
+.field-box {
+	width: 100%;
+    border-radius: 4px;
+    border: 1px solid #B9B9B9;
+    padding: 5px 6px;
+    margin-bottom: 4px;
+}
+.invisible-border {
+	/*keeps spacing consistent */
+	border-color:rgba(0,0,0,0.00) !important;
+}
+.no-border {
+	border:none !important;
+}
+.no-background {
+	background:none !important;
+}
+.auto-width {
+  width: auto !important;
+}
+.blue-shadow {
+  text-shadow: 2px 2px 0 #00a8e6, 5px 3px 0 rgba(0,0,0,0.15);
+}
+.big-blue-shadow {
+  text-shadow: 2px 4px 0 #00a8e6, 10px 9px 0 rgba(0,0,0,0.15)
+}
+.white-shadow {
+      text-shadow: 2px 2px 0 #ffffff, 5px 3px 0 rgba(0,0,0,0.15);
+}
+.big-white-shadow {
+  text-shadow: 2px 4px 0 #ffffff, 10px 9px 0 rgba(0,0,0,0.15)
+}
+.field-box input {
+	background: transparent;	
+	width: 100%;
+	border:none;
+	font-size:13px;
+	color:black;
+	
+}
+.field-box .uk-form-select {
+	border:none;
+	background:none;
+	width:100%;
+	text-align:left;
+	padding-left:6px;
+	line-height:18px;
+	background-image:url(../images/select-down-arrow-gray.png);
+	background-position:right;
+	background-repeat:no-repeat;
+	min-height:20px;
+	max-height:22px;
+	color:black;
+}
+.field-box a, .field-box a:hover {
+	color:darkgray;
+	text-decoration:none;	
+}
+
+.field-box label {
+	font-size:9px;
+	color:darkgray;	
+}
+
+.button-gray {
+	border-radius:0px;
+	background-color:#8A8A8A;
+	font-size:11px;
+	color:white;	
+	width:100%;
+	text-shadow: none;
+	
+}
+.button-white {
+	border-radius:0px;
+	background-color:white;
+	font-size:11px;
+	color:#8A8A8A;	
+	width:100%;
+	text-shadow: none;
+	
+}
+
+.history-divider {
+	width:100%;
+	margin-bottom:20px;
+	margin-top:13px;
+	background-image:url(../images/history-divider.png);
+	background-position:center;
+	background-repeat:no-repeat;
+	height:38px;
+	text-align:center;
+	line-height:43px;
+
+}
+.history-divider a, .history-divider a: hover {
+	color:#00aeef;	
+	text-decoration:none;
+}
+
+input {
+	-webkit-transition: all 0.3s ease;                  
+    -moz-transition: all 0.3s ease;                 
+    -o-transition: all 0.3s ease;   
+    -ms-transition: all 0.3s ease;          
+    transition: all 0.3s ease;
+}
+#parcel-detail-tabs {
+	background: white !important;
+    border-left: 1px #dddddd solid;
+    border-bottom: 1px #dddddd solid;
+    border-right: 1px #dddddd solid;
+    padding-top: 10px;
+    padding-bottom: 22px;
+    border-radius: 0 0 4px 4px;
+    min-height: 300px;
+}
+.uk-progress {
+	background: #9ca6ad;
+}
+.uk-progress {
+    box-sizing: border-box;
+    height: 28px;
+    margin-bottom: 15px;
+    
+    overflow: hidden;
+    line-height: 28px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+    border-radius: 4px;
+}
+.uk-progress-bar {
+	overflow: visible;
+	white-space: nowrap;
+	padding-left:10px;
+	padding-right: 10px;
+	text-align: left;
+}
+.print-only, .only-print, .print-only *, .only-print * {
+  display: none !important;
+}
+
+/*Make sure this is last in the file*/
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+    .print-only, .only-print, .print-only *, .only-print * {
+      display: block !important;
+    }
+	.uk-table-middle {
+	opacity:1;
+	}
+}
+
+/* Added 8/8/16 */
+.uk-dropdown, .uk-dropdown-blank {
+	width:260px;
+}
+
+//hide the sort icons
+.parcel-arrow-1, .address-arrow-2, .program-arrow-6, .hfa-status-13{
+	display: block !important;
+}
+.date-arrow-, .date-arrow-1, .date-arrow-2, .date-arrow-3, .date-arrow-4, .date-arrow-5, .date-arrow-6, .date-arrow-7, .date-arrow-8, .date-arrow-9, .date-arrow-10, .date-arrow-11, .date-arrow-13, .date-arrow-14
+, .parcel-arrow-, .parcel-arrow-2, .parcel-arrow-3, .parcel-arrow-4, .parcel-arrow-5, .parcel-arrow-6, .parcel-arrow-7, .parcel-arrow-8, .parcel-arrow-9, .parcel-arrow-10, .parcel-arrow-11, .parcel-arrow-12, .parcel-arrow-13, .parcel-arrow-14
+, .address-arrow-, .address-arrow-1, .address-arrow-3, .address-arrow-4, .address-arrow-5, .address-arrow-6, .address-arrow-7, .address-arrow-8, .address-arrow-9, .address-arrow-10, .address-arrow-11, .address-arrow-12, .address-arrow-13, .address-arrow-14
+, .program-arrow-, .program-arrow-1, .program-arrow-2, .program-arrow-3, .program-arrow-4, .program-arrow-5, .program-arrow-7, .program-arrow-8, .program-arrow-9, .program-arrow-10, .program-arrow-11, .program-arrow-12, .program-arrow-13, .program-arrow-14
+, .cost-arrow-, .cost-arrow-1, .cost-arrow-2, .cost-arrow-3, .cost-arrow-4, .cost-arrow-5, .cost-arrow-6, .cost-arrow-8, .cost-arrow-9, .cost-arrow-10, .cost-arrow-11, .cost-arrow-12, .cost-arrow-13, .cost-arrow-14
+, .requested-arrow-, .requested-arrow-1, .requested-arrow-2, .requested-arrow-3, .requested-arrow-4, .requested-arrow-5, .requested-arrow-6, .requested-arrow-7, .requested-arrow-9, .requested-arrow-10, .requested-arrow-11, .requested-arrow-12, .requested-arrow-13, .requested-arrow-14
+, .approved-arrow-, .approved-arrow-1, .approved-arrow-2, .approved-arrow-3, .approved-arrow-4, .approved-arrow-5, .approved-arrow-6, .approved-arrow-7, .approved-arrow-8, .approved-arrow-10, .approved-arrow-11, .approved-arrow-12, .approved-arrow-13, .approved-arrow-14
+, .invoiced-arrow-, .invoiced-arrow-1, .invoiced-arrow-2, .invoiced-arrow-3, .invoiced-arrow-4, .invoiced-arrow-5, .invoiced-arrow-6, .invoiced-arrow-7, .invoiced-arrow-8, .invoiced-arrow-9, .invoiced-arrow-11, .invoiced-arrow-12, .invoiced-arrow-13, .invoiced-arrow-14
+, .status-arrow-, .status-arrow-1, .status-arrow-2, .status-arrow-3, .status-arrow-4, .status-arrow-5, .status-arrow-6, .status-arrow-7, .status-arrow-8, .status-arrow-9, .status-arrow-10, .status-arrow-13, .status-arrow-14
+, .hfa-status-arrow-, .hfa-status-arrow-1, .hfa-status-arrow-2, .hfa-status-arrow-3, .hfa-status-arrow-4, .hfa-status-arrow-5, .hfa-status-arrow-6, .hfa-status-arrow-7, .hfa-status-arrow-8, .hfa-status-arrow-9, .hfa-status-arrow-10, .hfa-status-arrow-11, .hfa-status-arrow-12, .hfa-status-arrow-14
+, .target-area-arrow-, .target-area-arrow-1, .target-area-arrow-2, .target-area-arrow-3, .target-area-arrow-4, .target-area-arrow-5, .target-area-arrow-6, .target-area-arrow-7, .target-area-arrow-8, .target-area-arrow-9, .target-area-arrow-10, .target-area-arrow-11, .target-area-arrow-12, .target-area-arrow-13
+
+{
+	display: none !important;
+}
+
+
+
+/* End 8/8/16 addition */

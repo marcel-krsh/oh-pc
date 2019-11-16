@@ -1,0 +1,85 @@
+/* CSS Document */
+.uk-modal-content, .uk-modal-body {
+	background-image: none;
+}
+.uk-modal-content:first-child, .uk-modal-body:first-child {
+	background-image: url(../images/apple-touch-icon.png);
+	padding-top:30px;
+ 	background-position-x: 10px;
+    background-position-y: 10px;
+}
+
+
+
+
+.all-caps {
+	
+	text-transform: uppercase;
+}
+
+.calculation-box {
+	
+	border-left: 1px solid lightgray;
+	border-top:none;
+	border-right:1px solid lightgray;
+	border-radius:12px;
+	border-bottom: none;
+	min-height: 370px;
+	
+}
+.calculation-box > .field-box {
+	width:80%;
+}
+.height-200 {
+	min-height: 200px;
+}
+.hidden-text-field {
+	height: 0px; position: absolute;
+	padding:0px;
+	margin:0px;
+	
+}
+.eval-checklist-box-top {
+	
+	border-top:2px dotted black;
+	border-bottom:2px dotted black;
+}
+
+.eval-checklist-box-bottom {
+	
+	border-bottom:2px dotted black;
+}
+
+.check-list-not-eligible{
+	
+	text-decoration: line-through;
+	color:lightgray;
+}
+.gray-text {
+	color: lightgray;
+}
+.green-text {
+	color: green;
+}
+.red-text {
+	color: #ce0a0a;
+}
+.action-bar {
+	width:100%;
+	margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    top: 18px;
+}
+.action-bar td {
+	padding:0px 5px;
+	}
+	
+.field-box {
+	
+	min-height: 21px;
+}
+
+.dotted-blue-bottom {
+	border-bottom: 1px dotted #11a5c7;
+}

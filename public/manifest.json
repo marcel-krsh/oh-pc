@@ -1,0 +1,12 @@
+{
+	"name": "Allita Program Compliance",
+	"icons": [
+		{
+			"src": "\/devco_favicon_160.png",
+			"sizes": "160x160",
+			"type": "image\/png"
+		}
+	],
+	"theme_color": "#ffffff",
+	"display": "standalone"
+}

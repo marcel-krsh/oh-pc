@@ -1,0 +1,178 @@
+/* CSS Document */
+	.display-FALSE, .display- {
+		display:none;
+	}
+#communication-list, .communication-list {
+	border-bottom: 1px solid #eaeaea;
+	    height: auto !important;
+}
+.no-text-shadow {
+	    text-shadow:none !important;
+}
+.field-box-square{border-radius: 4px;border: 1px solid #B9B9B9;padding: 4px 7px;margin-bottom: 4px;width: 1em;float: left;margin-right: .25em;}
+	.square-fieldbox-label{float: left;margin-top: .65em;}
+	.extra-right-padding{padding-right:8em;}
+	.clear-background, ul.clear-background{background-color:rgba(255,255,255,0)!important;}
+#open-communication-row-1 {
+	color:#b1b1b1;
+	font-size: 12px;
+	position:relative;
+	left:-22px;
+}
+.open-communication-bottom-rules {
+	border-bottom:1px solid #eaeaea;padding-bottom:4px;
+}
+.communication-direction-text{
+	text-transform: capitalize;
+}
+.communication-open{
+	z-index: 2;
+	    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.70);
+    -moz-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.70);
+    -webkit-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.70);
+
+}
+.show-false, .open-box-true, .check-box-false{
+	display:none;
+}
+.show-true ,.open-box-false, .check-box-true{
+	display: inherit;
+}
+.uk-icon-caret-left .direction-outbound, .uk-icon-caret-right .direction-inbound {
+	color:white;
+}
+.normal-cursor {
+	cursor: auto !important;
+}
+
+.filter-block {
+	display: inline-block;
+    padding: 8px;
+    color: white;
+    font-weight: bold;
+    border-radius: 11px;
+    background-color: #777777;
+    margin-right: 5px;
+    width: 26px;
+    height: 20px;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+	
+}
+.filter-block:hover {
+	background-color: #707070;
+}
+.filter-input{
+	display: inline-block;
+	width: 422px;
+	margin-right:20px;
+}
+.filter-people {
+	display: inline-block;
+	width:30px;
+	height:30px;
+	margin-right:8px;
+	
+}
+
+	
+.communication-list-item{
+	padding-top: 15px;
+    padding-bottom: 15px;
+    border: 1px solid #eaeaea;
+    padding-left: 10px;
+    border-bottom: none;
+    cursor: pointer;
+    -webkit-transition: all 350ms ease-in-out;
+-moz-transition: all 350ms ease-in-out;
+-ms-transition: all 350ms ease-in-out;
+-o-transition: all 350ms ease-in-out;
+transition: all 350ms ease-in-out;
+position: relative !important;
+}
+.communication-list-item:hover{
+	background-color: rgba(10,10,10,0.02);
+	}
+	
+.communication-open:hover{
+	background-color: white;
+	}
+
+.communication-list-item:last-of-type {
+	
+}
+
+.communication-type-and-who, .communication-item-date-time, .communication-item-tt-to-from {
+	font-size:14px;
+}
+
+.user-badge-communication-item{
+	width:20px;
+	height:20px;
+	font-size: 11px;
+	line-height: 21px;
+	display: inline-block;
+	text-align: center;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    color: white;
+    font-weight: 300;
+    margin-right: 3px;
+}
+.phone-communication {
+	color:rgb(0,174,239);
+	font-weight: bold;
+}
+.phone-communication i{
+	font-size:16px;
+}
+.email-communication {
+	color:rgb(53,182,69);
+	font-weight: bold;
+}
+.email-communication i{
+	font-size:16px;
+}
+
+.communication-selector {
+	height: 245px;
+    border: 2px solid #bbbbbb;
+    border-radius: 4px;
+    overflow-x: hidden;
+    padding-top: 10px;
+    margin-bottom: 15px;
+    box-sizing: initial;
+    padding-bottom: 1px;
+}
+.communication-selector ul {
+    padding-left: 15px;
+}
+.communication-selector ul li {
+    width: 100%;
+}
+.communication-selector ul li ul {
+    margin-left: 35px;
+}
+.communication-unread .communication-item-date-time, .communication-unread .communication-item-tt-to-from, .communication-unread .communication-item-parcel {
+	font-weight: bold;
+}
+
+/* WWU - Project detail page*/
+.proj_details{
+	background-color: rgba(86,178,133,0.5) !important;
+	color: #fff !important;
+	padding: 4px 0 !important;
+	text-shadow: none !important;
+	line-height: 20px !important;
+	border: 2px solid #56b285 !important;
+	width: 100% !important;
+	text-transform: uppercase !important;
+	margin-top: 15px !important;
+}
+
+.proj_details_1{
+	background-color: rgb(224, 224, 223) !important;
+	color: #000 !important;
+	border: 2px solid #909090 !important;
+}
