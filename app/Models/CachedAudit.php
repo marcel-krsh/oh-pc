@@ -379,7 +379,7 @@ class CachedAudit extends Model
     }
 
     public function update_building_statuses() {
-        if($this->audit && $this->audit->building_inspections->count !== $this->total_buildings) {
+        if($this->audit && $this->audit->building_inspections->count() !== $this->total_buildings) {
             $building_count = $this->audit->building_inspections->count();
             $this->total_buildings = $building_count;
             $this->save();
