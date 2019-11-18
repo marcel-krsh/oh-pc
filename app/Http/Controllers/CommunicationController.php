@@ -1581,9 +1581,9 @@ class CommunicationController extends Controller
         // get the project
         $project = Project::where('id', '=', $project->id)->first();
 
-        return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit', 'projects_array', 'message_recipients'));
+        return view('projects.partials.communications', compact('data', 'messages', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit', 'projects_array', 'message_recipients'));
       } else {
-        return view('dashboard.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array', 'message_recipients'));
+        return view('dashboard.communications', compact('data', 'messages', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array', 'message_recipients'));
       }
     }
   }
@@ -1780,7 +1780,7 @@ class CommunicationController extends Controller
       $audit             = $report->audit_id;
       $data              = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
         'message'                       => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
       // return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
       return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
     } else {
