@@ -804,8 +804,14 @@ class ProjectContactsController extends Controller
     }
     $selected = $request->email_address_id;
     if (!$selected && $request->email_address != '') {
-      $ua       = $this->saveEmailToUser($request->user_id, $request, 1);
-      $selected = $ua->id;
+    	$check_email = EmailAddress::where('email_address', $request->email_address)->first();
+    	if($check_email) {
+    		$ue = UserEmail::where('user_id', $request->user_id)->where('email_address_id', $check_email->id)->first();
+    		$selected = $ue->id;
+    	} else {
+	      $ua       = $this->saveEmailToUser($request->user_id, $request, 1);
+	      $selected = $ua->id;
+    	}
     }
     // return 'didn';
     // Check if it is devco user and exists in project emails
@@ -1124,9 +1130,16 @@ class ProjectContactsController extends Controller
       return 'Error 849: Either User Id, Project Id or Email address Id was not provided. Please let an admin know this happened and how you got here.';
     }
     $selected = $request->email_address_id;
+
     if (!$selected && $request->email_address != '') {
-      $ua       = $this->saveEmailToUser($request->user_id, $request, 1);
-      $selected = $ua->id;
+    	$check_email = EmailAddress::where('email_address', $request->email_address)->first();
+    	if($check_email) {
+    		$ue = UserEmail::where('user_id', $request->user_id)->where('email_address_id', $check_email->id)->first();
+    		$selected = $ue->id;
+    	} else {
+	      $ua       = $this->saveEmailToUser($request->user_id, $request, 1);
+	      $selected = $ua->id;
+    	}
     }
     // Check if it is devco user and exists in project emails
     if ($request->devco) {
