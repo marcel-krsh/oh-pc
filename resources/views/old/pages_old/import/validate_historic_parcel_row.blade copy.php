@@ -20,8 +20,8 @@
 								<script type="text/javascript">
 
 									<?php /*
-                                    updateTotals(list,record,addressCount,usHouseCount,ohHouseCount,ohSenateCount,identicalCount,historicCount,hhfCount,totalCount,processedCount,percentComplete,rowNum);
-                                    */?>
+									updateTotals(list,record,addressCount,usHouseCount,ohHouseCount,ohSenateCount,identicalCount,historicCount,hhfCount,totalCount,processedCount,percentComplete,rowNum);
+									*/?>
 									updateTotals(1,2,1,2,2,2,4,0,2,10,5,50,3);
 								</script>
 								</td>

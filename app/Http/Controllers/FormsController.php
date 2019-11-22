@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 class FormsController extends Controller
 {
+
+
     /**
      * FormsController constructor.
      * @param string $action
@@ -13,9 +15,9 @@ class FormsController extends Controller
      * @param string $icon
      * if resource is edit, will need to populate method values.
      */
-    public function formBuilder($action = '/example', $method = 'null', $encType = 'application/x-www-form-urlencoded', $title = 'Example Form', $icon = 'pencil')
+    public function formBuilder($action = "/example", $method = "null", $encType = "application/x-www-form-urlencoded", $title = "Example Form", $icon = "pencil")
     {
-        return [$action, $method, $encType, $title, $icon];
+        return ([$action, $method, $encType, $title, $icon]);
     }
 
     /**
@@ -25,8 +27,7 @@ class FormsController extends Controller
      */
     public function text($array = ['textfor', 'textName', 'textValue', 'textPlaceholder', 'textRequired'])
     {
-        $row = ['type'=>'text', 'for'=>$array[0], 'id'=>$array[0], 'name'=>$array[1], 'value'=>$array[2], 'placeholder'=>$array[3], 'required'=>$array[4]];
-
+        $row = ['type'=>'text','for'=>$array[0],'id'=>$array[0],'name'=>$array[1],'value'=>$array[2],'placeholder'=>$array[3],'required'=>$array[4]];
         return $row;
     }
 
@@ -34,15 +35,14 @@ class FormsController extends Controller
      * @param array $array
      * @return array
      */
-    public function multipleText_wCheckbox($label = 'Sample Label', $arr = [['acquisition_advance', '', 'Acquisition advance', 'required', 'checked'], ['acquisition_max_advance', '', 'Acquisition max advance', 'required'],
-        ['acquisition_max', '', 'Acquisition maximum (0 = No Max)', 'required'], ['acquisition_min', '', 'Acquisition minimum', 'required'], ], $numberOfFields = 4)
+    public function multipleText_wCheckbox($label = "Sample Label", $arr = [['acquisition_advance','','Acquisition advance','required','checked'],['acquisition_max_advance','','Acquisition max advance','required'],
+        ['acquisition_max','','Acquisition maximum (0 = No Max)','required'], ['acquisition_min','','Acquisition minimum','required']], $numberOfFields = 4)
     {
-        $row = ['type'=>'multipleText', 'cells'=>$numberOfFields, 'for'=>$label, 'id'=>$label];
-        for ($i = 0; $i < $numberOfFields; $i++) {
-            $row[$i] = ['name'=>$arr[$i][0], 'value'=>$arr[$i][1], 'placeholder'=>$arr[$i][2], 'required'=>$arr[$i][3]];
-            $row['checked'] = $arr[0][4];
+        $row =['type'=>'multipleText','cells'=>$numberOfFields,'for'=>$label,'id'=>$label];
+        for ($i=0; $i<$numberOfFields; $i++) {
+            $row[$i]=['name'=>$arr[$i][0],'value'=>$arr[$i][1],'placeholder'=>$arr[$i][2],'required'=>$arr[$i][3]];
+            $row['checked']=$arr[0][4];
         }
-
         return $row;
     }
 
@@ -50,35 +50,35 @@ class FormsController extends Controller
      * @param array $array
      * @return array
      */
-    public function multipleText($arr = [['acquisition_advance', '', 'Acquisition advance', ''], ['acquisition_max_advance', '', 'Acquisition max advance', ''],
-        ['acquisition_max', '', 'Acquisition maximum (0 = No Max)', 'required'], ['acquisition_min', '', 'Acquisition minimum', 'required'], ], $numberOfFields = 4)
+    public function multipleText($arr = [['acquisition_advance','','Acquisition advance',''],['acquisition_max_advance','','Acquisition max advance',''],
+        ['acquisition_max','','Acquisition maximum (0 = No Max)','required'], ['acquisition_min','','Acquisition minimum','required']], $numberOfFields = 4)
     {
-        $row = ['type'=>'multipleText1', 'cells'=>$numberOfFields];
-        for ($i = 0; $i < $numberOfFields; $i++) {
-            $row[$i] = ['name'=>$arr[$i][0], 'value'=>$arr[$i][1], 'placeholder'=>$arr[$i][2], 'required'=>$arr[$i][3]];
+        $row =['type'=>'multipleText1','cells'=>$numberOfFields];
+        for ($i=0; $i<$numberOfFields; $i++) {
+            $row[$i]=['name'=>$arr[$i][0],'value'=>$arr[$i][1],'placeholder'=>$arr[$i][2],'required'=>$arr[$i][3]];
         }
-
         return $row;
     }
+
+
 
     public function newDocRule(
         $for,
-        $hidden = '10',
-        $label = 'Acquisition',
+        $hidden = "10",
+        $label = "Acquisition",
         $textInputarr = ['acquisition_amount', '', 'Enter acquisition trigger amount'],
-        $selectArr = ['acquisition_documents', 'options'=>['option_values'=>1, 'option_names'=>'Hello', 'selected'=>'selected']]
+        $selectArr = ['acquisition_documents', 'options'=>['option_values'=>1,'option_names'=>"Hello",'selected'=>'selected']]
     ) {
-        $row = ['type'=>'documentRule', 'for'=>$for, 'hidden'=>$hidden, 'label'=>$label, 'textInput'=>$textInputarr, 'selectInput'=>$selectArr];
-
+        $row = ['type'=>'documentRule','for'=>$for, 'hidden'=>$hidden, 'label'=>$label, 'textInput'=>$textInputarr, 'selectInput'=>$selectArr];
         return $row;
     }
 
-    public function newDocRule13($for, $hidden = '10', $label = 'Acquisition', $selectArr = ['acquisition_documents', 'options'=>['option_values'=>1, 'option_names'=>'Hello', 'selected'=>'selected']])
+    public function newDocRule13($for, $hidden = "10", $label = "Acquisition", $selectArr = ['acquisition_documents', 'options'=>['option_values'=>1,'option_names'=>"Hello",'selected'=>'selected']])
     {
-        $row = ['type'=>'documentRule13', 'for'=>$for, 'hidden'=>$hidden, 'label'=>$label, 'selectInput'=>$selectArr];
-
+        $row = ['type'=>'documentRule13','for'=>$for, 'hidden'=>$hidden,'label'=>$label, 'selectInput'=>$selectArr];
         return $row;
     }
+
 
     /**
      * @param array $array
@@ -88,8 +88,7 @@ class FormsController extends Controller
      */
     public function password($array)
     {
-        $row = ['type'=>'password', 'for'=>$array[0], 'id'=>$array[0], 'name'=>$array[1], 'value'=>$array[2], 'placeholder'=>$array[3], 'required'=>$array[4]];
-
+        $row = ['type'=>'password','for'=>$array[0],'id'=>$array[0],'name'=>$array[1],'value'=>$array[2],'placeholder'=>$array[3],'required'=>$array[4]];
         return $row;
     }
 
@@ -100,8 +99,7 @@ class FormsController extends Controller
      */
     public function textArea($array)
     {
-        $row = ['type'=>'textarea', 'for'=>$array[0], 'id'=>$array[0], 'name'=>$array[1], 'value'=>$array[2], 'placeholder'=>$array[3], 'required'=>$array[4]];
-
+        $row = ['type'=>'textarea','for'=>$array[0],'id'=>$array[0],'name'=>$array[1],'value'=>$array[2],'placeholder'=>$array[3],'required'=>$array[4]];
         return $row;
     }
 
@@ -114,12 +112,11 @@ class FormsController extends Controller
      */
     public function checkbox($array)
     {
-        $row = ['type'=>'checkbox', 'for'=>$array[0], 'id'=>$array[0], 'required'=>$array[5]];
-        $row['name'] = $array[1];
-        $row['value'] = $array[2];
-        $row['optionLabel'] = $array[3];
-        $row['checked'] = $array[4];
-
+        $row = ['type'=>'checkbox','for'=>$array[0],'id'=>$array[0],'required'=>$array[5]];
+        $row['name']=$array[1];
+        $row['value']=$array[2];
+        $row['optionLabel']=$array[3];
+        $row['checked']=$array[4];
         return $row;
     }
 
@@ -132,11 +129,10 @@ class FormsController extends Controller
      */
     public function radio($array)
     {
-        $row = ['type'=>'radio', 'for'=>$array[0], 'id'=>$array[0], 'name'=>$array[1], 'required'=>$array[5]];
-        $row['value'] = $array[2];
-        $row['optionLabel'] = $array[3];
-        $row['checked'] = $array[4];
-
+        $row = ['type'=>'radio','for'=>$array[0],'id'=>$array[0],'name'=>$array[1],'required'=>$array[5]];
+        $row['value']=$array[2];
+        $row['optionLabel']=$array[3];
+        $row['checked']=$array[4];
         return $row;
     }
 
@@ -148,11 +144,10 @@ class FormsController extends Controller
      */
     public function selectBox($array)
     {
-        $row = ['type'=>'select', 'for'=>$array[0], 'id'=>$array[0], 'name'=>$array[1], 'multiple'=>$array[5], 'required'=>$array[6]];
-        $row['value'] = $array[2];
-        $row['optionLabel'] = $array[3];
-        $row['selected'] = $array[4];
-
+        $row = ['type'=>'select','for'=>$array[0],'id'=>$array[0],'name'=>$array[1],'multiple'=>$array[5],'required'=>$array[6]];
+        $row['value']=$array[2];
+        $row['optionLabel']=$array[3];
+        $row['selected']=$array[4];
         return $row;
     }
 
@@ -163,9 +158,8 @@ class FormsController extends Controller
      */
     public function fileUpload($array)
     {
-        $this->encType = 'multipart/form-data';
-        $row = ['type'=>'file', 'for'=>$array[0], 'id'=>$array[0], 'name'=>$array[1], 'accept'=>$array[2], 'required'=>$array[3]];
-
+        $this->encType = "multipart/form-data";
+        $row = ['type'=>'file','for'=>$array[0],'id'=>$array[0],'name'=>$array[1],'accept'=>$array[2],'required'=>$array[3]];
         return $row;
     }
 
@@ -177,7 +171,6 @@ class FormsController extends Controller
     public function reset($array)
     {
         $row = ['type'=>'reset', 'name'=>'reset', 'value'=>$array[0]];
-
         return $row;
     }
 
@@ -189,7 +182,6 @@ class FormsController extends Controller
     public function submit($array)
     {
         $row = ['type'=>'submit', 'name'=>'submit', 'value'=>$array[0]];
-
         return $row;
     }
 
@@ -200,8 +192,7 @@ class FormsController extends Controller
      */
     public function buttonImage($array)
     {
-        $row = ['type'=>'image', 'name'=>$array[0], 'src'=>$array[1]];
-
+        $row = ['type'=>'image','name'=>$array[0],'src'=>$array[1]];
         return $row;
     }
 
@@ -212,8 +203,7 @@ class FormsController extends Controller
      */
     public function hidden($array)
     {
-        $row = ['type'=>'hidden', 'name'=>$array[0], 'value'=>$array[1]];
-
+        $row = ['type'=>'hidden','name'=>$array[0],'value'=>$array[1]];
         return $row;
     }
 }

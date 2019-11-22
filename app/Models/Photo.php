@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * Photo Model.
+ * Photo Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -33,40 +33,40 @@ class Photo extends Model
         'file_path',
         'device_id',
         'followup_id',
-        'deleted',
+        'deleted'
     ];
 
-    public function photos() : HasMany
+    public function photos() : HasMany 
     {
-        return $this->hasMany(self::class, 'photo_id', 'id');
+        return $this->hasMany(\App\Models\Photo::class, 'photo_id', 'id');
     }
 
-    public function photo() : HasOne
+    public function photo() : HasOne 
     {
-        return $this->hasOne(self::class, 'id', 'photo_id');
+        return $this->hasOne(\App\Models\Photo::class, 'id', 'photo_id');
     }
 
-    public function user() : HasOne
+    public function user() : HasOne 
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
 
-    public function finding() : HasOne
+    public function finding() : HasOne 
     {
         return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
     }
 
-    public function followup() : HasOne
+    public function followup() : HasOne 
     {
         return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
     }
 
-    public function comment() : HasOne
+    public function comment() : HasOne 
     {
         return $this->hasOne(\App\Models\Comment::class, 'id', 'comment_id');
     }
 
-    public function comments() : HasMany
+    public function comments() : HasMany 
     {
         return $this->hasMany(\App\Models\Comment::class, 'photo_id', 'id');
     }

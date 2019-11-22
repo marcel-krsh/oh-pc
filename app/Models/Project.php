@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use App\Models\Audit;
-use App\Models\Building;
-use App\Models\CachedAudit;
-use App\Models\SystemSetting;
-use Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\Audit;
+use App\Models\CachedAudit;
+use App\Models\SystemSetting;
+use App\Models\Building;
+use Carbon;
 use Session;
 
 class Project extends Model
@@ -21,7 +21,7 @@ class Project extends Model
     protected $guarded = ['id'];
 
     /**
-     * audits.
+     * audits
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -37,19 +37,18 @@ class Project extends Model
 
     public function amenities() : HasMany
     {
-        return $this->hasMany(\App\Models\ProjectAmenity::class);
+        return $this->hasMany('\App\Models\ProjectAmenity');
     }
 
     public function currentAudit()
     {
         $audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->first();
-
         return $audit;
     }
 
     public function pm()
     {
-        //$ra = ReportAccess::where('project_id', $this->id)->where('default', 1)->first();
+    		//$ra = ReportAccess::where('project_id', $this->id)->where('default', 1)->first();
         $pm_contact = $this->contactRoles()->where('project_role_key', '=', 21)
                                 ->with('organization.address')
                                 ->first();
@@ -72,7 +71,7 @@ class Project extends Model
             if ($pm_contact->organization) {
                 $pm_organization_id = $pm_contact->organization_id;
                 $pm_organization = $pm_contact->organization->organization_name;
-                if ($pm_contact->organization->address) {
+                if($pm_contact->organization->address){
                     $pm_address = $pm_contact->organization->address->formatted_address();
                     $pm_line_1 = $pm_contact->organization->address->line_1;
                     $pm_line_2 = $pm_contact->organization->address->line_2;
@@ -84,26 +83,27 @@ class Project extends Model
             if ($pm_contact->person) {
                 $pm_person_id = $pm_contact->person->id;
                 $pm = User::where('person_id', '=', $pm_person_id)->first();
-                if ($pm) {
+                if($pm){
                     $pm_id = $pm->id;
-                } else {
-                    $pm_id = '';
+                }else{
+                     $pm_id = '';
                 }
 
-                $pm_name = $pm_contact->person->first_name.' '.$pm_contact->person->last_name;
-                if ($pm_contact->person->phone) {
+                $pm_name = $pm_contact->person->first_name." ".$pm_contact->person->last_name;
+                if($pm_contact->person->phone){
                     $pm_phone = $pm_contact->person->phone->number();
                 }
-                if ($pm_contact->person->fax) {
+                if($pm_contact->person->fax){
                     $pm_fax = $pm_contact->person->fax->number();
                 }
-                if ($pm_contact->person->email) {
+                if($pm_contact->person->email){
                     $pm_email = $pm_contact->person->email->email_address;
                 }
             }
+
         }
 
-        return ['organization_id' => $pm_organization_id, 'pm_id' => $pm_id, 'organization'=> $pm_organization, 'name'=>$pm_name, 'email'=>$pm_email, 'phone'=>$pm_phone, 'fax'=>$pm_fax, 'address'=>$pm_address, 'line_1'=>$pm_line_1, 'line_2'=>$pm_line_2, 'city'=>$pm_city, 'state'=>$pm_state, 'zip'=>$pm_zip];
+        return ['organization_id' => $pm_organization_id , 'pm_id' => $pm_id, 'organization'=> $pm_organization, 'name'=>$pm_name, 'email'=>$pm_email, 'phone'=>$pm_phone, 'fax'=>$pm_fax, 'address'=>$pm_address, 'line_1'=>$pm_line_1, 'line_2'=>$pm_line_2, 'city'=>$pm_city, 'state'=>$pm_state, 'zip'=>$pm_zip ];
     }
 
     public function owner()
@@ -130,7 +130,7 @@ class Project extends Model
             if ($owner_contact->organization) {
                 $owner_organization_id = $owner_contact->organization_id;
                 $owner_organization = $owner_contact->organization->organization_name;
-                if ($owner_contact->organization->address) {
+                if($owner_contact->organization->address){
                     $owner_address = $owner_contact->organization->address->formatted_address();
                     $owner_line_1 = $owner_contact->organization->address->line_1;
                     $owner_line_2 = $owner_contact->organization->address->line_2;
@@ -142,23 +142,24 @@ class Project extends Model
             if ($owner_contact->person) {
                 $owner_person_id = $owner_contact->person->id;
                 $owner = User::where('person_id', '=', $owner_person_id)->first();
-                if ($owner) {
+                if($owner){
                     $owner_id = $owner->id;
                 }
-                $owner_name = $owner_contact->person->first_name.' '.$owner_contact->person->last_name;
-                if ($owner_contact->person->phone) {
+                $owner_name = $owner_contact->person->first_name." ".$owner_contact->person->last_name;
+                if($owner_contact->person->phone){
                     $owner_phone = $owner_contact->person->phone->number();
                 }
-                if ($owner_contact->person->fax) {
+                if($owner_contact->person->fax){
                     $owner_fax = $owner_contact->person->fax->number();
                 }
-                if ($owner_contact->person->email) {
+                if($owner_contact->person->email){
                     $owner_email = $owner_contact->person->email->email_address;
                 }
             }
+
         }
 
-        return ['organization_id'=> $owner_organization_id, 'owner_id'=> $owner_id, 'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip];
+        return ['organization_id'=> $owner_organization_id,'owner_id'=> $owner_id,'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
     }
 
     public function complianceContacts() : HasOne
@@ -169,38 +170,38 @@ class Project extends Model
     public function nextDueDate()
     {
         $compliance_contacts = $this->complianceContacts()->first();
-        if (! $compliance_contacts) {
+        if(!$compliance_contacts){
             return 'N/A';
         }
         $next_inspection = $compliance_contacts->next_inspection;
-        if ($next_inspection == null) {
+        if($next_inspection == null){
             return 'N/A';
-        } else {
+        }else{
             return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $next_inspection)->format('F j, Y');
         }
     }
 
-    public function selected_audit($audit_id = 0, $reports = 0)
+    public function selected_audit($audit_id = 0 , $reports = 0)
     {
-        if ($audit_id) {
-            $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->with('audit');
-            if ($reports) {
-                $selected_audit = $selected_audit->with('audit.reports');
-            }
-            $selected_audit = $selected_audit->first();
-        } elseif (Session::has('project.'.$this->id.'.selectedaudit') && Session::get('project.'.$this->id.'.selectedaudit') != '') {
-            $audit_id = Session::get('project.'.$this->id.'.selectedaudit');
-            $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->with('audit');
-            if ($reports) {
-                $selected_audit = $selected_audit->with('audit.reports');
-            }
-            $selected_audit = $selected_audit->first();
-        } else {
+    		if($audit_id) {
+                $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->with('audit');
+                if($reports){
+                    $selected_audit = $selected_audit->with('audit.reports');
+                }
+                $selected_audit = $selected_audit->first();
+    		} else if (Session::has('project.'.$this->id.'.selectedaudit') && Session::get('project.'.$this->id.'.selectedaudit') != '') {
+                    $audit_id = Session::get('project.'.$this->id.'.selectedaudit');
+                    $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->with('audit');
+                if($reports){
+                    $selected_audit = $selected_audit->with('audit.reports');
+                }
+                $selected_audit = $selected_audit->first();
+        }else{
             $selected_audit = CachedAudit::where('project_id', '=', $this->id)->orderBy('id', 'desc')->with('audit');
-            if ($reports) {
-                $selected_audit = $selected_audit->with('audit.reports');
-            }
-            $selected_audit = $selected_audit->first();
+                if($reports){
+                    $selected_audit = $selected_audit->with('audit.reports');
+                }
+                $selected_audit = $selected_audit->first();
 
             Session::put('project.'.$this->id.'.selectedaudit', $audit_id);
         }
@@ -215,7 +216,7 @@ class Project extends Model
 
         $selected_audit = $this->selected_audit($audit_id);
 
-        if (! $selected_audit) {
+        if (!$selected_audit) {
             // no audit for this project yet, use default project default
             // first check if there are default values and add them if not
             $details = ProjectDetail::where('project_id', '=', $this->id)
@@ -228,7 +229,7 @@ class Project extends Model
                     ->first();
         }
 
-        if (! $details) {
+        if(!$details){
             // create a default record
             $details = $this->set_project_defaults();
         }
@@ -241,7 +242,8 @@ class Project extends Model
         // details is a cache of the project's information at the time of the audit.
         // details is updated whenever the respective sources are changed, as long as the most current audit is not archived
 
-        if (! $audit_id) {
+
+        if (!$audit_id) {
             // no audit for this project yet, use default project default
             // first check if there are default values and add them if not
             $details = ProjectDetail::where('project_id', '=', $this->id)
@@ -254,7 +256,7 @@ class Project extends Model
                     ->first();
         }
 
-        if (! $details) {
+        if(!$details){
             // create a default record
             $details = $this->set_project_defaults();
         }
@@ -267,10 +269,10 @@ class Project extends Model
         // create a record in project_details table with the current stats, contact info
 
         //$programs = $this->programs->get(['program_id','total_unit_count'])->toJson();
-        $programs = [];
-        foreach ($this->programs as $program) {
+        $programs = array();
+        foreach($this->programs as $program){
             $count = $program->total_unit_count;
-            $programs[] = ['name' => $program->program->program_name, 'units' => $count, 'program_id' => $program->program_id];
+            $programs[] = ["name" => $program->program->program_name, "units" => $count, "program_id" => $program->program_id];
         }
 
         $last_audit = $this->lastAudit();
@@ -283,9 +285,9 @@ class Project extends Model
         //     $audit_id = $this->selected_audit()->audit_id;
         // }
 
-        if ($this->complianceContacts()->first()) {
+        if($this->complianceContacts()->first()){
             $next_inspection = $this->complianceContacts()->first()->next_inspection;
-        } else {
+        }else{
             $next_inspection = null;
         }
 
@@ -331,7 +333,7 @@ class Project extends Model
                 'manager_address2' => $this->pm()['line_2'],
                 'manager_city' => $this->pm()['city'],
                 'manager_state' => $this->pm()['state'],
-                'manager_zip' => $this->pm()['zip'],
+                'manager_zip' => $this->pm()['zip']
             ]);
         $details->save();
 
@@ -341,22 +343,21 @@ class Project extends Model
     public function lastAudit()
     {
         $audit = Audit::where('development_key', '=', $this->project_key)->where('completed_date', '!=', null)->orderBy('id', 'desc')->first();
-
         return $audit;
     }
 
     public function lastAuditCompleted()
     {
         $audit = $this->lastAudit();
-        if ($audit) {
-            if ($audit->completed_date) {
+        // return $audit->completed_date;
+        if($audit){
+            if($audit->completed_date){
                 $date = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $audit->completed_date)->format('F j, Y');
-
                 return $date;
             }
         }
 
-        return 'N/A';
+        return "N/A";
     }
 
     public function address() : HasOne
@@ -364,70 +365,72 @@ class Project extends Model
         return $this->hasOne(\App\Models\Address::class, 'id', 'physical_address_id');
     }
 
+
+
     public function programs() : HasMany
     {
-        $programKeys = [];
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_htc')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_bundle')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_811')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_faf')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_nsp')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_tce')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_rtcap')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_medicaid')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_home')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_ohtf')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_nhtf')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('lease_purchase')));
+
+        $programKeys = array();
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_htc')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_bundle')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_811')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_faf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_nsp')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_tce')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_rtcap')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_medicaid')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_home')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_ohtf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_nhtf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('lease_purchase')));
         // $test = ProjectProgram::where('project_id','45055')->where('program_status_type_id', SystemSetting::get('active_program_status_type_id'))
         //         ->whereIn('program_key',$programKeys)->get();
         // dd($test,$programKeys);
         // need to make this read from system settings (not hard code) for program statuses
         return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')
 
-                ->whereIn('program_key', $programKeys)
+                ->whereIn('program_key',$programKeys)
                 ->where(function ($query) {
                     $query->orWhere('project_program_status_type_key', 30012);
                     $query->orWhere('project_program_status_type_key', 30004);
                     $query->orWhere('project_program_status_type_key', 30009);
                     $query->orWhere('project_program_status_type_key', 30010);
-                })->with('program');
+                })->with('program')
+                ;
     }
-
     public function all_other_programs() : HasMany
     {
-        $programKeys = [];
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_htc')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_bundle')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_811')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_faf')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_nsp')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_tce')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_rtcap')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_medicaid')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_home')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_ohtf')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('program_nhtf')));
-        $programKeys = array_merge($programKeys, explode(',', SystemSetting::get('lease_purchase')));
+
+        $programKeys = array();
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_htc')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_bundle')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_811')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_faf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_nsp')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_tce')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_rtcap')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_medicaid')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_home')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_ohtf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('program_nhtf')));
+        $programKeys = array_merge($programKeys,explode(',',SystemSetting::get('lease_purchase')));
 
         // we don't exclude non active programs as we may still get back program funding
         return $this->hasMany(\App\Models\ProjectProgram::class, 'project_id')
-                ->whereNotIn('program_key', $programKeys);
+                ->whereNotIn('program_key',$programKeys);
     }
 
     public function buildings() : HasMany
     {
-        return $this->hasMany(\App\Models\Building::class)->where('building_status_key', '=', 1)->with('address');
+        return $this->hasMany('\App\Models\Building')->where('building_status_key','=',1)->with('address');
     }
 
-    public function units() : HasManyThrough
-    {
-        return $this->hasManyThrough(\App\Models\Unit::class, \App\Models\Building::class);
+    public function units() : HasManyThrough {
+        return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building');
     }
 
-    public function market_rate_units() : HasManyThrough
-    {
-        return $this->hasManyThrough(\App\Models\Unit::class, \App\Models\Building::class)->where('unit_identity_id', '=', 6);
+    public function market_rate_units() : HasManyThrough {
+        return $this->hasManyThrough('App\Models\Unit', 'App\Models\Building')->where('unit_identity_id','=',6);
     }
 
     public function program_units_total()
@@ -452,12 +455,11 @@ class Project extends Model
             $count = UnitProgram::where('audit_id', $this->currentAudit()->audit_id)
                                             ->where('program_id', $program->program_id)
                                             ->count();
-            $programCounts[] = [$program->program->program_name => $count, 'program_id'=>$program->program_id];
+            $programCounts[] = [$program->program->program_name => $count,'program_id'=>$program->program_id];
         }
-        if (count($programCounts) < 1) {
+        if (count($programCounts)<1) {
             $programCounts[] = ['No Programs Found' => 'NA'];
         }
-
         return $programCounts;
     }
 
@@ -478,6 +480,7 @@ class Project extends Model
 
     public function stat_program_units()
     {
+
         $programs = $this->programs;
         $program_units = [];
         foreach ($programs as $program) {
@@ -487,15 +490,15 @@ class Project extends Model
 
             $count = $program->total_unit_count;
 
-            $program_units[] = ['name' => $program->program->program_name.' '.$program->program_id.' '.$this->currentAudit()->audit_id, 'units' => $count, 'program_id' => $program->program_id];
+            $program_units[] = ["name" => $program->program->program_name." ".$program->program_id." ".$this->currentAudit()->audit_id, "units" => $count, "program_id" => $program->program_id];
         }
+
 
         return $program_units;
     }
-
     public function is_project_contact($user_id = 1)
     {
-        return count($this->contactRoles->where('user_id', $user_id));
+        return count($this->contactRoles->where('user_id',$user_id));
     }
 
     public function project_users()

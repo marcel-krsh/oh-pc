@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * State Model.
+ * State Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class State extends Model
 {
     /**
-     * Counties.
+     * Counties
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -24,7 +24,7 @@ class State extends Model
     }
 
     /**
-     * Entity.
+     * Entity
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

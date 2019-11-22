@@ -9,6 +9,8 @@ class SyncUtilityAllowance extends Model
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
+    
+
     //
     protected $guarded = ['id'];
 }

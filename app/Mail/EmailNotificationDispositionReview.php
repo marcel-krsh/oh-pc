@@ -2,16 +2,16 @@
 
 namespace App\Mail;
 
-use App\Disposition;
-use App\HistoricEmail;
-use App\ReimbursementInvoice;
 use App\User;
+use App\ReimbursementInvoice;
+use App\Disposition;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use App\HistoricEmail;
 
 /**
- * EmailNotificationDispositionReview.
+ * EmailNotificationDispositionReview
  *
  * @category Mail
  * @license  Proprietary and confidential
@@ -49,7 +49,7 @@ class EmailNotificationDispositionReview extends Mailable
         $this->invoice = ReimbursementInvoice::where('id', '=', $invoice_id)->get()->first();
         $this->owner = User::where('id', '=', $recipient_id)->get()->first();
         $this->user = $this->owner;
-        $this->subject = '[OHFA Allita] You received a release request';
+        $this->subject = "[OHFA Allita] You received a release request";
     }
 
     /**
@@ -61,40 +61,40 @@ class EmailNotificationDispositionReview extends Mailable
     {
         $owner = $this->owner;
         $invoice = $this->invoice;
-
-        $introLines[] = '';
+        
+        $introLines[] = "";
         $outroLines[] = [];
 
         if ($this->disposition) {
-            $greeting = 'DISPOSITION '.$this->disposition->id.' has been submitted for review.';
+            $greeting = "DISPOSITION ".$this->disposition->id." has been submitted for review.";
             $type = 'dispositions';
             $type_id = $this->disposition->id;
-            $actionText = 'View DISPOSITION';
+            $actionText = "View DISPOSITION";
             $actionUrl = secure_url('/dispositions/'.$this->disposition->parcel_id.'/'.$this->disposition->id);
         } else {
-            $greeting = 'INVOICE '.$this->invoice_id.' has release requests.';
+            $greeting = "INVOICE ".$this->invoice_id." has release requests.";
             $type = 'reimbursement_invoices';
             $type_id = $this->invoice_id;
-            $actionText = 'View DISPOSITION INVOICE';
+            $actionText = "View DISPOSITION INVOICE";
             $actionUrl = secure_url('/disposition_invoice/'.$this->invoice_id);
         }
 
-        $level = 'success';
-        $level2 = 'error';
+        $level = "success";
+        $level2 = "error";
         $outroLines = [];
 
         //clear session vars.
-        session(['ownerId'=>'', 'newUserId' => '']);
+        session(['ownerId'=>"",'newUserId' => ""]);
 
         // save in database
         if ($owner) {
             $body = \view('emails.send_communication', compact('greeting', 'introLines', 'actionUrl', 'actionText', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));
             $email_saved_in_db = new  HistoricEmail([
-                'user_id' => $owner->id,
-                'type' => $type,
-                'type_id' => $type_id,
-                'subject' => $this->subject,
-                'body' => $body,
+                "user_id" => $owner->id,
+                "type" => $type,
+                "type_id" => $type_id,
+                "subject" => $this->subject,
+                "body" => $body
             ]);
             $email_saved_in_db->save();
         }

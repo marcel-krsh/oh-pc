@@ -15,7 +15,7 @@ return [
     | messages to the logs. The name specified in this option should match
     | one of the channels defined in the "channels" configuration array.
     |
-    */
+     */
 
     'default' => env('LOG_CHANNEL', 'stack'),
 
@@ -32,13 +32,13 @@ return [
     |                    "errorlog", "monolog",
     |                    "custom", "stack"
     |
-    */
+     */
 
     'channels' => [
         'stack' => [
             'driver' => 'stack',
             'channels' => ['daily'],
-            'ignore_exceptions' => false,
+            'ignore_exceptions' => false, //disabled in hotfix
         ],
 
         'single' => [
@@ -64,6 +64,7 @@ return [
 
         'papertrail' => [
             'driver' => 'monolog',
+
             'level' => 'debug',
             'handler' => SyslogUdpHandler::class,
             'handler_with' => [

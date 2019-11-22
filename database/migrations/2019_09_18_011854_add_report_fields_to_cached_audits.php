@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class AddReportFieldsToCachedAudits extends Migration
 {
@@ -38,12 +38,12 @@ class AddReportFieldsToCachedAudits extends Migration
     {
         Schema::table('cached_audits', function (Blueprint $table) {
             //
-
+            
             $table->dropColumn('car_icon');
             $table->dropColumn('car_status');
             $table->dropColumn('car_id');
             $table->dropColumn('car_status_text');
-            $table->dropColumn('ehs_icon');
+             $table->dropColumn('ehs_icon');
             $table->dropColumn('ehs_status');
             $table->dropColumn('ehs_status_text');
             $table->dropColumn('ehs_id');

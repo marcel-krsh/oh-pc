@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * DefaultFollowup Model.
+ * DefaultFollowup Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -24,11 +24,11 @@ class DefaultFollowup extends Model
         'reply',
         'photo',
         'doc',
-        'doc_categories',
+        'doc_categories'
     ];
 
     /**
-     * Finding Type.
+     * Finding Type
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

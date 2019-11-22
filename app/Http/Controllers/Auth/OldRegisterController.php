@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Entity;
+use App\Models\Program;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Models\Mail\EmailActivation;
 use App\Models\Mail\EmailEntityActivation;
-use App\Models\Program;
-use App\Models\User;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class OldRegisterController extends Controller
 {
@@ -84,7 +83,7 @@ class OldRegisterController extends Controller
         //     'email' => $data['email'],
         //     'password' => bcrypt($data['password']),
         // ]);
-        $newuser = ''; //define new user,  will be overwritten below
+        $newuser = ""; //define new user,  will be overwritten below
         if (isset($data['newlandbank'])) {
             // $m = "inside";
             // dd($m,$data);
@@ -95,11 +94,11 @@ class OldRegisterController extends Controller
                 'validate_all' => 1,
                 'password' => bcrypt($data['password']),
                 'entity_id' => 99999, //give temporary id
-                'email_token' => Str::random(60),
-
+                'email_token' => str_random(60),
+                
                 'active'=> 0, // make sure they are set to an active of 0 until they are verified.
             ]);
-            $newEntity = Entity::insertGetId([
+            $newEntity= Entity::insertGetId([
                 'entity_name' => $data['entity_name'],
                 'address1' => $data['address1'],
                 'address2' => $data['address2'],
@@ -114,8 +113,8 @@ class OldRegisterController extends Controller
                 'owner_type' => 'user',
                 'owner_id' => $newuser->id,
                 'user_id' => $newuser->id,
-                'datatran_user' => 'a',
-                'datatran_password' => 'a',
+                'datatran_user' => "a",
+                'datatran_password' => "a",
                 'active' => 0, // make sure entity is not active so it does not show up in list of active orgs until approved.
             ]);
             $newuser->entity_id = $newEntity;
@@ -128,10 +127,10 @@ class OldRegisterController extends Controller
                 'entity_id'=>$newEntity,
                 'program_name'=>$data['program_name'],
                 'county_id'=>$data['county_id'],
-                'active'=>0, // make sure program is not active and does not show up in list on front as available program.
+                'active'=>0 // make sure program is not active and does not show up in list on front as available program.
                 ]);
             /// Store ids into session.
-            session(['newUserId'=>$newuser->id, 'newEntityId'=>$newEntity, 'newProgramId'=>$newProgram]);
+            session(['newUserId'=>$newuser->id,'newEntityId'=>$newEntity,'newProgramId'=>$newProgram]);
 
             $approvers = DB::table('users')->join('users_roles', 'users_roles.user_id', '=', 'users.id')->select('users.id', 'users.email')->where('users_roles.role_id', 5)->get()->all();
             //dd($approvers);
@@ -142,8 +141,7 @@ class OldRegisterController extends Controller
                 \Mail::to($approver->email)->send($emailEntityActivation);
             }
             /// Remove from session.
-            session(['newUserId'=>'', 'newEntityId'=>'', 'newProgramId'=>'']);
-
+            session(['newUserId'=>'','newEntityId'=>'','newProgramId'=>'']);
             return $newuser;
         } else {
             //no new Entity,  create user with existing landbank
@@ -152,26 +150,23 @@ class OldRegisterController extends Controller
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
                 'entity_id' => $data['entity_id'],
-                'email_token' => Str::random(254),
+                'email_token' => str_random(254)
             ]);
             //send mail to Entity owner
             $entity = Entity::find($newuser->entity_id);
             $owner = User::find($entity->owner_id);
-            session(['ownerId' => $owner->id, 'newUserId'=>$newuser->id]);
+            session(['ownerId' => $owner->id,'newUserId'=>$newuser->id]);
             $emailactivation = new EmailActivation($owner);
             \Mail::to($owner->email)->send($emailactivation);
-
             return $newuser;
         }
         // //send mail to new user
         // $email = new EmailVerification($newuser);
         // \Mail::to($newuser->email)->send($email);
     }
-
     public function verify($token)
     {
         User::where('email_token', $token)->firstOrFail()->verify();
-
         return redirect('/login');
     }
 }

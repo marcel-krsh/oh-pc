@@ -14,37 +14,37 @@ use Log;
 
 class AmenityEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+  use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
+  /**
+   * Create a new event instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
+    //
+  }
+
+  public function amenityCreated(AmenityInspection $amenity)
+  {
+    /*
+    Check which property is this amenity added (unit, building or site)
+    Mark that particular property as incomplete, as new amenity is added
+    Unit Level
+    Unitinspections - mark complete = 0
      */
-    public function __construct()
-    {
-        //
-    }
-
-    public function amenityCreated(AmenityInspection $amenity)
-    {
-        /*
-        Check which property is this amenity added (unit, building or site)
-        Mark that particular property as incomplete, as new amenity is added
-        Unit Level
-        Unitinspections - mark complete = 0
-         */
-        $units = [];
-        if (! is_null($amenity->unit_id)) {
-            $units = UnitInspection::where('audit_id', $amenity->audit_id)
+    $units = [];
+    if (!is_null($amenity->unit_id)) {
+      $units = UnitInspection::where('audit_id', $amenity->audit_id)
         ->where('unit_id', $amenity->unit_id)
         ->get();
-            foreach ($units as $key => $unit) {
-                $unit->complete = 0;
-                $unit->save();
-            }
-        }
+      foreach ($units as $key => $unit) {
+        $unit->complete = 0;
+        $unit->save();
+      }
     }
+  }
 
   public function amenityDeleted(AmenityInspection $amenity)
   {

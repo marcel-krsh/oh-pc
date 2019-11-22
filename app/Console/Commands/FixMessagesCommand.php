@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 /**
- * FixMessages Command.
+ * FixMessages Command
  *
  * @category Commands
  * @license  Proprietary and confidential

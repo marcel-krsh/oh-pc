@@ -63,7 +63,7 @@ $correctedLtCount = count($selected_audit->audit->lts->where('auditor_last_appro
 $car = collect($selected_audit->audit->reports)->where('from_template_id','1')->first();
 $ehs = collect($selected_audit->audit->reports)->where('from_template_id','2')->first();
 if(env('APP_ENV') != 'production'){
-$_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')->first();
+	$_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')->first();
 	//dd($selected_audit->audit->reports,collect($selected_audit->audit->reports)->where('from_template_id','1')->first());
 }
 ?>
@@ -242,7 +242,7 @@ $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')
 						            				@endIf
 						            			</div>
 						            			<div class="uk-width-1-3">
-						            			@if(env('APP_ENV') != 'production')
+						            				@if(env('APP_ENV') != 'production')
 						            				@if(($_8823))
 						            				<?php
 						            				switch ($_8823->crr_approval_type_id) {
@@ -304,7 +304,7 @@ $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')
 						            				@else
 						            				@if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S 8823" onclick="submitNewReportPD({{$selected_audit->audit_id}},5)"><i  class="a-file-plus"></i><br /><small>8823</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A 8823 TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
 						            				@endIf
-						            			@endIf
+						            				@endIf
 						            			</div>
 						            		</div>
 						            	</div>
@@ -432,214 +432,214 @@ $_8823 = collect($selected_audit->audit->reports)->where('from_template_id','5')
 						Chart.defaults.global.legend.display = false;
 						Chart.defaults.global.tooltips.enabled = true;
 
-    // THIS SCRIPT MUST BE UPDATED WITH NEW VALUES AFTER A NEW FUNDING SUBMISSION HAS BEEN MADE  - to make this simple - this tab is reloaded on form submission of new payment/ payment edits //
-    var summaryOptions = {
-        //Boolean - Whether we should show a stroke on each segment
-        segmentShowStroke : false,
-        legendPosition : 'bottom',
+    				// THIS SCRIPT MUST BE UPDATED WITH NEW VALUES AFTER A NEW FUNDING SUBMISSION HAS BEEN MADE  - to make this simple - this tab is reloaded on form submission of new payment/ payment edits //
+    				var summaryOptions = {
+        			//Boolean - Whether we should show a stroke on each segment
+        			segmentShowStroke : false,
+        			legendPosition : 'bottom',
 
-        "cutoutPercentage":40,
-        "legend" : {
-        	"display" : false
-        },
-        "responsive" : true,
-        "maintainAspectRatio" : false,
+        			"cutoutPercentage":40,
+        			"legend" : {
+        				"display" : false
+        			},
+        			"responsive" : true,
+        			"maintainAspectRatio" : false,
 
-        //String - The colour of each segment stroke
-        segmentStrokeColor : "#fff",
+			        //String - The colour of each segment stroke
+			        segmentStrokeColor : "#fff",
 
-        //Number - The width of each segment stroke
-        segmentStrokeWidth : 0,
+			        //Number - The width of each segment stroke
+			        segmentStrokeWidth : 0,
 
-        //The percentage of the chart that we cut out of the middle.
-        // cutoutPercentage : 67,
+			        //The percentage of the chart that we cut out of the middle.
+			        // cutoutPercentage : 67,
 
-        easing: "linear",
+			        easing: "linear",
 
-        duration: 100000,
+			        duration: 100000,
 
-        tooltips: {
-        	enabled: true,
-        	mode: 'single',
-        	callbacks: {
-        		label: function(tooltipItem, data) {
-        			var label = data.labels[tooltipItem.index];
-        			var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-        			return label + ': ' + addCommas(datasetLabel) + ' units' ;
-        		}
-        	}
-        }
-
-
-      }
-      function addCommas(nStr)
-      {
-      	nStr += '';
-      	x = nStr.split('.');
-      	x1 = x[0];
-      	x2 = x.length > 1 ? '.' + x[1] : '';
-      	var rgx = /(\d+)(\d{3})/;
-      	while (rgx.test(x1)) {
-      		x1 = x1.replace(rgx, '$1' + ',' + '$2');
-      	}
-      	return x1 + x2;
-      }
-
-      function changeAudit(){
-      	console.log("changing audit");
-
-      	var nextAudit = $('#audit-selection').val();
-
-      	var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
-      	$('#project-detail-tab-1-content').html(tempdiv);
-
-      	UIkit.modal('#modal-select-audit').hide();
-      	$('#modal-select-audit').remove();
-      	dynamicModalClose();
-      	$.post("/session/project.{{$project->id}}.selectedaudit/"+nextAudit, {
-      		'_token' : '{{ csrf_token() }}'
-      	}, function(data) {
-      		loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);
-
-      	} );
+			        tooltips: {
+			        	enabled: true,
+			        	mode: 'single',
+			        	callbacks: {
+			        		label: function(tooltipItem, data) {
+			        			var label = data.labels[tooltipItem.index];
+			        			var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+			        			return label + ': ' + addCommas(datasetLabel) + ' units' ;
+			        		}
+			        	}
+			        }
 
 
-      }
+			      }
+			      function addCommas(nStr)
+			      {
+			      	nStr += '';
+			      	x = nStr.split('.');
+			      	x1 = x[0];
+			      	x2 = x.length > 1 ? '.' + x[1] : '';
+			      	var rgx = /(\d+)(\d{3})/;
+			      	while (rgx.test(x1)) {
+			      		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+			      	}
+			      	return x1 + x2;
+			      }
 
-      function refresh_details(id, auditId) {
-      	UIkit.modal.confirm("Are you sure want to refresh the details?").then(function() {
-      		$.post('{{ URL::route("project.refreshdetails") }}', {
-      			'id' : id,
-      			'audit_id': auditId,
-      			'_token' : '{{ csrf_token() }}'
-      		}, function(data) {
-      			console.log(data.success);
-      			$("#project-details-stats").html(data.html);
-      		});
-      	}, function () {
-      		console.log('Rejected.');
-      	});
-      }
+			      function changeAudit(){
+			      	console.log("changing audit");
 
-      function submitNewReportPD(audit_id,template_id) {
-      	console.log('Submitting Request for New Report.');
-      	$.post('/new-report', {
-      		'template_id' : template_id,
-      		'audit_id' : audit_id,
-      		'_token' : '{{ csrf_token() }}'
-      	}, function(data) {
-      		if(data!=1){
-      			UIkit.notification({
-      				message: data,
-      				status: 'danger',
-      				pos: 'top-right',
-      				timeout: 5000
+			      	var nextAudit = $('#audit-selection').val();
+
+			      	var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
+			      	$('#project-detail-tab-1-content').html(tempdiv);
+
+			      	UIkit.modal('#modal-select-audit').hide();
+			      	$('#modal-select-audit').remove();
+			      	dynamicModalClose();
+			      	$.post("/session/project.{{$project->id}}.selectedaudit/"+nextAudit, {
+			      		'_token' : '{{ csrf_token() }}'
+			      	}, function(data) {
+			      		loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);
+
+			      	} );
+
+
+			      }
+
+			      function refresh_details(id, auditId) {
+			      	UIkit.modal.confirm("Are you sure want to refresh the details?").then(function() {
+			      		$.post('{{ URL::route("project.refreshdetails") }}', {
+			      			'id' : id,
+			      			'audit_id': auditId,
+			      			'_token' : '{{ csrf_token() }}'
+			      		}, function(data) {
+			      			console.log(data.success);
+			      			$("#project-details-stats").html(data.html);
+			      		});
+			      	}, function () {
+			      		console.log('Rejected.');
+			      	});
+			      }
+
+			      function submitNewReportPD(audit_id,template_id) {
+			      	console.log('Submitting Request for New Report.');
+			      	$.post('/new-report', {
+			      		'template_id' : template_id,
+			      		'audit_id' : audit_id,
+			      		'_token' : '{{ csrf_token() }}'
+			      	}, function(data) {
+			      		if(data!=1){
+			      			UIkit.notification({
+			      				message: data,
+			      				status: 'danger',
+			      				pos: 'top-right',
+			      				timeout: 5000
+			      			});
+
+
+			      		} else {
+
+			      			UIkit.notification({
+			      				message: 'Report Created',
+			      				status: 'success',
+			      				pos: 'top-right',
+			      				timeout: 1500
+			      			});
+			      			loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);
+
+			      		}
+			      	} );
+
+							// by nature this note is it's history note - so no need to ask them for a comment.
+
+
+						}
+
+						function reportActionPDT(reportId,action,project_id = null){
+							window.crrActionReportId = reportId;
+   						//Here goes the notification code
+   						if(action == 6) {
+   							dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
+   						} else if(action == 2) {
+   							dynamicModalLoad('report-send-to-manager/' + reportId + '/' + project_id);
+   						} else if(action == 3) {
+   							dynamicModalLoad('report-decline/' + reportId + '/' + project_id);
+   						} else if(action == 4) {
+   							dynamicModalLoad('report-approve-with-changes/' + reportId + '/' + project_id);
+   						} else if(action == 5) {
+   							dynamicModalLoad('report-approve/' + reportId + '/' + project_id);
+   						} else if(action == 9) {
+   							dynamicModalLoad('report-resolved/' + reportId + '/' + project_id);
+   						} else if(action != 8){
+   							$.get('/dashboard/reports', {
+   								'id' : reportId,
+   								'action' : action,
+   								'project_id' : project_id
+   							}, function(data2) {
+
+   							});
+   							$('#project-detail-tab-1').trigger('click');
+      					//loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
+      				}else if(action == 8){
+      					UIkit.modal.confirm('Refreshing the dynamic data will set the report back to Draft status - are you sure you want to do this?').then(function(){
+      						$.get('/dashboard/reports', {
+      							'id' : window.crrActionReportId,
+      							'action' : 8
+      						}, function(data2) {
+
+      						});
+      						$('#project-detail-tab-1').trigger('click');
+      					},function(){
+                //nope
+              });
+      				}
+      			}
+
+      			$.fn.scrollView = function () {
+      				return this.each(function () {
+      					$('html, body').animate({
+      						scrollTop: $(this).offset().top-80
+      					}, 1000);
+      				});
+      			}
+
+
+      			$(document ).ready(function() {
+      				if($('#project-details-info-container').html() == ''){
+      					$('#project-details-button-3').trigger("click");
+      				}
+      				if(window.subtab == 'communications') {
+      					openCommunication();
+      					window.subtab = '';
+      				} else if(window.subtab == 'documents') {
+      					openDocuments();
+      					window.subtab = '';
+      				}
+      				loadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
+      				UIkit.dropdown('#car-dropdown-{{$selected_audit->audit_id}}', 'mode:click');
+
       			});
 
 
-      		} else {
+      			function openSchedule() {
+      				$('#project-details-button-2').trigger('click');
+      				$('html, body').animate({
+      					scrollTop: 400
+      				}, 1000);
+      			}
 
-      			UIkit.notification({
-      				message: 'Report Created',
-      				status: 'success',
-      				pos: 'top-right',
-      				timeout: 1500
-      			});
-      			loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);
+      			function openCommunication() {
+      				$('#project-detail-tab-2').trigger('click');
+      			}
 
-      		}
-      	} );
+      			function openDocuments() {
+      				$('#project-detail-tab-3').trigger('click');
+      			}
 
-		// by nature this note is it's history note - so no need to ask them for a comment.
-
-
-	}
-
-	function reportActionPDT(reportId,action,project_id = null){
-		window.crrActionReportId = reportId;
-    //Here goes the notification code
-    if(action == 6) {
-    	dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
-    } else if(action == 2) {
-    	dynamicModalLoad('report-send-to-manager/' + reportId + '/' + project_id);
-    } else if(action == 3) {
-    	dynamicModalLoad('report-decline/' + reportId + '/' + project_id);
-    } else if(action == 4) {
-    	dynamicModalLoad('report-approve-with-changes/' + reportId + '/' + project_id);
-    } else if(action == 5) {
-    	dynamicModalLoad('report-approve/' + reportId + '/' + project_id);
-    } else if(action == 9) {
-    	dynamicModalLoad('report-resolved/' + reportId + '/' + project_id);
-    } else if(action != 8){
-    	$.get('/dashboard/reports', {
-    		'id' : reportId,
-    		'action' : action,
-    		'project_id' : project_id
-    	}, function(data2) {
-
-    	});
-    	$('#project-detail-tab-1').trigger('click');
-      //loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
-    }else if(action == 8){
-    	UIkit.modal.confirm('Refreshing the dynamic data will set the report back to Draft status - are you sure you want to do this?').then(function(){
-    		$.get('/dashboard/reports', {
-    			'id' : window.crrActionReportId,
-    			'action' : 8
-    		}, function(data2) {
-
-    		});
-    		$('#project-detail-tab-1').trigger('click');
-    	},function(){
-                    //nope
-                  });
-    }
-  }
-
-  $.fn.scrollView = function () {
-  	return this.each(function () {
-  		$('html, body').animate({
-  			scrollTop: $(this).offset().top-80
-  		}, 1000);
-  	});
-  }
-
-
-  $(document ).ready(function() {
-  	if($('#project-details-info-container').html() == ''){
-  		$('#project-details-button-3').trigger("click");
-  	}
-  	if(window.subtab == 'communications') {
-  		openCommunication();
-  		window.subtab = '';
-  	} else if(window.subtab == 'documents') {
-  		openDocuments();
-  		window.subtab = '';
-  	}
-  	loadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
-  	UIkit.dropdown('#car-dropdown-{{$selected_audit->audit_id}}', 'mode:click');
-
-  });
-
-
-  function openSchedule() {
-  	$('#project-details-button-2').trigger('click');
-  	$('html, body').animate({
-  		scrollTop: 400
-  	}, 1000);
-  }
-
-  function openCommunication() {
-  	$('#project-detail-tab-2').trigger('click');
-  }
-
-  function openDocuments() {
-  	$('#project-detail-tab-3').trigger('click');
-  }
-
-  function openCompliance() {
-  	$('#project-details-button-1').trigger('click');
-  	$('html, body').animate({
-  		scrollTop: 400
-  	}, 1000);
-  }
-</script>
+      			function openCompliance() {
+      				$('#project-details-button-1').trigger('click');
+      				$('html, body').animate({
+      					scrollTop: 400
+      				}, 1000);
+      			}
+      		</script>

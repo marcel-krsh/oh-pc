@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 /**
- * EmailVerification.
+ * EmailVerification
  *
  * @category Mail
  * @license  Proprietary and confidential

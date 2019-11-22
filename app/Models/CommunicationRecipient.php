@@ -8,43 +8,44 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * CommunicationRecipient Model.
+ * CommunicationRecipient Model
  *
  * @category Models
  * @license  Proprietary and confidential
  */
 class CommunicationRecipient extends Model
 {
-    protected $fillable = [
+  protected $fillable = [
     'communication_id',
     'user_id',
     'seen',
     'seen_at',
   ];
 
-    public static function boot()
-    {
-        parent::boot();
+  public static function boot()
+  {
+    parent::boot();
 
-        /* @todo: move to observer class */
-        static::created(function ($cr) {
-            Event::listen('communication.created', $cr);
-            // Log::info('Fired event?');
-        });
-    }
+    /* @todo: move to observer class */
+    static::created(function ($cr) {
+      Event::listen('communication.created', $cr);
+      // Log::info('Fired event?');
+    });
+  }
 
-    /**
-     * Communication.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function communication(): BelongsTo
-    {
-        return $this->belongsTo(\App\Models\Communication::class);
-    }
+  /**
+   * Communication
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+   */
+  public function communication(): BelongsTo
+  {
+    return $this->belongsTo(\App\Models\Communication::class);
+  }
 
-    public function user(): HasOne
-    {
-        return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
-    }
+  public function user(): HasOne
+  {
+    return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
+  }
+
 }

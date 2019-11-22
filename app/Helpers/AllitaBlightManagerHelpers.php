@@ -1,7 +1,7 @@
 <?php
 
 /**
- * System Message.
+ * System Message
  *
  * @param        $message
  * @param string $level
@@ -13,7 +13,7 @@ function systemMessage($message, $level = 'info')
 }
 
 /**
- * User Initials.
+ * User Initials
  *
  * @param $name
  *
@@ -21,24 +21,24 @@ function systemMessage($message, $level = 'info')
  */
 function userInitials($name)
 {
-    if (strlen($name) >= 3) {
-        $first = substr($name, 0, 1);
-        $secondPosition = strpos($name, ' ') + 1;
+    if (strlen($name)>=3) {
+        $first =  substr($name, 0, 1);
+        $secondPosition = strpos($name, ' ')+1;
         $second = substr($name, $secondPosition, 1);
-        $thirdPosition = strpos($name, ' ', $secondPosition) + 1;
-        if ($thirdPosition > ($secondPosition + 1)) {
+        $thirdPosition = strpos($name, ' ', $secondPosition)+1;
+        if ($thirdPosition > ($secondPosition+1)) {
             $second .= substr($name, $thirdPosition, 1);
         }
     } else {
-        $first = 'N';
-        $second = 'A';
+        $first='N';
+        $second='A';
     }
 
     return $first.$second;
 }
 
 /**
- * Next Quarter.
+ * Next Quarter
  *
  * @param $date
  *
@@ -46,10 +46,10 @@ function userInitials($name)
  */
 function nextQuarter($date)
 {
-    $currentQuarterStartMonth = ceil(date('n', strtotime($date)) / 3) * 3;
+    $currentQuarterStartMonth = ceil(date('n', strtotime($date)) / 3)*3;
     $year = date('Y', strtotime($date));
     $currentQuarterDate = $currentQuarterStartMonth.'/15/'.$year;
-    $nextQuarterDate = date('m/d/Y', strtotime('+3 months', strtotime($currentQuarterDate)));
+    $nextQuarterDate = date('m/d/Y', strtotime("+3 months", strtotime($currentQuarterDate)));
 
     return $nextQuarterDate;
 }

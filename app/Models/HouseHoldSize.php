@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class HouseHoldSize extends Model
+class HouseholdSize extends Model
 {
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';

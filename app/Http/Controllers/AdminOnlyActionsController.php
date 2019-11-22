@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Audit;
 use App\Models\CrrReport;
-use Illuminate\Http\Request;
 
 class AdminOnlyActionsController extends Controller
 {
@@ -56,27 +56,26 @@ class AdminOnlyActionsController extends Controller
     	}else{
     		return '<h2>Sorry, your user has insufficient priveledges to do this action.<h2>';
     	}
-    	/// all done -
+    	/// all done - 
     	return '<p>Allita\'s managed copy of this audit has been deleted. It was confirmed that this did not have any findings recorded and was eligible to be deleted by you - an admin. Any time scheduled on this audit has been removed. If it had any reports, they have also been removed as they will not work without the Allita managed audit. This process did not delete the monitoring from DEVCO. If that same audit is set to a monitoring status that Allita recognizes - it will be run again.</p>';
     }
 
-    public function deleteCrrReport(CrrReport $report)
-    {
-        if (\Auth::user()->can('access_admin')) {
-            if (is_object($report)) {
-                \App\Models\CrrPart::where('crr_report_id', $report->id)->delete();
-                \App\Models\CrrPartOrder::where('crr_report_id', $report->id)->delete();
-                \App\Models\CrrSection::where('crr_report_id', $report->id)->delete();
-                \App\Models\CrrSectionOrder::where('crr_report_id', $report->id)->delete();
-                /// delete history??
-                \App\Models\CrrReport::where('id', $report->id)->delete();
-            } else {
-                return '<h2>Sorry, I cannot find the report you are referencing</h2>';
-            }
-        } else {
-            return '<h2>Sorry, your user has insufficient priveledges to do this action.<h2>';
-        }
+    public function deleteCrrReport(CrrReport $report){
 
-        return '<p>Successfully deleted the report.</p>';
+    			if(\Auth::user()->can('access_admin')){
+    				if(is_object($report)){
+    					\App\Models\CrrPart::where('crr_report_id',$report->id)->delete();
+	    				\App\Models\CrrPartOrder::where('crr_report_id',$report->id)->delete();
+	    				\App\Models\CrrSection::where('crr_report_id',$report->id)->delete();
+	    				\App\Models\CrrSectionOrder::where('crr_report_id',$report->id)->delete();
+	    				/// delete history??
+	    				\App\Models\CrrReport::where('id',$report->id)->delete();
+	    			} else {
+	    				return '<h2>Sorry, I cannot find the report you are referencing</h2>';
+	    			}
+	    		}else{
+	    			return '<h2>Sorry, your user has insufficient priveledges to do this action.<h2>';
+	    		}
+	    		return '<p>Successfully deleted the report.</p>';
     }
 }

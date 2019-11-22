@@ -3,20 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\DocumentRule;
-use App\Models\Parcel;
-use App\Models\ParcelsToPurchaseOrder;
-use App\Models\Programs;
-use App\Models\ReimbursementPurchaseOrders;
-use App\Models\User;
-use Auth;
-use DB;
-use File;
-use Gate;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+use Auth;
+use Gate;
+use File;
 use Storage;
+use App\Models\Programs;
+use Illuminate\Http\Request;
+use DB;
+use App\Models\Parcel;
+use App\Models\User;
+use App\Models\ReimbursementPurchaseOrders;
+use App\Models\ParcelsToPurchaseOrder;
 
 class PurchaseOrderController extends Controller
 {
@@ -43,7 +43,7 @@ class PurchaseOrderController extends Controller
         //                           DB::raw("(select sum(invoice_items.amount) from invoice_items where invoice_items.parcel_id = parcel_system_id) as invoiced_total"))
         //                       ->whereIn('parcels.id', $parcelids_array)
         //                       ->get();
-
+        
         $po->load('status')
             ->load('parcels')
             ->load('entity');
@@ -62,7 +62,7 @@ class PurchaseOrderController extends Controller
             } else {
                 $parcel->reimbursement_request_id = 0;
             }
-
+          
             $parcel->load('associatedPo');
             if ($parcel->associatedPo) {
                 $parcel->purchase_order_id = $parcel->associatedPo->purchase_order_id;

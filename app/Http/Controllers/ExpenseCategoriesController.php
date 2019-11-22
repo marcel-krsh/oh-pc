@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CostItem;
-use App\Models\ExpenseCategory;
-use App\Models\InvoiceItem;
-use App\Models\Parcel;
-use App\Models\PoItems;
-use App\Models\Program;
-use App\Models\RequestItem;
-use App\Models\Vendor;
+use Illuminate\Http\Request;
+use Gate;
 use Auth;
 use DB;
-use Gate;
-use Illuminate\Http\Request;
+use App\Models\Parcel;
+use App\Models\ExpenseCategory;
+use App\Models\Program;
+use App\Models\Vendor;
+use App\Models\CostItem;
+use App\Models\RequestItem;
+use App\Models\PoItems;
+use App\Models\InvoiceItem;
 
 ini_set('max_execution_time', 600);
 class ExpenseCategoriesController extends Controller
@@ -34,16 +34,16 @@ class ExpenseCategoriesController extends Controller
      *
      * @return array|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function showDetails($output, ExpenseCategory $category, Program $program, Parcel $parcel = null, $zero_values = 0)
+    public function showDetails($output = 0, ExpenseCategory $category, Program $program, Parcel $parcel = null, $zero_values = 0)
     {
         //get all categories
         $expense_categories = ExpenseCategory::where('id', '!=', 1)->get();
 
         // which items do we use to compute averages?
-        $source = 'Cost items';
+        $source = "Cost items";
 
         if (count($parcel->associatedInvoice) == 1) {
-            $source = 'Invoice items';
+            $source = "Invoice items";
 
             // get the invoiced total, count and average for program and category
             $query_totals = DB::table('invoice_items')
@@ -51,16 +51,16 @@ class ExpenseCategoriesController extends Controller
                                                         AVG( amount ) AS average'))
                                         ->where('expense_category_id', '=', $category->id)
                                         ->where('program_id', '=', $program->id);
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_totals = $query_totals->where('amount', '!=', 0);
             }
             $amount_for_program = $query_totals->first();
-
+                                        
             // Invoiced for Parcel
             $query_parcel = DB::table('invoice_items')
                                         ->where('expense_category_id', '=', $category->id)
                                         ->where('parcel_id', '=', $parcel->id);
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_parcel = $query_parcel->where('amount', '!=', 0);
             }
             $amount_for_parcel_query = $query_parcel->sum('amount');
@@ -74,7 +74,7 @@ class ExpenseCategoriesController extends Controller
                                             $join->on('invoice_items.program_id', '=', 'programs.id')
                                                 ->where('programs.active', '=', 1);
                                         });
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_all_program = $query_all_program->where('amount', '!=', 0);
             }
             $amount_for_entity = $query_all_program->first();
@@ -85,7 +85,7 @@ class ExpenseCategoriesController extends Controller
                                         ->where('program_id', '=', $program->id)
                                         ->where('expense_category_id', '=', $category->id)
                                         ->orderBy('amount', 'ASC');
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_median_program = $query_median_program->where('amount', '!=', 0);
             }
             $amount_for_program_array = $query_median_program->get();
@@ -99,12 +99,12 @@ class ExpenseCategoriesController extends Controller
                                         })
                                         ->where('expense_category_id', '=', $category->id)
                                         ->orderBy('amount', 'ASC');
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_median_entity = $query_median_entity->where('amount', '!=', 0);
             }
             $amount_for_entity_array = $query_median_entity->get();
         } elseif (count($parcel->associatedPo) == 1) {
-            $source = 'PO items';
+            $source = "PO items";
 
             // get the invoiced total, count and average for program and category
             $query_totals = DB::table('po_items')
@@ -112,16 +112,16 @@ class ExpenseCategoriesController extends Controller
                                                         AVG( amount ) AS average'))
                                         ->where('expense_category_id', '=', $category->id)
                                         ->where('program_id', '=', $program->id);
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_totals = $query_totals->where('amount', '!=', 0);
             }
             $amount_for_program = $query_totals->first();
-
+                                        
             // Invoiced for Parcel
             $query_parcel = DB::table('po_items')
                                         ->where('expense_category_id', '=', $category->id)
                                         ->where('parcel_id', '=', $parcel->id);
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_parcel = $query_parcel->where('amount', '!=', 0);
             }
             $amount_for_parcel_query = $query_parcel->sum('amount');
@@ -135,7 +135,7 @@ class ExpenseCategoriesController extends Controller
                                             $join->on('po_items.program_id', '=', 'programs.id')
                                                 ->where('programs.active', '=', 1);
                                         });
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_all_program = $query_all_program->where('amount', '!=', 0);
             }
             $amount_for_entity = $query_all_program->first();
@@ -147,7 +147,7 @@ class ExpenseCategoriesController extends Controller
                                         ->where('program_id', '=', $program->id)
                                         ->where('expense_category_id', '=', $category->id)
                                         ->orderBy('amount', 'ASC');
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_median_program = $query_median_program->where('amount', '!=', 0);
             }
             $amount_for_program_array = $query_median_program->get();
@@ -161,12 +161,12 @@ class ExpenseCategoriesController extends Controller
                                         })
                                         ->where('expense_category_id', '=', $category->id)
                                         ->orderBy('amount', 'ASC');
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_median_entity = $query_median_entity->where('amount', '!=', 0);
             }
             $amount_for_entity_array = $query_median_entity->get();
         } elseif (count($parcel->associatedRequest) == 1) {
-            $source = 'Request items';
+            $source = "Request items";
 
             // get the invoiced total, count and average for program and category
             $query_totals = DB::table('request_items')
@@ -174,16 +174,16 @@ class ExpenseCategoriesController extends Controller
                                                         AVG( amount ) AS average'))
                                         ->where('expense_category_id', '=', $category->id)
                                         ->where('program_id', '=', $program->id);
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_totals->where('amount', '!=', 0);
             }
             $amount_for_program = $query_totals->first();
-
+                                        
             // Invoiced for Parcel
             $query_parcel = DB::table('request_items')
                                         ->where('expense_category_id', '=', $category->id)
                                         ->where('parcel_id', '=', $parcel->id);
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_parcel->where('amount', '!=', 0);
             }
             $amount_for_parcel_query = $query_parcel->sum('amount');
@@ -197,7 +197,7 @@ class ExpenseCategoriesController extends Controller
                                             $join->on('request_items.program_id', '=', 'programs.id')
                                                 ->where('programs.active', '=', 1);
                                         });
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_all_program->where('amount', '!=', 0);
             }
             $amount_for_entity = $query_all_program->first();
@@ -208,7 +208,7 @@ class ExpenseCategoriesController extends Controller
                                         ->where('program_id', '=', $program->id)
                                         ->where('expense_category_id', '=', $category->id)
                                         ->orderBy('amount', 'ASC');
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_median_program->where('amount', '!=', 0);
             }
             $amount_for_program_array = $query_median_program->get();
@@ -222,12 +222,12 @@ class ExpenseCategoriesController extends Controller
                                         })
                                         ->where('expense_category_id', '=', $category->id)
                                         ->orderBy('amount', 'ASC');
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_median_entity->where('amount', '!=', 0);
             }
             $amount_for_entity_array = $query_median_entity->get();
         } else {
-            $source = 'Cost items';
+            $source = "Cost items";
 
             // get the invoiced total, count and average for program and category
             $query_totals = DB::table('cost_items')
@@ -235,16 +235,16 @@ class ExpenseCategoriesController extends Controller
                                                         AVG( amount ) AS average'))
                                         ->where('expense_category_id', '=', $category->id)
                                         ->where('program_id', '=', $program->id);
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_totals->where('amount', '!=', 0);
             }
             $amount_for_program = $query_totals->first();
-
+                                        
             // Invoiced for Parcel
             $query_parcel = DB::table('cost_items')
                                         ->where('expense_category_id', '=', $category->id)
                                         ->where('parcel_id', '=', $parcel->id);
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_parcel = $query_parcel->where('amount', '!=', 0);
             }
             $amount_for_parcel_query = $query_parcel->sum('amount');
@@ -258,7 +258,7 @@ class ExpenseCategoriesController extends Controller
                                             $join->on('cost_items.program_id', '=', 'programs.id')
                                                 ->where('programs.active', '=', 1);
                                         });
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_all_program = $query_all_program->where('amount', '!=', 0);
             }
             $amount_for_entity = $query_all_program->first();
@@ -269,7 +269,7 @@ class ExpenseCategoriesController extends Controller
                                         ->where('program_id', '=', $program->id)
                                         ->where('expense_category_id', '=', $category->id)
                                         ->orderBy('amount', 'ASC');
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_median_program = $query_median_program->where('amount', '!=', 0);
             }
             $amount_for_program_array = $query_median_program->get();
@@ -283,41 +283,42 @@ class ExpenseCategoriesController extends Controller
                                         })
                                         ->where('expense_category_id', '=', $category->id)
                                         ->orderBy('amount', 'ASC');
-            if ($zero_values != 1) {
+            if ($zero_values!=1) {
                 $query_median_entity = $query_median_entity->where('amount', '!=', 0);
             }
             $amount_for_entity_array = $query_median_entity->get();
         }
 
-        if (! $amount_for_parcel_query) {
+
+        if (!$amount_for_parcel_query) {
             $amount_for_parcel = 0;
         } else {
             $amount_for_parcel = $amount_for_parcel_query;
         }
-
+                                         
         $count_amount_for_program_array = count($amount_for_program_array);
         if ($count_amount_for_program_array) {
-            $middleval = floor(($count_amount_for_program_array - 1) / 2);
+            $middleval = floor(($count_amount_for_program_array-1)/2);
             if ($count_amount_for_program_array % 2) {
                 $amount_for_program_median = $amount_for_program_array[$middleval]->amount;
             } else {
                 $low = $amount_for_program_array[$middleval]->amount;
-                $high = $amount_for_program_array[$middleval + 1]->amount;
-                $amount_for_program_median = (($low + $high) / 2);
+                $high = $amount_for_program_array[$middleval+1]->amount;
+                $amount_for_program_median = (($low+$high)/2);
             }
         } else {
             $amount_for_program_median = 0;
         }
-
+                         
         $count_amount_for_entity_array = count($amount_for_entity_array);
         if ($count_amount_for_entity_array) {
-            $middleval = floor(($count_amount_for_entity_array - 1) / 2);
+            $middleval = floor(($count_amount_for_entity_array-1)/2);
             if ($count_amount_for_entity_array % 2) {
                 $amount_for_entity_median = $amount_for_entity_array[$middleval]->amount;
             } else {
                 $low = $amount_for_entity_array[$middleval]->amount;
-                $high = $amount_for_entity_array[$middleval + 1]->amount;
-                $amount_for_entity_median = (($low + $high) / 2);
+                $high = $amount_for_entity_array[$middleval+1]->amount;
+                $amount_for_entity_median = (($low+$high)/2);
             }
         } else {
             $amount_for_entity_median = 0;
@@ -337,11 +338,11 @@ class ExpenseCategoriesController extends Controller
         } else {
             $parcelid = 0;
         }
-
+        
         $categoryid = $category->id;
         $categoryname = $category->expense_category_name;
 
-        if ($output == 1) {
+        if ($output==1) {
             return compact('source', 'parcelid', 'programid', 'categoryid', 'categoryname', 'expense_categories', 'amount_for_parcel', 'amount_for_program_average', 'amount_for_entity_average', 'amount_for_program_median', 'amount_for_entity_median');
         } else {
             return view('modals.expense-categories-details', compact('source', 'parcelid', 'programid', 'categoryid', 'categoryname', 'expense_categories', 'amount_for_program_average', 'amount_for_parcel', 'amount_for_entity_average', 'amount_for_program_median', 'amount_for_entity_median'));
@@ -349,7 +350,7 @@ class ExpenseCategoriesController extends Controller
     }
 
     /**
-     * Show Vendor Expenses.
+     * Show Vendor Expenses
      *
      * @param      $vendor_id
      * @param null $parcel_id
@@ -405,8 +406,8 @@ class ExpenseCategoriesController extends Controller
             $cat_names = $cat_names.'"'.$cat->expense_category_name.'",';
 
             if ($parcel) {
-                $in_parcel = 1;
-
+                $in_parcel =1;
+                    
                 if ($include_legacy_vendor) {
                     $data['parcel']['cost'][$cat->id]['total'] = CostItem::where('vendor_id', '=', $vendor_id)->where('parcel_id', '=', $parcel->id)->where('expense_category_id', '=', $cat->id)->sum('amount');
                     $data['parcel']['cost'][$cat->id]['grand_total'] = CostItem::where('expense_category_id', '=', $cat->id)->where('parcel_id', '=', $parcel->id)->sum('amount');
@@ -421,7 +422,7 @@ class ExpenseCategoriesController extends Controller
                 } else {
                     $data['parcel']['cost'][$cat->id]['percentage'] = null;
                 }
-
+                
                 if ($include_legacy_vendor) {
                     $data['parcel']['request'][$cat->id]['total'] = RequestItem::where('vendor_id', '=', $vendor_id)->where('parcel_id', '=', $parcel->id)->where('expense_category_id', '=', $cat->id)->sum('amount');
                     $data['parcel']['request'][$cat->id]['grand_total'] = RequestItem::where('expense_category_id', '=', $cat->id)->where('parcel_id', '=', $parcel->id)->sum('amount');

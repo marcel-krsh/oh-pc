@@ -1,17 +1,17 @@
 <?php
 
 namespace App\Events;
-
-use App\Models\User;
 use Auth;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
+use App\Models\User;
+
 use Illuminate\Support\Facades\Log;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
 class UpdateEvent implements ShouldBroadcastNow
 {
@@ -19,7 +19,6 @@ class UpdateEvent implements ShouldBroadcastNow
 
     public $user;
     public $data;
-
     /**
      * Create a new event instance.
      *
@@ -30,7 +29,7 @@ class UpdateEvent implements ShouldBroadcastNow
         //
         $this->user = $user;
         if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-            // Auth::onceUsingId(1); // TEST BRIAN
+           // Auth::onceUsingId(1); // TEST BRIAN
             Auth::onceUsingId(286); // TEST
             $this->user = Auth::user();
         }

@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
-use Carbon;
 use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Relations\HasOne;
+
+use Carbon;
 
 class CachedUnit extends Model
 {
@@ -46,7 +48,7 @@ class CachedUnit extends Model
         'updated_at',
         'unit_id',
         'unit_key',
-        'unit_name',
+        'unit_name'
     ];
 
     public function getAmenitiesJsonAttribute($value)
@@ -63,7 +65,6 @@ class CachedUnit extends Model
     {
         return $this->hasOne(\App\Models\Unit::class, 'id', 'unit_id');
     }
-
     public function building() : HasOne
     {
         return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
@@ -76,7 +77,7 @@ class CachedUnit extends Model
 
     public function amenity_inspections()
     {
-        return \App\Models\AmenityInspection::where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->unit_id)->whereNotNull('unit_id')->get();
+        return \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$this->unit_id)->whereNotNull('unit_id')->get();
     }
 
     public function amenities_and_findings()
@@ -85,60 +86,62 @@ class CachedUnit extends Model
         // name (with numbering)
         // link to findings modal
         // blue dotted outline if they need to be done, otherwise completed
-
+        
         //$amenity_inspections = $this->amenity_inspections();
 
         // manage name duplicates, number them based on their id
-        $amenity_names = [];
+        $amenity_names = array();
         $amenities = $this->amenity_inspections();
 
-        foreach ($amenities as $amenity) {
+        foreach($amenities as $amenity){
             $amenity_names[$amenity->amenity->amenity_description][] = $amenity->id;
         }
 
-        $output = [];
-        $output_completed = [];
-
-        foreach ($amenities as $amenity) {
+        $output = array();
+        $output_completed = array();
+        
+        foreach($amenities as $amenity){
             $key = array_search($amenity->id, $amenity_names[$amenity->amenity->amenity_description]);
-
-            if ($key > 0) {
+            
+            if($key > 0){
                 $key = $key + 1;
-                $name = $amenity->amenity->amenity_description.' '.$key;
-            } else {
+                $name = $amenity->amenity->amenity_description." ".$key;
+            }else{
                 $name = $amenity->amenity->amenity_description;
             }
 
             $status = $amenity->status();
 
-            if ($amenity->completed_date_time !== null) {
+            if($amenity->completed_date_time !== NULL){
                 $completed = 1;
 
                 $output_completed[] = [
-                    'id' => $amenity->id,
-                    'findings_total' => $amenity->findings_total(),
-                    'name' => $name,
-                    'status' => $status,
-                    'completed' => $completed,
+                    "id" => $amenity->id,
+                    "findings_total" => $amenity->findings_total(),
+                    "name" => $name,
+                    "status" => $status,
+                    "completed" => $completed
                 ];
-            } else {
+            }else{
                 $completed = 0;
 
                 $output[] = [
-                    'id' => $amenity->id,
-                    'findings_total' => $amenity->findings_total(),
-                    'name' => $name,
-                    'status' => $status,
-                    'completed' => $completed,
+                    "id" => $amenity->id,
+                    "findings_total" => $amenity->findings_total(),
+                    "name" => $name,
+                    "status" => $status,
+                    "completed" => $completed
                 ];
             }
+
+            
         }
 
         // prioritize not completed amenities
-        foreach ($output_completed as $o) {
+        foreach($output_completed as $o){
             $output[] = $o;
         }
-
+        
         $output = array_filter($output); // remove empty elements
 
         return $output;
@@ -150,35 +153,35 @@ class CachedUnit extends Model
         $this->findingstotal();
 
         // fix finding type totals
-        $total_nlt = \App\Models\Finding::where('audit_id', '=', $this->audit_id)
-                                            ->where('unit_id', '=', $this->unit_id)
-                                            ->whereHas('finding_type', function ($query) {
+        $total_nlt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                            ->where('unit_id','=',$this->unit_id)
+                                            ->whereHas('finding_type', function($query) {
                                                 $query->where('type', '=', 'nlt');
                                             })->count();
         // fix the count
-        if ($this->finding_nlt_total != $total_nlt) {
+        if($this->finding_nlt_total != $total_nlt){
             $this->finding_nlt_total = $total_nlt;
             $this->save();
         }
 
-        $total_file = \App\Models\Finding::where('audit_id', '=', $this->audit_id)
-                                            ->where('unit_id', '=', $this->unit_id)
-                                            ->whereHas('finding_type', function ($query) {
+        $total_file = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                            ->where('unit_id','=',$this->unit_id)
+                                            ->whereHas('finding_type', function($query) {
                                                 $query->where('type', '=', 'file');
                                             })->count();
 
-        if ($this->finding_file_total != $total_file) {
+        if($this->finding_file_total != $total_file){
             $this->finding_file_total = $total_file;
             $this->save();
         }
 
-        $total_lt = \App\Models\Finding::where('audit_id', '=', $this->audit_id)
-                                            ->where('unit_id', '=', $this->unit_id)
-                                            ->whereHas('finding_type', function ($query) {
+        $total_lt = \App\Models\Finding::where('audit_id','=',$this->audit_id)
+                                            ->where('unit_id','=',$this->unit_id)
+                                            ->whereHas('finding_type', function($query) {
                                                 $query->where('type', '=', 'lt');
                                             })->count();
 
-        if ($this->finding_lt_total != $total_lt) {
+        if($this->finding_lt_total != $total_lt){
             $this->finding_lt_total = $total_lt;
             $this->save();
         }
@@ -191,19 +194,20 @@ class CachedUnit extends Model
         $unit_id = $this->unit_id;
 
         // is it a unit?
-        if ($unit_id) {
-            $total = \App\Models\Finding::where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $unit_id)->count();
-        } else {
+        if($unit_id){
+            $total = \App\Models\Finding::where('audit_id','=',$this->audit_id)->where('unit_id','=',$unit_id)->count();
+        }else{
             // it is an amenity
             $total = $this->amenity_inspections()->findings_total();
         }
 
         // fix the count
-        if ($current_finding_total != $total) {
+        if($current_finding_total != $total){
             $this->finding_total = $total;
             $this->save();
         }
 
         return $total;
+        
     }
 }

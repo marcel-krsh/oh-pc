@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * HudInspectableArea Model.
+ * HudInspectableArea Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -22,11 +22,11 @@ class HudInspectableArea extends Model
         'building_exterior',
         'common_area',
         'unit',
-        'file',
+        'file'
     ];
 
     /**
-     * finding_types.
+     * finding_types
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -36,7 +36,7 @@ class HudInspectableArea extends Model
     }
 
     /**
-     * Amenities.
+     * Amenities
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * UserRole Model.
+ * UserRole Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -16,11 +16,11 @@ class UserAmenity extends Model
     protected $fillable = [
         'amenity_id',
         'user_id',
-        'is_lead',
+        'is_lead'
     ];
 
     /**
-     * User.
+     * User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -30,7 +30,7 @@ class UserAmenity extends Model
     }
 
     /**
-     * Amenity.
+     * Amenity
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

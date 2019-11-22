@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * Device Model.
+ * Device Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Device extends Model
 {
     /**
-     * Users.
+     * Users
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -25,7 +25,7 @@ class Device extends Model
     // }
 
     /**
-     * Wipe User.
+     * Wipe User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

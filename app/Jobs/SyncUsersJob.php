@@ -2,11 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Models\AuthTracker;
 use App\Models\SyncUser;
-use App\Models\SystemSetting;
 use App\Models\User;
-use App\Services\AuthService;
 use App\Services\DevcoService;
 use DateTime;
 use DB;
@@ -15,7 +12,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class SyncUsersJob implements ShouldQueue
@@ -67,7 +63,7 @@ class SyncUsersJob implements ShouldQueue
             //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
-        if (! is_null($apiConnect)) {
+        if (!is_null($apiConnect)) {
             $syncData = $apiConnect->listUsers(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
@@ -117,8 +113,8 @@ class SyncUsersJob implements ShouldQueue
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
                             $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
-                            $allitaFloat = '.'.$allitaDate->format('u');
-                            $devcoFloat = '.'.$devcoDate->format('u');
+                            $allitaFloat = "." . $allitaDate->format('u');
+                            $devcoFloat = "." . $devcoDate->format('u');
                             settype($allitaFloat, 'float');
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
@@ -127,37 +123,37 @@ class SyncUsersJob implements ShouldQueue
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
 
                             if ($devcoDateEval > $allitaDateEval) {
-                                if (! is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+                                if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
                                     SyncUser::where('id', $updateRecord['id'])
-                                    ->update([
+                                        ->update([
 
-                                        'organization_key'=>$v['attributes']['organizationKey'],
-                                        'user_status_key'=>$v['attributes']['userStatusKey'],
-                                        'person_key'=>$v['attributes']['personKey'],
-                                        'organization_key'=>$v['attributes']['organizationKey'],
+                                            'organization_key' => $v['attributes']['organizationKey'],
+                                            'user_status_key' => $v['attributes']['userStatusKey'],
+                                            'person_key' => $v['attributes']['personKey'],
+                                            'organization_key' => $v['attributes']['organizationKey'],
 
-                                        'organization'=>$v['attributes']['organization'],
+                                            'organization' => $v['attributes']['organization'],
 
-                                        'last_edited'=>$v['attributes']['lastEdited'],
-                                    ]);
+                                            'last_edited' => $v['attributes']['lastEdited'],
+                                        ]);
                                     $UpdateAllitaValues = SyncUser::find($updateRecord['id']);
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
 
-                                        'organization_key'=>$v['attributes']['organizationKey'],
-                                        'organization_id'=>null,
-                                        'user_status_key'=>$v['attributes']['userStatusKey'],
-                                        'person_key'=>$v['attributes']['personKey'],
-                                        'person_id'=>null,
+                                        'organization_key' => $v['attributes']['organizationKey'],
+                                        'organization_id' => null,
+                                        'user_status_key' => $v['attributes']['userStatusKey'],
+                                        'person_key' => $v['attributes']['personKey'],
+                                        'person_id' => null,
 
-                                        'organization'=>$v['attributes']['organization'],
-                                        'entity_type'=>'devco',
+                                        'organization' => $v['attributes']['organization'],
+                                        'entity_type' => 'devco',
 
-                                        'last_edited'=>$UpdateAllitaValues->updated_at,
+                                        'last_edited' => $UpdateAllitaValues->updated_at,
                                     ]);
-                                //dd('inside.');
+                                    //dd('inside.');
                                 } elseif (is_null($allitaTableRecord)) {
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
@@ -167,38 +163,38 @@ class SyncUsersJob implements ShouldQueue
 
                                     $allitaTableRecord = User::create([
 
-                                        'organization_key'=>$v['attributes']['organizationKey'],
-                                        'user_status_key'=>$v['attributes']['userStatusKey'],
-                                        'person_key'=>$v['attributes']['personKey'],
-                                        'organization_key'=>$v['attributes']['organizationKey'],
+                                        'organization_key' => $v['attributes']['organizationKey'],
+                                        'user_status_key' => $v['attributes']['userStatusKey'],
+                                        'person_key' => $v['attributes']['personKey'],
+                                        'organization_key' => $v['attributes']['organizationKey'],
 
-                                        'organization'=>$v['attributes']['organization'],
-                                        'name'=>$v['attributes']['login'],
-                                        'email'=>$v['attributes']['login'].'@allita.org',
-                                        'password'=>bcrypt($password),
-                                        'active'=>$active,
+                                        'organization' => $v['attributes']['organization'],
+                                        'name' => $v['attributes']['login'],
+                                        'email' => $v['attributes']['login'] . '@allita.org',
+                                        'password' => bcrypt($password),
+                                        'active' => $active,
 
-                                        'entity_type'=>'devco',
+                                        'entity_type' => 'devco',
 
-                                        'devco_key'=>$v['attributes']['userKey'],
+                                        'devco_key' => $v['attributes']['userKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
                                     $syncTableRecord = SyncUser::where('id', $updateRecord['id'])
-                                    ->update([
+                                        ->update([
 
-                                        'organization_key'=>$v['attributes']['organizationKey'],
-                                        'user_status_key'=>$v['attributes']['userStatusKey'],
-                                        'person_key'=>$v['attributes']['personKey'],
-                                        'organization_key'=>$v['attributes']['organizationKey'],
+                                            'organization_key' => $v['attributes']['organizationKey'],
+                                            'user_status_key' => $v['attributes']['userStatusKey'],
+                                            'person_key' => $v['attributes']['personKey'],
+                                            'organization_key' => $v['attributes']['organizationKey'],
 
-                                        'organization'=>$v['attributes']['organization'],
+                                            'organization' => $v['attributes']['organization'],
 
-                                        'devco_key'=>$v['attributes']['userKey'],
-                                        'last_edited'=>$v['attributes']['lastEdited'],
-                                        'allita_id'=>$allitaTableRecord->id,
-                                    ]);
+                                            'devco_key' => $v['attributes']['userKey'],
+                                            'last_edited' => $v['attributes']['lastEdited'],
+                                            'allita_id' => $allitaTableRecord->id,
+                                        ]);
                                     // Update the Allita Table Record with the Sync Table's updated at date
-                                    $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
+                                    $allitaTableRecord->update(['last_edited' => $syncTableRecord->updated_at]);
                                 }
                             }
                         } else {
@@ -207,37 +203,37 @@ class SyncUsersJob implements ShouldQueue
                             // when we add in the allita_id
                             $allitaTableRecord = User::create([
 
-                                    'devco_key'=>$v['attributes']['userKey'],
-                                    'organization_key'=>$v['attributes']['organizationKey'],
-                                    'user_status_key'=>$v['attributes']['userStatusKey'],
-                                    'person_key'=>$v['attributes']['personKey'],
-                                    'organization_key'=>$v['attributes']['organizationKey'],
+                                'devco_key' => $v['attributes']['userKey'],
+                                'organization_key' => $v['attributes']['organizationKey'],
+                                'user_status_key' => $v['attributes']['userStatusKey'],
+                                'person_key' => $v['attributes']['personKey'],
+                                'organization_key' => $v['attributes']['organizationKey'],
 
-                                    'organization'=>$v['attributes']['organization'],
+                                'organization' => $v['attributes']['organization'],
 
-                                    'name'=>$v['attributes']['login'],
-                                    'email'=>$v['attributes']['login'].'@allita.org',
-                                    'password'=>bcrypt($password),
-                                    'active'=>$active,
+                                'name' => $v['attributes']['login'],
+                                'email' => $v['attributes']['login'] . '@allita.org',
+                                'password' => bcrypt($password),
+                                'active' => $active,
 
-                            'devco_key'=>$v['attributes']['userKey'],
+                                'devco_key' => $v['attributes']['userKey'],
                             ]);
                             // Create the sync table entry with the allita id
                             $syncTableRecord = SyncUser::create([
 
-                                    'organization_key'=>$v['attributes']['organizationKey'],
-                                    'user_status_key'=>$v['attributes']['userStatusKey'],
-                                    'person_key'=>$v['attributes']['personKey'],
-                                    'organization_key'=>$v['attributes']['organizationKey'],
+                                'organization_key' => $v['attributes']['organizationKey'],
+                                'user_status_key' => $v['attributes']['userStatusKey'],
+                                'person_key' => $v['attributes']['personKey'],
+                                'organization_key' => $v['attributes']['organizationKey'],
 
-                                    'organization'=>$v['attributes']['organization'],
+                                'organization' => $v['attributes']['organization'],
 
-                                'devco_key'=>$v['attributes']['userKey'],
-                                'last_edited'=>$v['attributes']['lastEdited'],
-                                'allita_id'=>$allitaTableRecord->id,
+                                'devco_key' => $v['attributes']['userKey'],
+                                'last_edited' => $v['attributes']['lastEdited'],
+                                'allita_id' => $allitaTableRecord->id,
                             ]);
                             // Update the Allita Table Record with the Sync Table's updated at date
-                            $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
+                            $allitaTableRecord->update(['last_edited' => $syncTableRecord->updated_at]);
                         }
                     }
                     $syncPage++;

@@ -2,14 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Amenity;
-use App\Models\Building;
-use App\Models\BuildingAmenity;
-use App\Models\Project;
-use App\Models\ProjectAmenity;
-use App\Models\UnitAmenity;
-use App\Modles\Unit;
 use Illuminate\Console\Command;
+use App\Models\Amenity;
+use App\Models\BuildingAmenity;
+use App\Models\UnitAmenity;
+use App\Models\ProjectAmenity;
+use App\Models\Project;
+use App\Modles\Unit;
+use App\Models\Building;
 
 class FixAmenities extends Command
 {
@@ -48,12 +48,13 @@ class FixAmenities extends Command
         // Get all the audits first:
         $projects = Project::get()->all();
         $this->info(PHP_EOL.'Processing '.count($projects).' Projects'.PHP_EOL);
+        
 
         foreach ($projects as $project) {
-            if (count($project->amenities) > 0) {
+            if(count($project->amenities)>0){
                 $this->info('Project ID '.$project->id.' has '.count($project->amenities).' Project Amenities'.PHP_EOL);
                 $this->info(count($project->buildings).' Project Buildings with '.count($project->units).' Units total'.PHP_EOL);
-
+            
                 $processBar = $this->output->createProgressBar(count($project->amenities));
 
                 $previousPaId = 0;
@@ -65,40 +66,43 @@ class FixAmenities extends Command
                     //     $this->error('DUPLICATE ENTRY - ALLOW DUPES'.PHP_EOL);
                     // }
                     // $previousPaId = $pa->amenity->id;
-                    if ($pa->amenity->unit) {
+                    if($pa->amenity->unit){
                         foreach ($project->units as $unit) {
                             UnitAmenity::create([
                             'unit_id'=>$unit->id,
                             'amenity_id'=>$pa->amenity->id,
-                            'comment' =>$pa->comment,
+                            'comment' =>$pa->comment
                             ]);
                         }
-
+                        
                         //$this->info('Add to Units'.PHP_EOL);
                     }
-                    if ($pa->amenity->building_system || $pa->amenity->building_exterior) {
+                    if($pa->amenity->building_system || $pa->amenity->building_exterior){
                         //$this->info('Add to Buildings'.PHP_EOL);
                         foreach ($project->buildings as $building) {
                             BuildingAmenity::create([
                             'building_id'=>$building->id,
                             'amenity_id'=>$pa->amenity->id,
-                            'comment' =>$pa->comment,
+                            'comment' =>$pa->comment
                             ]);
                         }
                     }
-                    if ($pa->amenity->project) {
+                    if($pa->amenity->project){
                         //$this->info('Keep on Project'.PHP_EOL);
                     } else {
-                        $pa->update(['deleted_at'=>date('Y-m-d H:i:s', time())]);
+                        $pa->update(['deleted_at'=>date("Y-m-d H:i:s",time())]);
                         //$this->info('Remove from Project'.PHP_EOL);
                     }
 
+                    
                     $processBar->advance();
                 }
-
+                
                 $processBar->finish();
                 $this->info(PHP_EOL.'==================================================='.PHP_EOL);
             }
+
+            
         }
     }
 }

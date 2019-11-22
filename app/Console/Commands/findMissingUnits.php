@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Project;
 use Illuminate\Console\Command;
+use App\Models\Project;
 
 class findMissingUnits extends Command
 {
@@ -45,22 +45,24 @@ class findMissingUnits extends Command
         $moreCount = 0;
         $exactCount = 0;
         foreach ($projects as $project) {
-            if ($project->total_unit_count != count($project->units)) {
-                if (count($project->units) == 0) {
+            if($project->total_unit_count != count($project->units)){
+                if(count($project->units) == 0){
                     $zeroCount++;
                 }
-                if ($project->total_unit_count > count($project->units)) {
-                    $lessCount++;
+                if($project->total_unit_count > count($project->units)){
+                     $lessCount++;
                 }
-                if ($project->total_unit_count < count($project->units)) {
-                    $moreCount++;
+                if($project->total_unit_count < count($project->units)){
+                     $moreCount++;
                 }
                 //$this->info('Project '.$project->project_number.' info says it has '.$project->total_unit_count.' units, but there are '.count($project->units).' units in the database.'.PHP_EOL);
             } else {
                 $exactCount++;
             }
-            // code...
+            # code...
+            
         }
         $this->info('Projects with matching units to Project Info Count: '.$exactCount.PHP_EOL.'Projects with less units than the Project Info Count: '.$lessCount.PHP_EOL.'Projects with more units more than Project Info Count: '.$moreCount);
+
     }
 }

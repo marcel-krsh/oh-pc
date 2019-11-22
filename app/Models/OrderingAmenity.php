@@ -10,7 +10,7 @@ class OrderingAmenity extends Model
     protected $table = 'ordering_amenities';
 
     public $timestamps = false;
-
+    
     protected $fillable = [
         'user_id',
         'audit_id',
@@ -19,11 +19,11 @@ class OrderingAmenity extends Model
         'unit_id',
         'amenity_id',
         'order',
-        'amenity_inspection_id',
+        'amenity_inspection_id'
     ];
 
     /**
-     * Building.
+     * Building
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -33,7 +33,7 @@ class OrderingAmenity extends Model
     }
 
     /**
-     * Amenity.
+     * Amenity
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -54,7 +54,7 @@ class OrderingAmenity extends Model
     }
 
     /**
-     * Project.
+     * Project
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -64,7 +64,7 @@ class OrderingAmenity extends Model
     }
 
     /**
-     * Area.
+     * Area
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -74,7 +74,7 @@ class OrderingAmenity extends Model
     }
 
     /**
-     * Audit.
+     * Audit
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -84,7 +84,7 @@ class OrderingAmenity extends Model
     }
 
     /**
-     * User.
+     * User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

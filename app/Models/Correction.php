@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Correction Model.
+ * Correction Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -25,6 +25,6 @@ class Correction extends Model
         'corrected_site_visit_id',
         'corrected_user_id',
         'corrected_date',
-        'deleted',
+        'deleted'
     ];
 }

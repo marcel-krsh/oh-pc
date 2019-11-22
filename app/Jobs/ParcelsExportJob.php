@@ -2,22 +2,22 @@
 
 namespace App\Jobs;
 
-use App\Mail\DownloadReady;
-use App\Parcel;
-use App\Report;
-use App\User;
-use Excel;
 use Exception;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Mail\DownloadReady;
+use App\Report;
+use App\Parcel;
+use Excel;
+use App\User;
 
 ini_set('max_execution_time', 600);
 ini_set('memory_limit', '1000M');
 
 /**
- * ParcelsExport Job.
+ * ParcelsExport Job
  *
  * @category Events
  * @license  Proprietary and confidential
@@ -55,69 +55,70 @@ class ParcelsExportJob implements ShouldQueue
      */
     public function handle()
     {
-        $date = date('m-d-Y_g-i-s_a', time());
+        $date = date("m-d-Y_g-i-s_a", time());
         $filename = 'all_parcel_data_'.$date;
         \Excel::create($filename, function ($excel) {
-            require_once base_path('vendor/phpoffice/phpexcel/Classes/PHPExcel/NamedRange.php');
-            require_once base_path('vendor/phpoffice/phpexcel/Classes/PHPExcel/Cell/DataValidation.php');
-            require_once base_path('vendor/phpoffice/phpexcel/Classes/PHPExcel/Cell/DataValidation.php');
-            require_once base_path('vendor/phpoffice/phpexcel/Classes/PHPExcel/Style/Protection.php');
+            require_once(base_path("vendor/phpoffice/phpexcel/Classes/PHPExcel/NamedRange.php"));
+            require_once(base_path("vendor/phpoffice/phpexcel/Classes/PHPExcel/Cell/DataValidation.php"));
+            require_once(base_path("vendor/phpoffice/phpexcel/Classes/PHPExcel/Cell/DataValidation.php"));
+            require_once(base_path("vendor/phpoffice/phpexcel/Classes/PHPExcel/Style/Protection.php"));
+        
 
             $excel->sheet('Per Unit Accounting '.date('m.d.y', time()), function ($sheet) {
                 $parcels = Parcel::orderBy('entity_id', 'ASC')->orderBy('created_at')->get();
                 $totalRows = count($parcels) + 1; /// add one to include header
-
+            
                 $sheet->setColumnFormat([
-                'A2:A'.$totalRows => '@', 'B2:B'.$totalRows => '@', 'C2:C'.$totalRows => '@', 'D2:D'.$totalRows => '@', 'E2:E'.$totalRows => '@', 'F2:F'.$totalRows => '0.00000000', 'G2:G'.$totalRows => '0.00000000', 'H2:H5'.$totalRows => '@', 'I2:I'.$totalRows => '$#,##0.00_-', 'J2:J'.$totalRows => '$#,##0.00_-',
-                'K2:K'.$totalRows => '$#,##0.00_-', 'L2:L'.$totalRows => '$#,##0.00_-', 'M2:M'.$totalRows => '$#,##0.00_-', 'N2:N'.$totalRows => '$#,##0.00_-', 'O2:O'.$totalRows => '$#,##0.00_-', 'P2:P'.$totalRows => '$#,##0.00_-', 'Q2:Q'.$totalRows => '$#,##0.00_-', 'R2:R'.$totalRows => 'm/d/y',
+                'A2:A'.$totalRows => '@','B2:B'.$totalRows => '@','C2:C'.$totalRows => '@','D2:D'.$totalRows => '@','E2:E'.$totalRows => '@','F2:F'.$totalRows => '0.00000000','G2:G'.$totalRows => '0.00000000','H2:H5'.$totalRows => '@','I2:I'.$totalRows => '$#,##0.00_-','J2:J'.$totalRows => '$#,##0.00_-',
+                'K2:K'.$totalRows => '$#,##0.00_-','L2:L'.$totalRows => '$#,##0.00_-','M2:M'.$totalRows => '$#,##0.00_-','N2:N'.$totalRows => '$#,##0.00_-','O2:O'.$totalRows => '$#,##0.00_-','P2:P'.$totalRows => '$#,##0.00_-','Q2:Q'.$totalRows => '$#,##0.00_-','R2:R'.$totalRows => 'm/d/y',
                 ]);
-
-                $sheet->SetCellValue('A1', 'Parcel');
-                $sheet->SetCellValue('B1', 'Partner');
-                $sheet->SetCellValue('C1', 'Street Address');
-                $sheet->SetCellValue('D1', 'City');
-                $sheet->SetCellValue('E1', 'Zip');
-                $sheet->SetCellValue('F1', 'Lat Lon (Latitude)');
-                $sheet->SetCellValue('G1', 'Lat Lon (Longitude)');
-                $sheet->SetCellValue('H1', 'Property Status');
-                $sheet->SetCellValue('I1', 'Acquisition');
-                $sheet->SetCellValue('J1', 'NIP Loan');
-                $sheet->SetCellValue('K1', 'Pre-Demo');
-                $sheet->SetCellValue('L1', 'Demolition');
-                $sheet->SetCellValue('M1', 'Greening');
-                $sheet->SetCellValue('N1', 'Maintenance');
-                $sheet->SetCellValue('O1', 'Admin');
-                $sheet->SetCellValue('P1', 'Other');
-                $sheet->SetCellValue('Q1', 'Disbursement');
-                $sheet->SetCellValue('R1', 'Date Paid');
-
+            
+                $sheet->SetCellValue("A1", "Parcel");
+                $sheet->SetCellValue("B1", "Partner");
+                $sheet->SetCellValue("C1", "Street Address");
+                $sheet->SetCellValue("D1", "City");
+                $sheet->SetCellValue("E1", "Zip");
+                $sheet->SetCellValue("F1", "Lat Lon (Latitude)");
+                $sheet->SetCellValue("G1", "Lat Lon (Longitude)");
+                $sheet->SetCellValue("H1", "Property Status");
+                $sheet->SetCellValue("I1", "Acquisition");
+                $sheet->SetCellValue("J1", "NIP Loan");
+                $sheet->SetCellValue("K1", "Pre-Demo");
+                $sheet->SetCellValue("L1", "Demolition");
+                $sheet->SetCellValue("M1", "Greening");
+                $sheet->SetCellValue("N1", "Maintenance");
+                $sheet->SetCellValue("O1", "Admin");
+                $sheet->SetCellValue("P1", "Other");
+                $sheet->SetCellValue("Q1", "Disbursement");
+                $sheet->SetCellValue("R1", "Date Paid");
+            
                 $row = 1;
                 foreach ($parcels as $data) {
                     $row++;
-                    $sheet->SetCellValue('A'.$row, $data->parcel_id);
+                    $sheet->SetCellValue("A".$row, $data->parcel_id);
                     if ($data->program) {
-                        $sheet->SetCellValue('B'.$row, $data->program->program_name);
+                        $sheet->SetCellValue("B".$row, $data->program->program_name);
                     } else {
-                        $sheet->SetCellValue('B'.$row, '');
+                        $sheet->SetCellValue("B".$row, '');
                     }
-                    $sheet->SetCellValue('C'.$row, $data->street_address);
-                    $sheet->SetCellValue('D'.$row, $data->city);
-                    $sheet->SetCellValue('E'.$row, $data->zip);
-                    $sheet->SetCellValue('F'.$row, $data->latitude);
-                    $sheet->SetCellValue('G'.$row, $data->longitude);
+                    $sheet->SetCellValue("C".$row, $data->street_address);
+                    $sheet->SetCellValue("D".$row, $data->city);
+                    $sheet->SetCellValue("E".$row, $data->zip);
+                    $sheet->SetCellValue("F".$row, $data->latitude);
+                    $sheet->SetCellValue("G".$row, $data->longitude);
                     if ($data->hfa_property_status) {
-                        $sheet->SetCellValue('H'.$row, $data->hfa_property_status->option_name);
+                        $sheet->SetCellValue("H".$row, $data->hfa_property_status->option_name);
                     } else {
-                        $sheet->SetCellValue('H'.$row, '');
+                        $sheet->SetCellValue("H".$row, '');
                     }
-                    $sheet->SetCellValue('I'.$row, $data->acquisitionTotal());
-                    $sheet->SetCellValue('J'.$row, $data->nipLoanTotal());
-                    $sheet->SetCellValue('K'.$row, $data->predemoTotal());
-                    $sheet->SetCellValue('L'.$row, $data->demolitionTotal());
-                    $sheet->SetCellValue('M'.$row, $data->demolitionTotal());
-                    $sheet->SetCellValue('N'.$row, $data->maintenanceTotal());
-                    $sheet->SetCellValue('O'.$row, $data->administrationTotal());
-                    $sheet->SetCellValue('P'.$row, $data->otherTotal());
+                    $sheet->SetCellValue("I".$row, $data->acquisitionTotal());
+                    $sheet->SetCellValue("J".$row, $data->nipLoanTotal());
+                    $sheet->SetCellValue("K".$row, $data->predemoTotal());
+                    $sheet->SetCellValue("L".$row, $data->demolitionTotal());
+                    $sheet->SetCellValue("M".$row, $data->demolitionTotal());
+                    $sheet->SetCellValue("N".$row, $data->maintenanceTotal());
+                    $sheet->SetCellValue("O".$row, $data->administrationTotal());
+                    $sheet->SetCellValue("P".$row, $data->otherTotal());
                     // get status of this parcel's invoice - if it is paid put in invoiced total
 
                     if (isset($data->associatedInvoice->reimbursement_invoice_id)) {
@@ -129,17 +130,17 @@ class ParcelsExportJob implements ShouldQueue
                         }
                         $payment = \App\Transaction::where('link_to_type_id', $invoice->id)->where('type_id', 1)->first();
                         if (isset($payment->date_entered)) {
-                            $sheet->SetCellValue('Q'.$row, $data->invoicedTotal());
+                            $sheet->SetCellValue("Q".$row, $data->invoicedTotal());
                             // get the paid date
-                            $sheet->SetCellValue('R'.$row, date('m/d/Y', strtotime($payment->date_entered)));
+                            $sheet->SetCellValue("R".$row, date('m/d/Y', strtotime($payment->date_entered)));
                         } elseif ($invoiceStatus == 0) {
-                            $sheet->SetCellValue('Q'.$row, 'Cannot determine invoice status.');
+                            $sheet->SetCellValue("Q".$row, "Cannot determine invoice status.");
                         }
                     } else {
-                        $sheet->SetCellValue('Q'.$row, 0);
+                        $sheet->SetCellValue("Q".$row, 0);
                     }
                 }
-
+             
                 // Set black background
                 $sheet->row(1, function ($row) {
 
@@ -177,9 +178,9 @@ class ParcelsExportJob implements ShouldQueue
         $report = Report::where('id', '=', $this->report_id)->first();
         if ($report) {
             $report->update([
-                  'folder' => 'export/parcels',
+                  'folder' => "export/parcels",
                   'filename' => $filename.'.xls',
-                  'pending_request' => 0,
+                  'pending_request' => 0
             ]);
         }
 
@@ -190,7 +191,8 @@ class ParcelsExportJob implements ShouldQueue
         } else {
             email_admins('Parcel export processed automatically (no email address provided).', 'export/parcels/');
         }
-
+        
+        
         $this->delete();
     }
 

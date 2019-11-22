@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * GuideProgress Model.
+ * GuideProgress Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 class GuideProgress extends Model
 {
     protected $table = 'guide_progress';
-
+    
     protected $fillable = [
         'guide_step_id',
         'type_id',
@@ -21,11 +21,11 @@ class GuideProgress extends Model
         'audit_id',
         'user_id',
         'started',
-        'completed',
+        'completed'
     ];
 
     /**
-     * Step Guide.
+     * Step Guide
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

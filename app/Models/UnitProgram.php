@@ -58,6 +58,7 @@ class UnitProgram extends Model
                     ->orWhere('is_site_visit', '=', 1);
             })
             ->count();
+
     }
 
     public function unitInspected()

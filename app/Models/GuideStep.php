@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * GuideStep Model.
+ * GuideStep Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class GuideStep extends Model
 {
     protected $table = 'guide_steps';
-
+    
     protected $fillable = [
         'parent_id',
         'guide_step_type_id',
@@ -24,11 +24,11 @@ class GuideStep extends Model
         'icon',
         'step_help',
         'name_completed',
-        'hfa',
+        'hfa'
     ];
 
     /**
-     * Step Type.
+     * Step Type
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -38,27 +38,27 @@ class GuideStep extends Model
     }
 
     /**
-     * Parent.
+     * Parent
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent() : BelongsTo
     {
-        return $this->belongsTo(self::class, 'parent_id');
+        return $this->belongsTo(\App\Models\GuideStep::class, 'parent_id');
     }
 
     /**
-     * Children.
+     * Children
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function children() : HasMany
     {
-        return $this->hasMany(self::class, 'parent_id')->orderBy('id', 'ASC');
+        return $this->hasMany(\App\Models\GuideStep::class, 'parent_id')->orderBy('id', 'ASC');
     }
 
     /**
-     * Progress.
+     * Progress
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -68,7 +68,7 @@ class GuideStep extends Model
     }
 
     /**
-     * Is Next Step.
+     * Is Next Step
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

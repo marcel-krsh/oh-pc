@@ -34,7 +34,7 @@ trait DocumentTrait
                 //dd($cd, $cd->attributes->docId);
                 $checkAD = SyncDocuware::where('docuware_doc_id', $cd->attributes->docId)->first();
                 //dd($checkAD);
-                if (! is_null($checkAD)) {
+                if (!is_null($checkAD)) {
                     // there is a record - check to make sure it hasn't changed
 
                     // compare mod date:
@@ -49,7 +49,7 @@ trait DocumentTrait
                             'project_number' => $cd->attributes->fields->PROJECTNUMBER,
                             'document_class' => $cd->attributes->fields->DOCUMENTCLASS,
                             'document_description' => $cd->attributes->fields->DOCUMENTDESCRIPTION,
-                            'document_date' => date('Y-m-d H:i:s', strtotime($cd->attributes->fields->DOCUMENTDATE)),
+                            'document_date' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DOCUMENTDATE)),
                             'notes' => $cd->attributes->fields->NOTES,
                             'email_to' => $cd->attributes->fields->EMAILTO,
                             'email_from' => $cd->attributes->fields->EMAILFROM,
@@ -57,8 +57,8 @@ trait DocumentTrait
                             'image_file_name' => $cd->attributes->fields->IMAGEFILENAME,
                             'retention_sched_code' => $cd->attributes->fields->RETENTIONSCHEDCODE,
                             'dw_page_count' => $cd->attributes->fields->DWPAGECOUNT,
-                            'dw_stored_date_time' => date('Y-m-d H:i:s', strtotime($cd->attributes->fields->DWSTOREDATETIME)),
-                            'dw_mod_date_time' => date('Y-m-d H:i:s', strtotime($cd->attributes->fields->DWMODDATETIME)),
+                            'dw_stored_date_time' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWSTOREDATETIME)),
+                            'dw_mod_date_time' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWMODDATETIME)),
                             'dw_extension' => $cd->attributes->fields->DWEXTENSION,
                             'dw_flags' => $cd->attributes->fields->DWFLAGS,
                             'dw_doc_size' => $cd->attributes->fields->DWDOCSIZE,
@@ -66,7 +66,7 @@ trait DocumentTrait
                             'project_id' => $project->id,
                         ]);
                         //dd($doc,$doc->id);
-                        if (! is_null($cd->attributes->fields->DOCUMENTCLASS)) {
+                        if (!is_null($cd->attributes->fields->DOCUMENTCLASS)) {
                             //check if the categories are in the database
                             $primaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTCLASS)->where('parent_id', 0)->first();
                             if (is_null($primaryCat)) {
@@ -86,7 +86,7 @@ trait DocumentTrait
                                 'docuware_document_class' => 1,
                             ]);
                         }
-                        if (! is_null($cd->attributes->fields->DOCUMENTDESCRIPTION)) {
+                        if (!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION)) {
                             $secondaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTDESCRIPTION)->where('parent_id', $primaryCat->id)->first();
                             if (is_null($secondaryCat)) {
                                 //needs category entered
@@ -105,7 +105,9 @@ trait DocumentTrait
                                 'docuware_document_class' => 1,
                             ]);
                         }
+
                     }
+
                 } else {
                     // there is not a record - add it to the document list.
                     $doc = SyncDocuware::create([
@@ -116,7 +118,7 @@ trait DocumentTrait
                         'project_number' => $cd->attributes->fields->PROJECTNUMBER,
                         'document_class' => $cd->attributes->fields->DOCUMENTCLASS,
                         'document_description' => $cd->attributes->fields->DOCUMENTDESCRIPTION,
-                        'document_date' => date('Y-m-d H:i:s', strtotime($cd->attributes->fields->DOCUMENTDATE)),
+                        'document_date' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DOCUMENTDATE)),
                         'notes' => $cd->attributes->fields->NOTES,
                         'email_to' => $cd->attributes->fields->EMAILTO,
                         'email_from' => $cd->attributes->fields->EMAILFROM,
@@ -124,8 +126,8 @@ trait DocumentTrait
                         'image_file_name' => $cd->attributes->fields->IMAGEFILENAME,
                         'retention_sched_code' => $cd->attributes->fields->RETENTIONSCHEDCODE,
                         'dw_page_count' => $cd->attributes->fields->DWPAGECOUNT,
-                        'dw_stored_date_time' => date('Y-m-d H:i:s', strtotime($cd->attributes->fields->DWSTOREDATETIME)),
-                        'dw_mod_date_time' => date('Y-m-d H:i:s', strtotime($cd->attributes->fields->DWMODDATETIME)),
+                        'dw_stored_date_time' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWSTOREDATETIME)),
+                        'dw_mod_date_time' => date("Y-m-d H:i:s", strtotime($cd->attributes->fields->DWMODDATETIME)),
                         'dw_extension' => $cd->attributes->fields->DWEXTENSION,
                         'dw_flags' => $cd->attributes->fields->DWFLAGS,
                         'dw_doc_size' => $cd->attributes->fields->DWDOCSIZE,
@@ -133,7 +135,7 @@ trait DocumentTrait
                         'project_id' => $project->id,
                     ]);
                     //dd($doc,$doc->id);
-                    if (! is_null($cd->attributes->fields->DOCUMENTCLASS)) {
+                    if (!is_null($cd->attributes->fields->DOCUMENTCLASS)) {
                         //check if the categories are in the database
                         $primaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTCLASS)->where('parent_id', 0)->first();
                         if (is_null($primaryCat)) {
@@ -153,7 +155,7 @@ trait DocumentTrait
                             'docuware_document_class' => 1,
                         ]);
                     }
-                    if (! is_null($cd->attributes->fields->DOCUMENTDESCRIPTION) && ! is_null($primaryCat)) {
+                    if (!is_null($cd->attributes->fields->DOCUMENTDESCRIPTION) && !is_null($primaryCat)) {
                         $secondaryCat = DocumentCategory::where('document_category_name', $cd->attributes->fields->DOCUMENTDESCRIPTION)->where('parent_id', $primaryCat->id)->first();
                         if (is_null($secondaryCat)) {
                             //needs category entered
@@ -172,14 +174,16 @@ trait DocumentTrait
                             'docuware_document_class' => 1,
                         ]);
                     }
+
                 }
+
             }
 
             $documents = SyncDocuware::where('project_id', $project->id)->orderBy('document_class')->orderby('document_description')->get();
+
         } else {
             $documents = null;
         }
-
         return $documents;
     }
 }

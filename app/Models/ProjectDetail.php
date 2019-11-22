@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Carbon;
 
 class ProjectDetail extends Model
 {
@@ -45,11 +45,11 @@ class ProjectDetail extends Model
         'manager_state',
         'manager_zip',
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
 
     /**
-     * Audit.
+     * Audit
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -59,7 +59,7 @@ class ProjectDetail extends Model
     }
 
     /**
-     * Project.
+     * Project
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

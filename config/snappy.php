@@ -4,9 +4,9 @@ return [
 
     'pdf' => [
         'enabled' => true,
-        'binary'  => env('WKHTMLTOPDF_PATH', '/usr/local/bin/wkhtmltopdf-amd64'),
+        'binary' => env('WKHTMLTOPDF_PATH', '/usr/local/bin/wkhtmltopdf-amd64'),
         'timeout' => false,
-        'env'     => [],
+        'env' => [],
     ],
     // 'image' => array(
     //     'enabled' => true,

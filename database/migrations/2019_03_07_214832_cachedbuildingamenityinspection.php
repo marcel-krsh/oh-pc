@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class Cachedbuildingamenityinspection extends Migration
 {
@@ -15,7 +15,7 @@ class Cachedbuildingamenityinspection extends Migration
     {
         Schema::table('cached_buildings', function (Blueprint $table) {
             //if (!Schema::hasColumn('amenity_inspection_id')){
-            $table->unsignedInteger('amenity_inspection_id')->nullable();
+                $table->unsignedInteger('amenity_inspection_id')->nullable();
             //}
         });
     }

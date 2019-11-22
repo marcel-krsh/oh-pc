@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
-use Event;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Event;
+use Illuminate\Support\Str;
+
 
 class Audit extends Model
 {
-    public $timestamps = true;
+    public $timestamps = false;
+    protected $dates = ['start_date', 'completed_date'];
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
     //
     protected $guarded = ['id'];
@@ -30,9 +33,7 @@ class Audit extends Model
         //     Event::fire('audit.deleted', $audit);
         // });
     }
-
-    public function total_items() : int
-    {
+    public function total_items() : int {
         // this is the total of project amenities, plus buildings, plus units
         // $total = 0;
         $total = $this->project->total_building_count;
@@ -40,6 +41,7 @@ class Audit extends Model
         $total = $total + $this->unique_unit_inspections->count();
         //dd($this->project->total_building_count,$this->project_amenity_inspections->count(),$this->unique_unit_inspections->count());
         return  $total;
+
     }
 
     public function auditors() : HasMany
@@ -47,158 +49,139 @@ class Audit extends Model
         return $this->hasMany(\App\Models\AuditAuditor::class, 'audit_id');
     }
 
-    public function total_inspection_units()
-    {
-        return \App\Models\UnitInspection::where('audit_id', $this->id)->groupBy('unit_id')->count();
+    public function total_inspection_units(){
+        return \App\Models\UnitInspection::where('audit_id',$this->id)->groupBy('unit_id')->count();
     }
 
     public function project_details() : HasOne
     {
-        return $this->hasOne(\App\Models\ProjectDetails::class, 'project_id', 'project_id')->where('audit_id', $this->id);
+        return $this->hasOne(\App\Models\ProjectDetails::class, 'project_id', 'project_id')->where('audit_id',$this->id);
     }
-
     public function lead() : HasOne
     {
+
         return $this->hasOne(\App\Models\User::class, 'devco_key', 'user_key');
     }
-
     public function project(): HasOne
     {
-        return $this->hasOne(\App\Models\Project::class, 'project_key', 'development_key');
+        return $this->hasOne(\App\Models\Project::class, 'project_key','development_key');
+    }
+    public function amenity_inspections() : HasMany {
+       return $this->hasMany('\App\Models\AmenityInspection');
     }
 
-    public function amenity_inspections() : HasMany
-    {
-        return $this->hasMany(\App\Models\AmenityInspection::class);
+    public function project_amenity_inspections() : HasMany {
+       return $this->hasMany('\App\Models\AmenityInspection')->whereNull('building_id')->whereNull('unit_id')->with('amenity');
     }
 
-    public function project_amenity_inspections() : HasMany
-    {
-        return $this->hasMany(\App\Models\AmenityInspection::class)->whereNull('building_id')->whereNull('unit_id')->with('amenity');
+    public function building_inspections() : HasMany {
+       return $this->hasMany('\App\Models\BuildingInspection')->with('building')->orderBy('building_id');
     }
-
-    public function building_inspections() : HasMany
-    {
-        return $this->hasMany(\App\Models\BuildingInspection::class)->with('building')->orderBy('building_id');
+    public function unit_inspections() : HasMany {
+       return $this->hasMany('\App\Models\UnitInspection')->with('program')->with('building')->orderBy('building_id')->orderBy('unit_id');
     }
+    public function unique_unit_inspections() : HasMany {
+        return $this->hasMany('\App\Models\UnitInspection')->with('building')->groupBy('unit_id')->orderBy('building_id');
 
-    public function unit_inspections() : HasMany
-    {
-        return $this->hasMany(\App\Models\UnitInspection::class)->with('program')->with('building')->orderBy('building_id')->orderBy('unit_id');
     }
-
-    public function unique_unit_inspections() : HasMany
-    {
-        return $this->hasMany(\App\Models\UnitInspection::class)->with('building')->groupBy('unit_id')->orderBy('building_id');
-    }
-
     public function nlts() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'nlt');
+
         })->whereNull('cancelled_at');
     }
-
     public function site_nlts() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'nlt');
+
         })
         ->whereNull('cancelled_at')
         ->whereNull('building_id')->whereNull('unit_id');
     }
-
     public function building_nlts() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'nlt');
+
         })
         ->whereNull('cancelled_at')
         ->whereNotNull('building_id');
     }
-
     public function unit_nlts() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'nlt');
+
         })
         ->whereNull('cancelled_at')
         ->whereNotNull('unit_id');
     }
-
     public function lts() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'lt');
+
         })->whereNull('cancelled_at');
     }
-
     public function site_lts() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'lt');
+
         })
         ->whereNull('cancelled_at')
         ->whereNull('building_id')->whereNull('unit_id');
     }
-
     public function building_lts() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'lt');
+
         })
         ->whereNull('cancelled_at')
         ->whereNotNull('building_id');
     }
-
     public function unit_lts() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'lt');
+
         })
         ->whereNull('cancelled_at')
         ->whereNotNull('unit_id');
     }
-
     public function files() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'file');
+
         })->whereNull('cancelled_at');
     }
-
     public function findings() : HasMany
     {
-        return $this->hasMany(\App\Models\Finding::class);
+        return $this->hasMany('\App\Models\Finding');
     }
-
     public function reports() : HasMany
     {
-        return $this->hasMany(\App\Models\CrrReport::class);
+        return $this->hasMany('\App\Models\CrrReport');
     }
-
-    public function uncorrectedFindings() : HasMany
-    {
-        return $this->hasMany(\App\Models\Finding::class)->whereNull('cancelled_at')->whereNull('auditor_last_approved_resolution_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')
-                ->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->with('photos')->orderBy('building_id', 'desc')->orderBy('unit_id');
+    public function uncorrectedFindings() : HasMany {
+        return $this->hasMany('\App\Models\Finding')->whereNull('cancelled_at')->whereNull('auditor_last_approved_resolution_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')
+                ->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->with('photos')->orderBy('building_id','desc')->orderBy('unit_id');
     }
-
-    public function reportableFindings() : HasMany
-    {
-        return $this->hasMany(\App\Models\Finding::class)->whereNull('cancelled_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')
-                ->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->with('photos')->orderBy('building_id', 'desc')->orderBy('unit_id');
+    public function reportableFindings() : HasMany {
+        return $this->hasMany('\App\Models\Finding')->whereNull('cancelled_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')
+                ->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->with('photos')->orderBy('building_id','desc')->orderBy('unit_id');
     }
-
-    public function reportableLtFindings() : HasMany
-    {
-        return $this->hasMany(\App\Models\Finding::class)->whereHas('finding_type', function ($query) {
+    public function reportableLtFindings() : HasMany {
+        return $this->hasMany('\App\Models\Finding')->whereHas('finding_type', function( $query ) {
             $query->where('type', '=', 'lt');
-        })->whereNull('cancelled_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->orderBy('building_id', 'desc')->orderBy('unit_id');
+        })->whereNull('cancelled_at')->with('amenity_inspection')->with('auditor')->with('amenity')->with('finding_type')->with('building')->with('unit')->with('unit.building.address')->with('building.address')->with('amenity_inspection.unit_programs')->with('amenity_inspection.unit_programs.program')->with('comments')->with('project.address')->orderBy('building_id','desc')->orderBy('unit_id');
     }
-
-    public function ranCompliance()
-    {
-        $this->update(['compliance_run'=>1, 'rerun_compliance'=>null]);
+    public function ranCompliance(){
+        $this->update(['compliance_run'=>1,'rerun_compliance'=>null]);
     }
 
     public function stats() : HasMany
@@ -206,12 +189,11 @@ class Audit extends Model
         return $this->hasMany(\App\Models\StatsCompliance::class);
     }
 
-    public function stats_compliance()
-    {
+    public function stats_compliance(){
         // fetches the stats from the stats_compliance table if they exist
         // otherwise, create them using the summary stored in the audit
 
-        if (count($this->stats) == 0) {
+        if(count($this->stats) == 0){
             // calculate and save data for each program
             $selection_summary = json_decode($this->selection_summary, 1);
 
@@ -241,13 +223,14 @@ class Audit extends Model
             // $program_keys_array[5] = explode(',', SystemSetting::get('program_ohtf')); // 5 - OHTF
             // $program_keys_array[6] = explode(',', SystemSetting::get('program_nhtf')); // 6 - NHTF
             // $program_keys_array[7] = explode(',', SystemSetting::get('program_htc')); // 7 - HTC
-            if (null !== $this->selection_summary) {
-                foreach ($selection_summary['programs'] as $program) { // those are "groups"!
+            if(null !== $this->selection_summary){
+
+                foreach($selection_summary['programs'] as $program){ // those are "groups"!
 
                     // count selected units using the list of program ids
                     $program_keys = explode(',', $program['program_keys']);
-                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $this->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->get()->count();
-                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $this->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->get()->count();
+                    $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $this->id)->where('group_id', '=', $program['group'])->where('is_site_visit','=',1)->get()->count();
+                    $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $this->id)->where('group_id', '=', $program['group'])->where('is_file_audit','=',1)->get()->count();
 
                     $needed_units_site = max($program['required_units'] - $selected_units_site, 0);
                     $needed_units_file = max($program['required_units_file'] - $selected_units_file, 0);
@@ -261,17 +244,17 @@ class Audit extends Model
                                 //     $query->where('completed_date_time', '!=', null);
                                 // })
                                 ->where('is_site_visit', '=', 1)
-                                ->where('complete', '!=', null)
+                                ->where('complete', '!=', NULL)
                                 //->select('unit_id')->groupBy('unit_id')->get()
                                 ->get()
                                 ->count();
 
-                    //whereIn('unit_key', $unit_keys)
+                                //whereIn('unit_key', $unit_keys)
 
                     $inspected_units_file = UnitInspection::where('audit_id', '=', $this->id)
                                 ->where('group_id', '=', $program['group'])
                                 ->where('is_file_audit', '=', 1)
-                                ->where('complete', '!=', null)
+                                ->where('complete', '!=', NULL)
                                 //->select('unit_id')->groupBy('unit_id')->get()
                                 ->get()
                                 ->count();
@@ -296,14 +279,15 @@ class Audit extends Model
                         'inspected_site' => $inspected_units_site,
                         'inspected_file' => $inspected_units_file,
                         'tobeinspected_site' => $to_be_inspected_units_site,
-                        'tobeinspected_file' => $to_be_inspected_units_file,
+                        'tobeinspected_file' => $to_be_inspected_units_file
                     ]);
                     $newstat->save();
                 }
             }
 
             return $this->stats;
-        } else {
+
+        }else{
             return $this->stats;
         }
     }
@@ -330,18 +314,19 @@ class Audit extends Model
 
         // 6) messages, documents
 
-        $checks = [];
+        $checks = array();
 
         $checks['status'] = '';
 
         switch ($type) {
-            case 'auditors':
+            case "auditors":
 
                 // are there no auditors?
                 //if(!count())
 
+
                 break;
-            case 'schedules':
+            case "schedules":
                 // defaults: we assume that we still have a new audit
                 // also the case for : are there any schedules?
                 $checks['inspection_status_text'] = 'AUDIT NEEDS SCHEDULING';
@@ -351,7 +336,7 @@ class Audit extends Model
                 $checks['inspection_icon'] = 'a-mobile-repeat';
 
                 // if we have some schedules in the system
-                if ($this->inspection_schedule_json !== null) {
+                if($this->inspection_schedule_json !== null){
                     // are there conflicts? TBD
                     //
                     // $sum_scheduled_time = 0;
@@ -394,20 +379,20 @@ class Audit extends Model
                 }
 
                 break;
-            case 'compliance':
+            case "compliance":
 
                 break;
-            case 'assignments':
+            case "assignments":
 
                 break;
-            case 'findings':
+            case "findings":
 
                 break;
-            case 'reports':
+            case "reports":
 
                 break;
             default:
-               return;
+               return null;
         }
 
         return $checks;
@@ -416,19 +401,56 @@ class Audit extends Model
     public function cached_audit() : HasOne
     {
         //return $this->hasOne(\App\Models\CachedAudit::class)->where('audit_id',$this->id);
-        return $this->hasOne(\App\Models\CachedAudit::class, 'audit_id', 'id');
+        return $this->hasOne(\App\Models\CachedAudit::class, 'audit_id','id');
     }
-
-    public function is_archived() : bool
-    {
-        if ($this->cached_audit) {
-            if ($this->cached_audit->step_id !== 67) {
+    public function is_archived() : bool {
+        if($this->cached_audit){
+            if($this->cached_audit->step_id !== 67){
                 return false;
             } else {
                 return true;
             }
-        } else {
+        }else{
             return false;
         }
     }
+
+    public function getDateFormat() {
+			return 'Y-m-d H:i:s.u';
+		}
+
+
+//     public function fromDateTime($value)
+// {
+// 	$format = Str::contains($value, '.');
+// 	if($format) {
+//     return substr($value, 0, -4);
+// 	} else {
+// 		return $value;
+// 	}
+// }
+
+// 	public function getCreatedAtAttribute($value)
+//     {
+//         $format = Str::contains($value, '.');
+
+//         if($format) {
+// 			    return substr(($value), 0, -4);
+// 				} else {
+// 					return $value;
+// 				}
+
+//         // return Carbon::createFromFormat($format, $value);
+//     }
+
+public function getUpdatedAtAttribute($value) {
+	if (!empty($value)) {
+		return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value);
+	} else {
+		return null;
+	}
+}
+
+
+
 }

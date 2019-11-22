@@ -3,19 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ScheduleDay extends Model
 {
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d G:i:s.u';
-
+    
     protected $guarded = ['id'];
 
     public function times() : HasMany
     {
-        return $this->hasMany(\App\Models\ScheduleTime::class, 'day_id', 'id');
+        return $this->hasMany('\App\Models\ScheduleTime', 'day_id', 'id');
     }
 
     public function cached_audit() : HasOne
@@ -27,4 +27,5 @@ class ScheduleDay extends Model
     {
         return $this->hasOne(\App\Models\Audit::class, 'id', 'audit_id');
     }
+   
 }

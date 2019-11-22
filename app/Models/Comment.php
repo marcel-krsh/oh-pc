@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * Comment Model.
+ * Comment Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -19,6 +19,7 @@ class Comment extends Model
     //
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
+
 
     protected $fillable = [
         'uid',
@@ -37,50 +38,50 @@ class Comment extends Model
         'comment',
         'latitude',
         'longitude',
-        'deleted',
+        'deleted'
     ];
 
-    public function comments() : HasMany
+    public function comments() : HasMany 
     {
-        return $this->hasMany(self::class, 'comment_id', 'id');
+        return $this->hasMany(\App\Models\Comment::class, 'comment_id', 'id');
     }
 
-    public function comment() : HasOne
+    public function comment() : HasOne 
     {
-        return $this->hasOne(self::class, 'id', 'comment_id');
+        return $this->hasOne(\App\Models\Comment::class, 'id', 'comment_id');
     }
 
-    public function amenity() : HasOne
+    public function amenity() : HasOne 
     {
         return $this->hasOne(\App\Models\AmenityInspection::class, 'id', 'amenity_id');
     }
 
-    public function photo() : HasOne
+    public function photo() : HasOne 
     {
         return $this->hasOne(\App\Models\Photo::class, 'id', 'photo_id');
     }
 
-    public function photos() : HasMany
+    public function photos() : HasMany 
     {
         return $this->hasMany(\App\Models\Photo::class, 'comment_id', 'id');
     }
 
-    public function document() : HasOne
+    public function document() : HasOne 
     {
         return $this->hasOne(\App\Models\Document::class, 'id', 'document_id');
     }
 
-    public function documents() : HasMany
+    public function documents() : HasMany 
     {
         return $this->hasMany(\App\Models\Document::class, 'comment_id', 'id');
     }
 
-    public function finding() : HasOne
+    public function finding() : HasOne 
     {
         return $this->hasOne(\App\Models\Finding::class, 'id', 'finding_id');
     }
 
-    public function followup() : HasOne
+    public function followup() : HasOne 
     {
         return $this->hasOne(\App\Models\Followup::class, 'id', 'followup_id');
     }
@@ -89,4 +90,5 @@ class Comment extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
+
 }

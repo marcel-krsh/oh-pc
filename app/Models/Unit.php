@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\SystemSetting;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\SystemSetting;
 
 class Unit extends Model
 {
@@ -31,7 +31,7 @@ class Unit extends Model
 
     public function building() : HasOne
     {
-        return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
+        return $this->hasOne(\App\Models\Building::class, 'id','building_id');
     }
 
     public function project_id() : int
@@ -43,16 +43,15 @@ class Unit extends Model
     {
         return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_id', 'id');
     }
-
+    
     public function is_market_rate() : int
     {
-        if ($this->unit_identity_id == 22) {
+        if($this->unit_identity_id == 22){
             return true;
         } else {
             return false;
         }
     }
-
     public function isAssistedUnit() : bool
     {
         foreach ($this->household_events()->get() as $event) {
@@ -60,7 +59,6 @@ class Unit extends Model
                 return true;
             }
         }
-
         return false;
     }
 
@@ -77,18 +75,18 @@ class Unit extends Model
 
     public function has_program($program_key, $audit_id) : bool
     {
-        if ($this->programs()->where('audit_id', '=', $audit_id)->where('program_key', '=', $program_key)->count()) {
+        if($this->programs()->where('audit_id', '=', $audit_id)->where('program_key','=', $program_key)->count()){
             return true;
-        } else {
+        }else{
             return false;
         }
     }
 
     public function has_program_from_array($program_key_array, $audit_id) : bool
     {
-        if ($this->programs()->where('audit_id', '=', $audit_id)->whereIn('program_key', $program_key_array)->count()) {
+        if($this->programs()->where('audit_id', '=', $audit_id)->whereIn('program_key',$program_key_array)->count()){
             return true;
-        } else {
+        }else{
             return false;
         }
     }

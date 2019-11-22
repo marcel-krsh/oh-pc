@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\AuditorAddressEvent;
-use Illuminate\Queue\InteractsWithQueue;
 
 //use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -29,4 +28,5 @@ class AddAuditorAddress
     {
         //
     }
+
 }

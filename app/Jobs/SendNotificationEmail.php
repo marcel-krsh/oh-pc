@@ -2,14 +2,15 @@
 
 namespace App\Jobs;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Mail\Mailer;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Mail\Mailer;
 use Log;
+use App\Models\User;
+
 
 class SendNotificationEmail implements ShouldQueue
 {
@@ -36,7 +37,7 @@ class SendNotificationEmail implements ShouldQueue
      */
     public function handle(Mailer $mailer)
     {
-        //Log::info($this->user);
+    	//Log::info($this->user);
         $mailer->to($this->user->email)->send($this->message);
     }
 }

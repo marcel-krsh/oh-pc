@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 /**
- * DownloadReady.
+ * DownloadReady
  *
  * @category Mail
  * @license  Proprietary and confidential
@@ -28,7 +28,7 @@ class EmailFailedLogin extends Mailable
      */
     public function __construct($recipient_id = null)
     {
-        $this->subject = '[Allita PC] System Message';
+        $this->subject = "[Allita PC] System Message";
         $this->owner = User::where('id', '=', $recipient_id)->get()->first();
         $this->reset_link = env('DEVCO_RESET_URL');
     }
@@ -40,20 +40,20 @@ class EmailFailedLogin extends Mailable
      */
     public function build()
     {
-        $greeting = 'Hello,';
-
+        $greeting = "Hello,";
+       
         $introLines[] = 'It appears someone is trying to login to Allita PC using your username and has yet to put in the correct password. If this is not you, please notify your admin right away at admin@allita.org. If it is you, please try resetting your password here '.$this->reset_link.'.';
-
-        $actionText = '';
+        
+        $actionText = "";
 
         $actionUrl = '';
 
-        $actionText2 = '';
+        $actionText2 = "";
 
         $actionUrl2 = '';
 
-        $level = 'success';
-        $level2 = 'success';
+        $level = "success";
+        $level2 = "success";
         $outroLines = [];
 
         return $this->view('emails.send_communication', compact('greeting', 'introLines', 'actionUrl', 'actionText', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));

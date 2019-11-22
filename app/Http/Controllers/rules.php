@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProgramRule;
-use App\Models\User;
-use Auth;
-use DB;
-use Gate;
 use Illuminate\Http\Request;
+use App\Models\ProgramRule;
+use Gate;
+use \DB;
+use Auth;
+use App\Models\User;
 
 class rules extends Controller
 {

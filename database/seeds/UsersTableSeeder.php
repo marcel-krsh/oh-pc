@@ -11,6 +11,8 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+
+        
         DB::table('users')->insert([
             'name' => 'Brian Greenwood',
             'email' => 'brian@greenwood360.com',
@@ -35,5 +37,7 @@ class UsersTableSeeder extends Seeder
             'verified' => '1',
 
         ]);
+
+        
     }
 }

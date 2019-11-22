@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\hasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Amenity extends Model
@@ -16,16 +16,17 @@ class Amenity extends Model
     protected $table = 'amenities';
     protected $guarded = ['id'];
 
-    /**
-     * hud.
+     /**
+     * hud
      */
-    public function huds() : HasMany
-    {
-        return $this->hasMany(\App\Models\AmenityHud::class);
+    
+    public function huds() : HasMany {
+        return $this->hasMany('App\Models\AmenityHud');
+        
     }
 
     /**
-     * finding types.
+     * finding types
      */
     public function finding_types()
     {
@@ -33,7 +34,7 @@ class Amenity extends Model
             join('hud_finding_type', 'finding_types.id', '=', 'hud_finding_type.finding_type_id')
             ->join('amenity_hud', 'hud_finding_type.hud_inspectable_area_id', '=', 'amenity_hud.hud_inspectable_area_id')
             ->select('finding_types.*')
-            ->where('amenity_hud.amenity_id', $this->id)
+            ->where('amenity_hud.amenity_id',$this->id)
             ->groupBY('finding_types.id')
             ->get();
 

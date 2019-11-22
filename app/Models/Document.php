@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * Document Model.
+ * Document Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -21,8 +21,8 @@ class Document extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'findings_ids' => 'array',
-      ];
+	    'findings_ids' => 'array'
+	  ];
 
     public function finding() : HasOne
     {
@@ -33,7 +33,6 @@ class Document extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
     }
-
     public function user() : HasOne
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'user_id');
@@ -41,7 +40,7 @@ class Document extends Model
 
     public function comments() : HasMany
     {
-        return $this->hasMany(\App\Models\Comment::class, 'document_id', 'id')->orderBy('id', 'asc');
+        return $this->hasMany(\App\Models\Comment::class, 'document_id', 'id')->orderBy('id','asc');
     }
 
     // public function photos() : HasMany
@@ -67,18 +66,22 @@ class Document extends Model
     public function document_categories()
     {
         $local_categories = \App\Models\LocalDocumentCategory::where('document_id', '=', $this->id)->pluck('document_category_id')->toArray();
-        if ($local_categories) {
+        if($local_categories){
             return \App\Models\DocumentCategory::whereIn('id', $local_categories)->get();
-        } else {
-            return;
+        }else{
+            return null;
         }
+
     }
 
     // OLD METHODS.
     // VERIFY THAT WE NEED THEM.
 
+
+
+
     /**
-     * Retainages.
+     * Retainages
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -88,7 +91,7 @@ class Document extends Model
     // }
 
     /**
-     * Advances.
+     * Advances
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -98,7 +101,7 @@ class Document extends Model
     // }
 
     /**
-     * Approve Categories.
+     * Approve Categories
      *
      * Used to approve document's categories, for example all approvals upload:
      * $document->approve_categories([15, 30, 31, 32, 33, 34, 35, 36, 37, 39])
@@ -107,6 +110,7 @@ class Document extends Model
      *
      * @return mixed
      */
+
     public function approve_categories($cat_array = null)
     {
         if (is_array($cat_array)) {
@@ -144,7 +148,7 @@ class Document extends Model
                     }
 
                     // if not already approved, add to approved array
-                    if (! in_array($catid, $current_approval_array)) {
+                    if (!in_array($catid, $current_approval_array)) {
                         $current_approval_array[] = $catid;
                         $approval = json_encode($current_approval_array);
 
@@ -160,7 +164,8 @@ class Document extends Model
     }
 
     public function assigned_categories()
-    {
-        return $this->belongsToMany(\App\Models\DocumentCategory::class, 'local_document_categories', 'document_id', 'document_category_id')->where('parent_id', '<>', 0);
-    }
+		{
+		    return $this->belongsToMany('App\Models\DocumentCategory', 'local_document_categories', 'document_id', 'document_category_id')->where('parent_id','<>',0);
+		}
+
 }

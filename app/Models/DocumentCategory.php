@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * DocumentCategory Model.
+ * DocumentCategory Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -17,17 +17,20 @@ class DocumentCategory extends Model
 
     protected $guarded = ['id'];
 
-    public function parent()
-    {
-        if ($this->parent_id !== 0) {
-            return $this->hasOne(self::class, 'id', 'parent_id');
-        } else {
-            return;
-        }
+    public function parent(){
+    	if($this->parent_id !== 0){
+    		return $this->hasOne('App\Models\DocumentCategory','id','parent_id');
+    	} else {
+    		return null;
+    	}
+
     }
 
-    public function scopeActive($query)
+
+		public function scopeActive($query)
     {
         return $query->where('active', 1);
     }
+
+
 }

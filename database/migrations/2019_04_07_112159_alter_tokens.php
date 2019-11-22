@@ -33,5 +33,6 @@ class AlterTokens extends Migration
      */
     public function down()
     {
+
     }
 }

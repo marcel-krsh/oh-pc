@@ -2,21 +2,22 @@
 
 namespace App\Jobs;
 
-use App\Models\AuthTracker;
-use App\Models\PhoneNumber;
-use App\Models\SyncPhoneNumber;
-use App\Models\SystemSetting;
-use App\Models\User;
-use App\Services\AuthService;
-use App\Services\DevcoService;
-use DateTime;
-use DB;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Services\AuthService;
+use App\Services\DevcoService;
+use App\Models\AuthTracker;
+use App\Models\SystemSetting;
+use App\Models\User;
+use DB;
+use DateTime;
 use Illuminate\Support\Facades\Hash;
+
+use App\Models\SyncPhoneNumber;
+use App\Models\PhoneNumber;
 
 class SyncPhoneNumbersJob implements ShouldQueue
 {
@@ -31,7 +32,6 @@ class SyncPhoneNumbersJob implements ShouldQueue
     {
         //
     }
-
     public $tries = 5;
 
     /**
@@ -67,7 +67,7 @@ class SyncPhoneNumbersJob implements ShouldQueue
             //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
-        if (! is_null($apiConnect)) {
+        if (!is_null($apiConnect)) {
             $syncData = $apiConnect->listPhoneNumbers(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
@@ -83,26 +83,26 @@ class SyncPhoneNumbersJob implements ShouldQueue
                     }
                     //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     foreach ($syncData['data'] as $i => $v) {
-                        // check if record exists
-                        $updateRecord = SyncPhoneNumber::select('id', 'allita_id', 'last_edited', 'updated_at')->where('phone_number_key', $v['attributes']['phoneNumberKey'])->first();
-                        // convert booleans
-                        //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
-                        // settype($v['attributes']['isPhoneNumberHandicapAccessible'], 'boolean');
+                            // check if record exists
+                            $updateRecord = SyncPhoneNumber::select('id', 'allita_id', 'last_edited', 'updated_at')->where('phone_number_key', $v['attributes']['phoneNumberKey'])->first();
+                            // convert booleans
+                             //settype($v['attributes']['ownerPaidUtilities'], 'boolean');
+                            // settype($v['attributes']['isPhoneNumberHandicapAccessible'], 'boolean');
 
-                        // Set dates older than 1950 to be NULL:
-                        //  if($v['attributes']['acquisitionDate'] < 1951){
-                        //     $v['attributes']['acquisitionDate'] = NULL;
-                        // }
-                        // if($v['attributes']['buildingBuiltDate'] < 1951){
-                        //     $v['attributes']['buildingBuiltDate'] = NULL;
-                        // }
-                        // if($v['attributes']['confirmedDate'] < 1951){
-                        //     $v['attributes']['confirmedDate'] = NULL;
-                        // }
-                        // if($v['attributes']['onSiteMonitorEndDate'] < 1951){
-                        //     $v['attributes']['onSiteMonitorEndDate'] = NULL;
-                        // }
-                        //dd($updateRecord,$updateRecord->updated_at);
+                            // Set dates older than 1950 to be NULL:
+                            //  if($v['attributes']['acquisitionDate'] < 1951){
+                            //     $v['attributes']['acquisitionDate'] = NULL;
+                            // }
+                            // if($v['attributes']['buildingBuiltDate'] < 1951){
+                            //     $v['attributes']['buildingBuiltDate'] = NULL;
+                            // }
+                            // if($v['attributes']['confirmedDate'] < 1951){
+                            //     $v['attributes']['confirmedDate'] = NULL;
+                            // }
+                            // if($v['attributes']['onSiteMonitorEndDate'] < 1951){
+                            //     $v['attributes']['onSiteMonitorEndDate'] = NULL;
+                            // }
+                            //dd($updateRecord,$updateRecord->updated_at);
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
 
@@ -113,42 +113,54 @@ class SyncPhoneNumbersJob implements ShouldQueue
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
                             $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
-                            $allitaFloat = '.'.$allitaDate->format('u');
-                            $devcoFloat = '.'.$devcoDate->format('u');
+                            $allitaFloat = ".".$allitaDate->format('u');
+                            $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-
+                                
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-
+                                
                             if ($devcoDateEval > $allitaDateEval) {
-                                if (! is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+                                if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
                                     SyncPhoneNumber::where('id', $updateRecord['id'])
                                     ->update([
-
+                                            
+                                            
+                                            
                                         'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                         'area_code'=>$v['attributes']['areaCode'],
                                         'phone_number'=>$v['attributes']['phoneNumber'],
                                         'extension'=>$v['attributes']['extension'],
-
+                                            
+                                            
+                                            
+                                            
+                                            
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                     $UpdateAllitaValues = SyncPhoneNumber::find($updateRecord['id']);
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
-
+                                            
+                                            
+                                            
                                         'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                         'phone_number_type_id'=>null,
                                         'area_code'=>$v['attributes']['areaCode'],
                                         'phone_number'=>$v['attributes']['phoneNumber'],
                                         'extension'=>$v['attributes']['extension'],
-
+                                            
+                                            
+                                            
+                                            
+                                            
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
-                                //dd('inside.');
+                                    //dd('inside.');
                                 } elseif (is_null($allitaTableRecord)) {
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
@@ -157,23 +169,37 @@ class SyncPhoneNumbersJob implements ShouldQueue
                                     // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                     $allitaTableRecord = PhoneNumber::create([
-
+                                            
+                                            
+                                            
+                                            
                                         'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                         'area_code'=>$v['attributes']['areaCode'],
                                         'phone_number'=>$v['attributes']['phoneNumber'],
                                         'extension'=>$v['attributes']['extension'],
-
+                                            
+                                            
+                                            
+                                            
+                                            
                                         'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
                                     $syncTableRecord = SyncPhoneNumber::where('id', $updateRecord['id'])
                                     ->update([
-
+                                            
+                                            
+                                            
+                                            
                                         'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                         'area_code'=>$v['attributes']['areaCode'],
                                         'phone_number'=>$v['attributes']['phoneNumber'],
                                         'extension'=>$v['attributes']['extension'],
-
+                                            
+                                            
+                                            
+                                            
+                                            
                                         'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
@@ -187,22 +213,35 @@ class SyncPhoneNumbersJob implements ShouldQueue
                             // We do this so the updated_at value of the Sync Table does not become newer
                             // when we add in the allita_id
                             $allitaTableRecord = PhoneNumber::create([
+                                    
 
+                                            
                                     'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                     'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                     'area_code'=>$v['attributes']['areaCode'],
                                     'phone_number'=>$v['attributes']['phoneNumber'],
                                     'extension'=>$v['attributes']['extension'],
-
+                                            
+                                            
+                                            
+                                            
+                                    
                             'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                             ]);
                             // Create the sync table entry with the allita id
                             $syncTableRecord = SyncPhoneNumber::create([
-
+                                            
+                                            
+                                            
+                                            
                                     'phone_number_type_key'=>$v['attributes']['phoneNumberTypeKey'],
                                     'area_code'=>$v['attributes']['areaCode'],
                                     'phone_number'=>$v['attributes']['phoneNumber'],
                                     'extension'=>$v['attributes']['extension'],
+                                            
+                                            
+                                            
+                                            
 
                                 'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                 'last_edited'=>$v['attributes']['lastEdited'],

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notice;
-use App\Models\User;
-use Auth;
 use Gate;
-use Illuminate\Http\Request;
+use Auth;
 use Session;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class NoticeController extends Controller
 {
@@ -29,24 +29,24 @@ class NoticeController extends Controller
         } else {
             $unread = 0;
         }
-
+        
         if ($request->get('unread') == 1) {
             $notices = Notice::with('owner')->where('user_id', Auth::user()->id)->whereNull('read')->orderBy('created_at', 'desc')->get();
         } else {
             $notices = Notice::with('owner')->where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
         }
-
+        
         foreach ($notices as $notice) {
             // create initials
-            $words = explode(' ', $notice->owner->name);
-            $initials = '';
+            $words = explode(" ", $notice->owner->name);
+            $initials = "";
             foreach ($words as $w) {
                 $initials .= $w[0];
             }
             $notice->initials = $initials;
 
             // create associative arrays for initials and names
-            if (! array_key_exists($notice->owner->id, $owners_array)) {
+            if (!array_key_exists($notice->owner->id, $owners_array)) {
                 $owners_array[$notice->owner->id]['initials'] = $initials;
                 $owners_array[$notice->owner->id]['name'] = $notice->owner->name;
                 $owners_array[$notice->owner->id]['color'] = $notice->owner->badge_color;
@@ -60,16 +60,15 @@ class NoticeController extends Controller
     public function newNotice()
     {
         if (Auth::user()->entity_type == 'landbank') {
-            $where = 'entity_id';
-            $whereOperator = '=';
+            $where = "entity_id";
+            $whereOperator = "=";
             $whereValue = Auth::user()->entity_id;
         } else {
-            $where = 'user_id';
-            $whereOperator = '>';
+            $where = "user_id";
+            $whereOperator = ">";
             $whereValue = 0;
         }
         $users = User::join('entity', 'users.entity_id', 'entity.id')->select('users.*', 'entity.name')->where('users.active', 1)->where('entity.active', 1)->where($where, $whereOperator, $whereValue)->orderBy('entity.entity_name', 'asc')->orderBy('users.name', 'asc')->get();
-
         return view('modals.new-notice-entry', compact('users'));
     }
 
@@ -80,9 +79,9 @@ class NoticeController extends Controller
         } else {
             Session::forget('notices-search');
         }
-
         return 1;
     }
+
 
     public function createNotice(Request $request)
     {
@@ -94,17 +93,18 @@ class NoticeController extends Controller
                     'owner_id' => Auth::user()->id,
                     'user_id' => $user->id,
                     'subject' => $request->get('subject'),
-                    'body' => $request->get('body'),
+                    'body' => $request->get('body')
                 ]);
                 $notice->save();
                 $lc = new LogConverter('notice', 'addnotice');
                 $lc->setFrom($user)->setTo($notice)->setDesc($user->email.' added notice to '.$user->name)->save();
 
+                
                 try {
-                    $current_recipient = $user;
-                    $emailNotification = new EmailNoticeNotification($user, $notice->id);
-                    \Mail::to($current_recipient->email)->send($emailNotification);
-                    //   \Mail::to('jotassin@gmail.com')->send($emailNotification);
+                        $current_recipient = $user;
+                        $emailNotification = new EmailNoticeNotification($user, $notice->id);
+                        \Mail::to($current_recipient->email)->send($emailNotification);
+                     //   \Mail::to('jotassin@gmail.com')->send($emailNotification);
                 } catch (\Illuminate\Database\QueryException $ex) {
                     dd($ex->getMessage());
                 }

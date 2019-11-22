@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class AddDeletedAtColumnToProjectContactRoles extends Migration
 {
@@ -13,9 +13,9 @@ class AddDeletedAtColumnToProjectContactRoles extends Migration
      */
     public function up()
     {
-        Schema::table('project_contact_roles', function (Blueprint $table) {
-            $table->softDeletes();
-        });
+    	Schema::table('project_contact_roles', function (Blueprint $table) {
+			    $table->softDeletes();
+			});
     }
 
     /**
@@ -26,7 +26,7 @@ class AddDeletedAtColumnToProjectContactRoles extends Migration
     public function down()
     {
         Schema::table('project_contact_roles', function (Blueprint $table) {
-            $table->dropColumn('deleted_at');
+          	$table->dropColumn('deleted_at');
         });
     }
 }

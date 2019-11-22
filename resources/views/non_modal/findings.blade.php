@@ -69,18 +69,18 @@
 	window.findingModalSelectedMine = 'true';
 	window.findingModalSelectedType = '{{ $type }}';
 	<?php
-$passedAmenity  = $amenity;
-$passedBuilding = $building;
-if (!is_null($passedBuilding) && !is_null($passedBuilding->building_id)) {
-  $passedBuildingId = $passedBuilding->id;
-} else {
-  $passedBuildingId = null;
-}
-$passedUnit = $unit;
-if ($amenity && $passedAmenity->building_id) {
-  $buildingName = $passedAmenity->building_inspection()->building_name;
-}
-?>
+	$passedAmenity = $amenity;
+	$passedBuilding = $building;
+	if(!is_null($passedBuilding) && !is_null($passedBuilding->building_id)) {
+		$passedBuildingId = $passedBuilding->id;
+	} else {
+		$passedBuildingId = null;
+	}
+	$passedUnit = $unit;
+	if ($amenity && $passedAmenity->building_id) {
+		$buildingName = $passedAmenity->building_inspection()->building_name;
+	}
+	?>
 	window.findingModalSelectedAmenity = '';
 	window.findingModalSelectedLocationType = '';
 	window.scrollPosType = 0;
@@ -585,31 +585,28 @@ if ($amenity && $passedAmenity->building_id) {
 				window.findingModalSelectedAmenityInspection = 'amenity-inspection-{{ $passedAmenity->id }}';
 				window.selectedAmenityInspection = '{{ $passedAmenity->id }}';
 				<?php
-if ($passedAmenity->project_id) {
-  // is a project type
-  $locationType = 's-' . $passedAmenity->project_ref;
-  $locationText = "Site picked";
-} elseif ($passedAmenity->building_id) {
-  // is a building
-  $locationType = 'b-' . $passedAmenity->building_id;
-  $locationText = "BIN: " . addslashes($buildingName);
-  if ($passedAmenity->building->address) {
-    $locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
-  } else {
-    $locationText .= ", NO ADDRESSS SET IN DEVCO.";
-  }
-  echo "console.log('Passed amenity is a building type');";
-} else {
-  // is a unit
-  $locationType = 'u-' . $passedAmenity->unit_id;
-  $locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_name;
-  if ($passedAmenity->unit->building->address) {
-    $locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
-  } else {
-    $locationText .= ", NO ADDRESSS SET IN DEVCO.";
-  }
-}
-?>
+					if ($passedAmenity->project_id) { // is a project type
+						$locationType = 's-' . $passedAmenity->project_ref;
+						$locationText = "Site picked";
+					} elseif ($passedAmenity->building_id) { // is a building
+						$locationType = 'b-' . $passedAmenity->building_id;
+						$locationText = "BIN: " . addslashes($buildingName);
+						if ($passedAmenity->building->address) {
+							$locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
+						} else {
+							$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+						}
+						echo "console.log('Passed amenity is a building type');";
+					} else { // is a unit
+						$locationType = 'u-' . $passedAmenity->unit_id;
+						$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_name;
+						if ($passedAmenity->unit->building->address) {
+							$locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
+						} else {
+							$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+						}
+					}
+					?>
 					// load the findings of selected amenities
 					@if(!is_null($passedUnit))
 					$.ajax({
@@ -635,8 +632,8 @@ if ($passedAmenity->project_id) {
 				console.log('Filtering to unit id:u-{{ $passedUnit->unit_id }}');
 			    	// set filter test for type
 			    	<?php
-$locationType = 'u-' . $passedUnit->unit_id;
-?>
+			    	$locationType = 'u-' . $passedUnit->unit_id;
+			    	?>
 						// set filter text for type
 						window.findingModalSelectedLocationType = '{{ $locationType }}';
 						// filterAmenities('u-{{ $passedUnit->unit_id }}', 'Unit NAME: {{ $passedUnit->unit_name }} in Building BIN:{{ $passedUnit->building_key }} ADDRESS: @if($passedUnit->building->address) {{ $passedUnit->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf',0);
@@ -650,8 +647,8 @@ $locationType = 'u-' . $passedUnit->unit_id;
 			    	@if($toplevel != 1)
 			    	console.log('Filtering to Building BIN: {{ $passedBuilding->building_name }}, ADDRESS: {{ $passedBuilding->address }}');
 			    	<?php
-$locationType = 'b-' . $passedBuilding->building_id;
-?>
+			    	$locationType = 'b-' . $passedBuilding->building_id;
+			    	?>
 							// set filter text for type
 							window.findingModalSelectedLocationType = '{{ $locationType }}';
 				    	// set filter test for type

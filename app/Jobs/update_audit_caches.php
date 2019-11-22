@@ -2,12 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Models\CachedAudit;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Models\CachedAudit;
 use Log;
 
 class update_audit_caches implements ShouldQueue
@@ -31,11 +31,12 @@ class update_audit_caches implements ShouldQueue
      */
     public function handle()
     {
-        $audits = CachedAudit::where('step_id', '<', 67)->get();
+        $audits = CachedAudit::where('step_id','<', 67)->get();
 
-        // processing only active audits.
-        foreach ($audits as $audit) {
-            $audit->update_cached_audit();
-        }
+            // processing only active audits.
+            foreach ($audits as $audit) {
+               $audit->update_cached_audit();
+            }
     }
+
 }

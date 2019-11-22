@@ -2,32 +2,35 @@
 
 namespace App\Events;
 
-use App\Models\AmenityInspection;
-use App\Models\Audit;
-use App\Models\AuditAuditor;
-use App\Models\BuildingInspection;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
-use App\Models\CachedUnit;
-use App\Models\Organization;
-use App\Models\Program;
-use App\Models\Project;
-use App\Models\ProjectContactRole;
-use App\Models\SystemSetting;
-use App\Models\Unit;
-use App\Models\UnitInspection;
-use App\Models\UnitProgram;
-use App\Models\User;
-use App\Services\DevcoService;
-use Auth;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
+use App\Models\AuditAuditor;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use App\Models\SystemSetting;
+use App\Models\Audit;
+use App\Models\Unit;
+use App\Models\Project;
+use App\Models\UnitInspection;
+use App\Models\Organization;
+use App\Models\BuildingInspection;
+use App\Models\ProjectContactRole;
+use App\Models\Program;
+use App\Services\DevcoService;
+use App\Models\UnitProgram;
+use App\Models\AmenityInspection;
+use App\Models\CachedUnit;
+use Auth;
+
+
 
 class CachedAuditsEvent
 {
@@ -41,7 +44,7 @@ class CachedAuditsEvent
     public function __construct()
     {
         if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-            // Auth::onceUsingId(1); // TEST BRIAN
+           // Auth::onceUsingId(1); // TEST BRIAN
             Auth::onceUsingId(286); // TEST
         }
     }
@@ -51,11 +54,13 @@ class CachedAuditsEvent
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
+    
     public function cachedAuditCreated(CachedAudit $cached_audit)
     {
+        
         $jsonRun = 0;
         // get buildings from cached_audit
-        $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building', 'building.address', 'building.project', 'building.project.address')->get();
+        $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building','building.address','building.project','building.project.address')->get();
         //dd($buildings);
 
         // get the auditors' list from audit_auditors table
@@ -96,48 +101,49 @@ class CachedAuditsEvent
         // }
 
         // create cached buildings related to this audit
-        //
-        CachedBuilding::where('audit_id', $cached_audit->audit_id)->delete();
+        // 
+        CachedBuilding::where('audit_id',$cached_audit->audit_id)->delete();
         foreach ($buildings as $building) {
             //dd($building->building);
             //$count_units = UnitInspection::where('building_key', '=', $building->building_key)->count();
             $count_units = UnitInspection::where('building_key', '=', $building->building_key)->selectRaw('unit_id, ANY_VALUE(building_key) as building_key, ANY_VALUE(project_id) as project_id, ANY_VALUE(project_key) as project_key, ANY_VALUE(building_id) as building_id, ANY_VALUE(building_key) as building_key')->groupBy('unit_id', 'building_key', 'project_id', 'project_key', 'building_id', 'building_key')->get()->count();
             $finding_total = $building->nlt_count + $building->lt_count + $building->file_count;
-            $building_amenities = AmenityInspection::where('building_id', $building->building_id)->with('amenity')->get();
+            $building_amenities = AmenityInspection::where('building_id',$building->building_id)->with('amenity')->get();
             //dd($building_amenities,$building);
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
             //
+            
+            $baJson = array();
+            forEach($building_amenities as $ba){
 
-            $baJson = [];
-            foreach ($building_amenities as $ba) {
-                if ($ba->amenity->inspectable == 1) {
+                if($ba->amenity->inspectable == 1){
                     // if($jsonRun == 1){
                     //     $baJson .= ' , ';
                     //     //insert comma between groups
                     // }
                     $jsonRun = 1;
                     $baJson[] = [
-                        'id' => $ba->amenity_id,
-                        'qty' => '0',
-                        'type' => addslashes($ba->amenity->amenity_description),
-                        'status' => '',
-                        'common_area' => $ba->common_area,
-                        'project' => $ba->project,
-                        'building_system' => $ba->building_system,
-                        'building_exterior' => $ba->building_exterior,
-                        'unit' => $ba->unit,
-                        'file' => $ba->file,
+                        "id" => $ba->amenity_id,
+                        "qty" => "0", 
+                        "type" => addslashes($ba->amenity->amenity_description),
+                        "status" => "",
+                        "common_area" => $ba->common_area,
+                        "project" => $ba->project,
+                        "building_system" => $ba->building_system,
+                        "building_exterior" => $ba->building_exterior,
+                        "unit" => $ba->unit,
+                        "file" => $ba->file
                     ];
                 } else {
-                    //dd($ba,$ba->amenity->inspectable);
+                            //dd($ba,$ba->amenity->inspectable);
                 }
             }
-
+            
             $jsonRun = 0;
-
+            
             // set values to allow for null checks:
-            if (isset($building)) {
+            if(isset($building)){
                 $building_name = $building->building_name;
                 $building_id = $building->building_id;
                 $building_key = $building->building_key;
@@ -148,18 +154,19 @@ class CachedAuditsEvent
                 $finding_file_total = $building->file_count;
                 $finding_nlt_total = $building->nlt_count;
                 $finding_lt_total = $building->lt_count;
-                if (isset($building->building->address)) {
+                if(isset($building->building->address)){
                     $address = $building->building->address->line_1;
                     $city = $building->building->address->city;
                     $state = $building->building->address->state;
                     $zip = $building->building->address->zip;
+                    
                 } else {
                     $address = 'DEFAULT: '.$building->building->project->address->line_1;
                     $city = $building->building->project->address->city;
                     $state = $building->building->project->address->state;
                     $zip = $building->building->project->address->zip;
                 }
-            } else {
+            }else{
                 $building_name = 'NOT SET IN DEVCO';
                 $building_id = $building->building_id;
                 $building_key = $building->building_key;
@@ -179,6 +186,7 @@ class CachedAuditsEvent
             $auditors_json = json_encode($auditors_array);
             $amenities_json = json_encode($baJson);
 
+            
             $cached_building = new CachedBuilding([
                 'building_name' => $building_name,
                 'building_id' => $building_id,
@@ -209,34 +217,36 @@ class CachedAuditsEvent
                 'state' => $state,
                 'zip' => $zip,
                 'auditors_json' => $auditors_json,
-                'amenities_json' => $amenities_json,
+                'amenities_json' => $amenities_json
             ]);
             $cached_building->save();
+
         }
 
-        // create project level amenities
-        $project_amenities = AmenityInspection::where('project_id', $cached_audit->project_id)->with('amenity')->get();
+            // create project level amenities
+            $project_amenities = AmenityInspection::where('project_id',$cached_audit->project_id)->with('amenity')->get();
 
-        //build amenity json:
-        //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
+            //build amenity json:
+            //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
+            
+            $baJson = array();
+            forEach($project_amenities as $ba){
 
-        $baJson = [];
-        foreach ($project_amenities as $ba) {
-            if ($ba->amenity->inspectable) {
-                $baJson[] = [
-                        'id' => $ba->amenity_id,
-                        'qty' => '0',
-                        'type' => addslashes($ba->amenity->amenity_description),
-                        'status' => '',
-                        'common_area' => $ba->common_area,
-                        'project' => $ba->project,
-                        'building_system' => $ba->building_system,
-                        'building_exterior' => $ba->building_exterior,
-                        'unit' => $ba->unit,
-                        'file' => $ba->file,
+                if($ba->amenity->inspectable){
+                    $baJson[] = [
+                        "id" => $ba->amenity_id,
+                        "qty" => "0", 
+                        "type" => addslashes($ba->amenity->amenity_description),
+                        "status" => "",
+                        "common_area" => $ba->common_area,
+                        "project" => $ba->project,
+                        "building_system" => $ba->building_system,
+                        "building_exterior" => $ba->building_exterior,
+                        "unit" => $ba->unit,
+                        "file" => $ba->file
                     ];
-
-                $cached_building = new CachedBuilding([
+                
+                    $cached_building = new CachedBuilding([
                         'building_name' => $ba->amenity->amenity_description,
                         'building_id' => null,
                         'building_key' => null,
@@ -268,77 +278,80 @@ class CachedAuditsEvent
                         'auditors_json' => json_encode($auditors_array),
                         'amenities_json' => json_encode($baJson),
                         'amenity_id' =>$ba->amenity_id,
-                        'amenity_inspection_id' =>$ba->id,
+                        'amenity_inspection_id' =>$ba->id
                     ]);
-                $cached_building->save();
+                    $cached_building->save();
 
-                $ba->cachedbuilding_id = $cached_building->id;
-                $ba->save();
+                    $ba->cachedbuilding_id = $cached_building->id;
+                    $ba->save();
+                }
             }
-        }
+
+        
 
         // create cached units
         $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->selectRaw('unit_id, ANY_VALUE(audit_key) as audit_key, ANY_VALUE(project_id) as project_id, ANY_VALUE(project_key) as project_key, ANY_VALUE(building_id) as building_id, ANY_VALUE(building_key) as building_key')->groupBy('unit_id', 'audit_key', 'project_id', 'project_key', 'building_id', 'building_key')->get();
 
         // $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->get();
 
-        CachedUnit::where('audit_id', $cached_audit->audit_id)->delete();
-
+        CachedUnit::where('audit_id',$cached_audit->audit_id)->delete();
+        
         //$units_added = array();
 
         foreach ($units as $unit) {
             //if(!in_array($unit->unit_id, $units_added)){
-            //$units_added[] = $unit->unit_id;
+                //$units_added[] = $unit->unit_id;
 
-            // get the unit type (bedroom type)
-            //
-            //
+                // get the unit type (bedroom type)
+                //
+                //
 
-            $unit_amenities = AmenityInspection::where('unit_id', $unit->unit_id)->with('amenity')->get();
-            //dd($unit_amenities);
-            $uaCount = 0;
-            //Unit amenity json:
-            //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
-            $uaJson = [];
-            foreach ($unit_amenities as $ua) {
-                if ($ua->amenity->inspectable) {
-                    $uaCount++;
-                    // if($jsonRun == 1){
-                    //     $uaJson .= ' , ';
-                    //     //insert comma between groups
-                    // }
-                    $jsonRun = 1;
+                $unit_amenities = AmenityInspection::where('unit_id',$unit->unit_id)->with('amenity')->get();
+                //dd($unit_amenities);
+                $uaCount = 0;
+                //Unit amenity json:
+                //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
+                $uaJson = array();
+                forEach($unit_amenities as $ua){
+                    if($ua->amenity->inspectable){
+                        $uaCount++;
+                        // if($jsonRun == 1){
+                        //     $uaJson .= ' , ';
+                        //     //insert comma between groups
+                        // }
+                        $jsonRun = 1;
 
-                    $uaJson[] = [
-                            'id' => $ua->amenity_id,
-                            'qty' => '0',
-                            'type' => addslashes($ua->amenity->amenity_description),
-                            'status' => '',
-                            'common_area' => $ua->common_area,
-                            'project' => $ua->project,
-                            'building_system' => $ua->building_system,
-                            'building_exterior' => $ua->building_exterior,
-                            'unit' => $ua->unit,
-                            'file' => $ua->file,
+                        $uaJson[] = [
+                            "id" => $ua->amenity_id,
+                            "qty" => "0", 
+                            "type" => addslashes($ua->amenity->amenity_description),
+                            "status" => "",
+                            "common_area" => $ua->common_area,
+                            "project" => $ua->project,
+                            "building_system" => $ua->building_system,
+                            "building_exterior" => $ua->building_exterior,
+                            "unit" => $ua->unit,
+                            "file" => $ua->file
                         ];
+                        
+                    }
                 }
-            }
-
-            $jsonRun = 0;
-
-            if (isset($unit->unit->building->address)) {
-                $address = $unit->unit->building->address->line_1;
-                $city = $unit->unit->building->address->city;
-                $state = $unit->unit->building->address->state;
-                $zip = $unit->unit->building->address->zip;
-            } else {
-                $address = null;
-                $city = null;
-                $state = null;
-                $zip = null;
-            }
-            if ($unit) {
-                $cached_unit = new CachedUnit([
+                
+                $jsonRun = 0;
+                
+                if(isset($unit->unit->building->address)){
+                    $address = $unit->unit->building->address->line_1;
+                    $city = $unit->unit->building->address->city;
+                    $state = $unit->unit->building->address->state;
+                    $zip = $unit->unit->building->address->zip;
+                } else {
+                    $address = null;
+                    $city = null;
+                    $state = null;
+                    $zip = null;
+                }
+                if($unit){
+                    $cached_unit = new CachedUnit([
                         'audit_id' => $cached_audit->audit_id,
                         'audit_key' => $cached_audit->audit_key,
                         'project_id' => $unit->project_id,
@@ -374,12 +387,12 @@ class CachedAuditsEvent
                         'amenities_json' => json_encode($uaJson),
                         'unit_id'=>$unit->unit_id,
                         'unit_key'=>$unit->unit_key,
-                        'unit_name'=>$unit->unit->unit_name,
+                        'unit_name'=>$unit->unit->unit_name
                     ]);
-                $cached_unit->save();
-            } else {
-                dd('Unit unit was not good:', $unit);
-            }
+                    $cached_unit->save();
+                }else{
+                    dd('Unit unit was not good:',$unit);
+                }
 
             //}
         }

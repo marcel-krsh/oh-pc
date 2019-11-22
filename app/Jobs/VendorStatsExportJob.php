@@ -2,31 +2,31 @@
 
 namespace App\Jobs;
 
-use App\CostItem;
-use App\ExpenseCategory;
-use App\InvoiceItem;
-use App\Mail\DownloadReady;
-use App\PoItems;
-use App\Program;
-use App\Report;
-use App\RequestItem;
-use App\User;
-use App\Vendor;
-use Excel;
 use Exception;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Mail\DownloadReady;
+use App\Report;
+use App\ExpenseCategory;
+use App\Program;
+use App\Vendor;
+use App\CostItem;
+use App\RequestItem;
+use App\PoItems;
+use App\InvoiceItem;
+use Excel;
 use Illuminate\Support\Facades\Storage;
+use App\User;
 
 set_time_limit(3600);
 ini_set('max_execution_time', 2000);
-ini_set('memory_limit', -1);
-ini_set('request_terminate_timeout', 2000);
+ini_set("memory_limit", -1);
+ini_set("request_terminate_timeout", 2000);
 
 /**
- * VendorStatsExport Job.
+ * VendorStatsExport Job
  *
  * @category Events
  * @license  Proprietary and confidential
@@ -74,7 +74,7 @@ class VendorStatsExportJob implements ShouldQueue
         $convert = 0;
 
         if ($this->date_ref == null) {
-            $date = date('m-d-Y_g-i-s_a', time());
+            $date = date("m-d-Y_g-i-s_a", time());
         } else {
             $date = $this->date_ref;
         }
@@ -86,7 +86,7 @@ class VendorStatsExportJob implements ShouldQueue
         } else {
             $filename = 'vendor_stats_'.$date;
         }
-
+        
         $filenames_array = [];
 
         // Create an array of totals with/without categories and programs
@@ -130,7 +130,7 @@ class VendorStatsExportJob implements ShouldQueue
             $filename_summary_csv = 'vendor_stats_'.$date.'-summary.csv';
             $filename_csv = 'vendor_stats_'.$date.'.csv';
 
-            if (! Storage::exists($directory)) {
+            if (!Storage::exists($directory)) {
                 Storage::makeDirectory($directory);
             }
 
@@ -138,7 +138,7 @@ class VendorStatsExportJob implements ShouldQueue
             $vendors = Vendor::where('id', '!=', 1)->orderBy('vendor_name', 'ASC')->get();
 
             // only run the summary file once
-            if (! Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
+            if (!Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
                 $headers = '"Name","ID","Link","Cost Type","Total","Total %"';
 
                 foreach ($expense_categories as $cat) {
@@ -146,12 +146,12 @@ class VendorStatsExportJob implements ShouldQueue
                 }
 
                 $headers = $headers."\n";
-
+            
                 Storage::put($directory.'/'.$filename_summary_csv, $headers);
             }
 
             foreach ($vendors as $vendor) {
-                $vendor_url = env('APP_URL', 'https://ohfa.allita.org').'/viewvendor/'.$vendor->id;
+                $vendor_url = env('APP_URL', 'https://ohfa.allita.org')."/viewvendor/".$vendor->id;
 
                 // calculations
                 // Cost
@@ -194,7 +194,7 @@ class VendorStatsExportJob implements ShouldQueue
                 }
                 $summary_total_invoice = '$'.number_format($summary_total_invoice, 2, '.', ',');
 
-                if (! Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
+                if (!Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
                     $row1 = '"'.$vendor->vendor_name.'","'.$vendor->id.'","'.$vendor_url.'","Cost","'.$summary_total_cost.'","'.$summary_percentage_cost.'"';
                     $row2 = '"'.$vendor->vendor_name.'","'.$vendor->id.'","'.$vendor_url.'","Request","'.$summary_total_requested.'","'.$summary_percentage_requested.'"';
                     $row3 = '"'.$vendor->vendor_name.'","'.$vendor->id.'","'.$vendor_url.'","PO","'.$summary_total_po.'","'.$summary_percentage_po.'"';
@@ -242,21 +242,21 @@ class VendorStatsExportJob implements ShouldQueue
                     }
                     $total_invoice = '$'.number_format($total_invoice, 2, '.', ',');
 
-                    if (! Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
-                        $row1 = $row1.',"'.$total_cost.'","'.$percentage_cost.'"';
-                        $row2 = $row2.',"'.$total_requested.'","'.$percentage_requested.'"';
-                        $row3 = $row3.',"'.$total_po.'","'.$percentage_po.'"';
-                        $row4 = $row4.',"'.$total_invoice.'","'.$percentage_invoice.'"';
+                    if (!Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
+                        $row1 = $row1 .',"'. $total_cost.'","'.$percentage_cost.'"';
+                        $row2 = $row2 .',"'. $total_requested.'","'.$percentage_requested.'"';
+                        $row3 = $row3 .',"'. $total_po.'","'.$percentage_po.'"';
+                        $row4 = $row4 .',"'. $total_invoice.'","'.$percentage_invoice.'"';
                     }
                 }
 
-                if (! Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
+                if (!Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
                     $row = $row1."\n".$row2."\n".$row3."\n".$row4;
                     Storage::append($directory.'/'.$filename_summary_csv, $row);
                 }
             }
 
-            if (! Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
+            if (!Storage::exists($directory.'/'.'vendor_stats_'.$date.'-summary.xlsx')) {
                 // convert that csv in xls
                 Excel::load('storage/app/'.$directory.'/'.$filename_summary_csv, function ($file) {
                 })->setFileName('vendor_stats_'.$date.'-summary')->store('xlsx', storage_path('app/'.$directory));
@@ -281,7 +281,7 @@ class VendorStatsExportJob implements ShouldQueue
                 }
 
                 $headers = $headers."\n";
-
+            
                 Storage::put($directory.'/'.$filename_csv, $headers);
 
                 foreach ($vendors as $vendor) {
@@ -324,7 +324,7 @@ class VendorStatsExportJob implements ShouldQueue
                         $percentage_invoice = '0.00%';
                     }
                     $total_invoice = '$'.number_format($total_invoice, 2, '.', ',');
-
+              
                     $row1 = '"'.$vendor->vendor_name.'","'.$vendor->id.'","'.$vendor_url.'","Cost","'.$summary_total_cost.'","'.$summary_percentage_cost.'"';
                     $row2 = '"'.$vendor->vendor_name.'","'.$vendor->id.'","'.$vendor_url.'","Request","'.$summary_total_requested.'","'.$summary_percentage_requested.'"';
                     $row3 = '"'.$vendor->vendor_name.'","'.$vendor->id.'","'.$vendor_url.'","PO","'.$summary_total_po.'","'.$summary_percentage_po.'"';
@@ -334,6 +334,7 @@ class VendorStatsExportJob implements ShouldQueue
                     $row2 = $row2.',"'.$total_requested.'","'.$percentage_requested.'"';
                     $row3 = $row3.',"'.$total_po.'","'.$percentage_po.'"';
                     $row4 = $row4.',"'.$total_invoice.'","'.$percentage_invoice.'"';
+            
 
                     foreach ($expense_categories as $cat) {
                         // Cost
@@ -396,7 +397,7 @@ class VendorStatsExportJob implements ShouldQueue
                 if ($report) {
                     $new_program_processed = $report->program_processed + 1;
                     $report->update([
-                    'program_processed' => $new_program_processed,
+                    'program_processed' => $new_program_processed
                     ]);
                     $report = $report->fresh();
                 }
@@ -1010,9 +1011,10 @@ class VendorStatsExportJob implements ShouldQueue
                 $files = glob(storage_path('app/'.$directory.'/*'));
                 //$zipper->make('vendor_stats_'.$date.'.zip')->folder('storage/app/export/vendorstats/'.$date.'/')->add($filenames_array);
                 $zipper->make(storage_path('app/'.$directory.'/').'vendor_stats_'.$date.'.zip')->add($files)->close();
+            
 
                 $report->update([
-                  'pending_request' => 0,
+                  'pending_request' => 0
                 ]);
 
                 // Send email notification to requestor
@@ -1025,7 +1027,7 @@ class VendorStatsExportJob implements ShouldQueue
                 }
             }
         }
-
+        
         $this->delete();
     }
 

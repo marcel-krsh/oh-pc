@@ -2,21 +2,21 @@
 
 namespace App\Jobs;
 
-use App\Models\Audit;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use App\Services\AuthService;
+use App\Services\DevcoService;
 use App\Models\AuthTracker;
 use App\Models\SystemSetting;
 use App\Models\User;
-use App\Services\AuthService;
-use App\Services\DevcoService;
-use DateTime;
 use DB;
-use Event;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use DateTime;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Audit;
+use Event;
 use Log;
 
 class CreateTestAuditJob implements ShouldQueue
@@ -34,9 +34,7 @@ class CreateTestAuditJob implements ShouldQueue
     {
         $this->audit = $audit;
     }
-
     public $tries = 5;
-
     /**
      * Execute the job.
      *
@@ -45,7 +43,7 @@ class CreateTestAuditJob implements ShouldQueue
     public function handle()
     {
         if (is_null($this->audit)) {
-            Log::info('Did not receive audit ');
+             Log::info('Did not receive audit ');
         } else {
             Log::info('Creating a test event for audit id'.$this->audit->id);
         }

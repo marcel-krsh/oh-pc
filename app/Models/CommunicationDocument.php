@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * CommunicationDocument Model.
+ * CommunicationDocument Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -16,13 +16,13 @@ class CommunicationDocument extends Model
     protected $fillable = [
         'communication_id',
         'document_id',
-        'sync_docuware_id',
+        'sync_docuware_id'
     ];
 
     public $timestamps = false;
 
     /**
-     * Communication.
+     * Communication
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -32,7 +32,7 @@ class CommunicationDocument extends Model
     }
 
     /**
-     * Document.
+     * Document
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

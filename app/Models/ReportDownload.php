@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * ReportDownload Model.
+ * ReportDownload Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -17,11 +17,11 @@ class ReportDownload extends Model
 
     protected $fillable = [
         'report_id',
-        'user_id',
+        'user_id'
     ];
 
     /**
-     * User.
+     * User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -31,7 +31,7 @@ class ReportDownload extends Model
     }
 
     /**
-     * Report.
+     * Report
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

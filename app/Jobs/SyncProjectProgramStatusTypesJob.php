@@ -2,21 +2,22 @@
 
 namespace App\Jobs;
 
-use App\Models\AuthTracker;
-use App\Models\ProjectProgramStatusType;
-use App\Models\SyncProjectProgramStatusType;
-use App\Models\SystemSetting;
-use App\Models\User;
-use App\Services\AuthService;
-use App\Services\DevcoService;
-use DateTime;
-use DB;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Services\AuthService;
+use App\Services\DevcoService;
+use App\Models\AuthTracker;
+use App\Models\SystemSetting;
+use App\Models\User;
+use DB;
+use DateTime;
 use Illuminate\Support\Facades\Hash;
+
+use App\Models\SyncProjectProgramStatusType;
+use App\Models\ProjectProgramStatusType;
 
 class SyncProjectProgramStatusTypesJob implements ShouldQueue
 {
@@ -31,7 +32,6 @@ class SyncProjectProgramStatusTypesJob implements ShouldQueue
     {
         //
     }
-
     public $tries = 5;
 
     /**
@@ -67,7 +67,7 @@ class SyncProjectProgramStatusTypesJob implements ShouldQueue
             //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
-        if (! is_null($apiConnect)) {
+        if (!is_null($apiConnect)) {
             $syncData = $apiConnect->listDevelopmentProgramStatusTypes(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
@@ -82,11 +82,11 @@ class SyncProjectProgramStatusTypesJob implements ShouldQueue
                         //dd('Page Count is Higher',$syncData);
                     }
                     foreach ($syncData['data'] as $i => $v) {
-                        // check if record exists
-                        $updateRecord = SyncProjectProgramStatusType::select('id', 'allita_id', 'last_edited', 'updated_at')->where('project_program_status_type_key', $v['attributes']['developmentProgramStatusTypeKey'])->first();
-                        // convert booleans
-                        //settype($v['attributes']['isActive'], 'boolean');
-                        //dd($updateRecord,$updateRecord->updated_at);
+                            // check if record exists
+                            $updateRecord = SyncProjectProgramStatusType::select('id', 'allita_id', 'last_edited', 'updated_at')->where('project_program_status_type_key', $v['attributes']['developmentProgramStatusTypeKey'])->first();
+                            // convert booleans
+                            //settype($v['attributes']['isActive'], 'boolean');
+                            //dd($updateRecord,$updateRecord->updated_at);
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
 
@@ -97,17 +97,17 @@ class SyncProjectProgramStatusTypesJob implements ShouldQueue
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
                             $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
-                            $allitaFloat = '.'.$allitaDate->format('u');
-                            $devcoFloat = '.'.$devcoDate->format('u');
+                            $allitaFloat = ".".$allitaDate->format('u');
+                            $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-
+                                
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-
+                                
                             if ($devcoDateEval > $allitaDateEval) {
-                                if (! is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+                                if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
                                     SyncProjectProgramStatusType::where('id', $updateRecord['id'])
@@ -123,7 +123,7 @@ class SyncProjectProgramStatusTypesJob implements ShouldQueue
                                         'status_description'=>$v['attributes']['statusDescription'],
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
-                                //dd('inside.');
+                                    //dd('inside.');
                                 } elseif (is_null($allitaTableRecord)) {
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
@@ -134,7 +134,7 @@ class SyncProjectProgramStatusTypesJob implements ShouldQueue
                                     $allitaTableRecord = ProjectProgramStatusType::create([
                                         'status_name'=>$v['attributes']['statusName'],
                                         'status_description'=>$v['attributes']['statusDescription'],
-
+                                            
                                         'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
@@ -142,7 +142,7 @@ class SyncProjectProgramStatusTypesJob implements ShouldQueue
                                     ->update([
                                         'status_name'=>$v['attributes']['statusName'],
                                         'status_description'=>$v['attributes']['statusDescription'],
-
+                                            
                                         'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
 use Illuminate\Console\Command;
+use App\Models\User;
 
 class FixUsernames extends Command
 {
@@ -41,12 +41,13 @@ class FixUsernames extends Command
         //
         $this->line('Fixing User Names'.PHP_EOL);
         $users = User::get();
-        foreach ($users as $user) {
-            if ($user->person) {
+        foreach($users as $user){
+            if($user->person){
                 //dd($user->full_name());
                 $user->update(['name'=>$user->full_name()]);
                 $this->line('Updated '.$user->full_name().PHP_EOL);
             }
+
         }
     }
 }

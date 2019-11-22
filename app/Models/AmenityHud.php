@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * AmenityHud Model.
+ * AmenityHud Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -18,11 +18,11 @@ class AmenityHud extends Pivot
 
     protected $fillable = [
         'amenity_id',
-        'hud_inspectable_area_id',
+        'hud_inspectable_area_id'
     ];
 
     /**
-     * Amenity.
+     * Amenity
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -32,7 +32,7 @@ class AmenityHud extends Pivot
     }
 
     /**
-     * Hud Inspectable Area.
+     * Hud Inspectable Area
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

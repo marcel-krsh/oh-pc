@@ -509,6 +509,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('modals/communication/open-draft/{draft_id}', 'CommunicationController@openDraftMessage')->name('communications.open-draft-message');
     Route::post('/commmunication/draft-save/{draft}', 'CommunicationController@saveDrfatToCommunication')->name('communication.draft-save');
 
+
+
     // Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
 
     // notifications trigger

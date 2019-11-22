@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\LogConverter;
-use App\Models\CostItem;
-use App\Models\DispositionType;
 use App\Models\DocumentRule;
-use App\Models\ExpenseCategory;
-use App\Models\Helpers\GeoData;
-use App\Models\Parcel;
-use App\Models\ProgramRule;
-use App\Models\Programs;
-use App\Models\SfParcel;
-use App\Models\SfReimbursements;
-use App\Models\Vendor;
-use Auth;
-use DB;
-use File;
-use Gate;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+use Auth;
+use App\Models\DispositionType;
+use Gate;
+use File;
 use Storage;
+use App\Models\SfParcel;
+use App\Models\Programs;
+use Illuminate\Http\Request;
+use DB;
+use App\Models\Parcel;
+use App\Models\SfReimbursements;
+use App\Models\Helpers\GeoData;
+use App\LogConverter;
+use App\Models\ExpenseCategory;
+use App\Models\Vendor;
+use App\Models\CostItem;
+use App\Models\ProgramRule;
 
 class ParcelCostController extends Controller
 {
@@ -43,7 +43,7 @@ class ParcelCostController extends Controller
                     ->get();
 
         foreach ($vendors as $vendor) {
-            $vendor->vendor_name = str_replace(['"'], [''], $vendor->vendor_name);
+            $vendor->vendor_name = str_replace(['"',], [''], $vendor->vendor_name);
         }
 
         // check if a category can have the advance checkbox
@@ -54,74 +54,74 @@ class ParcelCostController extends Controller
             switch ($expense_category->id) {
                 case 2: // acquisition
                     if ($program_rules->acquisition_advance == 1) {
-                        $advance_rules[$i]['advance'] = 1;
-                        $advance_rules[$i]['name'] = 'Acquisition';
+                        $advance_rules[$i]["advance"] = 1;
+                        $advance_rules[$i]["name"] = "Acquisition";
                     } else {
-                        $advance_rules[$i]['advance'] = 0;
-                        $advance_rules[$i]['name'] = 'Acquisition';
+                        $advance_rules[$i]["advance"] = 0;
+                        $advance_rules[$i]["name"] = "Acquisition";
                     }
                     break;
                 case 3: // pre-demo
                     if ($program_rules->pre_demo_advance == 1) {
-                        $advance_rules[$i]['advance'] = 1;
-                        $advance_rules[$i]['name'] = 'Pre-Demo';
+                        $advance_rules[$i]["advance"] = 1;
+                        $advance_rules[$i]["name"] = "Pre-Demo";
                     } else {
-                        $advance_rules[$i]['advance'] = 0;
-                        $advance_rules[$i]['name'] = 'Pre-Demo';
+                        $advance_rules[$i]["advance"] = 0;
+                        $advance_rules[$i]["name"] = "Pre-Demo";
                     }
                     break;
                 case 4: // demo
                     if ($program_rules->demolition_advance == 1) {
-                        $advance_rules[$i]['advance'] = 1;
-                        $advance_rules[$i]['name'] = 'Acquisition';
+                        $advance_rules[$i]["advance"] = 1;
+                        $advance_rules[$i]["name"] = "Acquisition";
                     } else {
-                        $advance_rules[$i]['advance'] = 0;
-                        $advance_rules[$i]['name'] = 'Demolition';
+                        $advance_rules[$i]["advance"] = 0;
+                        $advance_rules[$i]["name"] = "Demolition";
                     }
                     break;
                 case 5: // greening
                     if ($program_rules->greening_advance == 1) {
-                        $advance_rules[$i]['advance'] = 1;
-                        $advance_rules[$i]['name'] = 'Greening (Post Demo)';
+                        $advance_rules[$i]["advance"] = 1;
+                        $advance_rules[$i]["name"] = "Greening (Post Demo)";
                     } else {
-                        $advance_rules[$i]['advance'] = 0;
-                        $advance_rules[$i]['name'] = 'Greening (Post Demo)';
+                        $advance_rules[$i]["advance"] = 0;
+                        $advance_rules[$i]["name"] = "Greening (Post Demo)";
                     }
                     break;
                 case 6: // maintenance
                     if ($program_rules->maintenance_advance == 1) {
-                        $advance_rules[$i]['advance'] = 1;
-                        $advance_rules[$i]['name'] = 'Maintenance';
+                        $advance_rules[$i]["advance"] = 1;
+                        $advance_rules[$i]["name"] = "Maintenance";
                     } else {
-                        $advance_rules[$i]['advance'] = 0;
-                        $advance_rules[$i]['name'] = 'Maintenance';
+                        $advance_rules[$i]["advance"] = 0;
+                        $advance_rules[$i]["name"] = "Maintenance";
                     }
                     break;
                 case 7: // admin
                     if ($program_rules->administration_advance == 1) {
-                        $advance_rules[$i]['advance'] = 1;
-                        $advance_rules[$i]['name'] = 'Administration';
+                        $advance_rules[$i]["advance"] = 1;
+                        $advance_rules[$i]["name"] = "Administration";
                     } else {
-                        $advance_rules[$i]['advance'] = 0;
-                        $advance_rules[$i]['name'] = 'Administration';
+                        $advance_rules[$i]["advance"] = 0;
+                        $advance_rules[$i]["name"] = "Administration";
                     }
                     break;
                 case 8: // other
                     if ($program_rules->other_advance == 1) {
-                        $advance_rules[$i]['advance'] = 1;
-                        $advance_rules[$i]['name'] = 'Other';
+                        $advance_rules[$i]["advance"] = 1;
+                        $advance_rules[$i]["name"] = "Other";
                     } else {
-                        $advance_rules[$i]['advance'] = 0;
-                        $advance_rules[$i]['name'] = 'Other';
+                        $advance_rules[$i]["advance"] = 0;
+                        $advance_rules[$i]["name"] = "Other";
                     }
                     break;
                 case 9: // loan payoff
                     if ($program_rules->nip_loan_payoff_advance == 1) {
-                        $advance_rules[$i]['advance'] = 1;
-                        $advance_rules[$i]['name'] = 'NIP Loan Payoff';
+                        $advance_rules[$i]["advance"] = 1;
+                        $advance_rules[$i]["name"] = "NIP Loan Payoff";
                     } else {
-                        $advance_rules[$i]['advance'] = 0;
-                        $advance_rules[$i]['name'] = 'NIP Loan Payoff';
+                        $advance_rules[$i]["advance"] = 0;
+                        $advance_rules[$i]["name"] = "NIP Loan Payoff";
                     }
                     break;
             }
@@ -159,17 +159,17 @@ class ParcelCostController extends Controller
             } else {
                 $categoryid = 1;
             }
-
+            
             // get vendor id
             if ($vendor_name) {
-                $vendor_name = str_replace(['&amp;'], ['&'], $vendor_name);
-                $vendor_name = str_replace(['&#039;'], ["'"], $vendor_name);
+                $vendor_name = str_replace(['&amp;',], ['&'], $vendor_name);
+                $vendor_name = str_replace(['&#039;',], ["'"], $vendor_name);
                 $vendor = Vendor::where('vendor_name', 'LIKE', '%'.$vendor_name.'%')->first();
                 $vendorid = $vendor->id;
             } else {
                 $vendorid = 1;
             }
-
+            
             // check program rules to make sure we can save advance
             switch ($categoryid) {
                 case 2: // acquisition
@@ -235,7 +235,7 @@ class ParcelCostController extends Controller
                     'vendor_id' => $vendorid,
                     'description' => $expense,
                     'notes' => $note,
-                    'advance' => $advance,
+                    'advance' => $advance
                 ]);
                 $cost_item->save();
                 $cost_added = 1;
@@ -247,6 +247,7 @@ class ParcelCostController extends Controller
             $parcel->load('associatedInvoice');
             $parcel->load('associatedPo');
             $parcel->load('associatedRequest');
+
 
             if ($parcel->associatedInvoice || $parcel->associatedPo || $parcel->associatedRequest) {
                 // now we have a new cost item, the request, po and invoices are no longer valid
@@ -281,7 +282,7 @@ class ParcelCostController extends Controller
                                 $compliance->delete();
                             }
                             $parcel->update([
-                                'compliance_score' => null,
+                                'compliance_score' => null
                             ]);
                         }
                     }
@@ -295,7 +296,7 @@ class ParcelCostController extends Controller
                 guide_set_progress($parcel->id, 32, $status = 'started', 0); // step 3
 
                 // uncheck step 2: request approved, request sent to HFA
-
+                
                 if ($parcel->associatedRequest) {
                     $parcel->associatedRequest->request->first()->resetApprovals();
                 }
@@ -311,39 +312,36 @@ class ParcelCostController extends Controller
 
         return 1;
     }
-
     public function addBreakOut(Request $request)
     {
+        
 
         // get info needed to record entry
         $parcel = DB::table('parcels')->select('*')->where('id', $request->parcel_id)->first();
-        if (count($parcel) < 1) {
-            $msg = ['message'=> "I was not able to find the associated parcel. That is weird right? Please reload the parcel to make sure it 1. exists, and 2. I have it's information to work with. If the problem persists, contact Greenwood 360 and let them know of the issue, and parcel number you're having trouble with.", 'status'=>1];
-
+        if (count($parcel)< 1) {
+            $msg = ['message'=> "I was not able to find the associated parcel. That is weird right? Please reload the parcel to make sure it 1. exists, and 2. I have it's information to work with. If the problem persists, contact Greenwood 360 and let them know of the issue, and parcel number you're having trouble with.",'status'=>1];
             return json_encode($msg);
         }
-
+            
         // are they HFA or LB?
-        if (Auth::user()->entity_type == 'landbank') {
+        if (Auth::user()->entity_type == "landbank") {
             /// landbank eh? - make sure their enity is the entity of the parcel?
             if ($parcel->entity_id == Auth::user()->entity_id) {
                 $pass = 1;
             } else {
-                $msg = ['message'=> 'Sorry you don\'t have access to this parcel.', 'status'=>1];
-
+                $msg = ['message'=> 'Sorry you don\'t have access to this parcel.','status'=>1];
                 return json_encode($msg);
             }
         } else {
             $pass = 1;
         }
         $cost = \App\Models\CostItem::find($request->reference_id);
-        if (count($cost) < 1) {
-            $msg = ['message'=> "I wasn't able to lookup the cost associated with this. Did someone delete it while you were working on it?", 'status'=>1];
-
+        if (count($cost)< 1) {
+            $msg = ['message'=> "I wasn't able to lookup the cost associated with this. Did someone delete it while you were working on it?",'status'=>1];
             return json_encode($msg);
         }
         if ($pass == 1) {
-            if ($request->type == 'request') {
+            if ($request->type == "request") {
                 \App\Models\RequestItem::create([
                     'breakout_type' => $cost->breakout_type,
                     'parcel_id'=> $parcel->id,
@@ -356,10 +354,9 @@ class ParcelCostController extends Controller
                     'description'=> $cost->description,
                     'notes'=> $cost->notes,
                     'ref_id'=> $cost->id,
-                    'breakout_item_status_id'=> 1,
+                    'breakout_item_status_id'=> 1
                     ]);
-                $msg = ['message'=> 'I Added the requested amount successfully.', 'status'=>1];
-
+                $msg = ['message'=> 'I Added the requested amount successfully.','status'=>1];
                 return json_encode($msg);
             }
         }

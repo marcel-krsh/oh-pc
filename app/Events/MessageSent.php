@@ -1,35 +1,34 @@
 <?php
 
 namespace App\Events;
-
-use App\Models\Message;
 use App\Models\User;
+use App\Models\Message;
 use Auth;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
 class MessageSent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * User that sent the message.
+     /**
+     * User that sent the message
      *
      * @var User
      */
-    public $user;
+        public $user;
 
     /**
-     * Message details.
+     * Message details
      *
      * @var Message
      */
-    public $message;
+        public $message;
 
     /**
      * Create a new event instance.
@@ -38,7 +37,7 @@ class MessageSent implements ShouldBroadcastNow
      */
     public function __construct(User $user, Message $message)
     {
-        $this->user = $user;
+        $this->user = $user; 
         $this->message = $message;
     }
 
@@ -50,7 +49,7 @@ class MessageSent implements ShouldBroadcastNow
     public function broadcastOn()
     {
         // return new PrivateChannel('chat');
-
+        
         $uid = $this->user->id;
         $sid = $this->user->socket_id;
 

@@ -2,21 +2,22 @@
 
 namespace App\Jobs;
 
-use App\Models\AuthTracker;
-use App\Models\SyncUtilityAllowanceType;
-use App\Models\SystemSetting;
-use App\Models\User;
-use App\Models\UtilityAllowanceType;
-use App\Services\AuthService;
-use App\Services\DevcoService;
-use DateTime;
-use DB;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Services\AuthService;
+use App\Services\DevcoService;
+use App\Models\AuthTracker;
+use App\Models\SystemSetting;
+use App\Models\User;
+use DB;
+use DateTime;
 use Illuminate\Support\Facades\Hash;
+
+use App\Models\SyncUtilityAllowanceType;
+use App\Models\UtilityAllowanceType;
 
 class SyncUtilityAllowanceTypesJob implements ShouldQueue
 {
@@ -31,7 +32,6 @@ class SyncUtilityAllowanceTypesJob implements ShouldQueue
     {
         //
     }
-
     public $tries = 5;
 
     /**
@@ -67,7 +67,7 @@ class SyncUtilityAllowanceTypesJob implements ShouldQueue
             //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
-        if (! is_null($apiConnect)) {
+        if (!is_null($apiConnect)) {
             $syncData = $apiConnect->listUtilityAllowanceTypes(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
@@ -83,26 +83,26 @@ class SyncUtilityAllowanceTypesJob implements ShouldQueue
                     }
                     //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     foreach ($syncData['data'] as $i => $v) {
-                        // check if record exists
-                        $updateRecord = SyncUtilityAllowanceType::select('id', 'allita_id', 'last_edited', 'updated_at')->where('utility_allowance_type_key', $v['attributes']['utilityAllowanceTypeKey'])->first();
-                        // convert booleans
-                        settype($v['attributes']['isActive'], 'boolean');
-                        // settype($v['attributes']['isUtilityAllowanceTypeHandicapAccessible'], 'boolean');
+                            // check if record exists
+                            $updateRecord = SyncUtilityAllowanceType::select('id', 'allita_id', 'last_edited', 'updated_at')->where('utility_allowance_type_key', $v['attributes']['utilityAllowanceTypeKey'])->first();
+                            // convert booleans
+                             settype($v['attributes']['isActive'], 'boolean');
+                            // settype($v['attributes']['isUtilityAllowanceTypeHandicapAccessible'], 'boolean');
 
-                        // Set dates older than 1950 to be NULL:
-                        // if($v['attributes']['comment'] < 1951){
-                        //     $v['attributes']['comment'] = NULL;
-                        // }
-                        // if($v['attributes']['completedDate'] < 1951){
-                        //     $v['attributes']['completedDate'] = NULL;
-                        // }
-                        // if($v['attributes']['confirmedDate'] < 1951){
-                        //     $v['attributes']['confirmedDate'] = NULL;
-                        // }
-                        // if($v['attributes']['onSiteMonitorEndDate'] < 1951){
-                        //     $v['attributes']['onSiteMonitorEndDate'] = NULL;
-                        // }
-                        //dd($updateRecord,$updateRecord->updated_at);
+                            // Set dates older than 1950 to be NULL:
+                            // if($v['attributes']['comment'] < 1951){
+                            //     $v['attributes']['comment'] = NULL;
+                            // }
+                            // if($v['attributes']['completedDate'] < 1951){
+                            //     $v['attributes']['completedDate'] = NULL;
+                            // }
+                            // if($v['attributes']['confirmedDate'] < 1951){
+                            //     $v['attributes']['confirmedDate'] = NULL;
+                            // }
+                            // if($v['attributes']['onSiteMonitorEndDate'] < 1951){
+                            //     $v['attributes']['onSiteMonitorEndDate'] = NULL;
+                            // }
+                            //dd($updateRecord,$updateRecord->updated_at);
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
 
@@ -113,37 +113,49 @@ class SyncUtilityAllowanceTypesJob implements ShouldQueue
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
                             $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
-                            $allitaFloat = '.'.$allitaDate->format('u');
-                            $devcoFloat = '.'.$devcoDate->format('u');
+                            $allitaFloat = ".".$allitaDate->format('u');
+                            $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-
+                                
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-
+                                
                             if ($devcoDateEval > $allitaDateEval) {
-                                if (! is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+                                if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
                                     SyncUtilityAllowanceType::where('id', $updateRecord['id'])
                                     ->update([
-
+                                            
+                                            
+                                            
                                         'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                         'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                            
+                                            
+                                            
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                     $UpdateAllitaValues = SyncUtilityAllowanceType::find($updateRecord['id']);
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
-
+                                            
+                                            
+                                            
                                         'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                         'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                            
+                                            
+                                            
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
-                                //dd('inside.');
+                                    //dd('inside.');
                                 } elseif (is_null($allitaTableRecord)) {
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
@@ -152,19 +164,33 @@ class SyncUtilityAllowanceTypesJob implements ShouldQueue
                                     // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                     $allitaTableRecord = UtilityAllowanceType::create([
-
+                                            
+                                            
+                                            
+                                            
                                         'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                         'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                            
+                                            
+                                            
                                         'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
                                     $syncTableRecord = SyncUtilityAllowanceType::where('id', $updateRecord['id'])
                                     ->update([
-
+                                            
+                                            
+                                            
+                                            
                                         'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                         'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                            
+                                            
+                                            
                                         'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
@@ -178,18 +204,31 @@ class SyncUtilityAllowanceTypesJob implements ShouldQueue
                             // We do this so the updated_at value of the Sync Table does not become newer
                             // when we add in the allita_id
                             $allitaTableRecord = UtilityAllowanceType::create([
+                                    
 
+                                            
                                     'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                     'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                     'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                            
+                                            
+                                    
                             'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                             ]);
                             // Create the sync table entry with the allita id
                             $syncTableRecord = SyncUtilityAllowanceType::create([
-
+                                            
+                                            
+                                            
+                                            
                                     'utility_allowance_type_name'=>$v['attributes']['utilityAllowanceTypeName'],
                                     'is_active'=>$v['attributes']['isActive'],
+                                            
+                                            
+                                            
+                                            
 
                                 'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                 'last_edited'=>$v['attributes']['lastEdited'],

@@ -2,21 +2,22 @@
 
 namespace App\Jobs;
 
-use App\Models\AuthTracker;
-use App\Models\SyncUnit;
-use App\Models\SystemSetting;
-use App\Models\Unit;
-use App\Models\User;
-use App\Services\AuthService;
-use App\Services\DevcoService;
-use DateTime;
-use DB;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Services\AuthService;
+use App\Services\DevcoService;
+use App\Models\AuthTracker;
+use App\Models\SystemSetting;
+use App\Models\User;
+use DB;
+use DateTime;
 use Illuminate\Support\Facades\Hash;
+
+use App\Models\SyncUnit;
+use App\Models\Unit;
 
 class SyncUnitsJob implements ShouldQueue
 {
@@ -31,7 +32,6 @@ class SyncUnitsJob implements ShouldQueue
     {
         //
     }
-
     public $tries = 5;
 
     /**
@@ -67,7 +67,7 @@ class SyncUnitsJob implements ShouldQueue
             //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
-        if (! is_null($apiConnect)) {
+        if (!is_null($apiConnect)) {
             $syncData = $apiConnect->listUnits(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
@@ -82,12 +82,12 @@ class SyncUnitsJob implements ShouldQueue
                         //dd('Page Count is Higher',$syncData);
                     }
                     foreach ($syncData['data'] as $i => $v) {
-                        // check if record exists
-                        $updateRecord = SyncUnit::select('id', 'allita_id', 'last_edited', 'updated_at')->where('unit_key', $v['attributes']['unitKey'])->first();
-                        // convert booleans
-                        settype($v['attributes']['isActive'], 'boolean');
-                        settype($v['attributes']['isUnitHandicapAccessible'], 'boolean');
-                        //dd($updateRecord,$updateRecord->updated_at);
+                            // check if record exists
+                            $updateRecord = SyncUnit::select('id', 'allita_id', 'last_edited', 'updated_at')->where('unit_key', $v['attributes']['unitKey'])->first();
+                            // convert booleans
+                            settype($v['attributes']['isActive'], 'boolean');
+                            settype($v['attributes']['isUnitHandicapAccessible'], 'boolean');
+                            //dd($updateRecord,$updateRecord->updated_at);
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
 
@@ -98,22 +98,22 @@ class SyncUnitsJob implements ShouldQueue
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
                             $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
-                            $allitaFloat = '.'.$allitaDate->format('u');
-                            $devcoFloat = '.'.$devcoDate->format('u');
+                            $allitaFloat = ".".$allitaDate->format('u');
+                            $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-
+                                
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-
+                                
                             if ($devcoDateEval > $allitaDateEval) {
-                                if (! is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+                                if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
                                     SyncUnit::where('id', $updateRecord['id'])
                                     ->update([
-
+                                            
                                         'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                         'building_key'=>$v['attributes']['buildingKey'],
                                         'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
@@ -124,13 +124,15 @@ class SyncUnitsJob implements ShouldQueue
                                         'status_date'=>$v['attributes']['statusDate'],
                                         'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                         'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                            
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                     $UpdateAllitaValues = SyncUnit::find($updateRecord['id']);
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
-
+                                            
                                         'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                         'unit_bedroom_id'=>null,
                                         'building_key'=>$v['attributes']['buildingKey'],
@@ -146,10 +148,12 @@ class SyncUnitsJob implements ShouldQueue
                                         'status_date'=>$v['attributes']['statusDate'],
                                         'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                         'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                            
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
-                                //dd('inside.');
+                                    //dd('inside.');
                                 } elseif (is_null($allitaTableRecord)) {
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
@@ -158,7 +162,8 @@ class SyncUnitsJob implements ShouldQueue
                                     // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                     $allitaTableRecord = Unit::create([
-
+                                            
+                                            
                                         'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                         'building_key'=>$v['attributes']['buildingKey'],
                                         'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
@@ -169,13 +174,16 @@ class SyncUnitsJob implements ShouldQueue
                                         'status_date'=>$v['attributes']['statusDate'],
                                         'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                         'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                            
                                         'unit_key'=>$v['attributes']['unitKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
                                     $syncTableRecord = SyncUnit::where('id', $updateRecord['id'])
                                     ->update([
-
+                                            
+                                            
                                         'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                         'building_key'=>$v['attributes']['buildingKey'],
                                         'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
@@ -186,7 +194,9 @@ class SyncUnitsJob implements ShouldQueue
                                         'status_date'=>$v['attributes']['statusDate'],
                                         'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                         'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                            
                                         'unit_key'=>$v['attributes']['unitKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
@@ -200,6 +210,7 @@ class SyncUnitsJob implements ShouldQueue
                             // We do this so the updated_at value of the Sync Table does not become newer
                             // when we add in the allita_id
                             $allitaTableRecord = Unit::create([
+                                    
 
                                     'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                     'building_key'=>$v['attributes']['buildingKey'],
@@ -211,12 +222,15 @@ class SyncUnitsJob implements ShouldQueue
                                     'status_date'=>$v['attributes']['statusDate'],
                                     'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                     'is_active'=>$v['attributes']['isActive'],
-
+                                            
+                                            
+                                    
                             'unit_key'=>$v['attributes']['unitKey'],
                             ]);
                             // Create the sync table entry with the allita id
                             $syncTableRecord = SyncUnit::create([
-
+                                            
+                                            
                                     'unit_bedroom_key'=>$v['attributes']['unitBedroomKey'],
                                     'building_key'=>$v['attributes']['buildingKey'],
                                     'unit_square_feet'=>$v['attributes']['unitSquareFeet'],
@@ -227,6 +241,8 @@ class SyncUnitsJob implements ShouldQueue
                                     'status_date'=>$v['attributes']['statusDate'],
                                     'is_unit_handicap_accessible'=>$v['attributes']['isUnitHandicapAccessible'],
                                     'is_active'=>$v['attributes']['isActive'],
+                                            
+                                            
 
                                 'unit_key'=>$v['attributes']['unitKey'],
                                 'last_edited'=>$v['attributes']['lastEdited'],

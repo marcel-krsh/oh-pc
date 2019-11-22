@@ -9,7 +9,6 @@ use App\Models\Audit;
 use App\Models\AuditAuditor;
 use App\Models\Building;
 use App\Models\BuildingAmenity;
-use App\Models\BuildingInspection;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
 use App\Models\CachedComment;
@@ -17,30 +16,32 @@ use App\Models\CachedInspection;
 use App\Models\CachedUnit;
 use App\Models\Comment;
 use App\Models\Finding;
-use App\Models\Group;
 use App\Models\Job;
-use App\Models\Program;
-use App\Models\ProgramGroup;
 use App\Models\Project;
 use App\Models\ProjectAmenity;
-use App\Models\ProjectDetail;
 use App\Models\SystemSetting;
 use App\Models\Unit;
 use App\Models\UnitAmenity;
 use App\Models\UnitInspection;
+use App\Models\ProjectDetail;
 use App\Models\UnitProgram;
 use App\Models\User;
+use DB;
 use Auth;
 use Carbon;
-use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Session;
+use App\Models\Group;
+use App\Models\Program;
+use App\Models\ProgramGroup;
 use View;
+use App\Models\BuildingInspection;
+
 
 class AuditController extends Controller
 {
-    private $htc_group_id;
+	private $htc_group_id;
 
     public function __construct()
     {
@@ -51,17 +52,16 @@ class AuditController extends Controller
             // 6281 holly
             // 6346 Robin (Abigail)
         }
-        $this->htc_group_id = 7;
-        View::share('htc_group_id', $this->htc_group_id);
+      $this->htc_group_id = 7;
+      View::share ('htc_group_id', $this->htc_group_id );
     }
 
-    public function index(Request $request)
-    {
+    public function index(Request $request){
         $user = Auth::user();
         $auditsA = Audit::
         has('cached_audit')
-        ->whereHas('auditors', function ($query) {
-            $query->where('user_id', Auth::id());
+        ->whereHas('auditors',function($query){
+            $query->where('user_id',Auth::id());
         })
         ->with('cached_audit')
         ->with('project')
@@ -79,12 +79,13 @@ class AuditController extends Controller
         ->with('nlts')
         ->with('lts')
         ->with('findings')
-        ->where('lead_user_id', $user->id)
+        ->where('lead_user_id',$user->id)
         ->groupBy('id')
         ->get();
         $audits = $auditsA->merge($auditsB);
         $audits = $audits->sortBy('project.project_name');
-
-        return view('pc.mobile.audits', compact('user', 'audits'));
+        return view('pc.mobile.audits',compact('user','audits'));
     }
+    
+
 }

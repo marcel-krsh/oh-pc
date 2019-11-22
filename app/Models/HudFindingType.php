@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * HudFindingType Model.
+ * HudFindingType Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -17,11 +17,11 @@ class HudFindingType extends Model
 
     protected $fillable = [
         'hud_inspectable_area_id',
-        'finding_type_id',
+        'finding_type_id'
     ];
 
     /**
-     * Finding Type.
+     * Finding Type
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -31,7 +31,7 @@ class HudFindingType extends Model
     }
 
     /**
-     * Hud Inspectable Area.
+     * Hud Inspectable Area
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * Note Model.
+ * Note Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -16,11 +16,11 @@ class Note extends Model
     protected $fillable = [
         'note',
         'user_id',
-        'project_id',
+        'project_id'
     ];
 
     /**
-     * Owner.
+     * Owner
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

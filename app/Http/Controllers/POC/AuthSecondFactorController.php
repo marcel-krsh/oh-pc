@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class AuthSecondFactorController extends Controller
 {
+
     public function index()
     {
         return \view('poc.auth.second-factor');

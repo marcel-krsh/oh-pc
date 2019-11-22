@@ -15,8 +15,7 @@ return [
     |
     | Supported: "sync", "database", "beanstalkd", "sqs", "redis", "null"
     |
-    */
-
+     */
 
     'default' => env('QUEUE_DRIVER', 'database'),
 
@@ -29,9 +28,8 @@ return [
     | is used by your application. A default configuration has been added
     | for each back-end shipped with Laravel. You are free to add more.
 
-
     |
-    */
+     */
 
     'connections' => [
 
@@ -56,7 +54,6 @@ return [
 
         'sqs' => [
             'driver' => 'sqs',
-
 
             'key' => env('SQS_KEY', 'your-public-key'),
             'secret' => env('SQS_SECRET', 'your-secret-key'),
@@ -85,7 +82,7 @@ return [
     | can control which database and table are used to store the jobs that
     | have failed. You may change them to any database / table you wish.
     |
-    */
+     */
 
     'failed' => [
 

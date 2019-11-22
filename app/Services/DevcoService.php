@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Carbon;
+use \GuzzleHttp\RequestOptions;
 
 class DevcoService extends PCAPIService
 {
-    /**
-     * Devco Addresses.
-     */
 
     /**
-     * List Addresses.
+     * Devco Addresses
+     */
+    
+    /**
+     * List Addresses
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -38,7 +39,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Get Address.
+     * Get Address
      *
      * @param  int $address_key
      * @param  int|null $user
@@ -59,7 +60,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Update Address.
+     * Update Address
      *
      * @param  int $address_key
      * @param  array $metadata
@@ -87,11 +88,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Devco Amenities.
+     * Devco Amenities
      */
-
+    
     /**
-     * List Amenities.
+     * List Amenities
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -115,7 +116,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Add Amenity.
+     * Add Amenity
      *
      * @param array $metadata
      * @param  int|null $user
@@ -144,11 +145,11 @@ class DevcoService extends PCAPIService
 
         $payload = array_merge($metadata, $log_params);
 
-        return $this->post('devco/amenities', $payload);
+        return $this->post("devco/amenities", $payload);
     }
 
     /**
-     * Update Amenity.
+     * Update Amenity
      *
      * @param  int $amenities_id
      * @param  array $metadata
@@ -176,11 +177,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Devco Buildings.
+     * Devco Buildings
      */
 
     /**
-     * List Buildings.
+     * List Buildings
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -204,7 +205,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Get Building.
+     * Get Building
      *
      * @param  int $building_key
      * @param  int|null $user
@@ -225,7 +226,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Update Building.
+     * Update Building
      *
      * @param  int $building_key
      * @param  array $metadata
@@ -258,7 +259,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Get Building Amenities.
+     * Get Building Amenities
      *
      * @param  int $building_key
      * @param  int|null $user
@@ -279,11 +280,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Building Statuses.
+     * Building Statuses
      */
-
+    
     /**
-     * List Building Statuses.
+     * List Building Statuses
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -307,7 +308,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Update Building Status.
+     * Update Building Status
      *
      * @param  int $building_status_key
      * @param  array $metadata
@@ -334,13 +335,13 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Building Types.
+     * Building Types
      */
 
     /**
-     * List Building Types.
+     * List Building Types
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -359,11 +360,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Compliance Contacts.
+     * Compliance Contacts
      */
 
     /**
-     * Update Compliance Contact.
+     * Update Compliance Contact
      *
      * @param  int $compliane_contact_key
      * @param  array $metadata
@@ -392,13 +393,13 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Counties.
+     * Counties
      */
 
     /**
-     * List Counties.
+     * List Counties
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -417,13 +418,13 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Developments (projects).
+     * Developments (projects)
      */
-
+    
     /**
-     * List Developments.
+     * List Developments
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -442,7 +443,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Get Development.
+     * Get Development
      *
      * @param  int $development_key
      * @param  int|null $user
@@ -454,15 +455,16 @@ class DevcoService extends PCAPIService
      */
     public function getDevelopment(int $development_key, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
     {
+
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
         return $this->get("devco/developments/{$development_key}?{$log_params}");
     }
 
     /**
-     * List Financial Types.
+     * List Financial Types
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -480,9 +482,9 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Project Financials.
+     * List Project Financials
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -500,7 +502,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Update Development.
+     * Update Development
      *
      * @param  int $development_key
      * @param  array $metadata
@@ -525,10 +527,10 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Development Amenities.
+     * List Development Amenities
      *
      * @param  int $development_key
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -546,10 +548,10 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Development Buildings.
+     * List Development Buildings
      *
      * @param  int $development_key
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -557,7 +559,7 @@ class DevcoService extends PCAPIService
      * @param  string|null $device_name
      * @return object
      */
-    public function listDevelopmentBuildings(int $page, string $newer_than = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, int $development_key) : object
+    public function listDevelopmentBuildings(int $page = 1, string $newer_than = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, int $development_key) : object
     {
         $params = "page={$page}&newer_than={$newer_than}";
 
@@ -567,13 +569,13 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Development Activities.
+     * Development Activities
      */
-
+    
     /**
-     * List Development Activities.
+     * List Development Activities
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  string|null $newer_than
      * @param  int|null $user
      * @param  string|null $user_email
@@ -592,9 +594,9 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Development Activity Types.
+     * List Development Activity Types
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  string|null $newer_than
      * @param  int|null $user
      * @param  string|null $user_email
@@ -613,7 +615,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Update Development Activity.
+     * Update Development Activity
      *
      * @param  int $development_activity_key
      * @param  array $metadata
@@ -636,13 +638,13 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Development Contact Roles.
+     * Development Contact Roles
      */
-
+    
     /**
-     * List Contacts.
+     * List Contacts
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  string|null $newer_than
      *
      *
@@ -655,6 +657,8 @@ class DevcoService extends PCAPIService
      */
     public function listDevelopmentContactRoles(int $page = 1, string $newer_than = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null, int $development_key = null, int $development_program_key = null, int $development_role_key = null, int $organization_key = null, int $person_key = null, string $group_by = 'developmentKey') : object
     {
+        
+
         $params = "page={$page}&newer_than={$newer_than}&development_key={$development_key}&development_program_key={$development_program_key}&development_role_key={$development_role_key}&organization_key={$organization_key}&person_key={$person_key}&group_by={$group_by}";
 
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
@@ -663,7 +667,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Add Contact.
+     * Add Contact
      *
      * @param  array $metadata
      * @param  int $user
@@ -691,15 +695,15 @@ class DevcoService extends PCAPIService
 
         $payload = array_merge($metadata, $log_params);
 
-        return $this->post('devco/development_contact_roles', $payload);
+        return $this->post("devco/development_contact_roles", $payload);
     }
 
     /**
-     * Development Dates.
+     * Development Dates
      */
-
+    
     /**
-     * Update Development Date.
+     * Update Development Date
      *
      * @param  int $development_date_key
      * @param  array $metadata
@@ -722,13 +726,13 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Development Roles.
+     * Development Roles
      */
-
+    
     /**
-     * List Development Roles.
+     * List Development Roles
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -740,18 +744,17 @@ class DevcoService extends PCAPIService
     {
         $params = "page={$page}&newer_than={$newer_than}";
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
-
         return $this->get("devco/development_roles?{$params}&{$log_params}");
     }
 
     /**
-     * Development Programs.
+     * Development Programs
      */
 
     /**
-     * List Development Programs.
+     * List Development Programs
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -771,9 +774,9 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Development Program Status Types.
+     * List Development Program Status Types
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -791,9 +794,9 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Multiple Building Election Types.
+     * List Multiple Building Election Types
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -811,9 +814,9 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Percentages.
+     * List Percentages
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -831,7 +834,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Update Development Program.
+     * Update Development Program
      *
      * @param  int $development_program_key
      * @param  array $metadata
@@ -842,6 +845,7 @@ class DevcoService extends PCAPIService
      * @param  string|null $device_name
      * @return object
      */
+
     public function updateDevelopmentProgram(int $development_program_key, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
     {
         //  $metadata = [
@@ -854,11 +858,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Devco Monitoring (audits).
+     * Devco Monitoring (audits)
      */
-
+    
     /**
-     * Update Audit.
+     * Update Audit
      *
      * @param  int $monitoring_key
      * @param  array $metadata
@@ -881,13 +885,13 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Monitoring Statuses.
+     * Monitoring Statuses
      */
-
+    
     /**
-     * List Audit Statuses.
+     * List Audit Statuses
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -904,14 +908,15 @@ class DevcoService extends PCAPIService
         return $this->get("devco/monitoring_status_types?{$params}&{$log_params}");
     }
 
-    /**
-     * Federal Set Asides.
-     */
 
     /**
-     * List Federal Set Asides.
+     * Federal Set Asides
+     */
+    
+    /**
+     * List Federal Set Asides
      *
-     * @param  int|int $page
+     * @param  int|integer $page
      * @param  int|null $user
      * @param  string|null $user_email
      * @param  string|null $user_name
@@ -929,11 +934,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Amenity Types.
+     * Amenity Types
      */
 
     /**
-     * List Amenitiy Types.
+     * List Amenitiy Types
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -954,11 +959,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Organizations.
+     * Organizations
      */
 
     /**
-     * List Organizations.
+     * List Organizations
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -979,7 +984,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Get Organization.
+     * Get Organization
      *
      * @param  int $organization_id
      * @param  int|null $user
@@ -997,7 +1002,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Update Organization.
+     * Update Organization
      *
      * @param  int $organization_id
      * @param  array $metadata
@@ -1022,11 +1027,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * People.
+     * People
      */
 
     /**
-     * List People.
+     * List People
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -1047,7 +1052,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Get Person.
+     * Get Person
      *
      * @param  int $person_key
      * @param  int|null $user
@@ -1065,7 +1070,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Update Person.
+     * Update Person
      *
      * @param  int $person_key
      * @param  array $metadata
@@ -1094,11 +1099,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Programs.
+     * Programs
      */
 
     /**
-     * List Programs.
+     * List Programs
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -1119,11 +1124,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Program Date Types.
+     * Program Date Types
      */
 
     /**
-     * List Program Date Types.
+     * List Program Date Types
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -1144,11 +1149,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Program Status Types.
+     * Program Status Types
      */
 
     /**
-     * List Program Status Types.
+     * List Program Status Types
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -1168,12 +1173,15 @@ class DevcoService extends PCAPIService
         return $this->get("devco/development_program_status_types?{$params}&{$log_params}");
     }
 
-    /**
-     * States.
-     */
+    
+    
 
     /**
-     * List States.
+     * States
+     */
+    
+    /**
+     * List States
      *
      * @param  int $page
      * @param  int|null $user
@@ -1193,11 +1201,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Users.
+     * Users
      */
-
+    
     /**
-     * List Users.
+     * List Users
      *
      * @param  int $page
      * @param  int|null $user
@@ -1217,11 +1225,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Units.
+     * Units
      */
 
     /**
-     * List Units.
+     * List Units
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -1242,7 +1250,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Unit Bedrooms.
+     * List Unit Bedrooms
      *
      * @param  int $page
      * @param  string|null $newer_than
@@ -1263,7 +1271,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Get Unit.
+     * Get Unit
      *
      * @param  int $unit_key
      * @param  int|null $user
@@ -1281,7 +1289,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Update Unit.
+     * Update Unit
      *
      * @param  int $unit_key
      * @param  array $metadata
@@ -1305,8 +1313,10 @@ class DevcoService extends PCAPIService
         return $this->put("devco/units/{$unit_key}?{$log_params}", $metadata);
     }
 
+    
+
     /**
-     * List Household Events.
+     * List Household Events
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1328,7 +1338,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Event Types.
+     * List Event Types
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1350,11 +1360,11 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Unit Statuses.
+     * Unit Statuses
      */
 
     /**
-     * Update Unit Status.
+     * Update Unit Status
      *
      * @param  int $unit_status_key
      * @param  array $metadata
@@ -1377,7 +1387,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Unit Status.
+     * List Unit Status
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1399,7 +1409,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Owner Certification Years.
+     * List Owner Certification Years
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1421,7 +1431,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Households.
+     * List Households
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1443,7 +1453,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Household Sizes.
+     * List Household Sizes
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1465,7 +1475,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Special Needs.
+     * List Special Needs
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1487,7 +1497,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Rental Assistance Sources.
+     * List Rental Assistance Sources
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1509,7 +1519,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Rental Assistance Types.
+     * List Rental Assistance Types
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1531,7 +1541,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Utility Allowances.
+     * List Utility Allowances
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1553,7 +1563,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Utility Allowance Types.
+     * List Utility Allowance Types
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1575,7 +1585,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Monitorings.
+     * List Monitorings
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1597,7 +1607,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Monitoring Monitors.
+     * List Monitoring Monitors
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1619,7 +1629,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Project Amenities.
+     * List Project Amenities
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1641,7 +1651,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Unit Amenities.
+     * List Unit Amenities
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1663,7 +1673,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Building Amenities.
+     * List Building Amenities
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1685,7 +1695,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Project Programs.
+     * List Project Programs
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1707,7 +1717,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Project Buildings.
+     * List Project Buildings
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1729,7 +1739,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Compliance Contacts.
+     * List Compliance Contacts
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1751,7 +1761,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Project Dates.
+     * List Project Dates
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1773,7 +1783,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Phone Numbers.
+     * List Phone Numbers
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1795,7 +1805,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Phone Number Types.
+     * List Phone Number Types
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1817,7 +1827,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Email Addresses.
+     * List Email Addresses
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1839,7 +1849,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * List Email Addresse Types.
+     * List Email Addresse Types
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1859,9 +1869,8 @@ class DevcoService extends PCAPIService
 
         return $this->get("devco/email_address_types?{$params}&{$log_params}");
     }
-
     /**
-     * List Unit Identities.
+     * List Unit Identities
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1881,9 +1890,8 @@ class DevcoService extends PCAPIService
 
         return $this->get("devco/unit_identities?{$params}&{$log_params}");
     }
-
     /**
-     * Get Unit's Programs.
+     * Get Unit's Programs
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1908,7 +1916,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Get Unit's Project Program Records.
+     * Get Unit's Project Program Records
      *
      * @param  int $unit_key
      * @param  int $page
@@ -1922,23 +1930,27 @@ class DevcoService extends PCAPIService
      */
     public function getUnitProjectPrograms(int $unitKey = 1, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) : object
     {
+        
         $params = "unit={$unitKey}";
 
-        $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}}"; //
+        $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}}";//
 
         return $this->get("devco/unit_development_programs/{$unitKey}?{$log_params}");
     }
 
-    public function putUnitProgram($unitKey, $programKey, $fundingProgramKey, $startDate, $endDate, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
-    {
+    
+
+    public function putUnitProgram($unitKey, $programKey, $fundingProgramKey,$startDate,$endDate, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null) {
+
         $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
-        return $this->post('devco/unit_development_programs?', ['form_params'=>['UnitKey'=>$unitKey, 'DevelopmentProgramKey'=>$programKey, 'StartDate'=>$startDate, 'EndDate'=>$endDate]]
+        return $this->post("devco/unit_development_programs?",['form_params'=>['UnitKey'=>$unitKey,'DevelopmentProgramKey'=>$programKey,'StartDate'=>$startDate,'EndDate'=>$endDate]]
           );
+
     }
 
     /**
-     * Get Project Docs.
+     * Get Project Docs
      *
      * @param  string $projectNumber
      * @param  int|null $user
@@ -1948,16 +1960,18 @@ class DevcoService extends PCAPIService
      * @param  string|null $device_name
      * @return object
      */
+
     public function getProjectDocuments(string $projectNumber = '1', string $searchString = null, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
     {
-        $cabinet = \App\Models\SystemSetting::where('key', 'docuware_cabinet')->first();
+        $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
         $cabinetNumber = $cabinet->value;
-        if (! is_null($searchString)) {
+        if(!is_null($searchString)){
             //$search = "DOCUMENTDATE:1/1/2018,2/1/2018;";
             $search = "PROJECTNUMBER:{$projectNumber};DocuWareFulltext:{$searchString}";
         } else {
             $search = "PROJECTNUMBER:{$projectNumber};";
         }
+
 
         $log_params = "cabinet={$cabinetNumber}&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
@@ -1966,15 +1980,15 @@ class DevcoService extends PCAPIService
 
     public function getDocuments(int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
     {
-        $cabinet = \App\Models\SystemSetting::where('key', 'docuware_cabinet')->first();
+        $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
         $cabinetNumber = $cabinet->value;
 
-        $date = \App\Models\SyncDocuware::orderBy('synced_at', 'desc');
-        if (! is_null($date)) {
-            $date = '1/1/2018,2/1/2018';
-        }
+        $date = \App\Models\SyncDocuware::orderBy('synced_at','desc');
+        if(!is_null($date)){$date="1/1/2018,2/1/2018";}
+        
+            $search = "DOCUMENTDATE:{$date};";
+        
 
-        $search = "DOCUMENTDATE:{$date};";
 
         $log_params = "cabinet={$cabinetNumber}&user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
 
@@ -1982,7 +1996,7 @@ class DevcoService extends PCAPIService
     }
 
     /**
-     * Get Doc.
+     * Get Doc
      *
      * @param  int $projectNumber
      * @param  int|null $user
@@ -1992,15 +2006,24 @@ class DevcoService extends PCAPIService
      * @param  string|null $device_name
      * @return object
      */
-    public function getDocument(int $documentId = 1, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
-    {
-        $cabinet = \App\Models\SystemSetting::where('key', 'docuware_cabinet')->first();
-        $cabinetNumber = $cabinet->value;
+    public function getDocument(int $documentId = 1,  int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null)
+        {
+            $cabinet = \App\Models\SystemSetting::where('key','docuware_cabinet')->first();
+            $cabinetNumber = $cabinet->value;
 
-        $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+           $log_params = "user={$user}&user_email={$user_email}&user_name={$user_name}&device_id={$device_id}&device_name={$device_name}";
+           
+           
+           return $this->getFile("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}");
+            
 
-        return $this->getFile("docuware/documents/{$cabinetNumber}/{$documentId}?{$log_params}");
+            
+            
+           
+           //return response()->download($file, 'filename.pdf', $headers);
 
-        //return response()->download($file, 'filename.pdf', $headers);
-    }
+            
+        }
+
+
 }

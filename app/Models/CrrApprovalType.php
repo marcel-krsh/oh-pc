@@ -10,11 +10,10 @@ class CrrApprovalType extends Model
 {
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d G:i:s.u';
-
+    
     protected $guarded = ['id'];
 
-    public function crrReports(): HasMany
-    {
-        return $this->hasMany(\App\Models\CrrReport::class);
+    public function crrReports(): HasMany {
+    	return $this->hasMany('App\Models\CrrReport');
     }
 }

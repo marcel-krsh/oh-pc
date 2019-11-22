@@ -18,11 +18,11 @@ class OrderingBuilding extends Model
         'building_id',
         'amenity_id',
         'order',
-        'amenity_inspection_id',
+        'amenity_inspection_id'
     ];
 
     /**
-     * Building.
+     * Building
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -33,10 +33,10 @@ class OrderingBuilding extends Model
 
     public function building() : HasOne
     {
-        if ($this->building_id === null) {
-            return $this->hasOne(\App\Models\CachedBuilding::class, 'amenity_id', 'amenity_id')->where('audit_id', '=', $this->audit_id)->where('amenity_inspection_id', '=', $this->amenity_inspection_id);
-        //$cachedbuilding = \App\Models\CachedBuilding::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->first();
-        } else {
+        if($this->building_id === NULL){
+            return $this->hasOne(\App\Models\CachedBuilding::class, 'amenity_id', 'amenity_id')->where('audit_id','=',$this->audit_id)->where('amenity_inspection_id', '=', $this->amenity_inspection_id);
+            //$cachedbuilding = \App\Models\CachedBuilding::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->first(); 
+        }else{
             //$cachedbuilding = \App\Models\CachedBuilding::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building_id)->first();
             return $this->hasOne(\App\Models\CachedBuilding::class, 'building_id', 'building_id');
         }
@@ -45,7 +45,7 @@ class OrderingBuilding extends Model
     }
 
     /**
-     * Audit.
+     * Audit
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -65,7 +65,7 @@ class OrderingBuilding extends Model
     }
 
     /**
-     * User.
+     * User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -81,23 +81,24 @@ class OrderingBuilding extends Model
 
         //dd($this->audit_id, $this->building_id, $this->id);
         // get all the auditors for that building/units in the building
-
+       
         // if building_id is null, we are looking at a building-level amenity that should only have one auditor
-        if ($this->building->building_id) {
-            $auditor_ids = \App\Models\AmenityInspection::where('audit_id', '=', $this->audit_id)->where('building_id', '=', $this->building->building_id)->whereNotNull('auditor_id')->whereNotNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+        if($this->building->building_id){
+            $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('building_id','=',$this->building->building_id)->whereNotNull('auditor_id')->whereNotNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+            
 
             // we are missing building_ids in the table, we for now we need to go through the units individually
-            $auditor_unit_ids = [];
-
+            $auditor_unit_ids = array();
+            
             $units = Unit::where('building_id', '=', $this->building->building_id)->get();
 
-            foreach ($units as $unit) {
-                $auditor_unit_ids = array_merge($auditor_unit_ids, \App\Models\AmenityInspection::where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
+            foreach($units as $unit){
+                $auditor_unit_ids = array_merge($auditor_unit_ids, \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
             }
 
             $auditor_ids = array_merge($auditor_ids, $auditor_unit_ids);
-        } else {
-            $auditor_ids = \App\Models\AmenityInspection::where('audit_id', '=', $this->audit_id)->where('amenity_id', '=', $this->amenity_id)->whereNotNull('auditor_id')->whereNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
+        }else{
+            $auditor_ids = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('amenity_id','=',$this->amenity_id)->whereNotNull('auditor_id')->whereNull('building_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
         }
 
         $auditors = User::whereIn('id', $auditor_ids)->get();
@@ -107,7 +108,7 @@ class OrderingBuilding extends Model
 
     public function amenity_inspections()
     {
-        $amenities = \App\Models\AmenityInspection::where('audit_id', '=', $this->audit_id)->where('unit_id', '=', $this->building->building_id)->whereNotNull('building_id')->get();
+        $amenities = \App\Models\AmenityInspection::where('audit_id','=',$this->audit_id)->where('unit_id','=',$this->building->building_id)->whereNotNull('building_id')->get();
 
         return $amenities;
     }

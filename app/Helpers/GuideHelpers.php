@@ -1,20 +1,20 @@
 <?php
 
-use App\ApprovalRequest;
-use App\CostItem;
-use App\Disposition;
-use App\GuideProgress;
-use App\GuideStep;
-use App\Mail\DispositionApprovedNotification;
 use App\Parcel;
-use App\ReimbursementInvoice;
 use App\ReimbursementPurchaseOrders;
 use App\ReimbursementRequest;
+use App\ReimbursementInvoice;
+use App\GuideStep;
+use App\GuideProgress;
+use App\ApprovalRequest;
 use App\Retainage;
+use App\CostItem;
+use App\Disposition;
 use App\User;
+use App\Mail\DispositionApprovedNotification;
 
 /**
- * Guide Check Step.
+ * Guide Check Step
  *
  * Check if a specific step id has been completed for an asset id (a step for disposition would get a disposition_id)
  *
@@ -25,6 +25,7 @@ use App\User;
  */
 function guide_check_step($guide_step_id = null, $type_id = null)
 {
+
     if ($guide_step_id && $type_id) {
         $progress = GuideProgress::where('guide_step_id', '=', $guide_step_id)->where('type_id', '=', $type_id)->first();
         if ($progress) {
@@ -42,7 +43,7 @@ function guide_check_step($guide_step_id = null, $type_id = null)
 }
 
 /**
- * Guide Set Progress.
+ * Guide Set Progress
  *
  * @param        $type_id
  * @param        $step_id
@@ -53,12 +54,12 @@ function guide_check_step($guide_step_id = null, $type_id = null)
  */
 function guide_set_progress($type_id, $step_id, $status = 'completed', $perform_checks = 1)
 {
-    if (! $step_id) {
+    if (!$step_id) {
         return false;
     }
 
     $step = GuideStep::where('id', '=', $step_id)->first();
-    if (! $step) {
+    if (!$step) {
         return false;
     }
 
@@ -82,15 +83,15 @@ function guide_set_progress($type_id, $step_id, $status = 'completed', $perform_
         $progress = GuideProgress::where('guide_step_id', '=', $step_id)->where('type_id', '=', $type_id)->first();
         if ($progress) {
             $progress->update([
-                    'started' => 1,
-                    'completed' => 1,
+                    "started" => 1,
+                    "completed" => 1
             ]);
         } else {
             $progress = new  GuideProgress([
-                'guide_step_id' => $step_id,
-                'type_id' => $type_id,
-                'started' => 1,
-                'completed' => 1,
+                "guide_step_id" => $step_id,
+                "type_id" => $type_id,
+                "started" => 1,
+                "completed" => 1
             ]);
             $progress->save();
         }
@@ -98,15 +99,15 @@ function guide_set_progress($type_id, $step_id, $status = 'completed', $perform_
         $progress = GuideProgress::where('guide_step_id', '=', $step_id)->where('type_id', '=', $type_id)->first();
         if ($progress) {
             $progress->update([
-                    'started' => 1,
-                    'completed' => 0,
+                    "started" => 1,
+                    "completed" => 0
             ]);
         } else {
             $progress = new  GuideProgress([
-                'guide_step_id' => $step_id,
-                'type_id' => $type_id,
-                'started' => 1,
-                'completed' => 0,
+                "guide_step_id" => $step_id,
+                "type_id" => $type_id,
+                "started" => 1,
+                "completed" => 0
             ]);
             $progress->save();
         }
@@ -122,12 +123,13 @@ function guide_set_progress($type_id, $step_id, $status = 'completed', $perform_
             }
         }
     }
-
     return true;
 }
 
+
+
 /**
- * Guide Next Pending Step.
+ * Guide Next Pending Step
  *
  * returns the next available step
  * $step_type_id is 1 for disposition, 2 for parcel, etc.
@@ -142,7 +144,7 @@ function guide_set_progress($type_id, $step_id, $status = 'completed', $perform_
  */
 function guide_next_pending_step($step_type_id, $type_id, $show = 'id')
 {
-    if (! $type_id || ! $step_type_id) {
+    if (!$type_id || !$step_type_id) {
         return false;
     }
 
@@ -153,7 +155,7 @@ function guide_next_pending_step($step_type_id, $type_id, $show = 'id')
     if ($step_type_id == 2) { // parcel
         $is_parcel = 1;
         $parcel = Parcel::where('id', '=', $type_id)->first();
-        if (! is_null($parcel)) {
+        if (!is_null($parcel)) {
             if (count($parcel->retainages) == 0 && count($parcel->costItemsWithAdvance) == 0) {
                 // ignore steps 41, 42, 43
             } else {
@@ -171,24 +173,24 @@ function guide_next_pending_step($step_type_id, $type_id, $show = 'id')
             if ($step->children) {
                 foreach ($step->children as $substep) {
                     // special case for parcels with retainages/advances
-                    if ($is_parcel && ! $has_retainages_or_advances) { // parcel without retainages/advances
+                    if ($is_parcel && !$has_retainages_or_advances) { // parcel without retainages/advances
                         if ($substep->id != 41 && $substep->id != 42 && $substep->id != 43) {
                             $count_existing = GuideProgress::where('guide_step_id', '=', $substep->id)->where('type_id', '=', $type_id)->where('completed', '!=', 1)->count();
                             $count_substep_progress = GuideProgress::where('guide_step_id', '=', $substep->id)->where('type_id', '=', $type_id)->count();
 
-                            if ($count_existing || ! $count_substep_progress) { // if there are no progress at all or if there are some incomplete ones
+                            if ($count_existing || !$count_substep_progress) { // if there are no progress at all or if there are some incomplete ones
                                 /*    if(!$corresponding_progress || $corresponding_progress->completed != 1){*/
                                 // we are done, this is the next step to address
                                 // save it in parcel cache
 
                                 $parcel->update([
-                                    'next_step' => $substep->id,
+                                    'next_step' => $substep->id
                                 ]);
                                 if ($substep->landbank_property_status_id !== null) {
-                                    updateStatus('parcel', $parcel, 'landbank_property_status_id', $substep->landbank_property_status_id, 0, '');
+                                    updateStatus("parcel", $parcel, 'landbank_property_status_id', $substep->landbank_property_status_id, 0, "");
                                 }
                                 if ($substep->hfa_property_status_id !== null) {
-                                    updateStatus('parcel', $parcel, 'hfa_property_status_id', $substep->hfa_property_status_id, 0, '');
+                                    updateStatus("parcel", $parcel, 'hfa_property_status_id', $substep->hfa_property_status_id, 0, "");
                                 }
 
                                 return $substep;
@@ -200,21 +202,20 @@ function guide_next_pending_step($step_type_id, $type_id, $show = 'id')
                         // if(!$corresponding_progress || $corresponding_progress->completed != 1){
                         $count_existing = GuideProgress::where('guide_step_id', '=', $substep->id)->where('type_id', '=', $type_id)->where('completed', '!=', 1)->count();
                         $count_substep_progress = GuideProgress::where('guide_step_id', '=', $substep->id)->where('type_id', '=', $type_id)->count();
-                        if ($count_existing || ! $count_substep_progress) {
+                        if ($count_existing || !$count_substep_progress) {
                             // we are done, this is the next step to address
                             if ($is_parcel) {
                                 // save next step in parcel's cache
                                 $parcel->update([
-                                    'next_step' => $substep->id,
+                                    'next_step' => $substep->id
                                 ]);
                                 if ($substep->landbank_property_status_id !== null) {
-                                    updateStatus('parcel', $parcel, 'landbank_property_status_id', $substep->landbank_property_status_id, 0, '');
+                                    updateStatus("parcel", $parcel, 'landbank_property_status_id', $substep->landbank_property_status_id, 0, "");
                                 }
                                 if ($substep->hfa_property_status_id !== null) {
-                                    updateStatus('parcel', $parcel, 'hfa_property_status_id', $substep->hfa_property_status_id, 0, '');
+                                    updateStatus("parcel", $parcel, 'hfa_property_status_id', $substep->hfa_property_status_id, 0, "");
                                 }
                             }
-
                             return $substep;
                             break;
                         }
@@ -226,13 +227,13 @@ function guide_next_pending_step($step_type_id, $type_id, $show = 'id')
 
         if ($is_parcel) {
             $parcel->update([
-                'next_step' => null,
+                'next_step' => null
             ]);
         }
 
-        return;
+        return null;
     } else {
-        return;
+        return null;
     }
 }
 
@@ -243,7 +244,7 @@ function guide_next_pending_step($step_type_id, $type_id, $show = 'id')
 // --------------------------------------------------------
 
 /**
- * Guide Parcel Validated.
+ * Guide Parcel Validated
  *
  * @param \App\Parcel $parcel
  *
@@ -257,7 +258,7 @@ function guide_parcel_validated(Parcel $parcel)
     if ($parcel->resolutions) {
         $all_resolved = 1;
         foreach ($parcel->resolutions as $resolution) {
-            if (! $resolution->lb_resolved == 1 || ! $all_resolved) {
+            if (!$resolution->lb_resolved == 1 || !$all_resolved) {
                 $all_resolved = 0;
             }
         }
@@ -272,7 +273,7 @@ function guide_parcel_validated(Parcel $parcel)
 }
 
 /**
- * Guide Parcel Request Sent To HFA.
+ * Guide Parcel Request Sent To HFA
  *
  * @param \App\ReimbursementPurchaseOrders $reimbursement_po
  *
@@ -283,12 +284,12 @@ function guide_parcel_request_sent_to_hfa(ReimbursementPurchaseOrders $reimburse
     if ($reimbursement_po->created_at || $reimbursement_po->updated_at) {
         return 1;
     } else {
-        return;
+        return null;
     }
 }
 
 /**
- * Guide Parcel Docs Added.
+ * Guide Parcel Docs Added
  *
  * @param \App\Parcel $parcel
  * @param null        $cat_id_to_check
@@ -327,12 +328,12 @@ function guide_parcel_docs_added(Parcel $parcel, $cat_id_to_check = null)
             return 1; // delete when rules are implemented
         }
     } else {
-        return;
+        return null;
     }
 }
 
 /**
- * Guide Parcel Retainage Paid Docs Uploaded.
+ * Guide Parcel Retainage Paid Docs Uploaded
  *
  * @param \App\Parcel $parcel
  * @param int         $retainage_id
@@ -362,7 +363,7 @@ function guide_parcel_retainage_paid_docs_uploaded(Parcel $parcel, $retainage_id
                 return 0;
             }
         } else {
-            return;
+            return null;
         }
     } else {
         // make sure retainage belongs to parcel
@@ -390,16 +391,16 @@ function guide_parcel_retainage_paid_docs_uploaded(Parcel $parcel, $retainage_id
                     return 0;
                 }
             } else {
-                return;
+                return null;
             }
         } else {
-            return;
+            return null;
         }
     }
 }
 
 /**
- * Guide Parcel Advance Paid Docs Uploaded.
+ * Guide Parcel Advance Paid Docs Uploaded
  *
  * @param \App\Parcel $parcel
  * @param int         $advance_id
@@ -429,7 +430,7 @@ function guide_parcel_advance_paid_docs_uploaded(Parcel $parcel, $advance_id = 0
                 return 0;
             }
         } else {
-            return;
+            return null;
         }
     } else {
         $cost_item = CostItem::where('id', '=', $advance_id)->where('parcel_id', '=', $parcel->id)->first();
@@ -455,16 +456,16 @@ function guide_parcel_advance_paid_docs_uploaded(Parcel $parcel, $advance_id = 0
                     return 0;
                 }
             } else {
-                return;
+                return null;
             }
         } else {
-            return;
+            return null;
         }
     }
 }
 
 /**
- * Guide Parcel Docs Reviewed.
+ * Guide Parcel Docs Reviewed
  *
  * @param \App\Parcel $parcel
  *
@@ -476,22 +477,22 @@ function guide_parcel_docs_reviewed(Parcel $parcel)
     if (count($documents)) {
         $all_docs_reviewed = 1;
         foreach ($documents as $document) {
-            if (! ($document->approved || $document->notapproved) || ! $all_docs_reviewed) {
+            if (!($document->approved || $document->notapproved) || !$all_docs_reviewed) {
                 $all_docs_reviewed = 0;
             }
         }
         if ($all_docs_reviewed) {
             return 1;
         } else {
-            return;
+            return null;
         }
     } else {
-        return;
+        return null;
     }
 }
 
 /**
- * Guide Parcel Retainage Paid Docs Reviewed.
+ * Guide Parcel Retainage Paid Docs Reviewed
  *
  * @param \App\Parcel $parcel
  * @param int         $retainage_id
@@ -520,7 +521,7 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
                         if ($document->retainages) {
                             $retainages_paid = 1;
                             foreach ($document->retainages as $retainage) {
-                                if ($retainage->paid != 1 || ! $retainages_paid) {
+                                if ($retainage->paid != 1 || !$retainages_paid) {
                                     $retainages_paid = 0;
                                 }
                             }
@@ -528,7 +529,7 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
                             $retainages_paid = 0;
                         }
 
-                        if (! ($document->approved || $document->notapproved) || ! $all_retainage_docs_reviewed || ! $retainages_paid) {
+                        if (!($document->approved || $document->notapproved) || !$all_retainage_docs_reviewed || !$retainages_paid) {
                             $all_retainage_docs_reviewed = 0;
                         }
                     }
@@ -540,10 +541,10 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
             if ($all_retainage_docs_reviewed && $retainage_doc_found) {
                 return 1;
             } else {
-                return;
+                return null;
             }
         } else {
-            return;
+            return null;
         }
     } else {
         $retainage = Retainage::where('id', '=', $retainage_id)->where('parcel_id', '=', $parcel->id)->first();
@@ -568,7 +569,7 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
                                 $retainages_paid = 1;
                             }
 
-                            if (! ($document->approved || $document->notapproved) || ! $all_retainage_docs_reviewed) {
+                            if (!($document->approved || $document->notapproved) || !$all_retainage_docs_reviewed) {
                                 $all_retainage_docs_reviewed = 0;
                             }
                         }
@@ -580,17 +581,17 @@ function guide_parcel_retainage_paid_docs_reviewed(Parcel $parcel, $retainage_id
                 if ($all_retainage_docs_reviewed && $retainage_doc_found) {
                     return 1;
                 } else {
-                    return;
+                    return null;
                 }
             }
         } else {
-            return;
+            return null;
         }
     }
 }
 
 /**
- * Guide Parcel Advance Paid Docs Reviewed.
+ * Guide Parcel Advance Paid Docs Reviewed
  *
  * @param \App\Parcel $parcel
  * @param int         $advance_id
@@ -617,7 +618,7 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
                         if ($document->retainages) {
                             $advances_paid = 1;
                             foreach ($document->advances as $advance) {
-                                if ($advance->advance_paid != 1 || ! $advances_paid) {
+                                if ($advance->advance_paid != 1 || !$advances_paid) {
                                     $advances_paid = 0;
                                 }
                             }
@@ -625,7 +626,7 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
                             $advances_paid = 0;
                         }
 
-                        if (! ($document->approved || $document->notapproved) || ! $all_advance_docs_reviewed || ! $advances_paid) {
+                        if (!($document->approved || $document->notapproved) || !$all_advance_docs_reviewed || !$advances_paid) {
                             $all_advance_docs_reviewed = 0;
                         }
                     }
@@ -637,10 +638,10 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
             if ($all_advance_docs_reviewed && $advance_doc_found) {
                 return 1;
             } else {
-                return;
+                return null;
             }
         } else {
-            return;
+            return null;
         }
     } else {
         $cost_item = CostItem::where('id', '=', $advance_id)->where('parcel_id', '=', $parcel->id)->first();
@@ -661,11 +662,11 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
                         if (in_array('47', $current_doc_categories_found)) {
                             $advance_doc_found = 1;
                             // check if associated retainages have been paid
-                            if ($cost_item->advance_paid != 1 || ! $advances_paid) {
+                            if ($cost_item->advance_paid != 1 || !$advances_paid) {
                                 $advances_paid = 0;
                             }
 
-                            if (! ($document->approved || $document->notapproved) || ! $all_advance_docs_reviewed) {
+                            if (!($document->approved || $document->notapproved) || !$all_advance_docs_reviewed) {
                                 $all_advance_docs_reviewed = 0;
                             }
                         }
@@ -677,17 +678,17 @@ function guide_parcel_advance_paid_docs_reviewed(Parcel $parcel, $advance_id = 0
                 if ($all_advance_docs_reviewed && $advance_doc_found) {
                     return 1;
                 } else {
-                    return;
+                    return null;
                 }
             }
         } else {
-            return;
+            return null;
         }
     }
 }
 
 /**
- * Guide Parcel PO Approved.
+ * Guide Parcel PO Approved
  *
  * @param \App\ReimbursementPurchaseOrders $reimbursement_po
  *
@@ -697,15 +698,14 @@ function guide_parcel_po_approved(ReimbursementPurchaseOrders $reimbursement_po)
 {
     if ($reimbursement_po) {
         $approval_status_po = guide_approval_status(3, $reimbursement_po->id);
-
         return $approval_status_po['is_approved'];
     } else {
-        return;
+        return null;
     }
 }
 
 /**
- * Guide Parcel Compliance Completed.
+ * Guide Parcel Compliance Completed
  *
  * @param \App\Parcel $parcel
  *
@@ -717,13 +717,13 @@ function guide_parcel_compliance_completed(Parcel $parcel)
     if ($parcel->compliance || $parcel->compliance_manual) {
         if (count($parcel->compliances)) {
             $last_compliance = $parcel->compliances->first();
-            if ($last_compliance->score == 'Pass') {
+            if ($last_compliance->score == "Pass") {
                 return 1;
             } else {
-                return;
+                return null;
             }
         } else {
-            return;
+            return null;
         }
     } else {
         return 1;
@@ -731,7 +731,7 @@ function guide_parcel_compliance_completed(Parcel $parcel)
 }
 
 /**
- * Guide Parcel Initial PO Approval.
+ * Guide Parcel Initial PO Approval
  *
  * @param \App\ReimbursementPurchaseOrders $reimbursement_po
  *
@@ -742,19 +742,18 @@ function guide_parcel_initial_po_approval(ReimbursementPurchaseOrders $reimburse
     $all_po_parcel_approved = 1;
     if (count($reimbursement_po->parcels)) {
         foreach ($reimbursement_po->parcels as $po_parcel) {
-            if ($po_parcel->approved_in_po != 1 || ! $all_po_parcel_approved) { // reimbursement request approved by HFA
+            if ($po_parcel->approved_in_po != 1 || !$all_po_parcel_approved) { // reimbursement request approved by HFA
                 $all_po_parcel_approved = 0;
             }
         }
-
         return $all_po_parcel_approved;
     } else {
-        return;
+        return null;
     }
 }
 
 /**
- * Guide Parcel Approved Amounts Entered.
+ * Guide Parcel Approved Amounts Entered
  *
  * @param \App\Parcel $parcel
  *
@@ -771,25 +770,24 @@ function guide_parcel_approved_amounts_entered(Parcel $parcel)
                 $corresponding_request_item = $parcel_cost_item->requestItem;
                 if ($corresponding_request_item->po_item) {
                     $corresponding_po_item = $corresponding_request_item->po_item;
-                    if (! $corresponding_po_item || ! $all_cost_items_have_po_items) {
+                    if (!$corresponding_po_item || !$all_cost_items_have_po_items) {
                         $all_cost_items_have_po_items = 0;
                     }
                 } else {
-                    return;
+                    return null;
                 }
             } else {
-                return;
+                return null;
             }
         }
-
         return $all_cost_items_have_po_items;
     } else {
-        return;
+        return null;
     }
 }
 
 /**
- * Guide Parcel Request Amounts Entered.
+ * Guide Parcel Request Amounts Entered
  *
  * @param \App\Parcel $parcel
  *
@@ -802,19 +800,19 @@ function guide_parcel_request_amounts_entered(Parcel $parcel)
         foreach ($parcel->costItems() as $parcel_cost_item) {
             if ($parcel_cost_item->requestItem) {
                 $corresponding_request_item = $parcel_cost_item->requestItem;
-                if (! $corresponding_request_item || ! $all_cost_items_have_request_items) {
+                if (!$corresponding_request_item || !$all_cost_items_have_request_items) {
                     $all_cost_items_have_request_items = 0;
                 }
             } else {
-                return;
+                return null;
             }
         }
-
         return $all_cost_items_have_request_items;
     } else {
-        return;
+        return null;
     }
 }
+
 
 // --------------------------------------------------------
 //
@@ -823,7 +821,7 @@ function guide_parcel_request_amounts_entered(Parcel $parcel)
 // --------------------------------------------------------
 
 /**
- * Guide Approvals.
+ * Guide Approvals
  *
  * get all approvals for a specific parcel/disposition/etc
  *
@@ -844,12 +842,12 @@ function guide_approvals($approval_type_id, $link_type_id)
     if ($approvals) {
         return $approvals;
     } else {
-        return;
+        return null;
     }
 }
 
 /**
- * Guide Approval Status.
+ * Guide Approval Status
  *
  * checks the approval status of parcel/disposition/etc based on approval type
  * returns array [approved (bool), status_name, isapprover (bool), hasapprovals (bool), approvals]
@@ -872,7 +870,7 @@ function guide_approval_status($approval_type_id, $link_type_id)
 
     // for each approval request, check the last action
     if (count($approvals)) {
-        if (! Auth::check()) {
+        if (!Auth::check()) {
             Auth::loginUsingId(1);
         }
         foreach ($approvals as $approval) {
@@ -926,12 +924,12 @@ function guide_approval_status($approval_type_id, $link_type_id)
                 'status_name' => $status_name,
                 'is_approver' => $isApprover,
                 'has_approvals' => $hasApprovals,
-                'approvals' => $approvals,
+                'approvals' => $approvals
             ];
 }
 
 /**
- * Perform All Parcel Checks.
+ * Perform All Parcel Checks
  *
  * @param \App\Parcel $parcel
  */
@@ -965,9 +963,9 @@ function perform_all_parcel_checks(Parcel $parcel)
     }
 
     // remove any compliance requirement for legacy
-    if (! is_null($parcel->sf_parcel_id)) {
+    if (!is_null($parcel->sf_parcel_id)) {
         $parcel->update([
-                'compliance' => 0,
+                "compliance" => 0
         ]);
     }
 
@@ -998,7 +996,7 @@ function perform_all_parcel_checks(Parcel $parcel)
 
         // LB approve request internally
         $approval_request_status = guide_approval_status(2, $reimbursement_request->id);
-        if ($approval_request_status['is_approved'] || ! is_null($parcel->sf_parcel_id)) {
+        if ($approval_request_status['is_approved'] || !is_null($parcel->sf_parcel_id)) {
             guide_set_progress($parcel->id, 30, $status = 'completed', 0);
         } else {
             guide_set_progress($parcel->id, 30, $status = 'started', 0);
@@ -1067,10 +1065,10 @@ function perform_all_parcel_checks(Parcel $parcel)
         if (guide_parcel_initial_po_approval($reimbursement_po)) {
             guide_set_progress($parcel->id, 36, $status = 'completed', 0); // initial PO approval
             // legacy parcel handling
-            if (! is_null($parcel->sf_parcel_id)) {
+            if (!is_null($parcel->sf_parcel_id)) {
                 guide_set_progress($parcel->id, 30, $status = 'completed', 0); // REQ Approved assumed
                 guide_set_progress($parcel->id, 33, $status = 'completed', 0); // Validated Approved assumed
-                updateStatus('parcel', $parcel, 'approved_in_po', 1, 0, ''); // update the status in the parcel
+                updateStatus("parcel", $parcel, 'approved_in_po', 1, 0, ""); // update the status in the parcel
                 guide_set_progress($parcel->id, 55, $status = 'completed', 0); // parcel approved in PO
                 guide_set_progress($parcel->id, 36, $status = 'completed', 0); // PO Initial Approved assumed
                 guide_set_progress($parcel->id, 38, $status = 'completed', 0); // PO Final Approved assumed
@@ -1078,10 +1076,10 @@ function perform_all_parcel_checks(Parcel $parcel)
         } else {
             guide_set_progress($parcel->id, 36, $status = 'started', 0);
             // legacy parcel handling
-            if (! is_null($parcel->sf_parcel_id)) {
+            if (!is_null($parcel->sf_parcel_id)) {
                 guide_set_progress($parcel->id, 30, $status = 'completed', 0); // REQ Approved assumed
                 guide_set_progress($parcel->id, 33, $status = 'completed', 0); // Validated Approved assumed
-                updateStatus('parcel', $parcel, 'approved_in_po', 1, 0, ''); // update the status in the parcel
+                updateStatus("parcel", $parcel, 'approved_in_po', 1, 0, ""); // update the status in the parcel
                 guide_set_progress($parcel->id, 55, $status = 'completed', 0); // parcel approved in PO
                 guide_set_progress($parcel->id, 36, $status = 'completed', 0); // PO Initial Approved assumed
                 guide_set_progress($parcel->id, 38, $status = 'completed', 0); // PO Final Approved assumed
@@ -1135,16 +1133,16 @@ function perform_all_parcel_checks(Parcel $parcel)
         if ($reimbursement_invoice->status_id == 6) { // is invoice paid?
             guide_set_progress($parcel->id, 54, $status = 'completed', 0); // paid
             // make sure the parcel is also marked as paid
-            $parcel = updateStatus('parcel', $parcel, 'landbank_property_status_id', 14, 0, '');
-            $parcel = updateStatus('parcel', $parcel, 'hfa_property_status_id', 28, 0, '');
+            $parcel = updateStatus("parcel", $parcel, 'landbank_property_status_id', 14, 0, "");
+            $parcel = updateStatus("parcel", $parcel, 'hfa_property_status_id', 28, 0, "");
 
             guide_set_progress($parcel->id, 53, $status = 'completed', 0); // step 6 - done
             guide_set_progress($parcel->id, 47, $status = 'completed', 0); // Invoice sent to HFA assumed
             // make sure legacy parcels mark the invoice, po, and req approved as they did not go through this process.
-            if (! is_null($parcel->sf_parcel_id)) {
+            if (!is_null($parcel->sf_parcel_id)) {
                 guide_set_progress($parcel->id, 30, $status = 'completed', 0); // REQ Approved assumed
                 guide_set_progress($parcel->id, 33, $status = 'completed', 0); // Validated
-                updateStatus('parcel', $parcel, 'approved_in_po', 1, 0, ''); // update the status in the parcel
+                updateStatus("parcel", $parcel, 'approved_in_po', 1, 0, ""); // update the status in the parcel
                 guide_set_progress($parcel->id, 55, $status = 'completed', 0); // parcel approved in PO
                 guide_set_progress($parcel->id, 36, $status = 'completed', 0); // PO Initial Approved assumed
                 guide_set_progress($parcel->id, 38, $status = 'completed', 0); // PO Final Approved assumed
@@ -1165,6 +1163,7 @@ function perform_all_parcel_checks(Parcel $parcel)
         guide_set_progress($parcel->id, 45, $status = 'started', 0);
         // guide_set_progress($parcel->id, 39, $status = 'started');
     }
+
 
     // guide step checks clean-up
     // step 1
@@ -1237,7 +1236,7 @@ function perform_all_parcel_checks(Parcel $parcel)
 // --------------------------------------------------------
 
 /**
- * Guide Disposition Docs Added.
+ * Guide Disposition Docs Added
  *
  * @param \App\Dispositions $disposition
  * @param null              $cat_id_to_check
@@ -1278,12 +1277,12 @@ function guide_disposition_docs_added($disposition, $cat_id_to_check = null)
             return 1; // delete when rules are implemented
         }
     } else {
-        return;
+        return null;
     }
 }
 
 /**
- * Guide Disposition Docs Reviewed.
+ * Guide Disposition Docs Reviewed
  *
  * @param \App\Dispositions $disposition
  *
@@ -1297,22 +1296,22 @@ function guide_disposition_docs_reviewed($disposition)
     if (count($documents)) {
         $all_docs_reviewed = 1;
         foreach ($documents as $document) {
-            if (! ($document->approved || $document->notapproved) || ! $all_docs_reviewed) {
+            if (!($document->approved || $document->notapproved) || !$all_docs_reviewed) {
                 $all_docs_reviewed = 0;
             }
         }
         if ($all_docs_reviewed) {
             return 1;
         } else {
-            return;
+            return null;
         }
     } else {
-        return;
+        return null;
     }
 }
 
 /**
- * Perform All Disposition Checks.
+ * Perform All Disposition Checks
  *
  * $noemails using in command line checks to prevent emails to be sent out to LB
  * example command line use: perform_all_disposition_checks($disposition, 1);
@@ -1368,7 +1367,7 @@ function perform_all_disposition_checks($disposition, $noemails = null)
 
             // were the LB notified after approval (approved because already in invoice)?
             if (guide_check_step(10, $disposition->id) != 1) {
-                if (! $noemails) {
+                if (!$noemails) {
                     // notify LB that the disposition has been approved
                     $landbankDispositionManagers = User::where('entity_id', '=', $disposition->entity_id)
                                     ->join('users_roles', 'users.id', '=', 'users_roles.user_id')
@@ -1413,6 +1412,7 @@ function perform_all_disposition_checks($disposition, $noemails = null)
                 guide_set_progress($disposition->id, 11, $status = 'completed', 0); // step 2 request lien release - done
             }
 
+
             // is the request approved?
             if ($disposition->status_id == 7) { // approved
                 guide_set_progress($disposition->id, 1, $status = 'completed', 0); // step 1 - done
@@ -1422,7 +1422,7 @@ function perform_all_disposition_checks($disposition, $noemails = null)
 
                  // were the LB notified after approval?
                 if (guide_check_step(10, $disposition->id) != 1) {
-                    if (! $noemails) {
+                    if (!$noemails) {
                         // notify LB that the disposition has been approved
                         $landbankDispositionManagers = User::where('entity_id', '=', $disposition->entity_id)
                                         ->join('users_roles', 'users.id', '=', 'users_roles.user_id')

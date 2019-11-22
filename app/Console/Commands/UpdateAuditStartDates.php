@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\CachedAudit;
 use Illuminate\Console\Command;
+use App\Models\CachedAudit;
 
 class UpdateAuditStartDates extends Command
 {
@@ -36,15 +36,20 @@ class UpdateAuditStartDates extends Command
      *
      * @return mixed
      */
+    
+
     public function handle()
     {
         $cachedAudits = CachedAudit::with('audit')->get();
-        foreach ($cachedAudits as $a) {
-            $this->line(PHP_EOL.PHP_EOL.'Updating start date for audit '.$a->audit_id.'.'.PHP_EOL.PHP_EOL);
+        forEach($cachedAudits as $a){
+        $this->line(PHP_EOL.PHP_EOL."Updating start date for audit ".$a->audit_id.".".PHP_EOL.PHP_EOL);
 
             $a->inspection_schedule_date = $a->audit->completed_date;
             $a->update_cached_audit();
             $a->save();
         }
+
     }
+
+
 }

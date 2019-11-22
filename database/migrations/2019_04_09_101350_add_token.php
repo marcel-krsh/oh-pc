@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class AddToken extends Migration
 {
@@ -25,6 +25,7 @@ class AddToken extends Migration
             $table->string('timezone')->nullable();
             $table->string('continent')->nullable();
             $table->string('currency')->nullable();
+            
         });
     }
 

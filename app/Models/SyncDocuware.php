@@ -12,6 +12,8 @@ class SyncDocuware extends Model
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
+
+
     //
     protected $guarded = ['id'];
 
@@ -21,7 +23,10 @@ class SyncDocuware extends Model
     }
 
     public function assigned_categories()
-    {
-        return $this->belongsToMany(\App\Models\DocumentCategory::class, 'document_document_categories', 'sync_docuware_id', 'document_category_id')->where('parent_id', '<>', 0);
-    }
+		{
+		    return $this->belongsToMany('App\Models\DocumentCategory', 'document_document_categories', 'sync_docuware_id', 'document_category_id')->where('parent_id','<>',0);
+		}
+
+
+
 }

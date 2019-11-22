@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AuditAuditor extends Model
@@ -14,7 +15,7 @@ class AuditAuditor extends Model
     protected $guarded = ['id'];
 
     /**
-     * Person.
+     * Person
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -24,7 +25,7 @@ class AuditAuditor extends Model
     }
 
     /**
-     * User.
+     * User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -35,9 +36,9 @@ class AuditAuditor extends Model
 
     public function isScheduled($audit_id, $day_id) : int
     {
-        if (count(ScheduleTime::where('auditor_id', '=', $this->user_id)->where('audit_id', '=', $audit_id)->where('day_id', '=', $day_id)->get())) {
+        if(count(ScheduleTime::where('auditor_id','=',$this->user_id)->where('audit_id','=',$audit_id)->where('day_id','=',$day_id)->get())){
             return 1;
-        } else {
+        }else{
             return 0;
         }
     }

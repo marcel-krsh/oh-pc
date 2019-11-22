@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * ApprovalActionType Model.
+ * ApprovalActionType Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -20,6 +20,6 @@ class ActivityLog extends Model
         'log_name',
         'description',
         'subject_id',
-        'subject_type',
+        'subject_type'
     ];
 }

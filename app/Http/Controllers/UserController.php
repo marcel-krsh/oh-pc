@@ -97,7 +97,7 @@ class UserController extends Controller
       $date_array[0] = $daterange;
       $date_array[1] = $date_array[0];
     }
-    if (empty($date_array)) {
+    if(empty($date_array)) {
       return "Date range provided is not in correct format. Please let the Allita Support Team know date range you have selected";
     }
     $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
@@ -515,7 +515,7 @@ class UserController extends Controller
     }
 
     $calendar = $this->getCalendar($d); //dd($calendar);
-    $unp      = UserNotificationPreferences::where('user_id', $user->id)->first();
+    $unp = UserNotificationPreferences::where('user_id', $user->id)->first();
 
     $data = collect([
       "summary"                 => [
@@ -558,7 +558,7 @@ class UserController extends Controller
 
   public function preferencesView($id)
   {
-    $user         = User::find($id);
+    $user = User::find($id);
     $phone_number = '';
     if ($user->person) {
       if ($user->person->phone) {
@@ -615,7 +615,7 @@ class UserController extends Controller
     }
 
     $calendar = $this->getCalendar($d); //dd($calendar);
-    $unp      = UserNotificationPreferences::where('user_id', $user->id)->first();
+    $unp = UserNotificationPreferences::where('user_id', $user->id)->first();
 
     $data = collect([
       "summary"                 => [

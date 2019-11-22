@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class SystemSetting extends Model
 {
+
     protected $table = 'system_settings';
 
     protected $fillable = [
         'key',
-        'value',
+        'value'
     ];
 
     /**
-     * Get value from key.
+     * Get value from key
      *
      * @param  string $key
      * @return
@@ -26,5 +27,7 @@ class SystemSetting extends Model
         if ($found) {
             return $found->value;
         }
+
+        return null;
     }
 }

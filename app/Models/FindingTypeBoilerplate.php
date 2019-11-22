@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
- * Finding Type Boilerplate Model.
+ * Finding Type Boilerplate Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -17,11 +17,11 @@ class FindingTypeBoilerplate extends Model
 
     protected $fillable = [
         'finding_type_id',
-        'boilerplate_id',
+        'boilerplate_id'
     ];
 
     /**
-     * FindingType.
+     * FindingType
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -31,7 +31,7 @@ class FindingTypeBoilerplate extends Model
     }
 
     /**
-     * Boilerplate.
+     * Boilerplate
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

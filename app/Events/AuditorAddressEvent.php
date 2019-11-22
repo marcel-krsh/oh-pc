@@ -1,27 +1,27 @@
 <?php
 
 namespace App\Events;
-
-use App\Models\Address;
 use App\Models\User;
+use App\Models\Address;
 use Auth;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
 class AuditorAddressEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
+     
+        public $user;
 
-    public $address_id;
+        public $address_id;
 
-    public $address;
+        public $address;
 
     /**
      * Create a new event instance.
@@ -30,8 +30,8 @@ class AuditorAddressEvent implements ShouldBroadcastNow
      */
     public function __construct(User $user, $address_id, $address)
     {
-        $this->user = $user;
-        $this->address_id = $address_id;
+        $this->user = $user; 
+        $this->address_id = $address_id; 
         $this->address = $address;
     }
 
@@ -43,7 +43,7 @@ class AuditorAddressEvent implements ShouldBroadcastNow
     public function broadcastOn()
     {
         // return new PrivateChannel('chat');
-
+        
         $uid = $this->user->id;
         $sid = $this->user->socket_id;
 

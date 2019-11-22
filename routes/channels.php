@@ -1,7 +1,6 @@
 <?php
-
-use App\Models\Communication;
 use App\Models\User;
+use App\Models\Communication;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,8 +22,10 @@ use App\Models\User;
 // });
 
 Broadcast::channel('updates.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+  	return (int) $user->id === (int) $id;
+
 });
+
 
 // Broadcast::channel('audits.{id}', function ($user, $id) {
 //   	return (int) $user->id === (int) $id;

@@ -3,27 +3,28 @@
 namespace App\Events;
 
 use App\Events\UpdateEvent;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+
+use App\Models\User;
+use App\Models\SystemSetting;
 use App\Models\Communication;
 use App\Models\CommunicationRecipient;
-use App\Models\SystemSetting;
-use App\Models\User;
-use Auth;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
+use Auth;
 
 class CommunicationsEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $user;
-    public $data;
+     public $user;
+     public $data;
 
     /**
      * Create a new event instance.
@@ -32,6 +33,7 @@ class CommunicationsEvent
      */
     public function __construct()
     {
+        
     }
 
     /**
@@ -39,6 +41,10 @@ class CommunicationsEvent
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
+    
+
+
+
     public function communicationRecipientCreated(CommunicationRecipient $communication_recipient)
     {
         $current_user = Auth::user();
@@ -57,11 +63,11 @@ class CommunicationsEvent
         $data = [
             'event' =>'tab',
             'userId' => $communication_recipient->user_id,
-            'communicationTotal' => $communicationTotal,
+            'communicationTotal' => $communicationTotal
         ];
 
-        event(new UpdateEvent($user, $data));
-        Log::info('Update Event fired.');
+        event(new UpdateEvent($user,$data));
+    Log::info('Update Event fired.');
 
         // $new_communication = Communication::where('id', '=', $communication_recipient->communication_id)->first();
 
@@ -117,13 +123,13 @@ class CommunicationsEvent
         //         } else {
         //             $organization_name = '';
         //         }
-
+ 
         //         $organization_address = $communication->audit->address.', '.$communication->audit->city.', ';
         //         if ($communication->audit->state) {
         //             $organization_address = $organization_address.$communication->audit->state;
         //         }
         //         $organization_address = $organization_address.' '.$communication->audit->zip;
-
+                
         //         // if($communication->audit->county){
         //         //     $organization_address = $organization_address. '<br />'.$communication->audit->county->county_name;
         //         // }

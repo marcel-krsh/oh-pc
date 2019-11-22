@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Carbon;
 
 class CachedInspection extends Model
 {
@@ -24,7 +24,7 @@ class CachedInspection extends Model
         'type_text_plural',
         'menu_json',
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
 
     public function getMenuJsonAttribute($value)

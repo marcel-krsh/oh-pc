@@ -2,9 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Mail\EmailFailedLogin;
 use App\Models\AuthTracker;
-use App\Models\SystemSetting;
 //use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
 use App\Services\AuthService;
@@ -12,24 +10,22 @@ use App\Services\DevcoService;
 use Auth;
 use Closure;
 use Cookie;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Session;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AllitaAuth
 {
     /**
-     * AuthService.
+     * AuthService
      * @var
      */
     private $_auth_service;
 
     /**
-     * DevcoService.
+     * DevcoService
      * @var
      */
     private $_devco_service;
@@ -41,10 +37,12 @@ class AllitaAuth
      * @param  \Closure  $next
      * @return mixed
      */
+
     protected $auth;
 
     public function __construct(Guard $auth)
     {
+
         $this->auth = $auth;
     }
 
@@ -53,11 +51,12 @@ class AllitaAuth
         // Do they have an active session?
 
         //if(!$request->user()){
-        if (env('APP_DEBUG_NO_DEVCO') != 'true') { // allows for local testing
-                if (Auth::check()) {
-                    return $next($request);
-                }
-            if (! local()) {
+        if (env('APP_DEBUG_NO_DEVCO') != 'true') {
+            // allows for local testing
+            if (Auth::check()) {
+                return $next($request);
+            }
+            if (!local()) {
                 $this->_auth_service = new AuthService;
                 $this->_devco_service = new DevcoService;
             }
@@ -76,17 +75,15 @@ class AllitaAuth
     }
 
     /**
-     * Checks and refreshes Devco session.
+     * Checks and refreshes Devco session
      *
      * @param  \Illuminate\Http\Request  $request
      * @return
      */
-    public function checkDevcoSession($request)
-    {
-    }
+    public function checkDevcoSession($request) {}
 
     /**
-     * Authenticate user.
+     * Authenticate user
      *
      * @param  \Illuminate\Http\Request  $request
      * @return
@@ -101,7 +98,7 @@ class AllitaAuth
         $blockAccess = false;
         $maxUnlockTries = config('allita.api.max_unlock_tries'); // update to be a system setting.
         $rememberMeSessionLength = config('allita.api.remember_me_session_length');
-        $rememberMeCookieValueDecrypted = '';
+        $rememberMeCookieValueDecrypted = "";
         $blockUnlock = false;
         $thisIp = $request->ip();
         $thisAgent = $request->header('User-Agent');
@@ -122,7 +119,7 @@ class AllitaAuth
         ////
         $currentlyBlocked = AuthTracker::where('ip', '=', $thisIp)->first(); // we track each ip individually
 
-        if (! is_null($currentlyBlocked) && $currentlyBlocked->blocked_until > time()) {
+        if (!is_null($currentlyBlocked) && $currentlyBlocked->blocked_until > time()) {
             // this ip is currently being blocked
             $blockAccess = true;
         }
@@ -135,7 +132,7 @@ class AllitaAuth
         if ($name) {
             $rememberMeCookieValue = Cookie::get($name);
             /// check if token is for remembering user:
-            if (! is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10) {
+            if (!is_null($rememberMeCookieValue) && strlen($rememberMeCookieValue) > 10) {
                 //dd($rememberMeCookieValue);
                 $encryptor = app(\Illuminate\Contracts\Encryption\Encrypter::class);
                 try {
@@ -143,7 +140,7 @@ class AllitaAuth
                 } catch (DecryptException $e) {
                     $invalidCookie = true;
                     $failedLoginAttempt = true;
-                    $failedLoginReason = 'Invalid Cookie Used:'.$e;
+                    $failedLoginReason = 'Invalid Cookie Used:' . $e;
                 }
 
                 $credentials = explode('|', $rememberMeCookieValueDecrypted);
@@ -159,7 +156,7 @@ class AllitaAuth
                     } catch (DecryptException $e) {
                         $invalidCookie = true;
                         $failedLoginAttempt = true;
-                        $failedLoginReason = 'Invalid Cookie Used:'.$e;
+                        $failedLoginReason = 'Invalid Cookie Used:' . $e;
                     }
                     $credentials = explode('|', $rememberMeCookieValueDecrypted);
                     if (count($credentials) > 2) {
@@ -171,12 +168,12 @@ class AllitaAuth
                     /// we have credentials - log them in
                     $rememberedUser = User::where('id', $credentials[0])->where('remember_token', $credentials[1])->where('password', $credentials[2])->first();
                     // make sure we found a user:
-                    if (! is_null($rememberedUser)) {
+                    if (!is_null($rememberedUser)) {
                         // make sure user is active and it hasn't been longer than their maximum time since last load.
                         if ($rememberedUser->active == 1 && ($rememberedUser->last_accessed > (time() - env('SESSION_IDLE_TIME', 28800)))) {
                             // user is active - log them in
                             $this->auth->loginUsingId($rememberedUser->id);
-                            $rememberedUser->update(['last_accessed'=>time()]);
+                            $rememberedUser->update(['last_accessed' => time()]);
                             //dd($this->auth);
                             // set userActive and user to be true for final test.
                             $userActive = true;
@@ -206,11 +203,11 @@ class AllitaAuth
             // credentials passed through the get string - let us validate with DevCo
             $checkCredentials = $this->_auth_service->userAuthenticateToken($passedCredentials['user_id'], $passedCredentials['token'], $passedIp, $passedUserAgent);
             //dd($checkCredentials);
-            if (is_string($checkCredentials) || ! $checkCredentials->data->attributes->{'authenticated'} || ! $checkCredentials->data->attributes->{'user-activated'} || ! $checkCredentials->data->attributes->{'user-exists'}) {
+            if (is_string($checkCredentials) || !$checkCredentials->data->attributes->{'authenticated'} || !$checkCredentials->data->attributes->{'user-activated'} || !$checkCredentials->data->attributes->{'user-exists'}) {
                 // this is a failed login attempt
                 $failedLoginAttempt = true;
                 $failedLoginReason = $checkCredentials;
-            //throw new AuthenticationException('Unauthenticated 130.');
+                //throw new AuthenticationException('Unauthenticated 130.');
             } else {
                 // this user is authenticated!
                 $user = true;
@@ -227,11 +224,11 @@ class AllitaAuth
 
             $allitaUser = User::where('devco_key', '=', $devcoUserKey)->first();
 
-            if (! $allitaUser) {
+            if (!$allitaUser) {
                 // no user found - add them to the database
                 $allitaUser = new User;
                 $allitaUser->devco_key = $user_key;
-                $allitaUser->name = $devcoFirstName.' '.$devcoLastName;
+                $allitaUser->name = $devcoFirstName . " " . $devcoLastName;
                 $allitaUser->email = $devcoEmail;
                 $allitaUser->password = Hash::make(Str::random(50));
                 $allitaUser->active = 1;
@@ -248,7 +245,7 @@ class AllitaAuth
             }
             if ($allitaUser->active == 1) {
                 $this->auth->loginUsingId($allitaUser->id, true);
-                $allitaUser->update(['last_accessed'=> time()]);
+                $allitaUser->update(['last_accessed' => time()]);
                 //$name = $this->auth->getRecallerName();
                 // set userActive and user to be true for final test.
                 $userActive = true;
@@ -268,21 +265,22 @@ class AllitaAuth
         /// check if this is a failed login attempt
         ///
 
-        if ($failedLoginAttempt && $blockAccess == false) { // we don't record additional attempts on blocked access.
+        if ($failedLoginAttempt && $blockAccess == false) {
+            // we don't record additional attempts on blocked access.
 
             if (is_null($currentlyBlocked)) {
                 // there is not a tracker for this yet - insert one:
                 $newTracker = new AuthTracker([
-                                 'token' => $request->get('token'),
-                                 'ip' => $thisIp,
-                                 'user_agent' => $thisAgent,
-                                 'user_id' => $request->get('user_id'),
-                                 'tries' => 1,
-                                 'total_failed_tries' => 1,
-                                 'last_failed_time' => time(),
-                                 'last_failed_reason' => $failedLoginReason,
-                                'blocked_until' => null,
-                            ]);
+                    'token' => $request->get('token'),
+                    'ip' => $thisIp,
+                    'user_agent' => $thisAgent,
+                    'user_id' => $request->get('user_id'),
+                    'tries' => 1,
+                    'total_failed_tries' => 1,
+                    'last_failed_time' => time(),
+                    'last_failed_reason' => $failedLoginReason,
+                    'blocked_until' => null,
+                ]);
                 $newTracker->save();
             } else {
                 //update the current tracking ip:
@@ -303,7 +301,7 @@ class AllitaAuth
                 $lastFailedTime = time();
                 $lastLockedTime = $currentlyBlocked->last_locked_time;
 
-                if (! is_null($request->get('user_id'))) {
+                if (!is_null($request->get('user_id'))) {
                     $failedAttemptUser = $request->get('user_id');
                 }
 
@@ -345,12 +343,12 @@ class AllitaAuth
         ) {
             // find the currently blocked ip to unlock
             $currentlyBlocked = AuthTracker::
-                                    where('ip', $unblockIp['unlock_ip'])
-                                    ->where('blocked_until', '>', time())
-                                    ->first();
+                where('ip', $unblockIp['unlock_ip'])
+                ->where('blocked_until', '>', time())
+                ->first();
 
             // make sure this block can be unlocked
-            if (! is_null($currentlyBlocked)) {
+            if (!is_null($currentlyBlocked)) {
                 // there is an auth_tracking record...
                 if ($currentlyBlocked->unlock_attempts < $maxUnlockTries) {
                     $unlockAttempts = $currentlyBlocked->unlock_attempts + 1;
@@ -361,11 +359,11 @@ class AllitaAuth
                         // they have passed in a matching unlock token - make a time stamp for the past:
                         $unblockedTime = time() - 1;
                         $currentlyBlocked->update([
-                                            'blocked_until' => $unblockedTime,
-                                            'unlock_attempts' => 0,
-                                            'total_unlock_attempts' => $totalUnlockAttempts,
-                                            'unlock_token' => null,
-                                            ]);
+                            'blocked_until' => $unblockedTime,
+                            'unlock_attempts' => 0,
+                            'total_unlock_attempts' => $totalUnlockAttempts,
+                            'unlock_token' => null,
+                        ]);
                         // reset blocked access to false.
                         if ($currentlyBlocked->ip == $thisIp) {
                             $blockAccess = false;
@@ -383,7 +381,7 @@ class AllitaAuth
                         $blockUnlock = true;
                     }
                 }
-            }// there is not a matching record to unlock-- either the block expired or the record does not exist.
+            } // there is not a matching record to unlock-- either the block expired or the record does not exist.
         }
 
         // blocked unlock redirect
@@ -392,7 +390,7 @@ class AllitaAuth
         }
         // blocked redirect
         if ($blockAccess) {
-            echo '<script>alert(\''.date('m/j/y g:h a', time()).': Sorry, I am blocking access to your ip address '.$thisIp.' due to multiple failed logins. I will allow access again at '.date('m/j/y g:h a', $currentlyBlocked->blocked_until).'. Your admins have been notified and may allow access sooner if they determine there is no threat to the security of the site.\');</script>';
+            print('<script>alert(\'' . date('m/j/y g:h a', time()) . ': Sorry, I am blocking access to your ip address ' . $thisIp . ' due to multiple failed logins. I will allow access again at ' . date('m/j/y g:h a', $currentlyBlocked->blocked_until) . '. Your admins have been notified and may allow access sooner if they determine there is no threat to the security of the site.\');</script>');
             dd('ACCESS DENIED.');
         }
 
@@ -409,7 +407,6 @@ class AllitaAuth
         }
 
         // creation of a fresh socket_id for that user
-
         // $current_user = Auth::user();
         // $token = str_random(10);
         // $current_user->socket_id = $token;
@@ -523,7 +520,7 @@ class AllitaAuth
         //             $user->devco_key = $user_key;
         //             $user->name = $first_name." ".$last_name;
         //             $user->email = $email;
-        //             $user->password = Hash::make(Str::random(50));
+        //             $user->password = Hash::make(str_random(50));
         //             $user->active = 1;
         //             $user->save();
         //         }
@@ -547,5 +544,5 @@ class AllitaAuth
         // }
     }
 
-    //throw new HttpException(503);
+//throw new HttpException(503);
 }

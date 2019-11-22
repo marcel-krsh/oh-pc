@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use User;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
- * Notice Model.
+ * Notice Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -19,6 +20,6 @@ class Notice extends Model
         'read',
         'body',
         'id',
-        'owner_id',
+        'owner_id'
     ];
 }

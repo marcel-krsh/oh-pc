@@ -2639,7 +2639,7 @@ class AuditController extends Controller
       $schedules = ScheduleTime::where('day_id', '=', $day_id)->where('audit_id', '=', $id)->delete();
       $day       = ScheduleDay::where('id', '=', $day_id)->where('audit_id', '=', $id)->delete();
 
-      // Event::listen('audit.cache', $audit->audit);
+      // Event::fire('audit.cache', $audit->audit);
 
       $check = ScheduleDay::where('audit_id', $id)->orderBy('date', 'asc')->first();
       if ($check) {

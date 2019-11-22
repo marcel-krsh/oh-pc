@@ -24,7 +24,7 @@ class AutoLoadProvider extends ServiceProvider
     public function register()
     {
         foreach (glob(app_path().'/AutoLoad/*.php') as $filename) {
-            require_once $filename;
+            require_once($filename);
         }
     }
 }

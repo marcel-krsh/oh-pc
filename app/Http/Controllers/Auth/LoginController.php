@@ -13,8 +13,8 @@ use Cookie;
 use GeoIP;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Jenssegers\Agent\Agent;
 use Session;
+use Soumen\Agent\Agent;
 
 class LoginController extends Controller
 {
@@ -65,7 +65,6 @@ class LoginController extends Controller
       // Authentication passed...
       Auth::user()->auto_login_token = Str::random(255);
       Auth::user()->save();
-
       return redirect()->intended('dashboard');
     } else {
       // return "oops";
@@ -75,14 +74,12 @@ class LoginController extends Controller
 
   public function login(Request $request)
   {
-    // return $this->saveToken('token', 'login');
     $validator = \Validator::make($request->all(), [
       'email'    => 'required|email',
       'password' => 'required',
     ]);
     if ($validator->fails()) {
       $errors = $validator->errors()->all();
-
       return redirect()->back()->withInput($request->except('password'))->withErrors($validator);
     }
     if (Auth::validate($request->only('email', 'password'))) {
@@ -90,7 +87,6 @@ class LoginController extends Controller
       $device = Cookie::get('device_' . $user->id);
       if (!$user->isActive()) {
         $validator->getMessageBag()->add('error', 'User is not active');
-
         return redirect()->back()->withInput($request->except('password'))->withErrors($validator);
       }
       // check device already registered
@@ -100,7 +96,7 @@ class LoginController extends Controller
         ->first();
       //if true login with id & return to intended url else create toke
       if ($is_device_verifed) {
-        session(['user_id' => $user->id]);
+        session(["user_id" => $user->id]);
         if (count($user->roles) == 0) {
           return redirect('request-access');
         }
@@ -116,20 +112,19 @@ class LoginController extends Controller
           return redirect('request-access');
         }
       } else {
-        session(['user_id' => $user->id]);
-        session(['remember' => $request->get('remember')]);
-        session(['login_success' => true]);
-        session(['user_id_validation' => $user->id + $this->verification_number]);
+        session(["user_id" => $user->id]);
+        session(["remember" => $request->get('remember')]);
+        session(["login_success" => true]);
+        session(["user_id_validation" => $user->id + $this->verification_number]);
         //flash('Select channel communication')->success();
-        return redirect('code');
+        return redirect("code");
       }
       $token->delete(); // delete token because veriication code cannot be sent
       return redirect('/login')->withErrors([
-        'Unable to send verification code',
+        "Unable to send verification code",
       ]);
     }
     $validator->getMessageBag()->add('error', 'Login credentials didn\'t match our records');
-
     return redirect()->back()->withInput($request->except('password'))->withErrors($validator); /*->withInputs()
   ->withErrors([
   'email' => Lang::get('auth.failed'),
@@ -141,8 +136,8 @@ class LoginController extends Controller
     $user_id = intval(session()->get('user_id'));
     $user    = User::with('person.allita_phone')->find($user_id);
     if (is_null($user) || !session()->has('login_success')) {
-      $error = "Looks like the user doesn't exist with the provided information. " . $user_id . ' ' . session('user_id');
-      abort(403, $error);
+    	$error   = "Looks like the user doesn't exist with the provided information. ".$user_id.' '.session('user_id');
+	    abort(403, $error);
       // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
       // $error   = "Looks like the user doesn't exist with the provided information";
       // $type    = "danger";
@@ -155,7 +150,6 @@ class LoginController extends Controller
         $mask_phonenumber = null;
       }
       $mask_email = mask_email($user->email);
-
       return view('auth.code', compact('user', 'user_id', 'phone_number', 'mask_phonenumber', 'mask_email'));
     }
   }
@@ -167,8 +161,8 @@ class LoginController extends Controller
     if ($user && session()->get('user_id_validation') == $user_id + $this->verification_number && session()->has('code_sent')) {
       return view('auth.verification', compact('user', 'user_id'));
     } else {
-      $error = "Looks like the user doesn't exist with the provided information";
-      abort(403, $error);
+    	$error   = "Looks like the user doesn't exist with the provided information";
+	    abort(403, $error);
       // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
       // $error   = "Looks like the user doesn't exist with the provided information";
       // $type    = "danger";
@@ -181,8 +175,8 @@ class LoginController extends Controller
     $user_id = session()->get('user_id');
     $user    = User::with('person.allita_phone')->find($user_id);
     if (is_null($user)) {
-      $error = "Looks like the user doesn't exist with the provided information";
-      abort(403, $error);
+    	$error   = "Looks like the user doesn't exist with the provided information";
+	    abort(403, $error);
       // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
       // $error   = "Looks like the user doesn't exist with the provided information";
       // $type    = "danger";
@@ -191,7 +185,6 @@ class LoginController extends Controller
       if (count($user->roles) > 0) {
         return redirect()->intended('/');
       }
-
       return view('auth.request-access', compact('user', 'user_id'));
     }
   }
@@ -201,11 +194,10 @@ class LoginController extends Controller
     $validator = \Validator::make($request->all(), [
       'verification_code' => 'required|exists:tokens,code',
     ], [
-      'verification_code.exists' => 'The verification code entered was not valid. Please check your code and try again.',
+    	'verification_code.exists' => 'The verification code entered was not valid. Please check your code and try again.',
     ]);
     if ($validator->fails()) {
       $errors = $validator->errors()->all();
-
       return redirect()->back()->withErrors($validator);
     }
     $user_id = session()->get('user_id');
@@ -239,44 +231,31 @@ class LoginController extends Controller
       }
 
       $token->save();
-
       return redirect()->intended('/')->withCookie($cookie);
     } else {
-      $validator->getMessageBag()->add('error', 'The verification code entered was expired or already used. Please login again to receive new code.');
-
+    	$validator->getMessageBag()->add('error', 'The verification code entered was expired or already used. Please login again to receive new code.');
       return redirect('login')->withErrors($validator);
     }
-
     return redirect()->back();
   }
 
   public function saveToken($token, $trigger = 'code')
   {
-    $agent    = new Agent;
     $ip       = $this->getUserIpAddr();
     $location = GeoIP::getLocation($ip);
-    //$agent    = Agent::all();
+    $agent    = Agent::all();
     if ('login' == $trigger) {
       $token->used = 2;
       $token->code = '000-000-0000';
     }
-    // $token->ip        = $ip;
-    // $token->isMobile  = $agent->device->isMobile;
-    // $token->isTablet  = $agent->device->isTablet;
-    // $token->isDesktop = $agent->device->isDesktop;
-    // $token->isBot     = $agent->device->isBot;
-    // $token->browser   = $agent->browser->name;
-    // $token->platform  = $agent->platform->name;
-    // $token->device    = $agent->device->family . $token->browser . $token->platform;
     $token->ip        = $ip;
-    $token->isMobile  = $agent->isMobile();
-    $token->isTablet  = $agent->isTablet();
-    $token->isDesktop = $agent->isDesktop();
-    $token->isBot     = $agent->isRobot();
-    $token->browser   = $agent->browser();
-    $token->browser   = $token->browser . ' ' . $agent->version($token->browser);
-    $token->platform  = $agent->platform();
-    $token->device    = $agent->device() . ':' . $token->browser . ':' . $token->platform;
+    $token->isMobile  = $agent->device->isMobile;
+    $token->isTablet  = $agent->device->isTablet;
+    $token->isDesktop = $agent->device->isDesktop;
+    $token->isBot     = $agent->device->isBot;
+    $token->browser   = $agent->browser->name;
+    $token->platform  = $agent->platform->name;
+    $token->device    = $agent->device->family . $token->browser . $token->platform;
 
     $token->iso_code    = $location->iso_code;
     $token->country     = $location->country;
@@ -290,7 +269,6 @@ class LoginController extends Controller
     $token->continent   = $location->continent;
     $token->currency    = $location->currency;
     $token->save();
-
     return $token;
   }
 
@@ -301,7 +279,6 @@ class LoginController extends Controller
     ]);
     if ($validator->fails()) {
       $errors = $validator->errors()->all();
-
       return redirect()->back()->withInput($request->except('password'))->withErrors($validator);
     }
     $user_id = session()->get('user_id');
@@ -318,26 +295,23 @@ class LoginController extends Controller
       $status = false;
       if (2 == $request->delivery_method) {
         // send voice request
-        $status = $token->sendCode('voice', $phone_number);
+        $status = $token->sendCode("voice", $phone_number);
       } elseif (1 == $request->delivery_method) {
         // send sms request
-        $status = $token->sendCode('sms', $phone_number);
+        $status = $token->sendCode("sms", $phone_number);
       } else {
         // send email request
-        $status = $token->sendCode('email');
+        $status = $token->sendCode("email");
       }
       if ($status) {
-        session(['code_sent' => session()->pull('login_success')]);
-
-        return redirect()->to('verification');
+        session(["code_sent" => session()->pull('login_success')]);
+        return redirect()->to("verification");
       } else {
         $validator->getMessageBag()->add('error', 'Something went wrong, please contact admin');
-
         return redirect()->back()->withErrors($validator);
       }
     } else {
       $validator->getMessageBag()->add('error', 'Something went wrong, please contact admin');
-
       return redirect()->back()->withErrors($validator);
     }
   }
@@ -356,7 +330,6 @@ class LoginController extends Controller
       $email_notification_to_admins = new EmailApproveUserAccess($admin, $current_user);
       \Mail::to($admin->email)->send($email_notification_to_admins); //enable this in live
     }
-
     return 1;
   }
 
@@ -372,21 +345,21 @@ class LoginController extends Controller
       //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
       $user = User::find($user_id);
       if (!$user) {
-        $error = "Looks like the user doesn't exist with the provided information";
-        abort(403, $error);
+      	$error   = "Looks like the user doesn't exist with the provided information";
+	    	abort(403, $error);
         // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
         // $error   = "Looks like the user doesn't exist with the provided information";
         // $type    = "danger";
         // return view('errors.error', compact('error', 'message', 'type'));
       } elseif (count($user->roles) > 0) {
-        $error = 'Looks like the user has been already given access';
-        abort(403, $error);
+      	$error   = "Looks like the user has been already given access";
+	    	abort(403, $error);
         // $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
         // $error   = "Looks like the user has been already given access";
         // $type    = "message";
         // return view('errors.error', compact('error', 'message', 'type'));
       }
-      session(['user_id' => $user->id]);
+      session(["user_id" => $user->id]);
       $current_user_role_id = $current_user->roles->first()->role_id;
       $roles                = Role::where('id', '<', $current_user_role_id)->active()->orderBy('role_name', 'ASC')->get();
       if ($current_user->admin_access()) {
@@ -397,7 +370,6 @@ class LoginController extends Controller
         if (!session()->has('url.intended')) {
           session(['url.intended' => url()->previous()]);
         }
-
         return view('auth.login');
       } else {
         return 'Sorry, you do not have sufficient priveledges to access this page.';
@@ -420,15 +392,15 @@ class LoginController extends Controller
       //$current_user = Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
       $user = User::find($user_id);
       if (!$user) {
-        $error = "Looks like the user doesn't exist with the provided information";
-        abort(403, $error);
+      	$error   = "Looks like the user doesn't exist with the provided information";
+	    	abort(403, $error);
         // $message = "<h2>USER NOT FOUND!</h2><p>No user information has been found</p>";
         // $error   = "Looks like the user doesn't exist with the provided information";
         // $type    = "danger";
         // return view('errors.error', compact('error', 'message', 'type'));
       } elseif (count($user->roles) > 0) {
-        $error = 'Looks like the user has been already given access';
-        abort(403, $error);
+      	$error   = "Looks like the user has been already given access";
+	    	abort(403, $error);
         // $message = "<h2>ACCESS GRANTED!</h2><p>This user has been already given access</p>";
         // $error   = "Looks like the user has been already given access";
         // $type    = "message";
@@ -442,14 +414,12 @@ class LoginController extends Controller
       $user_role->role_id = $request->role;
       $user_role->user_id = $user->id;
       $user_role->save();
-
       return 1;
     } else {
       if (is_null($current_user)) {
         if (!session()->has('url.intended')) {
           session(['url.intended' => url()->previous()]);
         }
-
         return view('auth.login');
       } else {
         return 'Sorry, you do not have sufficient priveledges to access this page.';
@@ -460,7 +430,6 @@ class LoginController extends Controller
   protected function extraCheckErrors($validator)
   {
     $validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Technical Team');
-
     return response()->json(['errors' => $validator->errors()->all()]);
   }
 
@@ -475,7 +444,6 @@ class LoginController extends Controller
     } else {
       $ip = $_SERVER['REMOTE_ADDR'];
     }
-
     return $ip;
   }
 }

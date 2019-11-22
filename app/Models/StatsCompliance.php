@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StatsCompliance extends Model
 {
@@ -28,6 +28,6 @@ class StatsCompliance extends Model
 
     public function project(): HasOne
     {
-        return $this->hasOne(\App\Models\Project::class, 'project_key', 'development_key');
+        return $this->hasOne(\App\Models\Project::class, 'project_key','development_key');
     }
 }

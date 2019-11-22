@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Console\Command;
 use App\Models\CachedAudit;
 use App\Models\CachedBuilding;
 use App\Models\CachedUnit;
 use App\Models\Finding;
 use App\Models\FindingType;
-use Illuminate\Console\Command;
 
 class Findings extends Command
 {
@@ -45,14 +45,14 @@ class Findings extends Command
         // clear all building totals
         // clear all unit totals
         // foreach finding, add totals
-
+        
         $this->info('Clearing building stats');
         CachedBuilding::whereNotNull('building_id')
             ->update([
             'finding_file_total' => 0,
             'finding_nlt_total' => 0,
             'finding_lt_total' => 0,
-            'finding_total' => 0,
+            'finding_total' => 0
         ]);
 
         $this->info('Clearing unit stats');
@@ -61,56 +61,57 @@ class Findings extends Command
             'finding_file_total' => 0,
             'finding_nlt_total' => 0,
             'finding_lt_total' => 0,
-            'finding_total' => 0,
+            'finding_total' => 0
         ]);
 
         $this->info('Recounting findings');
         $findings = Finding::get();
 
-        foreach ($findings as $finding) {
+        foreach($findings as $finding){
             if ($finding) {
                 //dd($audit);
                 // update findings totals in cached building, unit, audit as needed
-
+                
                 // type of finding
-                $type = FindingType::where('id', '=', $finding->finding_type_id)->first()->type;
+                $type = FindingType::where('id','=',$finding->finding_type_id)->first()->type;
 
-                if ($finding->building_id) {
-                    $building = CachedBuilding::where('building_id', '=', $finding->building_id)->where('audit_id', '=', $finding->audit_id)->first();
+                if($finding->building_id){
+                    $building = CachedBuilding::where('building_id','=',$finding->building_id)->where('audit_id','=',$finding->audit_id)->first();
                     $finding_total = $building->finding_total;
 
-                    if ($type == 'file') {
+                    if($type == "file"){
                         $finding_file_total = $building->finding_file_total;
                         $building->finding_file_total = $finding_file_total + 1;
                         $building->finding_total = $finding_total + 1;
                         $building->save();
-                    } elseif ($type == 'nlt') {
+                    }elseif($type == "nlt"){
                         $finding_nlt_total = $building->finding_nlt_total;
                         $building->finding_nlt_total = $finding_nlt_total + 1;
                         $building->finding_total = $finding_total + 1;
                         $building->save();
-                    } elseif ($type == 'lt') {
+                    }elseif($type == "lt"){
                         $finding_lt_total = $building->finding_lt_total;
                         $building->finding_lt_total = $finding_lt_total + 1;
                         $building->finding_total = $finding_total + 1;
                         $building->save();
                     }
+
                 }
-                if ($finding->unit_id) {
-                    $unit = CachedUnit::where('unit_id', '=', $finding->unit_id)->where('audit_id', '=', $finding->audit_id)->first();
+                if($finding->unit_id){
+                    $unit = CachedUnit::where('unit_id','=',$finding->unit_id)->where('audit_id','=',$finding->audit_id)->first();
                     $finding_total = $unit->finding_total;
 
-                    if ($type == 'file') {
+                    if($type == "file"){
                         $finding_file_total = $unit->finding_file_total;
                         $unit->finding_file_total = $finding_file_total + 1;
                         $unit->finding_total = $finding_total + 1;
                         $unit->save();
-                    } elseif ($type == 'nlt') {
+                    }elseif($type == "nlt"){
                         $finding_nlt_total = $unit->finding_nlt_total;
                         $unit->finding_nlt_total = $finding_nlt_total + 1;
                         $unit->finding_total = $finding_total + 1;
                         $unit->save();
-                    } elseif ($type == 'lt') {
+                    }elseif($type == "lt"){
                         $finding_lt_total = $unit->finding_lt_total;
                         $unit->finding_lt_total = $finding_lt_total + 1;
                         $unit->finding_total = $finding_total + 1;
@@ -118,20 +119,20 @@ class Findings extends Command
                     }
 
                     // also save totals at the building level
-                    $building = CachedBuilding::where('building_id', '=', $unit->building_id)->where('audit_id', '=', $finding->audit_id)->first();
+                    $building = CachedBuilding::where('building_id','=',$unit->building_id)->where('audit_id','=',$finding->audit_id)->first();
                     $finding_total = $building->finding_total;
 
-                    if ($type == 'file') {
+                    if($type == "file"){
                         $finding_file_total = $building->finding_file_total;
                         $building->finding_file_total = $finding_file_total + 1;
                         $building->finding_total = $finding_total + 1;
                         $building->save();
-                    } elseif ($type == 'nlt') {
+                    }elseif($type == "nlt"){
                         $finding_nlt_total = $building->finding_nlt_total;
                         $building->finding_nlt_total = $finding_nlt_total + 1;
                         $building->finding_total = $finding_total + 1;
                         $building->save();
-                    } elseif ($type == 'lt') {
+                    }elseif($type == "lt"){
                         $finding_lt_total = $building->finding_lt_total;
                         $building->finding_lt_total = $finding_lt_total + 1;
                         $building->finding_total = $finding_total + 1;
@@ -140,5 +141,6 @@ class Findings extends Command
                 }
             }
         }
+        
     }
 }

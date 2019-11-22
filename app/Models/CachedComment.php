@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon;
 
 class CachedComment extends Model
 {
@@ -28,7 +28,7 @@ class CachedComment extends Model
         'content',
 
         'finding_type',
-
+        
         'document_id', // one document can be referenced
         'document_json', // id, title, size, etc + categories
 
@@ -42,27 +42,28 @@ class CachedComment extends Model
         'actions_json', // followup, comment ,document, photo
 
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
 
+   
     /**
-     * Parent.
+     * Parent
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent() : BelongsTo
     {
-        return $this->belongsTo(self::class, 'parent_id');
+        return $this->belongsTo(\App\Models\CachedComment::class, 'parent_id');
     }
 
     /**
-     * Replies.
+     * Replies
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function replies() : HasMany
     {
-        return $this->hasMany(self::class, 'parent_id');
+        return $this->hasMany(\App\Models\CachedComment::class, 'parent_id');
     }
 
     public function stats_replies_followup_count()
@@ -94,7 +95,7 @@ class CachedComment extends Model
     }
 
     /**
-     * Building.
+     * Building
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -104,7 +105,7 @@ class CachedComment extends Model
     }
 
     /**
-     * Finding.
+     * Finding
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -114,7 +115,7 @@ class CachedComment extends Model
     }
 
     /**
-     * User.
+     * User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -124,7 +125,7 @@ class CachedComment extends Model
     }
 
     /**
-     * Audit.
+     * Audit
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -134,7 +135,7 @@ class CachedComment extends Model
     }
 
     /**
-     * Document.
+     * Document
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

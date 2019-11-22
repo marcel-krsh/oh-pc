@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * County Model.
+ * County Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class County extends Model
 {
     /**
-     * State.
+     * State
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -25,7 +25,7 @@ class County extends Model
     }
 
     /**
-     * Target Areas.
+     * Target Areas
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -35,7 +35,7 @@ class County extends Model
     }
 
     /**
-     * Programs.
+     * Programs
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

@@ -2,33 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\CreateTestAuditJob;
-use App\Models\Audit;
+use DB;
+use DateTime;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Services\AuthService;
+use App\Services\DevcoService;
 use App\Models\AuthTracker;
+use App\Models\SystemSetting;
+//use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Console\Scheduling\Schedule;
+use Log;
+use Event;
+use Auth;
+use App\Models\Audit;
 use App\Models\Project;
 use App\Models\ProjectProgram;
 use App\Models\SyncProject;
-use App\Models\SystemSetting;
-use App\Services\AuthService;
-//use App\Models\User;
-use App\Services\DevcoService;
-use Auth;
-use Carbon\Carbon;
-use DateTime;
-use DB;
-use Event;
+use App\Jobs\CreateTestAuditJob;
+
 use File;
-use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Log;
 use Storage;
 
 class SyncController extends Controller
 {
-    public function testapi(Request $request)
-    {
-
+    
+    public function testapi(Request $request) {
+        
        //////////////////////////////////////////////////
         /////// Project Sync
         /////
@@ -55,7 +56,7 @@ class SyncController extends Controller
             //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
-        if (! is_null($apiConnect)) {
+        if (!is_null($apiConnect)) {
             $syncData = $apiConnect->listDevelopments(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
@@ -70,11 +71,11 @@ class SyncController extends Controller
                         //dd('Page Count is Higher',$syncData);
                     }
                     foreach ($syncData['data'] as $i => $v) {
-                        // check if record exists
-                        $updateRecord = SyncProject::select('id', 'allita_id', 'last_edited', 'updated_at')->where('project_key', $v['attributes']['developmentKey'])->first();
-                        // convert booleans
-                        //settype($v['attributes']['isActive'], 'boolean');
-                        //dd($updateRecord,$updateRecord->updated_at);
+                            // check if record exists
+                            $updateRecord = SyncProject::select('id', 'allita_id', 'last_edited', 'updated_at')->where('project_key', $v['attributes']['developmentKey'])->first();
+                            // convert booleans
+                            //settype($v['attributes']['isActive'], 'boolean');
+                            //dd($updateRecord,$updateRecord->updated_at);
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
 
@@ -85,17 +86,17 @@ class SyncController extends Controller
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
                             $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
-                            $allitaFloat = '.'.$allitaDate->format('u');
-                            $devcoFloat = '.'.$devcoDate->format('u');
+                            $allitaFloat = ".".$allitaDate->format('u');
+                            $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-
+                                
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-
+                                
                             if ($devcoDateEval > $allitaDateEval) {
-                                if (! is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+                                if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
                                     SyncProject::where('id', $updateRecord['id'])
@@ -108,7 +109,7 @@ class SyncController extends Controller
                                         'total_building_count'=>$v['attributes']['totalBuildingCount'],
                                         'project_number'=>$v['attributes']['projectNumber'],
                                         'sample_size'=>$v['attributes']['sampleSize'],
-
+                                            
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                     $UpdateAllitaValues = SyncProject::find($updateRecord['id']);
@@ -125,7 +126,7 @@ class SyncController extends Controller
 
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
-                                //dd('inside.');
+                                    //dd('inside.');
                                 } elseif (is_null($allitaTableRecord)) {
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
@@ -142,7 +143,7 @@ class SyncController extends Controller
                                         'total_building_count'=>$v['attributes']['totalBuildingCount'],
                                         'project_number'=>$v['attributes']['projectNumber'],
                                         'sample_size'=>$v['attributes']['sampleSize'],
-
+                                            
                                         'project_key'=>$v['attributes']['developmentKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
@@ -156,7 +157,7 @@ class SyncController extends Controller
                                         'total_building_count'=>$v['attributes']['totalBuildingCount'],
                                         'project_number'=>$v['attributes']['projectNumber'],
                                         'sample_size'=>$v['attributes']['sampleSize'],
-
+                                            
                                         'project_key'=>$v['attributes']['developmentKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
@@ -203,18 +204,17 @@ class SyncController extends Controller
                 } while ($syncPage <= $syncData['meta']['totalPageCount']);
             }
         }
-    }
 
+    }
     //
-    public function getDocs(string $projectNumber, string $searchString = null, int $deviceId = 0, string $deviceName = 'System')
-    {
+    public function getDocs(string $projectNumber, string $searchString = null, int $deviceId=0 , string $deviceName='System'){
         $apiConnect = new DevcoService();
         $documentList = $apiConnect->getProjectDocuments($projectNumber, $searchString, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
-        dd($documentList, 'Third doc id:'.$documentList->included[2]->id, 'Page count:'.$documentList->meta->totalPageCount, 'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION, 'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS, 'Userid passed:'.Auth::user()->id, 'User email passed:'.Auth::user()->email, 'Username Passed:'.Auth::user()->name, 'Device id and Device name:'.$deviceId.','.$deviceName);
+        dd($documentList,'Third doc id:'.$documentList->included[2]->id,'Page count:'.$documentList->meta->totalPageCount,'File type of third doc:'.$documentList->included[2]->attributes->fields->DWEXTENSION,'Document Class/Category:'.$documentList->included[2]->attributes->fields->DOCUMENTCLASS,'Userid passed:'. Auth::user()->id,'User email passed:'.Auth::user()->email,'Username Passed:'.Auth::user()->name,'Device id and Device name:'.$deviceId.','.$deviceName);
+
     }
 
-    public function getDoc(int $documentId, int $deviceId = 0, string $deviceName = 'System')
-    {
+    public function getDoc(int $documentId, int $deviceId=0 , string $deviceName='System'){
         $apiConnect = new DevcoService();
         $file = $apiConnect->getDocument($documentId, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
         //dd($stream);
@@ -224,7 +224,7 @@ class SyncController extends Controller
 
         // Storage::put($filepath, File::get($file));
         // $file = Storage::get($filepath);
-
+            
         //     header('Content-Description: File Transfer');
         //     header('Content-Type: application/octet-stream');
         //     header('Content-Disposition: attachment; filename='.$document->filename);
@@ -233,16 +233,17 @@ class SyncController extends Controller
         //     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         //     header('Pragma: public');
         //     header('Content-Length: '. Storage::size($filepath));
-
+            
         //     Storage::delete($filepath);
         //     return $file;
 
         // return response()->stream(function ($stream) {
         //       //Can add logic to chunk the file here if you want but the point is to stream data
         //       readfile($stream);
-        //  },200, [ "Content-Type" => "application/pdf",
-        //            "Content-Disposition" => "attachment; filename=\"filename.pdf\""
+        //  },200, [ "Content-Type" => "application/pdf",  
+        //            "Content-Disposition" => "attachment; filename=\"filename.pdf\"" 
         // ]);
+
     }
 
     public function associate($model, $lookUpModel, $associations)
@@ -261,14 +262,14 @@ class SyncController extends Controller
                 $key = $lookUpModel::select($associate['look_up_foreign_key'])
                 ->where($associate['lookup_field'], $update->{$associate['look_up_reference']})
                 ->first();
-                if (! is_null($key)) {
+                if (!is_null($key)) {
                     $model::whereNull($associate['null_field'])
                         ->where(
                             $associate['look_up_reference'],
                             $update->{$associate['look_up_reference']}
                         )
                         ->update([
-                                  $associate['null_field'] => $key->{$associate['look_up_foreign_key']},
+                                  $associate['null_field'] => $key->{$associate['look_up_foreign_key']}
                                                                     ]);
                 } else {
                     //Log::info(date('m/d/Y H:i:s ::',time()).'Failed associating keys for '.$model.'\'s column '.$associate['null_field'].' with foreign key of '.$update->{$associate['look_up_reference']}.' and when looking for a matching value for it on column '.$associate['look_up_foreign_key'].' on the model.');
@@ -281,27 +282,26 @@ class SyncController extends Controller
     public function sync(Request $request)
     {
 
+
         //Audit::where('audit_id',$request->get('development_key'))->update(['audit_status_id'=>4]);
         //TEST EVENT
         $testaudit = Audit::where('development_key', '=', $request->get('development_key'))->where('monitoring_status_type_key', '=', 4)->orderBy('start_date', 'desc')->first();
         CreateTestAuditJob::dispatch($testaudit)->onQueue('cache');
     }
 
-    public function getApiRoute($model, $crud, $user = 'system', $userEmail = 'admin@allita.org', $userName = 'AllitaPC', $deviceId = 1, $deviceName = 'AllitaPCServer', $metadata = [])
-    {
+    public function getApiRoute($model,$crud,$user='system',$userEmail='admin@allita.org',$userName='AllitaPC',$deviceId=1,$deviceName='AllitaPCServer',$metadata=array()) {
         $NOTAVARIABLE = 'REPLACE THIS VARIABLE IN THE CODE WITH REAL STUFF';
-        /// create the connection
+        /// create the connection 
         $apiConnect = new DevcoService();
-        if (! is_null($apiConnect)) {
+        if (!is_null($apiConnect)) {
             switch ($crud) {
                 case 'create':
                     switch ($model) {
                         case 'Amenity':
                             $apiMethod = 'addAmenity';
-                            $syncData = $apiConnect->$apiMethod($metadata, $user, $userEmail, $userName, $deviceId, $deviceName);
+                            $syncData = $apiConnect->$apiMethod($metadata,$user,$userEmail,$userName,$deviceId,$deviceName);
                             $syncData = json_decode($syncData, true);
                             dd($syncData);
-
                             return $syncData['meta']['...Key'];
                             break;
 
@@ -309,7 +309,6 @@ class SyncController extends Controller
                             $apiMethod = 'addMonitoringMonitor';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-
                             return $syncData['meta']['...Key'];
                             break;
 
@@ -317,7 +316,6 @@ class SyncController extends Controller
                             $apiMethod = 'addProjectAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-
                             return $syncData['meta']['...Key'];
                             break;
 
@@ -325,7 +323,6 @@ class SyncController extends Controller
                             $apiMethod = 'addUnitAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-
                             return $syncData['meta']['...Key'];
                             break;
 
@@ -333,23 +330,22 @@ class SyncController extends Controller
                             $apiMethod = 'addBuildingAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-
                             return $syncData['meta']['...Key'];
                             break;
 
                         default:
-                            // code...
+                            # code...
                             break;
                     }
                     break;
 
                 case 'update':
-                    switch ($model) {
+                    switch ($model){
                         case 'Address':
                             $apiMethod = 'updateAddress';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -362,12 +358,12 @@ class SyncController extends Controller
                             // api reference:
                             //int $amenities_id, array $metadata, int $user = null, string $user_email = null, string $user_name = null, int $device_id = null, string $device_name = null
                             // Amenity can update the description Only
-                            $passingData['AmenityDescription'] = $metadata['amenity_description'];
+                            $passingData['AmenityDescription']=$metadata['amenity_description'];
                             //
                             $syncData = $apiConnect->$apiMethod($metadata['amenity_type_key'], $passingData, $user, $userEmail, $userName, $deviceId, $deviceName);
                             $syncData = json_decode($syncData, true);
                             dd($syncData);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -378,7 +374,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateBuilding';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -389,7 +385,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateBuildingStatus';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -400,7 +396,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateComplianceContact';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -411,7 +407,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateDevelopment';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -422,7 +418,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateDevelopmentAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -433,7 +429,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateDevelopmentDate';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -444,7 +440,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateDevelopmentProgram';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -455,7 +451,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateAudit';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -466,7 +462,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateOrganization';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -477,7 +473,7 @@ class SyncController extends Controller
                             $apiMethod = 'updatePerson';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -488,7 +484,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateUnit';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -499,7 +495,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateUnitStatus';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -510,7 +506,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateUnitAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -521,7 +517,7 @@ class SyncController extends Controller
                             $apiMethod = 'updateBuildingAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -534,7 +530,7 @@ class SyncController extends Controller
                             $apiMethod = 'addAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -545,7 +541,7 @@ class SyncController extends Controller
                             $apiMethod = 'addMonitoringMonitor';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -556,7 +552,7 @@ class SyncController extends Controller
                             $apiMethod = 'addProjectAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -567,7 +563,7 @@ class SyncController extends Controller
                             $apiMethod = 'addUnitAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
@@ -578,16 +574,17 @@ class SyncController extends Controller
                             $apiMethod = 'addBuildingAmenity';
                             $syncData = $apiConnect->$apiMethod($NOTAVARIABLE);
                             $syncData = json_decode($syncData, true);
-                            if ($syncData['meta']['...value..']) {
+                            if($syncData['meta']['...value..']){
                                 return true;
                             } else {
                                 return false;
                             }
                             break;
-
+                
                 default:
-                    // code...
+                    # code...
                     break;
+
 
             }
         } else {
@@ -595,52 +592,53 @@ class SyncController extends Controller
         }
     }
 
-    public function crudDevco($model, $referenceId, $crud = 'update')
-    {
+    public function crudDevco($model, $referenceId, $crud='update'){
         //////////////////////////////////////////////////
         /////// Amenity CRUD back to devco
-
-        if (! is_null($model) && strtoupper($model) !== 'NULL') {
-            if (! is_null($referenceId) && strtoupper($referenceId) !== 'NULL') {
+       
+        if(!is_null($model) && strtoupper($model) !== 'NULL'){
+            if(!is_null($referenceId) && strtoupper($referenceId) !== 'NULL'){
                 $originalModel = $model;
                 $model = 'App\\Models\\'.$model;
                 $model = $model::find($referenceId);
-                if (is_null($model)) {
-                    return 'Sync Devco: Supplied reference '.$referenceId.' does not exist in the model '.$originalModel;
+                if(is_null($model)){
+                    return "Sync Devco: Supplied reference ".$referenceId." does not exist in the model ".$originalModel;
                 }
-                //dd($model);
+                //dd($model);  
             } else {
-                return 'Sync Devco: No reference id specified.';
+                return "Sync Devco: No reference id specified.";
             }
+            
         } else {
-            return 'Sync Devco: No reference model specified.';
+            return "Sync Devco: No reference model specified.";
+            
         }
-        if (Auth::check()) {
+        if(Auth::check()){
             $user = Auth::user()->devco_key;
             $userEmail = Auth::user()->email;
             $userName = Auth::user()->name;
 
             $deviceName = session('deviceName');
-            if (is_null($deviceName)) {
+            if(is_null($deviceName)){
                 $deviceName = 'UserTriggeredEventOnServer';
             }
             $deviceId = session('deviceId');
-            if (is_null($deviceId)) {
-                $deviceId = '1';
+            if(is_null($deviceId)){
+                $deviceId='1';
             }
         } else {
-            $user = null;
-            $userEmail = null;
-            $userName = null;
-            $deviceName = null;
-            $deviceId = null;
+            $user = NULL;
+            $userEmail = NULL;
+            $userName = NULL;
+            $deviceName = NULL;
+            $deviceId = NULL;
         }
 
         switch (strtolower($crud)) {
             case 'update':
                     // update devco using key
                     $metadata = $model->toArray();
-                    $this->getApiRoute($originalModel, strtolower($crud), $user, $userEmail, $userName, $deviceId, $deviceName, $metadata);
+                    $this->getApiRoute($originalModel,strtolower($crud),$user,$userEmail,$userName,$deviceId,$deviceName,$metadata);
                     // update the sync table key
                 break;
 
@@ -651,7 +649,7 @@ class SyncController extends Controller
 
                     // add to sync table
                 break;
-
+            
             case 'delete':
                     // delete from devco
                     dd('delete triggered');
@@ -659,15 +657,17 @@ class SyncController extends Controller
                 break;
 
             default:
-                // code...
+                # code...
                 dd('CRUD NOT AVAILABLE');
                 break;
         }
+
     }
 
     public function brianTest(Request $request)
     {
         $test = \App\Models\Project::where('id', $request->get('project_id'))->first();
+        ;
 
         dd('Project Model', 'projectProgramUnitCounts:<br />', $test, $test->projectProgramUnitCounts());
     }

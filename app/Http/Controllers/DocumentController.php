@@ -13,7 +13,6 @@ use Auth;
 use Carbon\Carbon;
 use File;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Storage;
 use App\Models\CommunicationDraft;
 
@@ -33,6 +32,7 @@ class DocumentController extends Controller
      * @param  int  $parcel_id
      * @return Response
      */
+
     public function compare($value1, $value2)
     {
         if ($value1 != $value2) {
@@ -56,7 +56,6 @@ class DocumentController extends Controller
             ->orderBy('parent_id')
             ->orderBy('document_category_name')
             ->get();
-
         return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories'));
     }
 
@@ -70,18 +69,19 @@ class DocumentController extends Controller
         	return 'You must select at least one category!';
         }
         if ($request->hasFile('files')) {
-            $data = [];
+
+            $data = array();
             $user = Auth::user();
             $files = $request->file('files');
 
-            foreach ($files as $file) {
+            foreach($files as $file){
                 // $file = $request->file('files')[0];
                 $selected_audit = 'non-audit-files';
                 $categories = DocumentCategory::with('parent')->find($request->categories);
                 //document_category_name
-                $parent_cat_folder = Str::snake(strtolower($categories->parent->document_category_name));
-                $cat_folder = Str::snake(strtolower($categories->document_category_name));
-                $folderpath = 'documents/project_'.$project->project_number.'/audit_'.$selected_audit.'/class_'.$parent_cat_folder.'/description_'.$cat_folder.'/';
+                $parent_cat_folder = snake_case(strtolower($categories->parent->document_category_name));
+                $cat_folder = snake_case(strtolower($categories->document_category_name));
+                $folderpath = 'documents/project_' . $project->project_number . '/audit_' . $selected_audit . '/class_' . $parent_cat_folder . '/description_' . $cat_folder . '/';
                 $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
                 $file_extension = $file->getClientOriginalExtension();
@@ -105,8 +105,8 @@ class DocumentController extends Controller
                 $document_categories->project_id = $project->id;
                 $document_categories->save();
                 // Sanitize filename and append document id to make it unique
-                $filename = Str::snake(strtolower($filename)).'_'.$document->id.'.'.$file_extension;
-                $filepath = $folderpath.$filename;
+                $filename = snake_case(strtolower($filename)) . '_' . $document->id . '.' . $file_extension;
+                $filepath = $folderpath . $filename;
                 if ($request->has('ohfa_file')) {
                     $document->update([
                         'file_path' => $filepath,
@@ -125,7 +125,6 @@ class DocumentController extends Controller
                 $data[] = $document->id;
                 $data['document_ids'] = [$document->id];
             }
-
             return json_encode($data);
         } else {
             // shouldn't happen - UIKIT shouldn't send empty files
@@ -139,14 +138,16 @@ class DocumentController extends Controller
             app('debugbar')->disable();
         }
         if ($request->hasFile('files')) {
-            $data = [];
+
+            $data = array();
             $user = Auth::user();
             $files = $request->file('files');
 
-            foreach ($files as $file) {
+            foreach($files as $file){
+
                 $selected_audit = $project->selected_audit();
 
-                $folderpath = 'photos/project_'.$project->project_number.'/audit_'.$selected_audit->audit_id.'/';
+                $folderpath = 'photos/project_' . $project->project_number . '/audit_' . $selected_audit->audit_id . '/';
                 $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
                 $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
                 $file_extension = $file->getClientOriginalExtension();
@@ -156,13 +157,13 @@ class DocumentController extends Controller
                     'project_id' => $project->id,
                     'audit_id' => $selected_audit->id,
                     'notes' => $request->comment,
-                    'finding_id' => $request->finding_id,
+                    'finding_id' => $request->finding_id
                 ]);
                 $photo->save();
 
                 // Sanitize filename and append document id to make it unique
-                $filename = Str::snake(strtolower($filename)).'_'.$photo->id.'.'.$file_extension;
-                $filepath = $folderpath.$filename;
+                $filename = snake_case(strtolower($filename)) . '_' . $photo->id . '.' . $file_extension;
+                $filepath = $folderpath . $filename;
                 $photo->update([
                     'file_path' => $filepath,
                     'filename' => $filename,
@@ -172,10 +173,9 @@ class DocumentController extends Controller
                 Storage::put($filepath, File::get($file));
                 $data[] = [
                     'id' => $photo->id,
-                    'filename' => $filename,
+                    'filename' => $filename
                 ];
             }
-
             return json_encode($data);
         } else {
             // shouldn't happen - UIKIT shouldn't send empty files
@@ -183,15 +183,15 @@ class DocumentController extends Controller
         }
     }
 
-    public function approveLocalDocument($project, Request $request)
+    public function approveLocalDocument($project = null, Request $request)
     {
-        if (! $request->get('id') && ! $request->get('catid')) {
+        if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';
         }
         $catid = $request->get('catid');
         $document = Document::where('id', $request->get('id'))->first();
         // if already "notapproved", remove from notapproved
-        if (! is_null($document->notapproved)) {
+        if (!is_null($document->notapproved)) {
             $document->update([
                 'notapproved' => null,
                 'document_decliner_id' => Auth::user()->id,
@@ -204,19 +204,18 @@ class DocumentController extends Controller
                 'document_approver_id' => Auth::user()->id,
             ]);
         }
-
         return 1;
     }
 
-    public function notApproveLocalDocument($project, Request $request)
+    public function notApproveLocalDocument($project = null, Request $request)
     {
-        if (! $request->get('id') && ! $request->get('catid')) {
+        if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';
         }
         $catid = $request->get('catid');
         $document = Document::where('id', $request->get('id'))->first();
         // if already approved, remove from approved array
-        if (! is_null($document->approved)) {
+        if (!is_null($document->approved)) {
             $document->update([
                 'approved' => null,
                 'document_approver_id' => Auth::user()->id,
@@ -229,30 +228,28 @@ class DocumentController extends Controller
                 'document_decliner_id' => Auth::user()->id,
             ]);
         }
-
         return 1;
     }
 
-    public function clearLocalReview($project, Request $request)
+    public function clearLocalReview($project = null, Request $request)
     {
-        if (! $request->get('id') && ! $request->get('catid')) {
+        if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';
         }
         $catid = $request->get('catid');
         $document = Document::where('id', $request->get('id'))->first();
-        if (! is_null($document->approved)) {
+        if (!is_null($document->approved)) {
             $document->update([
                 'approved' => null,
                 'document_approver_id' => Auth::user()->id,
             ]);
         }
-        if (! is_null($document->notapproved)) {
+        if (!is_null($document->notapproved)) {
             $document->update([
                 'notapproved' => null,
                 'document_decliner_id' => Auth::user()->id,
             ]);
         }
-
         return 1;
     }
 
@@ -262,7 +259,6 @@ class DocumentController extends Controller
         $project = Project::find($document->project_id);
         $document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
         $categories_used = $document->assigned_categories->first();
-
         return view('modals.edit-document', compact('document', 'document_categories', 'categories_used', 'project'));
     }
 
@@ -278,7 +274,7 @@ class DocumentController extends Controller
             $comments = '';
         }
         $document->update([
-            'comment' => $comments,
+            "comment" => $comments,
             'last_edited' => Carbon::now(),
         ]);
         $user = Auth::user();
@@ -298,7 +294,6 @@ class DocumentController extends Controller
             $document_categories->project_id = $project->id;
             $document_categories->save();
         }
-
         return 1;
     }
 
@@ -311,7 +306,6 @@ class DocumentController extends Controller
         LocalDocumentCategory::where('document_id', $document->id)->delete();
         // remove database record
         $document->delete();
-
         return 1;
     }
 
@@ -321,10 +315,10 @@ class DocumentController extends Controller
         if (Storage::exists($filepath)) {
             $file = Storage::get($filepath);
             ob_end_clean();
+            return response()->download(storage_path('app/'. $filepath));
 
-            return response()->download(storage_path('app/'.$filepath));
 
-        // header('Content-Description: File Transfer');
+            // header('Content-Description: File Transfer');
             // header('Content-Type: application/octet-stream');
             // header('Content-Disposition: attachment; filename=' . $document->filename);
             // header('Content-Transfer-Encoding: binary');
@@ -334,7 +328,7 @@ class DocumentController extends Controller
             // header('Content-Length: ' . Storage::size($filepath));
             // return $file;
         } else {
-            exit('Requested file does not exist on our server! '.$filepath);
+            exit('Requested file does not exist on our server! ' . $filepath);
         }
     }
 
@@ -344,6 +338,7 @@ class DocumentController extends Controller
         $document_categories = DocumentCategory::where('parent_id', '<>', 0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
 
         return view('projects.partials.docuware-documents', compact('project', 'documents', 'document_categories'));
+
     }
 
     public function showTabFromParcelId(Parcel $parcel, Request $request)
@@ -431,7 +426,7 @@ class DocumentController extends Controller
         //       $pending_categories = $categories_used;
 
         if (count($pending_categories)) {
-            $pending_categories_list = implode(',', $pending_categories);
+            $pending_categories_list = implode(",", $pending_categories);
         } else {
             $pending_categories_list = '';
         }
@@ -485,8 +480,8 @@ class DocumentController extends Controller
 
                 // update document
                 $document->update([
-                    'comment' => $comments,
-                    'categories' => $categories_json,
+                    "comment" => $comments,
+                    "categories" => $categories_json,
                 ]);
 
                 if ($is_retainage) {
@@ -548,7 +543,7 @@ class DocumentController extends Controller
             $uploadcount = 0; // counter to keep track of uploaded files
             $document_ids = '';
 
-            $categories = explode(',', $request->get('categories'));
+            $categories = explode(",", $request->get('categories'));
             $categories_json = json_encode($categories, true);
 
             $user = Auth::user();
@@ -566,7 +561,7 @@ class DocumentController extends Controller
 
             foreach ($files as $file) {
                 // Create filepath
-                $folderpath = 'documents/entity_'.$parcel->entity_id.'/program_'.$parcel->program_id.'/parcel_'.$parcel->id.'/';
+                $folderpath = 'documents/entity_' . $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
 
                 // sanitize filename
                 $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
@@ -584,15 +579,15 @@ class DocumentController extends Controller
 
                 // Save document ids in an array to return
                 if ($document_ids != '') {
-                    $document_ids = $document_ids.','.$document->id;
+                    $document_ids = $document_ids . ',' . $document->id;
                 } else {
                     $document_ids = $document->id;
                 }
 
                 // Sanitize filename and append document id to make it unique
                 // documents/entity_0/program_0/parcel_0/0_filename.ext
-                $filename = $document->id.'_'.$original_filename;
-                $filepath = $folderpath.$filename;
+                $filename = $document->id . '_' . $original_filename;
+                $filepath = $folderpath . $filename;
 
                 $document->update([
                     'file_path' => $filepath,
@@ -670,12 +665,12 @@ class DocumentController extends Controller
      */
     public function uploadComment(Parcel $parcel, Request $request)
     {
-        if (! $request->get('postvars')) {
+        if (!$request->get('postvars')) {
             return 'Something went wrong...';
         }
 
         // get document ids
-        $documentids = explode(',', $request->get('postvars'));
+        $documentids = explode(",", $request->get('postvars'));
 
         // get comment
         $comment = $request->get('comment');
@@ -686,8 +681,8 @@ class DocumentController extends Controller
                 $document->update([
                     'comment' => $comment,
                 ]);
-            }
 
+            }
             return 1;
         } else {
             return 0;
@@ -702,7 +697,7 @@ class DocumentController extends Controller
      */
     public function documentInfo(Project $project, Request $request)
     {
-        if (! $request->get('postvars')) {
+        if (!$request->get('postvars')) {
             return 'Something went wrong';
         }
         // get document ids
@@ -720,7 +715,6 @@ class DocumentController extends Controller
                 $document_info_array[$document->id]['categories']['category_parent_name'] = $category->parent->document_category_name;
             }
         }
-
         return $document_info_array;
     }
 
@@ -848,17 +842,17 @@ class DocumentController extends Controller
 
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.$document->filename);
+            header('Content-Disposition: attachment; filename=' . $document->filename);
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header('Pragma: public');
-            header('Content-Length: '.Storage::size($filepath));
+            header('Content-Length: ' . Storage::size($filepath));
 
             return $file;
         } else {
             // Error
-            exit('Requested file does not exist on our server! '.$filepath);
+            exit('Requested file does not exist on our server! ' . $filepath);
         }
     }
 
@@ -870,7 +864,7 @@ class DocumentController extends Controller
      */
     public function approveDocument(Parcel $parcel, Request $request)
     {
-        if (! $request->get('id') && ! $request->get('catid')) {
+        if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';
         }
 
@@ -904,7 +898,7 @@ class DocumentController extends Controller
         }
 
         // if not already approved, add to approved array
-        if (! in_array($catid, $current_approval_array)) {
+        if (!in_array($catid, $current_approval_array)) {
             $current_approval_array[] = $catid;
             $approval = json_encode($current_approval_array);
 
@@ -928,7 +922,7 @@ class DocumentController extends Controller
      */
     public function notApproveDocument(Parcel $parcel, Request $request)
     {
-        if (! $request->get('id') && ! $request->get('catid')) {
+        if (!$request->get('id') && !$request->get('catid')) {
             return 'Something went wrong';
         }
 
@@ -961,7 +955,7 @@ class DocumentController extends Controller
         }
 
         // if not already notapproved  --confused yet? :), add to notapproved array
-        if (! in_array($catid, $current_notapproval_array)) {
+        if (!in_array($catid, $current_notapproval_array)) {
             $current_notapproval_array[] = $catid;
             $notapproval = json_encode($current_notapproval_array);
 
@@ -1019,7 +1013,6 @@ class DocumentController extends Controller
                 }
             }
         }
-
         return 1;
     }
 
@@ -1047,7 +1040,6 @@ class DocumentController extends Controller
                 }
             }
         }
-
         return 1;
     }
 }

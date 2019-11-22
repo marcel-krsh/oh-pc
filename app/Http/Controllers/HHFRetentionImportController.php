@@ -2,26 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests;
-use App\LogConverter;
-use App\Models\Entity;
+use DB;
+use Gate;
+use File;
+use Storage;
+use Illuminate\Support\Facades\Schema;
+use Excel;
+
+use Auth;
+
+use Box\Spout\Reader\ReaderFactory;
+use Box\Spout\Writer\WriterFactory;
+use Box\Spout\Common\Type;
+
+
+
+use Carbon\Carbon;
+
 use App\Models\Import;
 use App\Models\ImportRow;
 use App\Models\Programs;
+use App\Models\Entity;
 use App\Models\TargetArea;
-use Auth;
-use Box\Spout\Common\Type;
-use Box\Spout\Reader\ReaderFactory;
-use Box\Spout\Writer\WriterFactory;
-use Carbon\Carbon;
-use DB;
-use Excel;
-use File;
-use Gate;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
-use Storage;
+use App\LogConverter;
 
 class HHFRetentionImportController extends Controller
 {
@@ -29,26 +36,31 @@ class HHFRetentionImportController extends Controller
     {
         // $this->middleware('auth');
     }
-
+    
     // Required fields for form
     //
     private $validation = ['table' => 'required', 'data' => 'required'];
+
+
 
     // Don't let anyone upload things into these columns on any table.
     //
     private $ignore_columns = ['created_at', 'updated_at', 'owner_id', 'owner_type'];
 
+
+
     // Prefill these columns with user info and don't let user fill them.
     //
     public $autofill_columns = ['account_id', 'program_id', 'entity_id', 'user_id', 'state_id', 'county_id'];
+
+
 
     // Is a string variable a boolean
     //
     public function checkBool($string)
     {
         $string = strtolower($string);
-
-        return in_array($string, ['true', 'false', '1', '0', 'yes', 'no'], true);
+        return (in_array($string, ["true", "false", "1", "0", "yes", "no"], true));
     }
 
     // Get the table column names and Types for any table.
@@ -58,7 +70,7 @@ class HHFRetentionImportController extends Controller
     {
         $columns = [];
         $keys = [];
-        $sm = DB::connection()->getDoctrineSchemaManager();
+        $sm      = DB::connection()->getDoctrineSchemaManager();
         $db_cols = $sm->listTableColumns($table);
 
         // First load foreign keys, read into an array.
@@ -68,19 +80,19 @@ class HHFRetentionImportController extends Controller
         $foreign_keys = $sm->listTableForeignKeys($table);
 
         foreach ($foreign_keys as $foreign_key) {
-            $local_col = current($foreign_key->getColumns());
+            $local_col   = current($foreign_key->getColumns());
             $foreign_col = current($foreign_key->getForeignColumns());
-            $table = $foreign_key->getForeignTableName();
+            $table       = $foreign_key->getForeignTableName();
 
             // save into temporary array, to reference below.
             $keys[$local_col] = [
                     'references' => $foreign_col,
-                    'on'         => $table,
+                    'on'         => $table
                 ];
         }
 
         foreach ($db_cols as $db_col) {
-            if (! in_array($db_col->getName(), $this->ignore_columns)) {
+            if (!in_array($db_col->getName(), $this->ignore_columns)) {
                 $columns[] = [
                         'name'       => $db_col->getName(),
                         'type'       => $db_col->getType(),
@@ -97,6 +109,8 @@ class HHFRetentionImportController extends Controller
 
         return $columns;
     }
+
+
 
     // Display a form with table-name and file upload fields.
     //
@@ -115,15 +129,15 @@ class HHFRetentionImportController extends Controller
                 switch (Auth::user()->entity_id) {
                     case '1':
                         $where = '%%';
-                        $whereOperator = 'LIKE';
+                        $whereOperator = "LIKE";
                         break;
-
+                        
                     default:
                         $where = Auth::user()->entity_id;
-                        $whereOperator = '=';
+                        $whereOperator = "=";
                         break;
                 }
-
+                    
                 return view('pages.import.hhf_retention_form');
             } else {
                 $rowCount = DB::table('sdo_parcels')->where('latitude', null)->count();
@@ -132,13 +146,14 @@ class HHFRetentionImportController extends Controller
                 $updated = 0;
                 $start = time();
                 $finish = time();
-
                 return view('pages.import.validate_hhf_retention_parcels', compact('rowCount', 'ignored', 'inserted', 'updated', 'start', 'finish'));
             }
         } else {
-            return 'Sorry you do not have access to this page.';
+            return "Sorry you do not have access to this page.";
         }
     }
+
+
 
     // Process initial file upload, pull table columns, show mappings form
     //
@@ -148,10 +163,11 @@ class HHFRetentionImportController extends Controller
             // Validate the required fields.
         //$this->validate($request, $this->validation);
 
-        $table = 'sdo_parcels';
+            
+        $table = "sdo_parcels";
 
-        $program_id = 1;
-        $account_id = 1;
+        $program_id   = 1;
+        $account_id   = 1;
 
         // $columns = $this->getTableColumns($table);
         // if (!$columns) {
@@ -161,13 +177,13 @@ class HHFRetentionImportController extends Controller
         if ($request->input('validate') != 1) {
             // Upload the file.
             $file = $request->file('data');
-            $ext = $file->getClientOriginalExtension();
-            $filename = 'imports/entity_'.Auth::user()->entity_id.'/hhf_retention_'.time().'.'.$ext;
+            $ext  = $file->getClientOriginalExtension();
+            $filename = 'imports/entity_' . Auth::user()->entity_id . "/hhf_retention_" . time() . '.' . $ext;
             Storage::put($filename, File::get($file));
-
+                
             $reader = ReaderFactory::create(Type::CSV); // for XLSX files
             //$reader->setTempFolder(storage_path('app/imports/entity_' . Auth::user()->entity_id ));
-            $reader->open(storage_path('app/'.$filename));
+            $reader->open(storage_path('app/' . $filename));
             $rowCount = 0;
             $indexes = 0;
             $updated = 0;
@@ -176,7 +192,7 @@ class HHFRetentionImportController extends Controller
             $start = time();
             $exists = 0;
             DB::table('sdo_parcels')->truncate();
-
+                
             foreach ($reader->getSheetIterator() as $sheet) { //sheet for
                 foreach ($sheet->getRowIterator() as $row) { //row for
                     //dd($row);
@@ -184,7 +200,7 @@ class HHFRetentionImportController extends Controller
                         /// determine the indexes for the insert
                         $numKeys = count(array_keys($row));
                         do { // do
-
+                                
                             switch ($row[$indexes]) { // switch
                                 case 'File Number':
                                     $fileNumber = $indexes;
@@ -231,7 +247,7 @@ class HHFRetentionImportController extends Controller
                                 /*///////////////////////////////////////////////////////////////////////////////////////*
 
                                 default:
-                                    // code...
+                                    # code...
                                     break;
                             } // end switch
                             $indexes++;
@@ -253,37 +269,38 @@ class HHFRetentionImportController extends Controller
                             'Property County'=>$row[$propertyCounty],
                             'Status'=>$row[$status],
                             'File Number'=>$row[$fileNumber],
-                            'street_address'=>$row[$propertyAddressNumber].' '.$row[$propertyAddressName].' '.$row[$propertyAddressSuffix],
+                            'street_address'=>$row[$propertyAddressNumber]." ".$row[$propertyAddressName]." ".$row[$propertyAddressSuffix]
                             ]];
+                              
 
                         if ($exists > 0) {
-                            /// update the parcel info
+                        /// update the parcel info
                             $new_sdo_data[0]['updated_at'] = date('Y-m-d H:i:s', time());
-                            //dd($new_sdo_data);
+                        //dd($new_sdo_data);
                             $check = DB::table('sdo_parcels')->where('File Number', $row[$fileNumber])->update($new_sdo_data[0]);
-                            if (! $check) {
-                                return $check.' Bad things at row '.$rowCount;
+                            if (!$check) {
+                                return $check." Bad things at row ".$rowCount;
                             }
                             $updated++;
-                            $new_sdo_data = [];
+                            $new_sdo_data=[];
                         } else {
-                            /// doesn't exist - insert it.
+                        /// doesn't exist - insert it.
                             $new_sdo_data[0]['created_at'] = date('Y-m-d H:i:s', time());
                             $check = DB::table('sdo_parcels')->insert($new_sdo_data);
-                            if (! $check) {
-                                return $check.' Bad things at row '.$rowCount;
+                            if (!$check) {
+                                return $check." Bad things at row ".$rowCount;
                             }
                             $inserted++;
-                            $new_sdo_data = [];
+                            $new_sdo_data=[];
                         } // end exists if
                     } else {
                         $ignored++;
                     }//end row count if
-
+                        
                     $rowCount++;
                 } // end row for
             } // end sheet for
-
+                
                 /// delete the file
             File::delete(storage_path('app/'.$filename));
         } else {
@@ -293,9 +310,9 @@ class HHFRetentionImportController extends Controller
             $start = time();
         } // else end
         $finish = time();
+            
+                
 
         return view('pages.import.validate_hhf_retention_parcels', compact('rowCount', 'ignored', 'inserted', 'updated', 'start', 'finish'));
-    }
-
-    //fuction end
+    }//fuction end
 }// class

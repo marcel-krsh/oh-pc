@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class AddTotalUnitsColumnToCachedAuditsTable extends Migration
 {
@@ -14,7 +14,7 @@ class AddTotalUnitsColumnToCachedAuditsTable extends Migration
     public function up()
     {
         Schema::table('cached_audits', function (Blueprint $table) {
-            $table->integer('total_units')->nullable();
+          	$table->integer('total_units')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddTotalUnitsColumnToCachedAuditsTable extends Migration
     public function down()
     {
         Schema::table('cached_audits', function (Blueprint $table) {
-            $table->dropColumn('total_units');
+           $table->dropColumn('total_units');
         });
     }
 }

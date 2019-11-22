@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\LogConverter;
-use App\Models\Device;
-use App\Models\User;
-use Auth;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Device;
+use Auth;
 use Session;
+use App\LogConverter;
 
 class TwoFAController extends Controller
 {
@@ -31,14 +31,13 @@ class TwoFAController extends Controller
         if ($user === null) {
             // something isn't right, user should be known and alert admin
             system_message('User unknown when trying to SMS device registration code.', null, null, null);
-
             return 0; // go somewhere
         }
 
         // insert test to see if we already know the device here
         $device_known = $this->isDeviceKnown(); // TODO
 
-        if (! $device_known) {
+        if (!$device_known) {
             $error = null;
             $status = null;
             $newly_added_device = null;
@@ -47,16 +46,16 @@ class TwoFAController extends Controller
             // $device = Device::where('device_id' == 'notsurehowtogettheid')->first();
 
             // if(!$device){
-            // if there is no record for this device id, create a new device in the database
-            // $device = new Device([
-            //     'user_id' => $user->id
-            // ]);
-            // $device->save();
+                // if there is no record for this device id, create a new device in the database
+                // $device = new Device([
+                //     'user_id' => $user->id
+                // ]);
+                // $device->save();
 
-            // because it is the first time we are on this page for this device, we send the code
-            // $newly_added_device = 1; //TEST UNCOMMENT TO TEST FIRST LOAD
+                // because it is the first time we are on this page for this device, we send the code
+                // $newly_added_device = 1; //TEST UNCOMMENT TO TEST FIRST LOAD
             // }
-
+            
             // $device_id = $device->id;
             $device_id = '54321'; // TEST
 
@@ -78,7 +77,7 @@ class TwoFAController extends Controller
                 if ($newly_added_device || $resend) {
                     // send code on that first load
                     // generate a code
-                    $code = rand(100, 999).' '.rand(100, 999).' '.rand(100, 999);
+                    $code = rand(100, 999)." ".rand(100, 999)." ".rand(100, 999);
 
                     // save the code in database
                     // devices table should be updated to account for generated codes and tries
@@ -133,7 +132,7 @@ class TwoFAController extends Controller
     public function makeVoiceCall($message = null, $message_code = null, $phone = null)
     {
         if ($message === null || $message == '') {
-            $message = 'Pink Elephants and Happy Rainbows'; // TEST
+            $message = "Pink Elephants and Happy Rainbows"; // TEST
 
             // $status = 'I cannot send an empty SMS';
             // return $status;
@@ -150,10 +149,9 @@ class TwoFAController extends Controller
         $message_code = implode(', ', str_split($message_code));
 
         $call_made = $twilio->call($phone, function ($call) use ($message, $message_code) {
-            $call->pause(['length' => 1]);
-            $call->say($message.$message_code, ['voice' => 'woman', 'loop' => 3]);
+                        $call->pause(['length' => 1]);
+                        $call->say($message.$message_code, ['voice' => 'woman','loop' => 3]);
         });
-
         return $call_made;
     }
 
@@ -183,7 +181,7 @@ class TwoFAController extends Controller
     public function sendSMSCode($message = null, $message_code = null, $phone = null)
     {
         if ($message === null || $message == '') {
-            $message = 'Pink Elephants and Happy Rainbows'; // TEST
+            $message = "Pink Elephants and Happy Rainbows"; // TEST
 
             // $status = 'I cannot send an empty SMS';
             // return $status;
@@ -199,10 +197,10 @@ class TwoFAController extends Controller
         $twilio = new \Aloha\Twilio\Twilio($accountId, $token, $fromNumber);
 
         // Send message to phone number
-        $message_sent = $twilio->message($phone, $message.' '.$message_code);
+        $message_sent = $twilio->message($phone, $message." ".$message_code);
 
         if ($message_sent->status != 'queued') {
-            $status = 'Something is wrong: '.$message_sent->status;
+            $status = "Something is wrong: ".$message_sent->status;
         } else {
             $status = 'Queued';
         }
@@ -219,9 +217,8 @@ class TwoFAController extends Controller
         if ($user === null) {
             // something isn't right, user should be known and alert admin
             system_message('User unknown when trying to validate SMS device registration code.', null, null, null);
-            $data['message'] = 'User unknown';
+            $data['message'] = "User unknown";
             $data['error'] = 1;
-
             return $data;
         }
 
@@ -238,26 +235,25 @@ class TwoFAController extends Controller
             $data['error'] = 0;
         } else {
             if ($tries >= 5) {
-                $data['message'] = 'You tried to verify the code too many times. Please contact support.';
+                $data['message'] = "You tried to verify the code too many times. Please contact support.";
                 $data['error'] = 2;
             } else {
-                $data['message'] = 'This code did not work, please try again.';
+                $data['message'] = "This code did not work, please try again.";
                 $data['error'] = 1;
             }
         }
-
+        
         return $data;
     }
 
     public function newDeviceTry($id = null)
     {
         if ($id) {
-            if (! session("new_device_check['".$id."']")) {
+            if (!session("new_device_check['".$id."']")) {
                 session(["new_device_check['".$id."']" => '1']);
             } else {
                 session(["new_device_check['".$id."']" => session("new_device_check['".$id."']") + 1]);
             }
-
             return session("new_device_check['".$id."']");
         } else {
             return 0;
@@ -289,13 +285,13 @@ class TwoFAController extends Controller
             exit;
         }
 
-        $response = 'This number is not monitored.';
+        $response = "This number is not monitored.";
 
-        header('content-type: text/xml');
+        header("content-type: text/xml");
         echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-        echo '<Response>';
-        echo '<Message>'.$response.'</Message>';
-        echo '</Response>';
+        echo "<Response>";
+        echo "<Message>".$response."</Message>";
+        echo "</Response>";
     }
 
     public function getsmsfailed(Request $request)
@@ -326,7 +322,7 @@ class TwoFAController extends Controller
 
         // get the pdf url
         // $pdfurl = route('device.create.fax.pdf', ['code' => $message_code]);
-        $pdfurl = 'http://65a6d568.ngrok.io/poc/tfa/faxpdf/'.$code_no_space; // for testing only, won't work on localhost
+        $pdfurl = "http://65a6d568.ngrok.io/poc/tfa/faxpdf/".$code_no_space; // for testing only, won't work on localhost
 
         $sdk = $twilio->getTwilio();
         $fax = $sdk->fax->v1->faxes
@@ -334,7 +330,7 @@ class TwoFAController extends Controller
                        $phone, // to
                        $pdfurl,
                        //"https://www.twilio.com/docs/documents/25/justthefaxmaam.pdf", // mediaUrl
-                        ['from' => $fromNumber]
+                        ["from" => $fromNumber]
                    );
 
         return $fax->sid;
@@ -350,7 +346,6 @@ class TwoFAController extends Controller
         $code = chunk_split($code, 3, ' '); // add spaces
 
         $pdf = \PDF::loadView('poc.twilio.faxpdf', compact('code'));
-
         return $pdf->download('allita_compliance.pdf');
     }
 }

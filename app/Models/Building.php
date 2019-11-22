@@ -11,11 +11,13 @@ class Building extends Model
     public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
+    
+
     //
     protected $guarded = ['id'];
 
     /**
-     * Units.
+     * Units
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -33,7 +35,6 @@ class Building extends Model
     {
         return $this->hasOne(\App\Models\Address::class, 'id', 'physical_address_id');
     }
-
     public function project() : HasOne
     {
         return $this->hasOne(\App\Models\Project::class, 'id', 'project_id');

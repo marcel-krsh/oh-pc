@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Report Model.
+ * Report Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -18,7 +18,7 @@ class Report extends Model
     use SoftDeletes;
 
     protected $table = 'reports';
-
+    
     protected $fillable = [
         'type',
         'folder',
@@ -26,15 +26,15 @@ class Report extends Model
         'pending_request',
         'user_id',
         'program_numbers',
-        'program_processed',
+        'program_processed'
     ];
 
     protected $dates = [
-        'deleted_at',
+        'deleted_at'
     ];
 
     /**
-     * User.
+     * User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -44,7 +44,7 @@ class Report extends Model
     }
 
     /**
-     * Downloads.
+     * Downloads
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -54,7 +54,7 @@ class Report extends Model
     }
 
     /**
-     * Download Total.
+     * Download Total
      *
      * @return int
      */

@@ -13,11 +13,11 @@ class Organization extends Model
     protected $guarded = ['id'];
 
     protected $fillable = [
-        'organization_name',
+        'organization_name'
     ];
 
     /**
-     * Address.
+     * Address
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -27,7 +27,7 @@ class Organization extends Model
     }
 
     /**
-     * Phone.
+     * Phone
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -41,10 +41,9 @@ class Organization extends Model
     	if($this->phone) {
     		$endNumber = substr($this->phone->phone_number, 0,3). '-'.substr($this->phone->phone_number, 3,6);
         $number = '('.$this->phone->area_code.') '.$endNumber;
-        if (! is_null($this->phone->extension) && $this->phone->extension != '') {
+        if(!is_null($this->phone->extension) && $this->phone->extension !=''){
             $number .= ' ext:'.$this->phone->extension;
         }
-
         return $number;
     	} else {
     		return 'Not Available';
@@ -53,7 +52,7 @@ class Organization extends Model
     }
 
     /**
-     * Fax.
+     * Fax
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -63,7 +62,7 @@ class Organization extends Model
     }
 
     /**
-     * Person.
+     * Person
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -72,8 +71,9 @@ class Organization extends Model
         return $this->hasOne(\App\Models\People::class, 'person_key', 'default_contact_person_key');
     }
 
-    public function scopeActive($query)
-    {
-        return $query->where('is_active', 1);
-    }
+
+	  public function scopeActive($query)
+	  {
+	    return $query->where('is_active', 1);
+	  }
 }

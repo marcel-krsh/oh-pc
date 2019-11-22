@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use App\Mail\EmailFailedLogin;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 use User;
+use App\Mail\EmailFailedLogin;
 
 class AuthTracker extends Model
 {
+
     protected $table = 'auth_tracker';
 
     protected $fillable = [
@@ -29,7 +30,7 @@ class AuthTracker extends Model
     ];
 
     /**
-     * User.
+     * User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -39,7 +40,7 @@ class AuthTracker extends Model
     }
 
     /**
-     * Reset Tries.
+     * Reset Tries
      */
     public function resetTries()
     {
@@ -48,7 +49,7 @@ class AuthTracker extends Model
     }
 
     /**
-     * Increment Tries.
+     * Increment Tries
      */
     public function incrementTries() : int
     {
@@ -63,7 +64,7 @@ class AuthTracker extends Model
     }
 
     /**
-     * Check if an IP is already blocked.
+     * Check if an IP is already blocked
      *
      * @param  string $ip
      * @return
@@ -79,20 +80,19 @@ class AuthTracker extends Model
     }
 
     /**
-     * Reset blocked date.
+     * Reset blocked date
      *
      * @return bool
-     */
+    */
     public function reset_block() : bool
     {
         $this->blocked_until = null;
         $this->save();
-
         return true;
     }
 
     /**
-     * Block user after too many attempts.
+     * Block user after too many attempts
      *
      * @return
      */
@@ -114,8 +114,8 @@ class AuthTracker extends Model
                 $user = User::where('id', '=', $this->user_id)->first();
                 if ($user) {
                     $emailNotification = new EmailFailedLogin($user->id);
-                    //    \Mail::to('jotassin@gmail.com')->send($emailNotification);
-                    \Mail::to($user->email)->send($emailNotification);
+                //    \Mail::to('jotassin@gmail.com')->send($emailNotification);
+                     \Mail::to($user->email)->send($emailNotification);
                 }
             }
         }

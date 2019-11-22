@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class AddReportApprovalIdFieldsToCachedAuditsTable extends Migration
 {
@@ -14,9 +14,9 @@ class AddReportApprovalIdFieldsToCachedAuditsTable extends Migration
     public function up()
     {
         Schema::table('cached_audits', function (Blueprint $table) {
-            $table->integer('car_approval_type_id')->nullable();
-            $table->integer('ehs_approval_type_id')->nullable();
-            $table->integer('_8823_approval_type_id')->nullable();
+          	$table->integer('car_approval_type_id')->nullable();
+          	$table->integer('ehs_approval_type_id')->nullable();
+          	$table->integer('_8823_approval_type_id')->nullable();
         });
     }
 
@@ -28,9 +28,9 @@ class AddReportApprovalIdFieldsToCachedAuditsTable extends Migration
     public function down()
     {
         Schema::table('cached_audits', function (Blueprint $table) {
-            $table->dropColumn('car_approval_type_id');
-            $table->dropColumn('ehs_approval_type_id');
-            $table->dropColumn('_8823_approval_type_id');
+           $table->dropColumn('car_approval_type_id');
+           $table->dropColumn('ehs_approval_type_id');
+           $table->dropColumn('_8823_approval_type_id');
         });
     }
 }

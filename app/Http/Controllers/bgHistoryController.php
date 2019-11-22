@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
-use App\Models\ActivityLog;
-use App\Models\Parcel;
-use App\Models\Role;
-use App\Models\User;
-use Auth;
-use DB;
-use Excel;
-use Gate;
 use Illuminate\Http\Request;
+use App\Models\Parcel;
+use App\Http\Requests;
+use Gate;
+use \DB;
+use Auth;
 use Session;
+use Excel;
+use App\Models\User;
+use App\Models\Role;
+use App\Models\ActivityLog;
 
 class bgHistoryController extends Controller
 {
@@ -20,10 +20,9 @@ class bgHistoryController extends Controller
     {
         // $this->middleware('auth');
     }
-
     public function parcelHistory(Parcel $parcel)
     {
-        if (! Gate::allows('view-all-parcels')) {
+        if (!Gate::allows('view-all-parcels')) {
             return "Oops, are you sure you're allowed to do this?";
         }
 
@@ -67,18 +66,18 @@ class bgHistoryController extends Controller
         $owners_array = [];
         foreach ($activities as $activity) {
             // create initials
-            $words = explode(' ', $activity->name);
-            $initials = '';
+            $words = explode(" ", $activity->name);
+            $initials = "";
             foreach ($words as $w) {
                 $initials .= $w[0];
             }
             $activity->initials = $initials;
 
             // someone misspelled "visible" in thousands of entries in the db... I don't want to mess with the db
-            $activity->description = str_replace('visable', 'visible', $activity->description); // arrrg
+            $activity->description = str_replace("visable", "visible", $activity->description); // arrrg
 
             // create associative arrays for initials and names
-            if (! array_key_exists($activity->user_id, $owners_array)) {
+            if (!array_key_exists($activity->user_id, $owners_array)) {
                 $owners_array[$activity->user_id]['initials'] = $initials;
                 $owners_array[$activity->user_id]['name'] = $activity->name;
                 $owners_array[$activity->user_id]['color'] = $activity->badge_color;
@@ -99,7 +98,6 @@ class bgHistoryController extends Controller
         } else {
             Session::forget('activities-search');
         }
-
         return 1;
     }
 }

@@ -1,43 +1,42 @@
 <?php
-
 // To combine with ParcelsController.php
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Gate;
+use Carbon;
+use File;
+use Storage;
+use App\Models\Programs;
+use Illuminate\Http\Request;
+use DB;
+use App\Models\User;
+use App\Models\Parcel;
 use App\LogConverter;
-use App\Models\ApprovalAction;
-use App\Models\ApprovalRequest;
-use App\Models\Compliance;
+use App\Models\ExpenseCategory;
 use App\Models\CostItem;
+use App\Models\ReimbursementRequest;
+use App\Models\RequestItem;
+use App\Models\Entity;
+use App\Models\ParcelsToReimbursementRequest;
+use App\Models\RequestNote;
+use App\Models\PurchaseOrderNote;
 use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Models\DocumentRule;
 use App\Models\DocumentRuleEntry;
-use App\Models\Entity;
-use App\Models\ExpenseCategory;
-use App\Models\InvoiceItem;
-use App\Models\Mail\EmailNotificationPOApproved;
-use App\Models\Parcel;
+use App\Models\ApprovalRequest;
+use App\Models\ApprovalAction;
+use App\Models\ReimbursementPurchaseOrders;
 use App\Models\ParcelsToPurchaseOrder;
 use App\Models\ParcelsToReimbursementInvoice;
-use App\Models\ParcelsToReimbursementRequest;
 use App\Models\PoItems;
-use App\Models\ProgramRule;
-use App\Models\Programs;
-use App\Models\PurchaseOrderNote;
+use App\Models\InvoiceItem;
 use App\Models\ReimbursementInvoice;
-use App\Models\ReimbursementPurchaseOrders;
-use App\Models\ReimbursementRequest;
-use App\Models\RequestItem;
-use App\Models\RequestNote;
-use App\Models\User;
-use Auth;
-use Carbon;
-use DB;
-use File;
-use Gate;
-use Illuminate\Http\Request;
-use Storage;
+use App\Models\Mail\EmailNotificationPOApproved;
+use App\Models\Compliance;
+use App\Models\ProgramRule;
 
 class ParcelsPTController extends Controller
 {
@@ -113,9 +112,9 @@ class ParcelsPTController extends Controller
         $docCatIds = DocumentRuleEntry::whereIn('document_rule_id', $docRules)->pluck('document_category_id');
         $parcelRules = \App\Models\ProgramRule::find($parcel->program_rules_id);
         if (is_array($docCatIds)) {
-            $categories_needed = $docCatIds;
+            $categories_needed =  $docCatIds;
         } else {
-            $categories_needed = [];
+            $categories_needed =  [];
         }
 
         // get categoties that were submitted
@@ -135,7 +134,7 @@ class ParcelsPTController extends Controller
             // create an associative array to simplify category references for each document
             foreach ($documents as $document) {
                 $categories = []; // store the new associative array cat id, cat name
-
+                 
                 if ($document->categories) {
                     $categories_decoded = json_decode($document->categories, true); // cats used by the doc
 
@@ -167,14 +166,14 @@ class ParcelsPTController extends Controller
                 } else {
                     $document->notapproved_array = [];
                 }
-
+                
                 $count_approved_cat_matched = 0;
                 foreach ($document->approved_array as $approved_cat_id) {
                     if (array_key_exists($approved_cat_id, $document->categoriesarray)) {
                         $count_approved_cat_matched++;
                     }
                 }
-
+               
                 if ($count_approved_cat_matched == count($document->categoriesarray) && $previous_document_approved == 1) {
                     $all_documents_approved = 1;
                 } else {
@@ -187,23 +186,23 @@ class ParcelsPTController extends Controller
         }
         // if there are pending categories left, set the status id
         $pending_categories = array_diff($categories_needed, $categories_used);
-
+        
         if ($all_documents_uploaded) {
             $parcel->update([
-                'lb_documents_complete' => 1,
+                'lb_documents_complete' => 1
             ]);
         } else {
             $parcel->update([
-                'lb_documents_complete' => 0,
+                'lb_documents_complete' => 0
             ]);
         }
         if ($all_documents_approved) {
             $parcel->update([
-                'hfa_documents_complete' => 1,
+                'hfa_documents_complete' => 1
             ]);
         } else {
             $parcel->update([
-                'hfa_documents_complete' => 0,
+                'hfa_documents_complete' => 0
             ]);
         }
 
@@ -251,7 +250,7 @@ class ParcelsPTController extends Controller
             // nothing to do here, the parcel is in disposition mode.
         } elseif ($parcel->landbank_property_status_id == 10) {
             // nothing to do here, the PO has been approved by HFA, LB needs to issue the invoice.
-        } elseif (! CostItem::where('parcel_id', '=', $parcel->id)->count() || $requestedAmountsAreMissing) {
+        } elseif (!CostItem::where('parcel_id', '=', $parcel->id)->count() || $requestedAmountsAreMissing) {
             //            $parcel = updateStatus("parcel", $parcel, 'landbank_property_status_id', 46, 0, "");
             // $parcel->update([
             //     'landbank_property_status_id' => 46
@@ -275,9 +274,9 @@ class ParcelsPTController extends Controller
 
         // requests available to this entity
         $availableRequests = DB::table('reimbursement_requests')->select('id as req_id')->where('program_id', $parcel->program_id)->orderBy('id', 'desc')->get()->all();
-
+        
         if (($parcel->compliance == 1 || $parcel->compliance_manual == 1) &&
-            $parcel->compliance_score != 'Pass' && $parcel->compliance_score != '1') {
+            $parcel->compliance_score != "Pass" && $parcel->compliance_score != "1") {
             $compliance_started_and_not_all_approved = 1;
         } else {
             $compliance_started_and_not_all_approved = 0;
@@ -298,7 +297,7 @@ class ParcelsPTController extends Controller
             } else {
                 $retainages = null;
             }
-
+            
             return json_encode(compact('breakouts', 'compliance_started_and_not_all_approved', 'status', 'parcel_id', 'parcel', 'requestedAmountsAreMissing', 'parcelAlreadyInRequest', 'parceltorequest', 'parcelAlreadyInPO', 'parceltopo', 'parcelAlreadyInInvoice', 'parceltoinvoice', 'all_documents_approved', 'availableRequests', 'parcelRules', 'invoice_id', 'retainages', 'invoice'));
         } else {
             return view('parcels.breakouts_table', compact('breakouts', 'compliance_started_and_not_all_approved', 'status', 'parcel_id', 'parcel', 'requestedAmountsAreMissing', 'parcelAlreadyInRequest', 'parceltorequest', 'parcelAlreadyInPO', 'parceltopo', 'parcelAlreadyInInvoice', 'parceltoinvoice', 'all_documents_approved', 'availableRequests', 'parcelRules', 'invoice'));
@@ -307,59 +306,57 @@ class ParcelsPTController extends Controller
 
     public function HFAApproveParcel(Parcel $parcel, Request $request)
     {
-        if (! Auth::user()->isHFAPOApprover() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isHFAPOApprover() && !Auth::user()->isHFAAdmin()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
         //updateStatus("parcel", $parcel, 'landbank_property_status_id', 10, 0, "");
         //updateStatus("parcel", $parcel, 'hfa_property_status_id', 26, 0, "");
-        updateStatus('parcel', $parcel, 'approved_in_po', 1, 0, '');
-        updateStatus('parcel', $parcel, 'declined_in_po', 0, 0, '');
+        updateStatus("parcel", $parcel, 'approved_in_po', 1, 0, "");
+        updateStatus("parcel", $parcel, 'declined_in_po', 0, 0, "");
         guide_set_progress($parcel->id, 55, $status = 'completed', 1); // parcel approved in PO
-
+        
         // after approving that parcel checks if all the parcels in the po are approved
         // and run compliance if needed
 
         if ($parcel->associatedPo) {
             $po = ReimbursementPurchaseOrders::where('id', '=', $parcel->associatedPo->purchase_order_id)->first();
-
-            if ($this->areParcelsApprovedInPO($po) && $po->legacy != 1 && ! $this->hasComplianceStarted($po)) {
+        
+            if ($this->areParcelsApprovedInPO($po) && $po->legacy != 1 && !$this->hasComplianceStarted($po)) {
                 $this->startCompliance($po);
             }
         }
-
+        
         $lc = new LogConverter('Parcel', 'approved by HFA');
-        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' approved a parcel.')->save();
-
+        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' approved a parcel.')->save();
         return ['message'=>"It's done!", 'error'=>0];
     }
 
     public function HFADeclineParcel(Parcel $parcel, Request $request)
     {
-        if (! Auth::user()->isHFAPOApprover() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isHFAPOApprover() && !Auth::user()->isHFAAdmin()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
 
-        updateStatus('parcel', $parcel, 'approved_in_po', 0, 0, '');
-        updateStatus('parcel', $parcel, 'declined_in_po', 1, 0, '');
+        updateStatus("parcel", $parcel, 'approved_in_po', 0, 0, "");
+        updateStatus("parcel", $parcel, 'declined_in_po', 1, 0, "");
 
-        updateStatus('parcel', $parcel, 'landbank_property_status_id', 8, 0, '');
-        updateStatus('parcel', $parcel, 'hfa_property_status_id', 23, 0, '');
+        updateStatus("parcel", $parcel, 'landbank_property_status_id', 8, 0, "");
+        updateStatus("parcel", $parcel, 'hfa_property_status_id', 23, 0, "");
 
         guide_set_progress($parcel->id, 55, $status = 'started', 1); // parcel not approved in PO
-
+        
         // $parcel->update([
         //     'landbank_property_status_id' => 8,
         //     'hfa_property_status_id' => 23
         // ]);
         $lc = new LogConverter('Parcel', 'declined by HFA');
-        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' declined a parcel.')->save();
-
+        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' declined a parcel.')->save();
         return ['message'=>"It's done!", 'error'=>0];
     }
 
     public function breakoutViewCostItem()
     {
-        return 'yeah';
+        return "yeah";
     }
 
     public function advanceDesignation(Parcel $parcel, Request $request)
@@ -380,7 +377,7 @@ class ParcelsPTController extends Controller
 
     public function editCostAmount(Parcel $parcel, Request $request)
     {
-        if (! Auth::user()->isLandbankAdmin() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isLandbankAdmin() && !Auth::user()->isHFAAdmin()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
 
@@ -392,7 +389,7 @@ class ParcelsPTController extends Controller
 
         if ($request_amount >= 0) {
             $cost_item->update([
-                    'amount' => $request_amount,
+                    "amount" => $request_amount
                 ]);
             $output['message'] = "I've updated the cost amount.";
             $output['new_amount'] = $request_amount;
@@ -405,7 +402,7 @@ class ParcelsPTController extends Controller
 
     public function deleteCostItem(Parcel $parcel, Request $request)
     {
-        if (! Auth::user()->isLandbankAdmin() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isLandbankAdmin() && !Auth::user()->isHFAAdmin()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?"];
         }
 
@@ -417,8 +414,7 @@ class ParcelsPTController extends Controller
         if (count($cost_item)) {
             // if cost item has a retainage, it cannot be deleted
             if ($cost_item->retainage) {
-                $output['message'] = 'This item cannot be deleted because it has a retainage!';
-
+                $output['message'] = "This item cannot be deleted because it has a retainage!";
                 return $output;
             }
 
@@ -444,19 +440,19 @@ class ParcelsPTController extends Controller
         }
 
         $lc = new LogConverter('Parcel', 'cost item deleted');
-        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' deleted a cost item '.$cost_item_id)->save();
-
+        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' deleted a cost item '.$cost_item_id)->save();
+        
         perform_all_parcel_checks($parcel);
         guide_next_pending_step(2, $parcel->id);
 
-        $output['message'] = 'This item has been deleted!';
+        $output['message'] = "This item has been deleted!";
 
         return $output;
     }
 
     public function addRequestedAmount(Parcel $parcel, Request $request)
     {
-        if (! Auth::user()->isLandbankAdmin() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isLandbankAdmin() && !Auth::user()->isHFAAdmin()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
 
@@ -469,11 +465,11 @@ class ParcelsPTController extends Controller
             $request_item = RequestItem::where('ref_id', '=', $cost_item_id)->first();
             if (count($request_item) == 1) {
                 $request_item->update([
-                    'amount' => $request_amount,
+                    "amount" => $request_amount
                 ]);
                 $lc = new LogConverter('Parcel', 'request item updated');
                 $expenseCategory = ExpenseCategory::find($request_item->expense_category_id);
-                $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' updated a request item '.$request_item->id.' to $'.$request_amount.' for expense category '.$expenseCategory->expense_category_name.' (id '.$request_item->expense_category_id.') for request #'.$request_item->request_id)->save();
+                $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' updated a request item '.$request_item->id.' to $'.$request_amount.' for expense category '.$expenseCategory->expense_category_name.' (id '.$request_item->expense_category_id.') for request #'.$request_item->request_id)->save();
             } elseif (count($request_item) == 0) {
                 // create the request_item using data from parcel and cost_item
                 $cost_item = CostItem::where('id', '=', $cost_item_id)->first();
@@ -500,12 +496,12 @@ class ParcelsPTController extends Controller
                             'description' => $cost_item->description,
                             'notes' => $cost_item->notes,
                             'ref_id' => $cost_item->id,
-                            'advance' => $cost_item->advance,
+                            'advance' => $cost_item->advance
                     ]);
                     $new_request_item->save();
                     $expenseCategory = ExpenseCategory::find($cost_item->expense_category_id);
                     $lc = new LogConverter('Parcel', 'request item added');
-                    $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' added a request item '.$new_request_item->id.' for expense category '.$expenseCategory->expense_category_name.'(id '.$cost_item->expense_category_id.') for $'.$request_amount)->save();
+                    $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' added a request item '.$new_request_item->id.' for expense category '.$expenseCategory->expense_category_name.'(id '.$cost_item->expense_category_id.') for $'.$request_amount)->save();
                 } else {
                     $output['message'] = "Oops, I couldn't find a corresponding cost item. Something went wrong.";
                 }
@@ -524,7 +520,7 @@ class ParcelsPTController extends Controller
 
     public function addApprovedAmount(Parcel $parcel, Request $request)
     {
-        if (! Auth::user()->isHFAPOApprover() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isHFAPOApprover() && !Auth::user()->isHFAAdmin()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
 
@@ -537,11 +533,11 @@ class ParcelsPTController extends Controller
             $po_item = PoItems::where('ref_id', '=', $request_item_id)->first();
             if ($po_item) {
                 $po_item->update([
-                    'amount' => $po_amount,
+                    "amount" => $po_amount
                 ]);
                 $lc = new LogConverter('Parcel', 'approved item updated');
                 $expenseCategory = ExpenseCategory::find($po_item->expense_category_id);
-                $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' updated an po item '.$po_item->id.' to $'.$po_amount.' for expense category '.$expenseCategory->expense_category_name.' (id '.$po_item->expense_category_id.') for PO #'.$po_item->po_id)->save();
+                $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' updated an po item '.$po_item->id.' to $'.$po_amount.' for expense category '.$expenseCategory->expense_category_name.' (id '.$po_item->expense_category_id.') for PO #'.$po_item->po_id)->save();
             } else {
                 // create the request_item using data from parcel and cost_item
                 $request_item = RequestItem::where('id', '=', $request_item_id)->first();
@@ -568,12 +564,12 @@ class ParcelsPTController extends Controller
                             'description' => $request_item->description,
                             'notes' => $request_item->notes,
                             'ref_id' => $request_item->id,
-                            'advance' => $request_item->advance,
+                            'advance' => $request_item->advance
                     ]);
                     $new_po_item->save();
                     $expenseCategory = ExpenseCategory::find($request_item->expense_category_id);
                     $lc = new LogConverter('Parcel', 'po item created');
-                    $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' created a po item for expense category '.$expenseCategory->expense_category_name.'(id'.$request_item->expense_category_id.') for the amount of $'.$po_amount.' for PO#'.$new_po_item->id)->save();
+                    $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' created a po item for expense category '.$expenseCategory->expense_category_name.'(id'.$request_item->expense_category_id.') for the amount of $'.$po_amount.' for PO#'.$new_po_item->id)->save();
                 } else {
                     $output['message'] = "Oops, I couldn't find a corresponding request item. Something went wrong.";
                 }
@@ -592,7 +588,7 @@ class ParcelsPTController extends Controller
 
     public function addInvoicedAmount(Parcel $parcel, Request $request)
     {
-        if (! Auth::user()->isHFAPrimaryInvoiceApprover() && ! Auth::user()->isHFASecondaryInvoiceApprover() && ! Auth::user()->isHFATertiaryInvoiceApprover() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isHFAPrimaryInvoiceApprover() && !Auth::user()->isHFASecondaryInvoiceApprover() && !Auth::user()->isHFATertiaryInvoiceApprover() && !Auth::user()->isHFAAdmin()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
         $output['new_amount'] = '';
@@ -604,11 +600,11 @@ class ParcelsPTController extends Controller
             $invoice_item = InvoiceItem::where('ref_id', '=', $po_item_id)->first();
             if ($invoice_item) {
                 $invoice_item->update([
-                    'amount' => $invoice_amount,
+                    "amount" => $invoice_amount
                 ]);
                 $lc = new LogConverter('Parcel', 'invoice item updated');
                 $expenseCategory = ExpenseCategory::find($invoice_item->expense_category_id);
-                $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' updated an invoice item '.$invoice_item->id.' to $'.$invoice_amount.' for expense category '.$expenseCategory->expense_category_name.' (id '.$invoice_item->expense_category_id.') for Invoice #'.$invoice_item->invoice_id)->save();
+                $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' updated an invoice item '.$invoice_item->id.' to $'.$invoice_amount.' for expense category '.$expenseCategory->expense_category_name.' (id '.$invoice_item->expense_category_id.') for Invoice #'.$invoice_item->invoice_id)->save();
             } else {
                 // create the po_item using data from parcel and request_item
                 $po_item = PoItems::where('id', '=', $po_item_id)->first();
@@ -635,13 +631,13 @@ class ParcelsPTController extends Controller
                             'description' => $po_item->description,
                             'notes' => $po_item->notes,
                             'ref_id' => $po_item->id,
-                            'advance' => $po_item->advance,
+                            'advance' => $po_item->advance
                     ]);
                     $new_invoice_item->save();
                     $expenseCategory = ExpenseCategory::find($po_item->expense_category_id);
-
+                    
                     $lc = new LogConverter('Parcel', 'invoice item created');
-                    $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' added an invoice item '.$new_invoice_item->id.' for expense category '.$expenseCategory->expense_category_name.' (id '.$po_item->expense_category_id.') in the amount of $'.$invoice_amount.' for Invoice #'.$inv_id)->save();
+                    $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' added an invoice item '.$new_invoice_item->id.' for expense category '.$expenseCategory->expense_category_name.' (id '.$po_item->expense_category_id.') in the amount of $'.$invoice_amount.' for Invoice #'.$inv_id)->save();
                 } else {
                     $output['message'] = "Oops, I couldn't find a corresponding request item. Something went wrong.";
                 }
@@ -661,12 +657,12 @@ class ParcelsPTController extends Controller
     public function landbankRemoveParcelFromRequest(Parcel $parcel)
     {
         // check if user is allowed to remove parcel from request
-        if (! Auth::user()->isLandbankParcelApprover() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isLandbankParcelApprover() && !Auth::user()->isHFAAdmin()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?"];
         }
 
         // check if parcel belongs to user's entity
-        if (! Auth::user()->isHFAAdmin() && Parcel::where('id', '=', $parcel->id)->where('entity_id', '=', Auth::user()->entity_id)->count() == 0) {
+        if (!Auth::user()->isHFAAdmin() && Parcel::where('id', '=', $parcel->id)->where('entity_id', '=', Auth::user()->entity_id)->count() == 0) {
             return ['message'=>"Oops, looks like this parcel doesn't belong to you..."];
         }
 
@@ -687,7 +683,7 @@ class ParcelsPTController extends Controller
 
         // delete all po items
         PoItems::where('parcel_id', '=', $parcel->id)->delete();
-
+        
         // check if parcel already removed from the request, a parcel should only be in one request ever
         $parceltorequest = ParcelsToReimbursementRequest::where('parcel_id', '=', $parcel->id)->first();
         if (count($parceltorequest) != 0) {
@@ -698,18 +694,18 @@ class ParcelsPTController extends Controller
         RequestItem::where('parcel_id', '=', $parcel->id)->update(['req_id' => null]);
 
         // update the parcel status
-        updateStatus('parcel', $parcel, 'landbank_property_status_id', 48, 0, '');
-        updateStatus('parcel', $parcel, 'hfa_property_status_id', 39, 0, '');
-
+        updateStatus("parcel", $parcel, 'landbank_property_status_id', 48, 0, "");
+        updateStatus("parcel", $parcel, 'hfa_property_status_id', 39, 0, "");
+        
         //   	$parcel->update([
         // 	"landbank_property_status_id" => 48,
         //           "hfa_property_status_id" => 39
         // ]);
 
         $lc = new LogConverter('Parcel', 'removed from request');
-        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.'Removed a parcel from the current request.')->save();
+        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . 'Removed a parcel from the current request.')->save();
 
-        $output['message'] = 'This parcel was removed from the current request.';
+        $output['message'] = "This parcel was removed from the current request.";
 
         perform_all_parcel_checks($parcel);
         guide_next_pending_step(2, $parcel->id);
@@ -720,18 +716,18 @@ class ParcelsPTController extends Controller
     public function landbankSubmitParcelToRequest(Parcel $parcel)
     {
         // check if user is allowed to add parcel to request
-        if (! Auth::user()->isLandbankParcelApprover() && ! Auth::user()->isHFAAdmin()) {
-            return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
+        if (!Auth::user()->isLandbankParcelApprover() && !Auth::user()->isHFAAdmin()) {
+            return ['message'=>"Oops, are you sure you're allowed to do this?", "error"=>1];
         }
 
         // check if parcel belongs to user's entity
-        if (Parcel::where('id', '=', $parcel->id)->where('entity_id', '=', Auth::user()->entity_id)->count() == 0 && ! Auth::user()->isHFAAdmin()) {
-            return ['message'=>"Oops, looks like this parcel doesn't belong to you...", 'error'=>1];
+        if (Parcel::where('id', '=', $parcel->id)->where('entity_id', '=', Auth::user()->entity_id)->count() == 0 && !Auth::user()->isHFAAdmin()) {
+            return ['message'=>"Oops, looks like this parcel doesn't belong to you...", "error"=>1];
         }
 
         // check if parcel not already in a request
         if (ParcelsToReimbursementRequest::where('parcel_id', '=', $parcel->id)->count() > 0) {
-            return ['message'=>'Oops, looks like that parcel is already in a request...', 'error'=>1];
+            return ['message'=>"Oops, looks like that parcel is already in a request...", "error"=>1];
         }
 
         // get current draft request
@@ -743,24 +739,24 @@ class ParcelsPTController extends Controller
                                 ->first();
 
         // if no request exist, create one
-        if (! $current_request) {
+        if (!$current_request) {
             $current_request = new ReimbursementRequest([
                             'entity_id' => $parcel->entity_id,
                             'program_id' => $parcel->program_id,
                             'account_id' => $parcel->account_id,
                             'status_id' => 1,
-                            'active' => 1,
+                            'active' => 1
             ]);
             $current_request->save();
 
             $lc = new LogConverter('reimbursement_requests', 'create');
-            $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email.'Created a new reimbursement request draft')->save();
+            $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email . 'Created a new reimbursement request draft')->save();
         }
 
         // add parcel to request
         $parcel_to_request = new ParcelsToReimbursementRequest([
                             'parcel_id' => $parcel->id,
-                            'reimbursement_request_id' => $current_request->id,
+                            'reimbursement_request_id' => $current_request->id
         ]);
         $parcel_to_request->save();
 
@@ -771,19 +767,19 @@ class ParcelsPTController extends Controller
                             ->where('account_id', '=', $parcel->account_id)
                             ->where('program_id', '=', $parcel->program_id)
                             ->update([
-                                'req_id' => $current_request->id,
+                                "req_id" => $current_request->id
                             ]);
 
         // set parcel "landbank_property_status_id" to 6
-        updateStatus('parcel', $parcel, 'landbank_property_status_id', 6, 0, '');
+        updateStatus("parcel", $parcel, 'landbank_property_status_id', 6, 0, "");
         //   	$parcel->update([
         // 	"landbank_property_status_id" => 6
         // ]);
 
         $lc = new LogConverter('Parcel', 'add to request');
-        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.'Added a parcel to the current request.')->save();
+        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . 'Added a parcel to the current request.')->save();
 
-        $output['message'] = 'This parcel was submitted to the current request.';
+        $output['message'] = "This parcel was submitted to the current request.";
 
         perform_all_parcel_checks($parcel);
         guide_next_pending_step(2, $parcel->id);
@@ -800,7 +796,7 @@ class ParcelsPTController extends Controller
     public function getRequest(ReimbursementRequest $request)
     {
         // check if allowed
-        if (! Gate::allows('view-request') && ! Auth::user()->isLandbankRequestApprover() || (Auth::user()->entity_id != $request->entity_id && Auth::user()->entity_id != 1)) {
+        if (!Gate::allows('view-request') && !Auth::user()->isLandbankRequestApprover() || (Auth::user()->entity_id != $request->entity_id && Auth::user()->entity_id !=1)) {
             return 'Sorry you do not have access to the request.';
         }
 
@@ -837,27 +833,28 @@ class ParcelsPTController extends Controller
         }
         $total = money_format('%n', $total);
 
+        
         $owners_array = [];
         foreach ($request->notes as $note) {
             // create initials
-            $words = explode(' ', $note->owner->name);
-            $initials = '';
+            $words = explode(" ", $note->owner->name);
+            $initials = "";
             foreach ($words as $w) {
                 $initials .= $w[0];
             }
             $note->initials = $initials;
 
             // create associative arrays for initials and names
-            if (! array_key_exists($note->owner->id, $owners_array)) {
+            if (!array_key_exists($note->owner->id, $owners_array)) {
                 $owners_array[$note->owner->id]['initials'] = $initials;
                 $owners_array[$note->owner->id]['name'] = $note->owner->name;
                 $owners_array[$note->owner->id]['color'] = $note->owner->badge_color;
                 $owners_array[$note->owner->id]['id'] = $note->owner->id;
             }
         }
-
+                        
         $lc = new LogConverter('reimbursement_requests', 'view');
-        $lc->setFrom(Auth::user())->setTo($request)->setDesc(Auth::user()->email.'Viewed reimbursement request')->save();
+        $lc->setFrom(Auth::user())->setTo($request)->setDesc(Auth::user()->email . 'Viewed reimbursement request')->save();
 
         // get NIP entity
         $nip = Entity::where('id', 1)->with('state')->with('user')->first();
@@ -880,9 +877,9 @@ class ParcelsPTController extends Controller
         if (count($added_approvers) == 0 && count($landbankRequestApprovers) > 0) {
             foreach ($landbankRequestApprovers as $landbankRequestApprover) {
                 $newApprovalRequest = new  ApprovalRequest([
-                    'approval_type_id' => 2,
-                    'link_type_id' => $request->id,
-                    'user_id' => $landbankRequestApprover->id,
+                    "approval_type_id" => 2,
+                    "link_type_id" => $request->id,
+                    "user_id" => $landbankRequestApprover->id
                 ]);
                 $newApprovalRequest->save();
             }
@@ -937,7 +934,7 @@ class ParcelsPTController extends Controller
                 } else {
                     // there is an approval request, but no action
                     // we are missing decisions
-                    $isApproved = 0;
+                    $isApproved =0;
                     $tmp_previous_approved = 0;
                 }
             }
@@ -966,10 +963,9 @@ class ParcelsPTController extends Controller
 
     public function requestSubmit(ReimbursementRequest $current_request, Request $request)
     {
-        if ((! Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $current_request->entity_id) && ! Auth::user()->isHFAAdmin()) {
+        if ((!Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $current_request->entity_id) && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
             $output['error'] = 1;
-
             return $output;
         }
 
@@ -997,7 +993,7 @@ class ParcelsPTController extends Controller
                 } else {
                     // there is an approval request, but no action
                     // we are missing decisions
-                    $isApproved = 0;
+                    $isApproved =0;
                     $tmp_previous_approved = 0;
                 }
             }
@@ -1006,11 +1002,10 @@ class ParcelsPTController extends Controller
         if ($isApproved == 0) {
             $output['message'] = "Some approvals are missing. I couldn't submit this request.";
             $output['error'] = 1;
-
             return $output;
         }
 
-        updateStatus('request', $current_request, 'status_id', 7, 0, '');
+        updateStatus("request", $current_request, 'status_id', 7, 0, "");
         // $current_request->update([
         //     "status_id" => 7 //approved
         // ]);
@@ -1018,14 +1013,14 @@ class ParcelsPTController extends Controller
         // Create PO if there isn't already one!
         $po = ReimbursementPurchaseOrders::where('rq_id', '=', $current_request->id)->first();
 
-        if (! $po) {
+        if (!$po) {
             $po = new ReimbursementPurchaseOrders([
                     'entity_id' => $current_request->entity_id,
                     'program_id' => $current_request->program_id,
                     'account_id' => $current_request->account_id,
                     'rq_id' => $current_request->id,
                     'status_id' => 1,
-                    'active' => 1,
+                    'active' => 1
             ]);
             $po->save();
 
@@ -1033,12 +1028,12 @@ class ParcelsPTController extends Controller
             foreach ($current_request->parcels as $parcel) {
                 $parcel_to_po = new ParcelsToPurchaseOrder([
                         'parcel_id' => $parcel->id,
-                        'purchase_order_id' => $po->id,
+                        'purchase_order_id' => $po->id
                 ]);
                 $parcel_to_po->save();
 
-                updateStatus('parcel', $parcel, 'landbank_property_status_id', 8, 0, '');
-                updateStatus('parcel', $parcel, 'hfa_property_status_id', 22, 0, '');
+                updateStatus("parcel", $parcel, 'landbank_property_status_id', 8, 0, "");
+                updateStatus("parcel", $parcel, 'hfa_property_status_id', 22, 0, "");
                 // $parcel->update([
                 //         "landbank_property_status_id" => 8,
                 //         "hfa_property_status_id" => 22
@@ -1047,13 +1042,13 @@ class ParcelsPTController extends Controller
                 // also make sure the req_id is set in every request_item
                 $request_items = RequestItem::where('parcel_id', '=', $parcel->id);
                 $request_items->update([
-                        'req_id' => $current_request->id,
+                        "req_id" => $current_request->id
                 ]);
 
                 // also make sure the po_id is set in every po_item (if they exist)
                 $existing_po_items = PoItems::where('parcel_id', '=', $parcel->id);
                 $existing_po_items->update([
-                        'po_id' => $po->id,
+                        "po_id" => $po->id
                 ]);
             }
 
@@ -1062,7 +1057,7 @@ class ParcelsPTController extends Controller
 
             foreach ($current_request->requestItems as $request_item) {
                 // first check that there isn't already a po item for that request item
-                if (! PoItems::where('parcel_id', '=', $parcel->id)->where('ref_id', '=', $request_item->id)->count()) {
+                if (!PoItems::where('parcel_id', '=', $parcel->id)->where('ref_id', '=', $request_item->id)->count()) {
                     // if not then create one with request values
                     $new_po_item = new PoItems([
                             'po_id' => $po->id,
@@ -1076,7 +1071,7 @@ class ParcelsPTController extends Controller
                             'description' => $request_item->description,
                             'notes' => $request_item->notes,
                             'ref_id' => $request_item->id,
-                            'advance' => $request_item->advance,
+                            'advance' => $request_item->advance
                     ]);
                     $new_po_item->save();
                 }
@@ -1100,9 +1095,8 @@ class ParcelsPTController extends Controller
 
     public function requestRemoveApprover(ReimbursementRequest $current_request, Request $request)
     {
-        if ((! Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $current_request->entity_id) && ! Auth::user()->isHFAAdmin()) {
+        if ((!Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $current_request->entity_id) && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
@@ -1115,92 +1109,83 @@ class ParcelsPTController extends Controller
             if (count($approver)) {
                 $approver->delete();
             }
-
+ 
             $lc = new LogConverter('reimbursement_requests', 'remove.approver');
-            $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email.'removed approver '.$approver_id)->save();
+            $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email . 'removed approver '.$approver_id)->save();
+
 
             $data['message'] = '';
             $data['id'] = $request->get('id');
-
             return $data;
         } else {
             $data['message'] = 'Something went wrong.';
             $data['id'] = null;
-
             return $data;
         }
     }
 
     public function requestAddHFAApprover(ReimbursementRequest $current_request, Request $request)
     {
-        if (! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
         if ($current_request) {
-            if (! ApprovalRequest::where('approval_type_id', '=', 2)
+            if (!ApprovalRequest::where('approval_type_id', '=', 2)
                         ->where('link_type_id', '=', $current_request->id)
                         ->where('user_id', '=', Auth::user()->id)
                         ->count()) {
                 $newApprovalRequest = new  ApprovalRequest([
-                    'approval_type_id' => 2,
-                    'link_type_id' => $current_request->id,
-                    'user_id' => Auth::user()->id,
+                    "approval_type_id" => 2,
+                    "link_type_id" => $current_request->id,
+                    "user_id" => Auth::user()->id
                 ]);
                 $newApprovalRequest->save();
                 $lc = new LogConverter('reimbursement_requests', 'add.hfa.approver');
-                $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email.'added a HFA approver.')->save();
+                $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email . 'added a HFA approver.')->save();
 
                 $data['message'] = 'You now are an approver.';
-
                 return $data;
             } else {
                 $data['message'] = 'Something went wrong.';
-
                 return $data;
             }
         } else {
             $data['message'] = 'Something went wrong.';
-
             return $data;
         }
     }
 
     public function requestAddLBApprover(ReimbursementRequest $current_request, Request $request)
     {
-        if ((! Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $current_request->entity_id) && ! Auth::user()->isHFAAdmin()) {
+        if ((!Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $current_request->entity_id) && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
         if ($current_request && $request->get('user_id') > 0) {
-            if (! ApprovalRequest::where('approval_type_id', '=', 2)
+            if (!ApprovalRequest::where('approval_type_id', '=', 2)
                         ->where('link_type_id', '=', $current_request->id)
                         ->where('user_id', '=', $request->get('user_id'))
                         ->count()) {
                 $newApprovalRequest = new  ApprovalRequest([
-                    'approval_type_id' => 2,
-                    'link_type_id' => $current_request->id,
-                    'user_id' => $request->get('user_id'),
+                    "approval_type_id" => 2,
+                    "link_type_id" => $current_request->id,
+                    "user_id" => $request->get('user_id')
                 ]);
                 $newApprovalRequest->save();
                 $lc = new LogConverter('reimbursement_requests', 'add.lb.approver');
-                $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email.'added LB approver '.$request->get('user_id'))->save();
+                $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email . 'added LB approver '.$request->get('user_id'))->save();
 
                 $data['message'] = 'Approver added.';
-
                 return $data;
             } else {
                 $data['message'] = 'Something went wrong.';
-
                 return $data;
             }
         } else {
             $data['message'] = 'Something went wrong.';
-
             return $data;
         }
     }
@@ -1210,7 +1195,7 @@ class ParcelsPTController extends Controller
         if (app('env') == 'local') {
             app('debugbar')->disable();
         }
-
+        
         if ($request->hasFile('files')) {
             $files = $request->file('files');
             $file_count = count($files);
@@ -1218,7 +1203,7 @@ class ParcelsPTController extends Controller
             $document_ids = '';
             $categories_json = json_encode(['30'], true); // 30 is "Landbank Request Signature"
 
-            $approvers = explode(',', $request->get('approvers'));
+            $approvers = explode(",", $request->get('approvers'));
 
             $user = Auth::user();
 
@@ -1228,10 +1213,10 @@ class ParcelsPTController extends Controller
             foreach ($req->parcels as $parcel) {
                 foreach ($files as $file) {
                     // Create filepath
-                    $folderpath = 'documents/entity_'.$parcel->entity_id.'/program_'.$parcel->program_id.'/parcel_'.$parcel->id.'/';
-
+                    $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
+                    
                     // sanitize filename
-                    $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
+                    $characters = [' ','´','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                     // Create a record in documents table
@@ -1239,7 +1224,7 @@ class ParcelsPTController extends Controller
                         'user_id' => $user->id,
                         'parcel_id' => $parcel->id,
                         'categories' => $categories_json,
-                        'filename' => $original_filename,
+                        'filename' => $original_filename
                     ]);
 
                     $document->save();
@@ -1248,7 +1233,7 @@ class ParcelsPTController extends Controller
                     $document->approve_categories([30]);
 
                     // Save document ids in an array to return
-                    if ($document_ids != '') {
+                    if ($document_ids!='') {
                         $document_ids = $document_ids.','.$document->id;
                     } else {
                         $document_ids = $document->id;
@@ -1256,14 +1241,14 @@ class ParcelsPTController extends Controller
 
                     // Sanitize filename and append document id to make it unique
                     // documents/entity_0/program_0/parcel_0/0_filename.ext
-                    $filename = $document->id.'_'.$original_filename;
-                    $filepath = $folderpath.$filename;
+                    $filename = $document->id . '_' . $original_filename;
+                    $filepath = $folderpath . $filename;
 
                     $document->update([
                         'file_path' => $filepath,
                     ]);
-                    $lc = new LogConverter('document', 'create');
-                    $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email.' created document '.$filepath)->save();
+                    $lc=new LogConverter('document', 'create');
+                    $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
                     // store original file
                     Storage::put($filepath, File::get($file));
 
@@ -1282,12 +1267,12 @@ class ParcelsPTController extends Controller
 
     public function approveRequestUploadSignatureComments(ReimbursementRequest $req, Request $request)
     {
-        if (! $request->get('postvars')) {
+        if (!$request->get('postvars')) {
             return 'Something went wrong';
         }
 
         // get document ids
-        $documentids = explode(',', $request->get('postvars'));
+        $documentids = explode(",", $request->get('postvars'));
 
         // get comment
         $comment = $request->get('comment');
@@ -1299,9 +1284,8 @@ class ParcelsPTController extends Controller
                     'comment' => $comment,
                 ]);
                 $lc = new LogConverter('document', 'comment');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email.' added comment to document ')->save();
+                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' added comment to document ')->save();
             }
-
             return 1;
         } else {
             return 0;
@@ -1310,9 +1294,8 @@ class ParcelsPTController extends Controller
 
     public function approveRequest(ReimbursementRequest $request, $approvers = null, $document_ids = null)
     {
-        if ((! Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $request->entity_id) && ! Auth::user()->isHFAAdmin()) {
+        if ((!Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $request->entity_id) && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
@@ -1322,14 +1305,14 @@ class ParcelsPTController extends Controller
             // in the records
             if (Auth::user()->isHFAAdmin()) {
                 // create an approval request for HFA user
-                if (! ApprovalRequest::where('approval_type_id', '=', 2)
+                if (!ApprovalRequest::where('approval_type_id', '=', 2)
                             ->where('link_type_id', '=', $request->id)
                             ->where('user_id', '=', Auth::user()->id)
                             ->count()) {
                     $newApprovalRequest = new  ApprovalRequest([
-                        'approval_type_id' => 2,
-                        'link_type_id' => $request->id,
-                        'user_id' => Auth::user()->id,
+                        "approval_type_id" => 2,
+                        "link_type_id" => $request->id,
+                        "user_id" => Auth::user()->id
                     ]);
                     $newApprovalRequest->save();
                 }
@@ -1338,7 +1321,7 @@ class ParcelsPTController extends Controller
             // check if multiple people need to record approvals
             if (count($approvers) > 0) {
                 if ($document_ids !== null) {
-                    $documents = explode(',', $document_ids);
+                    $documents = explode(",", $document_ids);
                 } else {
                     $documents = [];
                 }
@@ -1353,17 +1336,16 @@ class ParcelsPTController extends Controller
                         $action = new ApprovalAction([
                                 'approval_request_id' => $approver->id,
                                 'approval_action_type_id' => 5, //by proxy
-                                'documents' => $documents_json,
+                                'documents' => $documents_json
                             ]);
                         $action->save();
-
+             
                         $lc = new LogConverter('reimbursement_requests', 'approval by proxy');
-                        $lc->setFrom(Auth::user())->setTo($request)->setDesc(Auth::user()->email.'approved the request for '.$approver->name)->save();
+                        $lc->setFrom(Auth::user())->setTo($request)->setDesc(Auth::user()->email . 'approved the request for '.$approver->name)->save();
                     }
                 }
                 $data['message'] = 'This request was approved.';
                 $data['id'] = $approver_id;
-
                 return $data;
             } else {
                 $approver_id = Auth::user()->id;
@@ -1374,28 +1356,25 @@ class ParcelsPTController extends Controller
                 if (count($approver)) {
                     $action = new ApprovalAction([
                             'approval_request_id' => $approver->id,
-                            'approval_action_type_id' => 1,
+                            'approval_action_type_id' => 1
                         ]);
                     $action->save();
-
+         
                     $lc = new LogConverter('reimbursement_requests', 'approval');
-                    $lc->setFrom(Auth::user())->setTo($request)->setDesc(Auth::user()->email.'approved the request.')->save();
+                    $lc->setFrom(Auth::user())->setTo($request)->setDesc(Auth::user()->email . 'approved the request.')->save();
 
                     $data['message'] = 'Your request was approved.';
                     $data['id'] = $approver_id;
-
                     return $data;
                 } else {
                     $data['message'] = 'Something went wrong.';
                     $data['id'] = null;
-
                     return $data;
                 }
             }
         } else {
             $data['message'] = 'Something went wrong.';
             $data['id'] = null;
-
             return $data;
         }
     }
@@ -1403,9 +1382,8 @@ class ParcelsPTController extends Controller
     public function declineRequest(ReimbursementRequest $request)
     {
         // check user belongs to request entity
-        if ((! Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $request->entity_id) && ! Auth::user()->isHFAAdmin()) {
+        if ((!Auth::user()->isLandbankRequestApprover() || Auth::user()->entity_id != $request->entity_id) && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
@@ -1417,21 +1395,20 @@ class ParcelsPTController extends Controller
                             ->first();
             $action = new ApprovalAction([
                         'approval_request_id' => $approver->id,
-                        'approval_action_type_id' => 4,
+                        'approval_action_type_id' => 4
                     ]);
             $action->save();
-
+ 
             $lc = new LogConverter('reimbursement_requests', 'decline');
-            $lc->setFrom(Auth::user())->setTo($request)->setDesc(Auth::user()->email.'declined the request.')->save();
+            $lc->setFrom(Auth::user())->setTo($request)->setDesc(Auth::user()->email . 'declined the request.')->save();
+
 
             $data['message'] = 'This request has been declined.';
             $data['id'] = $approver_id;
-
             return $data;
         } else {
             $data['message'] = 'Something went wrong.';
             $data['id'] = null;
-
             return $data;
         }
     }
@@ -1444,14 +1421,14 @@ class ParcelsPTController extends Controller
             $note = new RequestNote([
                 'owner_id' => $user->id,
                 'reimbursement_request_id' => $current_request->id,
-                'note' => $request->get('request-note'),
+                'note' => $request->get('request-note')
             ]);
             $note->save();
             $lc = new LogConverter('reimbursement_requests', 'addnote');
-            $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email.' added note to reimbursement request')->save();
+            $lc->setFrom(Auth::user())->setTo($current_request)->setDesc(Auth::user()->email . ' added note to reimbursement request')->save();
 
-            $words = explode(' ', $user->name);
-            $initials = '';
+            $words = explode(" ", $user->name);
+            $initials = "";
             foreach ($words as $w) {
                 $initials .= $w[0];
             }
@@ -1475,7 +1452,7 @@ class ParcelsPTController extends Controller
     public function getPO(ReimbursementPurchaseOrders $po)
     {
         // check if allowed
-        if ((! Auth::user()->isLandbankInvoiceApprover() || Auth::user()->entity_id != $po->entity_id) && ! Auth::user()->isHFAAdmin() && ! Auth::user()->isHFAPOApprover()) {
+        if ((!Auth::user()->isLandbankInvoiceApprover() || Auth::user()->entity_id != $po->entity_id) && !Auth::user()->isHFAAdmin() && !Auth::user()->isHFAPOApprover()) {
             return 'Sorry you do not have access to this purchase order.';
         }
 
@@ -1500,6 +1477,7 @@ class ParcelsPTController extends Controller
         $total = 0;
         $po->legacy = 0;
 
+       
         $compliance_started_and_not_all_approved = 0;
         // check if parcels are out of compliance
         foreach ($po->parcels as $parcel) {
@@ -1511,7 +1489,7 @@ class ParcelsPTController extends Controller
             }
 
             if (($parcel->compliance == 1 || $parcel->compliance_manual == 1) &&
-                $parcel->compliance_score != 'Pass' && $parcel->compliance_score != '1') {
+                $parcel->compliance_score != "Pass" && $parcel->compliance_score != "1") {
                 $compliance_started_and_not_all_approved = 1;
             }
 
@@ -1519,28 +1497,28 @@ class ParcelsPTController extends Controller
             guide_next_pending_step(2, $parcel->id);
         }
         $total = money_format('%n', $total);
-
+        
         $owners_array = [];
         foreach ($po->notes as $note) {
             // create initials
-            $words = explode(' ', $note->owner->name);
-            $initials = '';
+            $words = explode(" ", $note->owner->name);
+            $initials = "";
             foreach ($words as $w) {
                 $initials .= $w[0];
             }
             $note->initials = $initials;
 
             // create associative arrays for initials and names
-            if (! array_key_exists($note->owner->id, $owners_array)) {
+            if (!array_key_exists($note->owner->id, $owners_array)) {
                 $owners_array[$note->owner->id]['initials'] = $initials;
                 $owners_array[$note->owner->id]['name'] = $note->owner->name;
                 $owners_array[$note->owner->id]['color'] = $note->owner->badge_color;
                 $owners_array[$note->owner->id]['id'] = $note->owner->id;
             }
         }
-
+                        
         $lc = new LogConverter('reimbursement_purchase_orders', 'view');
-        $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email.'Viewed purchase order')->save();
+        $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email . 'Viewed purchase order')->save();
 
         // get NIP entity
         $nip = Entity::where('id', 1)->with('state')->with('user')->first();
@@ -1562,9 +1540,9 @@ class ParcelsPTController extends Controller
         if (count($added_approvers) == 0 && count($HFAPOApprovers) > 0) {
             foreach ($HFAPOApprovers as $HFAPOApprover) {
                 $newApprovalRequest = new  ApprovalRequest([
-                    'approval_type_id' => 3,
-                    'link_type_id' => $po->id,
-                    'user_id' => $HFAPOApprover->id,
+                    "approval_type_id" => 3,
+                    "link_type_id" => $po->id,
+                    "user_id" => $HFAPOApprover->id
                 ]);
                 $newApprovalRequest->save();
             }
@@ -1620,7 +1598,7 @@ class ParcelsPTController extends Controller
                 } else {
                     // there is an approval request, but no action
                     // we are missing decisions
-                    $isApproved = 0;
+                    $isApproved =0;
                     $tmp_previous_approved = 0;
                 }
             }
@@ -1632,7 +1610,7 @@ class ParcelsPTController extends Controller
 
         // if all parcels approved and none under compliance yet
         $compliance_started = $this->hasComplianceStarted($po);
-        if ($this->areParcelsApprovedInPO($po) && $po->legacy != 1 && ! $compliance_started) {
+        if ($this->areParcelsApprovedInPO($po) && $po->legacy != 1 && !$compliance_started) {
             $this->startCompliance($po);
         }
 
@@ -1667,7 +1645,6 @@ class ParcelsPTController extends Controller
                 $all_parcels_approved = 0;
             }
         }
-
         return $all_parcels_approved;
     }
 
@@ -1680,7 +1657,7 @@ class ParcelsPTController extends Controller
         $compliance_started = 0;
         foreach ($po->parcels as $parcel) {
             if (($parcel->compliance == 1 || $parcel->compliance_manual == 1) &&
-                $parcel->compliance_score != 'Pass' && $parcel->compliance_score != '1') {
+                $parcel->compliance_score != "Pass" && $parcel->compliance_score != "1") {
                 $compliance_started_and_not_all_approved = 1;
             }
 
@@ -1688,7 +1665,6 @@ class ParcelsPTController extends Controller
                 $compliance_started = 1;
             }
         }
-
         return $compliance_started;
     }
 
@@ -1700,36 +1676,37 @@ class ParcelsPTController extends Controller
 
         $count_parcels_with_compliance = count($po->parcels()->where('compliance', 1));
 
+
         if ($count_parcels == 0) {
             return 0;
         }
-
+        
         // ensure we don't add to an existing set of compliance reiviews - and if we are, only add the number needed.
         $number_of_parcels_to_review = ceil($count_parcels * 0.05);
         // create array of random picks
 
         //if($number_of_parcels_to_review > 0){
         $randomizer = [];
-        for ($i = 0; $i < $count_parcels; $i++) {
+        for ($i=0; $i<$count_parcels; $i++) {
             $randomizer[] = $i;
         }
         // array_rand returns an int if only one value, otherwise an array, but we always need an array
-
+            
         $rand_keys = array_rand($randomizer, $number_of_parcels_to_review);
-        if (! is_array($rand_keys)) {
+        if (!is_array($rand_keys)) {
             $rand_keys = [$rand_keys];
         }
         //}
         // change the status of each parcel in the po
         $i = 0;
         foreach ($po->parcels as $parcel) {
-            updateStatus('parcel', $parcel, 'landbank_property_status_id', 10, 0, '');
-            updateStatus('parcel', $parcel, 'hfa_property_status_id', 26, 0, '');
+            updateStatus("parcel", $parcel, 'landbank_property_status_id', 10, 0, "");
+            updateStatus("parcel", $parcel, 'hfa_property_status_id', 26, 0, "");
 
             if (in_array($i, $rand_keys)) {
-                updateStatus('parcel', $parcel, 'hfa_property_status_id', 21, 0, '');
+                updateStatus("parcel", $parcel, 'hfa_property_status_id', 21, 0, "");
                 $parcel->update([
-                        'compliance' => 1,
+                        "compliance" => 1
                 ]);
             }
             perform_all_parcel_checks($parcel);
@@ -1739,7 +1716,7 @@ class ParcelsPTController extends Controller
         // we have to use another instance of the po because the $po may contain "legacy" attribute that can't be updated.
         $po_to_update = ReimbursementPurchaseOrders::where('id', '=', $po->id)->first();
         $po_to_update->update([
-                'status_id' => 3, // pending HFA approval
+                "status_id" => 3 // pending HFA approval
         ]);
 
         return 1;
@@ -1750,7 +1727,7 @@ class ParcelsPTController extends Controller
         if (app('env') == 'local') {
             app('debugbar')->disable();
         }
-
+        
         if ($request->hasFile('files')) {
             $files = $request->file('files');
             $file_count = count($files);
@@ -1758,7 +1735,7 @@ class ParcelsPTController extends Controller
             $document_ids = '';
             $categories_json = json_encode(['32'], true); // 32 is "HFA PO signature"
 
-            $approvers = explode(',', $request->get('approvers'));
+            $approvers = explode(",", $request->get('approvers'));
 
             $user = Auth::user();
 
@@ -1768,10 +1745,10 @@ class ParcelsPTController extends Controller
             foreach ($po->parcels as $parcel) {
                 foreach ($files as $file) {
                     // Create filepath
-                    $folderpath = 'documents/entity_'.$parcel->entity_id.'/program_'.$parcel->program_id.'/parcel_'.$parcel->id.'/';
-
+                    $folderpath = 'documents/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
+                    
                     // sanitize filename
-                    $characters = [' ', '¥', '`', "'", '~', '"', '\'', '\\', '/'];
+                    $characters = [' ','¥','`',"'",'~','"','\'','\\','/'];
                     $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 
                     // Create a record in documents table
@@ -1779,7 +1756,7 @@ class ParcelsPTController extends Controller
                         'user_id' => $user->id,
                         'parcel_id' => $parcel->id,
                         'categories' => $categories_json,
-                        'filename' => $original_filename,
+                        'filename' => $original_filename
                     ]);
 
                     $document->save();
@@ -1788,7 +1765,7 @@ class ParcelsPTController extends Controller
                     $document->approve_categories([32]);
 
                     // Save document ids in an array to return
-                    if ($document_ids != '') {
+                    if ($document_ids!='') {
                         $document_ids = $document_ids.','.$document->id;
                     } else {
                         $document_ids = $document->id;
@@ -1796,14 +1773,14 @@ class ParcelsPTController extends Controller
 
                     // Sanitize filename and append document id to make it unique
                     // documents/entity_0/program_0/parcel_0/0_filename.ext
-                    $filename = $document->id.'_'.$original_filename;
-                    $filepath = $folderpath.$filename;
+                    $filename = $document->id . '_' . $original_filename;
+                    $filepath = $folderpath . $filename;
 
                     $document->update([
                         'file_path' => $filepath,
                     ]);
-                    $lc = new LogConverter('document', 'create');
-                    $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email.' created document '.$filepath)->save();
+                    $lc=new LogConverter('document', 'create');
+                    $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' created document ' . $filepath)->save();
                     // store original file
                     Storage::put($filepath, File::get($file));
 
@@ -1822,12 +1799,12 @@ class ParcelsPTController extends Controller
 
     public function approvePOUploadSignatureComments(ReimbursementPurchaseOrders $po, Request $request)
     {
-        if (! $request->get('postvars')) {
+        if (!$request->get('postvars')) {
             return 'Something went wrong';
         }
 
         // get document ids
-        $documentids = explode(',', $request->get('postvars'));
+        $documentids = explode(",", $request->get('postvars'));
 
         // get comment
         $comment = $request->get('comment');
@@ -1839,9 +1816,8 @@ class ParcelsPTController extends Controller
                     'comment' => $comment,
                 ]);
                 $lc = new LogConverter('document', 'comment');
-                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email.' added comment to document ')->save();
+                $lc->setFrom(Auth::user())->setTo($document)->setDesc(Auth::user()->email . ' added comment to document ')->save();
             }
-
             return 1;
         } else {
             return 0;
@@ -1850,9 +1826,8 @@ class ParcelsPTController extends Controller
 
     public function approvePO(ReimbursementPurchaseOrders $po, $approvers = null, $document_ids = null)
     {
-        if ((! Auth::user()->isLandbankInvoiceApprover() || Auth::user()->entity_id != $po->entity_id) && ! Auth::user()->isHFAAdmin() && ! Auth::user()->isHFAPOApprover()) {
+        if ((!Auth::user()->isLandbankInvoiceApprover() || Auth::user()->entity_id != $po->entity_id) && !Auth::user()->isHFAAdmin() && !Auth::user()->isHFAPOApprover()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
@@ -1860,7 +1835,7 @@ class ParcelsPTController extends Controller
             // check if multiple people need to record approvals
             if (count($approvers) > 0) {
                 if ($document_ids !== null) {
-                    $documents = explode(',', $document_ids);
+                    $documents = explode(",", $document_ids);
                 } else {
                     $documents = [];
                 }
@@ -1875,17 +1850,16 @@ class ParcelsPTController extends Controller
                         $action = new ApprovalAction([
                                 'approval_request_id' => $approver->id,
                                 'approval_action_type_id' => 5, //by proxy
-                                'documents' => $documents_json,
+                                'documents' => $documents_json
                             ]);
                         $action->save();
-
+             
                         $lc = new LogConverter('reimbursement_purchase_orders', 'approval by proxy');
-                        $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email.'approved the po for '.$approver->name)->save();
+                        $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email . 'approved the po for '.$approver->name)->save();
                     }
                 }
                 $output['message'] = 'This PO was approved.';
                 $output['id'] = $approver_id;
-
                 return $output;
             } else {
                 $approver_id = Auth::user()->id;
@@ -1896,16 +1870,15 @@ class ParcelsPTController extends Controller
                 if (count($approver)) {
                     $action = new ApprovalAction([
                             'approval_request_id' => $approver->id,
-                            'approval_action_type_id' => 1,
+                            'approval_action_type_id' => 1
                         ]);
                     $action->save();
-
+         
                     $lc = new LogConverter('reimbursement_purchase_orders', 'approval');
-                    $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email.'approved the PO.')->save();
+                    $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email . 'approved the PO.')->save();
 
                     $output['message'] = 'Your PO was approved.';
                     $output['id'] = $approver_id;
-
                     return $output;
                 } else {
                     $output['message'] = 'Something went wrong.';
@@ -1922,21 +1895,18 @@ class ParcelsPTController extends Controller
         } else {
             $output['message'] = 'Something went wrong.';
             $output['id'] = null;
-
             return $output;
         }
 
         // output message
         $output['message'] = 'This purchase order has been approved!';
-
         return $output;
     }
 
     public function poRemoveApprover(ReimbursementPurchaseOrders $po, Request $request)
     {
-        if (! Auth::user()->isHFAPOApprover() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isHFAPOApprover() && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
@@ -1949,56 +1919,51 @@ class ParcelsPTController extends Controller
             if (count($approver)) {
                 $approver->delete();
             }
-
+ 
             $lc = new LogConverter('reimbursement_purchase_orders', 'remove.approver');
-            $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email.'removed approver '.$approver_id)->save();
+            $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email . 'removed approver '.$approver_id)->save();
+
 
             $data['message'] = '';
             $data['id'] = $request->get('id');
-
             return $data;
         } else {
             $data['message'] = 'Something went wrong.';
             $data['id'] = null;
-
             return $data;
         }
     }
 
     public function poAddHFAApprover(ReimbursementPurchaseOrders $po, Request $request)
     {
-        if (! Auth::user()->isHFAPOApprover() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isHFAPOApprover() && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
         if ($po) {
             $approver_id = $request->get('user_id');
-            if (! ApprovalRequest::where('approval_type_id', '=', 3)
+            if (!ApprovalRequest::where('approval_type_id', '=', 3)
                         ->where('link_type_id', '=', $po->id)
                         ->where('user_id', '=', $approver_id)
                         ->count()) {
                 $newApprovalRequest = new  ApprovalRequest([
-                    'approval_type_id' => 3,
-                    'link_type_id' => $po->id,
-                    'user_id' => $approver_id,
+                    "approval_type_id" => 3,
+                    "link_type_id" => $po->id,
+                    "user_id" => $approver_id
                 ]);
                 $newApprovalRequest->save();
                 $lc = new LogConverter('reimbursement_purchase_orders', 'add.hfa.approver');
-                $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email.'added an approver.')->save();
+                $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email . 'added an approver.')->save();
 
                 $data['message'] = 'The approver was added.';
-
                 return $data;
             } else {
                 $data['message'] = 'Something went wrong.';
-
                 return $data;
             }
         } else {
             $data['message'] = 'Something went wrong.';
-
             return $data;
         }
     }
@@ -2011,14 +1976,14 @@ class ParcelsPTController extends Controller
             $note = new PurchaseOrderNote([
                 'owner_id' => $user->id,
                 'purchase_order_id' => $po->id,
-                'note' => $request->get('po-note'),
+                'note' => $request->get('po-note')
             ]);
             $note->save();
             $lc = new LogConverter('reimbursement_purchase_orders', 'addnote');
-            $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email.' added note to reimbursement purchase order')->save();
+            $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email . ' added note to reimbursement purchase order')->save();
 
-            $words = explode(' ', $user->name);
-            $initials = '';
+            $words = explode(" ", $user->name);
+            $initials = "";
             foreach ($words as $w) {
                 $initials .= $w[0];
             }
@@ -2035,24 +2000,23 @@ class ParcelsPTController extends Controller
 
     public function poNotifyLB(ReimbursementPurchaseOrders $po, Request $request)
     {
-        if (! Auth::user()->isHFAPOApprover() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isHFAPOApprover() && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
         $po->load('parcels');
 
         // change PO to approved (7)
-        updateStatus('po', $po, 'status_id', 7, 0, '');
+        updateStatus("po", $po, 'status_id', 7, 0, "");
         // $po->update([
         //     'status_id' => 7
         // ]);
 
         // change parcels'status to LB (approved by HFA 10) and HFA (PO Sent 40)
         foreach ($po->parcels as $parcel) {
-            updateStatus('parcel', $parcel, 'landbank_property_status_id', 10, 0, '');
-            updateStatus('parcel', $parcel, 'hfa_property_status_id', 40, 0, '');
+            updateStatus("parcel", $parcel, 'landbank_property_status_id', 10, 0, "");
+            updateStatus("parcel", $parcel, 'hfa_property_status_id', 40, 0, "");
             // $parcel->update([
             //         "landbank_property_status_id" => 10,
             //         "hfa_property_status_id" => 40
@@ -2082,15 +2046,13 @@ class ParcelsPTController extends Controller
         }
 
         $output['message'] = 'The PO is on its way!';
-
         return $output;
     }
 
     public function declinePO(ReimbursementPurchaseOrders $po)
     {
-        if (! Auth::user()->isHFAPOApprover() && ! Auth::user()->isHFAAdmin()) {
+        if (!Auth::user()->isHFAPOApprover() && !Auth::user()->isHFAAdmin()) {
             $output['message'] = 'Something went wrong.';
-
             return $output;
         }
 
@@ -2102,21 +2064,20 @@ class ParcelsPTController extends Controller
                             ->first();
             $action = new ApprovalAction([
                         'approval_request_id' => $approver->id,
-                        'approval_action_type_id' => 4,
+                        'approval_action_type_id' => 4
                     ]);
             $action->save();
-
+ 
             $lc = new LogConverter('reimbursement_purchase_orders', 'decline');
-            $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email.'declined the po.')->save();
+            $lc->setFrom(Auth::user())->setTo($po)->setDesc(Auth::user()->email . 'declined the po.')->save();
+
 
             $data['message'] = 'This PO has been declined.';
             $data['id'] = $approver_id;
-
             return $data;
         } else {
             $data['message'] = 'Something went wrong.';
             $data['id'] = null;
-
             return $data;
         }
     }
@@ -2128,6 +2089,8 @@ class ParcelsPTController extends Controller
     */
 
     // for some reason the getInvoice and all its related functions are in InvoiceController :)
+
+   
 
     /*
     //
@@ -2147,9 +2110,9 @@ class ParcelsPTController extends Controller
         if ($parcel->compliance_score === null) {
             $last_compliance = $parcel->compliances->first();
             if ($last_compliance) {
-                if ($last_compliance->score == 'Pass' || $last_compliance->score == '1') {
+                if ($last_compliance->score == "Pass" || $last_compliance->score == "1") {
                     $parcel->update([
-                        'compliance_score' => 1,
+                        'compliance_score' => 1
                     ]);
                 }
             }
@@ -2176,7 +2139,7 @@ class ParcelsPTController extends Controller
     public function editCompliance(Parcel $parcel, compliance $compliance)
     {
         // check roles, HFA admin or auditor can edit
-        if (! Auth::user()->isHFAAdmin() && ! Auth::user()->isHFAComplianceAuditor()) {
+        if (!Auth::user()->isHFAAdmin() && !Auth::user()->isHFAComplianceAuditor()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
 
@@ -2184,7 +2147,7 @@ class ParcelsPTController extends Controller
                 ->where('name', '!=', '')
                 ->select('users.id', 'users.email', 'users.name', 'active')
                 ->get();
-
+        
         $compliance->audit_date_formatted = date('m/d/Y', strtotime($compliance->audit_date));
 
         return view('pages.compliance-edit', compact('compliance', 'hfa_users'));
@@ -2193,7 +2156,7 @@ class ParcelsPTController extends Controller
     public function deleteCompliance(Parcel $parcel, Request $request)
     {
         // check roles, HFA admin or auditor can edit
-        if (! Auth::user()->isHFAAdmin() && ! Auth::user()->isHFAComplianceAuditor()) {
+        if (!Auth::user()->isHFAAdmin() && !Auth::user()->isHFAComplianceAuditor()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
         $compliance_id = $request->get('compliance_id');
@@ -2201,18 +2164,18 @@ class ParcelsPTController extends Controller
             $compliance = Compliance::where('id', '=', $compliance_id)->first();
 
             $lc = new LogConverter('Compliance', 'deleted');
-            $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email.' deleted a compliance review.')->save();
+            $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email . ' deleted a compliance review.')->save();
 
             $compliance = Compliance::where('id', '=', $compliance_id)->first();
             $compliance->delete();
-
+            
             // check if there are any active compliances and if not remove flags in parcel table
             $any_manual_compliances = Compliance::where('parcel_id', '=', $parcel->id)
                                             ->where('random_audit', '=', 1)
                                             ->count();
             if ($any_manual_compliances == 0) {
                 $parcel->update([
-                    'compliance_manual' => 0,
+                    'compliance_manual' => 0
                 ]);
             }
 
@@ -2222,14 +2185,14 @@ class ParcelsPTController extends Controller
                                             ->count();
             if ($any_manual_compliances == 0) {
                 $parcel->update([
-                    'compliance_manual' => 0,
+                    'compliance_manual' => 0
                 ]);
             }
 
             perform_all_parcel_checks($parcel);
             guide_next_pending_step(2, $parcel->id);
 
-            return ['message'=>'This compliance review has been deleted.', 'error'=>0];
+            return ['message'=>"This compliance review has been deleted.", 'error'=>0];
         } else {
             return ['message'=>"Something isn't right, I didn't find anything to delete.", 'error'=>1];
         }
@@ -2237,7 +2200,7 @@ class ParcelsPTController extends Controller
 
     public function createCompliance(Parcel $parcel, Request $request)
     {
-        if (! Auth::user()->isHFAAdmin() && ! Auth::user()->isHFAComplianceAuditor()) {
+        if (!Auth::user()->isHFAAdmin() && !Auth::user()->isHFAComplianceAuditor()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
 
@@ -2253,165 +2216,166 @@ class ParcelsPTController extends Controller
                 'program_id' => $parcel->program_id,
                 'created_by_user_id' => Auth::user()->id,
                 'random_audit' => $random_audit,
-                'parcel_hfa_status_id' => $parcel->hfa_property_status_id,
+                'parcel_hfa_status_id' => $parcel->hfa_property_status_id
         ]);
         $compliance->save();
 
         // if parcel wasn't in random compliance, set compliance_manual flag
-        if (! $parcel->compliance) {
+        if (!$parcel->compliance) {
             // $parcel->update([
             //     'compliance_manual' => 1,
             //     'hfa_property_status_id' => 21
             // ]);
             $parcel->update([
-                'compliance_manual' => 1,
+                'compliance_manual' => 1
             ]);
-            updateStatus('parcel', $parcel, 'hfa_property_status_id', 21, 0, '');
+            updateStatus("parcel", $parcel, 'hfa_property_status_id', 21, 0, "");
         }
 
         perform_all_parcel_checks($parcel);
         guide_next_pending_step(2, $parcel->id);
 
         $lc = new LogConverter('Compliance', 'created');
-        $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email.' created a compliance review.')->save();
+        $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email . ' created a compliance review.')->save();
 
         // $hfa_users = User::where('entity_id','=',1)
         //         ->where('name','!=','')
         //         ->select('users.id','users.email','users.name','active')
         //         ->get();
-
+        
         // $compliance->audit_date_formatted = date('m/d/Y',strtotime($compliance->audit_date));
 
-        return ['message'=>'A compliance review has been created.', 'error'=>0];
+        return ['message'=>"A compliance review has been created.", 'error'=>0];
+        ;
     }
 
     public function saveCompliance(Parcel $parcel, compliance $compliance, Request $request)
     {
-        if (! Auth::user()->isHFAAdmin() && ! Auth::user()->isHFAComplianceAuditor()) {
+        if (!Auth::user()->isHFAAdmin() && !Auth::user()->isHFAComplianceAuditor()) {
             return ['message'=>"Oops, are you sure you're allowed to do this?", 'error'=>1];
         }
 
         $forminputs = $request->get('inputs');
         parse_str($forminputs, $forminputs);
 
-        if (! isset($forminputs['property_yes'])) {
+        if (!isset($forminputs['property_yes'])) {
             $forminputs['property_yes'] = 0;
         }
-        if (! isset($forminputs['property_notes'])) {
+        if (!isset($forminputs['property_notes'])) {
             $forminputs['property_notes'] = null;
         }
-        if (! isset($forminputs['analyst_id'])) {
+        if (!isset($forminputs['analyst_id'])) {
             $forminputs['analyst_id'] = null;
         }
-        if (! isset($forminputs['auditor_id'])) {
+        if (!isset($forminputs['auditor_id'])) {
             $forminputs['auditor_id'] = null;
         }
-        if (! isset($forminputs['checklist_yes'])) {
+        if (!isset($forminputs['checklist_yes'])) {
             $forminputs['checklist_yes'] = 0;
         }
-        if (! isset($forminputs['checklist_notes'])) {
+        if (!isset($forminputs['checklist_notes'])) {
             $forminputs['checklist_notes'] = null;
         }
-        if (! isset($forminputs['consolidated_certs_pass'])) {
+        if (!isset($forminputs['consolidated_certs_pass'])) {
             $forminputs['consolidated_certs_pass'] = 0;
         }
-        if (! isset($forminputs['contractors_yes'])) {
+        if (!isset($forminputs['contractors_yes'])) {
             $forminputs['contractors_yes'] = 0;
         }
-        if (! isset($forminputs['contractors_notes'])) {
+        if (!isset($forminputs['contractors_notes'])) {
             $forminputs['contractors_notes'] = null;
         }
-        if (! isset($forminputs['environmental_yes'])) {
+        if (!isset($forminputs['environmental_yes'])) {
             $forminputs['environmental_yes'] = 0;
         }
-        if (! isset($forminputs['environmental_notes'])) {
+        if (!isset($forminputs['environmental_notes'])) {
             $forminputs['environmental_notes'] = null;
         }
-        if (! isset($forminputs['funding_limits_pass'])) {
+        if (!isset($forminputs['funding_limits_pass'])) {
             $forminputs['funding_limits_pass'] = 0;
         }
-        if (! isset($forminputs['funding_limits_notes'])) {
+        if (!isset($forminputs['funding_limits_notes'])) {
             $forminputs['funding_limits_notes'] = null;
         }
-        if (! isset($forminputs['inelligible_costs_yes'])) {
+        if (!isset($forminputs['inelligible_costs_yes'])) {
             $forminputs['inelligible_costs_yes'] = 0;
         }
-        if (! isset($forminputs['inelligible_costs_notes'])) {
+        if (!isset($forminputs['inelligible_costs_notes'])) {
             $forminputs['inelligible_costs_notes'] = null;
         }
-        if (! isset($forminputs['items_Reimbursed'])) {
+        if (!isset($forminputs['items_Reimbursed'])) {
             $forminputs['items_Reimbursed'] = null;
         }
-        if (! isset($forminputs['note_mortgage_pass'])) {
+        if (!isset($forminputs['note_mortgage_pass'])) {
             $forminputs['note_mortgage_pass'] = 0;
         }
-        if (! isset($forminputs['note_mortgage_notes'])) {
+        if (!isset($forminputs['note_mortgage_notes'])) {
             $forminputs['note_mortgage_notes'] = null;
         }
-        if (! isset($forminputs['payment_processing_pass'])) {
+        if (!isset($forminputs['payment_processing_pass'])) {
             $forminputs['payment_processing_pass'] = 0;
         }
-        if (! isset($forminputs['payment_processing_notes'])) {
+        if (!isset($forminputs['payment_processing_notes'])) {
             $forminputs['payment_processing_notes'] = null;
         }
-        if (! isset($forminputs['loan_requirements_pass'])) {
+        if (!isset($forminputs['loan_requirements_pass'])) {
             $forminputs['loan_requirements_pass'] = 0;
         }
-        if (! isset($forminputs['loan_requirements_notes'])) {
+        if (!isset($forminputs['loan_requirements_notes'])) {
             $forminputs['loan_requirements_notes'] = null;
         }
-        if (! isset($forminputs['photos_yes'])) {
+        if (!isset($forminputs['photos_yes'])) {
             $forminputs['photos_yes'] = 0;
         }
-        if (! isset($forminputs['photos_notes'])) {
+        if (!isset($forminputs['photos_notes'])) {
             $forminputs['photos_notes'] = null;
         }
-        if (! isset($forminputs['salesforce_yes'])) {
+        if (!isset($forminputs['salesforce_yes'])) {
             $forminputs['salesforce_yes'] = 0;
         }
-        if (! isset($forminputs['salesforce_notes'])) {
+        if (!isset($forminputs['salesforce_notes'])) {
             $forminputs['salesforce_notes'] = null;
         }
-        if (! isset($forminputs['right_to_demo_pass'])) {
+        if (!isset($forminputs['right_to_demo_pass'])) {
             $forminputs['right_to_demo_pass'] = 0;
         }
-        if (! isset($forminputs['right_to_demo_notes'])) {
+        if (!isset($forminputs['right_to_demo_notes'])) {
             $forminputs['right_to_demo_notes'] = null;
         }
-        if (! isset($forminputs['reimbursement_doc_pass'])) {
+        if (!isset($forminputs['reimbursement_doc_pass'])) {
             $forminputs['reimbursement_doc_pass'] = 0;
         }
-        if (! isset($forminputs['reimbursement_doc_notes'])) {
+        if (!isset($forminputs['reimbursement_doc_notes'])) {
             $forminputs['reimbursement_doc_notes'] = null;
         }
-        if (! isset($forminputs['target_area_yes'])) {
+        if (!isset($forminputs['target_area_yes'])) {
             $forminputs['target_area_yes'] = 0;
         }
-        if (! isset($forminputs['target_area_notes'])) {
+        if (!isset($forminputs['target_area_notes'])) {
             $forminputs['target_area_notes'] = null;
         }
-        if (! isset($forminputs['sdo_pass'])) {
+        if (!isset($forminputs['sdo_pass'])) {
             $forminputs['sdo_pass'] = 0;
         }
-        if (! isset($forminputs['sdo_notes'])) {
+        if (!isset($forminputs['sdo_notes'])) {
             $forminputs['sdo_notes'] = null;
         }
-        if (! isset($forminputs['score'])) {
+        if (!isset($forminputs['score'])) {
             $forminputs['score'] = null;
         }
         if ($forminputs['score'] == -1) {
             $forminputs['score'] = null;
         }
-        if (! isset($forminputs['if_fail_corrected'])) {
+        if (!isset($forminputs['if_fail_corrected'])) {
             $forminputs['if_fail_corrected'] = 0;
         }
-        if (! isset($forminputs['property_pass'])) {
+        if (!isset($forminputs['property_pass'])) {
             $forminputs['property_pass'] = 0;
         }
-        if (! isset($forminputs['property_pass_notes'])) {
+        if (!isset($forminputs['property_pass_notes'])) {
             $forminputs['property_pass_notes'] = null;
         }
-        if (! isset($forminputs['random_audit'])) {
+        if (!isset($forminputs['random_audit'])) {
             $forminputs['random_audit'] = 0;
         }
 
@@ -2464,23 +2428,23 @@ class ParcelsPTController extends Controller
                 'if_fail_corrected' => $forminputs['if_fail_corrected'],
                 'property_pass' => $forminputs['property_pass'],
                 'property_pass_notes' => $forminputs['property_pass_notes'],
-                'random_audit' => $forminputs['random_audit'],
+                'random_audit' => $forminputs['random_audit']
             ]);
         } catch (Exception $e) {
             // do task when error
-            dd($e->getMessage());   // insert query
+            dd($e->getMessage()) ;   // insert query
         }
 
         //if pass then update the parcel
         $parcel = $compliance->parcel;
 
-        if ($compliance->parcel_hfa_status_id == 21 && ($forminputs['score'] == 1 || $forminputs['score'] == 'Pass')) {
+        if ($compliance->parcel_hfa_status_id == 21 && ($forminputs['score'] == 1 || $forminputs['score'] == "Pass")) {
             $new_hfa_property_status_id = 24; // ready for signator
         } else {
             $new_hfa_property_status_id = $compliance->parcel_hfa_status_id;
         }
 
-        if ($forminputs['score'] == 1 || $forminputs['score'] == 'Pass') {
+        if ($forminputs['score'] == 1 || $forminputs['score'] == "Pass") {
             if ($compliance->random_audit == 1) {
                 // $parcel->update([
                 //     'compliance_manual' => null,
@@ -2489,9 +2453,9 @@ class ParcelsPTController extends Controller
                 // ]);
                 $parcel->update([
                     'compliance_manual' => null,
-                    'compliance_score' => $forminputs['score'],
+                    'compliance_score' => $forminputs['score']
                 ]);
-                updateStatus('parcel', $parcel, 'hfa_property_status_id', $new_hfa_property_status_id, 0, '');
+                updateStatus("parcel", $parcel, 'hfa_property_status_id', $new_hfa_property_status_id, 0, "");
             } else {
                 //  $parcel->update([
                 //     'compliance_manual' => 1,
@@ -2500,36 +2464,36 @@ class ParcelsPTController extends Controller
                 // ]);
                 $parcel->update([
                     'compliance_manual' => 1,
-                    'compliance_score' => $forminputs['score'],
+                    'compliance_score' => $forminputs['score']
                 ]);
-                updateStatus('parcel', $parcel, 'hfa_property_status_id', $new_hfa_property_status_id, 0, '');
+                updateStatus("parcel", $parcel, 'hfa_property_status_id', $new_hfa_property_status_id, 0, "");
             }
 
             perform_all_parcel_checks($parcel);
             guide_next_pending_step(2, $parcel->id);
-
+            
             $lc = new LogConverter('Compliance', 'passed');
-            $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email.' passed a compliance review.')->save();
+            $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email . ' passed a compliance review.')->save();
         } else {
             // $parcel->update([
             //     'compliance_score' => $forminputs['score'],
             //     'hfa_property_status_id' => 23
             // ]);
             $parcel->update([
-                'compliance_score' => $forminputs['score'],
+                'compliance_score' => $forminputs['score']
             ]);
-            updateStatus('parcel', $parcel, 'hfa_property_status_id', 23, 0, '');
+            updateStatus("parcel", $parcel, 'hfa_property_status_id', 23, 0, "");
 
             perform_all_parcel_checks($parcel);
             guide_next_pending_step(2, $parcel->id);
 
             $lc = new LogConverter('Compliance', 'failed');
-            $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email.' failed a compliance review.')->save();
+            $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email . ' failed a compliance review.')->save();
         }
 
         //$compliance = Compliance::where('id','=',$complianceid)->first();
         $lc = new LogConverter('Compliance', 'saved');
-        $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email.' saved a compliance review.')->save();
+        $lc->setFrom(Auth::user())->setTo($compliance)->setDesc(Auth::user()->email . ' saved a compliance review.')->save();
 
         return 1;
     }
@@ -2538,7 +2502,6 @@ class ParcelsPTController extends Controller
     {
         if ($parcel) {
             session(['subtab' => $subtab]);
-
             return redirect('/home')->with('open_parcel_id', $parcel);
         }
     }

@@ -637,7 +637,7 @@ class DashboardController extends Controller
     if ($page > 0) {
       return response()->json($data);
     } else {
-      return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditors_array', 'audits', 'sort_by', 'sort_order', 'steps'));
+      return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditors_array', 'audits', 'sort_by', 'sort_order', 'steps'));
     }
   }
 
@@ -1122,7 +1122,7 @@ class DashboardController extends Controller
     if ($page > 0) {
       return response()->json($data);
     } else {
-      return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceALL', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditBuildingFilterInspection', 'auditors', 'audits', 'sort_by', 'sort_order', 'steps', 'current_user', 'auditor_access', 'report_config'));
+      return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditBuildingFilterInspection', 'auditors', 'audits', 'sort_by', 'sort_order', 'steps', 'current_user', 'auditor_access', 'report_config'));
     }
   }
 

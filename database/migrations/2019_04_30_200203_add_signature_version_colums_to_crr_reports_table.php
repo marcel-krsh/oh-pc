@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class AddSignatureVersionColumsToCrrReportsTable extends Migration
 {
@@ -14,6 +14,7 @@ class AddSignatureVersionColumsToCrrReportsTable extends Migration
     public function up()
     {
         Schema::table('crr_reports', function (Blueprint $table) {
+            
             $table->integer('signed_version')->nullable();
             $table->timeStamp('date_signed')->nullable();
         });
@@ -27,6 +28,7 @@ class AddSignatureVersionColumsToCrrReportsTable extends Migration
     public function down()
     {
         Schema::table('crr_reports', function (Blueprint $table) {
+            
             $table->dropColumn('signed_version');
             $table->dropColumn('date_signed');
         });

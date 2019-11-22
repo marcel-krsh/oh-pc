@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\LogConverter;
-use App\Models\CostItem;
 use App\Models\DocumentRule;
+use Auth;
+use App\Models\Retainage;
+use Gate;
+use File;
+use Storage;
+use App\Models\Programs;
+use Illuminate\Http\Request;
+use DB;
+use App\Models\Parcel;
+use App\Models\Helpers\GeoData;
+use App\LogConverter;
 use App\Models\ExpenseCategory;
 use App\Models\GuideStep;
-use App\Models\Helpers\GeoData;
-use App\Models\Parcel;
-use App\Models\ProgramRule;
-use App\Models\Programs;
-use App\Models\ReimbursementRule;
-use App\Models\Retainage;
 use App\Models\User;
-use Auth;
-use DB;
-use File;
-use Gate;
-use Illuminate\Http\Request;
-use Storage;
+use App\Models\CostItem;
+use App\Models\ReimbursementRule;
+use App\Models\ProgramRule;
 
 ini_set('max_execution_time', 600);
 
@@ -30,13 +30,12 @@ class ParcelsController extends Controller
         // $this->middleware('auth');
         //Auth::onceUsingId(5);
     }
-
+   
     public function payRetainage(Retainage $retainage, Request $request)
     {
         if (is_null($retainage->id)) {
             $output['error'] = 1;
             $output['message'] = "OOPS! I can\'t find what you\'re looking for...";
-
             return $output;
         } else {
             // get cost info
@@ -46,7 +45,6 @@ class ParcelsController extends Controller
                 if (Auth::user()->entity_type != $costItem->entity_id) {
                     $output['error'] = 1;
                     $output['message'] = "OOPS! Doesn\'t look like you are allowed to do this... contact your admin for help.";
-
                     return $output;
                 } else {
                     $go = 1;
@@ -59,17 +57,14 @@ class ParcelsController extends Controller
             DB::table('retainages')->where('id', $retainage->id)->update(['paid'=>1]);
             $output['error'] = 0;
             $output['message'] = "<h1>Consider it Paid.</h1><p>Feels good, doesn\'t it?</p>";
-
             return $output;
         }
     }
-
     public function removeRetainage(Retainage $retainage, Request $request)
     {
         if (is_null($retainage->id)) {
             $output['error'] = 1;
             $output['message'] = "OOPS! I can\'t find what you\'re looking for...";
-
             return $output;
         } else {
             // get cost info
@@ -79,7 +74,6 @@ class ParcelsController extends Controller
                 if (Auth::user()->entity_type != $costItem->entity_id) {
                     $output['error'] = 1;
                     $output['message'] = "OOPS! Doesn\'t look like you are allowed to do this... contact your admin for help.";
-
                     return $output;
                 } else {
                     $go = 1;
@@ -91,18 +85,15 @@ class ParcelsController extends Controller
         if ($go == 1) {
             DB::table('retainages')->where('id', $retainage->id)->delete();
             $output['error'] = 0;
-            $output['message'] = '<h1>Consider it Removed.</h1><p>Like a clean slate!';
-
+            $output['message'] = "<h1>Consider it Removed.</h1><p>Like a clean slate!";
             return $output;
         }
     }
-
     public function storeRetainage(Parcel $parcel, Request $request)
     {
         if (is_null($parcel->id)) {
             $output['error'] = 1;
             $output['message'] = "OOPS! I can\'t find what you\'re looking for...";
-
             return $output;
         } else {
             $costItem = DB::table('cost_items')->select('*')->where('id', $request->cost_id)->first();
@@ -112,7 +103,6 @@ class ParcelsController extends Controller
                 if (Auth::user()->entity_type != $parcel->entity_id) {
                     $output['error'] = 1;
                     $output['message'] = "OOPS! Doesn\'t look like you are allowed to do this... contact your admin for help.";
-
                     return $output;
                 } else {
                     $go = 1;
@@ -127,14 +117,13 @@ class ParcelsController extends Controller
                                             'expense_category_id'=>$costItem->expense_category_id,
                                             'parcel_id'=>$parcel->id,
                                             'cost_item_id'=>$request->cost_id,
-                                            'retainage_amount'=>$request->retainage_amount,
+                                            'retainage_amount'=>$request->retainage_amount
                                             ]);
             $output['message'] = "<h1>Consider it Retained.</h1><p>You\'re an unstopable force of nature!</p>";
-
+            ;
             return $output;
         }
     }
-
     public function toggleSteetViewMatch(Parcel $parcel)
     {
         if (is_null($parcel->id)) {
@@ -157,11 +146,9 @@ class ParcelsController extends Controller
                 $update = 0;
             }
             DB::table('parcels')->where('id', $parcel->id)->update(['matches_street_view'=>$update]);
-
             return "<script>UIkit.modal.alert('<h1>Done!</h1><p>Easy peasy... peezee? You know what I mean!</p>');</script>";
         }
     }
-
     public function togglePretty(Parcel $parcel)
     {
         if (is_null($parcel->id)) {
@@ -226,13 +213,14 @@ class ParcelsController extends Controller
     {
         $lc = new LogConverter('parcel', 'validate');
         $import = \App\Models\Import::find(intval($request->query('import_id')));
-
-        if ($request->query('resetValidation') == 1 && isset($import->id)) {
-            $lc->setFrom(Auth::user())->setTo($import)->setDesc(Auth::user()->email.' Started to run a re-validation for import '.intval($request->query('import_id')).'.')->save();
+        
+        if ($request->query('resetValidation')==1 && isset($import->id)) {
+            $lc->setFrom(Auth::user())->setTo($import)->setDesc(Auth::user()->email . ' Started to run a re-validation for import '.intval($request->query('import_id')).'.')->save();
         } elseif (isset($import->id)) {
-            $lc->setFrom(Auth::user())->setTo($import)->setDesc(Auth::user()->email.' Started validation for import '.intval($request->query('import_id')).'.')->save();
+            $lc->setFrom(Auth::user())->setTo($import)->setDesc(Auth::user()->email . ' Started validation for import '.intval($request->query('import_id')).'.')->save();
         }
-
+        
+        
         if ($request->query('resetValidation') == 1) {
             DB::table('imports')->where('id', intval($request->query('import_id')))->update(['validated'=>0]);
         }
@@ -243,6 +231,7 @@ class ParcelsController extends Controller
             $importList = DB::table('imports')->join('import_rows', 'import_id', '=', 'imports.id')->leftJoin('users', 'imports.user_id', 'users.id')->leftJoin('entities', 'imports.entity_id', 'entities.id')->select('imports.id', 'imports.created_at', 'users.name', 'entity_name')->where('import_rows.table_name', 'parcels')->where('imports.entity_id', auth()->user()->entity_id)->where('validated', 0)->groupBy('imports.id', 'imports.created_at')->orderBy('imports.created_at', 'desc')->get()->all();
         }
 
+        
         // Reset session variables on reload
         session(['validationLastRow'=> 0]);
         // Only do this request once this way.
@@ -263,18 +252,18 @@ class ParcelsController extends Controller
             // disable pacer so they can watch the page load
         }
 
+
         return view('pages.import.validate_parcels', compact('importList', 'importId'));
     }
-
     public function validateParcel(Request $request)
     {
-        $debugMessage = '';
+        $debugMessage = "";
         /// determine if they are HFA or LB
         if (Auth::user()->entity_type == 'hfa') {
-            $entity_evaluator = 'LIKE';
-            $entity = '%%';
+            $entity_evaluator = "LIKE";
+            $entity = "%%";
         } else {
-            $entity_evaluator = '=';
+            $entity_evaluator = "=";
             $entity = Auth::user()->entity_id;
         }
         ///// set runGeoUpdate to zero
@@ -297,10 +286,10 @@ class ParcelsController extends Controller
         $insertedValidationResolution = 0;
 
         $parcelLandBankStatus = 46;
-        $parcelStatusReason = 'This parcel was set to Ready for Costs because validation did not determine a previous status.';
+        $parcelStatusReason = "This parcel was set to Ready for Costs because validation did not determine a previous status.";
         $withdraw = 0;
         // unless it encounters errors the parcel will be marked as ready for costs.
-
+       
         ///// get the parcel info for the next parcel on the import.
         $row = intval($request->query('rowNum')) + 1;
 
@@ -319,6 +308,8 @@ class ParcelsController extends Controller
             session(['validation_historicCount' => 0]);
             session(['validation_hhfCount' => 0]);
         }
+
+        
 
         if ($row <= session('validation_totalCount') && $waiver != 1 && $useGISAddress != 1 && $updateAddress != 1 && $resolutionId < 1 && $useProvidedAddress != 1) {
             $parcel = DB::table('import_rows')
@@ -343,9 +334,10 @@ class ParcelsController extends Controller
             try {
                 $updateWaiver = DB::table('parcels')->where('id', intval($request->query('parcelId')))->update(['historic_waiver_approved'=>1]);
             } catch (\Exception $e) {
-                return "<script>UIkit.modal.alert('<h2>Unable to Update Waiver Status</h2><p>The system parcel id ".intval($request->query('parcelId')).'  was not able to be updated. Please notify your friendly neighborhood spiderma... I mean IT guy that update waiver said '.$e."</p>');</script>";
+                return "<script>UIkit.modal.alert('<h2>Unable to Update Waiver Status</h2><p>The system parcel id ".intval($request->query('parcelId'))."  was not able to be updated. Please notify your friendly neighborhood spiderma... I mean IT guy that update waiver said ".$e."</p>');</script>";
             }
-
+            
+            
             $parcel = DB::table('parcels')
                             ->join('states', 'parcels.state_id', '=', 'states.id')
                             ->select('parcels.*', 'states.state_name')
@@ -360,7 +352,7 @@ class ParcelsController extends Controller
             /// This is a address update or a resolution
             /// We will tell the store to go ahead since
             /// we just want to update this parcel though.
-
+            
             $parcel = DB::table('parcels')
                             ->join('states', 'parcels.state_id', '=', 'states.id')
                             ->select('parcels.*', 'states.state_name')
@@ -372,7 +364,7 @@ class ParcelsController extends Controller
                 $parcelStatusReason = "This parcel was revalidated and retained it's previous status.";
             }
         }
-        if (Auth::user()->entity_type != 'hfa') {
+        if (Auth::user()->entity_type!='hfa') {
             // Check they own this parcel to do this update to it.
             if (Auth::user()->entity_id != $parcel->entity_id) {
                 return "Sorry- you don't have access to this parcel.";
@@ -403,12 +395,12 @@ class ParcelsController extends Controller
             ///////////////////////////////////////////////////////////////////////////////
             ////////////// Update the parcel with the new address. Use bindings to sanitize
 
-            DB::table('parcels')->where('id', $parcel->id)
+            DB::table('parcels')    ->where('id', $parcel->id)
                                     ->update([
                                                 'street_address'=>$request->get('street_address'),
                                                 'city'=>$request->get('city'),
                                                 'state_id'=>$request->get('state_id'),
-                                                'zip'=>$request->get('zip'),
+                                                'zip'=>$request->get('zip')
                                             ]);
 
             ///////////////////////////////////////////////////////////////////////////
@@ -431,12 +423,13 @@ class ParcelsController extends Controller
             /////// resolutions as these are likely to change with a new address.
             DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->delete();
 
+
             /// GET GIS ADDRESS
             $gisAddress = new GeoData;
             $parcelAddress = $parcel->street_address
-                                .', '.$parcel->city
-                                .' '.$parcel->state_name
-                                .' '.$parcel->zip;
+                                .", ".$parcel->city
+                                ." ".$parcel->state_name
+                                ." ".$parcel->zip;
             $geodataForUpdate = $gisAddress->getGeoData($parcelAddress);
             ///////////////////////////////////////////////////////////////////////////////
             ////////////// Update the parcel with the new address. Use bindings to sanitize
@@ -444,16 +437,16 @@ class ParcelsController extends Controller
             if (isset($geodataForUpdate['street_number'])) {
                 $streetAddress = $geodataForUpdate['street_number'].' '.$geodataForUpdate['route'];
             } else {
-                $streetAddress = $geodataForUpdate['route'];
+                $streetAddress =  $geodataForUpdate['route'];
             }
 
             $stateIdforUpdate = DB::table('states')->where('state_name', $geodataForUpdate['administrative_area_level_1'])->first();
-            DB::table('parcels')->where('id', $parcel->id)
+            DB::table('parcels')    ->where('id', $parcel->id)
                                     ->update([
                                                 'street_address'=>$streetAddress,
                                                 'city'=>$geodataForUpdate['locality'],
                                                 'state_id'=>$stateIdforUpdate->id,
-                                                'zip'=>$geodataForUpdate['postal_code'],
+                                                'zip'=>$geodataForUpdate['postal_code']
                                             ]);
 
             ///////////////////////////////////////////////////////////////////////////
@@ -476,19 +469,20 @@ class ParcelsController extends Controller
             /////// resolutions as these are likely to change with a new address.
             DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->delete();
 
-            /// USE PROVIDED ADDRESS
 
+            /// USE PROVIDED ADDRESS
+            
             $parcelAddress = $parcel->street_address
-                                .', '.$parcel->city
-                                .' '.$parcel->state_name
-                                .' '.$parcel->zip;
+                                .", ".$parcel->city
+                                ." ".$parcel->state_name
+                                ." ".$parcel->zip;
             $stateIdforUpdate = DB::table('states')->where('state_name', $geodataForUpdate['administrative_area_level_1'])->first();
-            DB::table('parcels')->where('id', $parcel->id)
+            DB::table('parcels')    ->where('id', $parcel->id)
                                     ->update([
                                                 'street_address'=>$geodataForUpdate['street_number'].' '.$geodataForUpdate['route'],
                                                 'city'=>$geodataForUpdate['locality'],
                                                 'state_id'=>$stateIdforUpdate->id,
-                                                'zip'=>$geodataForUpdate['postal_code'],
+                                                'zip'=>$geodataForUpdate['postal_code']
                                             ]);
 
             ///////////////////////////////////////////////////////////////////////////
@@ -513,19 +507,19 @@ class ParcelsController extends Controller
                 ->update([
                         'resolution_lb_notes'=>$resolutionNote,
                         'lb_resolved'=>1,
-                        'lb_resolved_at'=>date('Y-m-d H:i:s', time()),
+                        'lb_resolved_at'=>date('Y-m-d H:i:s', time())
 
                     ]);
 
             switch ($resolutionAction) {
                 case '1':
-                    // Not the matched parcel - no action needed...
+                    # Not the matched parcel - no action needed...
                     break;
                 case '2':
-                    // Create a Group of the matched parcel...
+                    # Create a Group of the matched parcel...
                     $sharedParcelId = DB::table('shared_parcel')->insertGetId([
                         'program_id'=>$parcel->program_id,
-                        'created_at'=>date('Y-m-d H:i:s', time()),
+                        'created_at'=>date('Y-m-d H:i:s', time())
                     ]);
                     $matchedParcel = DB::table('validation_resolutions')->select('resolution_id')->where('id', $resolutionId)->first();
                 // add parcels to table so they can be grouped.
@@ -534,24 +528,24 @@ class ParcelsController extends Controller
                         'created_at'=>date('Y-m-d H:i:s', time()),
                         'shared_parcel_id'=>$sharedParcelId,
                         'reference_letter'=>'a',
-                        'parcel_id'=>$parcel->id,
+                        'parcel_id'=>$parcel->id
                         ],
                         [ //8
                         'created_at'=>date('Y-m-d H:i:s', time()),
                         'shared_parcel_id'=>$sharedParcelId,
                         'reference_letter'=>'b',
-                        'parcel_id'=>$matchedParcel->resolution_id,
-                        ],
+                        'parcel_id'=>$matchedParcel->resolution_id
+                        ]
                     ];
                     DB::table('shared_parcel_to_parcels')->insert($groupData);
 
                     break;
                 case '3':
-                    // Withdraw parcel...
+                    # Withdraw parcel...
                     $Delete = \App\Models\Parcel::finde($parcel->id);
 
                     $Delete->deleteParcel();
-
+                        
                     // # Delete the other validations
                     // DB::table('validation_resolutions')->where('parcel_id',$parcel->id)->delete();
                     // DB::table('validation_resolutions')->where('resolution_id',$parcel->id)->where('resolution_type','parcels')->delete();
@@ -562,7 +556,7 @@ class ParcelsController extends Controller
 
                         break;
                 case '4':
-                    // Add to a group of matched parcels...
+                    # Add to a group of matched parcels...
                     // GET Shared Parcel Id
                     $resolutionParcel = DB::table('validation_resolutions')->select('resolution_id')->where('id', $resolutionId)->first();
                     $sharedParcelId = DB::table('shared_parcel_to_parcels')->select('shared_parcel_id')->where('parcel_id', $resolutionParcel->resolution_id)->first();
@@ -579,49 +573,50 @@ class ParcelsController extends Controller
                             'created_at'=>date('Y-m-d H:i:s', time()),
                             'shared_parcel_id'=>$sharedParcelId->shared_parcel_id,
                             'reference_letter'=>$referencLetter,
-                            'parcel_id'=>$parcel->id,
+                            'parcel_id'=>$parcel->id
                         ]);
                         // Add a note stating this was done.
                         DB::table('notes')->insert([
                             'created_at'=>date('Y-m-d H:i:s', time()),
                             'parcel_id'=>$parcel->id,
                             'owner_id'=>Auth::user()->id,
-                            'note'=>'Added parcel to a shared parcel group as a part of validation. It is now a part of Parcel Group Number '.$sharedParcelId->shared_parcel_id.' with reference letter '.$referencLetter.'.',
+                            'note'=>'Added parcel to a shared parcel group as a part of validation. It is now a part of Parcel Group Number '.$sharedParcelId->shared_parcel_id.' with reference letter '.$referencLetter.'.'
                         ]);
                     } else {
                         DB::table('notes')->insert([
                             'created_at'=>date('Y-m-d H:i:s', time()),
                             'parcel_id'=>$parcel->id,
                             'owner_id'=>Auth::user()->id,
-                            'note'=>'Attempted to add the parcel to a shared parcel group as a part of validation, however - it was already in a group. So, Allita ignored the request. The group I attempted to add it to was Shared Parcel Group '.$sharedParcelId->shared_parcel_id.', and would have had the reference letter '.$referencLetter.'.',
+                            'note'=>'Attempted to add the parcel to a shared parcel group as a part of validation, however - it was already in a group. So, Allita ignored the request. The group I attempted to add it to was Shared Parcel Group '.$sharedParcelId->shared_parcel_id.', and would have had the reference letter '.$referencLetter.'.'
                         ]);
                     }
                     //
+                        
 
                     break;
                 case '5':
-                    // Not a match to HHF - do nothing...
+                    # Not a match to HHF - do nothing...
                     break;
                 case '6':
-                    // Matched to the HHF...Withdraw parcel
+                    # Matched to the HHF...Withdraw parcel
                     DB::table('parcels')->where('id', $parcel->id)->update([
                         'hfa_property_status_id'=>37,
                         'landbank_property_status_id'=>48,
                         'retention_validated'=>0,
                         'address_validated'=>0,
-                        'date_lb_validated'=>date('Y-m-d H:i:s', time()),
+                        'date_lb_validated'=>date('Y-m-d H:i:s', time())
                     ]);
-                // Add a note to the notes table
+                # Add a note to the notes table
                     DB::table('notes')->insert([
                         'created_at'=>date('Y-m-d H:i:s', time()),
                         'parcel_id'=>$parcel->id,
                         'owner_id'=>Auth::user()->id,
-                        'note'=>'Withdrew parcel due to matching an previously HHF funded parcel. See parcel validation resolutions on parcel detail tab.',
+                        'note'=>'Withdrew parcel due to matching an previously HHF funded parcel. See parcel validation resolutions on parcel detail tab.'
                     ]);
-                // Cancel the other validations
+                # Cancel the other validations
                     DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->where('lb_resolved', 0)->delete();
                     DB::table('validation_resolutions')->where('resolution_id', $parcel->id)->where('resolution_type', 'parcels')->delete();
-                // If this was added to a parcel group - remove it
+                # If this was added to a parcel group - remove it
                     $groupMember = DB::table('shared_parcel_to_parcels')->where('parcel_id', $parcel->id)->delete();
                     if ($groupMember) {
                         // it was a member of a group - add a note to the parcel that it was removed.
@@ -629,39 +624,45 @@ class ParcelsController extends Controller
                         'created_at'=>date('Y-m-d H:i:s', time()),
                         'parcel_id'=>$parcel->id,
                         'owner_id'=>Auth::user()->id,
-                        'note'=>'This parcel was removed from a parcel group automatically as a part of its withdraw process as a result of a validation resolution for parcel '.$parcel->parcel_id.'.',
+                        'note'=>'This parcel was removed from a parcel group automatically as a part of its withdraw process as a result of a validation resolution for parcel '.$parcel->parcel_id.'.'
                         ]);
                     }
                     $parcelLandBankStatus = 48;
                     $parcelStatusReason = "This parcel was elected to be withdrawn manually as a part of the validation process for parcel $parcel->parcel_id";
                     $withdraw = 1;
                     break;
-
+                    
                 default:
-                    // Do nothing
+                    # Do nothing
                     break;
             }
         }
 
+
+
         if (is_null($parcel) && $waiver != 1 && $useGISAddress != 1 && $updateAddress != 1 && $resolutionId < 1) {
             /// on the off chance an imported parcel gets deleted
-            return "<script>UIkit.modal.alert('<p>I wasn\'t able to lookup a parcel for row number ".$row.' of import number '.intval($request->query('list')).".<br />Sorry, but I have to abort this validation.</p><p><strong>Please notify support</strong> of the row number and import number so they can investigate what happened to this parcel.</p>');</script>";
-        } elseif (is_null($parcel) && $request->query('waiver') == 1 || is_null($parcel) && $request->query('useGISAddress') == 1 && $updateAddress == 1) {
+            return "<script>UIkit.modal.alert('<p>I wasn\'t able to lookup a parcel for row number ".$row." of import number ".intval($request->query('list')).".<br />Sorry, but I have to abort this validation.</p><p><strong>Please notify support</strong> of the row number and import number so they can investigate what happened to this parcel.</p>');</script>";
+        } elseif (is_null($parcel) && $request->query('waiver') == 1 || is_null($parcel) && $request->query('useGISAddress') == 1  && $updateAddress == 1) {
             /// this is a waiver or GIS update request that was null.
             return "<script>UIkit.modal.alert('<p>I wasn\'t able to lookup a parcel for your requested id of ".intval($request->query('parcel_id')).".<br />Sorry. It is possible this parcel was either deleted, or ownership was changed from you to another landbank.</p>');</script>";
         }
+        
+
+
+
 
         /// Validate address
         if ($parcel->address_validated == 0 && $withdraw != 1) {
             $addressValidator = new GeoData;
             $parcelAddress = $parcel->street_address
-                                .', '.$parcel->city
-                                .' '.$parcel->state_name
-                                .' '.$parcel->zip;
+                                .", ".$parcel->city
+                                ." ".$parcel->state_name
+                                ." ".$parcel->zip;
             $geodata = $addressValidator->getGeoData($parcelAddress);
 
             //dd($geodata);
-            if (! isset($geodata['Congressional'])) {
+            if (!isset($geodata['Congressional'])) {
                 session(['validation_usHouseCount' => session('validation_usHouseCount') + 1]);
                 $geoDataUpdate['us_house_district'] = null;
                 $runGeoUpdate = 1;
@@ -669,15 +670,15 @@ class ParcelsController extends Controller
                 $geoDataUpdate['us_house_district'] = $geodata['Congressional'];
                 $runGeoUpdate = 1;
             }
-            if (! isset($geodata['OH House'])) {
+            if (!isset($geodata['OH House'])) {
                 session(['validation_ohHouseCount' => session('validation_ohHouseCount') + 1]);
-                $geoDataUpdate['oh_house_district'] = null;
+                $geoDataUpdate['oh_house_district']=null;
                 $runGeoUpdate = 1;
             } else {
-                $geoDataUpdate['oh_house_district'] = $geodata['OH House'];
+                $geoDataUpdate['oh_house_district']=$geodata['OH House'];
                 $runGeoUpdate = 1;
             }
-            if (! isset($geodata['OH Senate'])) {
+            if (!isset($geodata['OH Senate'])) {
                 session(['validation_ohSenateCount' => session('validation_ohSenateCount') + 1]);
                 $geoDataUpdate['oh_senate_district'] = null;
                 $runGeoUpdate = 1;
@@ -710,12 +711,12 @@ class ParcelsController extends Controller
                 session(['validation_addressCount' => session('validation_addressCount') + 1]);
                 $runGeoUpdate = 0;
                 $parcelLandBankStatus = 44;
-                $parcelStatusReason = 'Unable to validate because this parcel has an invalid GIS address.';
-                $debugMessage .= 'Geowarning or Error <br />';
+                $parcelStatusReason = "Unable to validate because this parcel has an invalid GIS address.";
+                $debugMessage .= "Geowarning or Error <br />";
             }
-
+                
             //dd($geoDataUpdate, $geodata);
-
+                
             /// store / send the geodata's version of the address
             if (isset($geodata['street_number'])) {
                 $geoDataUpdateCorrection['street_number'] = $geodata['street_number'];
@@ -749,7 +750,7 @@ class ParcelsController extends Controller
             }
         } else {
             $geoDataUpdate['latitude'] = $parcel->latitude;
-
+           
             $geoDataUpdate['longitude'] = $parcel->longitude;
 
             $geoDataUpdate['us_house_district'] = $parcel->us_house_district;
@@ -758,14 +759,19 @@ class ParcelsController extends Controller
             $geoDataUpdate['google_map_link'] = $parcel->google_map_link;
         }
 
+        
+
+            
+
+
         // Find retention parcels within 500 feet
         if ($geoDataUpdate['latitude'] != null && $withdraw != 1) {
-            $retentionFuzzy = DB::select('select * from (select *, 3956 * acos( cos( radians(?) ) *
+            $retentionFuzzy = DB::select("select * from (select *, 3956 * acos( cos( radians(?) ) *
                                 cos( radians( `latitude` ) )
                                 * cos( radians( `longitude` ) - (radians(?))
                                 ) + sin( radians(?) ) *
                                 sin( radians( `latitude` ) ) )
-                              AS distance from sdo_parcels) as derivedTable WHERE distance < ? OR distance = 0 OR distance = NULL ORDER BY distance', [$geoDataUpdate['latitude'], $geoDataUpdate['longitude'], $geoDataUpdate['latitude'],  '.0094697']);
+                              AS distance from sdo_parcels) as derivedTable WHERE distance < ? OR distance = 0 OR distance = NULL ORDER BY distance", [$geoDataUpdate['latitude'], $geoDataUpdate['longitude'], $geoDataUpdate['latitude'],  '.0094697']);
 
             $retentionCount = count($retentionFuzzy);
         }
@@ -785,7 +791,7 @@ class ParcelsController extends Controller
                 /// does it make sense to get its status?
 
                 if (count($countValidation) == 0) {
-                    session(['validation_hhfCount' => session('validation_hhfCount') + 1]);
+                    session(['validation_hhfCount' => session('validation_hhfCount')+ 1]);
                     // do insert as this one has not been reported yet.
                     $distance = $data->distance * 5280;
                     DB::table('validation_resolutions')
@@ -795,20 +801,20 @@ class ParcelsController extends Controller
                                         'resolution_id'=>$data->id,
                                         'resolution_system_notes'=>'A match of previously funded parcel was found within '.intval($distance).' feet. Please confirm the parcel is not the matched parcel. If the parcel is the matched parcel - this property is not eligible for reimbursement. A note from Allita\'s parcel controller at 1998.',
                                         'requires_hfa_resolution'=> 1,
-                                        'created_at' => date('Y-m-d H:i:s', time()),
-                                        'updated_at' => date('Y-m-d H:i:s', time()),
+                                        'created_at' => date("Y-m-d H:i:s", time()),
+                                        'updated_at' => date("Y-m-d H:i:s", time())
                                         ]);
                     $parcelLandBankStatus = 44;
-                    $parcelStatusReason = 'Unable to validate because this parcel has a new unresolved HHF validation conflict.';
+                    $parcelStatusReason = "Unable to validate because this parcel has a new unresolved HHF validation conflict.";
                     $insertedValidationResolution++;
                     $lb_validated = 0;
                 } elseif (isset($countValidation->lb_resolved)) {
                     // issue was already reported - check its status
                     if ($countValidation->lb_resolved == 0) {
                         // issue has not been resolved - set status to 44
-                        session(['validation_hhfCount' => session('validation_hhfCount') + 1]);
+                        session(['validation_hhfCount' => session('validation_hhfCount')+ 1]);
                         $parcelLandBankStatus = 44;
-                        $parcelStatusReason = 'Unable to validate because this parcel has an unresolved HHF validation conflict.';
+                        $parcelStatusReason = "Unable to validate because this parcel has an unresolved HHF validation conflict.";
                     } else {
                         /// status is resolved - leave status unchanged.
                         /// BUT we need to reduce the HHF count
@@ -822,12 +828,12 @@ class ParcelsController extends Controller
         }
 
         if ($geoDataUpdate['latitude'] != null && $withdraw != 1) {
-            $blightFuzzy = DB::select('select * from (select *, 3956 * acos( cos( radians(?) ) *
+            $blightFuzzy = DB::select("select * from (select *, 3956 * acos( cos( radians(?) ) *
                                 cos( radians( `latitude` ) )
                                 * cos( radians( `longitude` ) - (radians(?))
                                 ) + sin( radians(?) ) *
                                 sin( radians( `latitude` ) ) )
-                              AS distance from parcels) as derivedTable WHERE distance < ? OR distance = 0 OR distance = NULL AND landbank_property_status_id != 48 AND landbank_property_status_id != 11 ORDER BY distance', [$geoDataUpdate['latitude'], $geoDataUpdate['longitude'], $geoDataUpdate['latitude'],  '.0094697']);
+                              AS distance from parcels) as derivedTable WHERE distance < ? OR distance = 0 OR distance = NULL AND landbank_property_status_id != 48 AND landbank_property_status_id != 11 ORDER BY distance", [$geoDataUpdate['latitude'], $geoDataUpdate['longitude'], $geoDataUpdate['latitude'],  '.0094697']);
             /// .0947 is 500ft
 
             $blightCount = count($blightFuzzy);
@@ -846,13 +852,14 @@ class ParcelsController extends Controller
                                             ->where('resolution_id', $data->id)
                                             ->where('resolution_type', 'parcels')
                                             ->first();
-
+                        
+                        
                 if (count($countValidation) == 0 && $data->id != $parcel->id) {
                     $debugMessage .= "CountValidation == 0 <br /> found id = $data->id and this parcel id = $parcel->id";
                     /// did not find a issue already reported ---
                     /// or it was not matched to itself.
                     /// Increment for each matched parcel found.
-                    session(['validation_identicalCount' => session('validation_identicalCount') + 1]);
+                    session(['validation_identicalCount' => session('validation_identicalCount')+ 1]);
                     $distance = $data->distance * 5280;
                     DB::table('validation_resolutions')
                                     ->insert([
@@ -861,38 +868,38 @@ class ParcelsController extends Controller
                                         'resolution_id'=>$data->id,
                                         'resolution_system_notes'=>'Match to a blight parcel was found within '.intval($distance).' feet. Please confirm the parcel is not the matched parcel, or is another structure. Reimbursement will require confirmation by the HFA as well. This property may not be eligible for reimbursement.',
                                         'requires_hfa_resolution'=> 1,
-                                        'created_at' => date('Y-m-d H:i:s', time()),
-                                        'updated_at' => date('Y-m-d H:i:s', time()),
+                                        'created_at' => date("Y-m-d H:i:s", time()),
+                                        'updated_at' => date("Y-m-d H:i:s", time())
                                         ]);
                     $insertedValidationResolution++;
                     $parcelLandBankStatus = 44;
-                    $parcelStatusReason = 'Unable to validate because this parcel has a new unresolved validation conflict.';
+                    $parcelStatusReason = "Unable to validate because this parcel has a new unresolved validation conflict.";
                     $lb_validated = 0;
                     $geoDataUpdate['lb_validated'] = 0;
                     $geoDataUpdate['validated_unique'] = 0;
                 } elseif (isset($countValidation->lb_resolved)) {
                     // issue was already reported - check its status
                     if ($countValidation->lb_resolved == 0) {
-                        $debugMessage .= 'CountValidation = '.count($countValidation)." <br /> found id = $data->id and this parcel id = $parcel->id and lb_resolved = 0";
+                        $debugMessage .= "CountValidation = ".count($countValidation)." <br /> found id = $data->id and this parcel id = $parcel->id and lb_resolved = 0";
                         // issue has not been resolved - set status to 44
-                        session(['validation_identicalCount' => session('validation_identicalCount') + 1]);
+                        session(['validation_identicalCount' => session('validation_identicalCount')+ 1]);
                         $parcelLandBankStatus = 44;
                         if (session('validation_identicalCount') > 1) {
-                            $parcelStatusReason = 'Unable to validate because this parcel has an unresolved validation conflict.';
+                            $parcelStatusReason = "Unable to validate because this parcel has an unresolved validation conflict.";
                         } else {
-                            $parcelStatusReason = 'Unable to validate because this parcel has an unresolved validation conflict.';
+                            $parcelStatusReason = "Unable to validate because this parcel has an unresolved validation conflict.";
                         }
                     } else {
-                        $debugMessage .= 'CountValidation = '.count($countValidation)." <br /> found id = $data->id and this parcel id = $parcel->id and lb_resolved != 0";
+                        $debugMessage .= "CountValidation = ".count($countValidation)." <br /> found id = $data->id and this parcel id = $parcel->id and lb_resolved != 0";
                         /// status is resolved - leave status unchanged.
                               $unique = $unique - 1; // reduce the unique count so not to count this record.
                     }
                 } elseif ($data->id != $parcel->id) {
                     // its not matched to itself but still not good.
-                    $debugMessage .= 'CountValidation = '.count($countValidation)." <br /> found id = $data->id and this parcel id = $parcel->id and lb_resolved was not set at all.";
+                    $debugMessage .= "CountValidation = ".count($countValidation)." <br /> found id = $data->id and this parcel id = $parcel->id and lb_resolved was not set at all.";
                     $geoDataUpdate['validated_unique'] = 0;
                     $parcelLandBankStatus = 44;
-                    $parcelStatusReason = 'Unable to validate because this parcel still has unresolved validations.';
+                    $parcelStatusReason = "Unable to validate because this parcel still has unresolved validations.";
                 } else {
                     // its matched to itself
                     $unique = $unique - 1;
@@ -905,9 +912,9 @@ class ParcelsController extends Controller
 
         /// Check if it was claimed as historic
         if ($parcel->historic_significance_or_district == 1 && $parcel->historic_waiver_approved == 0 && $withdraw != 1) {
-            session(['validation_historicCount' => session('validation_historicCount') + 1]);
+            session(['validation_historicCount' => session('validation_historicCount')+ 1]);
             $parcelLandBankStatus = 44;
-            $parcelStatusReason = 'Unable to validate because this does not have a historic waiver recorded.';
+            $parcelStatusReason = "Unable to validate because this does not have a historic waiver recorded.";
         }
 
         /// STORE GEO DATA
@@ -924,32 +931,33 @@ class ParcelsController extends Controller
             // $geoDataUpdate['landbank_property_status_id'] = $parcelLandBankStatus; // ready to enter costs.
             DB::table('parcels')->where('id', $parcel->id)->update($geoDataUpdate);
             $parcel->address_validated = 1;
-            updateStatus('parcel', $parcel, 'landbank_property_status_id', $parcelLandBankStatus, 0, $parcelStatusReason);
+            updateStatus("parcel", $parcel, 'landbank_property_status_id', $parcelLandBankStatus, 0, $parcelStatusReason);
         } elseif ($parcel->address_validated == 0 && $withdraw != 1) {
             // update status to unable to validate
-            DB::table('parcels')->where('id', $parcel->id)->update(['lb_validated'=>$lb_validated, 'date_lb_validated'=>date('Y-m-d H:i:s', time())]);
-            updateStatus('parcel', $parcel, 'landbank_property_status_id', $parcelLandBankStatus, 0, $parcelStatusReason);
+            DB::table('parcels')->where('id', $parcel->id)->update(['lb_validated'=>$lb_validated,'date_lb_validated'=>date('Y-m-d H:i:s', time())]);
+            updateStatus("parcel", $parcel, 'landbank_property_status_id', $parcelLandBankStatus, 0, $parcelStatusReason);
         } elseif ($parcel->address_validated == 1 && $parcelLandBankStatus == 46 && $withdraw != 1) {
             $validated['lb_validated'] = 1;
-            $validated['date_lb_validated'] = date('Y-m-d H:i:s', time());
+            $validated['date_lb_validated']= date('Y-m-d H:i:s', time());
             //$validated['landbank_property_status_id'] = $parcelLandBankStatus;
             DB::table('parcels')->where('id', $parcel->id)->update($validated);
 
             $parcel->lb_validated = 1;
-            updateStatus('parcel', $parcel, 'landbank_property_status_id', $parcelLandBankStatus, 0, $parcelStatusReason);
-        } elseif ($parcel->address_validated == 1 && $parcelLandBankStatus == 44 && $withdraw != 1) {
+            updateStatus("parcel", $parcel, 'landbank_property_status_id', $parcelLandBankStatus, 0, $parcelStatusReason);
+        } elseif ($parcel->address_validated == 1 && $parcelLandBankStatus == 44  && $withdraw != 1) {
             if ($unique > 0) {
                 $validated['validated_unique'] = 0;
             }
             $validated['lb_validated'] = 0;
             //$validated['landbank_property_status_id'] = $parcelLandBankStatus;
             DB::table('parcels')->where('id', $parcel->id)->update($validated);
-            updateStatus('parcel', $parcel, 'landbank_property_status_id', $parcelLandBankStatus, 0, $parcelStatusReason);
+            updateStatus("parcel", $parcel, 'landbank_property_status_id', $parcelLandBankStatus, 0, $parcelStatusReason);
         }
-        if ($waiver != 1 && $useGISAddress != 1 && $updateAddress != 1 && $resolutionId < 1) {
-            session(['validationLastRow' => session('validationLastRow') + 1]);
-            session(['validation_processedCount' => session('validation_processedCount') + 1]);
+        if ($waiver != 1 && $useGISAddress != 1  && $updateAddress != 1 && $resolutionId < 1) {
+            session(['validationLastRow' => session('validationLastRow')+ 1]);
+            session(['validation_processedCount' => session('validation_processedCount')+ 1]);
             session(['validation_percentComplete' => (session('validation_processedCount') / session('validation_totalCount'))]);
+
 
             $updateTotals = [
                             'list'=> $request->query('list'),
@@ -963,25 +971,26 @@ class ParcelsController extends Controller
                             'totalCount'=>session('validation_totalCount'),
                             'processedCount'=>session('validation_processedCount'),
                             'percentComplete'=>session('validation_percentComplete'),
-                            'rowNum'=>$row,
+                            'rowNum'=>$row
                             ];
         }
         //check if this was the last parcel in the import, and if so, check if the entire import has been validated.
         // We don't state validated on an address update.
         $totalIssues = 0;
-        if (session('validation_totalCount') == session('validation_processedCount') && $useGISAddress != 1 && $updateAddress != 1 && $waiver != 1 && $resolutionId < 1) {
+        if (session('validation_totalCount') == session('validation_processedCount') && $useGISAddress != 1 && $updateAddress != 1 && $waiver != 1  && $resolutionId < 1) {
             $totalResolutions = DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->where('lb_resolved', 0)->count();
             // Check other "issues" before allowing the validation
             $totalIssues += $totalResolutions;
             $totalIssues += session('validation_addressCount');
-
+                 
             $totalIssues += session('validation_identicalCount');
             $totalIssues += session('validation_historicCount');
             $totalIssues += session('validation_hhfCount');
-
+                 
             if ($totalIssues < 1) {
                 //mark this as validated.
                 $importId = DB::table('import_rows')->select('import_id')->where('row_id', $parcel->id)->where('table_name', 'parcels')->first();
+                    
 
                 // update parcels to status 46 - needing costs
                 $parcelsToUpdate = DB::table('import_rows')->select('row_id')->where('import_id', $importId->import_id)->get()->all();
@@ -1012,10 +1021,10 @@ class ParcelsController extends Controller
         $googleMapsLink = $geoDataUpdate['google_map_link'];
         $unresolvedLandBankCount = DB::table('validation_resolutions')->where('lb_resolved', '0')->where('parcel_id', $parcel->id)->count();
         $unresolvedHFACount = DB::table('validation_resolutions')->where('hfa_resolved', '0')->where('parcel_id', $parcel->id)->count();
-        $resolutionLandBankCount = DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->count();
-        $resolutionHFALandBankCount = DB::table('validation_resolutions')->where('requires_hfa_resolution', '1')->where('parcel_id', $parcel->id)->count();
+        $resolutionLandBankCount =  DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->count();
+        $resolutionHFALandBankCount =  DB::table('validation_resolutions')->where('requires_hfa_resolution', '1')->where('parcel_id', $parcel->id)->count();
 
-        $debugMessage = '';
+        $debugMessage = "";
         ///////////////////////////////////////
         return view('pages.import.validate_parcel_row', compact('validated', 'useGISAddress', 'unresolvedLandBankCount', 'unresolvedHFACount', 'resolutionLandBankCount', 'resolutionHFALandBankCount', 'record', 'updateTotals', 'hhf', 'geoDataUpdateCorrection', 'parcel', 'lat', 'lon', 'congressional', 'ohHouse', 'ohSenate', 'unique', 'list', 'runGeoUpdate', 'parcelLandBankStatus', 'insertedValidationResolution', 'debugMessage', 'waiver', 'updateAddress', 'resolutionId', 'withdraw'));
     }
@@ -1052,19 +1061,19 @@ class ParcelsController extends Controller
             /// on the off chance an imported parcel gets deleted
             return "<script>UIkit.modal.alert('<p>I wasn\'t able to lookup a parcel for row number ".$row."<br />Sorry, but I have to abort this validation.</p><p><strong>This means someone deleted this parcel from the HHF Retention list.</strong> You can reimport the list from a current export from HHF Retention.</p>');</script>";
         }
-
+        
         /// Validate addess
         $addressValidator = new GeoData;
-
+        
         $parcelAddress = $parcel->street_address
-                            .', '.$parcel->{'Property City'}
-                            .' '.$parcel->{'Property State'}
-                            .' '.$parcel->{'Property Zip'};
+                            .", ".$parcel->{"Property City"}
+                            ." ".$parcel->{"Property State"}
+                            ." ".$parcel->{"Property Zip"};
         $geodata = $addressValidator->getGeoData($parcelAddress);
 
         $runGeoUpdate = 1;
         $geoDataUpdate = [];
-        if (! isset($geodata['Congressional'])) {
+        if (!isset($geodata['Congressional'])) {
             session(['hhf_retention_validation_usHouseCount' => session('hhf_retention_validation_usHouseCount') + 1]);
             $geoDataUpdate['us_house_district'] = null;
             $runGeoUpdate = 1;
@@ -1072,15 +1081,15 @@ class ParcelsController extends Controller
             $geoDataUpdate['us_house_district'] = $geodata['Congressional'];
             $runGeoUpdate = 1;
         }
-        if (! isset($geodata['OH House'])) {
+        if (!isset($geodata['OH House'])) {
             session(['hhf_retention_validation_ohHouseCount' => session('hhf_retention_validation_ohHouseCount') + 1]);
-            $geoDataUpdate['oh_house_district'] = null;
+            $geoDataUpdate['oh_house_district']=null;
             $runGeoUpdate = 1;
         } else {
-            $geoDataUpdate['oh_house_district'] = $geodata['OH House'];
+            $geoDataUpdate['oh_house_district']=$geodata['OH House'];
             $runGeoUpdate = 1;
         }
-        if (! isset($geodata['OH Senate'])) {
+        if (!isset($geodata['OH Senate'])) {
             session(['hhf_retention_validation_ohSenateCount' => session('hhf_retention_validation_ohSenateCount') + 1]);
             $geoDataUpdate['oh_senate_district'] = null;
             $runGeoUpdate = 1;
@@ -1110,14 +1119,15 @@ class ParcelsController extends Controller
         $congressional = $geoDataUpdate['us_house_district'];
         $ohHouse = $geoDataUpdate['oh_house_district'];
         $ohSenate = $geoDataUpdate['oh_senate_district'];
+            
 
         if (isset($geodata['google_maps_link'])) {
             $geoDataUpdate['google_map_link'] = $geodata['google_maps_link'];
             $googleMapsLink = $geoDataUpdate['google_map_link'];
             $runGeoUpdate = 1;
         } else {
-            $geoDataUpdate['google_map_link'] = 'https://www.google.com/search?q=I+could+not+find+that+house';
-            $googleMapsLink = 'NA';
+            $geoDataUpdate['google_map_link'] = "https://www.google.com/search?q=I+could+not+find+that+house";
+            $googleMapsLink = "NA";
         }
         if (isset($geodata['geoWarning']) || isset($geodata['geoError'])) {
             session(['hhf_retention_validation_addressCount' => session('hhf_retention_validation_addressCount') + 1]);
@@ -1165,8 +1175,10 @@ class ParcelsController extends Controller
         }
         //dd($geoDataUpdate, $geodata);
 
-        session(['hhfRetentionValidationLastRow' => session('hhfRetentionValidationLastRow') + 1]);
-        session(['hhf_retention_validation_processedCount' => session('hhf_retention_validation_processedCount') + 1]);
+
+        
+        session(['hhfRetentionValidationLastRow' => session('hhfRetentionValidationLastRow')+ 1]);
+        session(['hhf_retention_validation_processedCount' => session('hhf_retention_validation_processedCount')+ 1]);
         session(['hhf_retention_validation_percentComplete' => (session('hhf_retention_validation_processedCount') / session('hhf_retention_validation_totalCount'))]);
 
         $updateTotals = [
@@ -1181,14 +1193,17 @@ class ParcelsController extends Controller
                         'totalCount'=>session('hhf_retention_validation_totalCount'),
                         'processedCount'=>session('hhf_retention_validation_processedCount'),
                         'percentComplete'=>session('hhf_retention_validation_percentComplete'),
-
-                        'rowNum'=>$row,
+                        
+                        'rowNum'=>$row
                         ];
 
         //session()
-
+                        
         /// DONE?
         //$request->session()->forget('key');
+        
+
+       
 
         return view('pages.import.validate_hhf_retention_parcel_row', compact('updateTotals', 'geoDataUpdateCorrection', 'parcel', 'lat', 'lon', 'congressional', 'ohHouse', 'ohSenate'));
     }
@@ -1207,7 +1222,7 @@ class ParcelsController extends Controller
                     ->get()
                     ->all();*/
 
-        $reqs = DB::select('SELECT 
+        $reqs = DB::select("SELECT 
                    pc.id as allita_system_id,
                    sf_parcel_id as sales_force_id,
                    pc.parcel_id as parcel_name,
@@ -1377,45 +1392,46 @@ class ParcelsController extends Controller
             WHERE  a.id = pc.account_id
             AND p.entity_id = pc.entity_id
             ORDER BY pc.id
-            ');
+            ");
 
+
+               
         $process = session('process');
         // Reset session for process
         session(['process'=>'']);
-
         return view('parcels.sf_reimbursements', compact('process', 'reqs'));
     }
 
+    
     public function show(Parcel $parcel)
     {
         // make sure user belongs to the parcel's entity
-        if (! Auth::user()->isFromEntity($parcel->entity_id) && ! Auth::user()->isFromEntity(1)) {
-            return 'You are not allowed to view this parcel.';
+        if (!Auth::user()->isFromEntity($parcel->entity_id) && !Auth::user()->isFromEntity(1)) {
+            return "You are not allowed to view this parcel.";
         }
 
         $lc = new LogConverter('parcel', 'view');
-        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' Viewed parcel')->save();
+        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' Viewed parcel')->save();
 
         //return view('parcels.parcel_tabs',compact('parcel'));
         return view('parcels.parcel_tabs', compact('parcel'));
     }
-
     public function detail(Parcel $parcel, Request $request)
     {
         // make sure user belongs to the parcel's entity
-        if (! Auth::user()->isFromEntity($parcel->entity_id) && ! Auth::user()->isFromEntity(1)) {
-            return 'You are not allowed to view this parcel.';
+        if (!Auth::user()->isFromEntity($parcel->entity_id) && !Auth::user()->isFromEntity(1)) {
+            return "You are not allowed to view this parcel.";
         }
-
+        
         $lc = new LogConverter('parcel', 'view');
-        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email.' Viewed detailed parcel')->save();
-
-        $costs = DB::table('cost_items')->join('expense_categories', 'expense_categories.id', '=', 'cost_items.expense_category_id')->join('vendors', 'vendors.id', 'cost_items.vendor_id')->select('cost_items.id', 'amount', 'expense_category_name', 'expense_category_id', 'vendor_name', 'vendor_id', 'cost_items.description')->where('cost_items.parcel_id', $parcel->id)->get()->all();
-
+        $lc->setFrom(Auth::user())->setTo($parcel)->setDesc(Auth::user()->email . ' Viewed detailed parcel')->save();
+        
+        $costs = DB::table("cost_items")->join('expense_categories', 'expense_categories.id', '=', 'cost_items.expense_category_id')->join('vendors', 'vendors.id', 'cost_items.vendor_id')->select('cost_items.id', 'amount', 'expense_category_name', 'expense_category_id', 'vendor_name', 'vendor_id', 'cost_items.description')->where('cost_items.parcel_id', $parcel->id)->get()->all();
+        
         //$retainage = DB::table("retainages")->join('cost_items','cost_item_id','=','cost_items.id')->join('expense_categories','expense_categories.id','=','retainages.expense_category_id')->join('vendors','vendors.id','retainages.vendor_id')->select('retainages.*','expense_category_name','description','vendor_name','amount')->where('retainages.parcel_id',$parcel->id)->get()->all();
         $retainage = $parcel->retainages;
 
-        $parcelData = DB::select(DB::raw('SELECT
+        $parcelData = DB::select(DB::raw("SELECT
        pc.id as allita_system_id,
        sf_parcel_id as sales_force_id,
        pc.parcel_id as parcel_name,
@@ -1703,8 +1719,8 @@ class ParcelsController extends Controller
 
 
         WHERE   p.entity_id = pc.entity_id
-        AND pc.id = '.$parcel->id));
-
+        AND pc.id = ".$parcel->id));
+        
         //dd($parcel);
         $hasResolutions = 0;
         if (isset($parcelData[0])) {
@@ -1722,6 +1738,7 @@ class ParcelsController extends Controller
         ->where('programs.id', $parcelData->program_id)->first();
         //dd($program_owner);
 
+
         //dd($parcelData);
         $rules = DB::table('program_rules')->select('*')->where('active', '1')->orWhere('for_parcel', $parcel->id)->orderBy('for_parcel', 'DESC')->get()->all();
 
@@ -1732,14 +1749,14 @@ class ParcelsController extends Controller
         $minimums = DocumentRule::where('program_rules_id', $associated_id)->get();
 
         $minimumRules = [];
-        $minimumRules['acquisition'] = null;
-        $minimumRules['pre_demo'] = null;
-        $minimumRules['demolition'] = null;
-        $minimumRules['greening'] = null;
-        $minimumRules['maintenance'] = null;
-        $minimumRules['administration'] = null;
-        $minimumRules['other'] = null;
-        $minimumRules['nip'] = null;
+        $minimumRules['acquisition']=null;
+        $minimumRules['pre_demo']=null;
+        $minimumRules['demolition']=null;
+        $minimumRules['greening']=null;
+        $minimumRules['maintenance']=null;
+        $minimumRules['administration']=null;
+        $minimumRules['other']=null;
+        $minimumRules['nip']=null;
 
         foreach ($minimums as $minimumRule) {
             if ($minimumRule->expense_category_id == 2) {
@@ -1780,10 +1797,10 @@ class ParcelsController extends Controller
                 $within_unit_limits = 0;
             }
         }
-
+       
         if ($parcel->lb_validated != 1 && strlen($parcel->sf_parcel_id) < 1) {
             // this parcel is not validated - update its status.
-            updateStatus('parcel', $parcel, 'landbank_property_status_id', 43, 0, "Status updated because the parcel wasn't validated.");
+            updateStatus("parcel", $parcel, 'landbank_property_status_id', 43, 0, "Status updated because the parcel wasn't validated.");
             // Parcel::where('id',$parcel->id)->update(['landbank_property_status_id'=>43]);
             $parcel->landbank_property_status_id = 43;
         }
@@ -1805,7 +1822,6 @@ class ParcelsController extends Controller
         guide_next_pending_step(2, $parcel->id);
 
         $expense_categories = ExpenseCategory::where('parent_id', 1)->get();
-
         return view('parcels.parcel_detail', compact('hasResolutions', 'rules', 'parcelData', 'parcel', 'program_owner', 'minimumRules', 'expense_categories', 'retainage', 'costs', 'guide_name', 'guide_help', 'current_user', 'within_unit_limits', 'reimbursement_rules'));
     }
 
@@ -1846,7 +1862,7 @@ class ParcelsController extends Controller
             $i++;
         }
         $results = json_encode($parcels);
-
+        
         return response($results);
     }
 
@@ -1881,7 +1897,7 @@ class ParcelsController extends Controller
                         })->take(20)->get()->all();
         }
         $i = 0;
-        $results = [];
+        $results=[];
         foreach ($parcels as $data) {
             $parcels[$i]->created_at_formatted = date('n/j/y \a\t g:h a', strtotime($data->created_at));
             $results[] = [
@@ -1896,12 +1912,12 @@ class ParcelsController extends Controller
                         $data->name,
                         $data->created_at,
                         $data->validated,
-                        $parcels[$i]->created_at_formatted, ];
+                        $parcels[$i]->created_at_formatted];
             $i++;
         }
-
+        
+        
         $results = json_encode($results);
-
         return $results;
     }
 
@@ -1910,10 +1926,10 @@ class ParcelsController extends Controller
         //this can only be done for parcels that are withdrawn
         if ($parcel->landbank_property_status_id == 48) {
             //check that this person owns it or is hfa
-            if ($parcel->entity_id == Auth::user()->entity_id || Auth::user()->entity_id == 'hfa') {
+            if ($parcel->entity_id == Auth::user()->entity_id || Auth::user()->entity_id == "hfa") {
                 // reset the parcel to Needs Validated and
-                $parcel = updateStatus('parcel', $parcel, 'landbank_property_status_id', 43, 0, 'I set parcel to this status because it was previously withdrawn and it was requested to revalidate it.');
-                $parcel = updateStatus('parcel', $parcel, 'hfa_property_status_id', 39, 0, 'I set parcel to this status because it was previously withdawn and it was requested to revalidate it.');
+                $parcel = updateStatus("parcel", $parcel, 'landbank_property_status_id', 43, 0, "I set parcel to this status because it was previously withdrawn and it was requested to revalidate it.");
+                $parcel = updateStatus("parcel", $parcel, 'hfa_property_status_id', 39, 0, "I set parcel to this status because it was previously withdawn and it was requested to revalidate it.");
                 //$parcel->update(['landbank_property_status_id'=>43,'hfa_property_status_id'=>39]);
                 // reset the parcel's import to be unvalidated to re-run
                 $import = DB::table('import_rows')->select('import_id')->where('row_id', $parcel->id)->where('table_name', 'parcels')->first();
@@ -1929,50 +1945,41 @@ class ParcelsController extends Controller
                 return "I am sorry but you don't have permission to do this :(";
             }
         } else {
-            return 'I am sorry but you can only do this to parcels that are either declined or withdrawn.';
+            return "I am sorry but you can only do this to parcels that are either declined or withdrawn.";
         }
     }
-
     public function deleteParcel(Parcel $parcel)
     {
         if (Auth::user()->canDeleteParcels()) {
             $deleted = $parcel->deleteParcel();
             if ($deleted == 1) {
                 $output['message'] = "I've deleted the parcel ".$parcel->parcel_id;
-
                 return $output;
             } else {
                 $output['message'] = "I wasn't able to completely delete the parcel and its associated items. Pleae check your activity log for details.";
-
                 return $output;
             }
         } else {
-            $output['message'] = 'Sorry, only users with the role of Can Delete Parcels can perform this task.';
-
+            $output['message'] = "Sorry, only users with the role of Can Delete Parcels can perform this task.";
             return $output;
         }
     }
-
     public function reassignParcel(Parcel $parcel, Request $request)
     {
         if (Auth::user()->canReassignParcels()) {
             $assigned = $parcel->reassignParcel($request->requestId);
             if ($assigned == 1) {
-                $output['message'] = "I've assigned the parcel ".$parcel->parcel_id.' to request '.intval($request->requestId);
-
+                $output['message'] = "I've assigned the parcel ".$parcel->parcel_id." to request ".intval($request->requestId);
                 return $output;
             } else {
                 $output['message'] = "I wasn't able to assign the parcel. Please make sure it was already a part of a different request.";
-
                 return $output;
             }
         } else {
-            $output['message'] = 'Sorry, only users with the role of Can Reassign Parcels are allowed to reassing parcel requests.';
-
+            $output['message'] = "Sorry, only users with the role of Can Reassign Parcels are allowed to reassing parcel requests.";
             return $output;
         }
     }
-
     public function forceValidate(Request $request)
     {
         // get the parcel
@@ -1985,14 +1992,14 @@ class ParcelsController extends Controller
         $parcelRequests = \App\Models\RequestItem::where('parcel_id', $parcel->id)->count();
         if ($parcelCosts > 0 && ($parcelCosts == $parcelRequests)) {
             // Set status to ready for submission
-            updateStatus('parcel', $parcel, 'landbank_property_status_id', 7, 0, 'Forced Valid by '.Auth::user()->name.'. All costs have requested amounts - so I set this to a status of Internal Ready for Submission.');
+            updateStatus("parcel", $parcel, 'landbank_property_status_id', 7, 0, "Forced Valid by ".Auth::user()->name.". All costs have requested amounts - so I set this to a status of Internal Ready for Submission.");
             guide_set_progress($parcel->id, 24, $status = 'completed');
             perform_all_parcel_checks($parcel);
             // find out next step and cache it in db
             guide_next_pending_step(2, $parcel->id);
         } else {
             // Either there are no costs, or some costs do not have request amounts
-            updateStatus('parcel', $parcel, 'landbank_property_status_id', 46, 0, 'Forced Valid by '.Auth::user()->name.'. Either there are no costs or there are costs without requested amounts - so I set this to a status of Imported Needs Costs.');
+            updateStatus("parcel", $parcel, 'landbank_property_status_id', 46, 0, "Forced Valid by ".Auth::user()->name.". Either there are no costs or there are costs without requested amounts - so I set this to a status of Imported Needs Costs.");
             guide_set_progress($parcel->id, 24, $status = 'completed');
             perform_all_parcel_checks($parcel);
             // find out next step and cache it in db
@@ -2008,10 +2015,10 @@ class ParcelsController extends Controller
         $googleMapsLink = $parcel->google_map_link;
         $unresolvedLandBankCount = DB::table('validation_resolutions')->where('lb_resolved', '0')->where('parcel_id', $parcel->id)->count();
         $unresolvedHFACount = DB::table('validation_resolutions')->where('hfa_resolved', '0')->where('parcel_id', $parcel->id)->count();
-        $resolutionLandBankCount = DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->count();
-        $resolutionHFALandBankCount = DB::table('validation_resolutions')->where('requires_hfa_resolution', '1')->where('parcel_id', $parcel->id)->count();
+        $resolutionLandBankCount =  DB::table('validation_resolutions')->where('parcel_id', $parcel->id)->count();
+        $resolutionHFALandBankCount =  DB::table('validation_resolutions')->where('requires_hfa_resolution', '1')->where('parcel_id', $parcel->id)->count();
 
-        $debugMessage = '';
+        $debugMessage = "";
         $validated = null;
         $useGISAddress = 1; // doing this so it loads the TDs only and not the TR
         $updateTotals = 0;
@@ -2021,7 +2028,7 @@ class ParcelsController extends Controller
         $runGeoUpdate = 0;
         $parcelLandBankStatus = $parcel->landbank_property_status_id;
         $insertedValidationResolution = 0;
-        $debugMessage = '';
+        $debugMessage = "";
         $waiver = null;
         $updateAddress = null;
         $resolutionId = null;
@@ -2034,7 +2041,7 @@ class ParcelsController extends Controller
     public function guide_validate_parcel_info_hfa(Parcel $parcel, Request $request)
     {
         if (Auth::user()->entity_type != 'hfa') {
-            return;
+            return null;
         }
 
         if (guide_check_step(33, $parcel->id)) {
@@ -2044,14 +2051,14 @@ class ParcelsController extends Controller
             guide_set_progress($parcel->id, 33, $status = 'completed');
             $data['validated'] = 1;
         }
-
+        
         return $data;
     }
 
     public function guide_mark_advance_paid_hfa(Parcel $parcel, Request $request)
     {
         if (Auth::user()->entity_type != 'hfa') {
-            return;
+            return null;
         }
 
         // find the advance cost_item from cost_item_id
@@ -2061,27 +2068,27 @@ class ParcelsController extends Controller
         if (count($advance_item) == 1) {
             if ($advance_item->advance_paid == 1) {
                 $advance_item->update([
-                    'advance_paid' => 0,
+                    "advance_paid" => 0,
                 ]);
                 $data['paid'] = 0;
             } else {
                 $advance_item->update([
-                    'advance_paid' => 1,
+                    "advance_paid" => 1,
                 ]);
                 $data['paid'] = 1;
                 //$data['log'] = "test ".$advance_item->advance_paid;
             }
         } else {
-            return;
+            return null;
         }
-
+        
         return $data;
     }
 
     public function guide_mark_retainage_paid_hfa(Parcel $parcel, Request $request)
     {
         if (Auth::user()->entity_type != 'hfa') {
-            return;
+            return null;
         }
 
         // find the retainage
@@ -2091,19 +2098,19 @@ class ParcelsController extends Controller
         if (count($retainage_item) == 1) {
             if ($retainage_item->paid == 1) {
                 $retainage_item->update([
-                    'paid' => 0,
+                    "paid" => 0,
                 ]);
                 $data['paid'] = 0;
             } else {
                 $retainage_item->update([
-                    'paid' => 1,
+                    "paid" => 1,
                 ]);
                 $data['paid'] = 1;
             }
         } else {
-            return;
+            return null;
         }
-
+        
         return $data;
     }
 }

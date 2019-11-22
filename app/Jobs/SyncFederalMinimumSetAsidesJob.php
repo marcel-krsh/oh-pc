@@ -2,21 +2,22 @@
 
 namespace App\Jobs;
 
-use App\Models\AuthTracker;
-use App\Models\FederalSetAside;
-use App\Models\SyncFederalSetAside;
-use App\Models\SystemSetting;
-use App\Models\User;
-use App\Services\AuthService;
-use App\Services\DevcoService;
-use DateTime;
-use DB;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
+use App\Services\AuthService;
+use App\Services\DevcoService;
+use App\Models\AuthTracker;
+use App\Models\SystemSetting;
+use App\Models\User;
+use DB;
+use DateTime;
 use Illuminate\Support\Facades\Hash;
+
+use App\Models\SyncFederalSetAside;
+use App\Models\FederalSetAside;
 
 class SyncFederalMinimumSetAsidesJob implements ShouldQueue
 {
@@ -31,9 +32,8 @@ class SyncFederalMinimumSetAsidesJob implements ShouldQueue
     {
         //
     }
-
     public $tries = 5;
-
+    
     /**
      * Execute the job.
      *
@@ -67,7 +67,7 @@ class SyncFederalMinimumSetAsidesJob implements ShouldQueue
             //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
-        if (! is_null($apiConnect)) {
+        if (!is_null($apiConnect)) {
             $syncData = $apiConnect->listFederalSetAsides(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
@@ -82,11 +82,11 @@ class SyncFederalMinimumSetAsidesJob implements ShouldQueue
                         //dd('Page Count is Higher',$syncData);
                     }
                     foreach ($syncData['data'] as $i => $v) {
-                        // check if record exists
-                        $updateRecord = SyncFederalSetAside::select('id', 'allita_id', 'last_edited', 'updated_at')->where('federal_minimum_set_aside_key', $v['attributes']['federalMinimumSetAsideKey'])->first();
-                        // convert booleans
-                        //settype($v['attributes']['isActive'], 'boolean');
-                        //dd($updateRecord,$updateRecord->updated_at);
+                            // check if record exists
+                            $updateRecord = SyncFederalSetAside::select('id', 'allita_id', 'last_edited', 'updated_at')->where('federal_minimum_set_aside_key', $v['attributes']['federalMinimumSetAsideKey'])->first();
+                            // convert booleans
+                            //settype($v['attributes']['isActive'], 'boolean');
+                            //dd($updateRecord,$updateRecord->updated_at);
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
 
@@ -97,37 +97,39 @@ class SyncFederalMinimumSetAsidesJob implements ShouldQueue
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
                             $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
-                            $allitaFloat = '.'.$allitaDate->format('u');
-                            $devcoFloat = '.'.$devcoDate->format('u');
+                            $allitaFloat = ".".$allitaDate->format('u');
+                            $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-
+                                
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-
+                                
                             if ($devcoDateEval > $allitaDateEval) {
-                                if (! is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+                                if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
                                     SyncFederalSetAside::where('id', $updateRecord['id'])
                                     ->update([
-
+                                            
                                         'set_aside_name'=>$v['attributes']['setAsideName'],
                                         'set_aside_description'=>$v['attributes']['setAsideDescription'],
-
+                                            
+                                            
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                     $UpdateAllitaValues = SyncFederalSetAside::find($updateRecord['id']);
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
-
+                                            
                                         'set_aside_name'=>$v['attributes']['setAsideName'],
                                         'set_aside_description'=>$v['attributes']['setAsideDescription'],
-
+                                            
+                                            
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
-                                //dd('inside.');
+                                    //dd('inside.');
                                 } elseif (is_null($allitaTableRecord)) {
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
@@ -136,19 +138,23 @@ class SyncFederalMinimumSetAsidesJob implements ShouldQueue
                                     // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                     $allitaTableRecord = FederalSetAside::create([
-
+                                            
+                                            
                                         'set_aside_name'=>$v['attributes']['setAsideName'],
                                         'set_aside_description'=>$v['attributes']['setAsideDescription'],
-
+                                            
+                                            
                                         'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
                                     $syncTableRecord = SyncFederalSetAside::where('id', $updateRecord['id'])
                                     ->update([
-
+                                            
+                                            
                                         'set_aside_name'=>$v['attributes']['setAsideName'],
                                         'set_aside_description'=>$v['attributes']['setAsideDescription'],
-
+                                            
+                                            
                                         'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
@@ -162,17 +168,21 @@ class SyncFederalMinimumSetAsidesJob implements ShouldQueue
                             // We do this so the updated_at value of the Sync Table does not become newer
                             // when we add in the allita_id
                             $allitaTableRecord = FederalSetAside::create([
+                                    
 
                                     'set_aside_name'=>$v['attributes']['setAsideName'],
                                     'set_aside_description'=>$v['attributes']['setAsideDescription'],
-
+                                            
+                                    
                             'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
                             ]);
                             // Create the sync table entry with the allita id
                             $syncTableRecord = SyncFederalSetAside::create([
-
+                                            
+                                            
                                     'set_aside_name'=>$v['attributes']['setAsideName'],
                                     'set_aside_description'=>$v['attributes']['setAsideDescription'],
+                                            
 
                                 'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
                                 'last_edited'=>$v['attributes']['lastEdited'],

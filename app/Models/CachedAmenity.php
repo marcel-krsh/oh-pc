@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Carbon;
 
 class CachedAmenity extends Model
 {
@@ -28,11 +28,11 @@ class CachedAmenity extends Model
         'finding_copy_status',
         'finding_trash_status',
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
 
     /**
-     * Project.
+     * Project
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -42,7 +42,7 @@ class CachedAmenity extends Model
     }
 
     /**
-     * Audit.
+     * Audit
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -52,7 +52,7 @@ class CachedAmenity extends Model
     }
 
     /**
-     * Unit.
+     * Unit
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -62,7 +62,7 @@ class CachedAmenity extends Model
     }
 
     /**
-     * Building.
+     * Building
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -72,7 +72,7 @@ class CachedAmenity extends Model
     }
 
     /**
-     * Amenity Type.
+     * Amenity Type
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */

@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * AmenityHud Model.
+ * AmenityHud Model
  *
  * @category Models
  * @license  Proprietary and confidential
@@ -20,11 +20,11 @@ class Boilerplate extends Model
         'name',
         'boilerplate',
         'creator_id',
-        'global',
+        'global'
     ];
 
     /**
-     * Creator.
+     * Creator
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -32,7 +32,6 @@ class Boilerplate extends Model
     {
         return $this->hasOne(\App\Models\User::class, 'id', 'creator_id');
     }
-
     public function findings() : HasMany
     {
         return $this->hasMany(\App\Models\FindingTypeBoilerPlate::class, 'boilerplate_id', 'id');

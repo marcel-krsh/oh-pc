@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use Illuminate\Console\Command;
 use App\Models\Audit;
-use App\Models\CachedAudit;
 use App\Models\Project;
 use App\Models\ProjectContactRole;
+use App\Models\CachedAudit;
 use Event;
-use Illuminate\Console\Command;
 
 class CreateCachedAudit extends Command
 {
@@ -44,12 +44,13 @@ class CreateCachedAudit extends Command
     {
         $this->info('Working on audit '.$this->argument('id'));
 
-        $audit = Audit::where('id', '=', $this->argument('id'))->first();
-        if ($audit) {
+        $audit = Audit::where('id','=',$this->argument('id'))->first();
+        if($audit){
             $this->line('Found the audit...');
 
             Event::listen('audit.cache', $audit);
-        } else {
+
+        }else{
             $this->error('Looks like there is no audit with that id.');
         }
     }
@@ -135,6 +136,7 @@ class CreateCachedAudit extends Command
 
     //     // set status
     //     $status = 'tbd'; // critical, ok-actionable, etc
+
 
     //     $cached_audit = new CachedAudit([
     //             'audit_id' => $audit->id,

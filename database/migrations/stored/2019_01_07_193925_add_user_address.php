@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class AddUserAddress extends Migration
 {
@@ -14,7 +14,7 @@ class AddUserAddress extends Migration
     public function up()
     {
         Schema::table('addresses', function (Blueprint $table) {
-            if (! Schema::hasColumn('addresses', 'user_id')) {
+            if (!Schema::hasColumn('addresses', 'user_id')){
                 $table->unsignedInteger('user_id')->nullable();
             }
         });

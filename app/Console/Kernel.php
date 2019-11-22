@@ -2,61 +2,62 @@
 
 namespace App\Console;
 
-use App\Jobs\ComplianceProjectionJob;
-use App\Jobs\SyncAddressesJob;
-use App\Jobs\SyncAmenityTypesJob;
-use App\Jobs\SyncBuildingAmenitiesJob;
-use App\Jobs\SyncBuildingsJob;
-use App\Jobs\SyncComplianceContactJob;
-use App\Jobs\SyncEmailAddressesJob;
-use App\Jobs\SyncEmailAddressTypesJob;
-use App\Jobs\SyncEventTypesJob;
-use App\Jobs\SyncFederalMinimumSetAsidesJob;
-use App\Jobs\SyncFinancialTypesJob;
-use App\Jobs\SyncHouseholdEventsJob;
-use App\Jobs\SyncHouseHoldSizesJob;
-use App\Jobs\SyncHouseholdsJob;
-use App\Jobs\SyncIdsJob;
-use App\Jobs\SyncMonitoringMonitorsJob;
-use App\Jobs\SyncMonitoringsJob;
-use App\Jobs\SyncMonitoringStatusTypesJob;
-use App\Jobs\SyncMultipleBuildingTypesJob;
-use App\Jobs\SyncOrganizationsJob;
-use App\Jobs\SyncOwnerCertificationYearsJob;
-use App\Jobs\SyncPeopleJob;
-use App\Jobs\SyncPercentagesJob;
-use App\Jobs\SyncPhoneNumbersJob;
-use App\Jobs\SyncPhoneNumberTypesJob;
-use App\Jobs\SyncProgramDateTypesJob;
-use App\Jobs\SyncProgramsJob;
-use App\Jobs\SyncProjectActivitiesJob;
-use App\Jobs\SyncProjectActivityTypesJob;
-use App\Jobs\SyncProjectAmenitiesJob;
-use App\Jobs\SyncProjectContactRolesJob;
-use App\Jobs\SyncProjectDatesJob;
-use App\Jobs\SyncProjectFinancialsJob;
-use App\Jobs\SyncProjectProgramsJob;
-use App\Jobs\SyncProjectProgramStatusTypesJob;
-use App\Jobs\SyncProjectRolesJob;
-use App\Jobs\SyncProjectsJob;
-use App\Jobs\SyncRentalAssistanceSourcesJob;
-use App\Jobs\SyncRentalAssistanceTypesJob;
-use App\Jobs\SyncSpecialNeedsJob;
-use App\Jobs\SyncUnitAmenitiesJob;
-use App\Jobs\SyncUnitBedroomsJob;
-use App\Jobs\SyncUnitIdentitiesJob;
-use App\Jobs\SyncUnitsJob;
-use App\Jobs\SyncUnitStatusJob;
-use App\Jobs\SyncUsersJob;
-use App\Jobs\SyncUtilityAllowancesJob;
-use App\Jobs\SyncUtilityAllowanceTypesJob;
-use App\Jobs\update_audit_caches;
-use App\Models\Projection;
 use DB;
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\SyncAddressesJob;
+use App\Jobs\SyncPeopleJob;
+use App\Jobs\SyncMonitoringStatusTypesJob;
+use App\Jobs\SyncProjectActivitiesJob;
+use App\Jobs\SyncProjectActivityTypesJob;
+use App\Jobs\SyncProjectRolesJob;
+use App\Jobs\SyncProjectContactRolesJob;
+use App\Jobs\SyncOrganizationsJob;
+use App\Jobs\SyncProjectsJob;
+use App\Jobs\SyncAmenityTypesJob;
+use App\Jobs\SyncProgramsJob;
+use App\Jobs\SyncProjectProgramStatusTypesJob;
+use App\Jobs\SyncFinancialTypesJob;
+use App\Jobs\SyncProgramDateTypesJob;
+use App\Jobs\SyncMultipleBuildingTypesJob;
+use App\Jobs\SyncPercentagesJob;
+use App\Jobs\SyncFederalMinimumSetAsidesJob;
+use App\Jobs\SyncUnitStatusJob;
+use App\Jobs\SyncUnitsJob;
+use App\Jobs\SyncUnitBedroomsJob;
+use App\Jobs\SyncHouseholdEventsJob;
+use App\Jobs\SyncOwnerCertificationYearsJob;
+use App\Jobs\SyncHouseholdsJob;
+use App\Jobs\SyncEventTypesJob;
+use App\Jobs\SyncRentalAssistanceSourcesJob;
+use App\Jobs\SyncRentalAssistanceTypesJob;
+use App\Jobs\SyncUtilityAllowancesJob;
+use App\Jobs\SyncMonitoringsJob;
+use App\Jobs\SyncProjectAmenitiesJob;
+use App\Jobs\SyncProjectFinancialsJob;
+use App\Jobs\SyncProjectProgramsJob;
+use App\Jobs\SyncUtilityAllowanceTypesJob;
+use App\Jobs\SyncSpecialNeedsJob;
+use App\Jobs\SyncMonitoringMonitorsJob;
+use App\Jobs\SyncBuildingsJob;
+use App\Jobs\SyncPhoneNumbersJob;
+use App\Jobs\SyncUsersJob;
+use App\Jobs\SyncComplianceContactJob;
+use App\Jobs\SyncPhoneNumberTypesJob;
+use App\Jobs\SyncEmailAddressTypesJob;
+use App\Jobs\SyncEmailAddressesJob;
+use App\Jobs\SyncBuildingAmenitiesJob;
+use App\Jobs\SyncUnitAmenitiesJob;
+use App\Jobs\SyncHouseHoldSizesJob;
+use App\Jobs\SyncProjectDatesJob;
+use App\Jobs\SyncUnitIdentitiesJob;
+use App\Jobs\ComplianceProjectionJob;
+use App\Jobs\update_audit_caches;
+use Illuminate\Support\Carbon;
+use App\Jobs\SyncIdsJob;
+use App\Models\Projection;
+
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
@@ -92,31 +93,39 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+
+
         $seconds = 5;
         /// laravel's shortest span is 1 minute - we want to check our audit caches every 5 seconds.
         $schedule->call(function () use ($seconds) {
+
             $dt = Carbon::now();
 
-            $x = 60 / $seconds;
+            $x=60/$seconds;
 
-            do {
-                $check = \DB::table('jobs')->where('queue', 'cache_update')->count();
+            do{
 
-                if ($check < 1) {
+                $check = \DB::table('jobs')->where('queue','cache_update')->count();
+
+                if($check<1){
                     update_audit_caches::dispatch()->onQueue('cache_update');
                 }
 
                 time_sleep_until($dt->addSeconds($seconds)->timestamp);
-            } while ($x-- > 0);
+
+            } while($x-- > 0);
         })->everyMinute();
+
 
         /////////////////
         ////// SYNC JOBS
         ////
 
-        if (! env('APP_DEBUG_NO_DEVCO') && (intval(date('G', time())) < 22 || intval(date('G', time()) > 3))) {
+        if(!env('APP_DEBUG_NO_DEVCO') && (intval(date('G',time())) < 22 || intval(date('G',time()) > 3))){
 
             // it is befor 10:00 pm and after 3 am -- backup time.
+
+
 
             $test = DB::table('jobs')->where('payload', 'like', '%SyncAddresses%')->first();
             if (is_null($test)) {
@@ -501,6 +510,8 @@ class Kernel extends ConsoleKernel
 
         //Email scheduling every hour
         $schedule->command('run:hourly_notifications')->hourly();
+
+
     }
 
     /**

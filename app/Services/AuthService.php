@@ -12,68 +12,69 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class AuthService
 {
+
     /**
-     * Base URL For API calls.
+     * Base URL For API calls
      * @var string
      */
     private $_url;
 
     /**
-     * Base Directory For API calls.
+     * Base Directory For API calls
      * @var string
      */
     private $_base_directory;
 
     /**
-     * Username For API calls.
+     * Username For API calls
      * @var string
      */
     private $_username;
 
     /**
-     * Password For API calls.
+     * Password For API calls
      * @var string
      */
     private $_password;
 
     /**
-     * Login URL For User Redirection.
+     * Login URL For User Redirection
      * @var string
      */
     private $_login_url;
 
     /**
-     * System Level PC API Key.
+     * System Level PC API Key
      * @var string
      */
     private $_pcapi_key;
 
     /**
-     * System Level PC API Refresh Token.
+     * System Level PC API Refresh Token
      * @var string
      */
     private $_pcapi_refresh_token;
 
     /**
-     * System Level PC API Access Token.
+     * System Level PC API Access Token
      * @var string
      */
     private $_pcapi_access_token;
 
     /**
-     * PC API access token expiration time.
-     * @var int
+     * PC API access token expiration time
+     * @var integer
      */
     private $_pcapi_access_token_expires;
 
     /**
-     * PC API access token expiration in (set future for token auth).
-     * @var int
+     * PC API access token expiration in (set future for token auth)
+     * @var integer
      */
     private $_pcapi_access_token_expires_in;
 
     /**
-     * Guzzle Client for calls.
+     * Guzzle Client for calls
      * @var
      */
     private $_client;
@@ -99,13 +100,13 @@ class AuthService
             'base_uri' => $this->_url,
             'timeout'  => 10.0,
             'headers' => [
-                'User-Agent' => 'allita/1.0',
-            ],
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
     }
 
     /**
-     * Load Tokens From Database.
+     * Load Tokens From Database
      *
      * We store the token data in the database to persist between users and
      * their requests.
@@ -118,7 +119,7 @@ class AuthService
     }
 
     /**
-     * Root (System Level) Key Reset.
+     * Root (System Level) Key Reset
      */
     public function rootKeyReset()
     {
@@ -126,12 +127,14 @@ class AuthService
     }
 
     /**
-     * Root (System Level) Authenticate.
+     * Root (System Level) Authenticate
      *
      * @return bool
      */
     public function rootAuthenticate()
     {
+        
+       
         $endpoint = "{$this->_base_directory}/root/authenticate?username={$this->_username}&password={$this->_password}&key={$this->_pcapi_key}";
         $is_successful = false;
 
@@ -140,8 +143,8 @@ class AuthService
             'base_uri' => $this->_url,
             'timeout'  => 10.0,
             'headers' => [
-                'User-Agent' => 'allita/1.0',
-            ],
+                'User-Agent' => 'allita/1.0'
+            ]
         ]);
 
         try {
@@ -150,7 +153,7 @@ class AuthService
                 $result = json_decode($response->getBody()->getContents());
 
                 //$timestamp = intval((new Ticks($this->_getTokenExpiresValueInTicks($result->expires_in)))->timestamp());
-                $expiresAt = date('Y-m-d h:i:s', time() + $this->_pcapi_access_token_expires_in);
+                $expiresAt = date('Y-m-d h:i:s', time()+$this->_pcapi_access_token_expires_in);
 
                 $this->_updateAccessToken($result->access_token);
                 $this->_updateAccessTokenExpires($expiresAt);
@@ -194,7 +197,7 @@ class AuthService
         $result = false;
 
         // is there a token value?
-        if (! $this->_pcapi_access_token) {
+        if (!$this->_pcapi_access_token) {
             $result = true;
         }
 
@@ -202,9 +205,9 @@ class AuthService
         if ($this->_pcapi_access_token_expires < date('Y-m-d H:i:s')) {
             $result = true;
         }
-
         return $result;
     }
+
 
     public function rootRefreshToken()
     {
@@ -213,7 +216,7 @@ class AuthService
     }
 
     /**
-     * User Authenticate Token.
+     * User Authenticate Token
      *
      * @param int $user_id
      * @param string $user_token
@@ -228,7 +231,7 @@ class AuthService
             $response = $this->_client->request('GET', $endpoint);
             if ($response->getStatusCode() === 200) {
                 $result = json_decode($response->getBody()->getContents());
-
+                
                 return $result;
             } else {
                 // @todo: Throw PC-API Exception
@@ -236,13 +239,13 @@ class AuthService
             }
         } catch (GuzzleException | \Exception $e) {
             // @todo: Throw PC-API Exception
-            return 'Line 242 Auth Service gave an exception from the API server: '.$e->getMessage();
+             return 'Line 242 Auth Service gave an exception from the API server: '.$e->getMessage();
             //return false;
         }
     }
 
     /**
-     * Update Access Token.
+     * Update Access Token
      *
      * @param $token
      *
@@ -251,14 +254,14 @@ class AuthService
     private function _updateAccessToken($token)
     {
         return SystemSetting::updateOrCreate([
-            'key' => 'pcapi_access_token',
+            'key' => 'pcapi_access_token'
         ], [
-            'value' => $token,
+            'value' => $token
         ]);
     }
 
     /**
-     * Update Access Token Expires.
+     * Update Access Token Expires
      *
      * @param $expires
      *
@@ -267,14 +270,14 @@ class AuthService
     private function _updateAccessTokenExpires($expires)
     {
         return SystemSetting::updateOrCreate([
-            'key' => 'pcapi_access_token_expires',
+            'key' => 'pcapi_access_token_expires'
         ], [
-            'value' => $expires,
+            'value' => $expires
         ]);
     }
 
     /**
-     * Update Refresh Token.
+     * Update Refresh Token
      *
      * @param $token
      *
@@ -283,20 +286,22 @@ class AuthService
     private function _updateRefreshToken($token)
     {
         return SystemSetting::updateOrCreate([
-            'key' => 'pcapi_refresh_token',
+            'key' => 'pcapi_refresh_token'
         ], [
-            'value' => $token,
+            'value' => $token
         ]);
     }
 
+
     //
     //
     //
     //
     //
 
+
     /**
-     * Device Is Authorized.
+     * Device Is Authorized
      *
      * @param $user_id
      * @param $device_id
@@ -309,7 +314,7 @@ class AuthService
     }
 
     /**
-     * Attempt Device Authorization.
+     * Attempt Device Authorization
      *
      * @param $device_id
      * @param $verification_code
