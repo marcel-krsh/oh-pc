@@ -9,7 +9,15 @@ use App\Models\SystemSetting;
 
 class Unit extends Model
 {
-    public $timestamps = true;
+    public $timestamps = false;
+    function getUpdatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getLastEditedAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
     //
     protected $guarded = ['id'];
@@ -43,7 +51,7 @@ class Unit extends Model
     {
         return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_id', 'id');
     }
-    
+
     public function is_market_rate() : int
     {
         if($this->unit_identity_id == 22){

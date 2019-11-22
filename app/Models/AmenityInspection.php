@@ -10,9 +10,18 @@ use Event;
 
 class AmenityInspection extends Model
 {
-  public $timestamps = true;
+  public $timestamps = false;
   //protected $dateFormat = 'Y-m-d\TH:i:s.u';
   protected $table = 'amenity_inspections';
+
+  function getUpdatedAtAttribute($value)
+  {
+  	return milliseconds_mutator($value);
+  }
+  function getCompletedDateTimeAttribute($value)
+  {
+  	return milliseconds_mutator($value);
+  }
 
   //
   protected $guarded = ['id'];

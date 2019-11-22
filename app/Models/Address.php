@@ -6,12 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
-    public $timestamps = true;
+    public $timestamps = false;
+    function getUpdatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getLastEditedAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
     //protected $dateFormat = 'Y-m-d G:i:s.u';
-    
+
     protected $guarded = ['id'];
 
-    public function formatted_address($unit_name = null) 
+    public function formatted_address($unit_name = null)
     {
     	$address = '';
 
@@ -38,7 +46,7 @@ class Address extends Model
             }
         }
 
-    	
+
 
     	return $address;
     }

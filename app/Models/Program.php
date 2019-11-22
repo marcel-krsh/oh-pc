@@ -8,10 +8,19 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Program extends Model
 {
-    public $timestamps = true;
+    public $timestamps = false;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     protected $guarded = ['id'];
+
+    function getUpdatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getLastEditedAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
 
     /*
 	// 1 - FAF || NSP || TCE || RTCAP || 811 units
@@ -115,7 +124,7 @@ class Program extends Model
 	    return false;
 	}
 
-	
+
 
 	public function relatedGroups()
 	{

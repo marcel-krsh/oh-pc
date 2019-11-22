@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Amenity extends Model
 {
-    public $timestamps = true;
+    public $timestamps = false;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     protected $table = 'amenities';
@@ -19,10 +19,10 @@ class Amenity extends Model
      /**
      * hud
      */
-    
+
     public function huds() : HasMany {
         return $this->hasMany('App\Models\AmenityHud');
-        
+
     }
 
     /**

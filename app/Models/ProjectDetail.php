@@ -8,6 +8,8 @@ use Carbon;
 
 class ProjectDetail extends Model
 {
+	  public $timestamps = false;
+
     protected $fillable = [
         'project_id',
         'audit_id',

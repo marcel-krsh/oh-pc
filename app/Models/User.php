@@ -68,6 +68,18 @@ class User extends Authenticatable
     'remember_token',
   ];
 
+  public $timestamps = false;
+
+
+  function getUpdatedAtAttribute($value)
+  {
+  	return milliseconds_mutator($value);
+  }
+  function getLastEditedAttribute($value)
+  {
+  	return milliseconds_mutator($value);
+  }
+
   /**
    * A user can have many messages
    *

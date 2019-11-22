@@ -759,7 +759,7 @@ class CommunicationController extends Controller
       ->where('seen', 0)
       ->update(['seen' => 1]);
     // return $project;
-    return view('modals.communication-replies', compact('message', 'replies', 'audit', 'documents', 'document_categories', 'noaudit', 'project', 'report_notification'));
+    return view('modals.communication-replies', compact('message', 'replies', 'audit', 'noaudit', 'project', 'report_notification'));
   }
 
   public function getCommunicationDocuments($project_id = 0)

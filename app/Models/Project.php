@@ -10,16 +10,24 @@ use App\Models\Audit;
 use App\Models\CachedAudit;
 use App\Models\SystemSetting;
 use App\Models\Building;
-use Carbon;
 use Session;
+use Carbon\Carbon;
 
 class Project extends Model
 {
-    public $timestamps = true;
+    public $timestamps = false;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     protected $guarded = ['id'];
+    function getUpdatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
 
+    function getLastEditedAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
     /**
      * audits
      *
@@ -177,7 +185,7 @@ class Project extends Model
         if($next_inspection == null){
             return 'N/A';
         }else{
-            return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $next_inspection)->format('F j, Y');
+            return Carbon::createFromFormat('Y-m-d H:i:s', $next_inspection)->format('F j, Y');
         }
     }
 
@@ -352,7 +360,7 @@ class Project extends Model
         // return $audit->completed_date;
         if($audit){
             if($audit->completed_date){
-                $date = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $audit->completed_date)->format('F j, Y');
+                $date = Carbon::createFromFormat('Y-m-d H:i:s', $audit->completed_date)->format('F j, Y');
                 return $date;
             }
         }

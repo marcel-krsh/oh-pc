@@ -11,11 +11,30 @@ use Illuminate\Support\Str;
 
 class Audit extends Model
 {
-    public $timestamps = false;
-    protected $dates = ['start_date', 'completed_date'];
-    //protected $dateFormat = 'Y-m-d\TH:i:s.u';
-    //
     protected $guarded = ['id'];
+
+    public $timestamps = false;
+
+    function getUpdatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getCompletedDateAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getLastEditedAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getConfirmedDateAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getStartDateAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
 
     public static function boot()
     {
@@ -415,41 +434,7 @@ class Audit extends Model
         }
     }
 
-    public function getDateFormat() {
-			return 'Y-m-d H:i:s.u';
-		}
 
-
-//     public function fromDateTime($value)
-// {
-// 	$format = Str::contains($value, '.');
-// 	if($format) {
-//     return substr($value, 0, -4);
-// 	} else {
-// 		return $value;
-// 	}
-// }
-
-// 	public function getCreatedAtAttribute($value)
-//     {
-//         $format = Str::contains($value, '.');
-
-//         if($format) {
-// 			    return substr(($value), 0, -4);
-// 				} else {
-// 					return $value;
-// 				}
-
-//         // return Carbon::createFromFormat($format, $value);
-//     }
-
-public function getUpdatedAtAttribute($value) {
-	if (!empty($value)) {
-		return Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value);
-	} else {
-		return null;
-	}
-}
 
 
 

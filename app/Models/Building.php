@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Building extends Model
 {
-    public $timestamps = true;
+    public $timestamps = false;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
-    
+    function getLastEditedAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+
 
     //
     protected $guarded = ['id'];

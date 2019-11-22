@@ -234,3 +234,15 @@ function modal_confirm($request)
         //session(['hide_confirm_modal' => true]);
     }
 }
+
+function milliseconds_mutator($value) {
+	if(!is_null($value)) {
+		return Carbon::createFromFormat('Y-m-d H:i:s.u', $value);
+	} else {
+		return null;
+	}
+}
+
+function snake_case($string) {
+	Str::snake($string);
+}

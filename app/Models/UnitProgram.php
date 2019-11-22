@@ -7,7 +7,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class UnitProgram extends Model
 {
-    public $timestamps = true;
+    public $timestamps = false;
+    function getUpdatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getCreatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     //

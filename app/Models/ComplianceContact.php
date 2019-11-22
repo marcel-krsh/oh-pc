@@ -11,18 +11,18 @@ class ComplianceContact extends Model
 {
     public $timestamps = false;
 
-        public function getDateFormat() {
-					return 'Y-m-d H:i:s.u';
-				}
+    //     public function getDateFormat() {
+				// 	return 'Y-m-d H:i:s.u';
+				// }
 
-				public function getUpdatedAtAttribute($value)
-				{
-					if (!empty($value)) {
-						return Carbon::createFromFormat('Y-m-d H:i:s', $value);
-					} else {
-						return null;
-					}
-				}
+				// public function getUpdatedAtAttribute($value)
+				// {
+				// 	if (!empty($value)) {
+				// 		return Carbon::createFromFormat('Y-m-d H:i:s', $value);
+				// 	} else {
+				// 		return null;
+				// 	}
+				// }
 
 
     // protected $dateFormat = 'Y-m-d\TH:i:s.u';
