@@ -57,7 +57,7 @@ class EmailVerificationCode extends Mailable
     $outroLines = [];
     // save in database
     if ($owner) {
-      $body              = \view('emails.send_verification_code', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));
+      $body              = \view('emails.send_verification_code', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2'));
       $email_saved_in_db = new HistoricEmail([
         "user_id" => $new_user->id,
         "type"    => 'users',
@@ -68,6 +68,6 @@ class EmailVerificationCode extends Mailable
       //$email_saved_in_db->save();
     }
 
-    return $this->view('emails.send_verification_code', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'actionText2', 'actionUrl2', 'level2'));
+    return $this->view('emails.send_verification_code', compact('greeting', 'introLines', 'action_url', 'action_text', 'level', 'outroLines', 'level2'));
   }
 }
