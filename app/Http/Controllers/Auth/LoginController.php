@@ -241,21 +241,31 @@ class LoginController extends Controller
 
   public function saveToken($token, $trigger = 'code')
   {
+    $agent    = new Agent;
     $ip       = $this->getUserIpAddr();
     $location = GeoIP::getLocation($ip);
-    $agent    = Agent::all();
+    //$agent    = Agent::all();
     if ('login' == $trigger) {
       $token->used = 2;
       $token->code = '000-000-0000';
     }
+    // $token->ip        = $ip;
+    // $token->isMobile  = $agent->device->isMobile;
+    // $token->isTablet  = $agent->device->isTablet;
+    // $token->isDesktop = $agent->device->isDesktop;
+    // $token->isBot     = $agent->device->isBot;
+    // $token->browser   = $agent->browser->name;
+    // $token->platform  = $agent->platform->name;
+    // $token->device    = $agent->device->family . $token->browser . $token->platform;
     $token->ip        = $ip;
-    $token->isMobile  = $agent->device->isMobile;
-    $token->isTablet  = $agent->device->isTablet;
-    $token->isDesktop = $agent->device->isDesktop;
-    $token->isBot     = $agent->device->isBot;
-    $token->browser   = $agent->browser->name;
-    $token->platform  = $agent->platform->name;
-    $token->device    = $agent->device->family . $token->browser . $token->platform;
+    $token->isMobile  = $agent->isMobile();
+    $token->isTablet  = $agent->isTablet();
+    $token->isDesktop = $agent->isDesktop();
+    $token->isBot     = $agent->isRobot();
+    $token->browser   = $agent->browser();
+    $token->browser   = $token->browser . ' ' . $agent->version($token->browser);
+    $token->platform  = $agent->platform();
+    $token->device    = $agent->device() . ':' . $token->browser . ':' . $token->platform;
 
     $token->iso_code    = $location->iso_code;
     $token->country     = $location->country;
@@ -269,6 +279,7 @@ class LoginController extends Controller
     $token->continent   = $location->continent;
     $token->currency    = $location->currency;
     $token->save();
+
     return $token;
   }
 
