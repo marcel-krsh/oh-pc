@@ -35,6 +35,12 @@ class Audit extends Model
     {
     	return milliseconds_mutator($value);
     }
+    function getOnSiteMonitorEndDateAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+
+
 
     public static function boot()
     {

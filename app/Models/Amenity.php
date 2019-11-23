@@ -10,11 +10,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Amenity extends Model
 {
-    public $timestamps = false;
+    // public $timestamps = false;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     protected $table = 'amenities';
     protected $guarded = ['id'];
+    public $timestamps = false;
+
+    function getUpdatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getLastEditedAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
 
      /**
      * hud

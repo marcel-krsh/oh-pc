@@ -2739,7 +2739,7 @@ class PagesController extends Controller
         $owners_array = collect($owners_array)->sortBy('name')->toArray();
         $programs = Program::orderBy('program_name', 'ASC')->get();
 
-        return view('dashboard.emails', compact('messages', 'owners', 'owners_array', 'current_user', 'programs'));
+        return view('dashboard.emails', compact('messages', 'owners_array', 'current_user', 'programs'));
     }
 
     public function viewFullEmail($emailid)

@@ -8,10 +8,20 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StatsCompliance extends Model
 {
-    public $timestamps = true;
+    // public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     protected $table = 'stats_compliance';
+    public $timestamps = false;
+
+    function getUpdatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
+    function getCreatedAtAttribute($value)
+    {
+    	return milliseconds_mutator($value);
+    }
 
     //
     protected $guarded = ['id'];

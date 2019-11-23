@@ -6321,7 +6321,7 @@ class AuditController extends Controller
       //dd($program, $unitprogram->project_program->multiple_building_election_key);
     }
 
-    return view('dashboard.partials.project-summary-left-row', compact('data', 'project', 'audit', 'program', 'datasets'));
+    return view('dashboard.partials.project-summary-left-row', compact('data', 'project', 'audit', 'program'));
   }
 
   private function inspectionsUpdate($unit, $program, $audit, $group_ids, $project, $type, $new_program = false, $force_select = false)

@@ -97,7 +97,7 @@ class ProjectContactsController extends Controller
 
     $default_email       = $users->pluck('user_emails')->filter()->flatten()->where('default', 1)->where('project_id', $project->id)->count();
     $default_owner_email = $users->pluck('user_emails')->filter()->flatten()->where('owner_default', 1)->where('project_id', $project->id)->count();
-    return view('projects.partials.contacts', compact('users', 'user_role', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id', 'default_owner_id', 'default_devco_owner_id', 'default_owner_org', 'default_owner_addr', 'default_owner_phone', 'default_email', 'default_owner_email', 'contactsWithoutUsers', 'projectUserPersonIds'));
+    return view('projects.partials.contacts', compact('users', 'project', 'project_user_ids', 'allita_user_ids', 'default_user_id', 'default_org', 'default_addr', 'default_phone', 'default_devco_user_id', 'default_owner_id', 'default_devco_owner_id', 'default_owner_org', 'default_owner_addr', 'default_owner_phone', 'default_email', 'default_owner_email', 'contactsWithoutUsers', 'projectUserPersonIds'));
   }
 
   protected function projectUserIds($project_id)

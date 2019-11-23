@@ -22,6 +22,10 @@ class AmenityInspection extends Model
   {
   	return milliseconds_mutator($value);
   }
+  function getCreatedAtAttribute($value)
+  {
+  	return milliseconds_mutator($value);
+  }
 
   //
   protected $guarded = ['id'];
