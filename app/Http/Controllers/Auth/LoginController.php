@@ -14,7 +14,7 @@ use GeoIP;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Session;
-use Agent;
+use Jenssegers\Agent\Agent;
 
 class LoginController extends Controller
 {
