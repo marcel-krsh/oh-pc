@@ -337,7 +337,7 @@ session(['old_communication_modal' => $random]);
   		console.log( "update sraft!" );
   		window.setInterval(function(){
   			updateCommunicationDraft();
-  		}, 5000);
+  		}, 10000);
 
   	});
   </script>
