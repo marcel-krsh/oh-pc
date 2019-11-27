@@ -2116,7 +2116,6 @@ class PagesController extends Controller
             }
 
             DB::beginTransaction();
-            try {
                 $current_user = Auth::user();
                 //Phone numbers table
                 if ($request->filled('business_phone_number')) {
@@ -2230,6 +2229,8 @@ class PagesController extends Controller
                 } else {
                     return 1;
                 }
+
+            try {
             } catch (\Exception $e) {
                 DB::rollBack();
                 $data_insert_error = $e->getMessage();

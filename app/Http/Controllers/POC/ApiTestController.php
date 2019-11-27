@@ -12,9 +12,6 @@ class ApiTestController extends Controller
 
     public function index(Request $request)
     {
-
-    	  $agent    = new Agent;
-    	return $agent->device;
         $service = new DocumentService;
 
         $documents = $service->getDocuments();

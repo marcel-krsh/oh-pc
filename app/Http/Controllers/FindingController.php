@@ -1119,7 +1119,7 @@ class FindingController extends Controller
         $amenities = $amenities_query->get();
 
         $amenities = $amenities->where('unit_id', $unit_id)->sortBy('unit_id')->sortBy('amenity_id')->sortBy('id');
-        return view('modals.partials.finding-unit-amenities', compact('amenities', 'audit', 'building_id'));
+        return view('modals.partials.finding-unit-amenities', compact('amenities', 'audit'));
     }
 
     public function findingItems($findingid, $type = null, $typeid = null)

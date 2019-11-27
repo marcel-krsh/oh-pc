@@ -550,7 +550,7 @@ class CommunicationController extends Controller
     $messages = CommunicationDraft::where('owner_id', $current_user->id)->skip($skip)->take($number_per_page)->get();
     // $msg = $messages->where('id', 5)->first();
     // return $msg->getSelectedDocuments();
-    return view('dashboard.communications-drafts', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project'));
+    return view('dashboard.communications-drafts', compact('messages', 'current_user'));
   }
 
   public function communicationsFromProjectIdJson(Project $project)

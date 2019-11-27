@@ -11,6 +11,7 @@
 |
  */
 //Route::get('/reset_tokens','PagesController@resetTokens');
+// Route::get('test-all', 'Helper\TestingController@getTestAll');
 Route::get('unified_login', function () {
   //session(['brian'=>'test']);
   return redirect('/');
@@ -109,11 +110,11 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/document/{documentId}', function ($documentId) {
       $docRecord = \App\Models\SyncDocuware::where('docuware_doc_id', $documentId)->first();
       // Do Devco Auth here?
-      $deviceId   = 11;
+      $deviceId = 11;
       $deviceName = 'TestingSystem';
       // Look for existence of file on the provider location (ie. Docuware)
       // @todo: Add the log entry for the access request
-      $doc_service       = new \App\Services\DocumentService;
+      $doc_service = new \App\Services\DocumentService;
       $document_contents = $doc_service->getDocument($documentId, Auth::user()->id, Auth::user()->email, Auth::user()->name, $deviceId, $deviceName);
 
       //Store the document in local storage
@@ -508,8 +509,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/commmunication/drafts/{page?}', 'CommunicationController@showDraftMessages')->name('communications.show-draft-messages');
     Route::get('modals/communication/open-draft/{draft_id}', 'CommunicationController@openDraftMessage')->name('communications.open-draft-message');
     Route::post('/commmunication/draft-save/{draft}', 'CommunicationController@saveDrfatToCommunication')->name('communication.draft-save');
-
-
 
     // Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
 
