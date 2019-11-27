@@ -614,6 +614,8 @@ class CommunicationController extends Controller
 
     if ($audit) {
       $project = Project::find($audit->project_id);
+    } else {
+      $project = null;
     }
 
     /*if ($audit) {
