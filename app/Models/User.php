@@ -522,7 +522,7 @@ class User extends Authenticatable
       $response = json_decode($data, true);
       curl_close($ch);
       //dd($response,env('GOOGLE_API_KEY'),$googleAPI,env('OHIOGEOCODE_LOGIN'),env('APP_URL'));
-      if (count($response)) {
+      if (count($response) && array_key_exists('rows', $response) && array_key_exists('distance', $response['rows'][0]['elements'][0]) && array_key_exists('duration', $response['rows'][0]['elements'][0])) {
         return [$response['rows'][0]['elements'][0]['distance']['text'], $response['rows'][0]['elements'][0]['duration']['text'], $response['rows'][0]['elements'][0]['duration']['value']]; // array with 10 miles, 10 hours 36 mins, and the value in seconds
       } else {
         return 0;
