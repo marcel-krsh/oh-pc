@@ -1,7 +1,7 @@
 @forEach($reports as $report)
 <tr id="crr-report-row-{{ $report->id }}">
 	<td><a href="/report/{{ $report->id }}" target="{{ $report->template()->template_name }}-report-{{ $report->id }}" class="uk-mute"><i class="a-file-chart-3"></i> #{{ $report->id }}</a></td>
-	<td>@if($auditor_access)<a onclick="loadTab('/projects/{{ $report->project->project_key }}', '4', 1, 1,'',1);" class="uk-mute"> @endif {{ $report->project->project_number }} : {{ $report->project->project_name }}@if($auditor_access)</a>@endif</td>
+	<td>@if($auditor_access)<a onclick="openProject({{$report->project->project_key}},{{$report->audit_id}});" class="uk-mute"> @endif {{ $report->project->project_number }} : {{ $report->project->project_name }}@if($auditor_access)</a>@endif</td>
 	<td>{{ $report->audit_id }}</td>
 	@if($auditor_access)<td>@if($report->lead->person) {{ $report->lead->person->first_name }} {{ $report->lead->person->last_name }} @else NA @endif</td>@endif
 	<td>{{ $report->template()->template_name }}</td>
