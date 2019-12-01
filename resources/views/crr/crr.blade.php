@@ -70,9 +70,9 @@ session(['projectDetailsOutput' => 0]);
 		$('#close-comments').slideUp();
 		$('.crr-thumbs').fadeIn();
 		$('#section-thumbnails').css({'max-width':'130px','min-width':'90px','width':'113px','padding-top':'30px','padding-right':'5px','padding-left':'5px'});
-		$('#main-report-view').width('1248px');
-		$('#main-report-view').css({'min-width':'1248px','width':'1248px'});
-		$('.crr-sections').css({'min-width':'996px','padding':'72px','width':'1142px'});
+		$('#main-report-view').width('90%');
+		$('#main-report-view').css({'min-width':'980px','width':'90%'});
+		$('.crr-sections').css({'min-width':'996px','padding':'72px','width':'720px'});
 		$('.crr-part').css({'min-width':'996px','width':'996px'});
 		$('.crr-comment-edit').show();
 		$('.crr-part').removeClass('crr-part-commenting');
@@ -290,7 +290,7 @@ if (4 == $report->crr_approval_type_id) {
 }
 ?>
 	.crr-sections {
-		width:1142px; min-height: 1502px; margin-left:auto; margin-right:auto; border:1px black solid; background-image: url('/paginate-2x{{ $background }}.gif'); padding: 72px;
+		width:90%;min-width:720px; min-height: 1502px; margin-left:auto; margin-right:auto; border:1px black solid; background-image: url('/paginate-2x{{ $background }}.gif'); padding: 72px;
 
 	}
 	.crr-comment-edit {
@@ -416,7 +416,7 @@ if (4 == $report->crr_approval_type_id) {
 		@endCan
 
 	</div>
-	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; min-width: 1248px; padding:0px; background-color: currentColor;">
+	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; width: 90%; padding:0px; background-color: currentColor;">
 		@php
 		$j = 0;
 
@@ -444,7 +444,7 @@ if (Auth::user()->can('access_auditor')) {
     $totalComments = count($comments);
   }
 } else {
-  $comments      = [];
+  $comments = [];
   $totalComments = 0;
 }
 ?>
