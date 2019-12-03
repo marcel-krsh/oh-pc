@@ -8,7 +8,7 @@ use Carbon;
 
 class ProjectDetail extends Model
 {
-	  public $timestamps = false;
+	  public $timestamps = true;
 
     protected $fillable = [
         'project_id',

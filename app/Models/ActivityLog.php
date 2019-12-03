@@ -14,7 +14,7 @@ class ActivityLog extends Model
 {
     protected $table = 'activity_log';
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'log_name',

@@ -15,12 +15,9 @@ class Amenity extends Model
 
     protected $table = 'amenities';
     protected $guarded = ['id'];
-    public $timestamps = false;
+    public $timestamps = true;
 
-    function getUpdatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
+
     function getLastEditedAttribute($value)
     {
     	return milliseconds_mutator($value);

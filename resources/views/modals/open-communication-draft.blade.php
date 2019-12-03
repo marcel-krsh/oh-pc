@@ -233,6 +233,7 @@ session(['old_communication_modal' => $random]);
     	$("input[name='recipients[]']:checked").each(function (){
     		recipients_array.push(parseInt($(this).val()));
     	});
+    	debugger;
     	if(recipients_array.length === 0){
     		no_alert = 0;
     		UIkit.modal.alert('You must select a recipient.',{stack: true});
@@ -247,7 +248,7 @@ session(['old_communication_modal' => $random]);
     				UIkit.modal.alert(data,{stack: true});
     			} else {
     				$('#user-draft-messages').trigger('click');
-    				UIkit.modal.alert('Your message has been saved.',{stack: true});
+    				UIkit.modal.alert('Your message has been saved.');
     			}
     		} );
 

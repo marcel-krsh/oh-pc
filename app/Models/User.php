@@ -68,13 +68,8 @@ class User extends Authenticatable
     'remember_token',
   ];
 
-  public $timestamps = false;
+  public $timestamps = true;
 
-
-  function getUpdatedAtAttribute($value)
-  {
-  	return milliseconds_mutator($value);
-  }
   function getLastEditedAttribute($value)
   {
   	return milliseconds_mutator($value);

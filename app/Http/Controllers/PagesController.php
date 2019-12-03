@@ -2146,7 +2146,7 @@ class PagesController extends Controller
                 $email_address->email_address_type_id = $email_address_type->id;
                 $email_address->email_address_type_key = $email_address_type->email_address_type_key;
                 $last_record = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
-                $email_address->email_address_key = $last_record->email_address_key + 1;
+                // $email_address->email_address_key = $last_record->email_address_key + 1;
                 $email_address->save();
 
                 // People table

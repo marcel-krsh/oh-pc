@@ -13,12 +13,8 @@ class Audit extends Model
 {
     protected $guarded = ['id'];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
-    function getUpdatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
     function getCompletedDateAttribute($value)
     {
     	return milliseconds_mutator($value);

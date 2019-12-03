@@ -13,7 +13,7 @@ class SyncBuilding extends Model
 
     //
     protected $guarded = ['id'];
-    public $timestamps = false;
+    public $timestamps = true;
 
     function getLastEditedAttribute($value)
     {

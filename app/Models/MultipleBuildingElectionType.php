@@ -10,10 +10,6 @@ class MultipleBuildingElectionType extends Model
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     protected $guarded = ['id'];
-    public $timestamps = false;
+    public $timestamps = true;
 
-    function getUpdatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
 }

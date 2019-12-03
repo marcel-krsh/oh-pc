@@ -13,12 +13,8 @@ class UnitStatus extends Model
 
     //
     protected $guarded = ['id'];
-    public $timestamps = false;
+    public $timestamps = true;
 
-    function getUpdatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
     function getLastEditedAttribute($value)
     {
     	return milliseconds_mutator($value);

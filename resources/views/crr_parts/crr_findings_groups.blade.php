@@ -43,7 +43,7 @@
 						@endIf
 							</small>
 					@endIf
-						@if(!is_null($f->unit->building->address))
+						@if($f->unit->building && !is_null($f->unit->building->address))
 							<small style="text-transform: uppercase;">{{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}} |
 							{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}}</small>
 						@endIf
@@ -110,7 +110,7 @@
 
 			@elseIf(!is_null($f->unit_id))
 			{{-- {{$f->unit->building->building_name}} <br /> --}}
-			@if(!is_null($f->unit->building->address))
+			@if($f->unit->building && !is_null($f->unit->building->address))
 			{{-- {{$f->unit->building->address->line_1}} {{$f->unit->building->address->line_2}}<br />
 			{{$f->unit->building->address->city}}, {{$f->unit->building->address->state}} {{$f->unit->building->address->zip}} --}}
 			@endIf
