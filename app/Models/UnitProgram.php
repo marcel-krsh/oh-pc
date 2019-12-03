@@ -7,11 +7,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class UnitProgram extends Model
 {
-    public $timestamps = false;
-    function getUpdatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
+    public $timestamps = true;
+
     function getCreatedAtAttribute($value)
     {
     	return milliseconds_mutator($value);

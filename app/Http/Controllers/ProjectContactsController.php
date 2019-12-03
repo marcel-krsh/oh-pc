@@ -750,7 +750,7 @@ class ProjectContactsController extends Controller
   public function addEmailToUser($user_id, $project_id)
   {
     $user = User::with('role', 'person', 'organization_details', 'addresses', 'user_organizations.organization')->find($user_id);
-    return view('modals.user-project-email', compact('user', 'project_id', 'states'));
+    return view('modals.user-project-email', compact('user', 'project_id'));
   }
 
   public function saveEmailToUser($user_id, Request $request, $internal = 0)

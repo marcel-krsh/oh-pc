@@ -9,11 +9,8 @@ use App\Models\SystemSetting;
 
 class Unit extends Model
 {
-    public $timestamps = false;
-    function getUpdatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
+    public $timestamps = true;
+
     function getLastEditedAttribute($value)
     {
     	return milliseconds_mutator($value);

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Building extends Model
 {
-    public $timestamps = false;
+    public $timestamps = true;
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     function getLastEditedAttribute($value)

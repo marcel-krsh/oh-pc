@@ -12,16 +12,7 @@ class StatsCompliance extends Model
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     protected $table = 'stats_compliance';
-    public $timestamps = false;
-
-    function getUpdatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
-    function getCreatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
+    public $timestamps = true;
 
     //
     protected $guarded = ['id'];

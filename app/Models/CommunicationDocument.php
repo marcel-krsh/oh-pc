@@ -19,7 +19,7 @@ class CommunicationDocument extends Model
         'sync_docuware_id'
     ];
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     /**
      * Communication

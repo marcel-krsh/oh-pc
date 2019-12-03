@@ -54,11 +54,13 @@ class CachedAuditsEvent
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    
+
     public function cachedAuditCreated(CachedAudit $cached_audit)
     {
-        
+
         $jsonRun = 0;
+                    Log::info('CachedAudit Log Triggered');
+
         // get buildings from cached_audit
         $buildings = BuildingInspection::where('audit_id', '=', $cached_audit->audit_id)->with('building','building.address','building.project','building.project.address')->get();
         //dd($buildings);
@@ -101,7 +103,7 @@ class CachedAuditsEvent
         // }
 
         // create cached buildings related to this audit
-        // 
+        //
         CachedBuilding::where('audit_id',$cached_audit->audit_id)->delete();
         foreach ($buildings as $building) {
             //dd($building->building);
@@ -113,7 +115,7 @@ class CachedAuditsEvent
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
             //
-            
+
             $baJson = array();
             forEach($building_amenities as $ba){
 
@@ -125,7 +127,7 @@ class CachedAuditsEvent
                     $jsonRun = 1;
                     $baJson[] = [
                         "id" => $ba->amenity_id,
-                        "qty" => "0", 
+                        "qty" => "0",
                         "type" => addslashes($ba->amenity->amenity_description),
                         "status" => "",
                         "common_area" => $ba->common_area,
@@ -139,9 +141,9 @@ class CachedAuditsEvent
                             //dd($ba,$ba->amenity->inspectable);
                 }
             }
-            
+
             $jsonRun = 0;
-            
+
             // set values to allow for null checks:
             if(isset($building)){
                 $building_name = $building->building_name;
@@ -159,7 +161,7 @@ class CachedAuditsEvent
                     $city = $building->building->address->city;
                     $state = $building->building->address->state;
                     $zip = $building->building->address->zip;
-                    
+
                 } else {
                     $address = 'DEFAULT: '.$building->building->project->address->line_1;
                     $city = $building->building->project->address->city;
@@ -186,7 +188,7 @@ class CachedAuditsEvent
             $auditors_json = json_encode($auditors_array);
             $amenities_json = json_encode($baJson);
 
-            
+
             $cached_building = new CachedBuilding([
                 'building_name' => $building_name,
                 'building_id' => $building_id,
@@ -228,14 +230,14 @@ class CachedAuditsEvent
 
             //build amenity json:
             //[{"id": "295", "qty": "2", "type": "Elevator", "status": "pending"},]
-            
+
             $baJson = array();
             forEach($project_amenities as $ba){
 
                 if($ba->amenity->inspectable){
                     $baJson[] = [
                         "id" => $ba->amenity_id,
-                        "qty" => "0", 
+                        "qty" => "0",
                         "type" => addslashes($ba->amenity->amenity_description),
                         "status" => "",
                         "common_area" => $ba->common_area,
@@ -245,7 +247,7 @@ class CachedAuditsEvent
                         "unit" => $ba->unit,
                         "file" => $ba->file
                     ];
-                
+
                     $cached_building = new CachedBuilding([
                         'building_name' => $ba->amenity->amenity_description,
                         'building_id' => null,
@@ -287,7 +289,7 @@ class CachedAuditsEvent
                 }
             }
 
-        
+
 
         // create cached units
         $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->selectRaw('unit_id, ANY_VALUE(audit_key) as audit_key, ANY_VALUE(project_id) as project_id, ANY_VALUE(project_key) as project_key, ANY_VALUE(building_id) as building_id, ANY_VALUE(building_key) as building_key')->groupBy('unit_id', 'audit_key', 'project_id', 'project_key', 'building_id', 'building_key')->get();
@@ -295,7 +297,7 @@ class CachedAuditsEvent
         // $units = UnitInspection::where('audit_key', '=', $cached_audit->audit_key)->with('unit','unit.building.address')->get();
 
         CachedUnit::where('audit_id',$cached_audit->audit_id)->delete();
-        
+
         //$units_added = array();
 
         foreach ($units as $unit) {
@@ -323,7 +325,7 @@ class CachedAuditsEvent
 
                         $uaJson[] = [
                             "id" => $ua->amenity_id,
-                            "qty" => "0", 
+                            "qty" => "0",
                             "type" => addslashes($ua->amenity->amenity_description),
                             "status" => "",
                             "common_area" => $ua->common_area,
@@ -333,12 +335,12 @@ class CachedAuditsEvent
                             "unit" => $ua->unit,
                             "file" => $ua->file
                         ];
-                        
+
                     }
                 }
-                
+
                 $jsonRun = 0;
-                
+
                 if(isset($unit->unit->building->address)){
                     $address = $unit->unit->building->address->line_1;
                     $city = $unit->unit->building->address->city;

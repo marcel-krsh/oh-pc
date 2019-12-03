@@ -10,7 +10,7 @@ class OrderingAmenity extends Model
     protected $table = 'ordering_amenities';
 
     public $timestamps = false;
-    
+
     protected $fillable = [
         'user_id',
         'audit_id',
