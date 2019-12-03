@@ -15,11 +15,6 @@ class UnitGroup extends Model
     protected $guarded = ['id'];
     public $timestamps = true;
 
-    function getUpdatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
-
     public function unit() : HasOne
     {
         return $this->hasOne(\App\Models\Unit::class, 'unit_id', 'unit_id');
