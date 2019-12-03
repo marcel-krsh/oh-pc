@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class CrrSection extends Model
 {
     //
+    // public $timestamps = false;
+
     public function parts(): HasMany{
 
         return $this->hasMany('App\Models\CrrPart')

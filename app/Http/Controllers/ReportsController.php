@@ -895,7 +895,7 @@ class ReportsController extends Controller
 
   public function generateReport(CrrReport $report, $goToView = 1, $noStatusChange = 0)
   {
-  	// $report = CrrReport::find($report);
+  	// return $report = CrrReport::find($report);
     if ($report) {
       $data = [];
       if (!is_null($report->crr_data)) {

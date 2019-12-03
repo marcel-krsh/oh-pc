@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class CrrPart extends Model
 {
     //
+    // public $timestamps = false;
+
     public function crr_part_type() : HasOne
     {
         return $this->hasOne(CrrPartType::class, 'id', 'crr_part_type_id');

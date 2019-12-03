@@ -93,6 +93,7 @@ ALTER TABLE unit_bedrooms MODIFY updated_at TIMESTAMP NULL;
 ALTER TABLE unit_group MODIFY updated_at TIMESTAMP NULL;
 ALTER TABLE unit_identities MODIFY updated_at TIMESTAMP NULL;
 ALTER TABLE unit_programs MODIFY updated_at TIMESTAMP NULL;
+ALTER TABLE unit_programs MODIFY created_at TIMESTAMP NULL;
 ALTER TABLE unit_statuses MODIFY updated_at TIMESTAMP NULL;
 ALTER TABLE users MODIFY updated_at TIMESTAMP NULL;
 ALTER TABLE utility_allowances MODIFY updated_at TIMESTAMP NULL;
