@@ -9,10 +9,6 @@ class UnitProgram extends Model
 {
     public $timestamps = true;
 
-    function getCreatedAtAttribute($value)
-    {
-    	return milliseconds_mutator($value);
-    }
     //protected $dateFormat = 'Y-m-d\TH:i:s.u';
 
     //

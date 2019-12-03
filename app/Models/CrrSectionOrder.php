@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class CrrSectionOrder extends Model
 {
     //
-    public $timestamps = true;
+    // public $timestamps = false;
 }
