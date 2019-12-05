@@ -28,7 +28,7 @@ class CommunicationRecipient extends Model
 
     /* @todo: move to observer class */
     static::created(function ($cr) {
-      Event::listen('communication.created', $cr);
+      Event::dispatch('communication.created', $cr);
       // Log::info('Fired event?');
     });
   }

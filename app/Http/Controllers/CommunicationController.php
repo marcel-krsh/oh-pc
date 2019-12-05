@@ -215,6 +215,7 @@ class CommunicationController extends Controller
       }
       // return $forminputs;
       $draft->subject = array_key_exists('subject', $forminputs) ? $forminputs['subject'] : '';
+      $draft->subject = array_key_exists('messageBody', $forminputs) ? $forminputs['messageBody'] : '';
       $draft->message = $forminputs['messageBody'];
       if (array_key_exists('findings', $forminputs)) {
         $draft->finding_ids = json_encode($forminputs['findings']);

@@ -393,6 +393,7 @@ Route::group(['middleware' => 'web'], function () {
       Route::get('document_category', 'AdminToolController@documentIndex');
       Route::get('county', 'AdminToolController@countyIndex');
       Route::get('emails', 'PagesController@emailsTab');
+
     });
 
     Route::group(['prefix' => '', 'middleware' => 'can:access_admin'], function () {
@@ -428,6 +429,8 @@ Route::group(['middleware' => 'web'], function () {
 
       Route::get('groups-data', 'GroupController@getGroupsJson');
       Route::get('update-group-programs', 'GroupController@udateGroupProgramRelations');
+
+      Route::get('fix-notification', 'AdminfixController@communicationNotifications');
     });
 
     //Project
