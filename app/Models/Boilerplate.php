@@ -22,7 +22,6 @@ class Boilerplate extends Model
         'creator_id',
         'global'
     ];
-
     /**
      * Creator
      *

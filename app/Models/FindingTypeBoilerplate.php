@@ -19,7 +19,6 @@ class FindingTypeBoilerPlate extends Model
     'finding_type_id',
     'boilerplate_id',
   ];
-
   /**
    * FindingType
    *
