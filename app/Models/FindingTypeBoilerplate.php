@@ -11,32 +11,32 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @category Models
  * @license  Proprietary and confidential
  */
-class FindingTypeBoilerplate extends Model
+class FindingTypeBoilerPlate extends Model
 {
-    protected $table = 'finding_type_boilerplate';
+  protected $table = 'finding_type_boilerplate';
 
-    protected $fillable = [
-        'finding_type_id',
-        'boilerplate_id'
-    ];
+  protected $fillable = [
+    'finding_type_id',
+    'boilerplate_id',
+  ];
 
-    /**
-     * FindingType
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function finding_type() : HasOne
-    {
-        return $this->hasOne(\App\Models\FindingType::class, 'id', 'finding_type_id');
-    }
+  /**
+   * FindingType
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasOne
+   */
+  public function finding_type(): HasOne
+  {
+    return $this->hasOne(\App\Models\FindingType::class, 'id', 'finding_type_id');
+  }
 
-    /**
-     * Boilerplate
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function boilerplate() : HasOne
-    {
-        return $this->hasOne(\App\Models\Boilerplate::class, 'id', 'boilerplate_id');
-    }
+  /**
+   * Boilerplate
+   *
+   * @return \Illuminate\Database\Eloquent\Relations\HasOne
+   */
+  public function boilerplate(): HasOne
+  {
+    return $this->hasOne(\App\Models\Boilerplate::class, 'id', 'boilerplate_id');
+  }
 }
