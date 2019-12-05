@@ -3016,7 +3016,7 @@ class AuditController extends Controller
       $projects_array  = [];
     }
     foreach ($auditLeads as $hfa) {
-      if ($hfa->lead_user_id) {
+      if ($hfa->lead_user_id && $hfa->lead) { //check this relationship, we are checking lead_user_id but fetching lead based on devco_key - Div 20191205
         $hfa_users_array[] = $hfa->lead;
       }
     }
@@ -3036,7 +3036,6 @@ class AuditController extends Controller
     } else {
       $crrApprovalTypes = CrrApprovalType::where('id', '>', 5)->orderBy('order')->get();
     }
-
     if (null !== $request->get('order_by')) {
       switch ($request->get('order_by')) {
         case 'id':
