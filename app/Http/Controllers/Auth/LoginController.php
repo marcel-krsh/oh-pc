@@ -143,7 +143,7 @@ class LoginController extends Controller
       // $type    = "danger";
       return view('errors.error', compact('error', 'message', 'type'));
     } else {
-      if ($user->person->allita_phone) {
+      if ($user->person && $user->person->allita_phone) {
         $phone_number     = $user->person->allita_phone->number;
         $mask_phonenumber = mask_phone_number($phone_number);
       } else {
