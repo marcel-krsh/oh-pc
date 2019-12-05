@@ -48,7 +48,7 @@ class CreateCachedAudit extends Command
         if($audit){
             $this->line('Found the audit...');
 
-            Event::listen('audit.cache', $audit);
+            Event::dispatch('audit.cache', $audit);
 
         }else{
             $this->error('Looks like there is no audit with that id.');

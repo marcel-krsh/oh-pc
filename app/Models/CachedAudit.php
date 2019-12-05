@@ -83,7 +83,7 @@ class CachedAudit extends Model
         parent::boot();
 
         static::created(function ($cached_audit) {
-            Event::listen('cachedaudit.created', $cached_audit);
+            Event::dispatch('cachedaudit.created', $cached_audit);
         });
 
 

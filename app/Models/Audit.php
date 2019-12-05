@@ -43,11 +43,11 @@ class Audit extends Model
         parent::boot();
 
         static::created(function ($audit) {
-            Event::listen('audit.created', $audit);
+            Event::dispatch('audit.created', $audit);
         });
 
         static::updated(function ($audit) {
-            Event::listen('audit.updated', $audit);
+            Event::dispatch('audit.updated', $audit);
         });
 
         // static::deleted(function ($audit) {

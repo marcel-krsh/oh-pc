@@ -26,13 +26,13 @@ class AmenityInspection extends Model
   {
     parent::boot();
     static::created(function ($amenity) {
-      Event::listen('amenity.created', $amenity);
+      Event::dispatch('amenity.created', $amenity);
     });
      static::updated(function ($amenity) {
-      Event::listen('amenity.updated', $amenity);
+      Event::dispatch('amenity.updated', $amenity);
     });
     static::deleted(function ($amenity) {
-      Event::listen('amenity.deleted', $amenity);
+      Event::dispatch('amenity.deleted', $amenity);
     });
   }
 

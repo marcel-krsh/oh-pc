@@ -22,7 +22,7 @@ class Finding extends Model
         parent::boot();
 
         static::created(function ($finding) {
-            Event::listen('finding.created', $finding);
+            Event::dispatch('finding.created', $finding);
         });
     }
 

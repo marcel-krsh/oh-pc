@@ -19,7 +19,7 @@ class ScheduleTime extends Model
         parent::boot();
 
         static::created(function ($scheduleTime) {
-            Event::listen('scheduletime.created', $scheduleTime);
+            Event::dispatch('scheduletime.created', $scheduleTime);
         });
     }
 
