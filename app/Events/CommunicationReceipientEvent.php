@@ -31,6 +31,7 @@ class CommunicationReceipientEvent
    */
   public function communicationCreated(CommunicationRecipient $cr)
   {
+    Log::info('communication recepient');
     try {
       $cr_details = CommunicationRecipient::with('communication.owner', 'user.notification_preference', 'user.person')->find($cr->id);
       //insert data into notifications_triggered table
@@ -53,6 +54,7 @@ class CommunicationReceipientEvent
           $model_id = session()->get('notification_model_id');
         }
         Log::info($model_id);
+        Log::info('communication recepient');
         // Log::info(session()->get('notification_model_id'));
         $nt->type_id = $type_id;
         $nt->token   = $token;
