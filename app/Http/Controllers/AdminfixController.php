@@ -15,6 +15,8 @@ class AdminfixController extends Controller
    */
   public function communicationNotifications()
   {
+    return 'Already ran';
+
     if (!session()->has('ran-notification')) {
       //get all the messages sent to receipients with communication and user, which are not seen
       $receipients = CommunicationRecipient::with('communication', 'user')->whereBetween('created_at', ['2019-12-01 00:00:00', Carbon::now()])->where('seen', '<>', 1)->get();
