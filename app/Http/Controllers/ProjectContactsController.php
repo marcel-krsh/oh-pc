@@ -809,6 +809,9 @@ class ProjectContactsController extends Controller
         $ue = UserEmail::where('user_id', $request->user_id)->where('email_address_id', $check_email->id)->first();
         if ($ue) {
           $selected = $ue->id;
+        } else {
+          $ua = $this->saveEmailToUser($request->user_id, $request, 1);
+          $selected = $ua->id;
         }
       } else {
         $ua = $this->saveEmailToUser($request->user_id, $request, 1);
@@ -1137,7 +1140,13 @@ class ProjectContactsController extends Controller
       $check_email = EmailAddress::where('email_address', $request->email_address)->first();
       if ($check_email) {
         $ue = UserEmail::where('user_id', $request->user_id)->where('email_address_id', $check_email->id)->first();
-        $selected = $ue->id;
+        if ($ue) {
+          $selected = $ue->id;
+        } else {
+          $ua = $this->saveEmailToUser($request->user_id, $request, 1);
+          $selected = $ua->id;
+        }
+        // $selected = $ue->id;
       } else {
         $ua = $this->saveEmailToUser($request->user_id, $request, 1);
         $selected = $ua->id;
