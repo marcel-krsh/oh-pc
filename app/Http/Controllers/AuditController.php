@@ -50,7 +50,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Session;
 use View;
-use Sentry;
 
 class AuditController extends Controller
 {
@@ -74,7 +73,7 @@ class AuditController extends Controller
     // if there are findings, we cannot rerun the compliance
     // dd($audit->findings->count(), count($audit->findings));
     if ($audit->findings->count() < 1) {
-      $auditsAhead             = Job::where('queue', 'compliance')->count();
+      $auditsAhead = Job::where('queue', 'compliance')->count();
       $audit->rerun_compliance = 1;
       $audit->save();
 
@@ -107,7 +106,7 @@ class AuditController extends Controller
 
   public function buildingsFromAudit($audit, Request $request)
   {
-    $target  = $request->get('target');
+    $target = $request->get('target');
     $context = $request->get('context');
 
     // check if user can see that audit TBD
@@ -119,7 +118,7 @@ class AuditController extends Controller
 
     //// Optimized code...
     if (count($buildings)) {
-      $duplicates    = []; // to store amenity_inspection_ids for each amenity_id to see when we have duplicates
+      $duplicates = []; // to store amenity_inspection_ids for each amenity_id to see when we have duplicates
       $previous_name = []; // used in case we have building-level amenity duplicates
 
       foreach ($buildings as $building) {
@@ -167,7 +166,7 @@ class AuditController extends Controller
           // this is an amenity with no link to the amenity inspection -> there might be issues in case of duplicates.
 
           $amenity_id = $building->amenity_id;
-          $audit_id   = $building->audit_id;
+          $audit_id = $building->audit_id;
 
           // we look to see if amenityinspection has a record for this amenity
           if (!array_key_exists($amenity_id, $duplicates)) {
@@ -180,7 +179,7 @@ class AuditController extends Controller
             ->first();
 
           if ($cached_building) {
-            $duplicates[$amenity_id][]       = $cached_building->amenity_inspection_id;
+            $duplicates[$amenity_id][] = $cached_building->amenity_inspection_id;
             $building->amenity_inspection_id = $cached_building->amenity_inspection_id;
             $building->save();
           }
@@ -189,7 +188,7 @@ class AuditController extends Controller
           // naming duplicates should only apply to amenities
           if (!array_key_exists($building->building->building_name, $previous_name)) {
             $previous_name[$building->building->building_name]['counter'] = 1; // counter
-            $first_encounter                                              = $building->building;
+            $first_encounter = $building->building;
           } else {
             if (1 == $previous_name[$building->building->building_name]['counter']) {
               // this is our second encounter, change the first one since we now know there are more
@@ -197,7 +196,7 @@ class AuditController extends Controller
             }
 
             $previous_name[$building->building->building_name]['counter'] = $previous_name[$building->building->building_name]['counter'] + 1;
-            $building->building->building_name                            = $building->building->building_name . ' ' . $previous_name[$building->building->building_name]['counter'];
+            $building->building->building_name = $building->building->building_name . ' ' . $previous_name[$building->building->building_name]['counter'];
           }
         }
       }
@@ -361,7 +360,7 @@ class AuditController extends Controller
 
     //return $buildings;
     $amenities_query = AmenityInspection::where('audit_id', $audit)->with('amenity', 'user', 'building.units');
-    $amenities       = $amenities_query->get();
+    $amenities = $amenities_query->get();
     // echo 'ets';
     // return 12;
 
@@ -370,11 +369,11 @@ class AuditController extends Controller
 
   public function reorderBuildingsFromAudit($audit, Request $request)
   {
-    $building           = $request->get('building'); // this is building_id not cached_building_id
-    $amenity            = $request->get('amenity');
+    $building = $request->get('building'); // this is building_id not cached_building_id
+    $amenity = $request->get('amenity');
     $amenity_inspection = $request->get('amenity_inspection');
-    $project            = $request->get('project');
-    $index              = $request->get('index');
+    $project = $request->get('project');
+    $index = $request->get('index');
 
     if (null !== $building) {
       $current_ordering = OrderingBuilding::where('audit_id', '=', $audit)
@@ -387,13 +386,13 @@ class AuditController extends Controller
         ->get()->toArray();
 
       $inserted = [[
-        'user_id'               => Auth::user()->id,
-        'audit_id'              => $audit,
-        'project_id'            => $project,
-        'building_id'           => $building,
-        'amenity_id'            => 0,
+        'user_id' => Auth::user()->id,
+        'audit_id' => $audit,
+        'project_id' => $project,
+        'building_id' => $building,
+        'amenity_id' => 0,
         'amenity_inspection_id' => 0,
-        'order'                 => $index,
+        'order' => $index,
       ]];
     } else {
       // select all building orders except for the one we want to reorder
@@ -407,13 +406,13 @@ class AuditController extends Controller
         ->get()->toArray();
 
       $inserted = [[
-        'user_id'               => Auth::user()->id,
-        'audit_id'              => $audit,
-        'project_id'            => $project,
-        'building_id'           => null,
-        'amenity_id'            => $amenity,
+        'user_id' => Auth::user()->id,
+        'audit_id' => $audit,
+        'project_id' => $project,
+        'building_id' => null,
+        'amenity_id' => $amenity,
         'amenity_inspection_id' => $amenity_inspection,
-        'order'                 => $index,
+        'order' => $index,
       ]];
     }
 
@@ -427,13 +426,13 @@ class AuditController extends Controller
     // clean-up the ordering and store
     foreach ($reordered_array as $key => $ordering) {
       $new_ordering = new OrderingBuilding([
-        'user_id'               => $ordering['user_id'],
-        'audit_id'              => $ordering['audit_id'],
-        'project_id'            => $ordering['project_id'],
-        'building_id'           => $ordering['building_id'],
-        'amenity_id'            => $ordering['amenity_id'],
+        'user_id' => $ordering['user_id'],
+        'audit_id' => $ordering['audit_id'],
+        'project_id' => $ordering['project_id'],
+        'building_id' => $ordering['building_id'],
+        'amenity_id' => $ordering['amenity_id'],
         'amenity_inspection_id' => $ordering['amenity_inspection_id'],
-        'order'                 => $key + 1,
+        'order' => $key + 1,
       ]);
       $new_ordering->save();
     }
@@ -441,18 +440,18 @@ class AuditController extends Controller
 
   public function reorderUnitsFromAudit($audit, $building, Request $request)
   {
-    $unit  = $request->get('unit');
+    $unit = $request->get('unit');
     $index = $request->get('index');
 
     // select all building orders except for the one we want to reorder
     $current_ordering = OrderingUnit::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->where('building_id', '=', $building)->where('unit_id', '!=', $unit)->orderBy('order', 'asc')->get()->toArray();
 
     $inserted = [[
-      'user_id'     => Auth::user()->id,
-      'audit_id'    => $audit,
+      'user_id' => Auth::user()->id,
+      'audit_id' => $audit,
       'building_id' => $building,
-      'unit_id'     => $unit,
-      'order'       => $index,
+      'unit_id' => $unit,
+      'order' => $index,
     ]];
 
     // insert the building ordering in the array
@@ -465,11 +464,11 @@ class AuditController extends Controller
     // clean-up the ordering and store
     foreach ($reordered_array as $key => $ordering) {
       $new_ordering = new OrderingUnit([
-        'user_id'     => $ordering['user_id'],
-        'audit_id'    => $ordering['audit_id'],
+        'user_id' => $ordering['user_id'],
+        'audit_id' => $ordering['audit_id'],
         'building_id' => $ordering['building_id'],
-        'unit_id'     => $ordering['unit_id'],
-        'order'       => $key + 1,
+        'unit_id' => $ordering['unit_id'],
+        'order' => $key + 1,
       ]);
       $new_ordering->save();
     }
@@ -482,16 +481,16 @@ class AuditController extends Controller
 
   public function detailsFromBuilding($audit, $building, Request $request)
   {
-    $target      = $request->get('target');
+    $target = $request->get('target');
     $targetaudit = $request->get('targetaudit');
-    $context     = $request->get('context');
+    $context = $request->get('context');
 
     // count buildings & count ordering_buildings
     if (OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->count() == 0 && CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->count() != 0) {
       // if ordering_buildings is empty, create a default entry for the ordering
       $details = CachedUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->orderBy('id', 'desc')->get();
 
-      $i            = 1;
+      $i = 1;
       $new_ordering = [];
 
       foreach ($details as $detail) {
@@ -499,11 +498,11 @@ class AuditController extends Controller
         $detail->recount_findings();
 
         $ordering = new OrderingUnit([
-          'user_id'     => Auth::user()->id,
-          'audit_id'    => $audit,
+          'user_id' => Auth::user()->id,
+          'audit_id' => $audit,
           'building_id' => $detail->building_id,
-          'unit_id'     => $detail->id,
-          'order'       => $i,
+          'unit_id' => $detail->id,
+          'order' => $i,
         ]);
         $ordering->save();
         $i++;
@@ -515,7 +514,7 @@ class AuditController extends Controller
 
       // highest ordering
       $last_ordering = OrderingUnit::where('audit_id', '=', $audit)->where('building_id', '=', $building)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'desc')->first()->order;
-      $new_ordering  = $last_ordering;
+      $new_ordering = $last_ordering;
 
       foreach ($details as $detail) {
         // fix total findings if needed
@@ -527,11 +526,11 @@ class AuditController extends Controller
           $new_ordering++;
           //dd($detail);
           $ordering = new OrderingUnit([
-            'user_id'     => Auth::user()->id,
-            'audit_id'    => $audit,
+            'user_id' => Auth::user()->id,
+            'audit_id' => $audit,
             'building_id' => $detail->building_id,
-            'unit_id'     => $detail->id,
-            'order'       => $new_ordering,
+            'unit_id' => $detail->id,
+            'order' => $new_ordering,
           ]);
           $ordering->save();
         }
@@ -556,27 +555,27 @@ class AuditController extends Controller
   public function inspectionFromBuilding($audit_id, $building_id, Request $request)
   {
     //dd($audit_id, $building_id);
-    $target     = $request->get('target');
-    $rowid      = $request->get('rowid');
-    $context    = $request->get('context');
+    $target = $request->get('target');
+    $rowid = $request->get('rowid');
+    $context = $request->get('context');
     $inspection = 'test';
 
     $audit = Audit::where('id', '=', $audit_id)->first();
 
     if (CachedInspection::first()) {
       $data['detail'] = CachedInspection::first();
-      $data['menu']   = $data['detail']->menu_json;
+      $data['menu'] = $data['detail']->menu_json;
     } else {
       $data['detail'] = null;
-      $data['menu']   = null;
+      $data['menu'] = null;
     }
 
     // forget cachedinspection, populate without
     // details: unit_id, building_id, project_id
     $data['detail'] = collect([
-      'unit_id'     => null,
+      'unit_id' => null,
       'building_id' => $building_id,
-      'project_id'  => $audit->project_id,
+      'project_id' => $audit->project_id,
     ]);
 
     // if unit or building is completed, the icon for the unit turn solid green
@@ -624,17 +623,17 @@ class AuditController extends Controller
       }
       $amenities = $amenities->orderBy('id', 'desc')->get();
 
-      $i            = 1;
+      $i = 1;
       $new_ordering = [];
 
       foreach ($amenities as $amenity) {
         $ordering = new OrderingAmenity([
-          'user_id'               => Auth::user()->id,
-          'audit_id'              => $audit_id,
-          'building_id'           => $building_id,
-          'amenity_id'            => $amenity->amenity_id,
+          'user_id' => Auth::user()->id,
+          'audit_id' => $audit_id,
+          'building_id' => $building_id,
+          'amenity_id' => $amenity->amenity_id,
           'amenity_inspection_id' => $amenity->id,
-          'order'                 => $i,
+          'order' => $i,
         ]);
         $ordering->save();
         $i++;
@@ -658,14 +657,14 @@ class AuditController extends Controller
     foreach ($amenities as $amenity) {
       if (null !== $amenity->amenity_inspection->auditor_id) {
         $auditor_initials = $amenity->amenity_inspection->user->initials();
-        $auditor_name     = $amenity->amenity_inspection->user->full_name();
-        $auditor_id       = $amenity->amenity_inspection->user->id;
-        $auditor_color    = $amenity->amenity_inspection->user->badge_color;
+        $auditor_name = $amenity->amenity_inspection->user->full_name();
+        $auditor_id = $amenity->amenity_inspection->user->id;
+        $auditor_color = $amenity->amenity_inspection->user->badge_color;
       } else {
         $auditor_initials = '<i class="a-avatar-plus_1"></i>';
-        $auditor_name     = 'CLICK TO ASSIGN TO AUDITOR';
-        $auditor_color    = '';
-        $auditor_id       = 0;
+        $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+        $auditor_color = '';
+        $auditor_id = 0;
       }
 
       if (null == $amenity->amenity_inspection->completed_date_time) {
@@ -683,7 +682,7 @@ class AuditController extends Controller
       // check for name duplicates and assign a #
       $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
       if ($key > 0) {
-        $key  = $key + 1;
+        $key = $key + 1;
         $name = $amenity->amenity->amenity_description . ' ' . $key;
       } else {
         $name = $amenity->amenity->amenity_description;
@@ -697,25 +696,25 @@ class AuditController extends Controller
       }
 
       $data_amenities[] = [
-        'id'                     => $amenity->amenity_inspection_id,
-        'audit_id'               => $amenity->audit_id,
-        'name'                   => $name,
-        'status'                 => $status,
-        'auditor_initials'       => $auditor_initials,
-        'auditor_id'             => $auditor_id,
-        'auditor_name'           => $auditor_name,
-        'auditor_color'          => $auditor_color,
-        'finding_nlt_status'     => '',
-        'finding_lt_status'      => '',
-        'finding_sd_status'      => '',
-        'finding_photo_status'   => '',
+        'id' => $amenity->amenity_inspection_id,
+        'audit_id' => $amenity->audit_id,
+        'name' => $name,
+        'status' => $status,
+        'auditor_initials' => $auditor_initials,
+        'auditor_id' => $auditor_id,
+        'auditor_name' => $auditor_name,
+        'auditor_color' => $auditor_color,
+        'finding_nlt_status' => '',
+        'finding_lt_status' => '',
+        'finding_sd_status' => '',
+        'finding_photo_status' => '',
         'finding_comment_status' => '',
-        'finding_copy_status'    => '',
-        'finding_trash_status'   => '',
-        'building_id'            => $amenity->building_id,
-        'unit_id'                => 0,
-        'completed_icon'         => $completed_icon,
-        'has_findings'           => $has_findings,
+        'finding_copy_status' => '',
+        'finding_trash_status' => '',
+        'building_id' => $amenity->building_id,
+        'unit_id' => 0,
+        'completed_icon' => $completed_icon,
+        'has_findings' => $has_findings,
       ];
     }
 
@@ -731,9 +730,9 @@ class AuditController extends Controller
 
   public function inspectionFromBuildingDetail($audit_id, $building_id, $detail_id, Request $request)
   {
-    $target     = $request->get('target');
-    $rowid      = $request->get('rowid');
-    $context    = $request->get('context');
+    $target = $request->get('target');
+    $rowid = $request->get('rowid');
+    $context = $request->get('context');
     $inspection = 'test';
 
     //dd($audit_id, $building_id, $detail_id);
@@ -752,14 +751,14 @@ class AuditController extends Controller
 
     // $detail_id is the cachedunit id
     $cached_unit = CachedUnit::where('id', '=', $detail_id)->first();
-    $unit        = $cached_unit->unit;
+    $unit = $cached_unit->unit;
 
     $audit = Audit::where('id', '=', $audit_id)->first();
 
     $data['detail'] = collect([
-      'unit_id'     => $unit->id,
+      'unit_id' => $unit->id,
       'building_id' => $building_id,
-      'project_id'  => $audit->project_id,
+      'project_id' => $audit->project_id,
     ]);
 
     $data['menu'] = collect([
@@ -801,18 +800,18 @@ class AuditController extends Controller
       }
       $amenities = $amenities->orderBy('id', 'desc')->get();
 
-      $i            = 1;
+      $i = 1;
       $new_ordering = [];
 
       foreach ($amenities as $amenity) {
         $ordering = new OrderingAmenity([
-          'user_id'               => Auth::user()->id,
-          'audit_id'              => $audit_id,
-          'building_id'           => $building_id,
-          'unit_id'               => $unit->id,
-          'amenity_id'            => $amenity->amenity_id,
+          'user_id' => Auth::user()->id,
+          'audit_id' => $audit_id,
+          'building_id' => $building_id,
+          'unit_id' => $unit->id,
+          'amenity_id' => $amenity->amenity_id,
           'amenity_inspection_id' => $amenity->id,
-          'order'                 => $i,
+          'order' => $i,
         ]);
         $ordering->save();
         $i++;
@@ -837,14 +836,14 @@ class AuditController extends Controller
       //if(!$amenity->amenity_inspection){dd($amenity->id);} // 6093
       if (null !== $amenity->amenity_inspection->auditor_id) {
         $auditor_initials = $amenity->amenity_inspection->user->initials();
-        $auditor_name     = $amenity->amenity_inspection->user->full_name();
-        $auditor_id       = $amenity->amenity_inspection->user->id;
-        $auditor_color    = $amenity->amenity_inspection->user->badge_color;
+        $auditor_name = $amenity->amenity_inspection->user->full_name();
+        $auditor_id = $amenity->amenity_inspection->user->id;
+        $auditor_color = $amenity->amenity_inspection->user->badge_color;
       } else {
         $auditor_initials = '<i class="a-avatar-plus_1"></i>';
-        $auditor_name     = 'CLICK TO ASSIGN TO AUDITOR';
-        $auditor_color    = '';
-        $auditor_id       = 0;
+        $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+        $auditor_color = '';
+        $auditor_id = 0;
       }
 
       if (null == $amenity->amenity_inspection->completed_date_time) {
@@ -862,7 +861,7 @@ class AuditController extends Controller
       // check for name duplicates and assign a #
       $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
       if ($key > 0) {
-        $key  = $key + 1;
+        $key = $key + 1;
         $name = $amenity->amenity->amenity_description . ' ' . $key;
       } else {
         $name = $amenity->amenity->amenity_description;
@@ -876,26 +875,26 @@ class AuditController extends Controller
       }
 
       $data_amenities[] = [
-        'id'                     => $amenity->amenity_inspection_id,
-        'audit_id'               => $amenity->audit_id,
-        'name'                   => $name,
-        'status'                 => $status,
-        'auditor_id'             => $auditor_id,
-        'auditor_initials'       => $auditor_initials,
-        'auditor_name'           => $auditor_name,
-        'auditor_color'          => $auditor_color,
-        'finding_nlt_status'     => '',
-        'finding_lt_status'      => '',
-        'finding_sd_status'      => '',
-        'finding_photo_status'   => '',
+        'id' => $amenity->amenity_inspection_id,
+        'audit_id' => $amenity->audit_id,
+        'name' => $name,
+        'status' => $status,
+        'auditor_id' => $auditor_id,
+        'auditor_initials' => $auditor_initials,
+        'auditor_name' => $auditor_name,
+        'auditor_color' => $auditor_color,
+        'finding_nlt_status' => '',
+        'finding_lt_status' => '',
+        'finding_sd_status' => '',
+        'finding_photo_status' => '',
         'finding_comment_status' => '',
-        'finding_copy_status'    => '',
-        'finding_trash_status'   => '',
-        'finding_file_status'    => '',
-        'building_id'            => $amenity->building_id,
-        'unit_id'                => $amenity->unit_id,
-        'completed_icon'         => $completed_icon,
-        'has_findings'           => $has_findings,
+        'finding_copy_status' => '',
+        'finding_trash_status' => '',
+        'finding_file_status' => '',
+        'building_id' => $amenity->building_id,
+        'unit_id' => $amenity->unit_id,
+        'completed_icon' => $completed_icon,
+        'has_findings' => $has_findings,
       ];
     }
 
@@ -921,12 +920,12 @@ class AuditController extends Controller
 
   public function saveDeleteAmenity(Request $request)
   {
-    $comment     = ($request->get('comment') !== null) ? $request->get('comment') : '';
-    $amenity_id  = $request->get('amenity_id');
-    $audit_id    = $request->get('audit_id');
+    $comment = ($request->get('comment') !== null) ? $request->get('comment') : '';
+    $amenity_id = $request->get('amenity_id');
+    $audit_id = $request->get('audit_id');
     $building_id = $request->get('building_id');
-    $unit_id     = $request->get('unit_id');
-    $element     = $request->get('element');
+    $unit_id = $request->get('unit_id');
+    $element = $request->get('element');
 
     //dd($comment, $amenity_id, $audit_id, $building_id, $unit_id);
     /*
@@ -961,20 +960,20 @@ class AuditController extends Controller
         }
 
         $new_comment = new Comment([
-          'user_id'       => Auth::user()->id,
-          'project_id'    => $project_id,
-          'audit_id'      => $audit_id,
-          'amenity_id'    => $amenity_id,
-          'unit_id'       => $unit_id,
-          'building_id'   => $building_id,
-          'comment'       => $comment,
+          'user_id' => Auth::user()->id,
+          'project_id' => $project_id,
+          'audit_id' => $audit_id,
+          'amenity_id' => $amenity_id,
+          'unit_id' => $unit_id,
+          'building_id' => $building_id,
+          'comment' => $comment,
           'recorded_date' => date('Y-m-d H:i:s', time()),
         ]);
         $new_comment->save();
 
         // reload auditor names at the unit and building row levels
-        $reload_auditors   = $this->reload_auditors($audit_id, $unit_id, null);
-        $unit_auditors     = $reload_auditors['unit_auditors'];
+        $reload_auditors = $this->reload_auditors($audit_id, $unit_id, null);
+        $unit_auditors = $reload_auditors['unit_auditors'];
         $building_auditors = $reload_auditors['building_auditors'];
 
         $data['element'] = $element;
@@ -985,7 +984,7 @@ class AuditController extends Controller
           $unit->type_total = $unit->amenity_totals();
           $unit->save();
         }
-        $data['amenity_count']    = $unit->amenity_totals();
+        $data['amenity_count'] = $unit->amenity_totals();
         $data['amenity_count_id'] = $audit_id . $unit->building_id . $unit_id;
 
         return $data;
@@ -993,32 +992,32 @@ class AuditController extends Controller
         // dd("building", $comment, $amenity_id, $audit_id, $building_id, $unit_id);
         $amenity_inspection = AmenityInspection::where('id', '=', $amenity_id)->first();
         $ordering_amenities = OrderingAmenity::where('audit_id', '=', $audit_id)->where('amenity_inspection_id', '=', $amenity_id)->whereNull('unit_id')->where('building_id', '=', $building_id)->first();
-        $building_amenity   = BuildingAmenity::where('building_id', '=', $building_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
+        $building_amenity = BuildingAmenity::where('building_id', '=', $building_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
 
         $amenity_inspection->delete();
         $ordering_amenities->delete();
         $building_amenity->delete();
 
         $new_comment = new Comment([
-          'user_id'       => Auth::user()->id,
-          'project_id'    => $project_id,
-          'audit_id'      => $audit_id,
-          'amenity_id'    => $amenity_id,
-          'unit_id'       => $unit_id,
-          'building_id'   => $building_id,
-          'comment'       => $comment,
+          'user_id' => Auth::user()->id,
+          'project_id' => $project_id,
+          'audit_id' => $audit_id,
+          'amenity_id' => $amenity_id,
+          'unit_id' => $unit_id,
+          'building_id' => $building_id,
+          'comment' => $comment,
           'recorded_date' => date('Y-m-d H:i:s', time()),
         ]);
         $new_comment->save();
 
         // reload auditor names at the unit and building row levels
-        $reload_auditors   = $this->reload_auditors($audit_id, $unit_id, $building_id);
-        $unit_auditors     = $reload_auditors['unit_auditors'];
+        $reload_auditors = $this->reload_auditors($audit_id, $unit_id, $building_id);
+        $unit_auditors = $reload_auditors['unit_auditors'];
         $building_auditors = $reload_auditors['building_auditors'];
 
-        $data['element']          = $element;
-        $data['auditor']          = ['unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => $unit_id, 'building_id' => $building_id, 'audit_id' => $audit_id];
-        $data['amenity_count']    = '';
+        $data['element'] = $element;
+        $data['auditor'] = ['unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => $unit_id, 'building_id' => $building_id, 'audit_id' => $audit_id];
+        $data['amenity_count'] = '';
         $data['amenity_count_id'] = '';
 
         return $data;
@@ -1029,24 +1028,24 @@ class AuditController extends Controller
         // amenity_inspection
         $amenity_inspection = AmenityInspection::where('id', '=', $amenity_id)->first();
         $ordering_buildings = OrderingBuilding::where('audit_id', '=', $audit_id)->where('amenity_inspection_id', '=', $amenity_id)->first();
-        $cached_building    = CachedBuilding::where('audit_id', '=', $audit_id)->where('amenity_inspection_id', '=', $amenity_id)->first();
-        if($amenity_inspection) {
-        	$project_amenity    = ProjectAmenity::where('project_id', '=', $project_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
-        	 $amenity_inspection->delete();
-	         $project_amenity->delete();
+        $cached_building = CachedBuilding::where('audit_id', '=', $audit_id)->where('amenity_inspection_id', '=', $amenity_id)->first();
+        if ($amenity_inspection) {
+          $project_amenity = ProjectAmenity::where('project_id', '=', $project_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
+          $amenity_inspection->delete();
+          $project_amenity->delete();
         }
 
         $ordering_buildings->delete();
         $cached_building->delete();
 
         $new_comment = new Comment([
-          'user_id'       => Auth::user()->id,
-          'project_id'    => $project_id,
-          'audit_id'      => $audit_id,
-          'amenity_id'    => $amenity_id,
-          'unit_id'       => null,
-          'building_id'   => null,
-          'comment'       => $comment,
+          'user_id' => Auth::user()->id,
+          'project_id' => $project_id,
+          'audit_id' => $audit_id,
+          'amenity_id' => $amenity_id,
+          'unit_id' => null,
+          'building_id' => null,
+          'comment' => $comment,
           'recorded_date' => date('Y-m-d H:i:s', time()),
         ]);
         $new_comment->save();
@@ -1151,14 +1150,14 @@ class AuditController extends Controller
     if (0 == $amenity_id) {
       if (0 != $unit_id) {
         $amenity = 0;
-        $name    = 'Unit ' . CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name;
+        $name = 'Unit ' . CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name;
       } elseif (0 != $building_id) {
         $amenity = 0;
-        $name    = 'Building ' . CachedBuilding::where('building_id', '=', $building_id)->first()->building_name;
+        $name = 'Building ' . CachedBuilding::where('building_id', '=', $building_id)->first()->building_name;
       } else {
         $amenity = 0;
-        $audit   = CachedAudit::where('audit_id', $audit_id)->with('inspection_items')->first();
-        $name    = 'Site ' . $audit->project->address->basic_address() . ' (swap)';
+        $audit = CachedAudit::where('audit_id', $audit_id)->with('inspection_items')->first();
+        $name = 'Site ' . $audit->project->address->basic_address() . ' (swap)';
       }
     } else {
       if ('null' != $unit_id && 0 != $unit_id) {
@@ -1199,16 +1198,16 @@ class AuditController extends Controller
       }
     }
 
-    $cached_audit    = $auditors    = CachedAudit::with('auditors.user')->where('audit_id', '=', $audit_id)->first();
+    $cached_audit = $auditors = CachedAudit::with('auditors.user')->where('audit_id', '=', $audit_id)->first();
     $lead_auditor_id = Audit::find($audit_id)->lead_user_id;
-    $auditors        = $cached_audit->auditors;
+    $auditors = $cached_audit->auditors;
     if (count($auditors)) {
       $audit_user_ids = $auditors->pluck('user_id');
       array_merge($audit_user_ids->toArray(), [$lead_auditor_id]);
     } else {
       $audit_user_ids = [$lead_auditor_id];
     }
-    $audit_users     = User::whereIn('id', $audit_user_ids)->get();
+    $audit_users = User::whereIn('id', $audit_user_ids)->get();
     $current_auditor = null;
 
     return view('modals.auditor-amenity-assignment', compact('auditors', 'amenity', 'name', 'amenity_id', 'audit_id', 'building_id', 'unit_id', 'element', 'current_auditor', 'in_model', 'audit_users'));
@@ -1232,21 +1231,21 @@ class AuditController extends Controller
       $name = 'Building ' . CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first()->building_name . ' (swap)';
     } elseif (0 != $unit_id) {
       $amenity = 0;
-      $name    = 'Unit ' . CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name . ' (swap)';
+      $name = 'Unit ' . CachedUnit::where('unit_id', '=', $unit_id)->first()->unit_name . ' (swap)';
     } elseif (0 != $building_id) {
       $amenity = 0;
-      $name    = 'Building ' . CachedBuilding::where('building_id', '=', $building_id)->first()->building_name . ' (swap)';
+      $name = 'Building ' . CachedBuilding::where('building_id', '=', $building_id)->first()->building_name . ' (swap)';
     } else {
       $amenity = 0;
-      $audit   = CachedAudit::where('audit_id', $audit_id)->with('inspection_items')->first();
-      $name    = 'Site ' . $audit->project->address->basic_address() . ' (swap)';
+      $audit = CachedAudit::where('audit_id', $audit_id)->with('inspection_items')->first();
+      $name = 'Site ' . $audit->project->address->basic_address() . ' (swap)';
     }
 
     $current_auditor = User::where('id', '=', $auditor_id)->first();
 
-    $cached_audit    = $auditors    = CachedAudit::with('auditors.user')->where('audit_id', '=', $audit_id)->first();
+    $cached_audit = $auditors = CachedAudit::with('auditors.user')->where('audit_id', '=', $audit_id)->first();
     $lead_auditor_id = Audit::find($audit_id)->lead_user_id;
-    $auditors        = $cached_audit->auditors;
+    $auditors = $cached_audit->auditors;
     if (count($auditors)) {
       $audit_user_ids = $auditors->pluck('user_id');
       array_merge($audit_user_ids->toArray(), [$lead_auditor_id]);
@@ -1265,8 +1264,8 @@ class AuditController extends Controller
     if (0 == $amenity_id && 0 != $unit_id) {
       // make sure this id is already in the auditor's list for this audit
       if (AuditAuditor::where('audit_id', '=', $audit_id)->where('user_id', '=', $new_auditor_id)->first()) {
-        $building       = CachedBuilding::where('building_id', '=', $building_id)->first();
-        $unit           = CachedUnit::where('unit_id', '=', $unit_id)->first();
+        $building = CachedBuilding::where('building_id', '=', $building_id)->first();
+        $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
         $cached_unit_id = $unit->unit_id;
 
         $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id', '=', $auditor_id)->where('unit_id', '=', $unit->unit_id)->update([
@@ -1278,7 +1277,7 @@ class AuditController extends Controller
         $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
 
         $building_auditor_ids = [];
-        $units                = Unit::where('building_id', '=', $building_id)->get();
+        $units = Unit::where('building_id', '=', $building_id)->get();
         foreach ($units as $unit) {
           $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
         }
@@ -1286,16 +1285,16 @@ class AuditController extends Controller
         $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
         foreach ($unit_auditors as $unit_auditor) {
           $unit_auditor->full_name = $unit_auditor->full_name();
-          $unit_auditor->initials  = $unit_auditor->initials();
+          $unit_auditor->initials = $unit_auditor->initials();
         }
         $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
         foreach ($building_auditors as $building_auditor) {
           $building_auditor->full_name = $building_auditor->full_name();
-          $building_auditor->initials  = $building_auditor->initials();
+          $building_auditor->initials = $building_auditor->initials();
         }
 
         $initials = $user->initials();
-        $color    = 'auditor-badge-' . $user->badge_color;
+        $color = 'auditor-badge-' . $user->badge_color;
 
         return ['initials' => $initials, 'color' => $color, 'name' => $user->full_name(), 'unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => $cached_unit_id, 'building_id' => $building->building_id];
       }
@@ -1322,7 +1321,7 @@ class AuditController extends Controller
         $user = User::where('id', '=', $new_auditor_id)->first();
 
         $building_auditor_ids = [];
-        $units                = Unit::where('building_id', '=', $building_id)->get();
+        $units = Unit::where('building_id', '=', $building_id)->get();
         foreach ($units as $unit) {
           $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
         }
@@ -1330,16 +1329,16 @@ class AuditController extends Controller
         $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
         foreach ($unit_auditors as $unit_auditor) {
           $unit_auditor->full_name = $unit_auditor->full_name();
-          $unit_auditor->initials  = $unit_auditor->initials();
+          $unit_auditor->initials = $unit_auditor->initials();
         }
         $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
         foreach ($building_auditors as $building_auditor) {
           $building_auditor->full_name = $building_auditor->full_name();
-          $building_auditor->initials  = $building_auditor->initials();
+          $building_auditor->initials = $building_auditor->initials();
         }
 
         $initials = $user->initials();
-        $color    = 'auditor-badge-' . $user->badge_color;
+        $color = 'auditor-badge-' . $user->badge_color;
 
         return ['initials' => $initials, 'color' => $color, 'name' => $user->full_name(), 'unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => 0, 'building_id' => $building->building_id];
       }
@@ -1357,23 +1356,23 @@ class AuditController extends Controller
           'auditor_id' => $new_auditor_id,
         ]);
 
-        $unit_auditor_ids     = [];
+        $unit_auditor_ids = [];
         $building_auditor_ids = [];
-        $user                 = User::where('id', '=', $new_auditor_id)->first();
+        $user = User::where('id', '=', $new_auditor_id)->first();
 
         $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
         foreach ($unit_auditors as $unit_auditor) {
           $unit_auditor->full_name = $unit_auditor->full_name();
-          $unit_auditor->initials  = $unit_auditor->initials();
+          $unit_auditor->initials = $unit_auditor->initials();
         }
         $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
         foreach ($building_auditors as $building_auditor) {
           $building_auditor->full_name = $building_auditor->full_name();
-          $building_auditor->initials  = $building_auditor->initials();
+          $building_auditor->initials = $building_auditor->initials();
         }
 
         $initials = $user->initials();
-        $color    = 'auditor-badge-' . $user->badge_color;
+        $color = 'auditor-badge-' . $user->badge_color;
 
         return ['initials' => $initials, 'color' => $color, 'name' => $user->full_name(), 'unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => 0, 'building_id' => $building->building_id];
       }
@@ -1382,9 +1381,9 @@ class AuditController extends Controller
         $amenities = AmenityInspection::where('audit_id', '=', $audit_id)->where('auditor_id', '=', $auditor_id)->whereNull('building_id')->whereNull('unit_id')->update([
           'auditor_id' => $new_auditor_id,
         ]);
-        $user     = User::where('id', '=', $new_auditor_id)->first();
+        $user = User::where('id', '=', $new_auditor_id)->first();
         $initials = $user->initials();
-        $color    = 'auditor-badge-' . $user->badge_color;
+        $color = 'auditor-badge-' . $user->badge_color;
 
         return ['initials' => $initials, 'color' => $color, 'name' => $user->full_name(), 'unit_auditors' => [], 'building_auditors' => [], 'unit_id' => 0, 'building_id' => 0];
       }
@@ -1400,7 +1399,7 @@ class AuditController extends Controller
     //return $request->all();
 
     // is it mass assignment
-    $auditor_id            = $request->get('auditor_id');
+    $auditor_id = $request->get('auditor_id');
     $lead_auditor_selected = Audit::find($audit_id);
     if ($lead_auditor_selected->lead_user_id == $auditor_id) {
       $lead_auditor_selected = true;
@@ -1422,7 +1421,7 @@ class AuditController extends Controller
           $user = User::where('id', '=', $auditor_id)->first();
 
           $initials = $user->initials();
-          $color    = 'auditor-badge-' . $user->badge_color;
+          $color = 'auditor-badge-' . $user->badge_color;
 
           return ['initials' => $initials, 'color' => $color, 'id' => $user->id, 'name' => $user->full_name()];
         }
@@ -1446,9 +1445,9 @@ class AuditController extends Controller
             ]);
           }
 
-          $unit_auditor_ids     = [];
+          $unit_auditor_ids = [];
           $building_auditor_ids = [];
-          $units                = Unit::where('building_id', '=', $building_id)->get();
+          $units = Unit::where('building_id', '=', $building_id)->get();
           foreach ($units as $unit) {
             $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
 
@@ -1459,18 +1458,18 @@ class AuditController extends Controller
           $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
           foreach ($unit_auditors as $unit_auditor) {
             $unit_auditor->full_name = $unit_auditor->full_name();
-            $unit_auditor->initials  = $unit_auditor->initials();
+            $unit_auditor->initials = $unit_auditor->initials();
           }
           $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
           foreach ($building_auditors as $building_auditor) {
             $building_auditor->full_name = $building_auditor->full_name();
-            $building_auditor->initials  = $building_auditor->initials();
+            $building_auditor->initials = $building_auditor->initials();
           }
 
           $user = User::where('id', '=', $auditor_id)->first();
 
           $initials = $user->initials();
-          $color    = 'auditor-badge-' . $user->badge_color;
+          $color = 'auditor-badge-' . $user->badge_color;
 
           return ['initials' => $initials, 'color' => $color, 'id' => $user->id, 'name' => $user->full_name(), 'unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => 0, 'building_id' => $building->building_id];
         }
@@ -1490,7 +1489,7 @@ class AuditController extends Controller
           $user = User::where('id', '=', $auditor_id)->first();
 
           $initials = $user->initials();
-          $color    = 'auditor-badge-' . $user->badge_color;
+          $color = 'auditor-badge-' . $user->badge_color;
 
           return ['initials' => $initials, 'color' => $color, 'id' => $user->id, 'name' => $user->full_name(), 'unit_id' => 0, 'building_id' => 0];
         }
@@ -1506,7 +1505,7 @@ class AuditController extends Controller
           // if $building_id = 0 we are working with an amenity at the building level like parking lot
           if (0 == $building_id && 0 == $unit_id) {
             //$amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->first(); // TBD this may not work. might be a flaw in the selection...
-            $amenity  = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->whereNull('building_id')->first();
+            $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->whereNull('building_id')->first();
             $building = CachedBuilding::where('id', '=', $amenity->cachedbuilding_id)->first();
           } else {
             $building = CachedBuilding::where('building_id', '=', $building_id)->first();
@@ -1518,7 +1517,7 @@ class AuditController extends Controller
             // $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
             $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('unit_id', '=', $unit_id)->first();
 
-            $unit           = CachedUnit::where('unit_id', '=', $unit_id)->first();
+            $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
             $cached_unit_id = $unit_id;
             // reset unit auditors list
             //$unit_auditors = OrderingUnit::where('audit_id', '=', $audit_id)->where('user_id', '=', Auth::user()->id)->where('unit_id', '=', $unit->id)->first()->auditors();
@@ -1530,11 +1529,11 @@ class AuditController extends Controller
           } else {
             if (0 == $building_id && 0 == $unit_id) {
               // $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->whereNull('building_id')->whereNull('unit_id')->first();
-              $amenity        = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->whereNull('building_id')->whereNull('unit_id')->first();
+              $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->whereNull('building_id')->whereNull('unit_id')->first();
               $cached_unit_id = 0;
             } else {
               // $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('amenity_id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
-              $amenity        = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
+              $amenity = AmenityInspection::where('audit_id', '=', $audit_id)->where('id', '=', $amenity_id)->where('building_id', '=', $building_id)->whereNull('unit_id')->first();
               $cached_unit_id = 0;
             }
           }
@@ -1545,21 +1544,21 @@ class AuditController extends Controller
             $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
 
             $building_auditor_ids = [];
-            $units                = Unit::where('building_id', '=', $building_id)->get();
+            $units = Unit::where('building_id', '=', $building_id)->get();
             foreach ($units as $unit) {
               $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
             }
             // $building_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('building_id','=',$building_id)->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
           } else {
             if (0 == $building_id && 0 == $unit_id) {
-              $unit_auditor_ids     = [];
+              $unit_auditor_ids = [];
               $building_auditor_ids = [];
             } else {
               $unit_auditor_ids = [];
               // reset building auditors list
 
               $building_auditor_ids = [];
-              $units                = Unit::where('building_id', '=', $building_id)->get();
+              $units = Unit::where('building_id', '=', $building_id)->get();
               foreach ($units as $unit) {
                 $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
 
@@ -1572,17 +1571,17 @@ class AuditController extends Controller
           $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
           foreach ($unit_auditors as $unit_auditor) {
             $unit_auditor->full_name = $unit_auditor->full_name();
-            $unit_auditor->initials  = $unit_auditor->initials();
+            $unit_auditor->initials = $unit_auditor->initials();
           }
           $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
           foreach ($building_auditors as $building_auditor) {
             $building_auditor->full_name = $building_auditor->full_name();
-            $building_auditor->initials  = $building_auditor->initials();
+            $building_auditor->initials = $building_auditor->initials();
           }
 
-          $user     = User::where('id', '=', $auditor_id)->first();
+          $user = User::where('id', '=', $auditor_id)->first();
           $initials = $amenity->user->initials();
-          $color    = 'auditor-badge-' . $amenity->user->badge_color;
+          $color = 'auditor-badge-' . $amenity->user->badge_color;
 
           return ['initials' => $initials, 'color' => $color, 'id' => $user->id, 'name' => $user->full_name(), 'unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => $cached_unit_id, 'building_id' => $building_id];
         }
@@ -1594,32 +1593,32 @@ class AuditController extends Controller
 
   public function getProject($id = null, $audit_id = 0)
   {
-    $project   = Project::where('project_key', '=', $id)->first();
-    if($project) {
-	    $projectId = $project->id;
+    $project = Project::where('project_key', '=', $id)->first();
+    if ($project) {
+      $projectId = $project->id;
 
-	    // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
+      // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
 
-	    $projectTabs = collect([
-	      ['title' => 'Audits', 'icon' => 'a-mobile-home', 'status' => '', 'badge' => '', 'action' => 'project.details-with-audit'],
-	      ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.audit-communications'],
-	      ['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
-	      ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
-	      // ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
-	      // ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
-	      // ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.findings'],
-	      // ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
-	      ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.stream'],
-	      ['title' => 'Reports', 'icon' => 'a-file-chart-3', 'status' => '', 'badge' => '', 'action' => 'project.reports'],
-	      ['title' => 'Contacts', 'icon' => 'a-person-notebook icon', 'status' => '', 'badge' => '', 'action' => 'project.contacts'],
-	    ]);
-	    $tab = 'project-detail-tab-1';
+      $projectTabs = collect([
+        ['title' => 'Audits', 'icon' => 'a-mobile-home', 'status' => '', 'badge' => '', 'action' => 'project.details-with-audit'],
+        ['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.audit-communications'],
+        ['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
+        ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
+        // ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
+        // ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
+        // ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.findings'],
+        // ['title' => 'Follow-ups', 'icon' => 'a-bell-ring', 'status' => '', 'badge' => '', 'action' => 'project.followups'],
+        ['title' => 'Findings', 'icon' => 'a-mobile-info', 'status' => '', 'badge' => '', 'action' => 'project.stream'],
+        ['title' => 'Reports', 'icon' => 'a-file-chart-3', 'status' => '', 'badge' => '', 'action' => 'project.reports'],
+        ['title' => 'Contacts', 'icon' => 'a-person-notebook icon', 'status' => '', 'badge' => '', 'action' => 'project.contacts'],
+      ]);
+      $tab = 'project-detail-tab-1';
 
-	    return view('projects.project', compact('tab', 'projectTabs', 'projectId', 'audit_id', 'project'));
-	  } else {
-	  	$error = "I was not able to find the project from the link you clicked. Please let the Allita Support Team know what link you clicked on to arrive at this error.";
-        abort(403, $error);
-	  }
+      return view('projects.project', compact('tab', 'projectTabs', 'projectId', 'audit_id', 'project'));
+    } else {
+      $error = "I was not able to find the project from the link you clicked. Please let the Allita Support Team know what link you clicked on to arrive at this error.";
+      abort(403, $error);
+    }
   }
 
   public function getProjectTitle($id = null)
@@ -1629,7 +1628,7 @@ class AuditController extends Controller
     $audit = CachedAudit::where('project_key', '=', $id)->orderBy('id', 'desc')->first();
 
     // TBD add step to title
-    $step      = $audit->step_status_text; //  :: CREATED DYNAMICALLY FROM CONTROLLER
+    $step = $audit->step_status_text; //  :: CREATED DYNAMICALLY FROM CONTROLLER
     $step_icon = $audit->step_status_icon;
 
     return '<i class="a-mobile-repeat"></i><i class="' . $step_icon . '"></i> <span class="list-tab-text"> PROJECT ' . $project_number . '</span>';
@@ -1638,44 +1637,51 @@ class AuditController extends Controller
   public function getProjectDetails($id = null, $audit_id = 0)
   {
     // the project tab has a audit selection to display previous audit's stats, compliance info and assignments.
-  	try {
-	    $project = Project::where('id', '=', $id)->first();
-	    //return Session::get('project.'.$id.'.selectedaudit');
-	    // if($audit_id) {
-	    //   $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
-	    // } else {
-	    //  $selected_audit = $project->selected_audit();
-	    // }
-	    $selected_audit = $project->selected_audit($audit_id, 1);
-	    //dd($id, $project, $selected_audit);
-	    // get that audit's stats and contact info from the project_details table
-	    $details = $project->details();
-	    // get the list of all audits for this project
-	    $audits = $project->audits;
-	    //dd($selected_audit->checkStatus('schedules'));
-	    return view('projects.partials.details', compact('details', 'audits', 'project', 'selected_audit'));
-  	} catch (\Exception $e) {
-  		app('sentry')->captureException($e);
-  		if(!$selected_audit) {
-	    	$error = 'Audit not found';
-		    $message   = 'Looks like you are trying to access an audit that is not available.';
-		    $code    = 404;
-		    return view('errors.message', compact('error', 'message', 'code'));
-		  }
+    try {
+      $project = Project::where('id', '=', $id)->first();
+      //return Session::get('project.'.$id.'.selectedaudit');
+      // if($audit_id) {
+      //   $selected_audit = CachedAudit::where('audit_id', '=', $audit_id)->first();
+      // } else {
+      //  $selected_audit = $project->selected_audit();
+      // }
+      $selected_audit = $project->selected_audit($audit_id, 1);
+      //dd($id, $project, $selected_audit);
+      // get that audit's stats and contact info from the project_details table
+      $details = $project->details();
+      // get the list of all audits for this project
+      $audits = $project->audits;
+      //dd($selected_audit->checkStatus('schedules'));
+      // get auditors from user roles
+      $auditors = User::whereHas('roles', function ($query) {
+        $query->where('role_id', '=', 2);
+        $query->orWhere('role_id', '=', 3);
+      })
+        ->where('active', '=', 1)
+        ->orderBy('name', 'asc')
+        ->get();
+      return view('projects.partials.details', compact('details', 'audits', 'project', 'selected_audit', 'auditors'));
+    } catch (\Exception $e) {
+      app('sentry')->captureException($e);
+      if (!$selected_audit) {
+        $error = 'Audit not found';
+        $message = 'Looks like you are trying to access an audit that is not available.';
+        $code = 404;
+        return view('errors.message', compact('error', 'message', 'code'));
+      }
     }
-
   }
 
   public function getProjectDetailsAjax(Request $request)
   {
-    $id                   = $request->id;
-    $audit_id             = $request->audit_id;
-    $cached_audit         = CachedAudit::whereAuditId($audit_id)->first();
-    $project              = Project::with('contactRoles.person.user')->find($id);
+    $id = $request->id;
+    $audit_id = $request->audit_id;
+    $cached_audit = CachedAudit::whereAuditId($audit_id)->first();
+    $project = Project::with('contactRoles.person.user')->find($id);
     $project_default_user = $project->contactRoles->where('project_role_key', 21)->first();
-    $details              = $project->details($audit_id);
-    $details_new          = $details->replicate();
-    $pm                   = $project->pm();
+    $details = $project->details($audit_id);
+    $details_new = $details->replicate();
+    $pm = $project->pm();
     //Check if the project has default
     $default_user = ReportAccess::with('user')->where('project_id', $id)->where('default', 1)->first();
     if ($default_user) {
@@ -1693,28 +1699,28 @@ class AuditController extends Controller
     $default_address = UserAddresses::with('user', 'address')->where('project_id', $id)->where('default', 1)->first();
     if ($default_address) {
       // && $default_address->address->line_1 != $details_new->manager_address
-      $details_new->manager_address  = $default_address->address->line_1;
+      $details_new->manager_address = $default_address->address->line_1;
       $details_new->manager_address2 = $default_address->address->line_2;
-      $details_new->manager_city     = $default_address->address->city;
-      $details_new->manager_state    = $default_address->address->state;
-      $details_new->manager_zip      = $default_address->address->zip;
+      $details_new->manager_city = $default_address->address->city;
+      $details_new->manager_state = $default_address->address->state;
+      $details_new->manager_zip = $default_address->address->zip;
       $details_new->save();
     } elseif ($project_default_user && $project_default_user->person && $project_default_user->person->user && !is_null($project_default_user->person->user->organization_id) && $project_default_user->person->user->organization_details) {
-      $default_address               = $project_default_user->person->user->organization_details;
-      $details_new->manager_address  = $default_address->address->line_1;
+      $default_address = $project_default_user->person->user->organization_details;
+      $details_new->manager_address = $default_address->address->line_1;
       $details_new->manager_address2 = $default_address->address->line_2;
-      $details_new->manager_city     = $default_address->address->city;
-      $details_new->manager_state    = $default_address->address->state;
-      $details_new->manager_zip      = $default_address->address->zip;
+      $details_new->manager_city = $default_address->address->city;
+      $details_new->manager_state = $default_address->address->state;
+      $details_new->manager_zip = $default_address->address->zip;
       $details_new->save();
     }
     // Cached audit pm update
     if ($cached_audit) {
-      $cached_audit->pm      = $details_new->manager_poc;
+      $cached_audit->pm = $details_new->manager_poc;
       $cached_audit->address = $details_new->manager_address;
-      $cached_audit->state   = $details_new->manager_state;
-      $cached_audit->zip     = $details_new->manager_zip;
-      $cached_audit->city    = $details_new->manager_city;
+      $cached_audit->state = $details_new->manager_state;
+      $cached_audit->zip = $details_new->manager_zip;
+      $cached_audit->city = $details_new->manager_city;
       $cached_audit->save();
     }
 
@@ -1748,9 +1754,9 @@ class AuditController extends Controller
 
     // OWNER INFO
     $project_default_user = $project->contactRoles->where('project_role_key', 20)->first();
-    $details              = $project->details($audit_id);
-    $details_new          = $details->replicate();
-    $pm                   = $project->owner();
+    $details = $project->details($audit_id);
+    $details_new = $details->replicate();
+    $pm = $project->owner();
     //Check if the project has default
     $default_user = ReportAccess::with('user')->where('project_id', $id)->where('owner_default', 1)->first();
     if ($default_user) {
@@ -1764,19 +1770,19 @@ class AuditController extends Controller
     $default_address = UserAddresses::with('user', 'address')->where('project_id', $id)->where('owner_default', 1)->first();
     if ($default_address) {
       // && $default_address->address->line_1 != $details_new->manager_address
-      $details_new->owner_address  = $default_address->address->line_1;
+      $details_new->owner_address = $default_address->address->line_1;
       $details_new->owner_address2 = $default_address->address->line_2;
-      $details_new->owner_city     = $default_address->address->city;
-      $details_new->owner_state    = $default_address->address->state;
-      $details_new->owner_zip      = $default_address->address->zip;
+      $details_new->owner_city = $default_address->address->city;
+      $details_new->owner_state = $default_address->address->state;
+      $details_new->owner_zip = $default_address->address->zip;
       $details_new->save();
     } elseif ($project_default_user && $project_default_user->person->user && !is_null($project_default_user->person->user->organization_id) && $project_default_user->person->user->organization_details) {
-      $default_address             = $project_default_user->person->user->organization_details;
-      $details_new->owner_address  = $default_address->address->line_1;
+      $default_address = $project_default_user->person->user->organization_details;
+      $details_new->owner_address = $default_address->address->line_1;
       $details_new->owner_address2 = $default_address->address->line_2;
-      $details_new->owner_city     = $default_address->address->city;
-      $details_new->owner_state    = $default_address->address->state;
-      $details_new->owner_zip      = $default_address->address->zip;
+      $details_new->owner_city = $default_address->address->city;
+      $details_new->owner_state = $default_address->address->state;
+      $details_new->owner_zip = $default_address->address->zip;
       $details_new->save();
     }
     $default_org = UserOrganization::with('user', 'organization')->where('project_id', $id)->where('owner_default', 1)->first();
@@ -1835,16 +1841,16 @@ class AuditController extends Controller
     // types: compliance, assignment, findings, followups, reports, documents, comments, photos
     // project: project_id?
     $project = Project::where('id', '=', $id)->first();
-    $audit   = CachedAudit::with('auditors', 'audit', 'lead_auditor')->where('audit_id', $audit)->first();
+    $audit = CachedAudit::with('auditors', 'audit', 'lead_auditor')->where('audit_id', $audit)->first();
     //dd($project->selected_audit());
-    $current_user   = Auth::user();
+    $current_user = Auth::user();
     $manager_access = $current_user->manager_access();
 
     switch ($type) {
       case 'compliance':
         // get the compliance summary for this audit
         //
-        $audit             = $audit->audit;
+        $audit = $audit->audit;
         $selection_summary = json_decode($audit->selection_summary, 1);
         //dd($selection_summary['programs']);
 
@@ -1887,34 +1893,34 @@ class AuditController extends Controller
         $stats = $audit->stats_compliance();
         //dd($stats);
 
-        $summary_required                        = 0;
-        $summary_selected                        = 0;
-        $summary_needed                          = 0;
-        $summary_inspected                       = 0;
-        $summary_to_be_inspected                 = 0;
+        $summary_required = 0;
+        $summary_selected = 0;
+        $summary_needed = 0;
+        $summary_inspected = 0;
+        $summary_to_be_inspected = 0;
         $summary_optimized_remaining_inspections = 0;
-        $summary_optimized_sample_size           = 0;
+        $summary_optimized_sample_size = 0;
         $summary_optimized_completed_inspections = 0;
 
-        $summary_required_file                        = 0;
-        $summary_selected_file                        = 0;
-        $summary_needed_file                          = 0;
-        $summary_inspected_file                       = 0;
-        $summary_to_be_inspected_file                 = 0;
+        $summary_required_file = 0;
+        $summary_selected_file = 0;
+        $summary_needed_file = 0;
+        $summary_inspected_file = 0;
+        $summary_to_be_inspected_file = 0;
         $summary_optimized_remaining_inspections_file = 0;
-        $summary_optimized_sample_size_file           = 0;
+        $summary_optimized_sample_size_file = 0;
         $summary_optimized_completed_inspections_file = 0;
 
         $summary_optimized_unit_ids = [];
-        $summary_unit_ids           = [];
-        $all_program_keys           = [];
+        $summary_unit_ids = [];
+        $all_program_keys = [];
 
         // create stats for each group
         // we may have multiple buildings for a group (group 1 or HTC group 7...)
         if (null !== $selection_summary) {
           foreach ($selection_summary['programs'] as $program) {
             // count selected units using the list of program ids
-            $program_keys     = explode(',', $program['program_keys']);
+            $program_keys = explode(',', $program['program_keys']);
             $all_program_keys = array_merge($all_program_keys, $program_keys);
 
             // are we working with a building?
@@ -2000,36 +2006,36 @@ class AuditController extends Controller
 
             $unit_keys = $program['units_before_optimization'];
 
-            $summary_unit_ids           = array_merge($summary_unit_ids, $program['units_before_optimization']);
+            $summary_unit_ids = array_merge($summary_unit_ids, $program['units_before_optimization']);
             $summary_optimized_unit_ids = array_merge($summary_optimized_unit_ids, $program['units_after_optimization']);
 
             $to_be_inspected_units_site = $selected_units_site - $inspected_units_site;
             $to_be_inspected_units_file = $selected_units_file - $inspected_units_file;
 
-            $summary_required      = $summary_required + $program['required_units'];
+            $summary_required = $summary_required + $program['required_units'];
             $summary_required_file = $summary_required_file + $program['required_units_file'];
 
             $data['programs'][] = [
-              'id'                         => $program['group'],
-              'name'                       => $program['name'],
-              'pool'                       => $program['pool'],
-              'building_key'               => $program['building_key'],
-              'building_name'              => $building_name,
-              'comments'                   => $program['comments'],
-              'user_limiter'               => $program['use_limiter'],
+              'id' => $program['group'],
+              'name' => $program['name'],
+              'pool' => $program['pool'],
+              'building_key' => $program['building_key'],
+              'building_name' => $building_name,
+              'comments' => $program['comments'],
+              'user_limiter' => $program['use_limiter'],
               // 'totals_after_optimization' => $program['totals_after_optimization_not_merged'],
               // 'units_before_optimization' => $program['units_before_optimization'],
               // 'totals_before_optimization' => $program['totals_before_optimization'],
-              'required_units'             => $program['required_units'],
-              'selected_units'             => $selected_units_site,
-              'needed_units'               => $needed_units_site,
-              'inspected_units'            => $inspected_units_site,
-              'to_be_inspected_units'      => $to_be_inspected_units_site,
+              'required_units' => $program['required_units'],
+              'selected_units' => $selected_units_site,
+              'needed_units' => $needed_units_site,
+              'inspected_units' => $inspected_units_site,
+              'to_be_inspected_units' => $to_be_inspected_units_site,
 
-              'required_units_file'        => $program['required_units_file'],
-              'selected_units_file'        => $selected_units_file,
-              'needed_units_file'          => $needed_units_file,
-              'inspected_units_file'       => $inspected_units_file,
+              'required_units_file' => $program['required_units_file'],
+              'selected_units_file' => $selected_units_file,
+              'needed_units_file' => $needed_units_file,
+              'inspected_units_file' => $inspected_units_file,
               'to_be_inspected_units_file' => $to_be_inspected_units_file,
             ];
 
@@ -2093,38 +2099,38 @@ class AuditController extends Controller
 
         //$summary_optimized_required_file = $summary_required_file;
 
-        $summary_selected      = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_site_visit', '=', 1)->select('unit_id')->count();
+        $summary_selected = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_site_visit', '=', 1)->select('unit_id')->count();
         $summary_selected_file = UnitInspection::whereIn('program_key', $all_program_keys)->where('audit_id', '=', $audit->id)->where('is_file_audit', '=', 1)->count();
 
-        $summary_needed      = max($summary_required - $summary_selected, 0);
+        $summary_needed = max($summary_required - $summary_selected, 0);
         $summary_needed_file = max($summary_required_file - $summary_selected_file, 0);
 
-        $summary_to_be_inspected      = $summary_selected - $summary_inspected;
+        $summary_to_be_inspected = $summary_selected - $summary_inspected;
         $summary_to_be_inspected_file = $summary_selected_file - $summary_inspected_file;
 
-        $summary_optimized_sample_size           = $summary_optimized_required;
+        $summary_optimized_sample_size = $summary_optimized_required;
         $summary_optimized_completed_inspections = $summary_optimized_inspected;
         $summary_optimized_remaining_inspections = $summary_optimized_sample_size - $summary_optimized_completed_inspections;
 
-        $summary_optimized_sample_size_file           = $summary_optimized_required_file;
+        $summary_optimized_sample_size_file = $summary_optimized_required_file;
         $summary_optimized_completed_inspections_file = $summary_inspected_file;
         $summary_optimized_remaining_inspections_file = $summary_optimized_sample_size_file - $summary_optimized_completed_inspections_file;
 
         $data['summary'] = [
-          'required_units'                       => $summary_required,
-          'selected_units'                       => $summary_selected,
-          'needed_units'                         => $summary_needed,
-          'inspected_units'                      => $summary_inspected,
-          'to_be_inspected_units'                => $summary_to_be_inspected,
-          'optimized_sample_size'                => $summary_optimized_sample_size,
-          'optimized_completed_inspections'      => $summary_optimized_completed_inspections,
-          'optimized_remaining_inspections'      => $summary_optimized_remaining_inspections,
-          'required_units_file'                  => $summary_required_file,
-          'selected_units_file'                  => $summary_selected_file,
-          'needed_units_file'                    => $summary_needed_file,
-          'inspected_units_file'                 => $summary_inspected_file,
-          'to_be_inspected_units_file'           => $summary_to_be_inspected_file,
-          'optimized_sample_size_file'           => $summary_optimized_required_file,
+          'required_units' => $summary_required,
+          'selected_units' => $summary_selected,
+          'needed_units' => $summary_needed,
+          'inspected_units' => $summary_inspected,
+          'to_be_inspected_units' => $summary_to_be_inspected,
+          'optimized_sample_size' => $summary_optimized_sample_size,
+          'optimized_completed_inspections' => $summary_optimized_completed_inspections,
+          'optimized_remaining_inspections' => $summary_optimized_remaining_inspections,
+          'required_units_file' => $summary_required_file,
+          'selected_units_file' => $summary_selected_file,
+          'needed_units_file' => $summary_needed_file,
+          'inspected_units_file' => $summary_inspected_file,
+          'to_be_inspected_units_file' => $summary_to_be_inspected_file,
+          'optimized_sample_size_file' => $summary_optimized_required_file,
           'optimized_completed_inspections_file' => $summary_optimized_completed_inspections_file,
           'optimized_remaining_inspections_file' => $summary_optimized_remaining_inspections_file,
 
@@ -2139,9 +2145,9 @@ class AuditController extends Controller
         break;
       case 'assignment':
         // check if the lead is listed as an auditor and add it if needed
-        $auditors           = $audit->auditors;
+        $auditors = $audit->auditors;
         $is_lead_an_auditor = 0;
-        $auditors_key       = []; // used to store in which order the auditors will be displayed
+        $auditors_key = []; // used to store in which order the auditors will be displayed
         if ($audit->lead_auditor) {
           $auditors_key[] = $audit->lead_auditor->id;
         }
@@ -2161,10 +2167,10 @@ class AuditController extends Controller
         if (0 == $is_lead_an_auditor && $audit->lead_auditor) {
           // add to audit_auditors
           $new_auditor = new AuditAuditor([
-            'user_id'        => $audit->lead_auditor->id,
-            'user_key'       => $audit->lead_auditor->devco_key,
+            'user_id' => $audit->lead_auditor->id,
+            'user_key' => $audit->lead_auditor->devco_key,
             'monitoring_key' => $audit->audit_key,
-            'audit_id'       => $audit->audit_id,
+            'audit_id' => $audit->audit_id,
           ]);
           $new_auditor->save();
         }
@@ -2229,33 +2235,33 @@ class AuditController extends Controller
 
         $data = collect([
           'project' => [
-            'id'       => $project->id,
-            'ref'      => $project->project_number,
+            'id' => $project->id,
+            'ref' => $project->project_number,
             'audit_id' => $audit->audit_id,
           ],
           'summary' => [
-            'required_unit_selected'              => 0,
+            'required_unit_selected' => 0,
             'inspectable_areas_assignment_needed' => 0,
-            'required_units_selection'            => 0,
-            'file_audits_needed'                  => 0,
-            'physical_audits_needed'              => 0,
-            'schedule_conflicts'                  => 0,
-            'estimated'                           => $audit->estimated_hours() . ':' . $audit->estimated_minutes(),
-            'estimated_hours'                     => $audit->estimated_hours(),
-            'estimated_minutes'                   => $audit->estimated_minutes(),
-            'needed'                              => $audit->hours_still_needed(),
+            'required_units_selection' => 0,
+            'file_audits_needed' => 0,
+            'physical_audits_needed' => 0,
+            'schedule_conflicts' => 0,
+            'estimated' => $audit->estimated_hours() . ':' . $audit->estimated_minutes(),
+            'estimated_hours' => $audit->estimated_hours(),
+            'estimated_minutes' => $audit->estimated_minutes(),
+            'needed' => $audit->hours_still_needed(),
           ],
-          'audits'  => [
+          'audits' => [
             [
-              'id'        => '19200114',
-              'ref'       => '111111',
-              'date'      => '12/22/2018',
-              'name'      => 'The Garden Oaks',
-              'street'    => '123466 Silvegwood Street',
-              'city'      => 'Columbus',
-              'state'     => 'OH',
-              'zip'       => '43219',
-              'lead'      => 2, // user_id
+              'id' => '19200114',
+              'ref' => '111111',
+              'date' => '12/22/2018',
+              'name' => 'The Garden Oaks',
+              'street' => '123466 Silvegwood Street',
+              'city' => 'Columbus',
+              'state' => 'OH',
+              'zip' => '43219',
+              'lead' => 2, // user_id
               'schedules' => [
                 ['icon' => 'a-circle', 'status' => '', 'is_lead' => 1, 'tooltip' => ''],
                 ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' => ''],
@@ -2294,7 +2300,7 @@ class AuditController extends Controller
 
   public function getAuditorDailyCalendar($date, $day_id, $audit_id, $auditor_id)
   {
-    $events_array   = [];
+    $events_array = [];
     $availabilities = Availability::where('user_id', '=', $auditor_id)
       ->where('date', '=', $date->format('Y-m-d'))
       ->orderBy('start_slot', 'asc')
@@ -2321,17 +2327,17 @@ class AuditController extends Controller
     // detect if slot is inside an availability, save start in a variable and span in another
     // detect if no avail or no schedule, if there are variables for avail start and span, add avail, reset them. slot++.
 
-    $slot              = 1;
+    $slot = 1;
     $check_avail_start = null;
-    $check_avail_span  = null;
+    $check_avail_span = null;
 
     // get user default address and compare with project's address for estimated driving times
-    $auditor         = User::where('id', '=', $auditor_id)->first();
+    $auditor = User::where('id', '=', $auditor_id)->first();
     $default_address = $auditor->default_address();
     $distanceAndTime = $auditor->distanceAndTime($audit_id);
     if ($distanceAndTime) {
       // round up to the next 15 minute slot
-      $minutes     = intval($distanceAndTime[2] / 60, 10);
+      $minutes = intval($distanceAndTime[2] / 60, 10);
       $travel_time = ($minutes - ($minutes % 15) + 15) / 15; // time in 15 min slots
     } else {
       $travel_time = null;
@@ -2354,58 +2360,58 @@ class AuditController extends Controller
         if ($s['start_slot'] - $s['travel_span'] == $slot) {
           // save any previous availability
           if (null != $check_avail_start && null != $check_avail_span) {
-            $hours      = sprintf('%02d', floor(($check_avail_start - 1) * 15 / 60) + 6);
-            $minutes    = sprintf('%02d', ($check_avail_start - 1) * 15 % 60);
+            $hours = sprintf('%02d', floor(($check_avail_start - 1) * 15 / 60) + 6);
+            $minutes = sprintf('%02d', ($check_avail_start - 1) * 15 % 60);
             $start_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
-            $hours      = sprintf('%02d', floor(($check_avail_start + $check_avail_span - 1) * 15 / 60) + 6);
-            $minutes    = sprintf('%02d', ($check_avail_start + $check_avail_span - 1) * 15 % 60);
-            $end_time   = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
+            $hours = sprintf('%02d', floor(($check_avail_start + $check_avail_span - 1) * 15 / 60) + 6);
+            $minutes = sprintf('%02d', ($check_avail_start + $check_avail_span - 1) * 15 % 60);
+            $end_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
             $events_array[] = [
-              'id'          => uniqid(),
-              'auditor_id'  => $auditor_id,
-              'audit_id'    => $audit_id,
-              'status'      => '',
+              'id' => uniqid(),
+              'auditor_id' => $auditor_id,
+              'audit_id' => $audit_id,
+              'status' => '',
               'travel_time' => $travel_time,
-              'start_time'  => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')),
-              'end_time'    => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
-              'start'       => $check_avail_start,
-              'span'        => $check_avail_span,
+              'start_time' => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')),
+              'end_time' => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
+              'start' => $check_avail_start,
+              'span' => $check_avail_span,
               'travel_span' => null,
-              'icon'        => 'a-circle-plus',
-              'class'       => 'available no-border-top no-border-bottom',
-              'modal_type'  => 'addschedule',
-              'tooltip'     => 'AVAILABLE TIME ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')) . ' ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
+              'icon' => 'a-circle-plus',
+              'class' => 'available no-border-top no-border-bottom',
+              'modal_type' => 'addschedule',
+              'tooltip' => 'AVAILABLE TIME ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')) . ' ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
             ];
 
             $check_avail_start = null;
-            $check_avail_span  = null;
+            $check_avail_span = null;
           }
 
           // save travel
           if ($s['travel_span'] > 0) {
-            $hours      = sprintf('%02d', floor(($s['start_slot'] - $s['travel_span'] - 1) * 15 / 60) + 6);
-            $minutes    = sprintf('%02d', ($s['start_slot'] - $s['travel_span'] - 1) * 15 % 60);
+            $hours = sprintf('%02d', floor(($s['start_slot'] - $s['travel_span'] - 1) * 15 / 60) + 6);
+            $minutes = sprintf('%02d', ($s['start_slot'] - $s['travel_span'] - 1) * 15 % 60);
             $start_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
-            $hours      = sprintf('%02d', floor(($s['start_slot'] - 1) * 15 / 60) + 6);
-            $minutes    = sprintf('%02d', ($s['start_slot'] - 1) * 15 % 60);
-            $end_time   = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
+            $hours = sprintf('%02d', floor(($s['start_slot'] - 1) * 15 / 60) + 6);
+            $minutes = sprintf('%02d', ($s['start_slot'] - 1) * 15 % 60);
+            $end_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
             $events_array[] = [
-              'id'          => uniqid(),
-              'auditor_id'  => $auditor_id,
-              'audit_id'    => $audit_id,
-              'status'      => '',
+              'id' => uniqid(),
+              'auditor_id' => $auditor_id,
+              'audit_id' => $audit_id,
+              'status' => '',
               'travel_time' => '',
-              'start_time'  => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')),
-              'end_time'    => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
-              'start'       => $s['start_slot'] - $s['travel_span'],
-              'span'        => $s['travel_span'],
+              'start_time' => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')),
+              'end_time' => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
+              'start' => $s['start_slot'] - $s['travel_span'],
+              'span' => $s['travel_span'],
               'travel_span' => null,
-              'icon'        => '',
-              'class'       => 'travel ' . $thisauditclass,
-              'modal_type'  => '',
-              'tooltip'     => 'TRAVEL TIME ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')) . ' ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
+              'icon' => '',
+              'class' => 'travel ' . $thisauditclass,
+              'modal_type' => '',
+              'tooltip' => 'TRAVEL TIME ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')) . ' ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
             ];
             $travelclass = ' no-border-top';
           } else {
@@ -2414,20 +2420,20 @@ class AuditController extends Controller
 
           // save schedule
           $events_array[] = [
-            'id'          => $s['id'],
-            'auditor_id'  => $auditor_id,
-            'audit_id'    => $audit_id,
-            'status'      => '',
+            'id' => $s['id'],
+            'auditor_id' => $auditor_id,
+            'audit_id' => $audit_id,
+            'status' => '',
             'travel_time' => '',
-            'start_time'  => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['start_time'])->format('h:i A')),
-            'end_time'    => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['end_time'])->format('h:i A')),
-            'start'       => $s['start_slot'],
-            'span'        => $s['span'],
+            'start_time' => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['start_time'])->format('h:i A')),
+            'end_time' => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['end_time'])->format('h:i A')),
+            'start' => $s['start_slot'],
+            'span' => $s['span'],
             'travel_span' => null,
-            'icon'        => 'a-mobile-checked',
-            'class'       => 'schedule ' . $thisauditclass . $travelclass,
-            'modal_type'  => 'removeschedule',
-            'tooltip'     => 'SCHEDULED TIME ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['start_time'])->format('h:i A')) . ' ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['end_time'])->format('h:i A')) . ' (PROJECT NUMBER: ' . $s['audit']['project']['project_number'] . ')',
+            'icon' => 'a-mobile-checked',
+            'class' => 'schedule ' . $thisauditclass . $travelclass,
+            'modal_type' => 'removeschedule',
+            'tooltip' => 'SCHEDULED TIME ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['start_time'])->format('h:i A')) . ' ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $s['end_time'])->format('h:i A')) . ' (PROJECT NUMBER: ' . $s['audit']['project']['project_number'] . ')',
           ];
 
           // reset slot to the just after the scheduled time
@@ -2445,7 +2451,7 @@ class AuditController extends Controller
               $check_avail_span++;
             } else {
               $check_avail_start = $slot;
-              $check_avail_span  = 1;
+              $check_avail_span = 1;
             }
             $slot++;
             $skip = 1;
@@ -2457,32 +2463,32 @@ class AuditController extends Controller
       // Are there check_avail_start and check_avail_span? If so add avail to events and reset the variables. slot++
       if (!$skip) {
         if (null != $check_avail_start && null != $check_avail_span) {
-          $hours      = sprintf('%02d', floor(($check_avail_start - 1) * 15 / 60) + 6);
-          $minutes    = sprintf('%02d', ($check_avail_start - 1) * 15 % 60);
+          $hours = sprintf('%02d', floor(($check_avail_start - 1) * 15 / 60) + 6);
+          $minutes = sprintf('%02d', ($check_avail_start - 1) * 15 % 60);
           $start_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
-          $hours      = sprintf('%02d', floor(($check_avail_start + $check_avail_span - 1) * 15 / 60) + 6);
-          $minutes    = sprintf('%02d', ($check_avail_start + $check_avail_span - 1) * 15 % 60);
-          $end_time   = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
+          $hours = sprintf('%02d', floor(($check_avail_start + $check_avail_span - 1) * 15 / 60) + 6);
+          $minutes = sprintf('%02d', ($check_avail_start + $check_avail_span - 1) * 15 % 60);
+          $end_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
           $events_array[] = [
-            'id'          => uniqid(),
-            'auditor_id'  => $auditor_id,
-            'audit_id'    => $audit_id,
-            'status'      => '',
+            'id' => uniqid(),
+            'auditor_id' => $auditor_id,
+            'audit_id' => $audit_id,
+            'status' => '',
             'travel_time' => $travel_time,
-            'start_time'  => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')),
-            'end_time'    => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
-            'start'       => $check_avail_start,
-            'span'        => $check_avail_span,
+            'start_time' => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')),
+            'end_time' => strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
+            'start' => $check_avail_start,
+            'span' => $check_avail_span,
             'travel_span' => null,
-            'icon'        => 'a-circle-plus',
-            'class'       => 'available no-border-top no-border-bottom',
-            'modal_type'  => 'addschedule',
-            'tooltip'     => 'AVAILABLE TIME ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')) . ' ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
+            'icon' => 'a-circle-plus',
+            'class' => 'available no-border-top no-border-bottom',
+            'modal_type' => 'addschedule',
+            'tooltip' => 'AVAILABLE TIME ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $start_time)->format('h:i A')) . ' ' . strtoupper(Carbon\Carbon::createFromFormat('H:i:s', $end_time)->format('h:i A')),
           ];
 
           $check_avail_start = null;
-          $check_avail_span  = null;
+          $check_avail_span = null;
           $slot++;
         } else {
           $slot++;
@@ -2495,7 +2501,7 @@ class AuditController extends Controller
     if (count($events_array)) {
       // figure out the before and after areas on the schedule
       $start_slot = 60;
-      $end_slot   = 1;
+      $end_slot = 1;
       foreach ($events_array as $e) {
         if ($e['start'] <= $start_slot) {
           $start_slot = $e['start'];
@@ -2507,33 +2513,33 @@ class AuditController extends Controller
       }
 
       $before_time_start = 1;
-      $before_time_span  = $start_slot - 1;
-      $after_time_start  = $end_slot;
-      $after_time_span   = 61 - $end_slot;
-      $no_availability   = 0;
+      $before_time_span = $start_slot - 1;
+      $after_time_start = $end_slot;
+      $after_time_span = 61 - $end_slot;
+      $no_availability = 0;
     } else {
-      $events_array      = [];
+      $events_array = [];
       $before_time_start = 1;
-      $before_time_span  = 0;
-      $after_time_start  = 60;
-      $after_time_span   = 1;
-      $no_availability   = 1;
+      $before_time_span = 0;
+      $after_time_start = 60;
+      $after_time_span = 1;
+      $no_availability = 1;
     }
 
     $days = [
-      'date'                => $date->copy()->format('m/d'),
-      'date_formatted'      => $date->copy()->format('F j, Y'),
+      'date' => $date->copy()->format('m/d'),
+      'date_formatted' => $date->copy()->format('F j, Y'),
       'date_formatted_name' => strtolower($date->copy()->englishDayOfWeek),
-      'no_availability'     => $no_availability,
-      'before_time_start'   => $before_time_start,
-      'before_time_span'    => $before_time_span,
-      'after_time_start'    => $after_time_start,
-      'after_time_span'     => $after_time_span,
-      'events'              => $events_array,
+      'no_availability' => $no_availability,
+      'before_time_start' => $before_time_start,
+      'before_time_span' => $before_time_span,
+      'after_time_start' => $after_time_start,
+      'after_time_span' => $after_time_span,
+      'events' => $events_array,
     ];
 
     $calendar = [
-      'header'  => $header,
+      'header' => $header,
       'content' => $days,
     ];
 
@@ -2566,26 +2572,26 @@ class AuditController extends Controller
   {
     // TBD user check
 
-    $start    = $request->get('start');
+    $start = $request->get('start');
     $duration = $request->get('duration');
-    $travel   = $request->get('travel');
+    $travel = $request->get('travel');
 
-    $hours      = sprintf('%02d', floor(($start - 1) * 15 / 60) + 6);
-    $minutes    = sprintf('%02d', ($start - 1) * 15 % 60);
+    $hours = sprintf('%02d', floor(($start - 1) * 15 / 60) + 6);
+    $minutes = sprintf('%02d', ($start - 1) * 15 % 60);
     $start_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
-    $hours    = sprintf('%02d', floor(($start + $duration - 1) * 15 / 60) + 6);
-    $minutes  = sprintf('%02d', ($start + $duration - 1) * 15 % 60);
+    $hours = sprintf('%02d', floor(($start + $duration - 1) * 15 / 60) + 6);
+    $minutes = sprintf('%02d', ($start + $duration - 1) * 15 % 60);
     $end_time = formatTime($hours . ':' . $minutes . ':00', 'H:i:s');
 
     $new_schedule = new ScheduleTime([
-      'audit_id'    => $audit_id,
-      'day_id'      => $day_id,
-      'auditor_id'  => $auditor_id,
-      'start_time'  => $start_time,
-      'end_time'    => $end_time,
-      'start_slot'  => $start,
-      'span'        => $duration,
+      'audit_id' => $audit_id,
+      'day_id' => $day_id,
+      'auditor_id' => $auditor_id,
+      'start_time' => $start_time,
+      'end_time' => $end_time,
+      'start_slot' => $start,
+      'span' => $duration,
       'travel_span' => $travel,
     ]);
     $new_schedule->save();
@@ -2598,13 +2604,13 @@ class AuditController extends Controller
     $audit = Audit::where('id', '=', $id)->first();
 
     if (Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()) {
-      $date  = formatDate($request->get('date'), 'Y-m-d H:i:s', 'F d, Y');
+      $date = formatDate($request->get('date'), 'Y-m-d H:i:s', 'F d, Y');
       $check = ScheduleDay::where('audit_id', $id)->where('date', $date)->count();
       if ($check < 1) {
         // Day has not been entered yet :)
         $day = new ScheduleDay([
           'audit_id' => $id,
-          'date'     => $date,
+          'date' => $date,
         ]);
         $day->save();
 
@@ -2637,7 +2643,7 @@ class AuditController extends Controller
     $audit = Audit::where('id', '=', $id)->first();
     if (Auth::user()->id == $audit->lead_user_id || Auth::user()->manager_access()) {
       $schedules = ScheduleTime::where('day_id', '=', $day_id)->where('audit_id', '=', $id)->delete();
-      $day       = ScheduleDay::where('id', '=', $day_id)->where('audit_id', '=', $id)->delete();
+      $day = ScheduleDay::where('id', '=', $day_id)->where('audit_id', '=', $id)->delete();
 
       // Event::fire('audit.cache', $audit->audit);
 
@@ -2664,7 +2670,7 @@ class AuditController extends Controller
     $forminputs = $request->get('inputs');
     parse_str($forminputs, $forminputs);
 
-    $hours   = (int) $forminputs['estimated_hours'];
+    $hours = (int) $forminputs['estimated_hours'];
     $minutes = (int) $forminputs['estimated_minutes'];
 
     $audit = CachedAudit::where('audit_id', '=', $id)->with('audit');
@@ -2677,7 +2683,7 @@ class AuditController extends Controller
     if (null !== $audit && null !== $hours && null !== $minutes) {
       if (Auth::user()->id == $audit->audit->lead_user_id || Auth::user()->manager_access()) {
         if ($audit) {
-          $audit->estimated_time        = $new_estimate;
+          $audit->estimated_time = $new_estimate;
           $audit->audit->estimated_time = $new_estimate;
           $audit->save();
           $audit->audit->save();
@@ -2699,70 +2705,70 @@ class AuditController extends Controller
   public function getProjectDetailsAssignmentSchedule($project, $dateid)
   {
     $data = collect([
-      'project'  => [
+      'project' => [
         'id' => 1,
       ],
-      'summary'  => [
-        'required_unit_selected'              => 0,
+      'summary' => [
+        'required_unit_selected' => 0,
         'inspectable_areas_assignment_needed' => 12,
-        'required_units_selection'            => 13,
-        'file_audits_needed'                  => 14,
-        'physical_audits_needed'              => 15,
-        'schedule_conflicts'                  => 16,
-        'estimated'                           => '107:00',
-        'estimated_minutes'                   => '',
-        'needed'                              => '27:00',
+        'required_units_selection' => 13,
+        'file_audits_needed' => 14,
+        'physical_audits_needed' => 15,
+        'schedule_conflicts' => 16,
+        'estimated' => '107:00',
+        'estimated_minutes' => '',
+        'needed' => '27:00',
       ],
       'auditors' => [
         [
-          'id'       => 1,
-          'name'     => 'Brian Greenwood',
+          'id' => 1,
+          'name' => 'Brian Greenwood',
           'initials' => 'BG',
-          'color'    => 'pink',
+          'color' => 'pink',
         ],
         [
-          'id'       => 2,
-          'name'     => 'Brianna Bluewood',
+          'id' => 2,
+          'name' => 'Brianna Bluewood',
           'initials' => 'BB',
-          'color'    => 'blue',
+          'color' => 'blue',
         ],
         [
-          'id'       => 3,
-          'name'     => 'John Smith',
+          'id' => 3,
+          'name' => 'John Smith',
           'initials' => 'JS',
-          'color'    => 'black',
+          'color' => 'black',
         ],
         [
-          'id'       => 4,
-          'name'     => 'Sarah Connor',
+          'id' => 4,
+          'name' => 'Sarah Connor',
           'initials' => 'SC',
-          'color'    => 'red',
+          'color' => 'red',
         ],
       ],
-      'days'     => [
+      'days' => [
         [
-          'id'     => 6,
-          'date'   => '12/22/2018',
+          'id' => 6,
+          'date' => '12/22/2018',
           'status' => 'action-required',
-          'icon'   => 'a-avatar-fail',
+          'icon' => 'a-avatar-fail',
         ],
         [
-          'id'     => 7,
-          'date'   => '12/23/2018',
+          'id' => 7,
+          'date' => '12/23/2018',
           'status' => 'ok-actionable',
-          'icon'   => 'a-avatar-approve',
+          'icon' => 'a-avatar-approve',
         ],
       ],
       'projects' => [
         [
-          'id'        => '19200114',
-          'date'      => '12/22/2018',
-          'name'      => 'The Garden Oaks',
-          'street'    => '123466 Silvegwood Street',
-          'city'      => 'Columbus',
-          'state'     => 'OH',
-          'zip'       => '43219',
-          'lead'      => 2, // user_id
+          'id' => '19200114',
+          'date' => '12/22/2018',
+          'name' => 'The Garden Oaks',
+          'street' => '123466 Silvegwood Street',
+          'city' => 'Columbus',
+          'state' => 'OH',
+          'zip' => '43219',
+          'lead' => 2, // user_id
           'schedules' => [
             ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
             ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
@@ -2771,14 +2777,14 @@ class AuditController extends Controller
           ],
         ],
         [
-          'id'        => '19200115',
-          'date'      => '12/22/2018',
-          'name'      => 'The Garden Oaks 2',
-          'street'    => '123466 Silvegwood Street',
-          'city'      => 'Columbus',
-          'state'     => 'OH',
-          'zip'       => '43219',
-          'lead'      => 1, // user_id
+          'id' => '19200115',
+          'date' => '12/22/2018',
+          'name' => 'The Garden Oaks 2',
+          'street' => '123466 Silvegwood Street',
+          'city' => 'Columbus',
+          'state' => 'OH',
+          'zip' => '43219',
+          'lead' => 1, // user_id
           'schedules' => [
             ['icon' => 'a-circle-cross', 'status' => 'action-required', 'is_lead' => 1, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
             ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
@@ -2787,14 +2793,14 @@ class AuditController extends Controller
           ],
         ],
         [
-          'id'        => '19200116',
-          'date'      => '12/22/2018',
-          'name'      => 'The Garden Oaks 3',
-          'street'    => '123466 Silvegwood Street',
-          'city'      => 'Columbus',
-          'state'     => 'OH',
-          'zip'       => '43219',
-          'lead'      => 2, // user_id
+          'id' => '19200116',
+          'date' => '12/22/2018',
+          'name' => 'The Garden Oaks 3',
+          'street' => '123466 Silvegwood Street',
+          'city' => 'Columbus',
+          'state' => 'OH',
+          'zip' => '43219',
+          'lead' => 2, // user_id
           'schedules' => [
             ['icon' => '', 'status' => '', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
             ['icon' => 'a-circle-checked', 'status' => 'ok-actionable', 'is_lead' => 0, 'tooltip' => 'APPROVE SCHEDULE CONFLICT'],
@@ -2855,9 +2861,9 @@ class AuditController extends Controller
         ->get();
 
       $buildingid = '';
-      $unitid     = '';
-      $amenityid  = '';
-      $type       = 'all';
+      $unitid = '';
+      $amenityid = '';
+      $type = 'all';
     } else {
       return 'Sorry, you do not have permission to access this page.';
     }
@@ -2867,24 +2873,24 @@ class AuditController extends Controller
 
   public function getProjectReports(Request $request, $project_id = null)
   {
-    $id       = $project_id;
-    $project  = Project::find($project_id);
-    $prefix   = 'project' . $project->id;
+    $id = $project_id;
+    $project = Project::find($project_id);
+    $prefix = 'project' . $project->id;
     $messages = [];
     // Perform Actions First.
     if (!is_null($request->get('due'))) {
-      $data        = [];
+      $data = [];
       $data['due'] = $request->get('due');
-      $data['id']  = $request->get('report_id');
-      $messages[]  = $this->dueDate($data);
+      $data['id'] = $request->get('report_id');
+      $messages[] = $this->dueDate($data);
     }
 
     if (!is_null($request->get('action'))) {
-      $data           = [];
+      $data = [];
       $data['action'] = intval($request->get('action'));
-      $report         = CrrReport::find($request->get('id'));
-      $rc             = new ReportsController($request);
-      $messages[]     = $rc->reportAction($report, $data);
+      $report = CrrReport::find($request->get('id'));
+      $rc = new ReportsController($request);
+      $messages[] = $rc->reportAction($report, $data);
     }
 
     // Set default filters for first view of page:
@@ -2914,11 +2920,11 @@ class AuditController extends Controller
     }
     if (session($sessionCrrpSearchName) !== 'all') {
       $searchEval = '=';
-      $searchVal  = intval(session($sessionCrrpSearchName));
+      $searchVal = intval(session($sessionCrrpSearchName));
     } else {
       session([$sessionCrrpSearchName => 'all']);
       $searchEval = '>';
-      $searchVal  = '0';
+      $searchVal = '0';
     }
 
     // Report Type
@@ -2930,11 +2936,11 @@ class AuditController extends Controller
     }
     if (session($sessionCrrReportType) !== 'all') {
       $typeEval = '=';
-      $typeVal  = intval(session($sessionCrrReportType));
+      $typeVal = intval(session($sessionCrrReportType));
     } else {
       session([$sessionCrrReportType => 'all']);
       $typeEval = '>';
-      $typeVal  = '0';
+      $typeVal = '0';
     }
 
     // Report Status
@@ -2946,11 +2952,11 @@ class AuditController extends Controller
     if (Auth::user()->can('access_auditor')) {
       if (session($prefix . 'crr_report_status_id') !== 'all') {
         $approvalTypeEval = '=';
-        $approvalTypeVal  = intval(session($prefix . 'crr_report_status_id'));
+        $approvalTypeVal = intval(session($prefix . 'crr_report_status_id'));
       } else {
         session([$prefix . 'crr_report_status_id' => 'all']);
         $approvalTypeEval = '>';
-        $approvalTypeVal  = 0;
+        $approvalTypeVal = 0;
       }
     } else {
       if (session($prefix . 'crr_report_status_id') !== 'all') {
@@ -2959,11 +2965,11 @@ class AuditController extends Controller
           session([$prefix . 'crr_report_status_id' => 6]); // default them to the sent
         }
         $approvalTypeEval = '=';
-        $approvalTypeVal  = intval(session($prefix . 'crr_report_status_id'));
+        $approvalTypeVal = intval(session($prefix . 'crr_report_status_id'));
       } else {
         session([$prefix . 'crr_report_status_id' => 'all']);
         $approvalTypeEval = '>';
-        $approvalTypeVal  = 5;
+        $approvalTypeVal = 5;
       }
     }
 
@@ -2975,11 +2981,11 @@ class AuditController extends Controller
     }
     if (session($prefix . 'crr_report_lead_id') !== 'all') {
       $leadEval = '=';
-      $leadVal  = intval(session($prefix . 'crr_report_lead_id'));
+      $leadVal = intval(session($prefix . 'crr_report_lead_id'));
     } else {
       session([$prefix . 'crr_report_lead_id' => 'all']);
       $leadEval = '>';
-      $leadVal  = 0;
+      $leadVal = 0;
     }
 
     // Check For Newer Than Selection
@@ -2991,21 +2997,20 @@ class AuditController extends Controller
     }
 
     if (Auth::user()->can('access_auditor')) {
-
-      if(!is_null($project_id)) {
-      	$auditLeads      = Audit::where('project_id', $project_id)->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
-      	$auditProjects   = CrrReport::where('project_id', $project_id)->select('project_id')->with('project')->groupBy('project_id')->get();
+      if (!is_null($project_id)) {
+        $auditLeads = Audit::where('project_id', $project_id)->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+        $auditProjects = CrrReport::where('project_id', $project_id)->select('project_id')->with('project')->groupBy('project_id')->get();
       } else {
-      	$auditLeads      = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
-      	$auditProjects   = CrrReport::select('project_id')->with('project')->groupBy('project_id')->get();
+        $auditLeads = Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+        $auditProjects = CrrReport::select('project_id')->with('project')->groupBy('project_id')->get();
       }
 
       //$auditProjects   = CrrReport::select('*')->with('project')->groupBy('project_id')->get();
       $crr_types_array = CrrReport::select('id', 'template_name')->groupBy('template_name')->whereNotNull('template')->get()->all();
       $hfa_users_array = [];
-      $projects_array  = [];
+      $projects_array = [];
     } else {
-      $auditLeads    = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
+      $auditLeads = []; //Audit::select('*')->with('lead')->with('project')->whereNotNull('lead_user_id')->groupBy('lead_user_id')->get();
       $auditProjects = CrrReport::select('project_id')->when(Auth::user()->cannot('access_auditor'), function ($query) {
         $userProjects = \App\Models\ProjectContactRole::select('project_id')->where('person_id', Auth::user()->person_id)->get()->toArray();
 
@@ -3013,10 +3018,11 @@ class AuditController extends Controller
       })->with('project')->groupBy('project_id')->get();
       $crr_types_array = CrrReport::select('id', 'template_name', 'crr_approval_type_id')->where('crr_approval_type_id', '>', 5)->groupBy('template_name')->whereNotNull('template')->get()->all();
       $hfa_users_array = [];
-      $projects_array  = [];
+      $projects_array = [];
     }
     foreach ($auditLeads as $hfa) {
-      if ($hfa->lead_user_id && $hfa->lead) { //check this relationship, we are checking lead_user_id but fetching lead based on devco_key - Div 20191205
+      if ($hfa->lead_user_id && $hfa->lead) {
+        //check this relationship, we are checking lead_user_id but fetching lead based on devco_key - Div 20191205
         $hfa_users_array[] = $hfa->lead;
       }
     }
@@ -3209,7 +3215,7 @@ class AuditController extends Controller
      *         Units info
      */
     $programs = $request->get('programs');
-    $audit    = CachedAudit::where('audit_id', $audit)->first();
+    $audit = CachedAudit::where('audit_id', $audit)->first();
     if (is_array($programs) && count($programs) > 0) {
       $filters = collect([
         'programs' => $programs,
@@ -3217,8 +3223,8 @@ class AuditController extends Controller
     } else {
       $filters = null;
     }
-    $project           = Project::where('id', '=', $project_id)->first();
-    $audit             = $audit->audit;
+    $project = Project::where('id', '=', $project_id)->first();
+    $audit = $audit->audit;
     $selection_summary = json_decode($audit->selection_summary, 1);
     // get units filterd in programs
     if (empty($programs)) {
@@ -3250,16 +3256,16 @@ class AuditController extends Controller
       ->orderBy('units.unit_name', 'asc')
       ->get();
     $actual_programs = $all_unitprograms->pluck('program')->unique()->toArray();
-    $unitprograms    = $unitprograms->groupBy('unit_id');
+    $unitprograms = $unitprograms->groupBy('unit_id');
     foreach ($actual_programs as $key => $actual_program) {
       $group_names = array_column($actual_program['related_groups'], 'group_name');
-      $group_ids   = array_column($actual_program['related_groups'], 'id');
+      $group_ids = array_column($actual_program['related_groups'], 'id');
       if (!empty($group_names)) {
         $actual_programs[$key]['group_names'] = implode(', ', $group_names);
-        $actual_programs[$key]['group_ids']   = $group_ids;
+        $actual_programs[$key]['group_ids'] = $group_ids;
       } else {
         $actual_programs[$key]['group_names'] = ' - ';
-        $actual_programs[$key]['group_ids']   = [];
+        $actual_programs[$key]['group_ids'] = [];
       }
     }
 
@@ -3276,13 +3282,13 @@ class AuditController extends Controller
     }
     $selection_summary = json_decode($audit->selection_summary, 1);
     session(['audit-' . $audit->id . '-selection_summary' => $selection_summary]);
-    $programs          = [];
+    $programs = [];
     $program_keys_list = '';
     if (null !== $selection_summary) {
       foreach ($selection_summary['programs'] as $p) {
         if ($p['pool'] > 0) {
           $programs[] = [
-            'id'   => $p['group'],
+            'id' => $p['group'],
             'name' => $p['name'],
           ];
           if ('' != $program_keys_list) {
@@ -3298,38 +3304,38 @@ class AuditController extends Controller
         'id' => $project->id,
       ],
     ];
-    $stats                                        = $audit->stats_compliance();
-    $summary_required                             = 0;
-    $summary_selected                             = 0;
-    $summary_needed                               = 0;
-    $summary_inspected                            = 0;
-    $summary_to_be_inspected                      = 0;
-    $summary_optimized_remaining_inspections      = 0;
-    $summary_optimized_sample_size                = 0;
-    $summary_optimized_completed_inspections      = 0;
-    $summary_required_file                        = 0;
-    $summary_selected_file                        = 0;
-    $summary_needed_file                          = 0;
-    $summary_inspected_file                       = 0;
-    $summary_to_be_inspected_file                 = 0;
+    $stats = $audit->stats_compliance();
+    $summary_required = 0;
+    $summary_selected = 0;
+    $summary_needed = 0;
+    $summary_inspected = 0;
+    $summary_to_be_inspected = 0;
+    $summary_optimized_remaining_inspections = 0;
+    $summary_optimized_sample_size = 0;
+    $summary_optimized_completed_inspections = 0;
+    $summary_required_file = 0;
+    $summary_selected_file = 0;
+    $summary_needed_file = 0;
+    $summary_inspected_file = 0;
+    $summary_to_be_inspected_file = 0;
     $summary_optimized_remaining_inspections_file = 0;
-    $summary_optimized_sample_size_file           = 0;
+    $summary_optimized_sample_size_file = 0;
     $summary_optimized_completed_inspections_file = 0;
     // create stats for each group
     // build the dataset for the chart
-    $datasets         = [];
+    $datasets = [];
     $all_program_keys = [];
     if (null !== $selection_summary) {
       foreach ($selection_summary['programs'] as $program) {
         //this is actually groups not programs!
         // count selected units using the list of program ids
-        $program_keys         = explode(',', $program['program_keys']);
-        $all_program_keys[]   = $program_keys;
-        $selected_units_site  = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
-        $selected_units_file  = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
-        $needed_units_site    = $program['totals_after_optimization'] - $selected_units_site;
-        $needed_units_file    = $program['totals_after_optimization'] - $selected_units_file;
-        $unit_keys            = $program['units_after_optimization'];
+        $program_keys = explode(',', $program['program_keys']);
+        $all_program_keys[] = $program_keys;
+        $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
+        $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
+        $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
+        $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
+        $unit_keys = $program['units_after_optimization'];
         $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
           ->where('audit_id', '=', $audit->id)
           ->where('group_id', '=', $program['group'])
@@ -3370,9 +3376,9 @@ class AuditController extends Controller
         //chartjs data
         $datasets[] = [
           'program_name' => $program['name'],
-          'required'     => $program['totals_after_optimization'],
-          'selected'     => $selected_units_site + $selected_units_file,
-          'needed'       => $needed_units_site + $needed_units_file,
+          'required' => $program['totals_after_optimization'],
+          'selected' => $selected_units_site + $selected_units_file,
+          'needed' => $needed_units_site + $needed_units_file,
         ];
         // $summary_required = $summary_required + $program['totals_before_optimization'];
         // $summary_selected = $summary_selected + $selected_units_site;
@@ -3416,11 +3422,11 @@ class AuditController extends Controller
     $data = $this->getProjectDetailsInfo($project_id, 'compliance', $audit->id, 1);
 
     $send_project_details = [
-      'audit'            => $audit,
-      'data'             => $data,
-      'datasets'         => $datasets,
-      'project'          => $project,
-      'programs'         => $programs,
+      'audit' => $audit,
+      'data' => $data,
+      'datasets' => $datasets,
+      'project' => $project,
+      'programs' => $programs,
       'all_program_keys' => $all_program_keys,
     ];
 
@@ -3439,10 +3445,10 @@ class AuditController extends Controller
 
       $get_project_details = $this->projectSummaryComposite($project_id, $audit_id);
       collect($get_project_details['all_program_keys'])->flatten()->unique();
-      $audit    = $get_project_details['audit'];
-      $data     = $get_project_details['data'];
+      $audit = $get_project_details['audit'];
+      $data = $get_project_details['data'];
       $datasets = $get_project_details['datasets'];
-      $project  = $get_project_details['project'];
+      $project = $get_project_details['project'];
       $programs = $get_project_details['programs'];
       //@divyam We need to make it so the swap unit modal shows all units regardless of the unit status type and if there are no programs on it but the program exists on the project, show it as a substitution option. -NOT IMPLEMENTED YET 09/23/2019
       // $unit_ids = UnitGroup::where('audit_id', $audit->id)->get()->pluck('unit_id');
@@ -3455,16 +3461,16 @@ class AuditController extends Controller
         ->orderBy('units.unit_name', 'asc')
         ->get();
       $actual_programs = $unitprograms->pluck('program')->unique()->toArray();
-      $unitprograms    = $unitprograms->groupBy('unit_id');
+      $unitprograms = $unitprograms->groupBy('unit_id');
       foreach ($actual_programs as $key => $actual_program) {
         $group_names = array_column($actual_program['related_groups'], 'group_name');
-        $group_ids   = array_column($actual_program['related_groups'], 'id');
+        $group_ids = array_column($actual_program['related_groups'], 'id');
         if (!empty($group_names)) {
           $actual_programs[$key]['group_names'] = implode(', ', $group_names);
-          $actual_programs[$key]['group_ids']   = $group_ids;
+          $actual_programs[$key]['group_ids'] = $group_ids;
         } else {
           $actual_programs[$key]['group_names'] = ' - ';
-          $actual_programs[$key]['group_ids']   = [];
+          $actual_programs[$key]['group_ids'] = [];
         }
       }
       // return $unitprograms;
@@ -3472,16 +3478,16 @@ class AuditController extends Controller
     } else {
       //dd($selection_summary['programs'][$program_id-1]);
       //
-      $project           = Project::where('id', '=', $project_id)->first();
-      $audit             = $project->selected_audit()->audit;
+      $project = Project::where('id', '=', $project_id)->first();
+      $audit = $project->selected_audit()->audit;
       $selection_summary = json_decode($audit->selection_summary, 1);
       session(['audit-' . $audit->id . '-selection_summary' => $selection_summary]);
-      $programs          = [];
+      $programs = [];
       $program_keys_list = '';
       foreach ($selection_summary['programs'] as $p) {
         if ($p['pool'] > 0) {
           $programs[] = [
-            'id'   => $p['group'],
+            'id' => $p['group'],
             'name' => $p['name'],
           ];
           if ('' != $program_keys_list) {
@@ -3494,14 +3500,14 @@ class AuditController extends Controller
       $program = $selection_summary['programs'][$program_id - 1];
 
       // count selected units using the list of program ids
-      $program_keys        = explode(',', $program['program_keys']);
+      $program_keys = explode(',', $program['program_keys']);
       $selected_units_site = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_site_visit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
       $selected_units_file = UnitInspection::whereIn('program_key', $program_keys)->where('audit_id', '=', $audit->id)->where('group_id', '=', $program['group'])->where('is_file_audit', '=', 1)->select('unit_id')->groupBy('unit_id')->get()->count();
 
       $needed_units_site = $program['totals_after_optimization'] - $selected_units_site;
       $needed_units_file = $program['totals_after_optimization'] - $selected_units_file;
 
-      $unit_keys            = $program['units_after_optimization'];
+      $unit_keys = $program['units_after_optimization'];
       $inspected_units_site = UnitInspection::whereIn('unit_key', $unit_keys)
         ->where('audit_id', '=', $audit->id)
         ->where('group_id', '=', $program['group'])
@@ -3523,43 +3529,43 @@ class AuditController extends Controller
       $to_be_inspected_units_file = $program['totals_after_optimization'] - $inspected_units_file;
 
       $stats = [
-        'id'                         => $program['group'],
-        'name'                       => $program['name'],
-        'pool'                       => $program['pool'],
-        'totals_after_optimization'  => $program['totals_after_optimization'],
-        'units_before_optimization'  => $program['units_before_optimization'],
+        'id' => $program['group'],
+        'name' => $program['name'],
+        'pool' => $program['pool'],
+        'totals_after_optimization' => $program['totals_after_optimization'],
+        'units_before_optimization' => $program['units_before_optimization'],
         'totals_before_optimization' => $program['totals_before_optimization'],
-        'required_units'             => $program['totals_after_optimization'],
-        'selected_units'             => $selected_units_site,
-        'needed_units'               => $needed_units_site,
-        'inspected_units'            => $inspected_units_site,
-        'to_be_inspected_units'      => $to_be_inspected_units_site,
-        'required_units_file'        => $program['totals_after_optimization'],
-        'selected_units_file'        => $selected_units_file,
-        'needed_units_file'          => $needed_units_file,
-        'inspected_units_file'       => $inspected_units_file,
+        'required_units' => $program['totals_after_optimization'],
+        'selected_units' => $selected_units_site,
+        'needed_units' => $needed_units_site,
+        'inspected_units' => $inspected_units_site,
+        'to_be_inspected_units' => $to_be_inspected_units_site,
+        'required_units_file' => $program['totals_after_optimization'],
+        'selected_units_file' => $selected_units_file,
+        'needed_units_file' => $needed_units_file,
+        'inspected_units_file' => $inspected_units_file,
         'to_be_inspected_units_file' => $to_be_inspected_units_file,
       ];
 
       //$units = $project->units;
 
       // only select programs that we cover in the groups
-      $program_home_ids     = explode(',', SystemSetting::get('program_home'));
+      $program_home_ids = explode(',', SystemSetting::get('program_home'));
       $program_medicaid_ids = explode(',', SystemSetting::get('program_medicaid'));
-      $program_811_ids      = explode(',', SystemSetting::get('program_811'));
-      $program_bundle_ids   = explode(',', SystemSetting::get('program_bundle'));
-      $program_ohtf_ids     = explode(',', SystemSetting::get('program_ohtf'));
-      $program_nhtf_ids     = explode(',', SystemSetting::get('program_nhtf'));
-      $program_htc_ids      = explode(',', SystemSetting::get('program_htc'));
+      $program_811_ids = explode(',', SystemSetting::get('program_811'));
+      $program_bundle_ids = explode(',', SystemSetting::get('program_bundle'));
+      $program_ohtf_ids = explode(',', SystemSetting::get('program_ohtf'));
+      $program_nhtf_ids = explode(',', SystemSetting::get('program_nhtf'));
+      $program_htc_ids = explode(',', SystemSetting::get('program_htc'));
 
       // TBD something is missing here. We selected all the programs for that units, ignoring the SystemSettings???
 
       $unitprograms = UnitProgram::where('audit_id', '=', $audit->id)->with('unit', 'program', 'unit.building.address')->orderBy('unit_id', 'asc')->get();
 
       $data = collect([
-        'project'  => [
-          'id'               => $project->id,
-          'name'             => $project->project_name,
+        'project' => [
+          'id' => $project->id,
+          'name' => $project->project_name,
           'selected_program' => $program_id,
         ],
         'programs' => [
@@ -3568,69 +3574,69 @@ class AuditController extends Controller
           ['id' => 3, 'name' => 'Program Name 3'],
           ['id' => 4, 'name' => 'Program Name 4'],
         ],
-        'units'    => [
+        'units' => [
           [
-            'id'           => 1,
-            'status'       => 'not-inspectable',
-            'address'      => '123457 Silvegwood Street',
-            'address2'     => '#102',
+            'id' => 1,
+            'status' => 'not-inspectable',
+            'address' => '123457 Silvegwood Street',
+            'address2' => '#102',
             'move_in_date' => '1/29/2018',
-            'programs'     => [
+            'programs' => [
               ['id' => 1, 'name' => 'Program name 1', 'physical_audit_checked' => 'true', 'file_audit_checked' => 'false', 'selected' => '', 'status' => 'not-inspectable'],
               ['id' => 2, 'name' => 'Program name 2', 'physical_audit_checked' => 'false', 'file_audit_checked' => 'true', 'selected' => '', 'status' => 'not-inspectable'],
             ],
           ],
           [
-            'id'           => 2,
-            'status'       => 'inspectable',
-            'address'      => '123457 Silvegwood Street',
-            'address2'     => '#102',
+            'id' => 2,
+            'status' => 'inspectable',
+            'address' => '123457 Silvegwood Street',
+            'address2' => '#102',
             'move_in_date' => '1/29/2018',
-            'programs'     => [
+            'programs' => [
               ['id' => 1, 'name' => 'Program name 1', 'physical_audit_checked' => '', 'file_audit_checked' => '', 'selected' => '', 'status' => 'inspectable'],
               ['id' => 2, 'name' => 'Program name 2', 'physical_audit_checked' => '', 'file_audit_checked' => '', 'selected' => '', 'status' => 'not-inspectable'],
             ],
           ],
           [
-            'id'           => 2,
-            'status'       => 'inspectable',
-            'address'      => '123457 Silvegwood Street',
-            'address2'     => '#102',
+            'id' => 2,
+            'status' => 'inspectable',
+            'address' => '123457 Silvegwood Street',
+            'address2' => '#102',
             'move_in_date' => '1/29/2018',
-            'programs'     => [
+            'programs' => [
               ['id' => 1, 'name' => 'Program name 1', 'physical_audit_checked' => '', 'file_audit_checked' => '', 'selected' => '', 'status' => 'not-inspectable'],
               ['id' => 2, 'name' => 'Program name 2', 'physical_audit_checked' => '', 'file_audit_checked' => '', 'selected' => '', 'status' => 'inspectable'],
             ],
           ],
           [
-            'id'           => 2,
-            'status'       => 'inspectable',
-            'address'      => '123457 Silvegwood Street',
-            'address2'     => '#102',
+            'id' => 2,
+            'status' => 'inspectable',
+            'address' => '123457 Silvegwood Street',
+            'address2' => '#102',
             'move_in_date' => '1/29/2018',
-            'programs'     => [
+            'programs' => [
               ['id' => 1, 'name' => 'Program name 1', 'physical_audit_checked' => 'true', 'file_audit_checked' => 'false', 'selected' => '', 'status' => 'inspectable'],
               ['id' => 2, 'name' => 'Program name 2', 'physical_audit_checked' => 'false', 'file_audit_checked' => 'true', 'selected' => '', 'status' => 'inspectable'],
             ],
           ],
           [
-            'id'           => 2,
-            'status'       => 'inspectable',
-            'address'      => '123457 Silvegwood Street',
-            'address2'     => '#102',
+            'id' => 2,
+            'status' => 'inspectable',
+            'address' => '123457 Silvegwood Street',
+            'address2' => '#102',
             'move_in_date' => '1/29/2018',
-            'programs'     => [
+            'programs' => [
               ['id' => 1, 'name' => 'Program name 1', 'physical_audit_checked' => 'true', 'file_audit_checked' => 'false', 'selected' => '', 'status' => 'inspectable'],
               ['id' => 2, 'name' => 'Program name 2', 'physical_audit_checked' => 'false', 'file_audit_checked' => 'true', 'selected' => '', 'status' => 'inspectable'],
             ],
           ],
           [
-            'id'           => 2,
-            'status'       => 'inspectable',
-            'address'      => '123457 Silvegwood Street',
-            'address2'     => '#102',
+            'id' => 2,
+            'status' => 'inspectable',
+            'address' => '123457 Silvegwood Street',
+            'address2' => '#102',
             'move_in_date' => '1/29/2018',
-            'programs'     => [
+            'programs' => [
               ['id' => 1, 'name' => 'Program name 1', 'physical_audit_checked' => 'true', 'file_audit_checked' => 'false', 'selected' => '', 'status' => 'inspectable'],
               ['id' => 2, 'name' => 'Program name 2', 'physical_audit_checked' => 'false', 'file_audit_checked' => 'true', 'selected' => '', 'status' => 'not-inspectable'],
             ],
@@ -3684,10 +3690,10 @@ class AuditController extends Controller
 
     if ($day && $audit && $user && count(AuditAuditor::where('audit_id', '=', $auditid)->where('user_id', '=', $userid)->get()) == 0) {
       $new_auditor = new AuditAuditor([
-        'audit_id'       => $auditid,
+        'audit_id' => $auditid,
         'monitoring_key' => $audit->monitoring_key,
-        'user_id'        => $userid,
-        'user_key'       => $user->devco_key,
+        'user_id' => $userid,
+        'user_key' => $user->devco_key,
       ]);
       $new_auditor->save();
 
@@ -3720,1267 +3726,1267 @@ class AuditController extends Controller
     // id is project id
 
     $data = collect([
-      'project'           => [
-        'id'   => $id,
+      'project' => [
+        'id' => $id,
         'name' => 'Project Name',
       ],
-      'summary'           => [
-        'id'                         => $auditorid,
-        'name'                       => 'Jane Doe',
-        'initials'                   => 'JD',
-        'color'                      => 'blue',
-        'date'                       => 'DECEMBER 22, 2018',
-        'ref'                        => '20181222',
-        'date-previous'              => 'DECEMBER 13, 2018',
-        'ref-previous'               => '20181213',
-        'date-next'                  => 'DECEMBER 31, 2018',
-        'ref-next'                   => '20181231',
-        'preferred_longest_drive'    => '02:30',
-        'preferred_lunch'            => '00:30',
+      'summary' => [
+        'id' => $auditorid,
+        'name' => 'Jane Doe',
+        'initials' => 'JD',
+        'color' => 'blue',
+        'date' => 'DECEMBER 22, 2018',
+        'ref' => '20181222',
+        'date-previous' => 'DECEMBER 13, 2018',
+        'ref-previous' => '20181213',
+        'date-next' => 'DECEMBER 31, 2018',
+        'ref-next' => '20181231',
+        'preferred_longest_drive' => '02:30',
+        'preferred_lunch' => '00:30',
         'total_estimated_commitment' => '07:40',
       ],
-      'itinerary-start'   => [
-        'id'        => 1,
-        'icon'      => 'a-home-marker',
-        'type'      => 'start',
-        'status'    => '',
-        'name'      => 'Default address',
-        'address'   => 'address here',
-        'unit'      => 'unit 3',
-        'city'      => 'city',
-        'state'     => 'OH',
-        'zip'       => '12345',
-        'average'   => '00:00',
-        'end'       => '08:30 AM',
-        'lead'      => 1, // user id
-        'order'     => 1,
+      'itinerary-start' => [
+        'id' => 1,
+        'icon' => 'a-home-marker',
+        'type' => 'start',
+        'status' => '',
+        'name' => 'Default address',
+        'address' => 'address here',
+        'unit' => 'unit 3',
+        'city' => 'city',
+        'state' => 'OH',
+        'zip' => '12345',
+        'average' => '00:00',
+        'end' => '08:30 AM',
+        'lead' => 1, // user id
+        'order' => 1,
         'itinerary' => [],
       ],
-      'itinerary-end'     => [
-        'id'        => 9,
-        'icon'      => 'a-home-marker',
-        'type'      => 'end',
-        'status'    => '',
-        'name'      => 'The Ending Address',
-        'address'   => 'address here',
-        'unit'      => 'unit 3',
-        'city'      => 'city',
-        'state'     => 'OH',
-        'zip'       => '12345',
-        'average'   => '01:00',
-        'end'       => '4:10 PM',
-        'lead'      => 1,
-        'order'     => 5,
+      'itinerary-end' => [
+        'id' => 9,
+        'icon' => 'a-home-marker',
+        'type' => 'end',
+        'status' => '',
+        'name' => 'The Ending Address',
+        'address' => 'address here',
+        'unit' => 'unit 3',
+        'city' => 'city',
+        'state' => 'OH',
+        'zip' => '12345',
+        'average' => '01:00',
+        'end' => '4:10 PM',
+        'lead' => 1,
+        'order' => 5,
         'itinerary' => [],
       ],
-      'itinerary'         => [
+      'itinerary' => [
         [
-          'id'        => 2,
-          'icon'      => 'a-marker-basic',
-          'type'      => 'site',
-          'status'    => 'in-progress',
-          'name'      => 'The Garden Oaks',
-          'average'   => '00:00',
-          'end'       => '08:30 AM',
-          'lead'      => 1,
-          'order'     => 2,
+          'id' => 2,
+          'icon' => 'a-marker-basic',
+          'type' => 'site',
+          'status' => 'in-progress',
+          'name' => 'The Garden Oaks',
+          'average' => '00:00',
+          'end' => '08:30 AM',
+          'lead' => 1,
+          'order' => 2,
           'itinerary' => [
             [
-              'id'      => 3,
-              'icon'    => 'a-mobile-home',
-              'type'    => 'site',
-              'status'  => 'in-progress',
-              'name'    => 'The Garden Oaks',
+              'id' => 3,
+              'icon' => 'a-mobile-home',
+              'type' => 'site',
+              'status' => 'in-progress',
+              'name' => 'The Garden Oaks',
               'average' => '02:00',
-              'end'     => '11:30 AM',
-              'lead'    => 1,
-              'order'   => 1,
+              'end' => '11:30 AM',
+              'lead' => 1,
+              'order' => 1,
             ],
             [
-              'id'      => 4,
-              'icon'    => 'a-suitcase-2',
-              'type'    => 'break',
-              'status'  => '',
-              'name'    => 'LUNCH',
+              'id' => 4,
+              'icon' => 'a-suitcase-2',
+              'type' => 'break',
+              'status' => '',
+              'name' => 'LUNCH',
               'average' => '00:30',
-              'end'     => '12:00 AM',
-              'lead'    => 1,
-              'order'   => 2,
+              'end' => '12:00 AM',
+              'lead' => 1,
+              'order' => 2,
             ],
           ],
         ],
         [
-          'id'        => 5,
-          'icon'      => 'a-marker-basic',
-          'type'      => 'site',
-          'status'    => '',
-          'name'      => 'The Other Place',
-          'average'   => '00:15',
-          'end'       => '12:15 PM',
-          'lead'      => 1,
-          'order'     => 3,
+          'id' => 5,
+          'icon' => 'a-marker-basic',
+          'type' => 'site',
+          'status' => '',
+          'name' => 'The Other Place',
+          'average' => '00:15',
+          'end' => '12:15 PM',
+          'lead' => 1,
+          'order' => 3,
           'itinerary' => [
             [
-              'id'      => 6,
-              'icon'    => 'a-folder',
-              'type'    => 'file',
-              'status'  => 'in-progress',
-              'name'    => 'The Other Place',
+              'id' => 6,
+              'icon' => 'a-folder',
+              'type' => 'file',
+              'status' => 'in-progress',
+              'name' => 'The Other Place',
               'average' => '01:40',
-              'end'     => '1:55 PM',
-              'lead'    => 1,
-              'order'   => 1,
+              'end' => '1:55 PM',
+              'lead' => 1,
+              'order' => 1,
             ],
           ],
         ],
         [
-          'id'        => 7,
-          'icon'      => 'a-marker-basic',
-          'type'      => 'site',
-          'status'    => '',
-          'name'      => 'The Womping Willow',
-          'average'   => '00:15',
-          'end'       => '2:10 PM',
-          'lead'      => 2,
-          'order'     => 4,
+          'id' => 7,
+          'icon' => 'a-marker-basic',
+          'type' => 'site',
+          'status' => '',
+          'name' => 'The Womping Willow',
+          'average' => '00:15',
+          'end' => '2:10 PM',
+          'lead' => 2,
+          'order' => 4,
           'itinerary' => [
             [
-              'id'      => 8,
-              'icon'    => 'a-folder',
-              'type'    => 'file',
-              'status'  => 'in-progress',
-              'name'    => 'The Womping Willow',
+              'id' => 8,
+              'icon' => 'a-folder',
+              'type' => 'file',
+              'status' => 'in-progress',
+              'name' => 'The Womping Willow',
               'average' => '01:00',
-              'end'     => '3:10 PM',
-              'lead'    => 2,
-              'order'   => 1,
+              'end' => '3:10 PM',
+              'lead' => 2,
+              'order' => 1,
             ],
           ],
         ],
       ],
-      'calendar'          => [
-        'header'  => ['12/18', '12/19', '12/20', '12/21', '12/22', '12/23', '12/24', '12/25', '12/26'],
+      'calendar' => [
+        'header' => ['12/18', '12/19', '12/20', '12/21', '12/22', '12/23', '12/24', '12/25', '12/26'],
         'content' => [
           [
-            'id'                => 111,
-            'date'              => '12/18',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 111,
+            'date' => '12/18',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'action-required',
-                'start'      => '9',
-                'span'       => '24',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'action-required',
+                'start' => '9',
+                'span' => '24',
+                'icon' => 'a-mobile-not',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '33',
-                'span'       => '2',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '33',
+                'span' => '2',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '35',
-                'span'       => '11',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '35',
+                'span' => '11',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 112,
-            'date'              => '12/19',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 112,
+            'date' => '12/19',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => '',
-                'start'      => '9',
-                'span'       => '12',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 112,
+                'status' => '',
+                'start' => '9',
+                'span' => '12',
+                'icon' => 'a-mobile-not',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '21',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '21',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '22',
-                'span'       => '24',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '22',
+                'span' => '24',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 113,
-            'date'              => '12/20',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 113,
+            'date' => '12/20',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'action-required',
-                'start'      => '9',
-                'span'       => '12',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'action-required',
+                'start' => '9',
+                'span' => '12',
+                'icon' => 'a-mobile-not',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '21',
-                'span'       => '4',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '21',
+                'span' => '4',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '25',
-                'span'       => '21',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '25',
+                'span' => '21',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 115,
-            'date'              => '12/21',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 115,
+            'date' => '12/21',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => '',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top',
+                'id' => 112,
+                'status' => '',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top',
                 'modal_type' => 'choose-filing',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '30',
-                'span'       => '16',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '30',
+                'span' => '16',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/22',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/22',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'              => 114,
-            'date'            => '12/23',
+            'id' => 114,
+            'date' => '12/23',
             'no_availability' => 1,
           ],
           [
-            'id'              => 114,
-            'date'            => '12/24',
+            'id' => 114,
+            'date' => '12/24',
             'no_availability' => 1,
           ],
           [
-            'id'              => 114,
-            'date'            => '12/25',
+            'id' => 114,
+            'date' => '12/25',
             'no_availability' => 1,
           ],
           [
-            'id'              => 114,
-            'date'            => '12/26',
+            'id' => 114,
+            'date' => '12/26',
             'no_availability' => 1,
           ],
         ],
-        'footer'  => [
-          'previous'     => 'DECEMBER 13, 2018',
+        'footer' => [
+          'previous' => 'DECEMBER 13, 2018',
           'ref-previous' => '20181213',
-          'today'        => 'DECEMBER 22, 2018',
-          'next'         => 'DECEMBER 31, 2018',
-          'ref-next'     => '20181231',
+          'today' => 'DECEMBER 22, 2018',
+          'next' => 'DECEMBER 31, 2018',
+          'ref-next' => '20181231',
         ],
       ],
       'calendar-previous' => [
-        'header'  => ['12/09', '12/10', '12/11', '12/12', '12/13', '12/14', '12/15', '12/16', '12/17'],
+        'header' => ['12/09', '12/10', '12/11', '12/12', '12/13', '12/14', '12/15', '12/16', '12/17'],
         'content' => [
           [
-            'id'                => 111,
-            'date'              => '12/09',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 111,
+            'date' => '12/09',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'action-required',
-                'start'      => '9',
-                'span'       => '24',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'action-required',
+                'start' => '9',
+                'span' => '24',
+                'icon' => 'a-mobile-not',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '33',
-                'span'       => '2',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '33',
+                'span' => '2',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '35',
-                'span'       => '11',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '35',
+                'span' => '11',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 112,
-            'date'              => '12/10',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 112,
+            'date' => '12/10',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => '',
-                'start'      => '9',
-                'span'       => '12',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 112,
+                'status' => '',
+                'start' => '9',
+                'span' => '12',
+                'icon' => 'a-mobile-not',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '21',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '21',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '22',
-                'span'       => '24',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '22',
+                'span' => '24',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 113,
-            'date'              => '12/11',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 113,
+            'date' => '12/11',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'action-required',
-                'start'      => '9',
-                'span'       => '12',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'action-required',
+                'start' => '9',
+                'span' => '12',
+                'icon' => 'a-mobile-not',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '21',
-                'span'       => '4',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '21',
+                'span' => '4',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '25',
-                'span'       => '21',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '25',
+                'span' => '21',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 115,
-            'date'              => '12/12',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 115,
+            'date' => '12/12',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => '',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top',
+                'id' => 112,
+                'status' => '',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top',
                 'modal_type' => 'choose-filing',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '30',
-                'span'       => '16',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '30',
+                'span' => '16',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/13',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/13',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/14',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/14',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/15',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/15',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/16',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/16',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/17',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/17',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
         ],
-        'footer'  => [
-          'previous'     => 'DECEMBER 04, 2018',
+        'footer' => [
+          'previous' => 'DECEMBER 04, 2018',
           'ref-previous' => '20181204',
-          'today'        => 'DECEMBER 13, 2018',
-          'next'         => 'DECEMBER 22, 2018',
-          'ref-next'     => '20181222',
+          'today' => 'DECEMBER 13, 2018',
+          'next' => 'DECEMBER 22, 2018',
+          'ref-next' => '20181222',
         ],
       ],
-      'calendar-next'     => [
-        'header'  => ['12/27', '12/28', '12/29', '12/30', '12/31', '01/01', '01/02', '01/03', '01/04'],
+      'calendar-next' => [
+        'header' => ['12/27', '12/28', '12/29', '12/30', '12/31', '01/01', '01/02', '01/03', '01/04'],
         'content' => [
           [
-            'id'                => 111,
-            'date'              => '12/09',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 111,
+            'date' => '12/09',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'action-required',
-                'start'      => '9',
-                'span'       => '24',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'action-required',
+                'start' => '9',
+                'span' => '24',
+                'icon' => 'a-mobile-not',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '33',
-                'span'       => '2',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '33',
+                'span' => '2',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '35',
-                'span'       => '11',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '35',
+                'span' => '11',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 112,
-            'date'              => '12/10',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 112,
+            'date' => '12/10',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => '',
-                'start'      => '9',
-                'span'       => '12',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 112,
+                'status' => '',
+                'start' => '9',
+                'span' => '12',
+                'icon' => 'a-mobile-not',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '21',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '21',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '22',
-                'span'       => '24',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '22',
+                'span' => '24',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 113,
-            'date'              => '12/11',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 113,
+            'date' => '12/11',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'action-required',
-                'start'      => '9',
-                'span'       => '12',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'action-required',
+                'start' => '9',
+                'span' => '12',
+                'icon' => 'a-mobile-not',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '21',
-                'span'       => '4',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '21',
+                'span' => '4',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '25',
-                'span'       => '21',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '25',
+                'span' => '21',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 115,
-            'date'              => '12/12',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 115,
+            'date' => '12/12',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => '',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top',
+                'id' => 112,
+                'status' => '',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top',
                 'modal_type' => 'choose-filing',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '30',
-                'span'       => '16',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '30',
+                'span' => '16',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/13',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/13',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/14',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/14',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/15/18',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/15/18',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/16',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/16',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/17',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/17',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
         ],
-        'footer'  => [
-          'previous'     => 'DECEMBER 22, 2018',
+        'footer' => [
+          'previous' => 'DECEMBER 22, 2018',
           'ref-previous' => '20181222',
-          'today'        => 'DECEMBER 31, 2018',
-          'next'         => 'JANUARY 09, 2019',
-          'ref-next'     => '20190109',
+          'today' => 'DECEMBER 31, 2018',
+          'next' => 'JANUARY 09, 2019',
+          'ref-next' => '20190109',
         ],
       ],
     ]);
@@ -4995,15 +5001,15 @@ class AuditController extends Controller
     if ('before' == $beforeafter) {
       $newdate = $created->subDays(9);
 
-      $newdate_previous     = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->subDays(18)->format('F d, Y');
+      $newdate_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->subDays(18)->format('F d, Y');
       $newdate_ref_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->subDays(18)->format('Ymd');
-      $newdate_next         = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('F d, Y');
-      $newdate_ref_next     = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('Ymd');
+      $newdate_next = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('F d, Y');
+      $newdate_ref_next = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('Ymd');
 
-      $newdateref       = $newdate->format('Ymd');
+      $newdateref = $newdate->format('Ymd');
       $newdateformatted = $newdate->format('F d, Y');
 
-      $header_dates   = [];
+      $header_dates = [];
       $header_dates[] = $newdate->subDays(4)->format('m/d');
       $header_dates[] = $newdate->addDays(1)->format('m/d');
       $header_dates[] = $newdate->addDays(1)->format('m/d');
@@ -5016,15 +5022,15 @@ class AuditController extends Controller
     } else {
       $newdate = $created->addDays(9);
 
-      $newdate_previous     = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('F d, Y');
+      $newdate_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('F d, Y');
       $newdate_ref_previous = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->format('Ymd');
-      $newdate_next         = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->addDays(18)->format('F d, Y');
-      $newdate_ref_next     = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->addDays(18)->format('Ymd');
+      $newdate_next = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->addDays(18)->format('F d, Y');
+      $newdate_ref_next = Carbon\Carbon::createFromFormat('Ymd', $currentdate)->addDays(18)->format('Ymd');
 
-      $newdateref       = $newdate->format('Ymd');
+      $newdateref = $newdate->format('Ymd');
       $newdateformatted = $newdate->format('F d, Y');
 
-      $header_dates   = [];
+      $header_dates = [];
       $header_dates[] = $newdate->subDays(4)->format('m/d');
       $header_dates[] = $newdate->addDays(1)->format('m/d');
       $header_dates[] = $newdate->addDays(1)->format('m/d');
@@ -5038,263 +5044,263 @@ class AuditController extends Controller
     // dd($header_dates);
     // dd($currentdate." - ".$created." - ".$newdate." - ".$newdateformatted." - ".$newdateref);
     $data = collect([
-      'project'  => [
-        'id'   => $id,
+      'project' => [
+        'id' => $id,
         'name' => 'Project Name',
       ],
-      'summary'  => [
-        'id'       => $auditorid,
-        'name'     => 'Jane Doe',
+      'summary' => [
+        'id' => $auditorid,
+        'name' => 'Jane Doe',
         'initials' => 'JD',
-        'color'    => 'blue',
-        'date'     => $newdateformatted,
-        'ref'      => $newdateref,
+        'color' => 'blue',
+        'date' => $newdateformatted,
+        'ref' => $newdateref,
       ],
       'calendar' => [
-        'header'  => $header_dates,
+        'header' => $header_dates,
         'content' => [
           [
-            'id'                => 111,
-            'date'              => '12/18',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 111,
+            'date' => '12/18',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'action-required',
-                'start'      => '9',
-                'span'       => '24',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'action-required',
+                'start' => '9',
+                'span' => '24',
+                'icon' => 'a-mobile-not',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '33',
-                'span'       => '2',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '33',
+                'span' => '2',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '35',
-                'span'       => '11',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '35',
+                'span' => '11',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'                => 112,
-            'date'              => '12/19',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 112,
+            'date' => '12/19',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => '',
-                'start'      => '9',
-                'span'       => '12',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 112,
+                'status' => '',
+                'start' => '9',
+                'span' => '12',
+                'icon' => 'a-mobile-not',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '21',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '21',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '22',
-                'span'       => '24',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '22',
+                'span' => '24',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 113,
-            'date'              => '12/20',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 113,
+            'date' => '12/20',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'action-required',
-                'start'      => '9',
-                'span'       => '12',
-                'icon'       => 'a-mobile-not',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'action-required',
+                'start' => '9',
+                'span' => '12',
+                'icon' => 'a-mobile-not',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '21',
-                'span'       => '4',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '21',
+                'span' => '4',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 114,
-                'status'     => '',
-                'start'      => '25',
-                'span'       => '21',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top no-border-bottom',
+                'id' => 114,
+                'status' => '',
+                'start' => '25',
+                'span' => '21',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 115,
-            'date'              => '12/21',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 115,
+            'date' => '12/21',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => '',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-top',
+                'id' => 112,
+                'status' => '',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-top',
                 'modal_type' => 'choose-filing',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '30',
-                'span'       => '16',
-                'icon'       => 'a-circle-plus',
-                'lead'       => 1,
-                'class'      => 'available no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '30',
+                'span' => '16',
+                'icon' => 'a-circle-plus',
+                'lead' => 1,
+                'class' => 'available no-border-bottom',
                 'modal_type' => 'choose-filing',
               ],
             ],
           ],
           [
-            'id'                => 116,
-            'date'              => '12/22',
-            'no_availability'   => 0,
-            'start_time'        => '08:00 AM',
-            'end_time'          => '05:30 PM',
+            'id' => 116,
+            'date' => '12/22',
+            'no_availability' => 0,
+            'start_time' => '08:00 AM',
+            'end_time' => '05:30 PM',
             'before_time_start' => '1',
-            'before_time_span'  => '8',
-            'after_time_start'  => '46',
-            'after_time_span'   => '15',
-            'events'            => [
+            'before_time_span' => '8',
+            'after_time_start' => '46',
+            'after_time_span' => '15',
+            'events' => [
               [
-                'id'         => 112,
-                'status'     => 'in-progress',
-                'start'      => '9',
-                'span'       => '16',
-                'icon'       => 'a-mobile-checked',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 112,
+                'status' => 'in-progress',
+                'start' => '9',
+                'span' => '16',
+                'icon' => 'a-mobile-checked',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => 'change-date',
               ],
               [
-                'id'         => 113,
-                'status'     => 'breaktime',
-                'start'      => '25',
-                'span'       => '1',
-                'icon'       => '',
-                'lead'       => 1,
-                'class'      => '',
+                'id' => 113,
+                'status' => 'breaktime',
+                'start' => '25',
+                'span' => '1',
+                'icon' => '',
+                'lead' => 1,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '26',
-                'span'       => '12',
-                'icon'       => 'a-folder',
-                'lead'       => 2,
-                'class'      => '',
+                'id' => 113,
+                'status' => '',
+                'start' => '26',
+                'span' => '12',
+                'icon' => 'a-folder',
+                'lead' => 2,
+                'class' => '',
                 'modal_type' => '',
               ],
               [
-                'id'         => 113,
-                'status'     => '',
-                'start'      => '38',
-                'span'       => '8',
-                'icon'       => 'a-folder',
-                'lead'       => 1,
-                'class'      => 'no-border-bottom',
+                'id' => 113,
+                'status' => '',
+                'start' => '38',
+                'span' => '8',
+                'icon' => 'a-folder',
+                'lead' => 1,
+                'class' => 'no-border-bottom',
                 'modal_type' => '',
               ],
             ],
           ],
           [
-            'id'              => 114,
-            'date'            => '12/23',
+            'id' => 114,
+            'date' => '12/23',
             'no_availability' => 1,
           ],
           [
-            'id'              => 114,
-            'date'            => '12/24',
+            'id' => 114,
+            'date' => '12/24',
             'no_availability' => 1,
           ],
           [
-            'id'              => 114,
-            'date'            => '12/25',
+            'id' => 114,
+            'date' => '12/25',
             'no_availability' => 1,
           ],
           [
-            'id'              => 114,
-            'date'            => '12/26',
+            'id' => 114,
+            'date' => '12/26',
             'no_availability' => 1,
           ],
         ],
-        'footer'  => [
-          'previous'     => $newdate_previous,
+        'footer' => [
+          'previous' => $newdate_previous,
           'ref-previous' => $newdate_ref_previous,
-          'today'        => $newdateformatted,
-          'next'         => $newdate_next,
-          'ref-next'     => $newdate_ref_next,
+          'today' => $newdateformatted,
+          'next' => $newdate_next,
+          'ref-next' => $newdate_ref_next,
         ],
       ],
     ]);
@@ -5306,12 +5312,12 @@ class AuditController extends Controller
   {
     switch ($type) {
       case 'project':
-        $project_id  = $id;
+        $project_id = $id;
         $building_id = null;
-        $unit_id     = null;
+        $unit_id = null;
 
-        $audit                = CachedAudit::where('audit_id', '=', $project_id)->first();
-        $auditors_collection  = $audit->auditors;
+        $audit = CachedAudit::where('audit_id', '=', $project_id)->first();
+        $auditors_collection = $audit->auditors;
         $amenities_collection = Amenity::where('inspectable', '=', 1)
           ->where('project', '=', 1)
           ->orderBy('amenity_description', 'asc')->get();
@@ -5319,8 +5325,8 @@ class AuditController extends Controller
         break;
       case 'building':
         $building_id = $id;
-        $unit_id     = null;
-        $audit_id    = $request->has('audit') ? $request->audit : 0;
+        $unit_id = null;
+        $audit_id = $request->has('audit') ? $request->audit : 0;
 
         // get project_id from db
         if ($audit_id) {
@@ -5334,8 +5340,8 @@ class AuditController extends Controller
           $project_id = null;
         }
 
-        $audit                = CachedAudit::where('audit_id', '=', $building->audit_id)->first();
-        $auditors_collection  = $audit->auditors;
+        $audit = CachedAudit::where('audit_id', '=', $building->audit_id)->first();
+        $auditors_collection = $audit->auditors;
         $amenities_collection = Amenity::where('inspectable', '=', 1)
           ->where(function ($query) {
             $query->where('building_exterior', '=', 1)
@@ -5346,7 +5352,7 @@ class AuditController extends Controller
 
         break;
       case 'unit':
-        $unit_id  = $id;
+        $unit_id = $id;
         $audit_id = $request->has('audit') ? $request->audit : 0;
         // get building_id and project_id from db
         if ($audit_id) {
@@ -5355,15 +5361,15 @@ class AuditController extends Controller
           $unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
         }
         if ($unit) {
-          $project_id  = $unit->project_id;
+          $project_id = $unit->project_id;
           $building_id = $unit->building_id;
         } else {
-          $project_id  = null;
+          $project_id = null;
           $building_id = null;
         }
 
-        $audit                = CachedAudit::where('audit_id', '=', $unit->audit_id)->first();
-        $auditors_collection  = $audit->auditors;
+        $audit = CachedAudit::where('audit_id', '=', $unit->audit_id)->first();
+        $auditors_collection = $audit->auditors;
         $amenities_collection = Amenity::where('unit', '=', 1)->orWhere('file', '=', 1)->where('inspectable', '=', 1)->orderBy('amenity_description', 'asc')->get();
 
         break;
@@ -5373,10 +5379,10 @@ class AuditController extends Controller
     }
 
     $data = collect([
-      'project_id'  => $project_id,
+      'project_id' => $project_id,
       'building_id' => $building_id,
-      'unit_id'     => $unit_id,
-      'audit_id'    => $audit->audit_id,
+      'unit_id' => $unit_id,
+      'audit_id' => $audit->audit_id,
     ]);
 
     // get auditors for that audit
@@ -5401,12 +5407,12 @@ class AuditController extends Controller
 
   public function saveAmenity(Request $request)
   {
-    $project_id  = $request->get('project_id');
+    $project_id = $request->get('project_id');
     $building_id = $request->get('building_id');
-    $unit_id     = $request->get('unit_id');
-    $audit_id    = $request->get('audit_id');
-    $amenity_id  = $request->get('amenity_id');
-    $toplevel    = $request->get('toplevel');
+    $unit_id = $request->get('unit_id');
+    $audit_id = $request->get('audit_id');
+    $amenity_id = $request->get('amenity_id');
+    $toplevel = $request->get('toplevel');
     modal_confirm($request);
     // $request->session()->forget('hide_confirm_modal');
     // Session::save();
@@ -5433,15 +5439,15 @@ class AuditController extends Controller
             dd("There is an error - this auditor doesn't seem to be assigned to this audit.");
           }
 
-          $auditor_color    = $auditor->user->badge_color;
+          $auditor_color = $auditor->user->badge_color;
           $auditor_initials = $auditor->user->initials();
-          $auditor_name     = $auditor->user->full_name();
-          $auditorid        = $auditor->user_id;
+          $auditor_name = $auditor->user->full_name();
+          $auditorid = $auditor->user_id;
         } else {
-          $auditor_color    = '';
+          $auditor_color = '';
           $auditor_initials = '';
-          $auditor_name     = '';
-          $auditorid        = null;
+          $auditor_name = '';
+          $auditorid = null;
         }
 
         // get amenity type
@@ -5458,52 +5464,52 @@ class AuditController extends Controller
           // load buildings
 
           $project_amenity = new ProjectAmenity([
-            'project_key'      => $audit->project_key,
-            'project_id'       => $audit->project_id,
+            'project_key' => $audit->project_key,
+            'project_id' => $audit->project_id,
             'amenity_type_key' => $amenity_type->amenity_type_key,
-            'amenity_id'       => $amenity_type->id,
-            'comment'          => 'manually added by ' . Auth::user()->id,
+            'amenity_id' => $amenity_type->id,
+            'comment' => 'manually added by ' . Auth::user()->id,
           ]);
           $project_amenity->save();
 
           $cached_building = new CachedBuilding([
-            'building_name'          => $name,
-            'building_id'            => null,
-            'building_key'           => null,
-            'audit_id'               => $audit->audit_id,
-            'audit_key'              => $audit->audit_key,
-            'project_id'             => $audit->project_id,
-            'project_key'            => $audit->project_key,
-            'lead_id'                => $audit->lead_id,
-            'lead_key'               => $audit->lead_key,
-            'status'                 => '',
-            'type'                   => $amenity_type->icon,
-            'type_total'             => null,
-            'type_text'              => null,
-            'type_text_plural'       => null,
-            'finding_total'          => 0,
-            'finding_file_status'    => '',
-            'finding_nlt_status'     => '',
-            'finding_lt_status'      => '',
-            'finding_file_total'     => 0,
+            'building_name' => $name,
+            'building_id' => null,
+            'building_key' => null,
+            'audit_id' => $audit->audit_id,
+            'audit_key' => $audit->audit_key,
+            'project_id' => $audit->project_id,
+            'project_key' => $audit->project_key,
+            'lead_id' => $audit->lead_id,
+            'lead_key' => $audit->lead_key,
+            'status' => '',
+            'type' => $amenity_type->icon,
+            'type_total' => null,
+            'type_text' => null,
+            'type_text_plural' => null,
+            'finding_total' => 0,
+            'finding_file_status' => '',
+            'finding_nlt_status' => '',
+            'finding_lt_status' => '',
+            'finding_file_total' => 0,
             'finding_file_completed' => 0,
-            'finding_nlt_total'      => 0,
-            'finding_nlt_completed'  => 0,
-            'finding_lt_total'       => 0,
-            'finding_lt_completed'   => 0,
-            'address'                => $audit->address,
-            'city'                   => $audit->city,
-            'state'                  => $audit->state,
-            'zip'                    => $audit->zip,
-            'amenity_id'             => $amenity_type->id,
+            'finding_nlt_total' => 0,
+            'finding_nlt_completed' => 0,
+            'finding_lt_total' => 0,
+            'finding_lt_completed' => 0,
+            'address' => $audit->address,
+            'city' => $audit->city,
+            'state' => $audit->state,
+            'zip' => $audit->zip,
+            'amenity_id' => $amenity_type->id,
           ]);
           $cached_building->save();
 
           $amenity = new AmenityInspection([
-            'audit_id'          => $audit->audit_id,
-            'project_id'        => $audit->project_id,
-            'amenity_id'        => $amenity_type->id,
-            'auditor_id'        => $auditorid,
+            'audit_id' => $audit->audit_id,
+            'project_id' => $audit->project_id,
+            'amenity_id' => $amenity_type->id,
+            'auditor_id' => $auditorid,
             'cachedbuilding_id' => $cached_building->id,
           ]);
           $amenity->save();
@@ -5524,13 +5530,13 @@ class AuditController extends Controller
           }
           // save the ordering
           $ordering = new OrderingBuilding([
-            'user_id'               => Auth::user()->id,
-            'audit_id'              => $audit->audit_id,
-            'building_id'           => null,
-            'project_id'            => $audit->project_id,
-            'amenity_id'            => $amenity_type->id,
+            'user_id' => Auth::user()->id,
+            'audit_id' => $audit->audit_id,
+            'building_id' => null,
+            'project_id' => $audit->project_id,
+            'amenity_id' => $amenity_type->id,
             'amenity_inspection_id' => $amenity->id,
-            'order'                 => $latest_ordering + 1,
+            'order' => $latest_ordering + 1,
           ]);
           $ordering->save();
 
@@ -5542,15 +5548,15 @@ class AuditController extends Controller
           // save new amenity
           if ($unit_id) {
             $unitamenity = new UnitAmenity([
-              'unit_id'    => $unit_id,
+              'unit_id' => $unit_id,
               'amenity_id' => $amenity_type->id,
-              'comment'    => 'manually added by ' . Auth::user()->id,
+              'comment' => 'manually added by ' . Auth::user()->id,
             ]);
             $unitamenity->save();
 
             $amenity = new AmenityInspection([
-              'audit_id'   => $audit_id,
-              'unit_id'    => $unit_id,
+              'audit_id' => $audit_id,
+              'unit_id' => $unit_id,
               'amenity_id' => $amenity_type->id,
               'auditor_id' => $auditorid,
             ]);
@@ -5570,27 +5576,27 @@ class AuditController extends Controller
             }
             // save the ordering
             $ordering = new OrderingAmenity([
-              'user_id'               => Auth::user()->id,
-              'audit_id'              => $audit->audit_id,
-              'unit_id'               => $unit_id,
-              'amenity_id'            => $amenity_type->id,
+              'user_id' => Auth::user()->id,
+              'audit_id' => $audit->audit_id,
+              'unit_id' => $unit_id,
+              'amenity_id' => $amenity_type->id,
               'amenity_inspection_id' => $amenity->id,
-              'order'                 => $latest_ordering + 1,
+              'order' => $latest_ordering + 1,
             ]);
             $ordering->save();
           } elseif ($building_id) {
             $buildingamenity = new BuildingAmenity([
               'building_id' => $building_id,
-              'amenity_id'  => $amenity_type->id,
-              'comment'     => 'manually added by ' . Auth::user()->id,
+              'amenity_id' => $amenity_type->id,
+              'comment' => 'manually added by ' . Auth::user()->id,
             ]);
             $buildingamenity->save();
 
             $amenity = new AmenityInspection([
-              'audit_id'    => $audit->audit_id,
+              'audit_id' => $audit->audit_id,
               'building_id' => $building_id,
-              'amenity_id'  => $amenity_type->id,
-              'auditor_id'  => $auditorid,
+              'amenity_id' => $amenity_type->id,
+              'auditor_id' => $auditorid,
             ]);
             $amenity->save();
 
@@ -5607,12 +5613,12 @@ class AuditController extends Controller
             }
             // save the ordering
             $ordering = new OrderingAmenity([
-              'user_id'               => Auth::user()->id,
-              'audit_id'              => $audit->audit_id,
-              'building_id'           => $building_id,
-              'amenity_id'            => $amenity_type->id,
+              'user_id' => Auth::user()->id,
+              'audit_id' => $audit->audit_id,
+              'building_id' => $building_id,
+              'amenity_id' => $amenity_type->id,
               'amenity_inspection_id' => $amenity->id,
-              'order'                 => $latest_ordering + 1,
+              'order' => $latest_ordering + 1,
             ]);
             $ordering->save();
           }
@@ -5638,14 +5644,14 @@ class AuditController extends Controller
             if ($amenity->amenity_inspection) {
               if (null !== $amenity->amenity_inspection->auditor_id) {
                 $auditor_initials = $amenity->amenity_inspection->user->initials();
-                $auditor_name     = $amenity->amenity_inspection->user->full_name();
-                $auditor_id       = $amenity->amenity_inspection->user->id;
-                $auditor_color    = $amenity->amenity_inspection->user->badge_color;
+                $auditor_name = $amenity->amenity_inspection->user->full_name();
+                $auditor_id = $amenity->amenity_inspection->user->id;
+                $auditor_color = $amenity->amenity_inspection->user->badge_color;
               } else {
                 $auditor_initials = '<i class="a-avatar-plus_1"></i>';
-                $auditor_name     = 'CLICK TO ASSIGN TO AUDITOR';
-                $auditor_color    = '';
-                $auditor_id       = 0;
+                $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+                $auditor_color = '';
+                $auditor_id = 0;
               }
 
               if (null == $amenity->amenity_inspection->completed_date_time) {
@@ -5655,10 +5661,10 @@ class AuditController extends Controller
               }
             } else {
               $auditor_initials = '<i class="a-avatar-plus_1"></i>';
-              $auditor_name     = 'CLICK TO ASSIGN TO AUDITOR';
-              $auditor_color    = '';
-              $auditor_id       = 0;
-              $completed_icon   = 'a-circle-checked ok-actionable';
+              $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+              $auditor_color = '';
+              $auditor_id = 0;
+              $completed_icon = 'a-circle-checked ok-actionable';
             }
 
             if (1 == $amenity->amenity->file) {
@@ -5670,7 +5676,7 @@ class AuditController extends Controller
             // check for name duplicates and assign a #
             $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
             if ($key > 0) {
-              $key  = $key + 1;
+              $key = $key + 1;
               $name = $amenity->amenity->amenity_description . ' ' . $key;
             } else {
               $name = $amenity->amenity->amenity_description;
@@ -5683,25 +5689,25 @@ class AuditController extends Controller
             }
 
             $data_amenities[] = [
-              'id'                     => $amenity->amenity_inspection_id,
-              'audit_id'               => $amenity->audit_id,
-              'name'                   => $name,
-              'status'                 => $status,
-              'auditor_id'             => $auditor_id,
-              'auditor_initials'       => $auditor_initials,
-              'auditor_name'           => $auditor_name,
-              'auditor_color'          => $auditor_color,
-              'finding_nlt_status'     => '',
-              'finding_lt_status'      => '',
-              'finding_sd_status'      => '',
-              'finding_photo_status'   => '',
+              'id' => $amenity->amenity_inspection_id,
+              'audit_id' => $amenity->audit_id,
+              'name' => $name,
+              'status' => $status,
+              'auditor_id' => $auditor_id,
+              'auditor_initials' => $auditor_initials,
+              'auditor_name' => $auditor_name,
+              'auditor_color' => $auditor_color,
+              'finding_nlt_status' => '',
+              'finding_lt_status' => '',
+              'finding_sd_status' => '',
+              'finding_photo_status' => '',
               'finding_comment_status' => '',
-              'finding_copy_status'    => '',
-              'finding_trash_status'   => '',
-              'building_id'            => $building_id,
-              'unit_id'                => $amenity->unit_id,
-              'completed_icon'         => $completed_icon,
-              'has_findings'           => $has_findings,
+              'finding_copy_status' => '',
+              'finding_trash_status' => '',
+              'building_id' => $building_id,
+              'unit_id' => $amenity->unit_id,
+              'completed_icon' => $completed_icon,
+              'has_findings' => $has_findings,
             ];
           }
 
@@ -5710,8 +5716,8 @@ class AuditController extends Controller
           // TBD update amenity totals?
 
           // reload auditor names at the unit and building row levels
-          $reload_auditors   = $this->reload_auditors($audit->audit_id, $unit_id, $building_id);
-          $unit_auditors     = $reload_auditors['unit_auditors'];
+          $reload_auditors = $this->reload_auditors($audit->audit_id, $unit_id, $building_id);
+          $unit_auditors = $reload_auditors['unit_auditors'];
           $building_auditors = $reload_auditors['building_auditors'];
 
           $data['auditor'] = ['unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => $unit_id, 'building_id' => $building_id];
@@ -5722,10 +5728,10 @@ class AuditController extends Controller
       //
       //dd($amenity_id);//13299
 
-      $auditor_color    = '';
+      $auditor_color = '';
       $auditor_initials = '';
-      $auditor_name     = '';
-      $auditorid        = null;
+      $auditor_name = '';
+      $auditorid = null;
 
       $amenity_to_copy = AmenityInspection::where('id', '=', $amenity_id)->first();
 
@@ -5741,15 +5747,15 @@ class AuditController extends Controller
       // save new amenity
       if ($unit_id) {
         $unitamenity = new UnitAmenity([
-          'unit_id'    => $unit_id,
+          'unit_id' => $unit_id,
           'amenity_id' => $amenity_type->id,
-          'comment'    => 'manually added by ' . Auth::user()->id,
+          'comment' => 'manually added by ' . Auth::user()->id,
         ]);
         $unitamenity->save();
 
         $amenity = new AmenityInspection([
-          'audit_id'   => $audit->audit_id,
-          'unit_id'    => $unit_id,
+          'audit_id' => $audit->audit_id,
+          'unit_id' => $unit_id,
           'amenity_id' => $amenity_type->id,
           'auditor_id' => $auditorid,
         ]);
@@ -5769,27 +5775,27 @@ class AuditController extends Controller
 
         // save the ordering
         $ordering = new OrderingAmenity([
-          'user_id'               => Auth::user()->id,
-          'audit_id'              => $audit->audit_id,
-          'unit_id'               => $unit_id,
-          'amenity_id'            => $amenity_type->id,
+          'user_id' => Auth::user()->id,
+          'audit_id' => $audit->audit_id,
+          'unit_id' => $unit_id,
+          'amenity_id' => $amenity_type->id,
           'amenity_inspection_id' => $amenity->id,
-          'order'                 => $latest_ordering + 1,
+          'order' => $latest_ordering + 1,
         ]);
         $ordering->save();
       } elseif ($building_id) {
         $buildingamenity = new BuildingAmenity([
           'building_id' => $building_id,
-          'amenity_id'  => $amenity_type->id,
-          'comment'     => 'manually added by ' . Auth::user()->id,
+          'amenity_id' => $amenity_type->id,
+          'comment' => 'manually added by ' . Auth::user()->id,
         ]);
         $buildingamenity->save();
 
         $amenity = new AmenityInspection([
-          'audit_id'    => $audit->audit_id,
+          'audit_id' => $audit->audit_id,
           'building_id' => $building_id,
-          'amenity_id'  => $amenity_type->id,
-          'auditor_id'  => $auditorid,
+          'amenity_id' => $amenity_type->id,
+          'auditor_id' => $auditorid,
         ]);
         $amenity->save();
 
@@ -5812,64 +5818,64 @@ class AuditController extends Controller
         // }
         // save the ordering
         $ordering = new OrderingAmenity([
-          'user_id'               => Auth::user()->id,
-          'audit_id'              => $audit->audit_id,
-          'building_id'           => $building_id,
-          'amenity_id'            => $amenity_type->id,
+          'user_id' => Auth::user()->id,
+          'audit_id' => $audit->audit_id,
+          'building_id' => $building_id,
+          'amenity_id' => $amenity_type->id,
           'amenity_inspection_id' => $amenity->id,
-          'order'                 => $latest_ordering + 1,
+          'order' => $latest_ordering + 1,
         ]);
         $ordering->save();
       } else {
         // adding amenity to project
 
         $project_amenity = new ProjectAmenity([
-          'project_key'      => $audit->project_key,
-          'project_id'       => $audit->project_id,
+          'project_key' => $audit->project_key,
+          'project_id' => $audit->project_id,
           'amenity_type_key' => $amenity_type->amenity_type_key,
-          'amenity_id'       => $amenity_type->id,
-          'comment'          => 'manually added by ' . Auth::user()->id,
+          'amenity_id' => $amenity_type->id,
+          'comment' => 'manually added by ' . Auth::user()->id,
         ]);
         $project_amenity->save();
 
         $cached_building = new CachedBuilding([
-          'building_name'          => $name,
-          'building_id'            => null,
-          'building_key'           => null,
-          'audit_id'               => $audit->audit_id,
-          'audit_key'              => $audit->audit_key,
-          'project_id'             => $audit->project_id,
-          'project_key'            => $audit->project_key,
-          'lead_id'                => $audit->lead_id,
-          'lead_key'               => $audit->lead_key,
-          'status'                 => '',
-          'type'                   => $amenity_type->icon,
-          'type_total'             => null,
-          'type_text'              => null,
-          'type_text_plural'       => null,
-          'finding_total'          => 0,
-          'finding_file_status'    => '',
-          'finding_nlt_status'     => '',
-          'finding_lt_status'      => '',
-          'finding_file_total'     => 0,
+          'building_name' => $name,
+          'building_id' => null,
+          'building_key' => null,
+          'audit_id' => $audit->audit_id,
+          'audit_key' => $audit->audit_key,
+          'project_id' => $audit->project_id,
+          'project_key' => $audit->project_key,
+          'lead_id' => $audit->lead_id,
+          'lead_key' => $audit->lead_key,
+          'status' => '',
+          'type' => $amenity_type->icon,
+          'type_total' => null,
+          'type_text' => null,
+          'type_text_plural' => null,
+          'finding_total' => 0,
+          'finding_file_status' => '',
+          'finding_nlt_status' => '',
+          'finding_lt_status' => '',
+          'finding_file_total' => 0,
           'finding_file_completed' => 0,
-          'finding_nlt_total'      => 0,
-          'finding_nlt_completed'  => 0,
-          'finding_lt_total'       => 0,
-          'finding_lt_completed'   => 0,
-          'address'                => $audit->address,
-          'city'                   => $audit->city,
-          'state'                  => $audit->state,
-          'zip'                    => $audit->zip,
-          'amenity_id'             => $amenity_type->id,
+          'finding_nlt_total' => 0,
+          'finding_nlt_completed' => 0,
+          'finding_lt_total' => 0,
+          'finding_lt_completed' => 0,
+          'address' => $audit->address,
+          'city' => $audit->city,
+          'state' => $audit->state,
+          'zip' => $audit->zip,
+          'amenity_id' => $amenity_type->id,
         ]);
         $cached_building->save();
 
         $amenity = new AmenityInspection([
-          'audit_id'          => $audit->audit_id,
-          'project_id'        => $audit->project_id,
-          'amenity_id'        => $amenity_type->id,
-          'auditor_id'        => $auditorid,
+          'audit_id' => $audit->audit_id,
+          'project_id' => $audit->project_id,
+          'amenity_id' => $amenity_type->id,
+          'auditor_id' => $auditorid,
           'cachedbuilding_id' => $cached_building->id,
         ]);
         $amenity->save();
@@ -5889,13 +5895,13 @@ class AuditController extends Controller
         }
         // save the ordering
         $ordering = new OrderingBuilding([
-          'user_id'               => Auth::user()->id,
-          'audit_id'              => $audit->audit_id,
-          'building_id'           => null,
-          'project_id'            => $audit->project_id,
-          'amenity_id'            => $amenity_type->id,
+          'user_id' => Auth::user()->id,
+          'audit_id' => $audit->audit_id,
+          'building_id' => null,
+          'project_id' => $audit->project_id,
+          'amenity_id' => $amenity_type->id,
           'amenity_inspection_id' => $amenity->id,
-          'order'                 => $latest_ordering + 1,
+          'order' => $latest_ordering + 1,
         ]);
         $ordering->save();
       }
@@ -5920,14 +5926,14 @@ class AuditController extends Controller
       foreach ($amenities as $amenity) {
         if ($amenity->amenity_inspection && null !== $amenity->amenity_inspection->auditor_id) {
           $auditor_initials = $amenity->amenity_inspection->user->initials();
-          $auditor_name     = $amenity->amenity_inspection->user->full_name();
-          $auditor_id       = $amenity->amenity_inspection->user->id;
-          $auditor_color    = $amenity->amenity_inspection->user->badge_color;
+          $auditor_name = $amenity->amenity_inspection->user->full_name();
+          $auditor_id = $amenity->amenity_inspection->user->id;
+          $auditor_color = $amenity->amenity_inspection->user->badge_color;
         } else {
           $auditor_initials = '<i class="a-avatar-plus_1"></i>';
-          $auditor_name     = 'CLICK TO ASSIGN TO AUDITOR';
-          $auditor_color    = '';
-          $auditor_id       = 0;
+          $auditor_name = 'CLICK TO ASSIGN TO AUDITOR';
+          $auditor_color = '';
+          $auditor_id = 0;
         }
 
         if ($amenity->amenity_inspection && null == $amenity->amenity_inspection->completed_date_time) {
@@ -5945,7 +5951,7 @@ class AuditController extends Controller
         // check for name duplicates and assign a #
         $key = array_search($amenity->amenity_inspection_id, $amenity_names[$amenity->amenity->amenity_description]);
         if ($key > 0) {
-          $key  = $key + 1;
+          $key = $key + 1;
           $name = $amenity->amenity->amenity_description . ' ' . $key;
         } else {
           $name = $amenity->amenity->amenity_description;
@@ -5958,25 +5964,25 @@ class AuditController extends Controller
         }
 
         $data_amenities[] = [
-          'id'                     => $amenity->amenity_inspection_id,
-          'audit_id'               => $amenity->audit_id,
-          'name'                   => $name,
-          'status'                 => $status,
-          'auditor_id'             => $auditor_id,
-          'auditor_initials'       => $auditor_initials,
-          'auditor_name'           => $auditor_name,
-          'auditor_color'          => $auditor_color,
-          'finding_nlt_status'     => '',
-          'finding_lt_status'      => '',
-          'finding_sd_status'      => '',
-          'finding_photo_status'   => '',
+          'id' => $amenity->amenity_inspection_id,
+          'audit_id' => $amenity->audit_id,
+          'name' => $name,
+          'status' => $status,
+          'auditor_id' => $auditor_id,
+          'auditor_initials' => $auditor_initials,
+          'auditor_name' => $auditor_name,
+          'auditor_color' => $auditor_color,
+          'finding_nlt_status' => '',
+          'finding_lt_status' => '',
+          'finding_sd_status' => '',
+          'finding_photo_status' => '',
           'finding_comment_status' => '',
-          'finding_copy_status'    => '',
-          'finding_trash_status'   => '',
-          'building_id'            => $building_id,
-          'unit_id'                => $amenity->unit_id,
-          'completed_icon'         => $completed_icon,
-          'has_findings'           => $has_findings,
+          'finding_copy_status' => '',
+          'finding_trash_status' => '',
+          'building_id' => $building_id,
+          'unit_id' => $amenity->unit_id,
+          'completed_icon' => $completed_icon,
+          'has_findings' => $has_findings,
         ];
       }
 
@@ -5985,8 +5991,8 @@ class AuditController extends Controller
       // TBD update amenity totals?
 
       // reload auditor names at the unit and building row levels
-      $reload_auditors   = $this->reload_auditors($audit->audit_id, $unit_id, $building_id);
-      $unit_auditors     = $reload_auditors['unit_auditors'];
+      $reload_auditors = $this->reload_auditors($audit->audit_id, $unit_id, $building_id);
+      $unit_auditors = $reload_auditors['unit_auditors'];
       $building_auditors = $reload_auditors['building_auditors'];
 
       $data['auditor'] = ['unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => $unit_id, 'building_id' => $building_id];
@@ -6002,19 +6008,19 @@ class AuditController extends Controller
       $unit_auditor_ids = AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray();
 
       $building_auditor_ids = [];
-      $units                = Unit::where('building_id', '=', $building_id)->get();
+      $units = Unit::where('building_id', '=', $building_id)->get();
       foreach ($units as $unit) {
         $building_auditor_ids = array_merge($building_auditor_ids, \App\Models\AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit->id)->whereNotNull('unit_id')->whereNotNull('auditor_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
       }
     } else {
       if (0 == $building_id && 0 == $unit_id) {
-        $unit_auditor_ids     = [];
+        $unit_auditor_ids = [];
         $building_auditor_ids = [];
       } else {
         $unit_auditor_ids = [];
 
         $building_auditor_ids = [];
-        $units                = Unit::where('building_id', '=', $building_id)->get();
+        $units = Unit::where('building_id', '=', $building_id)->get();
         foreach ($units as $unit) {
           $unit_auditor_ids = array_merge($unit_auditor_ids, AmenityInspection::where('audit_id', '=', $audit_id)->where('unit_id', '=', $unit_id)->whereNotNull('auditor_id')->whereNotNull('unit_id')->select('auditor_id')->groupBy('auditor_id')->get()->toArray());
 
@@ -6027,12 +6033,12 @@ class AuditController extends Controller
     $unit_auditors = User::whereIn('id', $unit_auditor_ids)->get();
     foreach ($unit_auditors as $unit_auditor) {
       $unit_auditor->full_name = $unit_auditor->full_name();
-      $unit_auditor->initials  = $unit_auditor->initials();
+      $unit_auditor->initials = $unit_auditor->initials();
     }
     $building_auditors = User::whereIn('id', $building_auditor_ids)->get();
     foreach ($building_auditors as $building_auditor) {
       $building_auditor->full_name = $building_auditor->full_name();
-      $building_auditor->initials  = $building_auditor->initials();
+      $building_auditor->initials = $building_auditor->initials();
     }
 
     return ['unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors];
@@ -6040,10 +6046,10 @@ class AuditController extends Controller
 
   public function reorderAmenitiesFromAudit($audit, Request $request)
   {
-    $building_id           = $request->get('building_id');
-    $unit_id               = $request->get('unit_id');
+    $building_id = $request->get('building_id');
+    $unit_id = $request->get('unit_id');
     $amenity_inspection_id = $request->get('amenity_id'); // this is the amenity_inspection_id
-    $index                 = $request->get('index');
+    $index = $request->get('index');
 
     //dd($building_id." ".$unit_id." ".$amenity_id." ".$index);
 
@@ -6068,13 +6074,13 @@ class AuditController extends Controller
     $pre_reordering = $pre_reordering->orderBy('order', 'asc')->first();
 
     $inserted = [[
-      'user_id'               => Auth::user()->id,
-      'audit_id'              => $audit,
-      'building_id'           => $building_id,
-      'unit_id'               => $unit_id,
-      'amenity_id'            => $pre_reordering->amenity_id,
+      'user_id' => Auth::user()->id,
+      'audit_id' => $audit,
+      'building_id' => $building_id,
+      'unit_id' => $unit_id,
+      'amenity_id' => $pre_reordering->amenity_id,
       'amenity_inspection_id' => $pre_reordering->amenity_inspection_id,
-      'order'                 => $index,
+      'order' => $index,
     ]];
 
     // insert the building ordering in the array
@@ -6094,13 +6100,13 @@ class AuditController extends Controller
     // clean-up the ordering and store
     foreach ($reordered_array as $key => $ordering) {
       $new_ordering = new OrderingAmenity([
-        'user_id'               => $ordering['user_id'],
-        'audit_id'              => $ordering['audit_id'],
-        'building_id'           => $ordering['building_id'],
-        'unit_id'               => $ordering['unit_id'],
-        'amenity_id'            => $ordering['amenity_id'],
+        'user_id' => $ordering['user_id'],
+        'audit_id' => $ordering['audit_id'],
+        'building_id' => $ordering['building_id'],
+        'unit_id' => $ordering['unit_id'],
+        'amenity_id' => $ordering['amenity_id'],
         'amenity_inspection_id' => $ordering['amenity_inspection_id'],
-        'order'                 => $key + 1,
+        'order' => $key + 1,
       ]);
       $new_ordering->save();
     }
@@ -6117,7 +6123,7 @@ class AuditController extends Controller
     } elseif (!count($audit->audit->reports) && !count($audit->audit->findings)) {
       $steps = $steps->where('id', '<', 61);
     }
-    $steps       = $steps->get();
+    $steps = $steps->get();
     $detailsPage = null;
     if (1 == $request->details_refresh) {
       $detailsPage = 1;
@@ -6129,7 +6135,7 @@ class AuditController extends Controller
   public function saveStep(Request $request, $id)
   {
     $message = 1;
-    $audit   = CachedAudit::where('id', '=', $id)->with('audit')->first();
+    $audit = CachedAudit::where('id', '=', $id)->with('audit')->first();
     $step_id = intval($request->get('step'));
     if ((count($audit->audit->findings) || count($audit->audit->reports)) && $step_id < 60) {
       $step_id = 60;
@@ -6144,17 +6150,17 @@ class AuditController extends Controller
 
       // add new guide_progress entry
       $progress = new GuideProgress([
-        'user_id'       => Auth::user()->id,
-        'audit_id'      => $audit->id,
-        'project_id'    => $audit->project_id,
+        'user_id' => Auth::user()->id,
+        'audit_id' => $audit->id,
+        'project_id' => $audit->project_id,
         'guide_step_id' => $step_id,
-        'type_id'       => 1,
+        'type_id' => 1,
       ]);
       $progress->save();
 
       // update CachedAudit table with new step info
       $audit->update([
-        'step_id'          => $step->id,
+        'step_id' => $step->id,
         'step_status_icon' => $step->icon,
         'step_status_text' => $step->step_help,
       ]);
@@ -6173,12 +6179,12 @@ class AuditController extends Controller
     //get the count
     //load chart and below
 
-    $unit_id     = $request->get('unit_id');
+    $unit_id = $request->get('unit_id');
     $program_key = $request->get('program_key');
-    $group_ids   = $request->get('group_ids');
-    $type        = $request->get('type');
-    $audit_id    = $request->get('audit_id');
-    $project     = Project::where('id', '=', $project_id)->first();
+    $group_ids = $request->get('group_ids');
+    $type = $request->get('type');
+    $audit_id = $request->get('audit_id');
+    $project = Project::where('id', '=', $project_id)->first();
     if (!is_null($audit_id)) {
       $audit = $project->selected_audit($audit_id)->audit;
     } else {
@@ -6207,7 +6213,7 @@ class AuditController extends Controller
     //  If none exists
     //    insert both
     if (!is_null($program_key)) {
-      $program      = Program::where('program_key', $program_key)->first();
+      $program = Program::where('program_key', $program_key)->first();
       $unitprograms = UnitProgram::where('audit_id', $audit->id)
         ->where('program_key', $program->program_key)
         ->where('unit_id', $unit->id)
@@ -6227,15 +6233,15 @@ class AuditController extends Controller
         //monitoring_key - from audit
         //project_id
         //development_key -- from audit
-        $add_unit_program->unit_key        = $unit->unit_key;
-        $add_unit_program->unit_id         = $unit->id;
-        $add_unit_program->program_id      = $program->id;
-        $add_unit_program->program_key     = $program->program_key;
-        $add_unit_program->project_id      = $project->id;
-        $add_unit_program->audit_id        = $audit->id;
-        $add_unit_program->monitoring_key  = $audit->monitoring_key;
+        $add_unit_program->unit_key = $unit->unit_key;
+        $add_unit_program->unit_id = $unit->id;
+        $add_unit_program->program_id = $program->id;
+        $add_unit_program->program_key = $program->program_key;
+        $add_unit_program->project_id = $project->id;
+        $add_unit_program->audit_id = $audit->id;
+        $add_unit_program->monitoring_key = $audit->monitoring_key;
         $add_unit_program->development_key = $audit->development_key;
-        $add_unit_program->is_substitute   = 1;
+        $add_unit_program->is_substitute = 1;
         $add_unit_program->save();
         $new_program = true;
       }
@@ -6270,8 +6276,8 @@ class AuditController extends Controller
       //dd($unitprograms);
 
       foreach ($unitprograms as $unitprogram) {
-        $program     = $unitprogram->program;
-        $group_ids   = ProgramGroup::where('program_id', '=', $program->id)->get()->pluck('group_id')->toArray();
+        $program = $unitprogram->program;
+        $group_ids = ProgramGroup::where('program_id', '=', $program->id)->get()->pluck('group_id')->toArray();
         $new_program = 0;
 
         $check_if_file_exists = UnitInspection::where('unit_id', $unit->id)->where('program_key', $program->program_key)->where('audit_id', $audit->id)->whereIn('group_id', $group_ids)->where('is_file_audit', 1)->get()->count();
@@ -6293,7 +6299,7 @@ class AuditController extends Controller
     //Substitute programs
 
     $get_project_details = $this->projectSummaryComposite($project_id);
-    $data                = $get_project_details['data'];
+    $data = $get_project_details['data'];
     //dd($unitprogram->project_program);
     if ($unitprogram->project_program && 2 == $unitprogram->project_program->multiple_building_election_key) {
       //dd($building_key,$unit->building_key);
@@ -6369,23 +6375,23 @@ class AuditController extends Controller
         //
         if ($new_program && $group_id == $this->htc_group_id) {
         } else {
-          $group                    = Group::find($group_id);
-          $insert_new               = new UnitInspection;
-          $insert_new->program_id   = $program->id;
-          $insert_new->audit_id     = $audit->id;
-          $insert_new->audit_id     = $audit->id;
-          $insert_new->group        = $group->group_name;
-          $insert_new->group_id     = $group_id;
-          $insert_new->unit_id      = $unit->id;
-          $insert_new->unit_key     = $unit->unit_key;
-          $insert_new->unit_name    = $unit->unit_name;
+          $group = Group::find($group_id);
+          $insert_new = new UnitInspection;
+          $insert_new->program_id = $program->id;
+          $insert_new->audit_id = $audit->id;
+          $insert_new->audit_id = $audit->id;
+          $insert_new->group = $group->group_name;
+          $insert_new->group_id = $group_id;
+          $insert_new->unit_id = $unit->id;
+          $insert_new->unit_key = $unit->unit_key;
+          $insert_new->unit_name = $unit->unit_name;
           $insert_new->building_key = $unit->building_key;
-          $insert_new->building_id  = $unit->building->id;
-          $insert_new->audit_key    = $audit->monitoring_key;
-          $insert_new->project_id   = $project->id;
-          $insert_new->project_key  = $project->project_key;
-          $insert_new->program_key  = $program->program_key;
-          $insert_new->has_overlap  = 0;
+          $insert_new->building_id = $unit->building->id;
+          $insert_new->audit_key = $audit->monitoring_key;
+          $insert_new->project_id = $project->id;
+          $insert_new->project_key = $project->project_key;
+          $insert_new->program_key = $program->program_key;
+          $insert_new->has_overlap = 0;
           if ('is_file_audit' == $type) {
             $insert_new->is_file_audit = 1;
             $insert_new->is_site_visit = 0;
@@ -6408,7 +6414,7 @@ class AuditController extends Controller
   {
     // return $request->building_key;
     $audit_id = $request->post('id');
-    $name     = $request->post('name');
+    $name = $request->post('name');
     $req_type = $request->post('req_type');
     if ('required_units' == $req_type) {
       $requiredTypeDisplay = 'physical inspection';
@@ -6416,8 +6422,8 @@ class AuditController extends Controller
     if ('required_units_file' == $req_type) {
       $requiredTypeDisplay = 'file inspection';
     }
-    $value             = $request->post('req_val');
-    $audit_details     = Audit::where('id', '=', $audit_id)->first();
+    $value = $request->post('req_val');
+    $audit_details = Audit::where('id', '=', $audit_id)->first();
     $selection_summary = json_decode($audit_details->selection_summary, 1);
     if (null !== $selection_summary) {
       foreach ($selection_summary['programs'] as $key => $program) {
@@ -6430,10 +6436,10 @@ class AuditController extends Controller
         }
         if ($selection_summary['programs'][$key]['name'] == $name && !$has_building) {
           @$selection_summary['programs'][$key]['comments'][] = date('m/d/Y h:i:s a', time()) . ': ' . Auth::user()->name . ' ( user id: ' . Auth::user()->id . ' ) changed the ' . $requiredTypeDisplay . ' required amount from ' . $selection_summary['programs'][$key][$req_type] . ' to ' . $value;
-          @$selection_summary['programs'][$key][$req_type]    = $value;
+          @$selection_summary['programs'][$key][$req_type] = $value;
         } elseif ($selection_summary['programs'][$key]['name'] == $name && $has_building && $selection_summary['programs'][$key]['building_key'] == $request->building_key) {
           @$selection_summary['programs'][$key]['comments'][] = date('m/d/Y h:i:s a', time()) . ': ' . Auth::user()->name . ' ( user id: ' . Auth::user()->id . ' ) changed the ' . $requiredTypeDisplay . ' required amount from ' . $selection_summary['programs'][$key][$req_type] . ' to ' . $value;
-          @$selection_summary['programs'][$key][$req_type]    = $value;
+          @$selection_summary['programs'][$key][$req_type] = $value;
         }
       }
       $audit_details->selection_summary = json_encode($selection_summary);
@@ -6472,13 +6478,41 @@ class AuditController extends Controller
 
   public function singleCachedAudit($audit_id)
   {
-    $audit          = CachedAudit::where('audit_id', intval($audit_id))->first();
+    $audit = CachedAudit::where('audit_id', intval($audit_id))->first();
     $auditor_access = Auth::user()->auditor_access();
-    $audits         = $audit->toArray();
+    $audits = $audit->toArray();
     if (null !== $audit) {
       return view('dashboard.partials.audit_row', compact('audit', 'auditor_access', 'audits'));
     } else {
       return 0;
     }
+  }
+
+  public function swapAuditorToAudit($cahced_audit_id, Request $request)
+  {
+  	// return $request->all();
+  	$cached_audit = CachedAudit::with('audit')->find($cahced_audit_id);
+  	if($cached_audit && $cached_audit->audit) {
+  		//update cached audit
+  	  $user = User::find($request->selected_auditor);
+  	  $lead_array['id'] = $user->id;
+  	  $lead_array['name'] = $user->full_name();
+  	  $lead_array['color'] = $user->badge_color;
+  	  $lead_array['status'] = "";
+  	  $lead_array['initials'] = $user->initials();
+
+  	  $cached_audit->lead = $user->id;
+  	  $cached_audit->lead_json = json_encode($lead_array);
+  	  $cached_audit->save();
+
+  		//update Audit
+  	  $audit = $cached_audit->audit;
+  	  $audit->lead_user_id = $user->id;
+  	  $audit->user_key =$user->devco_key;
+  	  $audit->save();
+  		return 1;
+  	} else {
+  		return 'Could not find either the Cached audit or Audit, please contact admin';
+  	}
   }
 }
