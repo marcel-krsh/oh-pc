@@ -1234,12 +1234,12 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php $latestCachedAudit = '2000-01-01 12:00:00'; ?>
+				<?php $latestCachedAudit = '2000-01-01 12:00:00';?>
 				@foreach($audits as $audit)
-				<?php if(strtotime($audit->updated_at) > strtotime($latestCachedAudit)){
-					$latestCachedAudit = $audit->updated_at;
-				}
-				?>
+				<?php if (strtotime($audit->updated_at) > strtotime($latestCachedAudit)) {
+  $latestCachedAudit = $audit->updated_at;
+}
+?>
 				<tr id="audit-r-{{ $audit->audit_id }}" class="{{ $audit['status'] }} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
 					@include('dashboard.partials.audit_row')
 				</tr>
@@ -1256,7 +1256,7 @@
 <?php
 /*
 The following div is defined in this particular tab and pushed to the main layout's footer.
-*/
+ */
 ?>
 <div id="footer-actions" hidden>
 	@if($auditor_access)

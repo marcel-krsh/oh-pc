@@ -359,6 +359,9 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::post('/autosave', 'DataController@autosave');
 
+    Route::post('audit/swap-auditor/{cahced_audit_id}', 'AuditController@swapAuditorToAudit')->name('auditor.swapAuditor');
+
+
     // ADMIN
     Route::group(['prefix' => 'modals/admin'], function () {
       Route::get('boilerplate/create/{id?}', 'AdminToolController@boilerplateCreate');
