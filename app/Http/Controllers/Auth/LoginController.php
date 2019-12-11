@@ -135,6 +135,9 @@ class LoginController extends Controller
   {
     $user_id = intval(session()->get('user_id'));
     $user    = User::with('person.allita_phone')->find($user_id);
+    $phone_number = null;
+    $mask_phonenumber = null;
+    $mask_email = null;
     if (is_null($user) || !session()->has('login_success')) {
     	$error   = "Looks like the user doesn't exist with the provided information. ".$user_id.' '.session('user_id');
 	    abort(403, $error);
