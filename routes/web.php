@@ -434,6 +434,8 @@ Route::group(['middleware' => 'web'], function () {
       Route::get('update-group-programs', 'GroupController@udateGroupProgramRelations');
 
       Route::get('fix-notification', 'AdminfixController@communicationNotifications');
+ 			Route::get('fix-emails', 'AdminfixController@emailAddressDuplicateKey');
+
     });
 
     //Project
