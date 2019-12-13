@@ -5,13 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\CommunicationRecipient;
 use App\Models\EmailAddress;
-use Carbon\Carbon;
-use DB;
-use Event;
 use App\Models\People;
 use App\Models\SyncEmailAddress;
 use App\Models\SyncPeople;
-use App\Models\UserEmail;
+use Carbon\Carbon;
+use DB;
+use Event;
 
 class AdminfixController extends Controller
 {
@@ -53,9 +52,16 @@ class AdminfixController extends Controller
 		$non_sync_records = EmailAddress::whereNull('last_edited')->whereNotNull('email_address_key')->get();
 		$email_keys = $non_sync_records->pluck('email_address_key');
 		$allita_ids = $non_sync_records->pluck('id');
+		//Sync email address records are correct
 		foreach ($non_sync_records as $key => $record) {
-			$record->email_address_key = NULL;
-			$record->save();
+			$sync_email_address = SyncEmailAddress::where('email_address_key', $record->email_address_key)->first();
+			if (!$sync_email_address || $sync_email_address->allita_id != $record->id) {
+				$record->email_address_key = NULL;
+				$record->save();
+			} elseif ($sync_email_address) {
+				$record->last_edited = $sync_email_address->last_edited;
+				$record->save();
+			}
 		}
 		//
 		//Need to fix 2 tables, people, sync_email_address - Check user_emails table too
@@ -67,7 +73,7 @@ class AdminfixController extends Controller
 			$sync_people = SyncPeople::where('allita_id', $person->id)->get();
 			$correction = EmailAddress::where('email_address_key', $person->default_email_address_key)->get();
 			$sync_email_address = SyncEmailAddress::where('email_address_key', $person->default_email_address_key)->first();
-			if(!$sync_email_address) {
+			if (!$sync_email_address) {
 				$person->default_email_address_key = NULL;
 				$person->save();
 				foreach ($correction as $key => $corr) {
@@ -75,26 +81,29 @@ class AdminfixController extends Controller
 					$corr->save();
 				}
 			}
-			if(count($correction) > 1) {
+			if (count($correction) > 1) {
 				return 'Still multiple records exist for this key  ' . $correction;
-			} elseif($sync_email_address) {
+			} elseif ($sync_email_address) {
 				//Correct symc email address for allita_id
-				if($sync_email_address->allita_id != $correction->first()->id) {
+				// if(!$correction->first()) {
+				// 	return EmailAddress::find(5897);//183019
+				// }
+				if ($sync_email_address->allita_id != $correction->first()->id) {
 					// return 'Wrong correction for ' . $sync_email_address->email_address_key;
 					$sync_email_address->allita_id = $correction->first()->id;
 					$sync_email_address->save();
 				}
 				//Check the person email key and correct for email_address_id
-				if($person->default_email_address_id != $correction->first()->id) {
+				if ($person->default_email_address_id != $correction->first()->id) {
 					$person->default_email_address_id = $correction->first()->id;
 					$person->save();
 				}
 			}
 		}
 		//Check if
-	  // $user_email_ids = UserEmail::whereIn('email_address_id', $allita_ids)->get()->pluck('email_address_id');
-	  // $email_addresses = EmailAddress::whereIn('id', $user_email_ids)->get();
-	  $duplicates = DB::table('email_addresses')
+		// $user_email_ids = UserEmail::whereIn('email_address_id', $allita_ids)->get()->pluck('email_address_id');
+		// $email_addresses = EmailAddress::whereIn('id', $user_email_ids)->get();
+		$duplicates = DB::table('email_addresses')
 			->select('email_address_key')
 		// ->where('group_id', 3)
 			->groupBy('email_address_key')
