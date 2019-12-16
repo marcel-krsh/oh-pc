@@ -1593,7 +1593,7 @@ class FindingController extends Controller
 
                 if(null != $buildingInspection){
                     $latestResolution = Finding::select('auditor_last_approved_resolution_at')->leftJoin('units', 'units.id', '=', 'findings.unit_id')->where('findings.building_id',$buildingId)->orWhere('units.building_id',$buildingId)->orderBy('auditor_last_approved_resolution_at','desc')->first();
-                    $latestResolutionNullCheck = Finding::leftJoin('units', 'units.id', '=', 'findings.unit_id')->where(function($q) use ($buildingId){
+                    $latestResolutionNullCheck = Finding::leftJoin('units', 'units.id', '=', 'findings.unit_id')->whereNull('cancelled_at')->where(function($q) use ($buildingId){
                         $q->where('findings.building_id',$buildingId);
                         $q->orWhere('units.building_id',$buildingId);
                     })->whereNull('auditor_last_approved_resolution_at')->count();
