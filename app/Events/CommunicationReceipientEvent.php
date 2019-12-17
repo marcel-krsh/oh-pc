@@ -50,8 +50,8 @@ class CommunicationReceipientEvent
         $model_id             = $cr_details->id;
         $type_id              = 1;
         if (session()->has('notification_triggered_type')) {
-          $type_id  = session()->get('notification_triggered_type');
-          $model_id = session()->get('notification_model_id');
+          $type_id  = session()->pull('notification_triggered_type');
+          $model_id = session()->pull('notification_model_id');
         }
         Log::info($model_id);
         Log::info('communication recepient');

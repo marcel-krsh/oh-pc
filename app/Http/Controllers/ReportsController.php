@@ -122,11 +122,11 @@ class ReportsController extends Controller
           // Pending Manager Review...
           $note = 'Changed report status from ' . $report->status_name() . ' to Pending Manger Review.';
           if (!is_null($report->manager_id)) {
-            $report->update(['crr_approval_type_id' => 2, 'manager_id' => null]);
+            $report->update(['crr_approval_type_id' => 2]);
             $note .= ' Removed prior manager approval, and refreshed report to reflect the change.';
             $this->generateReport($report, 0, 1);
           } else {
-            $report->update(['crr_approval_type_id' => 2, 'manager_id' => null]);
+            $report->update(['crr_approval_type_id' => 2]);
           }
           break;
         case 3:
@@ -201,11 +201,11 @@ class ReportsController extends Controller
           if (Auth::user()->can('access_manager')) {
             $note = Auth::user()->name . ' updated the status to ' . $report->status_name();
             if (!is_null($report->manager_id)) {
-              $report->update(['crr_approval_type_id' => 9, 'manager_id' => null]);
+              $report->update(['crr_approval_type_id' => 9]);
               $note .= 'Removed prior status, and refreshed report to reflect the change.';
               $this->generateReport($report, 0, 1);
             } else {
-              $report->update(['crr_approval_type_id' => 9, 'manager_id' => null]);
+              $report->update(['crr_approval_type_id' => 9]);
             }
           } else {
             $note = 'Attempted change to All Items Resolved but something went wrong.';

@@ -2,7 +2,7 @@
 	resizeModal(80);
 </script>
 
-	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
+	<form name="newOutboundEmailFormMain" id="newOutboundEmailFormMain" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
 		@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit->id }}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
@@ -30,18 +30,18 @@
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
 				@if($single_receipient)
 				<?php $recipient = $recipients->first()->first();?>
-				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+				<div class="uk-width-4-5 "  id="recipients-box-main" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 					<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-						<input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" checked="checked" onclick="return false;">
-						<label for="recipient-id-{{ $recipient->id }}">
+						<input name="recipientsmain[]" id="recipient-id-main-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" checked="checked" onclick="return false;">
+						<label for="recipient-id-main-{{ $recipient->id }}">
 							{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
 						</label>
 					</li>
 				</div>
 				@else
-				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
-					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
+				<div class="uk-width-4-5 "  id="recipients-box-main" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+					<div id="add-recipients-button-main" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipientsMain()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button-main" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipientsMain()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
+					<div id='recipient-template-main' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
 						'recipient-name'></span>
 					</div>
 				</div>
@@ -55,8 +55,8 @@
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 							@foreach ($recipients_from_hfa as $recipient_from_hfa)
 							<li class="recipient-list-item ohfa {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name))))) }} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
-								<input name="" id="list-recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}')">
-								<label for="recipient-id-{{ $recipient_from_hfa->id }}">
+								<input name="" id="list-recipient-id-main-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientMain(this.value,'{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}')">
+								<label for="recipient-id-main-{{ $recipient_from_hfa->id }}">
 									{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }} | {{$recipient_from_hfa->email}}
 								</label>
 							</li>
@@ -70,8 +70,8 @@
 
 							@foreach($orgs as $recipient)
 							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
-								<label for="recipient-id-{{ $recipient->id }}">
+								<input name="" id="list-recipient-id-main-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientMain(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
+								<label for="recipient-id-main-{{ $recipient->id }}">
 									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }} | {{$recipient->email}}
 								</label>
 							</li>
@@ -83,8 +83,8 @@
 							@php $currentOrg = $recipient->organization_name; @endphp
 							@endIf
 							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
-								<label for="recipient-id-{{ $recipient->id }}">
+								<input name="" id="list-recipient-id-main-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientMain(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
+								<label for="recipient-id-main-{{ $recipient->id }}">
 									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
 								</label>
 							</li>
@@ -98,29 +98,29 @@
 					</div> --}}
 					<script>
             // CLONE RECIPIENTS
-            function addRecipient(formValue,name){
+            function addRecipientMain(formValue,name){
               //alert(formValue+' '+name);
-              if($("#list-recipient-id-"+formValue).is(':checked')){
-              	var recipientClone = $('#recipient-template').clone();
-              	recipientClone.attr("id", "recipient-id-"+formValue+"-holder");
-              	recipientClone.prependTo('#recipients-box');
+              if($("#list-recipient-id-main-"+formValue).is(':checked')){
+              	var recipientClone = $('#recipient-template-main').clone();
+              	recipientClone.attr("id", "recipient-id-main-"+formValue+"-holder");
+              	recipientClone.prependTo('#recipients-box-main');
 
-              	$("#recipient-id-"+formValue+"-holder").slideDown();
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
+              	$("#recipient-id-main-"+formValue+"-holder").slideDown();
+              	$("#recipient-id-main-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-main-"+formValue);
+              	$("#recipient-id-main-"+formValue+"-holder input[type=checkbox]").attr("name","recipientsmain[]");
+              	$("#recipient-id-main-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
 
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
-              	$("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+              	$("#recipient-id-main-"+formValue+"-holder input[type=checkbox]").val(formValue);
+              	$("#recipient-id-main-"+formValue+"-holder span").html('&nbsp; '+name+' ');
               } else {
-              	$("#recipient-id-"+formValue+"-holder").slideUp();
-              	$("#recipient-id-"+formValue+"-holder").remove();
+              	$("#recipient-id-main-"+formValue+"-holder").slideUp();
+              	$("#recipient-id-main-"+formValue+"-holder").remove();
               }
             }
             function removeRecipient(id){
-            	$("#recipient-id-"+id+"-holder").slideUp();
-            	$("#recipient-id-"+id+"-holder").remove();
-            	$("#list-recipient-id-"+id).prop("checked",false)
+            	$("#recipient-id-main-"+id+"-holder").slideUp();
+            	$("#recipient-id-main-"+id+"-holder").remove();
+            	$("#list-recipient-id-main-"+id).prop("checked",false)
             }
           </script>
           <!-- END RECIPIENT LISTING -->
@@ -185,10 +185,10 @@
     	}
     });
 
-    function showRecipients() {
+    function showRecipientsMain() {
     	$('.recipient-list').slideToggle();
-    	$('#add-recipients-button').toggle();
-    	$('#done-adding-recipients-button').toggle();
+    	$('#add-recipients-button-main').toggle();
+    	$('#done-adding-recipients-button-main').toggle();
     }
 
     function showDocuments() {
@@ -198,16 +198,37 @@
     }
 
     function submitNewCommunication() {
-    	var form = $('#newOutboundEmailForm');
+    	var form = $('#newOutboundEmailFormMain');
     	var no_alert = 1;
     	var recipients_array = [];
-    	$("input[name='recipients[]']:checked").each(function (){
+    	$("input[name='recipientsmain[]']:checked").each(function (){
     		recipients_array.push(parseInt($(this).val()));
     	});
-    	if(recipients_array.length === 0){
+    	var inputsMain = form.serializeArray();
+    	var error = '';
+    	$.each( inputsMain,function(index, value) {
+    		if(value['name'] == 'subject') {
+    			if(value['value'] == ""){
+    				error = error + 'Subject cannot be empty. ';
+		    	}
+    		}
+    		if(value['name'] == 'messageBody') {
+    			if(value['value'] == ""){
+    				error = error + 'Message cannot be empty. ';
+		    	}
+    		}
+    	});
+    	if(error != ''){
+    		if(recipients_array.length === 0){
+	    		error = error + 'You must select a recipient.';
+	    	}
+    		no_alert = 0;
+    		UIkit.modal.alert(error,{stack: true});
+    	} else if(recipients_array.length === 0){
     		no_alert = 0;
     		UIkit.modal.alert('You must select a recipient.',{stack: true});
     	}
+
     	if(no_alert){
     		$.post('{{ URL::route("communication.create") }}', {
     			'inputs' : form.serialize(),

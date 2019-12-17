@@ -228,10 +228,32 @@ session(['old_communication_modal' => $random]);
     	$("input[name='recipients[]']:checked").each(function (){
     		recipients_array.push(parseInt($(this).val()));
     	});
-    	if(recipients_array.length === 0){
+
+    	var inputs = form.serializeArray();
+    	var error = '';
+    	$.each( inputs,function(index, value) {
+    		if(value['name'] == 'subject') {
+    			if(value['value'] == ""){
+    				error = error + 'Subject cannot be empty. ';
+		    	}
+    		}
+    		if(value['name'] == 'messageBody') {
+    			if(value['value'] == ""){
+    				error = error + 'Message cannot be empty. ';
+		    	}
+    		}
+    	});
+    	if(error != ''){
+    		if(recipients_array.length === 0){
+	    		error = error + 'You must select a recipient.';
+	    	}
+    		no_alert = 0;
+    		UIkit.modal.alert(error,{stack: true});
+    	} else if(recipients_array.length === 0){
     		no_alert = 0;
     		UIkit.modal.alert('You must select a recipient.',{stack: true});
     	}
+
     	if(no_alert){
     		$.post('{{ URL::route("communication.create") }}', {
     			'inputs' : form.serialize(),
@@ -307,8 +329,6 @@ session(['old_communication_modal' => $random]);
   	function dynamicModalCommunicationClose() {
   		UIkit.modal('#dynamic-modal-communications').hide();
   	}
-  </script>
-  <script>
   	function updateCommunicationDraft() {
   		if(window.communicationActive) {
   			var form = $('#newOutboundEmailForm');
@@ -332,13 +352,12 @@ session(['old_communication_modal' => $random]);
 
 
 
-  	$( document ).ready(function() {
-  		window.communicationActive = 1;
-  		console.log( "update sraft!" );
-  		window.setInterval(function(){
-  			updateCommunicationDraft();
-  		}, 10000);
-
-  	});
+  	// $( document ).ready(function() {
+  	// 	window.communicationActive = 1;
+  	// 	console.log( "update sraft!" );
+  	// 	window.setInterval(function(){
+  	// 		// updateCommunicationDraft();
+  	// 	}, 90000);
+  	// });
   </script>
 </div>

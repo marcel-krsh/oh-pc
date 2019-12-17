@@ -11,6 +11,8 @@
 		@if($report->crr_approval_type_id !== 8)
 		<select id="crr-report-action-{{ $report->id }}" onchange="reportAction({{ $report->id }},this.value, {{ $report->project->id }});" style="width: 184px;">
 			<option value="0" >ACTION</option>
+			{{-- @if(!($report->crr_approval_type_id == 5 || $report->crr_approval_type_id == 9)) --}}
+			@if(!($report->crr_approval_type_id >= 5))
 			<option value="1">DRAFT</option>
 			@if($report->requires_approval)
 			<option value="2">SEND TO MANAGER REVIEW</option>
@@ -21,6 +23,7 @@
 			<option value="4">APPROVE WITH CHANGES</option>
 			<option value="5">APPROVE</option>
 			@endIf
+			@endif
 			@endif
 			@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
 			<option value="6">SEND TO PROPERTY CONTACT</option>
