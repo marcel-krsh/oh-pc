@@ -75,6 +75,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/reports', 'PC\Mobile\ReportController@index');
   });
   Route::group(['prefix' => '', 'middleware' => 'can:access_auditor'], function () {
+    Route::get('/audit_raw_data', 'PCStatsController@showStatsRawData');
     Route::post('/cached_audit_check', 'AuditController@cachedAuditCheck');
     Route::get('/updated_cached_audit/{audit_id}', 'AuditController@singleCachedAudit');
     Route::get('/modals/household/{unit_id}', 'AuditController@householdInfo');
@@ -163,8 +164,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('tables/users', 'HomeController@usersTable')->name('tables.users');
     Route::get('tables/usersdata', 'HomeController@usersTableAjax')->name('tables.usersdata');
 
-    Route::get('/sync', 'SyncController@sync');
-    Route::get('/brian_test', 'SyncController@brianTest');
+    //Route::get('/sync', 'SyncController@sync');
+    //Route::get('/brian_test', 'SyncController@brianTest');
 
     Route::get('dashboard/audits', 'DashboardController@audits')->name('dashboard.audits');
     Route::get('dashboard/audits/{audit}/buildings', 'AuditController@buildingsFromAudit')->name('audit.buildings');
