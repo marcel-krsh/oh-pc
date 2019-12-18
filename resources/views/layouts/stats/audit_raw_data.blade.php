@@ -1,4 +1,11 @@
-
+<?php 
+function decimalHours($time)
+{
+    $hms = explode(":", $time);
+    $hours = ($hms[0] + ($hms[1]/60) + ($hms[2]/3600));
+    return (number_format((float)$hours, 2, '.', ''));
+}
+?>
 <html>
 <head>
 <title>Audit Stats - Ugly Output</title>
@@ -249,10 +256,18 @@ table.greyGridTable tfoot td {
 						{{$ca->total_units}}
 					</td>
 					<td>
-						{{$ca->estimated_time}}
+						@if(!is_null($ca->estimated_time))
+							{{decimalHours($ca->estimated_time)}}
+						@else
+						0.0
+						@endif
 					</td>
 					<td>
-						{{$ca->estimated_time_needed}}
+						@if(!is_null($ca->estimated_time_needed))
+							{{decimalHours($ca->estimated_time_needed)}}
+						@else
+						0.0
+						@endif
 					</td>
 					<td>
 						{{$ca->file_findings_count}}
