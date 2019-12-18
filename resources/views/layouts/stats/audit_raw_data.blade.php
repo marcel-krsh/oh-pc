@@ -71,6 +71,9 @@ table.greyGridTable tfoot td {
 					Lead Auditor
 				</th>
 				<th width="200">
+					Inspection Date
+				</th>
+				<th width="200">
 					Project Manager
 				</th>
 				
@@ -143,17 +146,23 @@ table.greyGridTable tfoot td {
 					<td>
 						
 					</td>
-					
-					<td colspan="2">
+					<td>
+						
+					</td>
+					<td >
 						{{$cachedAudits->count()}}
 						PROJECTS
 						
 					</td>
-					<td colspan="4">
-						
-						
-					
-						
+					<td>
+					</td>
+					<td >
+					</td>
+					<td >
+					</td>
+					<td >
+					</td>
+					<td >
 					</td>
 					<td>
 						{{number_format($cachedAudits->sum('total_buildings'))}}
@@ -203,6 +212,9 @@ table.greyGridTable tfoot td {
 					<td>
 						
 						{{$ca->lead_json->name}}
+					</td>
+					<td>
+						{{date('m-d-Y', strtotime($ca->inspection_schedule_date))}}
 					</td>
 					<td>
 						{{$ca->pm}}
