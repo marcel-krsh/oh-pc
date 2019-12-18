@@ -266,7 +266,6 @@ class CommunicationController extends Controller
 		} else {
 			$draft = null;
 		}
-		//dd('Called NewCommunicationEntry');
 		//dd($project_id,$audit_id,$report_id,$finding_id,$all_findings);
 		$ohfa_id = SystemSetting::get('ohfa_organization_id');
 		// $ohfa = Organization::where('organization_name', 'OHFA Limited Partnership')->first();
@@ -1783,7 +1782,7 @@ class CommunicationController extends Controller
 			$audit = $report->audit_id;
 			$data = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
 			// return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
 			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
 		} else {
