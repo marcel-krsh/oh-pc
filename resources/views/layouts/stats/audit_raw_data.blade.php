@@ -1,4 +1,11 @@
-
+<?php 
+function decimalHours($time)
+{
+    $hms = explode(":", $time);
+    $hours = ($hms[0] + ($hms[1]/60) + ($hms[2]/3600));
+    return (number_format((float)$hours, 2, '.', ''));
+}
+?>
 <html>
 <head>
 <title>Audit Stats - Ugly Output</title>
@@ -69,6 +76,9 @@ table.greyGridTable tfoot td {
 				</th>
 				<th width="200">
 					Lead Auditor
+				</th>
+				<th width="200">
+					Inspection Date
 				</th>
 				<th width="200">
 					Project Manager
@@ -143,17 +153,23 @@ table.greyGridTable tfoot td {
 					<td>
 						
 					</td>
-					
-					<td colspan="2">
+					<td>
+						
+					</td>
+					<td >
 						{{$cachedAudits->count()}}
 						PROJECTS
 						
 					</td>
-					<td colspan="4">
-						
-						
-					
-						
+					<td>
+					</td>
+					<td >
+					</td>
+					<td >
+					</td>
+					<td >
+					</td>
+					<td >
 					</td>
 					<td>
 						{{number_format($cachedAudits->sum('total_buildings'))}}
@@ -205,6 +221,9 @@ table.greyGridTable tfoot td {
 						{{$ca->lead_json->name}}
 					</td>
 					<td>
+						{{date('m-d-Y', strtotime($ca->inspection_schedule_date))}}
+					</td>
+					<td>
 						{{$ca->pm}}
 					</td>
 					
@@ -237,10 +256,18 @@ table.greyGridTable tfoot td {
 						{{$ca->total_units}}
 					</td>
 					<td>
-						{{$ca->estimated_time}}
+						@if(!is_null($ca->estimated_time))
+							{{decimalHours($ca->estimated_time)}}
+						@else
+						0.0
+						@endif
 					</td>
 					<td>
-						{{$ca->estimated_time_needed}}
+						@if(!is_null($ca->estimated_time_needed))
+							{{decimalHours($ca->estimated_time_needed)}}
+						@else
+						0.0
+						@endif
 					</td>
 					<td>
 						{{$ca->file_findings_count}}
