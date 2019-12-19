@@ -120,7 +120,7 @@ class SyncDebug extends Command
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
 
                             //////////// FAULTY LOGIC FOUND HERE::: we were checking against the newest date in the table, not the record. /////////////////////
-                            $allitaDate = new DateTime($updatedRecord->last_edited);
+                            $allitaDate = new DateTime($updateRecord->last_edited);
                             $allitaFloat = ".".$allitaDate->format('u');
                             $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
