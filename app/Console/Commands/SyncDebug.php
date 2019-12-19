@@ -13,8 +13,9 @@ use DB;
 use DateTime;
 use Illuminate\Support\Facades\Hash;
 // includes specific to this sync
-use App\Models\SyncAddress;
-use App\Models\Address;
+use App\Models\SyncBuilding;
+use App\Models\Building;
+
 
 class SyncDebug extends Command
 {
@@ -55,7 +56,7 @@ class SyncDebug extends Command
         $this->line('Starting to sync the Address Sync:'.PHP_EOL);
      
         //////////////////////////////////////////////////
-        /////// Address Sync
+        /////// Building Sync YAY
         /////
 
         /// get last modified date inside the database
@@ -66,7 +67,7 @@ class SyncDebug extends Command
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
-        $lastModifiedDate = SyncAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'asc')->first();
+        $lastModifiedDate = SyncBuilding::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'asc')->first();
         // if the value is null set a default start date to start the sync.
         if (is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -80,35 +81,55 @@ class SyncDebug extends Command
             //dd($lastModifiedDate, $modified);
         }
         $apiConnect = new DevcoService();
+
         if (!is_null($apiConnect)) {
-            $syncData = $apiConnect->listAddresses(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listBuildings(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
             //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if ($syncData['meta']['totalPageCount'] > 0) {
+                $countofitems = 0;
                 do {
                     if ($syncPage > 1) {
                         //Get Next Page
-                        $syncData = $apiConnect->listAddresses($syncPage, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listBuildings($syncPage, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        //dd('Page Count is Higher'.$syncData);
+                        //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
+                    //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
+                    $processBar = $this->output->createProgressBar(count($syncData['data']));
                     foreach ($syncData['data'] as $i => $v) {
+                            $processBar->advance();
                             // check if record exists
-                            $updateRecord = SyncAddress::select('id', 'allita_id', 'last_edited', 'updated_at')->where('address_key', $v['attributes']['addressKey'])->first();
-                            
+                            $updateRecord = SyncBuilding::select('id', 'allita_id', 'last_edited', 'updated_at')->where('building_key', $v['attributes']['buildingKey'])->first();
+                            // convert booleans
+                             settype($v['attributes']['ownerPaidUtilities'], 'boolean');
+                            // settype($v['attributes']['isBuildingHandicapAccessible'], 'boolean');
+
+                            // Set dates older than 1950 to be NULL:
+                        if ($v['attributes']['acquisitionDate'] < 1951) {
+                            $v['attributes']['acquisitionDate'] = null;
+                        }
+                        if ($v['attributes']['buildingBuiltDate'] < 1951) {
+                            $v['attributes']['buildingBuiltDate'] = null;
+                        }
+                            // if($v['attributes']['confirmedDate'] < 1951){
+                            //     $v['attributes']['confirmedDate'] = NULL;
+                            // }
+                            // if($v['attributes']['onSiteMonitorEndDate'] < 1951){
+                            //     $v['attributes']['onSiteMonitorEndDate'] = NULL;
+                            // }
                             //dd($updateRecord,$updateRecord->updated_at);
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
 
                             /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                            $allitaTableRecord = Address::find($updateRecord->allita_id);
+                            $allitaTableRecord = Building::find($updateRecord->allita_id);
                             /// END NEW CODE PART 1
 
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
-                            
                             $allitaDate = new DateTime($updateRecord->last_edited);
                             
                             $allitaFloat = ".".$allitaDate->format('u');
@@ -119,67 +140,112 @@ class SyncDebug extends Command
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
                                 
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
+                                
                             if ($devcoDateEval > $allitaDateEval) {
                                 if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+                                    $countofitems ++;
+                                    $this->line('Updated '.$v['attributes']['buildingKey']. PHP_EOL);
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
-                                    $this->line('Updating Record'.PHP_EOL);
-                                    SyncAddress::where('id', $updateRecord['id'])
+                                    SyncBuilding::where('id', $updateRecord['id'])
                                     ->update([
-                                    'line_1'=>$v['attributes']['line1'],
-                                    'line_2'=>$v['attributes']['line2'],
-                                    'city'=>$v['attributes']['city'],
-                                    'state'=>$v['attributes']['state'],
-                                    'zip'=>$v['attributes']['zipCode'],
-                                    'zip_4'=>$v['attributes']['zip4'],
-                                    'longitude'=>$v['attributes']['latitude'],
-                                    'latitude'=>$v['attributes']['longitude'],
-                                    'last_edited'=>$v['attributes']['lastEdited'],
+                                            
+                                            
+                                            
+                                        'development_key'=>$v['attributes']['developmentKey'],
+                                        'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                        'building_name'=>$v['attributes']['buildingName'],
+                                        'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'in_service_date'=>$v['attributes']['inServiceDate'],
+                                        'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                        'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                        'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                        'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            
+                                            
+                                            
+                                            
+                                            
+                                        'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
-                                    $UpdateAllitaValues = SyncAddress::find($updateRecord['id']);
+                                    $UpdateAllitaValues = SyncBuilding::find($updateRecord['id']);
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
-                                        'line_1'=>$v['attributes']['line1'],
-                                        'line_2'=>$v['attributes']['line2'],
-                                        'city'=>$v['attributes']['city'],
-                                        'state'=>$v['attributes']['state'],
-                                        'zip'=>$v['attributes']['zipCode'],
-                                        'zip_4'=>$v['attributes']['zip4'],
-                                        'longitude'=>$v['attributes']['latitude'],
-                                        'latitude'=>$v['attributes']['longitude'],
+                                            
+                                            
+                                            
+                                        'development_key'=>$v['attributes']['developmentKey'],
+                                        'project_id'=>null,
+                                        'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                        'building_status_id'=>null,
+                                        'building_name'=>$v['attributes']['buildingName'],
+                                        'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'physical_address_id'=>null,
+                                        'in_service_date'=>$v['attributes']['inServiceDate'],
+                                        'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                        'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                        'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                        'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            
+                                            
+                                            
+                                            
+                                            
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
                                     //dd('inside.');
                                 } elseif (is_null($allitaTableRecord)) {
-                                    $this->line('Adding Missing Record'.PHP_EOL);
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
                                     // we create it first so we can ensure the correct updated at
                                     // date ends up in the allita table record
                                     // (if we create the sync record first the updated at date would become out of sync with the allita table.)
-
-                                    $allitaTableRecord = Address::create([
-                                        'line_1'=>$v['attributes']['line1'],
-                                        'line_2'=>$v['attributes']['line2'],
-                                        'city'=>$v['attributes']['city'],
-                                        'state'=>$v['attributes']['state'],
-                                        'zip'=>$v['attributes']['zipCode'],
-                                        'zip_4'=>$v['attributes']['zip4'],
-                                        'longitude'=>$v['attributes']['latitude'],
-                                        'latitude'=>$v['attributes']['longitude'],
+                                    $this->line('Added missing '.$v['attributes']['buildingKey']. PHP_EOL);
+                                    $allitaTableRecord = Building::create([
+                                            
+                                            
+                                            
+                                            
+                                        'development_key'=>$v['attributes']['developmentKey'],
+                                        'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                        'building_name'=>$v['attributes']['buildingName'],
+                                        'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'in_service_date'=>$v['attributes']['inServiceDate'],
+                                        'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                        'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                        'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                        'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            
+                                            
+                                            
+                                            
+                                            
+                                        'building_key'=>$v['attributes']['buildingKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncAddress::where('id', $updateRecord['id'])
+                                    $syncTableRecord = SyncBuilding::where('id', $updateRecord['id'])
                                     ->update([
-                                        'line_1'=>$v['attributes']['line1'],
-                                        'line_2'=>$v['attributes']['line2'],
-                                        'city'=>$v['attributes']['city'],
-                                        'state'=>$v['attributes']['state'],
-                                        'zip'=>$v['attributes']['zipCode'],
-                                        'zip_4'=>$v['attributes']['zip4'],
-                                        'longitude'=>$v['attributes']['latitude'],
-                                        'latitude'=>$v['attributes']['longitude'],
+                                            
+                                            
+                                            
+                                            
+                                        'development_key'=>$v['attributes']['developmentKey'],
+                                        'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                        'building_name'=>$v['attributes']['buildingName'],
+                                        'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                        'in_service_date'=>$v['attributes']['inServiceDate'],
+                                        'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                        'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                        'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                        'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            
+                                            
+                                            
+                                            
+                                            
+                                        'building_key'=>$v['attributes']['buildingKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
+                                        'allita_id'=>$allitaTableRecord->id,
                                     ]);
                                     // Update the Allita Table Record with the Sync Table's updated at date
                                     $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
@@ -189,30 +255,50 @@ class SyncDebug extends Command
                             // Create the Allita Entry First
                             // We do this so the updated_at value of the Sync Table does not become newer
                             // when we add in the allita_id
-                            $allitaTableRecord = Address::create([
-                                'address_key'=>$v['attributes']['addressKey'],
-                                'line_1'=>$v['attributes']['line1'],
-                                'line_2'=>$v['attributes']['line2'],
-                                'city'=>$v['attributes']['city'],
-                                'state'=>$v['attributes']['state'],
-                                'zip'=>$v['attributes']['zipCode'],
-                                'zip_4'=>$v['attributes']['zip4'],
-                                'longitude'=>$v['attributes']['latitude'],
-                                'latitude'=>$v['attributes']['longitude'],
+                            $allitaTableRecord = Building::create([
+                                    
+
+                                            
+                                    'building_key'=>$v['attributes']['buildingKey'],
+                                    'development_key'=>$v['attributes']['developmentKey'],
+                                    'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                    'building_name'=>$v['attributes']['buildingName'],
+                                    'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                    'in_service_date'=>$v['attributes']['inServiceDate'],
+                                    'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                    'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                    'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                    'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            
+                                            
+                                            
+                                            
+                                    
+                            'building_key'=>$v['attributes']['buildingKey'],
                             ]);
                             // Create the sync table entry with the allita id
-                            $syncTableRecord = SyncAddress::create([
-                                'allita_id'=>$allitaTableRecord->id,
-                                'address_key'=>$v['attributes']['addressKey'],
-                                'line_1'=>$v['attributes']['line1'],
-                                'line_2'=>$v['attributes']['line2'],
-                                'city'=>$v['attributes']['city'],
-                                'state'=>$v['attributes']['state'],
-                                'zip'=>$v['attributes']['zipCode'],
-                                'zip_4'=>$v['attributes']['zip4'],
-                                'longitude'=>$v['attributes']['latitude'],
-                                'latitude'=>$v['attributes']['longitude'],
+                            $syncTableRecord = SyncBuilding::create([
+                                            
+                                            
+                                            
+                                            
+                                    'development_key'=>$v['attributes']['developmentKey'],
+                                    'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                    'building_name'=>$v['attributes']['buildingName'],
+                                    'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                    'in_service_date'=>$v['attributes']['inServiceDate'],
+                                    'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                    'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                    'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                    'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                            
+                                            
+                                            
+                                            
+
+                                'building_key'=>$v['attributes']['buildingKey'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
+                                'allita_id'=>$allitaTableRecord->id,
                             ]);
                             // Update the Allita Table Record with the Sync Table's updated at date
                             $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
@@ -221,7 +307,7 @@ class SyncDebug extends Command
                     $syncPage++;
                 } while ($syncPage <= $syncData['meta']['totalPageCount']);
             }
-        } 
+        }
 
 
 
