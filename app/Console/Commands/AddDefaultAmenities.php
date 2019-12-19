@@ -44,8 +44,22 @@ class AddDefaultAmenities extends Command
     {
         //
         // Get all the projects first:
-        $projects = Project::get()->all();
-        $this->info(PHP_EOL.'Processing '.count($projects).' Projects'.PHP_EOL);
+        $chosen_id = $this->ask('Add default amenity assignments for which project id number? (not the project ref but the allita id)');
+
+        $project = Project::where('id', $chosen_id)->first();
+        if($project){
+            $this->line(PHP_EOL.$project->project_number.': '.$project->project_name.' project');
+            if($this->confirm('Is that the project you wanted?')){
+                $run = 1;
+            } else {
+                $this->line(PHP_EOL.'Sorry about that --- please try again with a different project number.');
+                $run = 0;
+            }
+        }else{
+            $this->line(PHP_EOL.'Sorry I could not find an project matching that number:'.$auditInput);
+            $run = 0;
+        }
+        if($run == 1){
         $settings = \App\Models\SystemSetting::where('key','bedroom_amenity_id')->first();
         $bedroomId = $settings->value;
         // get all the default amenities 
@@ -56,7 +70,7 @@ class AddDefaultAmenities extends Command
         //dd($defaultProjectAmenities,count($defaultBuildingAmenities),count($defaultUnitAmenities));
 
         
-        foreach ($projects as $project) {
+        
             if(count($project->units)>0){
                 $this->info('Project ID '.$project->id.' has '.count($project->amenities).' Project Amenities'.PHP_EOL);
                 $this->info(count($project->buildings).' Project Buildings with '.count($project->units).' Units total'.PHP_EOL);
@@ -151,9 +165,10 @@ class AddDefaultAmenities extends Command
                 $this->info(PHP_EOL.'==================================================='.PHP_EOL);
                 
             }
+        }
 
             
-        }
+        
     
     
 }
