@@ -89,7 +89,7 @@ class SyncDebug extends Command
             //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if ($syncData['meta']['totalPageCount'] > 0) {
-                $processBar = $this->output->createProgressBar(count($syncData['meta']['totalPageCount']));
+                $processBar = $this->output->createProgressBar($syncData['meta']['totalPageCount']);
                 do {
                     $processBar->advance();
                     if ($syncPage > 1) {
