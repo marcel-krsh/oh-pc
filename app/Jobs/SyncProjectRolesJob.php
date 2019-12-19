@@ -96,7 +96,8 @@ class SyncProjectRolesJob implements ShouldQueue
 
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
-                            $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
+                            $allitaDate = new DateTime($updateRecord->last_edited);
+                            
                             $allitaFloat = ".".$allitaDate->format('u');
                             $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
