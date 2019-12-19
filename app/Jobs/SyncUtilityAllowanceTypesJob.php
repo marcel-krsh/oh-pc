@@ -179,8 +179,7 @@ class SyncUtilityAllowanceTypesJob implements ShouldQueue
                                         'utility_allowance_type_key'=>$v['attributes']['utilityAllowanceTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncUtilityAllowanceType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncUtilityAllowanceType::create([
                                             
                                             
                                             

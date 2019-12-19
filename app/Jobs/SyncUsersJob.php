@@ -180,8 +180,7 @@ class SyncUsersJob implements ShouldQueue
                                         'devco_key' => $v['attributes']['userKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncUser::where('id', $updateRecord['id'])
-                                        ->update([
+                                    $syncTableRecord = SyncUser::create([
 
                                             'organization_key' => $v['attributes']['organizationKey'],
                                             'user_status_key' => $v['attributes']['userStatusKey'],

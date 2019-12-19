@@ -186,8 +186,7 @@ class SyncPhoneNumbersJob implements ShouldQueue
                                         'phone_number_key'=>$v['attributes']['phoneNumberKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncPhoneNumber::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncPhoneNumber::create([
                                             
                                             
                                             

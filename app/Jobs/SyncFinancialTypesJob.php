@@ -139,8 +139,7 @@ class SyncFinancialTypesJob implements ShouldQueue
                                         'financial_type_key'=>$v['attributes']['financialTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncFinancialType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncFinancialType::create([
                                         'financial_type_name'=>$v['attributes']['financialTypeName'],
                                             
                                             

@@ -156,8 +156,7 @@ class SyncOwnerCertificationYearsJob implements ShouldQueue
                                         'owner_certification_year_key'=>$v['attributes']['ownerCertificationYearKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncOwnerCertificationYear::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncOwnerCertificationYear::create([
                                             
                                             
                                             

@@ -201,8 +201,7 @@ class SyncProjectDatesJob implements ShouldQueue
                                         'project_date_key'=>$v['attributes']['developmentDateKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncProjectDate::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncProjectDate::create([
                                             
                                             
                                             

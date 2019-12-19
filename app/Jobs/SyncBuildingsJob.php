@@ -202,8 +202,7 @@ class SyncBuildingsJob implements ShouldQueue
                                         'building_key'=>$v['attributes']['buildingKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncBuilding::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = create([
                                             
                                             
                                             

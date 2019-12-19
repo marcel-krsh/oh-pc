@@ -184,8 +184,7 @@ class SyncEmailAddressesJob implements ShouldQueue
                                         'email_address_key'=>$v['attributes']['emailAddressKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncEmailAddress::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncEmailAddress::create([
                                             
                                             
                                             

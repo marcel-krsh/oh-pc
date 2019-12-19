@@ -182,8 +182,7 @@ class SyncSpecialNeedsJob implements ShouldQueue
                                         'special_needs_key'=>$v['attributes']['specialNeedsKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncSpecialNeed::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncSpecialNeed::create([
                                             
                                             
                                             

@@ -133,8 +133,7 @@ class SyncProjectRolesJob implements ShouldQueue
                                         'role_name'=>$v['attributes']['roleName'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncProjectRole::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncProjectRole::create([
                                         'role_name'=>$v['attributes']['roleName'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);

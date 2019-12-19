@@ -153,8 +153,7 @@ class SyncPeopleJob implements ShouldQueue
                                     'default_email_address_key'=>$v['attributes']['defaultEmailAddressKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncPeople::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncPeople::create([
                                         'person_key'=>$v['attributes']['personKey'],
                                         'is_active'=>$v['attributes']['isActive'],
                                         'last_name'=>$v['attributes']['lastName'],

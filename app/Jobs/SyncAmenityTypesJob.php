@@ -135,8 +135,7 @@ class SyncAmenityTypesJob implements ShouldQueue
                                         'amenity_type_key'=>$v['attributes']['amenityTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncAmenityType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncAmenityType::create([
                                         'amenity_description'=>$v['attributes']['amenityDescription'],
                                             
                                         'amenity_type_key'=>$v['attributes']['amenityTypeKey'],

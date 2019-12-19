@@ -193,8 +193,7 @@ class SyncComplianceContactJob implements ShouldQueue
                                         'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncComplianceContact::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncComplianceContact::create([
 
 
 
