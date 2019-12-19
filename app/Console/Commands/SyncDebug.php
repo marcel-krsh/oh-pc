@@ -118,7 +118,9 @@ class SyncDebug extends Command
 
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
-                            $allitaDate = new DateTime($lastModifiedDate->last_edited_convert);
+
+                            //////////// FAULTY LOGIC FOUND HERE::: we were checking against the newest date in the table, not the record. /////////////////////
+                            $allitaDate = new DateTime($updatedRecord->last_edited);
                             $allitaFloat = ".".$allitaDate->format('u');
                             $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
@@ -126,7 +128,7 @@ class SyncDebug extends Command
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
 
-                            $this->line('Dates:: raw last_edited date from DEVCO: '.$v['attributes']['lastEdited'].' || || Is devcoDateEval  '. $devcoDateEval. ' > allitaDateEval'.$allitaDateEval.PHP_EOL);
+                            $this->line('Dates:: raw last_edited date from DEVCO: '.$v['attributes']['lastEdited'].' Is devcoDateEval  '. $devcoDateEval. ' > allitaDateEval (sync_table) '.$allitaDateEval.PHP_EOL);
                                 
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 
