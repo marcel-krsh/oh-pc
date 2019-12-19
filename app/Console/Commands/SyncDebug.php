@@ -216,7 +216,7 @@ class SyncDebug extends Command
                                     $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
                                 }
                             } else {
-                                $this->line('Devco Date is not newer.');
+                                $this->line('Devco Date is not newer. Not Updating email_address_key '.$v['attributes']['emailAddressKey'].PHP_EOL.'============================================='.PHP_EOL);
                             }
                         } else {
                             $this->line('Record Not Found in Sync Table - Creating a New Record'.PHP_EOL);
