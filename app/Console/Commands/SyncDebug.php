@@ -126,7 +126,7 @@ class SyncDebug extends Command
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
 
-                            $this->line('Dates:: raw last_edited date from DEVCO: '.$v['attributes']['lastEdited'].' || devcoDate - '.$devcoDate.' ||  allitaDate - '. $allitaDate.' || allitaFloat - '.$allitaFloat.' || devcoFloat - '.$devcoFloat.' || devcoDateEval - '. $devcoDateEval. ' || allitaDateEval'.PHP_EOL);
+                            $this->line('Dates:: raw last_edited date from DEVCO: '.$v['attributes']['lastEdited'].' ||  allitaFloat - '.$allitaFloat.' || devcoFloat - '.$devcoFloat.' || devcoDateEval - '. $devcoDateEval. ' || allitaDateEval'.PHP_EOL);
                                 
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 
