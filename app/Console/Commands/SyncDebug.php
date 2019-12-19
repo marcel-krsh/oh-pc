@@ -144,7 +144,7 @@ class SyncDebug extends Command
                                 
                             if ($devcoDateEval > $allitaDateEval) {
                                 if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
-                                    $countofitems ++;
+                                    
                                     //$this->line('Updated '.$v['attributes']['buildingKey']. PHP_EOL);
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
