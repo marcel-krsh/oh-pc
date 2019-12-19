@@ -118,38 +118,38 @@ class SyncComplianceContactJob implements ShouldQueue
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-                                
+
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-                                
+
                             if ($devcoDateEval > $allitaDateEval) {
                                 if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
                                     SyncComplianceContact::where('id', $updateRecord['id'])
                                     ->update([
-                                            
-                                            
-                                            
+
+
+
                                         'address'=>$v['attributes']['address'],
                                         'project_key'=>$v['attributes']['developmentKey'],
-                                            
+
                                         'city'=>$v['attributes']['city'],
                                         'zip'=>$v['attributes']['zip'],
                                         'review_cycle'=>$v['attributes']['reviewCycle'],
                                         'next_inspection'=>$v['attributes']['nextInspection'],
-                                            
-                                            
-                                            
-                                            
-                                            
+
+
+
+
+
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
                                     $UpdateAllitaValues = SyncComplianceContact::find($updateRecord['id']);
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
-                                            
-                                            
-                                            
+
+
+
                                         'address'=>$v['attributes']['address'],
                                         'project_key'=>$v['attributes']['developmentKey'],
                                         'project_id'=>null,
@@ -157,11 +157,11 @@ class SyncComplianceContactJob implements ShouldQueue
                                         'zip'=>$v['attributes']['zip'],
                                         'review_cycle'=>$v['attributes']['reviewCycle'],
                                         'next_inspection'=>$v['attributes']['nextInspection'],
-                                            
-                                            
-                                            
-                                            
-                                            
+
+
+
+
+
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
                                     //dd('inside.');
@@ -173,43 +173,43 @@ class SyncComplianceContactJob implements ShouldQueue
                                     // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
                                     $allitaTableRecord = ComplianceContact::create([
-                                            
-                                            
-                                            
-                                            
+
+
+
+
                                         'address'=>$v['attributes']['address'],
                                         'project_key'=>$v['attributes']['developmentKey'],
-                                            
+
                                         'city'=>$v['attributes']['city'],
                                         'zip'=>$v['attributes']['zip'],
                                         'review_cycle'=>$v['attributes']['reviewCycle'],
                                         'next_inspection'=>$v['attributes']['nextInspection'],
-                                            
-                                            
-                                            
-                                            
-                                            
+
+
+
+
+
                                         'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
                                     $syncTableRecord = SyncComplianceContact::where('id', $updateRecord['id'])
                                     ->update([
-                                            
-                                            
-                                            
-                                            
+
+
+
+
                                         'address'=>$v['attributes']['address'],
                                         'project_key'=>$v['attributes']['developmentKey'],
-                                            
+
                                         'city'=>$v['attributes']['city'],
                                         'zip'=>$v['attributes']['zip'],
                                         'review_cycle'=>$v['attributes']['reviewCycle'],
                                         'next_inspection'=>$v['attributes']['nextInspection'],
-                                            
-                                            
-                                            
-                                            
-                                            
+
+
+
+
+
                                         'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
@@ -223,41 +223,40 @@ class SyncComplianceContactJob implements ShouldQueue
                             // We do this so the updated_at value of the Sync Table does not become newer
                             // when we add in the allita_id
                             $allitaTableRecord = ComplianceContact::create([
-                                    
 
-                                            
+
+
                                     'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                     'address'=>$v['attributes']['address'],
                                     'project_key'=>$v['attributes']['developmentKey'],
-                                            
+
                                     'city'=>$v['attributes']['city'],
                                     'zip'=>$v['attributes']['zip'],
                                     'review_cycle'=>$v['attributes']['reviewCycle'],
                                     'next_inspection'=>$v['attributes']['nextInspection'],
-                                            
-                                            
-                                            
-                                            
-                                    
-                            'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
+
+
+
+
+
                             ]);
                             // Create the sync table entry with the allita id
                             $syncTableRecord = SyncComplianceContact::create([
-                                            
-                                            
-                                            
-                                            
+
+
+
+
                                     'address'=>$v['attributes']['address'],
                                     'project_key'=>$v['attributes']['developmentKey'],
-                                            
+
                                     'city'=>$v['attributes']['city'],
                                     'zip'=>$v['attributes']['zip'],
                                     'review_cycle'=>$v['attributes']['reviewCycle'],
                                     'next_inspection'=>$v['attributes']['nextInspection'],
-                                            
-                                            
-                                            
-                                            
+
+
+
+
 
                                 'compliance_contact_key'=>$v['attributes']['complianceContactKey'],
                                 'last_edited'=>$v['attributes']['lastEdited'],
