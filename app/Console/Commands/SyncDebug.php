@@ -111,7 +111,7 @@ class SyncDebug extends Command
                             
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
-                            $this->line('found the record... updating...'.PHP_EOL);
+                            $this->line('found the record...'.PHP_EOL);
                             /// NEW CODE TO UPDATE ALLITA TABLE PART 1
                             $allitaTableRecord = EmailAddress::find($updateRecord->allita_id);
                             /// END NEW CODE PART 1
@@ -126,7 +126,7 @@ class SyncDebug extends Command
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
 
-                            $this->line('Dates:: raw last_edited date from DEVCO: '.$v['attributes']['lastEdited'].' ||  allitaFloat - '.$allitaFloat.' || devcoFloat - '.$devcoFloat.' || devcoDateEval - '. $devcoDateEval. ' || allitaDateEval'.PHP_EOL);
+                            $this->line('Dates:: raw last_edited date from DEVCO: '.$v['attributes']['lastEdited'].' || || Is devcoDateEval  '. $devcoDateEval. ' > allitaDateEval'.$allitaDateEval.PHP_EOL);
                                 
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 
