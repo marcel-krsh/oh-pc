@@ -89,8 +89,9 @@ class SyncDebug extends Command
             //dd($syncData);
             //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if ($syncData['meta']['totalPageCount'] > 0) {
-                $countofitems = 0;
+                $processBar = $this->output->createProgressBar(count($syncData['meta']['totalPageCount']));
                 do {
+                    $processBar->advance();
                     if ($syncPage > 1) {
                         //Get Next Page
                         $syncData = $apiConnect->listBuildings($syncPage, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
@@ -98,9 +99,9 @@ class SyncDebug extends Command
                         //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     }
                     //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
-                    $processBar = $this->output->createProgressBar(count($syncData['data']));
+                    
                     foreach ($syncData['data'] as $i => $v) {
-                            $processBar->advance();
+                            
                             // check if record exists
                             $updateRecord = SyncBuilding::select('id', 'allita_id', 'last_edited', 'updated_at')->where('building_key', $v['attributes']['buildingKey'])->first();
                             // convert booleans
@@ -144,7 +145,7 @@ class SyncDebug extends Command
                             if ($devcoDateEval > $allitaDateEval) {
                                 if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     $countofitems ++;
-                                    $this->line('Updated '.$v['attributes']['buildingKey']. PHP_EOL);
+                                    //$this->line('Updated '.$v['attributes']['buildingKey']. PHP_EOL);
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
                                     SyncBuilding::where('id', $updateRecord['id'])
@@ -200,7 +201,7 @@ class SyncDebug extends Command
                                     // we create it first so we can ensure the correct updated at
                                     // date ends up in the allita table record
                                     // (if we create the sync record first the updated at date would become out of sync with the allita table.)
-                                    $this->line('Added missing '.$v['attributes']['buildingKey']. PHP_EOL);
+                                    $this->line(' Added missing '.$v['attributes']['buildingKey']. PHP_EOL);
                                     $allitaTableRecord = Building::create([
                                             
                                             
@@ -247,6 +248,26 @@ class SyncDebug extends Command
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,
                                     ]);
+
+                                    if(!is_object($syncTableRecord)) {
+                                        // Record didn't exist???
+                                        $syncTableRecord = SyncBuilding::create([
+                                                    
+                                                'development_key'=>$v['attributes']['developmentKey'],
+                                                'building_status_key'=>$v['attributes']['buildingStatusKey'],
+                                                'building_name'=>$v['attributes']['buildingName'],
+                                                'physical_address_key'=>$v['attributes']['physicalAddressKey'],
+                                                'in_service_date'=>$v['attributes']['inServiceDate'],
+                                                'applicable_fraction'=>$v['attributes']['applicableFraction'],
+                                                'owner_paid_utilities'=>$v['attributes']['ownerPaidUtilities'],
+                                                'acquisition_date'=>$v['attributes']['acquisitionDate'],
+                                                'building_built_date'=>$v['attributes']['buildingBuiltDate'],
+                                                'building_key'=>$v['attributes']['buildingKey'],
+                                                'last_edited'=>$v['attributes']['lastEdited'],
+                                                'allita_id'=>$allitaTableRecord->id,
+                                            ]);
+
+                                    }
                                     // Update the Allita Table Record with the Sync Table's updated at date
                                     $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
                                 }
@@ -255,6 +276,8 @@ class SyncDebug extends Command
                             // Create the Allita Entry First
                             // We do this so the updated_at value of the Sync Table does not become newer
                             // when we add in the allita_id
+                            $this->line(' Added completely missing '.$v['attributes']['buildingKey']. PHP_EOL);
+
                             $allitaTableRecord = Building::create([
                                     
 
