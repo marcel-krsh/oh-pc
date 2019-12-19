@@ -13,8 +13,8 @@ use DB;
 use DateTime;
 use Illuminate\Support\Facades\Hash;
 // includes specific to this sync
-use App\Models\SyncEmailAddress;
-use App\Models\EmailAddress;
+use App\Models\SyncAddress;
+use App\Models\Address;
 
 class SyncDebug extends Command
 {
@@ -52,10 +52,10 @@ class SyncDebug extends Command
     public function handle()
     {
 
-        $this->line('Starting to sync the EmailAddress Sync:'.PHP_EOL);
+        $this->line('Starting to sync the Address Sync:'.PHP_EOL);
      
         //////////////////////////////////////////////////
-        /////// EmailAddress Sync
+        /////// Address Sync
         /////
 
         /// get last modified date inside the database
@@ -65,11 +65,8 @@ class SyncDebug extends Command
         /// To get the full time stamp out of the Allita DB, we trick the query into thinking it is a string.
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
-        $this->line('Fixing records to date'.PHP_EOL);
 
-        /// to check all records - you must run this ASC not DESC
-
-        $lastModifiedDate = SyncEmailAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'asc')->first();
+        $lastModifiedDate = SyncAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'desc')->first();
         // if the value is null set a default start date to start the sync.
         if (is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -82,186 +79,140 @@ class SyncDebug extends Command
             $modified = date('m/d/Y G:i:s.u', $currentModifiedDateTimeStamp);
             //dd($lastModifiedDate, $modified);
         }
-        $this->line('Last Edited Raw:'.$lastModifiedDate->last_edited.PHP_EOL);
-        $this->line('Last Edited Converted:'.$lastModifiedDate->last_edited_convert.PHP_EOL);
-        $this->line('Last Edited Modified for Check:'.$modified.PHP_EOL);
-
-
         $apiConnect = new DevcoService();
         if (!is_null($apiConnect)) {
-            $this->line('Connected to DEVCO'.PHP_EOL);
-            $syncData = $apiConnect->listEmailAddresses(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
+            $syncData = $apiConnect->listAddresses(1, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
             $syncData = json_decode($syncData, true);
             $syncPage = 1;
-
-            
+            //dd($syncData);
+            //dd($lastModifiedDate->last_edited_convert,$currentModifiedDateTimeStamp,$modified,$syncData);
             if ($syncData['meta']['totalPageCount'] > 0) {
-                $this->line('Updating '.$syncData['meta']['totalPageCount'].' Pages of Data From DEVCO.'.PHP_EOL);
                 do {
                     if ($syncPage > 1) {
                         //Get Next Page
-                        $syncData = $apiConnect->listEmailAddresses($syncPage, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
+                        $syncData = $apiConnect->listAddresses($syncPage, $modified, 1, 'admin@allita.org', 'System Sync Job', 1, 'Server');
                         $syncData = json_decode($syncData, true);
-                        //dd('Page Count is Higher',$syncData,$syncData['meta']['totalPageCount'],$syncPage);
+                        //dd('Page Count is Higher'.$syncData);
                     }
-                    //dd('Page Count is Higher',$syncData,$modified,$syncData,$syncData['meta']['totalPageCount'],$syncPage);
                     foreach ($syncData['data'] as $i => $v) {
                             // check if record exists
-
-                        //$this->line('Finding Matching Record for email_address_key:'.$v['attributes']['emailAddressKey'].PHP_EOL);
-                            $updateRecord = SyncEmailAddress::select('id', 'allita_id', 'last_edited', 'updated_at')->where('email_address_key', $v['attributes']['emailAddressKey'])->first();
-
+                            $updateRecord = SyncAddress::select('id', 'allita_id', 'last_edited', 'updated_at')->where('address_key', $v['attributes']['addressKey'])->first();
                             
+                            //dd($updateRecord,$updateRecord->updated_at);
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
-                            //$this->line('found the record...'.PHP_EOL);
+
                             /// NEW CODE TO UPDATE ALLITA TABLE PART 1
-                            $allitaTableRecord = EmailAddress::find($updateRecord->allita_id);
+                            $allitaTableRecord = Address::find($updateRecord->allita_id);
                             /// END NEW CODE PART 1
 
                             // convert dates to seconds and miliseconds to see if the current record is newer.
                             $devcoDate = new DateTime($v['attributes']['lastEdited']);
-
-                            //////////// FAULTY LOGIC FOUND HERE::: we were checking against the newest date in the table, not the record. /////////////////////
+                            
                             $allitaDate = new DateTime($updateRecord->last_edited);
+                            
                             $allitaFloat = ".".$allitaDate->format('u');
                             $devcoFloat = ".".$devcoDate->format('u');
                             settype($allitaFloat, 'float');
                             settype($devcoFloat, 'float');
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
-
-                            //$this->line('Dates:: raw last_edited date from DEVCO: '.$v['attributes']['lastEdited'].' Is devcoDateEval  '. $devcoDateEval. ' > allitaDateEval (sync_table) '.$allitaDateEval.PHP_EOL);
                                 
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
-                                
                             if ($devcoDateEval > $allitaDateEval) {
-                                $this->line('Updating record .'.$v['attributes']['emailAddressKey'].PHP_EOL);
                                 if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
-                                    SyncEmailAddress::where('id', $updateRecord['id'])
+                                    $this->line('Updating Record'.PHP_EOL);
+                                    SyncAddress::where('id', $updateRecord['id'])
                                     ->update([
-                                            
-                                            
-                                            
-                                        'email_address_type_key'=>$v['attributes']['emailAddressTypeKey'],
-                                            
-                                        'email_address'=>$v['attributes']['emailAddress'],
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                        'last_edited'=>$v['attributes']['lastEdited'],
+                                    'line_1'=>$v['attributes']['line1'],
+                                    'line_2'=>$v['attributes']['line2'],
+                                    'city'=>$v['attributes']['city'],
+                                    'state'=>$v['attributes']['state'],
+                                    'zip'=>$v['attributes']['zipCode'],
+                                    'zip_4'=>$v['attributes']['zip4'],
+                                    'longitude'=>$v['attributes']['latitude'],
+                                    'latitude'=>$v['attributes']['longitude'],
+                                    'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);
-                                    $UpdateAllitaValues = SyncEmailAddress::find($updateRecord['id']);
+                                    $UpdateAllitaValues = SyncAddress::find($updateRecord['id']);
                                     // update the allita db - we use the updated at of the sync table as the last edited value for the actual Allita Table.
                                     $allitaTableRecord->update([
-                                            
-                                            
-                                            
-                                        'email_address_type_key'=>$v['attributes']['emailAddressTypeKey'],
-                                        'email_address_type_id'=>null,
-                                        'email_address'=>$v['attributes']['emailAddress'],
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
+                                        'line_1'=>$v['attributes']['line1'],
+                                        'line_2'=>$v['attributes']['line2'],
+                                        'city'=>$v['attributes']['city'],
+                                        'state'=>$v['attributes']['state'],
+                                        'zip'=>$v['attributes']['zipCode'],
+                                        'zip_4'=>$v['attributes']['zip4'],
+                                        'longitude'=>$v['attributes']['latitude'],
+                                        'latitude'=>$v['attributes']['longitude'],
                                         'last_edited'=>$UpdateAllitaValues->updated_at,
                                     ]);
                                     //dd('inside.');
                                 } elseif (is_null($allitaTableRecord)) {
+                                    $this->line('Adding Missing Record'.PHP_EOL);
                                     // the allita table record doesn't exist
                                     // create the allita table record and then update the record
                                     // we create it first so we can ensure the correct updated at
                                     // date ends up in the allita table record
                                     // (if we create the sync record first the updated at date would become out of sync with the allita table.)
 
-                                    $allitaTableRecord = EmailAddress::create([
-                                            
-                                            
-                                            
-                                            
-                                        'email_address_type_key'=>$v['attributes']['emailAddressTypeKey'],
-                                            
-                                        'email_address'=>$v['attributes']['emailAddress'],
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                        'email_address_key'=>$v['attributes']['emailAddressKey'],
+                                    $allitaTableRecord = Address::create([
+                                        'line_1'=>$v['attributes']['line1'],
+                                        'line_2'=>$v['attributes']['line2'],
+                                        'city'=>$v['attributes']['city'],
+                                        'state'=>$v['attributes']['state'],
+                                        'zip'=>$v['attributes']['zipCode'],
+                                        'zip_4'=>$v['attributes']['zip4'],
+                                        'longitude'=>$v['attributes']['latitude'],
+                                        'latitude'=>$v['attributes']['longitude'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncEmailAddress::where('id', $updateRecord['id'])
+                                    $syncTableRecord = SyncAddress::where('id', $updateRecord['id'])
                                     ->update([
-                                            
-                                            
-                                            
-                                            
-                                        'email_address_type_key'=>$v['attributes']['emailAddressTypeKey'],
-                                            
-                                        'email_address'=>$v['attributes']['emailAddress'],
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                        'email_address_key'=>$v['attributes']['emailAddressKey'],
+                                        'line_1'=>$v['attributes']['line1'],
+                                        'line_2'=>$v['attributes']['line2'],
+                                        'city'=>$v['attributes']['city'],
+                                        'state'=>$v['attributes']['state'],
+                                        'zip'=>$v['attributes']['zipCode'],
+                                        'zip_4'=>$v['attributes']['zip4'],
+                                        'longitude'=>$v['attributes']['latitude'],
+                                        'latitude'=>$v['attributes']['longitude'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
-                                        'allita_id'=>$allitaTableRecord->id,
                                     ]);
                                     // Update the Allita Table Record with the Sync Table's updated at date
                                     $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
                                 }
-                            } else {
-                                //$this->line('Devco Date is not newer. Not Updating email_address_key '.$v['attributes']['emailAddressKey'].PHP_EOL.'============================================='.PHP_EOL);
                             }
                         } else {
-                            $this->line('Record Not Found in Sync Table - Creating a New Record'.PHP_EOL);
                             // Create the Allita Entry First
                             // We do this so the updated_at value of the Sync Table does not become newer
                             // when we add in the allita_id
-                            $allitaTableRecord = EmailAddress::create([
-                                    
-
-                                            
-                                    'email_address_key'=>$v['attributes']['emailAddressKey'],
-                                    'email_address_type_key'=>$v['attributes']['emailAddressTypeKey'],
-                                            
-                                    'email_address'=>$v['attributes']['emailAddress'],
-                                            
-                                            
-                                            
-                                            
-                                            
-                                    
-                            'email_address_key'=>$v['attributes']['emailAddressKey'],
+                            $allitaTableRecord = Address::create([
+                                'address_key'=>$v['attributes']['addressKey'],
+                                'line_1'=>$v['attributes']['line1'],
+                                'line_2'=>$v['attributes']['line2'],
+                                'city'=>$v['attributes']['city'],
+                                'state'=>$v['attributes']['state'],
+                                'zip'=>$v['attributes']['zipCode'],
+                                'zip_4'=>$v['attributes']['zip4'],
+                                'longitude'=>$v['attributes']['latitude'],
+                                'latitude'=>$v['attributes']['longitude'],
                             ]);
                             // Create the sync table entry with the allita id
-                            $syncTableRecord = SyncEmailAddress::create([
-                                            
-                                            
-                                            
-                                            
-                                    'email_address_type_key'=>$v['attributes']['emailAddressTypeKey'],
-                                            
-                                    'email_address'=>$v['attributes']['emailAddress'],
-                                            
-                                            
-                                            
-                                            
-                                            
-
-                                'email_address_key'=>$v['attributes']['emailAddressKey'],
-                                'last_edited'=>$v['attributes']['lastEdited'],
+                            $syncTableRecord = SyncAddress::create([
                                 'allita_id'=>$allitaTableRecord->id,
+                                'address_key'=>$v['attributes']['addressKey'],
+                                'line_1'=>$v['attributes']['line1'],
+                                'line_2'=>$v['attributes']['line2'],
+                                'city'=>$v['attributes']['city'],
+                                'state'=>$v['attributes']['state'],
+                                'zip'=>$v['attributes']['zipCode'],
+                                'zip_4'=>$v['attributes']['zip4'],
+                                'longitude'=>$v['attributes']['latitude'],
+                                'latitude'=>$v['attributes']['longitude'],
+                                'last_edited'=>$v['attributes']['lastEdited'],
                             ]);
                             // Update the Allita Table Record with the Sync Table's updated at date
                             $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
@@ -270,7 +221,7 @@ class SyncDebug extends Command
                     $syncPage++;
                 } while ($syncPage <= $syncData['meta']['totalPageCount']);
             }
-        }  
+        } 
 
 
 
