@@ -65,8 +65,11 @@ class SyncDebug extends Command
         /// To get the full time stamp out of the Allita DB, we trick the query into thinking it is a string.
         /// To do this we use the DB::raw() function and use CONCAT on the column.
         /// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
+        $this->line('Fixing records to date'.PHP_EOL);
 
-        $lastModifiedDate = SyncEmailAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'desc')->first();
+        /// to check all records - you must run this ASC not DESC
+
+        $lastModifiedDates = SyncEmailAddress::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'asc')->first();
         // if the value is null set a default start date to start the sync.
         if (is_null($lastModifiedDate)) {
             $modified = '10/1/1900';
@@ -105,13 +108,13 @@ class SyncDebug extends Command
                     foreach ($syncData['data'] as $i => $v) {
                             // check if record exists
 
-                        $this->line('Finding Matching Record for email_address_key:'.$v['attributes']['emailAddressKey'].PHP_EOL);
+                        //$this->line('Finding Matching Record for email_address_key:'.$v['attributes']['emailAddressKey'].PHP_EOL);
                             $updateRecord = SyncEmailAddress::select('id', 'allita_id', 'last_edited', 'updated_at')->where('email_address_key', $v['attributes']['emailAddressKey'])->first();
 
                             
                         if (isset($updateRecord->id)) {
                             // record exists - get matching table record
-                            $this->line('found the record...'.PHP_EOL);
+                            //$this->line('found the record...'.PHP_EOL);
                             /// NEW CODE TO UPDATE ALLITA TABLE PART 1
                             $allitaTableRecord = EmailAddress::find($updateRecord->allita_id);
                             /// END NEW CODE PART 1
@@ -128,12 +131,12 @@ class SyncDebug extends Command
                             $devcoDateEval = strtotime($devcoDate->format('Y-m-d G:i:s')) + $devcoFloat;
                             $allitaDateEval = strtotime($allitaDate->format('Y-m-d G:i:s')) + $allitaFloat;
 
-                            $this->line('Dates:: raw last_edited date from DEVCO: '.$v['attributes']['lastEdited'].' Is devcoDateEval  '. $devcoDateEval. ' > allitaDateEval (sync_table) '.$allitaDateEval.PHP_EOL);
+                            //$this->line('Dates:: raw last_edited date from DEVCO: '.$v['attributes']['lastEdited'].' Is devcoDateEval  '. $devcoDateEval. ' > allitaDateEval (sync_table) '.$allitaDateEval.PHP_EOL);
                                 
                             //dd($allitaTableRecord,$devcoDateEval,$allitaDateEval,$allitaTableRecord->last_edited, $updateRecord->updated_at);
                                 
                             if ($devcoDateEval > $allitaDateEval) {
-                                $this->line('Devco Source is determined to be newer.'.PHP_EOL);
+                                $this->line('Updating record .'.$v['attributes']['emailAddressKey'].PHP_EOL);
                                 if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
                                     // record is newer than the one currently on file in the allita db.
                                     // update the sync table first
@@ -218,7 +221,7 @@ class SyncDebug extends Command
                                     $allitaTableRecord->update(['last_edited'=>$syncTableRecord->updated_at]);
                                 }
                             } else {
-                                $this->line('Devco Date is not newer. Not Updating email_address_key '.$v['attributes']['emailAddressKey'].PHP_EOL.'============================================='.PHP_EOL);
+                                //$this->line('Devco Date is not newer. Not Updating email_address_key '.$v['attributes']['emailAddressKey'].PHP_EOL.'============================================='.PHP_EOL);
                             }
                         } else {
                             $this->line('Record Not Found in Sync Table - Creating a New Record'.PHP_EOL);
