@@ -166,8 +166,7 @@ class SyncOrganizationsJob implements ShouldQueue
                                         'organization_key'=>$v['attributes']['organizationKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncOrganization::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncOrganization::create([
                                         'default_address_key'=>$v['attributes']['defaultAddressKey'],
                                         'is_active'=>$v['attributes']['isActive'],
                                         'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],

@@ -159,8 +159,7 @@ class SyncRentalAssistanceTypesJob implements ShouldQueue
                                         'rental_assistance_type_key'=>$v['attributes']['rentalAssistanceTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncRentalAssistanceType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncRentalAssistanceType::create([
                                             
                                             
                                             

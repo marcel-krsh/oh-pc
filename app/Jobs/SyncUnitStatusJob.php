@@ -148,8 +148,7 @@ class SyncUnitStatusJob implements ShouldQueue
                                         'unit_status_key'=>$v['attributes']['unitStatusKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncUnitStatus::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncUnitStatus::create([
                                             
                                             
                                         'unit_status'=>$v['attributes']['unitStatus'],

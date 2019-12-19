@@ -153,8 +153,7 @@ class SyncAddressesJob implements ShouldQueue
                                         'latitude'=>$v['attributes']['longitude'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncAddress::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncAddress::create([
                                         'line_1'=>$v['attributes']['line1'],
                                         'line_2'=>$v['attributes']['line2'],
                                         'city'=>$v['attributes']['city'],

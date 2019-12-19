@@ -133,8 +133,7 @@ class SyncMonitoringStatusTypesJob implements ShouldQueue
                                         'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncMonitoringStatusType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncMonitoringStatusType::create([
                                         'monitoring_status_description'=>$v['attributes']['monitoringStatusDescription'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                     ]);

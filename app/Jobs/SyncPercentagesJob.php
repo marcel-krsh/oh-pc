@@ -148,8 +148,7 @@ class SyncPercentagesJob implements ShouldQueue
                                         'percentage_key'=>$v['attributes']['percentageKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncPercentage::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncPercentage::create([
                                             
                                             
                                         'percentage_description'=>$v['attributes']['percentageDesc'],

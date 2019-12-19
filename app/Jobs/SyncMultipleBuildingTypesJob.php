@@ -142,8 +142,7 @@ class SyncMultipleBuildingTypesJob implements ShouldQueue
                                         'multiple_building_election_key'=>$v['attributes']['multipleBuildingElectionKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncMultipleBuildingElectionType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncMultipleBuildingElectionType::create([
                                             
                                             
                                         'election_description'=>$v['attributes']['electionDescription'],

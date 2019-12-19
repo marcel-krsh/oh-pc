@@ -185,8 +185,7 @@ class SyncUnitAmenitiesJob implements ShouldQueue
                                         'unit_amenity_key'=>$v['attributes']['unitAmenityKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncUnitAmenity::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncUnitAmenity::create([
                                             
                                             
                                             

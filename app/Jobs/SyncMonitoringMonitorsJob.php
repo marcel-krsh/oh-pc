@@ -183,8 +183,7 @@ class SyncMonitoringMonitorsJob implements ShouldQueue
                                         'monitoring_monitor_key'=>$v['attributes']['monitoringMonitorKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncMonitoringMonitor::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncMonitoringMonitor::create([
                                             
                                             
                                             

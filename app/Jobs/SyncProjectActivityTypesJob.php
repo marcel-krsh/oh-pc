@@ -135,8 +135,7 @@ class SyncProjectActivityTypesJob implements ShouldQueue
                                         'activity_name'=>$v['attributes']['activityName'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncProjectActivityType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncProjectActivityType::create([
                                         'activity_name'=>$v['attributes']['activityName'],
                                         'last_edited'=>$v['attributes']['lastEdited'],
                                         'allita_id'=>$allitaTableRecord->id,

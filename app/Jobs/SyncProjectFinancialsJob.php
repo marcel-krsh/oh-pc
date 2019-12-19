@@ -188,8 +188,7 @@ class SyncProjectFinancialsJob implements ShouldQueue
                                         'project_financial_key'=>$v['attributes']['developmentFinancialKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncProjectFinancial::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncProjectFinancial::create([
                                             
                                             
                                             

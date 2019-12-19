@@ -185,8 +185,7 @@ class SyncHouseholdsJob implements ShouldQueue
                                         'household_key'=>$v['attributes']['householdKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncHousehold::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncHousehold::create([
                                             
                                             
                                             

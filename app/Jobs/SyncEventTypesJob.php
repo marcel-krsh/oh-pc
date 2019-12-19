@@ -160,8 +160,7 @@ class SyncEventTypesJob implements ShouldQueue
                                         'event_type_key'=>$v['attributes']['eventTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncEventType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncEventType::create([
                                             
                                             
                                             

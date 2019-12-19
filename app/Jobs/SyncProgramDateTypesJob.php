@@ -142,8 +142,7 @@ class SyncProgramDateTypesJob implements ShouldQueue
                                         'program_date_type_key'=>$v['attributes']['programDateTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncProgramDateType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncProgramDateType::create([
                                         'date_name'=>$v['attributes']['dateName'],
                                             
                                         'date_description'=>$v['attributes']['dateDescription'],

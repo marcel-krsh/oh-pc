@@ -181,8 +181,7 @@ class SyncEmailAddressTypesJob implements ShouldQueue
                                         'email_address_type_key'=>$v['attributes']['emailAddressTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncEmailAddressType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncEmailAddressType::create([
                                             
                                             
                                             

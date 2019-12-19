@@ -146,8 +146,7 @@ class SyncProgramsJob implements ShouldQueue
                                         'program_key'=>$v['attributes']['programKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncProgram::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncProgram::create([
                                         'program_abbreviation'=>$v['attributes']['programAbbreviation'],
                                         'program_number_identifier'=>$v['attributes']['programNumberIdentifier'],
                                         'program_name'=>$v['attributes']['programName'],

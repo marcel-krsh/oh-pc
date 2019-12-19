@@ -139,8 +139,7 @@ class SyncProjectProgramStatusTypesJob implements ShouldQueue
                                         'project_program_status_type_key'=>$v['attributes']['developmentProgramStatusTypeKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncProjectProgramStatusType::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncProjectProgramStatusType::create([
                                         'status_name'=>$v['attributes']['statusName'],
                                         'status_description'=>$v['attributes']['statusDescription'],
                                             

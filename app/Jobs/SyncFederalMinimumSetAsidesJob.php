@@ -148,8 +148,7 @@ class SyncFederalMinimumSetAsidesJob implements ShouldQueue
                                         'federal_minimum_set_aside_key'=>$v['attributes']['federalMinimumSetAsideKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncFederalSetAside::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncFederalSetAside::create([
                                             
                                             
                                         'set_aside_name'=>$v['attributes']['setAsideName'],

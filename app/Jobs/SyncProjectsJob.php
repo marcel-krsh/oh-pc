@@ -162,8 +162,7 @@ class SyncProjectsJob implements ShouldQueue
                                         'project_key'=>$v['attributes']['developmentKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncProject::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncProject::create([
                                         'project_name'=>$v['attributes']['developmentName'],
                                         'physical_address_key'=>$v['attributes']['physicalAddressKey'],
                                         'default_phone_number_key'=>$v['attributes']['defaultPhoneNumberKey'],

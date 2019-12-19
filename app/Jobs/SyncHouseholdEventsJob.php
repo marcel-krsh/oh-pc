@@ -223,8 +223,7 @@ class SyncHouseholdEventsJob implements ShouldQueue
                                         'house_hold_event_key'=>$v['attributes']['houseHoldEventKey'],
                                     ]);
                                     // Create the sync table entry with the allita id
-                                    $syncTableRecord = SyncHouseholdEvent::where('id', $updateRecord['id'])
-                                    ->update([
+                                    $syncTableRecord = SyncHouseholdEvent::create([
                                             
                                             
                                             
