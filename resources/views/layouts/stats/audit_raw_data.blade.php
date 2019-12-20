@@ -1,10 +1,11 @@
-<?php 
+<?php
 function decimalHours($time)
 {
-    $hms = explode(":", $time);
-    $hours = ($hms[0] + ($hms[1]/60) + ($hms[2]/3600));
-    return (number_format((float)$hours, 2, '.', ''));
+	$hms = explode(":", $time);
+	$hours = ($hms[0] + ($hms[1] / 60) + ($hms[2] / 3600));
+	return (number_format((float) $hours, 2, '.', ''));
 }
+
 ?>
 <html>
 <head>
@@ -16,53 +17,7 @@ function decimalHours($time)
 <script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
 
 <script type="text/javascript" src="/js/jquery.mask.js"></script>
-<style type="text/css">
-	
-	body {
-		font-family: sans-serif;
-		font-size: 17pt;
-	}
-	table.greyGridTable {
-  border: 0px solid #FFFFFF;
-  
-  text-align: left;
-  border-collapse: collapse;
-}
-table.greyGridTable td, table.greyGridTable th {
-  border: 1px solid #A8A8A8;
-  padding: 6px 5px;
-}
-table.greyGridTable tbody td {
-  font-size: 13px;
-}
-table.greyGridTable td:nth-child(even) {
-  background: #EBEBEB;
-}
-table.greyGridTable thead {
-  background: #FFFFFF;
-  border-bottom: 4px solid #AAAAAA;
-}
-table.greyGridTable thead th {
-  font-size: 15px;
-  font-weight: bold;
-  color: #2B2B2B;
-  text-align: center;
-  border-left: 2px solid #AAAAAA;
-}
-table.greyGridTable thead th:first-child {
-  border-left: none;
-}
 
-table.greyGridTable tfoot {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333333;
-  border-top: 4px solid #AEAEAE;
-}
-table.greyGridTable tfoot td {
-  font-size: 14px;
-}
-</style>
 
 </head>
 <body>
@@ -71,73 +26,73 @@ table.greyGridTable tfoot td {
 		<table class="greyGridTable" width="3500" >
 			<thead>
 				<tr>
-				<th width="100">
+				<th>
 					Audit Number
 				</th>
-				<th width="200">
+				<th>
 					Lead Auditor
 				</th>
-				<th width="200">
+				<th>
 					Inspection Date
 				</th>
-				<th width="200">
+				<th>
 					Project Manager
 				</th>
-				
-				<th width="200">
+
+				<th>
 					Project Number
 				</th>
-				<th width="200">
+				<th>
 					Project Name
 				</th>
-				<th width="100">
+				<th>
 					Address
 				</th>
-				<th width="100">
+				<th>
 					City
 				</th>
-				<th width="100">
+				<th>
 					State
 				</th>
-				<th width="100">
+				<th>
 					Zip
 				</th>
-				<th width="100">
+				<th>
 					Buildings Inspected
 				</th>
-				<th width="100">
+				<th>
 					Units Inspected
 				</th>
-				<th width="100">
+				<th>
 					Estimated Time
 				</th>
-				<th width="100">
+				<th>
 					Unscheduled
 				</th>
-				<th width="100">
+				<th>
 					File Findings
 				</th>
-				<th width="100">
+				<th>
 					Unresolved File Findings
 				</th>
-				<th width="100">
+				<th>
 					NLT Findings
 				</th>
-				<th width="100">
+				<th>
 					Unresolved NLT Findings
 				</th>
-				<th width="100">
+				<th>
 					LT Findings
 				</th>
-				<th width="100">
+				<th>
 					Unresolved LT Findings
 				</th>
-				
-				<th width="100">
+
+				<th>
 					CAR Status
 				</th>
-				
-				<th width="100">
+
+				<th>
 					EHS Status
 				</th>
 				</tr>
@@ -148,18 +103,18 @@ table.greyGridTable tfoot td {
 						TOTALS
 					</td>
 					<td>
-						
+
 					</td>
 					<td>
-						
+
 					</td>
 					<td>
-						
+
 					</td>
 					<td >
 						{{$cachedAudits->count()}}
 						PROJECTS
-						
+
 					</td>
 					<td>
 					</td>
@@ -202,13 +157,13 @@ table.greyGridTable tfoot td {
 						{{number_format($cachedAudits->sum('unresolved_nlt_findings_count'))}}
 					</td>
 					<td >
-						
-					
-						
+
+
+
 					</td>
 					<td >
-						
-						
+
+
 					</td>
 				</tr>
 				@forEach($cachedAudits as $ca)
@@ -217,7 +172,7 @@ table.greyGridTable tfoot td {
 						{{$ca->audit_id}}
 					</td>
 					<td>
-						
+
 						{{$ca->lead_json->name}}
 					</td>
 					<td>
@@ -226,7 +181,7 @@ table.greyGridTable tfoot td {
 					<td>
 						{{$ca->pm}}
 					</td>
-					
+
 					<td>
 						{{$ca->project_ref}}
 					</td>
@@ -235,19 +190,19 @@ table.greyGridTable tfoot td {
 					</td>
 					<td>
 						{{$ca->address}}
-						
+
 					</td>
 					<td>
 						{{$ca->city}}
-						
+
 					</td>
 					<td>
 						{{$ca->state}}
-						
+
 					</td>
 					<td>
 						{{$ca->zip}}
-						
+
 					</td>
 					<td>
 						{{$ca->total_buildings}}
@@ -287,22 +242,22 @@ table.greyGridTable tfoot td {
 					<td>
 						{{$ca->unresolved_nlt_findings_count}}
 					</td>
-					
+
 					<td>
 						@if(!is_null($ca->car_id)) {{$ca->car_status_text}} @else NA @endif
 					</td>
-					
+
 					<td>
 						@if(!is_null($ca->ehs_id)) {{$ca->ehs_status_text}} @else NA @endif
 					</td>
 				</tr>
 				@endForEach
-				
+
 			</tbody>
 
 
 		</table>
-	
+
 
 </body>
 </html>
