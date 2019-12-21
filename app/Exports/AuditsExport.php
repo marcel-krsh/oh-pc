@@ -38,11 +38,21 @@ class AuditsExport implements FromView, WithEvents
 	{
 		return [
 			AfterSheet::class => function (AfterSheet $event) {
+				$highest_row = $event->sheet->getHighestRow();
 				$event->sheet->styleCells(
 					'A1:' . $event->sheet->getDelegate()->getHighestColumn() . '1',
 					[
 						'font' => [
 							'size' => 16,
+							'bold' => true,
+						],
+					]
+				);
+				$event->sheet->styleCells(
+					'A2:' . $event->sheet->getDelegate()->getHighestColumn() . '2',
+					[
+						'font' => [
+							'size' => 12,
 							'bold' => true,
 						],
 					]
@@ -56,6 +66,7 @@ class AuditsExport implements FromView, WithEvents
 						],
 					],
 				];
+				$event->sheet->freezePane('A2', 'A2');
 				$event->sheet->getDelegate()->getStyle('A2:V1')->applyFromArray($styleArray);
 				$event->sheet->styleCells(
 					'A1:V1000',
@@ -68,6 +79,9 @@ class AuditsExport implements FromView, WithEvents
 
 				// Set first row to height 20
 				$event->sheet->getDelegate()->getRowDimension(1)->setRowHeight(30);
+				// $event->sheet->setCellValue('N2', '=SUM(N2:N' . $event->sheet->getHighestRow() . ')');
+				// $event->sheet->setCellValue('N2', '=CONCAT(SUM(N3:N' . $highest_row . ')," HOURS")');
+
 				// $event->sheet->getColumnDimension('A:V')->setAutoSize(true);
 				for ($i = 1; $i <= 22; $i++) {
 					$column = Coordinate::stringFromColumnIndex($i);

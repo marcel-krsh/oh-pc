@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Exports\AuditsExport;
 use App\Models\CachedAudit;
+use Carbon\Carbon;
+use DB;
 use Excel;
 use Illuminate\Http\Request;
-use \DB;
 
 class PCStatsController extends Controller
 {
@@ -28,7 +29,9 @@ class PCStatsController extends Controller
 		$cachedAudits = CachedAudit::whereIn('id', $audit_ids)->get();
 		$totalEstimatedTime = CachedAudit::sum(DB::raw("TIME_TO_SEC(estimated_time)"));
 		$totalEstimatedTimeNeeded = CachedAudit::sum(DB::raw("TIME_TO_SEC(estimated_time_needed)"));
-		return Excel::download(new AuditsExport($cachedAudits, $totalEstimatedTime, $totalEstimatedTimeNeeded), 'Audits_raw_data.xlsx');
+		$time = Carbon::now()->format('m_d_Y_h_m_A'); //Carbon::createFromFormat('m-d-Y H:m:s', Carbon::now());
+		$file_name = 'BG_AUDIT_DATA_' . $time . '.xls'; //BG_AUDIT_DATA_12_20_2019_9_36_AM.xls
+		return Excel::download(new AuditsExport($cachedAudits, $totalEstimatedTime, $totalEstimatedTimeNeeded), $file_name);
 
 		return view('layouts.stats.audit_raw_data', compact('cachedAudits', 'totalEstimatedTime', 'totalEstimatedTimeNeeded'));
 

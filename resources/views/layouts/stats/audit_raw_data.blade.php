@@ -9,7 +9,7 @@ function decimalHours($time)
 ?>
 <html>
 <head>
-<title>Audit Stats - Ugly Output</title>
+<title>Audit Stats - Excel Output</title>
 <link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
 <script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
 <script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>
@@ -64,10 +64,10 @@ function decimalHours($time)
 					Units Inspected
 				</th>
 				<th>
-					Estimated Time
+					Estimated Time (HOURS)
 				</th>
 				<th>
-					Unscheduled
+					Unscheduled (HOURS)
 				</th>
 				<th>
 					File Findings
@@ -112,7 +112,7 @@ function decimalHours($time)
 
 					</td>
 					<td >
-						{{$cachedAudits->count()}}
+						{{ $cachedAudits->count() }}
 						PROJECTS
 
 					</td>
@@ -127,34 +127,46 @@ function decimalHours($time)
 					<td >
 					</td>
 					<td>
-						{{number_format($cachedAudits->sum('total_buildings'))}}
+						=SUM(K3:K30000)
+						{{-- {{ number_format($cachedAudits->sum('total_buildings')) }} --}}
 					</td>
 					<td>
-						{{number_format($cachedAudits->sum('total_units'))}}
+						=SUM(L3:L30000)
+						{{-- {{ number_format($cachedAudits->sum('total_units')) }} --}}
 					</td>
 					<td>
-						{{number_format($totalEstimatedTime/3600)}} HOURS
+						=SUM(M3:M30000)
+						{{-- =CONCAT(SUM(M3:M30000)," HOURS") --}}
+						{{-- {{ number_format($totalEstimatedTime/3600) }} HOURS --}}
 					</td>
 					<td>
-						{{number_format($totalEstimatedTimeNeeded/3600)}} HOURS
+						=SUM(N3:N30000)
+						{{-- =CONCAT(SUM(N3:N30000)," HOURS") --}}
+						{{-- {{ number_format($totalEstimatedTimeNeeded/3600) }} HOURS --}}
 					</td>
 					<td>
-						{{number_format($cachedAudits->sum('file_findings_count'))}}
+						=SUM(O3:O30000)
+						{{-- {{ number_format($cachedAudits->sum('file_findings_count')) }} --}}
 					</td>
 					<td>
-						{{number_format($cachedAudits->sum('unresolved_file_findings_count'))}}
+						=SUM(P3:P30000)
+						{{-- {{ number_format($cachedAudits->sum('unresolved_file_findings_count')) }} --}}
 					</td>
 					<td>
-						{{number_format($cachedAudits->sum('nlt_findings_count'))}}
+						=SUM(Q3:Q30000)
+						{{-- {{ number_format($cachedAudits->sum('nlt_findings_count')) }} --}}
 					</td>
 					<td>
-						{{number_format($cachedAudits->sum('unresolved_nlt_findings_count'))}}
+						=SUM(R3:R30000)
+						{{-- {{ number_format($cachedAudits->sum('unresolved_nlt_findings_count')) }} --}}
 					</td>
 					<td>
-						{{number_format($cachedAudits->sum('lt_findings_count'))}}
+						=SUM(S3:S30000)
+						{{-- {{ number_format($cachedAudits->sum('lt_findings_count')) }} --}}
 					</td>
 					<td>
-						{{number_format($cachedAudits->sum('unresolved_nlt_findings_count'))}}
+						=SUM(T3:T30000)
+						{{-- {{ number_format($cachedAudits->sum('unresolved_nlt_findings_count')) }} --}}
 					</td>
 					<td >
 
@@ -169,86 +181,86 @@ function decimalHours($time)
 				@forEach($cachedAudits as $ca)
 				<tr>
 					<td>
-						{{$ca->audit_id}}
+						{{ $ca->audit_id }}
 					</td>
 					<td>
 
-						{{$ca->lead_json->name}}
+						{{ $ca->lead_json->name }}
 					</td>
 					<td>
-						{{date('m-d-Y', strtotime($ca->inspection_schedule_date))}}
+						{{ date('m-d-Y', strtotime($ca->inspection_schedule_date)) }}
 					</td>
 					<td>
-						{{$ca->pm}}
+						{{ $ca->pm }}
 					</td>
 
 					<td>
-						{{$ca->project_ref}}
+						{{ $ca->project_ref }}
 					</td>
 					<td>
-						{{$ca->title}}
+						{{ $ca->title }}
 					</td>
 					<td>
-						{{$ca->address}}
+						{{ $ca->address }}
 
 					</td>
 					<td>
-						{{$ca->city}}
+						{{ $ca->city }}
 
 					</td>
 					<td>
-						{{$ca->state}}
+						{{ $ca->state }}
 
 					</td>
 					<td>
-						{{$ca->zip}}
+						{{ $ca->zip }}
 
 					</td>
 					<td>
-						{{$ca->total_buildings}}
+						{{ $ca->total_buildings }}
 					</td>
 					<td>
-						{{$ca->total_units}}
+						{{ $ca->total_units }}
 					</td>
 					<td>
 						@if(!is_null($ca->estimated_time))
-							{{decimalHours($ca->estimated_time)}}
+							{{ decimalHours($ca->estimated_time) }}
 						@else
 						0.0
 						@endif
 					</td>
 					<td>
 						@if(!is_null($ca->estimated_time_needed))
-							{{decimalHours($ca->estimated_time_needed)}}
+							{{ decimalHours($ca->estimated_time_needed) }}
 						@else
 						0.0
 						@endif
 					</td>
 					<td>
-						{{$ca->file_findings_count}}
+						{{ $ca->file_findings_count }}
 					</td>
 					<td>
-						{{$ca->unresolved_file_findings_count}}
+						{{ $ca->unresolved_file_findings_count }}
 					</td>
 					<td>
-						{{$ca->nlt_findings_count}}
+						{{ $ca->nlt_findings_count }}
 					</td>
 					<td>
-						{{$ca->unresolved_nlt_findings_count}}
+						{{ $ca->unresolved_nlt_findings_count }}
 					</td>
 					<td>
-						{{$ca->lt_findings_count}}
+						{{ $ca->lt_findings_count }}
 					</td>
 					<td>
-						{{$ca->unresolved_nlt_findings_count}}
-					</td>
-
-					<td>
-						@if(!is_null($ca->car_id)) {{$ca->car_status_text}} @else NA @endif
+						{{ $ca->unresolved_nlt_findings_count }}
 					</td>
 
 					<td>
-						@if(!is_null($ca->ehs_id)) {{$ca->ehs_status_text}} @else NA @endif
+						@if(!is_null($ca->car_id)) {{ $ca->car_status_text }} @else NA @endif
+					</td>
+
+					<td>
+						@if(!is_null($ca->ehs_id)) {{ $ca->ehs_status_text }} @else NA @endif
 					</td>
 				</tr>
 				@endForEach
