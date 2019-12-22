@@ -818,6 +818,7 @@ class ReportsController extends Controller
 
 	public function getReport(CrrReport $report, Request $request)
 	{
+		// return $report;
 		if ($report) {
 			// return $report->status_name();
 			$oneColumn = null;
@@ -849,6 +850,8 @@ class ReportsController extends Controller
 					return '<meta http-equiv="refresh" content="0;url=/report/' . $report->id . '" />';
 				} else {
 					$data = json_decode($report->crr_data);
+					$versions_count = count($data);
+					// return count($data);
 					$version = $report->version;
 					if ($request->get('version')) {
 						$version = intval($request->get('version'));
@@ -874,7 +877,7 @@ class ReportsController extends Controller
 					//return dd(collect($x)[48]);
 
 					if ($request->get('print') != 1) {
-						return view('crr.crr', compact('report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn'));
+						return view('crr.crr', compact('versions_count', 'report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn'));
 					} else {
 						return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn'));
 					}
@@ -895,7 +898,7 @@ class ReportsController extends Controller
 
 	public function generateReport(CrrReport $report, $goToView = 1, $noStatusChange = 0)
 	{
-		// return $report = CrrReport::find($report);
+		//return $report = CrrReport::find($report);
 		if ($report) {
 			$data = [];
 			if (!is_null($report->crr_data)) {

@@ -64,10 +64,10 @@ function decimalHours($time)
 					Units Inspected
 				</th>
 				<th>
-					Estimated Time (HOURS)
+					Estimated Time
 				</th>
 				<th>
-					Unscheduled (HOURS)
+					Unscheduled
 				</th>
 				<th>
 					File Findings
@@ -112,9 +112,7 @@ function decimalHours($time)
 
 					</td>
 					<td >
-						{{ $cachedAudits->count() }}
-						PROJECTS
-
+						=CONCATENATE(COUNTIF(E3:E30000, "*")," PROJECTS")
 					</td>
 					<td>
 					</td>
@@ -135,13 +133,13 @@ function decimalHours($time)
 						{{-- {{ number_format($cachedAudits->sum('total_units')) }} --}}
 					</td>
 					<td>
-						=SUM(M3:M30000)
-						{{-- =CONCAT(SUM(M3:M30000)," HOURS") --}}
+						{{-- =SUM(M3:M30000) --}}
+						=CONCATENATE(SUM(M3:M30000)," HOURS")
 						{{-- {{ number_format($totalEstimatedTime/3600) }} HOURS --}}
 					</td>
 					<td>
-						=SUM(N3:N30000)
-						{{-- =CONCAT(SUM(N3:N30000)," HOURS") --}}
+						{{-- =SUM(N3:N30000) --}}
+						=CONCATENATE(SUM(N3:N30000)," HOURS")
 						{{-- {{ number_format($totalEstimatedTimeNeeded/3600) }} HOURS --}}
 					</td>
 					<td>

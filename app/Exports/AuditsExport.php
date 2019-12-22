@@ -39,14 +39,26 @@ class AuditsExport implements FromView, WithEvents
 		return [
 			AfterSheet::class => function (AfterSheet $event) {
 				$highest_row = $event->sheet->getHighestRow();
+
+				// $event->sheet->setCellValue('E' . (2), '=CONCATENATE(COUNTIF(E3:E' . $event->sheet->getHighestRow() . ',"*"), "asa")');
+
+				// $event->sheet->setCellValue('E2'), '=SUM(E3:E' . $event->sheet->getHighestRow() . ') PROJECTS');
+
 				$event->sheet->styleCells(
 					'A1:' . $event->sheet->getDelegate()->getHighestColumn() . '1',
 					[
 						'font' => [
 							'size' => 16,
 							'bold' => true,
+							'color' => ['rgb' => 'ffffff'],
 						],
-					]
+						'fill' => [
+							'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+							'startColor' => [
+								'rgb' => '0f233e',
+							],
+						],
+					],
 				);
 				$event->sheet->styleCells(
 					'A2:' . $event->sheet->getDelegate()->getHighestColumn() . '2',
@@ -54,6 +66,13 @@ class AuditsExport implements FromView, WithEvents
 						'font' => [
 							'size' => 12,
 							'bold' => true,
+							'color' => ['rgb' => 'ffffff'],
+						],
+						'fill' => [
+							'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+							'startColor' => [
+								'rgb' => '5273bc',
+							],
 						],
 					]
 				);
@@ -66,6 +85,9 @@ class AuditsExport implements FromView, WithEvents
 						],
 					],
 				];
+				// $event->sheet->getStyle('A1:' . $event->sheet->getDelegate()->getHighestColumn() . '1')->getFill()
+				// 	->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+				// 	->getStartColor()->setARGB('0f233e');
 				$event->sheet->freezePane('A2', 'A2');
 				$event->sheet->getDelegate()->getStyle('A2:V1')->applyFromArray($styleArray);
 				$event->sheet->styleCells(
@@ -94,9 +116,9 @@ class AuditsExport implements FromView, WithEvents
 		];
 	}
 
-	/**
-	 * @return \Illuminate\Support\Collection
-	 */
+/**
+ * @return \Illuminate\Support\Collection
+ */
 	public function view(): View
 	{
 		$cachedAudits = $this->cachedAudits;

@@ -37,10 +37,10 @@ class PCStatsController extends Controller
 		$file_name = 'BG_AUDIT_DATA_' . $time . '.xls'; //BG_AUDIT_DATA_12_20_2019_9_36_AM.xls
 		return Excel::download(new AuditsExport($cachedAudits, $totalEstimatedTime, $totalEstimatedTimeNeeded), $file_name);
 
-		return view('layouts.stats.audit_raw_data', compact('cachedAudits', 'totalEstimatedTime', 'totalEstimatedTimeNeeded'));
+		// return view('layouts.stats.audit_raw_data', compact('cachedAudits', 'totalEstimatedTime', 'totalEstimatedTimeNeeded'));
 
-		return Excel::download(new AuditsExport, 'Audits_raw_data.xlsx');
+		// return Excel::download(new AuditsExport, 'Audits_raw_data.xlsx');
 
-		return view('layouts.stats.audit_raw_data', compact('cachedAudits', 'totalEstimatedTime', 'totalEstimatedTimeNeeded'));
+		// return view('layouts.stats.audit_raw_data', compact('cachedAudits', 'totalEstimatedTime', 'totalEstimatedTimeNeeded'));
 	}
 }

@@ -107,8 +107,16 @@ session(['projectDetailsOutput' => 0]);
       	}
 
       	function reportAction(reportId,action,project_id = null){
+      		// debugger;
       		window.crrActionReportId = reportId;
         	//Here goes the notification code
+        	if(isNaN(action)) {
+      		UIkit.modal.alert('Opening report '+ action);
+      			window.location.href ='/report/{{ $report->id }}?'+action;
+      			return;
+        	}
+        	// return;
+
         	if(action == 6) {
         		dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
         	} else if(action == 2) {
@@ -161,7 +169,7 @@ session(['projectDetailsOutput' => 0]);
         			} else {
         				dynamicModalClose();
         			}
-			//documentsLocal('{{0}}');
+			//documentsLocal('{{ 0 }}');
 			let els = $('.doc-'+id);
 			let spanels = $('.doc-span-'+id);
 			let spancheck = $('.doc-span-check-'+id);
@@ -275,18 +283,18 @@ session(['projectDetailsOutput' => 0]);
 <script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 	<?php // determin background type
-$background = "none";
+$background = "";
 if (1 == $report->crr_approval_type_id) {
-  $background = '-draft';
+	$background = '-draft';
 }
 if (2 == $report->crr_approval_type_id) {
-  $background = '-pending';
+	$background = '-pending';
 }
 if (3 == $report->crr_approval_type_id) {
-  $background = '-declined';
+	$background = '-declined';
 }
 if (4 == $report->crr_approval_type_id) {
-  $background = '-revise';
+	$background = '-revise';
 }
 ?>
 	.crr-sections {
@@ -426,7 +434,7 @@ if (4 == $report->crr_approval_type_id) {
 
 		<a name="{{ str_replace(' ','',$section->crr_section_id) }}" ></a>
 		<hr class="dashed-hr" style="margin-bottom: 60px; margin-top: 0px; padding:0px; border-color: #3a3a3a;">
-		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $report->version }}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
+		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $version }}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
 
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
 			@if(property_exists($section,'parts'))
@@ -438,14 +446,14 @@ if (4 == $report->crr_approval_type_id) {
 			<?php
 // collect comments for this part
 if (Auth::user()->can('access_auditor')) {
-  $comments = collect($report->comments)->where('part_id', $piece->part_id);
+	$comments = collect($report->comments)->where('part_id', $piece->part_id);
 
-  if ($comments) {
-    $totalComments = count($comments);
-  }
+	if ($comments) {
+		$totalComments = count($comments);
+	}
 } else {
-  $comments = [];
-  $totalComments = 0;
+	$comments = [];
+	$totalComments = 0;
 }
 ?>
 			@can('access_auditor')<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a>
@@ -473,9 +481,9 @@ if (Auth::user()->can('access_auditor')) {
 					<?php
 
 if (array_key_exists(2, $pieceData)) {
-  $bladeData = $pieceData[2];
+	$bladeData = $pieceData[2];
 } else {
-  $bladeData = null;
+	$bladeData = null;
 }
 ?>
 					@if($piece->blade == 'crr_parts.crr_inspections')
@@ -483,9 +491,9 @@ if (array_key_exists(2, $pieceData)) {
 					@endif
 					<?php
 if (array_key_exists(3, $pieceData)) {
-  $bladeData = $pieceData[3];
+	$bladeData = $pieceData[3];
 } else {
-  $bladeData = null;
+	$bladeData = null;
 }
 ?>
 					@if($piece->blade == 'crr_parts.crr_inspections')
@@ -495,9 +503,9 @@ if (array_key_exists(3, $pieceData)) {
 
 					<?php
 if (array_key_exists(1, $pieceData)) {
-  $bladeData = $pieceData[1];
+	$bladeData = $pieceData[1];
 } else {
-  $bladeData = null;
+	$bladeData = null;
 }
 ?>
 					@include($piece->blade, [$inspections_type = 'unit', $audit_id = $report->audit->id])
@@ -551,7 +559,7 @@ session(['projectDetailsOutput' => 0]);
 				$('.fieldDisable').prop('disabled', true);
 				$.ajax({
 					type:'POST',
-					url:"{{URL('/report/sendfax')}}",
+					url:"{{ URL('/report/sendfax') }}",
 					data:{faxnumber:faxnumber,_token:_token,report:report},
 					dataType:'json',
 					success:function(data){
@@ -586,61 +594,72 @@ session(['projectDetailsOutput' => 0]);
 	@can('access_auditor')
 	@if($report->crr_approval_type_id !== 8)
 	<div id="report-actions-footer">
-		<select class="uk-form uk-select" id="crr-report-action-{{$report->id}}" onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});" style="width: 184px;">
-			<option value="0">ACTION</option>
-			<option value="1">DRAFT</option>
-			@if($report->requires_approval)
-			<option value="2">SEND TO MANAGER REVIEW</option>
-			@endIf
-			@can('access_manager')
-			@if($report->requires_approval)
-			<option value="3">DECLINE</option>
-			<option value="4">APPROVE WITH CHANGES</option>
-			<option value="5">APPROVE</option>
-			@endIf
-			@endCan
-			@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
-			<option value="6">SEND TO PROPERTY CONTACT</option>
-			<option value="7">PROPERTY VIEWED IN PERSON</option>
-			<option value="9">ALL ITEMS RESOLVED</option>
-			@endIf
+		{{-- <select class="uk-form uk-select" id="crr-report-action-{{ $report->id }}"  style="width: 184px;"> --}}
+			<select class="uk-form uk-select" id="crr-report-action-{{ $report->id }}" onchange="reportAction({{ $report->id }},this.value, {{ $report->project->id }});" style="width: 184px;">
+				<optgroup label="REPORT ACTIONS">
+					<option value="0">ACTION</option>
+					<option value="1">DRAFT</option>
+					@if($report->requires_approval)
+					<option value="2">SEND TO MANAGER REVIEW</option>
+					@endIf
+					@can('access_manager')
+					@if($report->requires_approval)
+					<option value="3">DECLINE</option>
+					<option value="4">APPROVE WITH CHANGES</option>
+					<option value="5">APPROVE</option>
+					@endIf
+					@endCan
+					@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
+					<option value="6">SEND TO PROPERTY CONTACT</option>
+					<option value="7">PROPERTY VIEWED IN PERSON</option>
+					<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
+				</optgroup>
+				<optgroup label="REPORT VERSIONS">
+					@for($i=0 ; $i<$versions_count ; $i++)
+					<option value="version={{ $i + 1 }}">Version - {{ $i + 1 }}</option>
+					@endfor
+				</optgroup>
+				@endIf
+			</select>
+		</div>
+		@else
+		<div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
+		@endIf
+		@endCan
+		<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
 
+		</div>
+		@else
+		<h1>Sorry!</h1>
+		<h2>The report you are trying to view has not been released for your review.</h2>
+		@endIf
+		@stop
 
-		</select>
-	</div>
-	@else
-	<div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
-	@endIf
-	@endCan
-	<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
-
-	</div>
-	@else
-	<h1>Sorry!</h1>
-	<h2>The report you are trying to view has not been released for your review.</h2>
-	@endIf
-	@stop
-
-	<script>
-		function dynamicModalLoadLocal(modalSource) {
-			var newmodalcontent = $('#dynamic-modal-content-communications');
-			$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
-			$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
-				if (status == "error") {
-					if(xhr.status == "401") {
-						var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
-					} else if( xhr.status == "500"){
-						var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
-					} else {
-						var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+		<script>
+			function dynamicModalLoadLocal(modalSource) {
+				var newmodalcontent = $('#dynamic-modal-content-communications');
+				$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
+				$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
+					if (status == "error") {
+						if(xhr.status == "401") {
+							var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+						} else if( xhr.status == "500"){
+							var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+						} else {
+							var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+						}
+						UIkit.modal.alert(msg);
 					}
-					UIkit.modal.alert(msg);
-				}
-			});
-			var modal = UIkit.modal('#dynamic-modal-communications', {
-				escClose: false,
-				bgClose: false
-			});
-			modal.show();
-		}
-	</script>
+				});
+				var modal = UIkit.modal('#dynamic-modal-communications', {
+					escClose: false,
+					bgClose: false
+				});
+				modal.show();
+			}
+
+			function messageRead(messageId) {
+			  var element = document.getElementById("show-message-"+messageId);
+			  $("#show-message-"+messageId).removeClass("uk-hidden");
+			}
+		</script>
