@@ -133,7 +133,7 @@
 							<span class="a-higher"></span>
 							<span class="uk-text-middle"> Please upload your document by dropping it here or</span>
 							<div uk-form-custom>
-								<input type="file">
+								<input type="file" multiple>
 								<span class="uk-link uk-text-primary">by browsing and selecting it here.</span>
 							</div>
 						</div>
@@ -154,6 +154,7 @@
 									}
 								});
 								var bar = document.getElementById('js-progressbar');
+								// debugger;
 								settings    = {
 									url: '{{ URL::route("documents.local-upload", $project->id) }}',
 									multiple: true,
@@ -161,6 +162,7 @@
 									beforeSend: function () {
 									},
 									beforeAll: function (settings) {
+										// debugger;
 										var categoryArray = [];
 										$("input:radio[name=category-id-checkbox]:checked").each(function(){
 											categoryArray.push($(this).val());

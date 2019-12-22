@@ -9,6 +9,10 @@ use DB;
 use Excel;
 use Illuminate\Http\Request;
 
+// set_time_limit(3600);
+// ini_set('max_execution_time', 300);
+// ini_set("request_terminate_timeout", 2003);
+
 class PCStatsController extends Controller
 {
 	//

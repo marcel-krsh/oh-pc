@@ -1240,7 +1240,7 @@
 				<?php $latestCachedAudit = '2000-01-01 12:00:00';?>
 				@foreach($audits as $audit)
 				<?php if (strtotime($audit->updated_at) > strtotime($latestCachedAudit)) {
-  $latestCachedAudit = $audit->updated_at;
+	$latestCachedAudit = $audit->updated_at;
 }
 ?>
 				<tr id="audit-r-{{ $audit->audit_id }}" class="{{ $audit['status'] }} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
