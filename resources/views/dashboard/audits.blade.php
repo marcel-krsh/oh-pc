@@ -188,10 +188,8 @@
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-1-1 uk-margin-top">
-			<div class="uk-button-success green-button uk-badge uk-text-right@s uk-margin-right " style="margin-top: 15px; float:right;">&nbsp;<a href="{{ url('audit_raw_data') }}" class="uk-dark uk-light" uk-tooltip="title:Export All Matching Parcels; pos: top-right;" title="" aria-expanded="false"><span class="a-lower"></span> EXPORT</a>&nbsp;</div>
-
-
-			<div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{ count($audits) }}  Audits </div>
+			<div class="uk-button-success green-button uk-badge uk-text-right@s uk-margin-right uk-margin-top" style="float:right;">&nbsp;<a href="{{ url('audit_raw_data') }}" class="uk-dark uk-light" uk-tooltip="title:Export All Matching Audits; pos: top-right;" title="" aria-expanded="false"><span class="a-lower"></span> EXPORT</a>&nbsp;</div>
+			<div class="uk-badge uk-align-right uk-label uk-margin-top uk-margin-right">{{ count($audits) }}  {{ count($audits) == 1 ?'AUDIT' : 'AUDITS' }} </div>
 			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
 				@if($auditor_access)

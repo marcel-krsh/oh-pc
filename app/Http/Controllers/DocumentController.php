@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Traits\DocumentTrait;
 use App\Models\CommunicationDraft;
 use App\Models\Document;
+use App\Models\DocumentAudit;
 use App\Models\DocumentCategory;
 use App\Models\LocalDocumentCategory;
 use App\Models\Photo;
@@ -43,19 +44,28 @@ class DocumentController extends Controller
 
 	public function getProjectDocuments(Project $project, Request $request)
 	{
-		return view('projects.partials.documents', compact('project'));
+		$audit_id = $request->audit_id;
+		return view('projects.partials.documents', compact('project', 'audit_id'));
 	}
 
-	public function getProjectLocalDocuments(Project $project, Request $request)
+	public function getProjectLocalDocuments(Project $project, $audit_id = null, Request $request)
 	{
-		$documents = Document::where('project_id', $project->id)->with('assigned_categories.parent')->get();
+		$documents = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'project.audits', 'communications.communication', 'audits')->orderBy('created_at', 'DESC')->get();
+		$audits = $documents->pluck('audits')->flatten()->unique('id');
+		$categories = $documents->pluck('assigned_categories')->flatten()->unique('id');
+		$findings = collect([]);
+		foreach ($documents as $key => $document) {
+			$findings = $findings->merge($document->findings());
+		}
+		$findings = $findings->unique('id');
+		// return $documents->first()->findings();
 		$document_categories = DocumentCategory::with('parent')
 			->where('parent_id', '<>', 0)
 			->active()
 			->orderBy('parent_id')
 			->orderBy('document_category_name')
 			->get();
-		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories'));
+		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories'));
 	}
 
 	public function localUpload(Project $project, Request $request)
@@ -72,6 +82,7 @@ class DocumentController extends Controller
 			$user = Auth::user();
 			$files = $request->file('files');
 
+			$audit_id = $request->audit_id;
 			foreach ($files as $file) {
 				// $file = $request->file('files')[0];
 				$selected_audit = 'non-audit-files';
@@ -90,6 +101,12 @@ class DocumentController extends Controller
 					'comment' => $request->comment,
 				]);
 				$document->save();
+				if (!is_null($audit_id)) {
+					$doc_audit = new DocumentAudit;
+					$doc_audit->audit_id = $audit_id;
+					$doc_audit->document_id = $document->id;
+					$doc_audit->save();
+				}
 				//Parent
 				$document_categories = new LocalDocumentCategory;
 				$document_categories->document_id = $document->id;
