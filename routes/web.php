@@ -65,7 +65,7 @@ Route::get('tablet_login', function () {
 });
 
 Route::group(['middleware' => 'web'], function () {
-  app('debugbar')->disable();
+  // app('debugbar')->disable();
 
   Route::group(['prefix' => 'mobile', 'middleware' => 'can:access_auditor'], function () {
     Route::get('/audits', 'PC\Mobile\AuditController@index');
@@ -511,7 +511,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/projects/{project_id}/reply-communications/documents', 'CommunicationController@getCommunicationDocuments')->name('project.communication.documents');
 
     Route::post('/commmunication-draft/{draft_id}/delete', 'CommunicationController@deleteDraftSave')->name('communication.delete-draft-save');
-    Route::post('/documents/{project}/documentinfo-draft', 'DocumentController@localUploadDraft')->name('documents.local-upload-draft');
     Route::post('/documents/{project}/documentinfo-draft', 'DocumentController@localUploadDraft')->name('documents.local-upload-draft');
     Route::post('/commmunication/drafts/{page?}', 'CommunicationController@showDraftMessages')->name('communications.show-drafts');
     Route::post('/commmunication/update-draft/{draft}', 'CommunicationController@updateDraft')->name('communication.update-draft');

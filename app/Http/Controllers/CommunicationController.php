@@ -279,7 +279,6 @@ class CommunicationController extends Controller
 
 		$current_user = Auth::user();
 		$current_user = User::find($current_user->id);
-
 		if (null !== $audit_id) {
 			// $audit = Audit::where('id', intval($audit_id))->first();
 			$audit = Audit::find((int) $audit_id);

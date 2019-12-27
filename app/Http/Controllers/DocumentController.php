@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use File;
 use Illuminate\Http\Request;
 use Storage;
+use Log;
 
 class DocumentController extends Controller
 {
@@ -50,6 +51,12 @@ class DocumentController extends Controller
 
 	public function getProjectLocalDocuments(Project $project, $audit_id = null, Request $request)
 	{
+		//check if filters exist
+		// return $request->all();
+		$filter['filter_audit_id'] = "";
+		$filter['filter_finding_id'] = "";
+		$filter['filter_category_id'] = "";
+
 		$documents = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'project.audits', 'communications.communication', 'audits')->orderBy('created_at', 'DESC')->get();
 		$audits = $documents->pluck('audits')->flatten()->unique('id');
 		$categories = $documents->pluck('assigned_categories')->flatten()->unique('id');
@@ -58,6 +65,17 @@ class DocumentController extends Controller
 			$findings = $findings->merge($document->findings());
 		}
 		$findings = $findings->unique('id');
+		$filtered_documents = $documents;
+		if ($request->filter_audit_id) {
+			$filter['filter_audit_id'] = $request->filter_audit_id;
+		}
+		if ($request->filter_finding_id) {
+			$filter['filter_finding_id'] = $request->filter_finding_id;
+		}
+		if ($request->filter_category_id) {
+			$filter['filter_category_id'] = $request->filter_category_id;
+		}
+		// return $filter;
 		// return $documents->first()->findings();
 		$document_categories = DocumentCategory::with('parent')
 			->where('parent_id', '<>', 0)
@@ -65,7 +83,7 @@ class DocumentController extends Controller
 			->orderBy('parent_id')
 			->orderBy('document_category_name')
 			->get();
-		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories'));
+		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories', 'filter'));
 	}
 
 	public function localUpload(Project $project, Request $request)
@@ -742,11 +760,11 @@ class DocumentController extends Controller
 		if (!$request->has('categories') || is_null($request->categories)) {
 			return 'You must select at least one category!';
 		}
+		$audit_id = $request->audit_id;
 		if ($request->hasFile('files')) {
 			$data = [];
 			$user = Auth::user();
 			$files = $request->file('files');
-
 			foreach ($files as $file) {
 				// $file = $request->file('files')[0];
 				$selected_audit = 'non-audit-files';
@@ -759,12 +777,19 @@ class DocumentController extends Controller
 				$original_filename = str_replace($characters, '_', $file->getClientOriginalName());
 				$file_extension = $file->getClientOriginalExtension();
 				$filename = pathinfo($original_filename, PATHINFO_FILENAME);
+				// Log::info($filename);
 				$document = new Document([
 					'user_id' => $user->id,
 					'project_id' => $project->id,
 					'comment' => $request->comment,
 				]);
 				$document->save();
+				if (!is_null($audit_id)) {
+					$doc_audit = new DocumentAudit;
+					$doc_audit->audit_id = $audit_id;
+					$doc_audit->document_id = $document->id;
+					$doc_audit->save();
+				}
 				//Parent
 				$document_categories = new LocalDocumentCategory;
 				$document_categories->document_id = $document->id;
@@ -796,7 +821,7 @@ class DocumentController extends Controller
 				// store original file
 				Storage::put($filepath, File::get($file));
 				$data[] = $document->id;
-				$data['document_ids'] = [$document->id];
+				$data['document_ids'][] = [$document->id];
 			}
 			if (!is_null($communication_draft->documents)) {
 				$docs = json_decode($communication_draft->documents, true);
