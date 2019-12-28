@@ -88,87 +88,86 @@ session(['projectDetailsOutput' => 0]);
 	}
 
 </script>
-@can('access_auditor')
+@if($auditor_access)
 <script type="text/javascript">
 
 	function updateStatus(report_id, action, receipents = []) {
-      		// debugger;
-      		$.get('/dashboard/reports', {
-      			'id' : report_id,
-      			'action' : action,
-      			'receipents' : receipents,
-      			'check' : 1
-      		}, function(data2) {
+		// debugger;
+		$.get('/dashboard/reports', {
+			'id' : report_id,
+			'action' : action,
+			'receipents' : receipents,
+			'check' : 1
+		}, function(data2) {
 
-      		});
-      		UIkit.modal.alert('Your message has been saved.',{stack: true});
-      		window.location.href ='/report/{{ $report->id }}';
+		});
+		UIkit.modal.alert('Your message has been saved.',{stack: true});
+		window.location.href ='/report/{{ $report->id }}';
+	}
 
-      	}
+	function reportAction(reportId,action,project_id = null){
+		// debugger;
+		window.crrActionReportId = reportId;
+  	//Here goes the notification code
+  	if(isNaN(action)) {
+  		UIkit.modal.alert('Opening report '+ action);
+  		window.location.href ='/report/{{ $report->id }}?'+action;
+  		return;
+  	}
+  	// return;
 
-      	function reportAction(reportId,action,project_id = null){
-      		// debugger;
-      		window.crrActionReportId = reportId;
-        	//Here goes the notification code
-        	if(isNaN(action)) {
-      		UIkit.modal.alert('Opening report '+ action);
-      			window.location.href ='/report/{{ $report->id }}?'+action;
-      			return;
-        	}
-        	// return;
+  	if(action == 6) {
+  		dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
+  	} else if(action == 2) {
+  		// debugger;
+  		dynamicModalLoad('report-send-to-manager/' + reportId + '/' + project_id);
+  	} else if(action == 3) {
+  		dynamicModalLoad('report-decline/' + reportId + '/' + project_id);
+  	} else if(action == 4) {
+  		dynamicModalLoad('report-approve-with-changes/' + reportId + '/' + project_id);
+  	} else if(action == 5) {
+  		dynamicModalLoad('report-approve/' + reportId + '/' + project_id);
+  	} else if(action == 9) {
+  		dynamicModalLoad('report-resolved/' + reportId + '/' + project_id);
+  	} else if(action != 8){
+  		UIkit.modal.alert('Updating status... please wait a moment.');
+  		$.get('/dashboard/reports', {
+  			'id' : reportId,
+  			'action' : action
+  		}, function(data2) {
+  			window.location.href ='/report/{{ $report->id }}';
 
-        	if(action == 6) {
-        		dynamicModalLoad('report-ready/' + reportId + '/' + project_id);
-        	} else if(action == 2) {
-        		// debugger;
-        		dynamicModalLoad('report-send-to-manager/' + reportId + '/' + project_id);
-        	} else if(action == 3) {
-        		dynamicModalLoad('report-decline/' + reportId + '/' + project_id);
-        	} else if(action == 4) {
-        		dynamicModalLoad('report-approve-with-changes/' + reportId + '/' + project_id);
-        	} else if(action == 5) {
-        		dynamicModalLoad('report-approve/' + reportId + '/' + project_id);
-        	} else if(action == 9) {
-        		dynamicModalLoad('report-resolved/' + reportId + '/' + project_id);
-        	} else if(action != 8){
-        		UIkit.modal.alert('Updating status... please wait a moment.');
-        		$.get('/dashboard/reports', {
-        			'id' : reportId,
-        			'action' : action
-        		}, function(data2) {
-        			window.location.href ='/report/{{ $report->id }}';
+  		});
+    	//loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
+    }else if(action == 8){
+    	UIkit.modal.confirm('Refreshing the dynamic data will set the report back to Draft status - are you sure you want to do this?').then(function(){
+    		$.get('/dashboard/reports', {
+    			'id' : window.crrActionReportId,
+    			'action' : 8
+    		}, function(data2) {
 
-        		});
-          	//loadTab('/dashboard/reports?id='+reportId+'&action='+action, '3','','','',1);
-          }else if(action == 8){
-          	UIkit.modal.confirm('Refreshing the dynamic data will set the report back to Draft status - are you sure you want to do this?').then(function(){
-          		$.get('/dashboard/reports', {
-          			'id' : window.crrActionReportId,
-          			'action' : 8
-          		}, function(data2) {
+    		});
+    	},function(){
+      //nope
+    });
+    }
+    $('#crr-report-action-'+reportId).val(0);
+    // $('#crr-report-row-'+reportId).slideUp(); //commented by Div on 20190922 - While modal is open, this row is hinding, any reason?
+  }
 
-          		});
-          	},function(){
-            //nope
-          });
-          }
-          $('#crr-report-action-'+reportId).val(0);
-          // $('#crr-report-row-'+reportId).slideUp(); //commented by Div on 20190922 - While modal is open, this row is hinding, any reason?
-        }
-
-        function markApproved(id,catid){
-        	UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
-        		$.post('{{ URL::route("documents.local-approve", 0) }}', {
-        			'id' : id,
-        			'catid' : catid,
-        			'_token' : '{{ csrf_token() }}'
-        		}, function(data) {
-        			if(data != 1 ) {
-        				console.log("processing");
-        				UIkit.modal.alert(data);
-        			} else {
-        				dynamicModalClose();
-        			}
+  function markApproved(id,catid){
+  	UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
+  		$.post('{{ URL::route("documents.local-approve", 0) }}', {
+  			'id' : id,
+  			'catid' : catid,
+  			'_token' : '{{ csrf_token() }}'
+  		}, function(data) {
+  			if(data != 1 ) {
+  				console.log("processing");
+  				UIkit.modal.alert(data);
+  			} else {
+  				dynamicModalClose();
+  			}
 			//documentsLocal('{{ 0 }}');
 			let els = $('.doc-'+id);
 			let spanels = $('.doc-span-'+id);
@@ -187,96 +186,98 @@ session(['projectDetailsOutput' => 0]);
 			}
 		}
 		);
-        	});
-        }
+  	});
+  }
 
-        function markUnreviewed(id,catid){
-        	UIkit.modal.confirm("Are you sure you want to clear the review on this file?").then(function() {
-        		$.post('{{ URL::route("documents.local-clearReview", 0) }}', {
-        			'id' : id,
-        			'catid' : catid,
-        			'_token' : '{{ csrf_token() }}'
-        		}, function(data) {
-        			if(data != 1){
-        				console.log("processing");
-        				UIkit.modal.alert(data);
-        			} else {
-        				dynamicModalClose();
-        			}
-        			let els = $('.doc-'+id);
-        			let spanels = $('.doc-span-'+id);
-        			let spancheck = $('.doc-span-check-'+id);
-        			for (i = 0; i < els.length; i++) {
-        				els[i].className = 'doc-'+id;
-        			}
-        			for (i = 0; i < spanels.length; i++) {
-        				spanels[i].className = '';
-        				spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
-        			}
-        			for (i = 0; i < spancheck.length; i++) {
-        				spancheck[i].className = '';
-        				spancheck[i].className = 'a-checkbox received-no doc-span-check-'+id;
-        			}
-        		}
-        		);
-        	});
-        }
+  function markUnreviewed(id,catid){
+  	UIkit.modal.confirm("Are you sure you want to clear the review on this file?").then(function() {
+  		$.post('{{ URL::route("documents.local-clearReview", 0) }}', {
+  			'id' : id,
+  			'catid' : catid,
+  			'_token' : '{{ csrf_token() }}'
+  		}, function(data) {
+  			if(data != 1){
+  				console.log("processing");
+  				UIkit.modal.alert(data);
+  			} else {
+  				dynamicModalClose();
+  			}
+  			let els = $('.doc-'+id);
+  			let spanels = $('.doc-span-'+id);
+  			let spancheck = $('.doc-span-check-'+id);
+  			for (i = 0; i < els.length; i++) {
+  				els[i].className = 'doc-'+id;
+  			}
+  			for (i = 0; i < spanels.length; i++) {
+  				spanels[i].className = '';
+  				spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
+  			}
+  			for (i = 0; i < spancheck.length; i++) {
+  				spancheck[i].className = '';
+  				spancheck[i].className = 'a-checkbox received-no doc-span-check-'+id;
+  			}
+  		}
+  		);
+  	});
+  }
 
-        function markNotApproved(id,catid){
-        	UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
-        		$.post('{{ URL::route("documents.local-notapprove", 0) }}', {
-        			'id' : id,
-        			'catid' : catid,
-        			'_token' : '{{ csrf_token() }}'
-        		}, function(data) {
-        			if(data != 1){
-        				UIkit.modal.alert(data);
-        			} else {
-        				dynamicModalClose();
-        			}
-        			let els = $('.doc-'+id);
-        			let spanels = $('.doc-span-'+id);
-        			let spancheck = $('.doc-span-check-'+id);
-        			for (i = 0; i < els.length; i++) {
-        				els[i].className = '';
-        				els[i].className = 'declined-category s doc-'+id;
-        			}
-        			for (i = 0; i < spanels.length; i++) {
-        				spanels[i].className = '';
-        				spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
-        			}
-        			for (i = 0; i < spancheck.length; i++) {
-        				spancheck[i].className = '';
-        				spancheck[i].className = 'a-circle-cross alert received-no doc-span-check-'+id;
-        			}
-        		});
-        	});
-        }
+  function markNotApproved(id,catid){
+  	UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
+  		$.post('{{ URL::route("documents.local-notapprove", 0) }}', {
+  			'id' : id,
+  			'catid' : catid,
+  			'_token' : '{{ csrf_token() }}'
+  		}, function(data) {
+  			if(data != 1){
+  				UIkit.modal.alert(data);
+  			} else {
+  				dynamicModalClose();
+  			}
+  			let els = $('.doc-'+id);
+  			let spanels = $('.doc-span-'+id);
+  			let spancheck = $('.doc-span-check-'+id);
+  			for (i = 0; i < els.length; i++) {
+  				els[i].className = '';
+  				els[i].className = 'declined-category s doc-'+id;
+  			}
+  			for (i = 0; i < spanels.length; i++) {
+  				spanels[i].className = '';
+  				spanels[i].className = 'a-checkbox-checked check-received-no received-no doc-span-'+id;
+  			}
+  			for (i = 0; i < spancheck.length; i++) {
+  				spancheck[i].className = '';
+  				spancheck[i].className = 'a-circle-cross alert received-no doc-span-check-'+id;
+  			}
+  		});
+  	});
+  }
 
-        function deleteFile(id){
-        	UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
-        		$.post('{{ URL::route("documents.local-deleteDocument", 0) }}', {
-        			'id' : id,
-        			'_token' : '{{ csrf_token() }}'
-        		}, function(data) {
-        			if(data!= 1){
-        				UIkit.modal.alert(data);
-        			} else {
-        			}
+  function deleteFile(id){
+  	UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
+  		$.post('{{ URL::route("documents.local-deleteDocument", 0) }}', {
+  			'id' : id,
+  			'_token' : '{{ csrf_token() }}'
+  		}, function(data) {
+  			if(data!= 1){
+  				UIkit.modal.alert(data);
+  			} else {
+  			}
 
-        		});
-        	});
-        }
-      </script>
-      @endCan
-      @stop
-      @section('content')
+  		});
+  	});
+  }
+</script>
+@endif
 
-      @can('access_auditor')
-      @include('templates.modal-findings-items')
-      @endCan
 
-      @if(Auth::user()->can('access_auditor') || $report->crr_approval_type_id > 5)
+@stop
+@section('content')
+
+@if($auditor_access)
+@include('templates.modal-findings-items')
+@endif
+
+@if($auditor_access || $report->crr_approval_type_id > 5)
 <!-- <script src="/js/components/upload.js{{ asset_version() }}"></script>
 <script src="/js/components/form-select.js{{ asset_version() }}"></script>
 <script src="/js/components/datepicker.js{{ asset_version() }}"></script>
@@ -315,7 +316,7 @@ if (4 == $report->crr_approval_type_id) {
 		width: 996px;
 
 	}
-	@can('access_auditor')
+	@if($auditor_access)
 	.crr-part-comment-icons {
 		top:-74px;
 	}
@@ -334,7 +335,6 @@ if (4 == $report->crr_approval_type_id) {
 		width: 377px;
 		color:lightyellow;
 		position: fixed;
-
 	}
 	#comment-list {
 		margin-top:110px;
@@ -344,7 +344,7 @@ if (4 == $report->crr_approval_type_id) {
 	ul.leaders, .leaders {
 		background-color: white;
 	}
-	@endCan
+	@endif
 	#section-thumbnails {
 		-webkit-transition: width 1s ease-out;
 		-moz-transition: width 1s ease-out;
@@ -398,11 +398,11 @@ if (4 == $report->crr_approval_type_id) {
 <div uk-grid >
 	<div id="section-thumbnails" class="uk-panel-scrollable" style="background-color:lightgray; padding-top:30px; min-height: 100vh; max-width:130px;">
 
-		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @can('access_auditor')| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endCan | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endIf
-		@can('access_auditor')
+		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @if($auditor_access)| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endif | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endIf
+		@if($auditor_access)
 		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
 		<div id="comment-list" style="display: none;"></div>
-		@endCan
+		@endif
 		<hr class="dashed-hr uk-margin-bottom">
 		@forEach($report->sections as $section)
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-thumbs" style="width:85px; magin-left:auto; margin-right:auto; padding:15px; min-height: 110px;">
@@ -417,11 +417,11 @@ if (4 == $report->crr_approval_type_id) {
 		@endForEach
 		<hr class="dashed-hr uk-margin-bottom">
 
-		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @can('access_auditor')| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endCan | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endIf
-		@can('access_auditor')
+		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @if($auditor_access)| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endif | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endIf
+		@if($auditor_access)
 		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
 		<div id="comment-list" style="display: none;"></div>
-		@endCan
+		@endif
 
 	</div>
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; width: 90%; padding:0px; background-color: currentColor;">
@@ -434,7 +434,7 @@ if (4 == $report->crr_approval_type_id) {
 
 		<a name="{{ str_replace(' ','',$section->crr_section_id) }}" ></a>
 		<hr class="dashed-hr" style="margin-bottom: 60px; margin-top: 0px; padding:0px; border-color: #3a3a3a;">
-		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $version }}  @can('access_auditor') | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" style="color:lightblue">REFRESH REPORT CONTENT</a>@endCan | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
+		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $version }} @if($auditor_access) | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" style="color:lightblue">REFRESH REPORT CONTENT</a>@endif | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
 
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
 			@if(property_exists($section,'parts'))
@@ -445,7 +445,7 @@ if (4 == $report->crr_approval_type_id) {
 
 			<?php
 // collect comments for this part
-if (Auth::user()->can('access_auditor')) {
+if ($auditor_access) {
 	$comments = collect($report->comments)->where('part_id', $piece->part_id);
 
 	if ($comments) {
@@ -456,10 +456,10 @@ if (Auth::user()->can('access_auditor')) {
 	$totalComments = 0;
 }
 ?>
-			@can('access_auditor')<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a>
+			@if($auditor_access)<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a>
 				<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>
 
-			</div>@endCan
+			</div>@endif
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
 				<?php $pieceData = json_decode($piece->data);
 // set this so we only output details once from the blade.
@@ -590,8 +590,8 @@ session(['projectDetailsOutput' => 0]);
 		</script>
 
 	</div>
-	@can('access_auditor')
-	@can('access_auditor')
+@if($auditor_access)
+@if($auditor_access)
 	@if($report->crr_approval_type_id !== 8)
 	<div id="report-actions-footer">
 		{{-- <select class="uk-form uk-select" id="crr-report-action-{{ $report->id }}"  style="width: 184px;"> --}}
@@ -601,65 +601,66 @@ session(['projectDetailsOutput' => 0]);
 					<option value="1">DRAFT</option>
 					@if($report->requires_approval)
 					<option value="2">SEND TO MANAGER REVIEW</option>
-					@endIf
-					@can('access_manager')
-					@if($report->requires_approval)
-					<option value="3">DECLINE</option>
-					<option value="4">APPROVE WITH CHANGES</option>
-					<option value="5">APPROVE</option>
-					@endIf
-					@endCan
-					@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
-					<option value="6">SEND TO PROPERTY CONTACT</option>
-					<option value="7">PROPERTY VIEWED IN PERSON</option>
-					<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
-				</optgroup>
-				<optgroup label="REPORT VERSIONS">
-					@for($i=0 ; $i<$versions_count ; $i++)
-					<option value="version={{ $i + 1 }}">Version - {{ $i + 1 }}</option>
-					@endfor
-				</optgroup>
-				@endIf
-			</select>
-		</div>
-		@else
-		<div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
-		@endIf
-		@endCan
-		<div id="comments" class="uk-panel-scrollable" style="display: none;">@endCan
+					@endif
+					@if($manager_access)
+						@if($report->requires_approval)
+						<option value="3">DECLINE</option>
+						<option value="4">APPROVE WITH CHANGES</option>
+						<option value="5">APPROVE</option>
+						@endif
+					@endif
+						@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
+							<option value="6">SEND TO PROPERTY CONTACT</option>
+							<option value="7">PROPERTY VIEWED IN PERSON</option>
+							<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
+							</optgroup>
+							<optgroup label="REPORT VERSIONS">
+							@for($i=0 ; $i<$versions_count ; $i++)
+							<option value="version={{ $i + 1 }}">Version - {{ $i + 1 }}</option>
+							@endfor
+					</optgroup>
+						@endif
+					</select>
+							</div>
+							@else
+							<div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
+							@endif
+							@endif
+							<div id="comments" class="uk-panel-scrollable" style="display: none;">
+							@endif
 
-		</div>
-		@else
-		<h1>Sorry!</h1>
-		<h2>The report you are trying to view has not been released for your review.</h2>
-		@endIf
-		@stop
+							</div>
+							@else
+							<h1>Sorry!</h1>
+							<h2>The report you are trying to view has not been released for your review.</h2>
+							@endif
+							@stop
 
-		<script>
-			function dynamicModalLoadLocal(modalSource) {
-				var newmodalcontent = $('#dynamic-modal-content-communications');
-				$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
-				$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
-					if (status == "error") {
-						if(xhr.status == "401") {
-							var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
-						} else if( xhr.status == "500"){
-							var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
-						} else {
-							var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
-						}
-						UIkit.modal.alert(msg);
+					<script>
+					function dynamicModalLoadLocal(modalSource) {
+						var newmodalcontent = $('#dynamic-modal-content-communications');
+						$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
+						$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
+							if (status == "error") {
+								if(xhr.status == "401") {
+									var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+								} else if( xhr.status == "500"){
+									var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+								} else {
+									var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+								}
+								UIkit.modal.alert(msg);
+							}
+						});
+						var modal = UIkit.modal('#dynamic-modal-communications', {
+							escClose: false,
+							bgClose: false
+						});
+						modal.show();
 					}
-				});
-				var modal = UIkit.modal('#dynamic-modal-communications', {
-					escClose: false,
-					bgClose: false
-				});
-				modal.show();
-			}
 
-			function messageRead(messageId) {
-			  var element = document.getElementById("show-message-"+messageId);
-			  $("#show-message-"+messageId).removeClass("uk-hidden");
-			}
-		</script>
+					function messageRead(messageId) {
+						var element = document.getElementById("show-message-"+messageId);
+						$("#show-message-"+messageId).removeClass("uk-hidden");
+					}
+					</script>

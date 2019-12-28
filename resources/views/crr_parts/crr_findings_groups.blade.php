@@ -71,12 +71,12 @@
 
 					<div style="break-inside:avoid" @if($print || $oneColumn) uk-grid @endIf>
 						<div class="inspec-tools-tab-finding-top-actions @if($print || $oneColumn) uk-width-1-5 @endIf" style="z-index:10; break-inside: avoid; page-break-inside: avoid;">
-							@can('access_auditor') @if(!$print)
+							@if($auditor_access) @if(!$print)
 							<a onclick="dynamicModalLoad('edit/finding/{{$f->id}}',0,0,0,2)" class="uk-mute-link">
 								<i class="a-pencil"></i>@endIf
-								@endCan
-								<strong class="cancelled-{{$f->id}}">F|N #{{$f->id}}</strong>@can('access_auditor') @if(!$print)
-							</a> @endIf @endCan
+								@endif
+								<strong class="cancelled-{{$f->id}}">F|N #{{$f->id}}</strong>@if($auditor_access) @if(!$print)
+							</a> @endIf @endif
 							@if(!$print)
 							@if($oneColumn && !$print)
 						</div>
@@ -86,15 +86,15 @@
 							<div uk-drop="mode: click; pos: bottom-right" style="min-width: 315px; background-color: #ffffff;  ">
 								<div class="uk-card uk-card-body uk-card-default uk-card-small">
 									<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
-										@can('access_auditor')
+										@if($auditor_access)
 							<!-- <div class="icon-circle use-hand-cursor" onclick="addChildItem({{ $f->id }}, 'followup')"><i class="a-bell-plus"></i></div>
 							--><div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'comment')"><i class="a-comment-plus"></i></div>
-							@endCan
+							@endif
 							<div class="icon-circle use-hand-cursor" onclick="dynamicModalLoadLocal('new-outbound-email-entry/{{$report->project_id}}/{{$report->audit_id}}/{{$report->id}}/{{$f->id}}/{{ $f->id }}/1')" ><i class="a-envelope-4"></i>
 							</div>
-							@can('access_auditor')
+							@if($auditor_access)
 							<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'document')"><i class="a-file-plus"></i></div>
-							@endCan
+							@endif
 							@if(env('APP_ENV') == 'local')
 							<!-- <div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'photo')"><i class="a-picture"></i></div>
 							-->@endIf
@@ -124,7 +124,7 @@
 
 				@endIf
 
-				@can('access_auditor')
+				@if($auditor_access)
 				@if(!$print)
 				<!-- LINE 77 -->
 				<div class="inspec-tools-tab-finding-actions  @if($oneColumn  && !$print) uk-width-1-5 @endIf uk-margin-small-top " @if(!$oneColumn) uk-grid @endIf>
@@ -219,7 +219,7 @@
 							@else
 							<strong><p class="attention" style="color:red">UNCORRECTED</p></strong>
 							@endIf
-							@endcan
+							@endif
 							@if(!$print && !$oneColumn)
 						</div>
 						@elseif($print)
@@ -255,11 +255,11 @@
 								<strong style="page-break-inside: avoid; break-inside: avoid; ">VIOLATION CODE: <a href="/codes?code={{$f->finding_type_id}}" target="code_reference">OH.{{strtoupper($f->finding_type->type)}}.{{$f->finding_type_id}} @if($f->level) LEVEL {{$f->level}} @endIf</a>:</strong><br/><div style="margin-left:24px; margin-top:7px;"> {{$f->finding_type->name}}:</div>
 								@if($f->level == '1')
 								@if(null == $f->finding_type->one_description)
-								@can('access_auditor')
+								@if($auditor_access)
 								<div style="margin-left:24px; margin-top:7px;">
 									<span style="color:red" class="attention">UNDEFINED LEVEL SELECTED - PLEASE SELECT A DEFINED LEVEL</span>
 								</div>
-								@endCan
+								@endif
 								@else
 								<div style="margin-left:24px; margin-top:7px;">
 									<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->one_description}}</span>
@@ -268,11 +268,11 @@
 								@endIf
 								@if($f->level == '2')
 								@if(null == $f->finding_type->two_description)
-								@can('access_auditor')
+								@if($auditor_access)
 								<div style="margin-left:24px; margin-top:7px;">
 									<span style="color:red" class="attention">UNDEFINED LEVEL SELECTED - PLEASE SELECT A DEFINED LEVEL</span>
 								</div>
-								@endCan
+								@endif
 								@else
 								<div style="margin-left:24px; margin-top:7px;">
 									<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->two_description}}</span>
@@ -281,11 +281,11 @@
 								@endIf
 								@if($f->level == '3')
 								@if(null == $f->finding_type->three_description)
-								@can('access_auditor')
+								@if($auditor_access)
 								<div style="margin-left:24px; margin-top:7px;">
 									<span style="color:red" class="attention">UNDEFINED LEVEL SELECTED - PLEASE SELECT A DEFINED LEVEL</span>
 								</div>
-								@endCan
+								@endif
 								@else
 								<div style="margin-left:24px; margin-top:7px;">
 									<span style="page-break-inside: avoid; break-inside: avoid;">{{$f->finding_type->three_description}}</span>
@@ -338,7 +338,7 @@
 								<hr class="dashed-hr uk-margin-bottom">
 								@if($f->amenity_inspection)
 								<?php $piecePrograms = collect($f->amenity_inspection->unit_programs)->where('audit_id', $report->audit_id);?>
-								@if(count($piecePrograms)>0 && Auth::user()->can('access_auditor'))
+								@if(count($piecePrograms)>0 && $auditor_access)
 								<div style="min-height: 80px;">
 									<span class="uk-margin-bottom"><strong >PROGRAMS:</strong></span>
 									<ul > @forEach($piecePrograms as $p)
@@ -390,14 +390,16 @@
 		@if($print || $oneColumn)
 		<hr class="uk-width-1-1">
 		<div class="uk-width-1-5">
-		@endif
-		@php
+			@endif
+			@php
+			$recipient_yes = 0;
+			$message_seen = 0;
 		// dd(auth()->user());
 		// 	dd($message);
 			//Check if the message is read by this recipient
 			//{{ !$message->tome->first()->seen ? 'attention use-hand-cursor ok-actionable': '' }}
 			// class="uk-hidden"
-		@endphp
+			@endphp
 			{!! $loop->first && !$print && !$oneColumn ? '<hr class="uk-width-1-1 uk-margin-bottom">': '' !!}
 			<strong class="a-envelope-4 " @if($print || $oneColumn) style="margin-top: 4px !important" @endIf></strong> : {{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }} @if($print || $oneColumn)</div><div class="uk-width-4-5"> @else <br> @endIf
 				<span {{-- style="margin-left: 20px" --}}>
@@ -410,7 +412,7 @@
 					<li>
 						<strong class="uk-text-small" style="float: left; margin-top: 2px;">To:&nbsp;</strong>
 						<label style="display: block; margin-left: 28px;" for="message-{{ $message->id }}">
-							@if(count($message->message_recipients))@foreach ($message->message_recipients as $recipient)@if($recipient->id != $current_user->id && $message->owner->id != $recipient->id && $recipient->name != ''){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}@elseif($recipient->id == $current_user->id) Me{{ !$loop->last ? ', ': '' }} @endif @endforeach @endif
+							@if(count($message->message_recipients))@foreach($message->message_recipients as $recipient) @if($recipient->id != $current_user->id && $message->owner->id != $recipient->id && $recipient->name != ''){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }} @php $recipient_yes = 1; if($recipient->seen) $message_seen = 1; @endphp @elseif($recipient->id == $current_user->id) Me{{ !$loop->last ? ', ': '' }} @endif @endforeach @endif
 						</label>
 					</li>
 					<li onclick="messageRead({{ $message->id }})">
@@ -421,6 +423,7 @@
 						</strong>
 					</li>
 					<span id="show-message-{{ $message->id }}">
+						{{-- class="{{ ($recipient_yes && !$message_seen) ? 'uk-hidden' : '' }}" --}}
 						<li>
 							<label style="display: block;" for="message-msg-{{ $message->id }}">
 								{{ $message->message }}
@@ -443,7 +446,7 @@
 											</span>
 											<span style="display: block; margin-left: 30px"></span>
 										</a>
-										@can('access_auditor')
+										@if($auditor_access)
 										<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
 											<ul class="uk-nav uk-nav-dropdown">
 												<li>
@@ -463,7 +466,7 @@
 												</li>
 											</ul>
 										</div>
-										@endCan
+										@endif
 										<label style="display: block; margin-left: 15px;" for="documents-{{ $document->id }}">
 											<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-margin-left uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
 												<i class="a-paperclip-2"></i> {{-- {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} --}}{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }}
@@ -472,84 +475,84 @@
 										</label>
 									</li>
 								</span>
-					{{-- <a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}">
-						<i class="a-paperclip-2"></i> {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
-					</a> --}}
+								{{-- <a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}">
+									<i class="a-paperclip-2"></i> {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}
+								</a> --}}
+								@endforeach
+							{{-- </label> --}}
+						</li>
+					</span>
+					@endif
+				</span>
+			@if($print || $oneColumn)</div> @endif
+			{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
+
+			@endforeach
+			@endif
+			{{-- End communications --}}
+
+			{{-- Documents --}}
+			@if(count($documents))
+				@if($print || $oneColumn)
+
+				<div class="uk-width-1-5" style="margin-top: 10px;"><i class="a-paperclip-2"></i> Other Documents</div><div class="uk-width-4-5" style="margin-top: 10px;">
+					@endIf
+					@foreach($documents as $document)
+					{!! $loop->first && !$print && !$oneColumn ? '<span class="uk-margin-top"><hr></span>':'' !!}
+					<span class="finding-documents-{{ $document->id }}">
+						@php
+						$document_category = $document->assigned_categories->first();
+						@endphp
+						<li class="doc-{{ $document->id }} {{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
+							<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}-{{ $f->id }}" class="" style="font-size: 23px">
+								<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }} doc-span-{{ $document->id }}"></span>
+								<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon-{{ $f->id }}" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }} doc-span-check-{{ $document->id }}"></span>
+								<span style="display: block; margin-left: 30px"></span>
+							</a>
+							@if($auditor_access)
+							<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
+								<ul class="uk-nav uk-nav-dropdown">
+									<li>
+										<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
+											Mark as approved
+										</a>
+									</li>
+									<li>
+										<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
+											Mark as declined
+										</a>
+									</li>
+									<li>
+										<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
+											Clear review status
+										</a>
+									</li>
+								</ul>
+							</div>
+							@endif
+							<label style="display: block; margin-left: 15px;" for="documents-{{ $document->id }}">
+								<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-margin-left uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
+									<i class="a-paperclip-2"></i> {{-- {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} --}}{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }}
+								</a>
+								<br>
+							</label>
+						</li>
+					</span>
 					@endforeach
-				{{-- </label> --}}
-			</li>
-		</span>
-		@endif
-	</span>
-@if($print || $oneColumn)</div> @endIf
-{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
+					@if($print || $oneColumn)
+				</div>
+				@endif
+			@endif
+			{{-- End documents --}}
+			@endif
 
-@endforeach
-@endIf
-{{-- End communications --}}
+			@if($oneColumn  && !$print)
+		</div>
+		@endIf
 
-{{-- Documents --}}
-@if(count($documents))
-@if($print || $oneColumn)
-
-<div class="uk-width-1-5" style="margin-top: 10px;"><i class="a-paperclip-2"></i> Other Documents</div><div class="uk-width-4-5" style="margin-top: 10px;">
-	@endIf
-	@foreach($documents as $document)
-	{!! $loop->first && !$print && !$oneColumn ? '<span class="uk-margin-top"><hr></span>':'' !!}
-	<span class="finding-documents-{{ $document->id }}">
-		@php
-		$document_category = $document->assigned_categories->first();
-		@endphp
-		<li class="doc-{{ $document->id }} {{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
-			<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}-{{ $f->id }}" class="" style="font-size: 23px">
-				<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }} doc-span-{{ $document->id }}"></span>
-				<span style="float: left;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon-{{ $f->id }}" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }} doc-span-check-{{ $document->id }}"></span>
-				<span style="display: block; margin-left: 30px"></span>
-			</a>
-			@can('access_auditor')
-			<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
-				<ul class="uk-nav uk-nav-dropdown">
-					<li>
-						<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
-							Mark as approved
-						</a>
-					</li>
-					<li>
-						<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
-							Mark as declined
-						</a>
-					</li>
-					<li>
-						<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
-							Clear review status
-						</a>
-					</li>
-				</ul>
-			</div>
-			@endCan
-			<label style="display: block; margin-left: 15px;" for="documents-{{ $document->id }}">
-				<a href="{{ URL::route('document.local-download', $document->id) }}" target="_blank" class="uk-button uk-button-default uk-margin-left uk-button-small uk-text-left uk-margin-small-bottom" uk-tooltip title="Download file:<br />{{ ucwords(strtolower($document->filename)) }} <br> {{ $document->comment }}">
-					<i class="a-paperclip-2"></i> {{-- {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} --}}{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }}
-				</a>
-				<br>
-			</label>
-		</li>
-	</span>
-	@endforeach
-	@if($print || $oneColumn)
-</div>
-@endIf
-@endIf
-{{-- End documents --}}
-@endif
-
-@if($oneColumn  && !$print)
-</div>
-@endIf
-
-@if($print )<hr class="dashed-hr uk-width-1-1" style="margin-top: 0px !important;"> @endIf
-</div>
-<?php
+		@if($print )<hr class="dashed-hr uk-width-1-1" style="margin-top: 0px !important;"> @endIf
+	</div>
+	<?php
 // using column count to put in center lines rather than rely on css which breaks.
 
 $columnCount++;
@@ -559,11 +562,11 @@ if ($columnCount > 3) {
 	$columnCount = 1;
 	if (!$print && !$oneColumn) {
 		?>
-		<hr class="dashed-hr uk-margin-bottom uk-width-1-1 @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" >
-		<?php
+			<hr class="dashed-hr uk-margin-bottom uk-width-1-1 @if($f->unit_id > 0) unit-{{$f->unit_id}}-finding @endIf @if($f->building_id > 0) building-{{$f->building_id}}-finding @endIf @if(null == $f->unit_id && null == $f->building_id) site-amenity-finding-{{$f->id}} @endIf @if(isset($site_finding) && $site_finding == 1) site-{{ $f->amenity->amenity_type_key }}-finding @endif finding-group" >
+			<?php
 }
 }
 ?>
 
 
-@endForEach
+	@endForEach

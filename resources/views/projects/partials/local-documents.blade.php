@@ -145,7 +145,7 @@
 		    		</ul>
 		    	</td>
 		    	<span class="uk-width-2-2">
-		    		<td><span uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
+		    		<td style="vertical-align: middle;"><span class="uk-margin-top" uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
 		    		</td>
 		    			{{-- <td><span uk-tooltip title="{{ date('h:i a', strtotime($document->updated_at)) }}">{{ date('m/d/Y', strtotime($document->updated_at)) }}</span>
 		    			</td> --}}
@@ -408,7 +408,7 @@
 		findingId = $('#document-filter-by-finding :selected').val();
 		categoryId = $('#document-filter-by-category :selected').val();
 		documentName = $('#documents-name-search').val();
-		debugger;
+		// debugger;
 		$(".all").hide();
 
 		// return;
