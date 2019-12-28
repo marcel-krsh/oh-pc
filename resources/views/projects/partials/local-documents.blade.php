@@ -6,18 +6,18 @@
 		</div>
 	</div> --}}
 	{{-- <div class=" uk-width-1-1@s uk-width-4-5@m"> --}}
-	<div class=" uk-width-1-1@s uk-width-1-1@m">
-		<div uk-grid="">
-			<div class="uk-width-1-1@s uk-width-1-4@m" id="audits-dropdown" style="vertical-align: top;">
-				<select id="document-filter-by-audit" class="uk-select filter-drops uk-width-1-1" onchange="getSelectedFilters();" style="font-size:13px; padding:0px">
-					<option value="" selected="">
-						FILTER BY AUDIT
-					</option>
-					@foreach($audits as $audit)
-					<option value="audit-{{ $audit->id }}" {{ $filter['filter_audit_id'] == $audit->id ? 'selected=selected': '' }}>{{ $audit->id }}</option>
-					@endforeach
-				</select>
-			</div>
+		<div class=" uk-width-1-1@s uk-width-1-1@m">
+			<div uk-grid="">
+				<div class="uk-width-1-1@s uk-width-1-4@m" id="audits-dropdown" style="vertical-align: top;">
+					<select id="document-filter-by-audit" class="uk-select filter-drops uk-width-1-1" onchange="getSelectedFilters();" style="font-size:13px; padding:0px">
+						<option value="" selected="">
+							FILTER BY AUDIT
+						</option>
+						@foreach($audits as $audit)
+						<option value="audit-{{ $audit->id }}" {{ $filter['filter_audit_id'] == $audit->id ? 'selected=selected': '' }}>{{ $audit->id }}</option>
+						@endforeach
+					</select>
+				</div>
 		{{-- <div class="uk-width-1-1@s uk-width-1-6@m" id="recipient-dropdown" style="vertical-align: top;">
 			<select id="filter-by-report" class="uk-select filter-drops uk-width-1-1" onchange="filterByReport();" style="font-size:13px; padding:0px">
 				<option value="all" selected="">
@@ -101,44 +101,52 @@
 		    					<a>{{ $document_category->document_category_name }} : {{ ucwords(strtolower($document->filename)) }}</a>
 		    				</li>
 		    				@else --}}
-		    				<li class="{{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
-		    					<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
-		    						<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }}"></span>
-		    						<span style="float: left;margin-top:6px;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
-		    						<span style="display: block; margin-left: 20px">{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }} </span>
-		    					</a>
-		    					<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
-		    						<ul class="uk-nav uk-nav-dropdown">
-		    							<li>
-		    								<a onclick="resetDocTabCategoryListVars();selectCategory('{{ $document_category->id }}');">
-		    									Select this category on right
-		    								</a>
-		    							</li>
-		    							<li>
-		    								<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
-		    									Mark as approved
-		    								</a>
-		    							</li>
-		    							<li>
-		    								<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
-		    									Mark as declined
-		    								</a>
-		    							</li>
-		    							<li>
-		    								<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
-		    									Clear review status
-		    								</a>
-		    							</li>
-		    						</ul>
-		    					</div>
-		    				</li>
-		    				{{-- @endif --}}
-		    				@endforeach
-		    			</ul>
+		    				<div class="uk-padding-remove" style="margin-top: 7px;">
+		    					<span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:Michelle Carroll;" title="" aria-expanded="false" class="user-badge user-badge-{{ $document->user->badge_color }} uk-link">
+		    					{{ $document->user->initials() }}
+		    				</span>
+		    			</div>
+
+
+
+		    			<li class="{{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
+		    				<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
+		    					<span  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }}"></span>
+		    					<span style="float: left;margin-top:6px;" id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
+		    					<span style="display: block; margin-left: 50px">{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }} </span>
+		    				</a>
+		    				<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
+		    					<ul class="uk-nav uk-nav-dropdown">
+		    						<li>
+		    							<a onclick="resetDocTabCategoryListVars();selectCategory('{{ $document_category->id }}');">
+		    								Select this category on right
+		    							</a>
+		    						</li>
+		    						<li>
+		    							<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
+		    								Mark as approved
+		    							</a>
+		    						</li>
+		    						<li>
+		    							<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
+		    								Mark as declined
+		    							</a>
+		    						</li>
+		    						<li>
+		    							<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
+		    								Clear review status
+		    							</a>
+		    						</li>
+		    					</ul>
+		    				</div>
+		    			</li>
+		    			{{-- @endif --}}
+		    			@endforeach
+		    		</ul>
+		    	</td>
+		    	<span class="uk-width-2-2">
+		    		<td><span uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
 		    		</td>
-		    		<span class="uk-width-2-2">
-		    			<td><span uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
-		    			</td>
 		    			{{-- <td><span uk-tooltip title="{{ date('h:i a', strtotime($document->updated_at)) }}">{{ date('m/d/Y', strtotime($document->updated_at)) }}</span>
 		    			</td> --}}
 		    			<td>

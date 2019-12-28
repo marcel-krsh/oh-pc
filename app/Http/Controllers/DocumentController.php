@@ -16,7 +16,6 @@ use Carbon\Carbon;
 use File;
 use Illuminate\Http\Request;
 use Storage;
-use Log;
 
 class DocumentController extends Controller
 {
@@ -57,7 +56,7 @@ class DocumentController extends Controller
 		$filter['filter_finding_id'] = "";
 		$filter['filter_category_id'] = "";
 
-		$documents = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'project.audits', 'communications.communication', 'audits')->orderBy('created_at', 'DESC')->get();
+		$documents = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'project.audits', 'communications.communication', 'audits', 'user')->orderBy('created_at', 'DESC')->get();
 		$audits = $documents->pluck('audits')->flatten()->unique('id');
 		$categories = $documents->pluck('assigned_categories')->flatten()->unique('id');
 		$findings = collect([]);

@@ -266,7 +266,6 @@ $crrTypeSelection    = 'all';
     					</div>
     				</header>
     				<div class="uk-comment-body">
-
     				</div>
     			</article>
 
