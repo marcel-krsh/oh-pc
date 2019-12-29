@@ -394,6 +394,12 @@
 			@php
 			$recipient_yes = 0;
 			$message_seen = 0;
+			$is_receipient = $message->message_recipients->where('id', $current_user->id);
+			if(count($is_receipient)){
+				$recipient_yes = 1;
+				if($is_receipient->first()->pivot->seen)
+				$message_seen = 1;
+			}
 		// dd(auth()->user());
 		// 	dd($message);
 			//Check if the message is read by this recipient
@@ -401,7 +407,7 @@
 			// class="uk-hidden"
 			@endphp
 			{!! $loop->first && !$print && !$oneColumn ? '<hr class="uk-width-1-1 uk-margin-bottom">': '' !!}
-			<strong class="a-envelope-4 " @if($print || $oneColumn) style="margin-top: 4px !important" @endIf></strong> : {{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }} @if($print || $oneColumn)</div><div class="uk-width-4-5"> @else <br> @endIf
+			<strong class="a-envelope-4 remove-action-{{ $message->id }} {{ ($recipient_yes && !$message_seen) ? 'attention ok-actionable' : '' }}" @if($print || $oneColumn) style="margin-top: 4px !important" @endIf></strong> : {{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }} @if($print || $oneColumn)</div><div class="uk-width-4-5"> @else <br> @endIf
 				<span {{-- style="margin-left: 20px" --}}>
 					<li>
 						<strong class="uk-text-small" style="float: left; margin-top: 2px;">From:&nbsp;</strong>
@@ -412,18 +418,21 @@
 					<li>
 						<strong class="uk-text-small" style="float: left; margin-top: 2px;">To:&nbsp;</strong>
 						<label style="display: block; margin-left: 28px;" for="message-{{ $message->id }}">
-							@if(count($message->message_recipients))@foreach($message->message_recipients as $recipient) @if($recipient->id != $current_user->id && $message->owner->id != $recipient->id && $recipient->name != ''){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }} @php $recipient_yes = 1; if($recipient->seen) $message_seen = 1; @endphp @elseif($recipient->id == $current_user->id) Me{{ !$loop->last ? ', ': '' }} @endif @endforeach @endif
+							@if(count($message->message_recipients))@foreach($message->message_recipients as $recipient) @if($recipient->id != $current_user->id && $message->owner->id != $recipient->id && $recipient->name != ''){{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }} @elseif($recipient->id == $current_user->id) Me{{ !$loop->last ? ', ': '' }} @endif @endforeach @endif
 						</label>
 					</li>
-					<li onclick="messageRead({{ $message->id }})">
+					<li>
 						<strong>
 							<label style="display: block;" for="message-sub-{{ $message->id }}">
 								{{ $message->subject }}
 							</label>
 						</strong>
 					</li>
-					<span id="show-message-{{ $message->id }}">
-						{{-- class="{{ ($recipient_yes && !$message_seen) ? 'uk-hidden' : '' }}" --}}
+					@if($recipient_yes && !$message_seen)
+					<li class="ok-actionable attention use-hand-cursor hide-message-{{ $message->id }}" onclick="messageRead({{ $message->id }})">Click to open</li>
+					@endif
+					{{-- <span id="show-message-{{ $message->id }}"> --}}
+					<span class="{{ ($recipient_yes && !$message_seen) ? 'uk-hidden' : '' }} show-message-{{ $message->id }}">
 						<li>
 							<label style="display: block;" for="message-msg-{{ $message->id }}">
 								{{ $message->message }}

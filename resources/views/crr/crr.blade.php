@@ -609,7 +609,7 @@ session(['projectDetailsOutput' => 0]);
 						<option value="5">APPROVE</option>
 						@endif
 					@endif
-						@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
+						@if( ($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
 							<option value="6">SEND TO PROPERTY CONTACT</option>
 							<option value="7">PROPERTY VIEWED IN PERSON</option>
 							<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
@@ -660,7 +660,26 @@ session(['projectDetailsOutput' => 0]);
 					}
 
 					function messageRead(messageId) {
-						var element = document.getElementById("show-message-"+messageId);
-						$("#show-message-"+messageId).removeClass("uk-hidden");
+						$.post('{{ url('mark-message-read') }}/'+messageId, {
+		    			'_token' : '{{ csrf_token() }}'
+		    		}, function(data) {
+		    			if(data!=1){
+		    				UIkit.modal.alert(data,{stack: true});
+		    			} else {
+		    				// var element = document.getElementById("show-message-"+messageId);
+								$(".show-message-"+messageId).removeClass("uk-hidden");
+								// var element = document.getElementById("hide-message-"+messageId);
+								$(".hide-message-"+messageId).addClass("uk-hidden");
+								$(".remove-action-"+messageId).removeClass("attention");
+								$(".remove-action-"+messageId).removeClass("ok-actionable");
+								UIkit.notification({
+									message: 'Message has been marked as read.',
+									status: 'success',
+									pos: 'top-right',
+									timeout: 1500
+								});
+		    			}
+		    		} );
+
 					}
-					</script>
+	</script>

@@ -502,6 +502,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
 		Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
 		Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
+		Route::post('/mark-message-read/{message_id}', 'CommunicationController@markMessageRead');
 		Route::get('communication/session/{trigger?}', 'CommunicationController@setFilterSession');
 		Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
 		Route::get('/projects/{project}/audit-communications/{audit}/{page?}', 'CommunicationController@auditCommunicationsFromProjectTab')->name('project.audit-communications');

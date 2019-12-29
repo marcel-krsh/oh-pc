@@ -1305,7 +1305,7 @@ class CommunicationController extends Controller
 
 			//List view
 			// return session()->all();
-			if(!session()->has('communication_list')) {
+			if (!session()->has('communication_list')) {
 				session(['communication_list' => 1]);
 			}
 			if (session('communication_list') == 1) {
@@ -1366,7 +1366,6 @@ class CommunicationController extends Controller
 				$messages = $messages->merge($project_messages)->where('project_id', $project->id);
 			}
 		}
-
 
 		$owners_array = [];
 		$projects_array = [];
@@ -1587,7 +1586,7 @@ class CommunicationController extends Controller
 			$audit = $report->audit_id;
 			$data = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
+Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
 			// return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
 			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
 		} else {
@@ -1727,13 +1726,16 @@ Please be sure to view your report using the Chrome browser. PLEASE NOTE: If you
 		return 'false';
 	}
 
-	public function some()
+	public function markMessageRead($message_id)
 	{
-		$notification = NotificationsTriggered::where('token', $token)->where('to_id', $user->id)->inactive()->first();
-		if ($notification) {
-			//show message $this->showNotificationMessage();
+		$current_user = Auth::getUser();
+		$check_message = CommunicationRecipient::where('communication_id', $message_id)->where('user_id', $current_user->id)->where('seen', 0)->first();
+		if ($check_message) {
+			$check_message->seen = 1;
+			$check_message->save();
+			return 1;
 		} else {
-			// show warning message, looks like something went wrong
+			return 'Something went wrong while marking the message as read. Please contact admin.';
 		}
 	}
 }
