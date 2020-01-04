@@ -2,54 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Amenity;
-use App\Models\AmenityInspection;
+use Auth;
+use View;
+use Carbon;
+use Session;
+use App\Models\Job;
+use App\Models\Unit;
+use App\Models\User;
 use App\Models\Audit;
+use App\Models\Group;
+use App\Models\Amenity;
+use App\Models\Comment;
+use App\Models\Finding;
+use App\Models\Program;
+use App\Models\Project;
+use App\Models\Building;
+use App\Models\CrrReport;
+use App\Models\GuideStep;
+use App\Models\UserEmail;
+use App\Models\CachedUnit;
+use App\Models\CachedAudit;
+use App\Models\ScheduleDay;
+use App\Models\UnitAmenity;
+use App\Models\UnitProgram;
+use Illuminate\Support\Arr;
 use App\Models\AuditAuditor;
 use App\Models\Availability;
-use App\Models\Building;
-use App\Models\BuildingAmenity;
-use App\Models\BuildingInspection;
-use App\Models\CachedAudit;
-use App\Models\CachedBuilding;
-use App\Models\CachedComment;
-use App\Models\CachedInspection;
-use App\Models\CachedUnit;
-use App\Models\Comment;
-use App\Models\CrrApprovalType;
-use App\Models\CrrReport;
-use App\Models\Finding;
-use App\Models\Group;
-use App\Models\GuideProgress;
-use App\Models\GuideStep;
-use App\Models\Job;
-use App\Models\OrderingAmenity;
-use App\Models\OrderingBuilding;
 use App\Models\OrderingUnit;
-use App\Models\Program;
 use App\Models\ProgramGroup;
-use App\Models\Project;
-use App\Models\ProjectAmenity;
 use App\Models\ReportAccess;
-use App\Models\ScheduleDay;
 use App\Models\ScheduleTime;
-use App\Models\SystemSetting;
-use App\Models\Unit;
-use App\Models\UnitAmenity;
-use App\Models\UnitInspection;
-use App\Models\UnitProgram;
-use App\Models\User;
-use App\Models\UserAddresses;
-use App\Models\UserEmail;
-use App\Models\UserOrganization;
-use App\Models\UserPhoneNumber;
-use Auth;
-use Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Session;
-use View;
+use App\Models\CachedComment;
+use App\Models\GuideProgress;
+use App\Models\SystemSetting;
+use App\Models\UserAddresses;
+use App\Models\CachedBuilding;
+use App\Models\ProjectAmenity;
+use App\Models\UnitInspection;
+use App\Models\BuildingAmenity;
+use App\Models\CrrApprovalType;
+use App\Models\OrderingAmenity;
+use App\Models\UserPhoneNumber;
+use App\Models\CachedInspection;
+use App\Models\OrderingBuilding;
+use App\Models\UserOrganization;
+use App\Models\AmenityInspection;
+use App\Models\BuildingInspection;
+use App\Http\Controllers\Controller;
 
 class AuditController extends Controller
 {
@@ -64,6 +64,12 @@ class AuditController extends Controller
 			// 6281 holly
 			// 6346 Robin (Abigail)
 		}
+		$this->middleware(function ($request, $next) {
+			$this->user = Auth::user();
+			$this->auditor_access = $this->user->auditor_access();
+			View::share('auditor_access', $this->auditor_access);
+			return $next($request);
+		});
 		$this->htc_group_id = 7;
 		View::share('htc_group_id', $this->htc_group_id);
 	}
@@ -6492,7 +6498,7 @@ class AuditController extends Controller
 	public function swapAuditorToAudit($cahced_audit_id, Request $request)
 	{
 		// return $request->all();
-	  $cached_audit = CachedAudit::with('audit.reports')->find($cahced_audit_id);
+		$cached_audit = CachedAudit::with('audit.reports')->find($cahced_audit_id);
 		if ($cached_audit && $cached_audit->audit) {
 			//update cached audit
 			$user = User::find($request->selected_auditor);
@@ -6511,12 +6517,12 @@ class AuditController extends Controller
 			$audit->lead_user_id = $user->id;
 			$audit->user_key = $user->devco_key;
 			$audit->save();
-			if($audit) {
-			foreach ($audit->reports as $key => $report) {
-				$report->lead_id = $user->id;
-				$report->save();
+			if ($audit) {
+				foreach ($audit->reports as $key => $report) {
+					$report->lead_id = $user->id;
+					$report->save();
+				}
 			}
-		}
 			return 1;
 		} else {
 			return 'Could not find either the Cached audit or Audit, please contact admin';

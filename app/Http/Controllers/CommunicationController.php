@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Traits\DocumentTrait;
-use App\Models\Audit;
-use App\Models\CachedAudit;
-use App\Models\Communication;
-use App\Models\CommunicationDocument;
-use App\Models\CommunicationDraft;
-use App\Models\CommunicationRecipient;
-use App\Models\CrrReport;
-use App\Models\Document;
-use App\Models\DocumentCategory;
-use App\Models\Finding;
-use App\Models\LocalDocumentCategory;
-use App\Models\NotificationsTriggered;
-use App\Models\Project;
-use App\Models\ReportAccess;
-use App\Models\SystemSetting;
-use App\Models\User;
-use Auth;
-//use App\LogConverter;
-use Carbon\Carbon;
-use Config;
 use DB;
-use Illuminate\Http\Request;
+use Auth;
+use Config;
 use Session;
 use Storage;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Audit;
+use App\Models\Finding;
+use App\Models\Project;
+use App\Models\Document;
+use App\Models\CrrReport;
+use App\Models\CachedAudit;
+use App\Models\ReportAccess;
+use Illuminate\Http\Request;
+use App\Models\Communication;
+use App\Models\SystemSetting;
+use App\Models\DocumentCategory;
+//use App\LogConverter;
+use App\Models\CommunicationDraft;
+use App\Models\CommunicationDocument;
+use App\Models\LocalDocumentCategory;
+use App\Models\CommunicationRecipient;
+use App\Models\NotificationsTriggered;
+use App\Http\Controllers\Traits\DocumentTrait;
 
 class CommunicationController extends Controller
 {
@@ -645,7 +645,10 @@ class CommunicationController extends Controller
 		$words = explode(' ', $owner_name_trimmed);
 		$initials = '';
 		foreach ($words as $w) {
-			$initials .= $w[0];
+			$w = str_replace(' ', '', $w);
+			if ($w) {
+				$initials .= $w[0];
+			}
 		}
 		$message->initials = $initials;
 
@@ -1585,8 +1588,7 @@ class CommunicationController extends Controller
 			$recipients = User::allManagers();
 			$audit = $report->audit_id;
 			$data = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
-				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.
-Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.', ];
+				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report. Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
 			// return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
 			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
 		} else {

@@ -1,3 +1,6 @@
+@php
+	$submit_name = 'submitNewCommunication'. rand();
+@endphp
 @if(session()->has('old_communication_modal'))
 <script>
 	window.oldCommunicationModal = "{{ session()->get('old_communication_modal') }}";
@@ -187,7 +190,7 @@ session(['old_communication_modal' => $random]);
         <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
         <div class="uk-width-1-3">&nbsp;</div>
         <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="communicationClose();"><i class="a-circle-cross"></i> Delete Draft</a></div>
-        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="submitNewCommunication()"><i class="a-paper-plane"></i> SEND</a>
+        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="{{ $submit_name }}()"><i class="a-paper-plane"></i> SEND</a>
         </div>
       </div>
     </div>
@@ -221,7 +224,7 @@ session(['old_communication_modal' => $random]);
     	$('#done-adding-documents-button').toggle();
     }
 
-    function submitNewCommunication() {
+    function {{ $submit_name }}() {
     	var form = $('#newOutboundEmailForm');
     	var no_alert = 1;
     	var recipients_array = [];
@@ -265,7 +268,7 @@ session(['old_communication_modal' => $random]);
     			} else {
     				@if(!$project || Auth::user()->cannot('access_auditor'))
     				$('#detail-tab-2').trigger('click');
-    				@endIf
+    				@endif
     				UIkit.modal.alert('Your message has been saved.',{stack: true});
     			}
     		} );
@@ -352,12 +355,12 @@ session(['old_communication_modal' => $random]);
 
 
 
-  	// $( document ).ready(function() {
-  	// 	window.communicationActive = 1;
-  	// 	console.log( "update sraft!" );
-  	// 	window.setInterval(function(){
-  	// 		// updateCommunicationDraft();
-  	// 	}, 90000);
-  	// });
+  	$( document ).ready(function() {
+  		window.communicationActive = 1;
+  		console.log( "update draft!" );
+  		window.setInterval(function(){
+  			updateCommunicationDraft();
+  		}, 30000);
+  	});
   </script>
 </div>
