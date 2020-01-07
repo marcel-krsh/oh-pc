@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Audit;
-use App\Models\CachedAudit;
-use App\Models\CrrApprovalType;
-use App\Models\CrrPart;
-use App\Models\CrrPartOrder;
-use App\Models\CrrReport;
-use App\Models\CrrSection;
-use App\Models\CrrSectionOrder;
-use App\Models\GuideProgress;
-use App\Models\GuideStep;
-use App\Models\People;
-use App\Models\Project;
-use App\Models\ProjectProgram;
-use App\Models\ReportAccess;
-use App\Models\User;
 use Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Response;
+use App\Models\User;
+use App\Models\Audit;
+use App\Models\People;
+use App\Models\CrrPart;
+use App\Models\Project;
 use Twilio\Rest\Client;
+use App\Models\CrrReport;
+use App\Models\GuideStep;
+use App\Models\CrrSection;
+use App\Models\CachedAudit;
+use Illuminate\Support\Arr;
+use App\Models\CrrPartOrder;
+use App\Models\ReportAccess;
+use Illuminate\Http\Request;
+use App\Models\GuideProgress;
+use App\Models\ProjectProgram;
+use App\Models\CrrApprovalType;
+use App\Models\CrrSectionOrder;
 
 class ReportsController extends Controller
 {
@@ -198,7 +198,7 @@ class ReportsController extends Controller
 					break;
 				case 9:
 					// All items resolved ...
-					if (Auth::user()->can('access_manager')) {
+					if (Auth::user()->can('access_auditor')) {
 						$note = Auth::user()->name . ' updated the status to ' . $report->status_name();
 						if (!is_null($report->manager_id)) {
 							$report->update(['crr_approval_type_id' => 9]);

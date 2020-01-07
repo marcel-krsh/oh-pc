@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\FormsController as Form;
+use Auth;
 // use App\LogConverter;
+use Session;
+use App\Models\Role;
+use App\Models\User;
+use App\Models\County;
 use App\Models\Amenity;
+use App\Models\Program;
+use App\Models\UserRole;
 use App\Models\AmenityHud;
 use App\Models\Boilerplate;
-use App\Models\County;
+use App\Models\FindingType;
+use App\Models\Organization;
+use Illuminate\Http\Request;
+use App\Models\HudFindingType;
+//use Illuminate\Foundation\Auth\User;
 use App\Models\DefaultFollowup;
 use App\Models\DocumentCategory;
-use App\Models\FindingType;
-use App\Models\FindingTypeBoilerplate;
-use App\Models\HudFindingType;
 use App\Models\HudInspectableArea;
-use App\Models\Organization;
-use App\Models\Program;
-use App\Models\Role;
-//use Illuminate\Foundation\Auth\User;
-use App\Models\User;
-use App\Models\UserRole;
-use Auth;
-use Illuminate\Http\Request;
-use Session;
+use App\Models\FindingTypeBoilerplate;
+use App\Http\Controllers\FormsController as Form;
 
 class AdminToolController extends Controller
 {
