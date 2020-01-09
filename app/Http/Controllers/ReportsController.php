@@ -512,7 +512,7 @@ class ReportsController extends Controller
 	{
 		//replace string value with current audit values.
 		$string = str_replace('||REPORT ID||', $report->id, $string);
-		$string = str_replace('||VERSION||', ($report->version + 1), $string);
+		$string = str_replace('||VERSION||', $report->version, $string);
 		$string = str_replace('||PROJECT NAME||', $audit->project->project_name, $string);
 		$string = str_replace('||AUDIT ID||', $audit->id, $string);
 		$string = str_replace('||PROJECT NUMBER||', $audit->project->project_number, $string);
@@ -691,6 +691,8 @@ class ReportsController extends Controller
 						$newPartOrder->save();
 					}
 				}
+
+				$this->generateReport($report, 1);
 			} else {
 				if ($audit->cached_audit->step_id < 61) {
 					//dd($audit,$audit->cachedAudit);
@@ -907,6 +909,8 @@ class ReportsController extends Controller
 			if (!is_null($report->crr_data)) {
 				// get current version and add 1 to it
 				$version = $report->version + 1;
+				$report->version = $version;
+				$report->save();
 				$data = collect(json_decode($report->crr_data))->toArray();
 			} else {
 				$version = 1;

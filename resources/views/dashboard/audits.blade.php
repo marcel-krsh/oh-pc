@@ -2370,9 +2370,11 @@ function updateAuditBuildingInspection(e) {
 			}
 			loadCalendar();
 			console.log( "ready!" );
+			@if(!local())
 			window.setInterval(function(){
 				checkForUpdatedAudits(window.onPageAudits);
 			}, 5000);
+			@endif
 
 		});
 	</script>

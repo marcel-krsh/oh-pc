@@ -598,7 +598,6 @@ session(['projectDetailsOutput' => 0]);
 			<select class="uk-form uk-select" id="crr-report-action-{{ $report->id }}" onchange="reportAction({{ $report->id }},this.value, {{ $report->project->id }});" style="width: 184px;">
 				<optgroup label="REPORT ACTIONS">
 					<option value="0">ACTION</option>
-					@if(!($report->crr_approval_type_id >= 5))
 					<option value="1">DRAFT</option>
 					@if($report->requires_approval)
 					<option value="2">SEND TO MANAGER REVIEW</option>
@@ -610,8 +609,7 @@ session(['projectDetailsOutput' => 0]);
 					<option value="5">APPROVE</option>
 					@endif
 					@endif
-					@endif
-					@if($auditor_access)
+					@if( ($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
 					<option value="6">SEND TO PROPERTY CONTACT</option>
 					<option value="7">PROPERTY VIEWED IN PERSON</option>
 					<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>

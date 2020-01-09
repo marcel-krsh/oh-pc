@@ -134,7 +134,10 @@ class CommunicationController extends Controller
 			$words = explode(' ', $message->owner->name);
 			$initials = '';
 			foreach ($words as $w) {
-				$initials .= $w[0];
+				$w = str_replace(' ', '', $w);
+				if ($w) {
+					$initials .= $w[0];
+				}
 			}
 			$message->initials = $initials;
 			// create associative arrays for initials and names
