@@ -152,8 +152,8 @@
   		selection_start = ele.selectionStart,
   		selection_end = ele.selectionEnd,
   		number = ele.value.replace(/\D/g,'');
-    // automatically add dashes
-    if (number.length > 2) {
+    	// automatically add dashes
+    	if (number.length > 2) {
       // matches: 123 || 123-4 || 123-45
       new_number = number.substring(0,3) + '-';
       if (number.length === 4 || number.length === 5) {
@@ -173,26 +173,26 @@
     	new_number = number;
     }
 
-    // if value is heigher than 12, last number is dropped
-    // if inserting a number before the last character, numbers
-    // are shifted right, only 12 characters will show
-    ele.value =  (new_number.length > 12) ? new_number.substring(0,12) : new_number;
+	    // if value is heigher than 12, last number is dropped
+	    // if inserting a number before the last character, numbers
+	    // are shifted right, only 12 characters will show
+	    ele.value =  (new_number.length > 12) ? new_number.substring(0,12) : new_number;
 
-    // restore cursor selection,
-    // prevent it from going to the end
-    // UNLESS
-    // cursor was at the end AND a dash was added
+	    // restore cursor selection,
+	    // prevent it from going to the end
+	    // UNLESS
+	    // cursor was at the end AND a dash was added
 
-    if (new_number.slice(-1) === '-' && restore === false && (new_number.length === 8 && selection_end === 7) || (new_number.length === 4 && selection_end === 3)) {
-    	selection_start = new_number.length;
-    	selection_end = new_number.length;
-    }
-    else if (restore === 'revert') {
-    	selection_start--;
-    	selection_end--;
-    }
-    ele.setSelectionRange(selection_start, selection_end);
-  }
+	    if (new_number.slice(-1) === '-' && restore === false && (new_number.length === 8 && selection_end === 7) || (new_number.length === 4 && selection_end === 3)) {
+	    	selection_start = new_number.length;
+	    	selection_end = new_number.length;
+	    }
+	    else if (restore === 'revert') {
+	    	selection_start--;
+	    	selection_end--;
+	    }
+	    ele.setSelectionRange(selection_start, selection_end);
+	  }
 
   function business_phone_number_check(field,e) {
   	var key_code = e.keyCode,

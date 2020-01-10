@@ -3,10 +3,10 @@
 		<div uk-grid>
 			<div class="user-preference-col-1  uk-padding-remove uk-margin-small-top">
 				<div uk-grid>
-					<div class="uk-width-1-1 uk-padding-remove-left">
+					<div class="uk-width-1-1 uk-padding-remove-left" id="user-info">
 						<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{ $data['summary']['name'] }};" class="user-badge-{{ $data['summary']['color'] }} user-badge-v2 uk-align-center user-badge use-hand-cursor">
 							{{ $data['summary']['initials'] }}
-						</span> {{ $data['summary']['name'] }} <br /><small>{{ $data['summary']['email'] }} | {{ $data['summary']['phone'] }}</small>
+						</span> {{ $data['summary']['name'] }} <i class="a-edit use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="editUserInformationForm();"></i> <br /><small>{{ $data['summary']['email'] }} | {{ $data['summary']['phone'] }}</small>
 						@if($current_user->id == $data['summary']['id'])
 						<a href="javascript:logout()" class="uk-button uk-button-small uk-padding-small-top uk-align-right"><i class="a-circle-keyhole"></i> LOGOUT</a></h3>
 						<form id="logout-form" action="/logout" method="POST" style="display: none;" siq_id="autopick_1705">
@@ -17,7 +17,6 @@
 							<script>
 								function launchMobile(){
 									var number = prompt("Please enter your mobile area code and phone number (no dashes or spaces please)");
-
 										$.post("/mobile/request_auto_login", {
 											'number' : number,
 											'_token' : '{{ csrf_token() }}'
@@ -31,8 +30,47 @@
 								}
 							</script>
 						@endif
-						@endIf
+						@endif
 					</div>
+
+						<form id="edit-user-info" method="post" class="uk-width-1-1 uk-margin-bottom" style="display:none;">
+							<h3>Edit My Info</h3>
+							<div class="alert alert-danger uk-text-danger" style="display:none"></div>
+
+							<div class="uk-grid-small uk-grid" uk-grid="">
+								<div class="uk-width-1-2">
+									<input id="first_name" name="first_name" type="text" class="uk-input" value="{{ $data['summary']['first_name'] }}" placeholder="Enter first name*">
+								</div>
+								<div class="uk-width-1-2 uk-margin-bottom">
+									<input id="last_name" name="last_name" type="text" class="uk-input" value="{{ $data['summary']['last_name'] }}" placeholder="Enter last name*">
+								</div>
+								<div class="uk-width-1-2 uk-margin-bottom">
+									<input id="email" name="email" type="text" class="uk-input" value="{{ $data['summary']['email'] }}" placeholder="Email*">
+								</div>
+								<div class="uk-width-1-2">
+									<input id="business_phone_number" name="business_phone_number" type="text" class="uk-input" value="{{ $data['summary']['phone'] }}" placeholder="Phone, Format: xxx-xxx-xxxx">
+								</div>
+								<div class="uk-width-1-1 uk-padding-remove-bottom">
+									<label class="uk-text-small">Leave blank if you don't want to change the password</label><br>
+								</div>
+								<div class="uk-width-1-2 uk-margin-remove-top">
+									<input id="password" name="password" type="password" class="uk-input" value="" placeholder="Enter password">
+								</div>
+								<div class="uk-width-1-2 uk-margin-remove-top">
+									<input id="password_confirmation" name="password_confirmation" type="password" class="uk-input" value="" placeholder="Confirm password">
+								</div>
+							</div>
+							<div class="uk-grid" uk-grid="">
+									<div class="uk-width-1-4 uk-padding-remove-left">
+						    		<a class="uk-button uk-button-default uk-width-1-1" onclick="editUserInformationForm()"><span uk-icon="times-circle" class="uk-icon"></span> CANCEL</a>
+						    	</div>
+						    	<div class="uk-width-1-4 ">
+						    		<a class="uk-button uk-width-1-1 uk-button uk-button-success" onclick="submitUserInfoForm()"><span uk-icon="save" class="uk-icon"></span> SAVE</a>
+						    	</div>
+							</div>
+						</form>
+
+
 					@if($auditor_access)
 					@if($current_user->id == $data['summary']['id'])
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
@@ -449,6 +487,7 @@
 	$( document ).ready(function() {
 		loadCalendar();
 		fillSpacers();
+		$('#business_phone_number').keyup();
 
 		$( "#default_address" ).change(function() {
 			var id = parseInt($(this).val(), 10);
@@ -465,6 +504,98 @@
 			} );
 		});
 	});
+
+
+  	function phone_formatting(ele,restore) {
+  		var new_number,
+  		selection_start = ele.selectionStart,
+  		selection_end = ele.selectionEnd,
+  		number = ele.value.replace(/\D/g,'');
+    	// automatically add dashes
+    	if (number.length > 2) {
+      // matches: 123 || 123-4 || 123-45
+      new_number = number.substring(0,3) + '-';
+      if (number.length === 4 || number.length === 5) {
+        // matches: 123-4 || 123-45
+        new_number += number.substr(3);
+      }
+      else if (number.length > 5) {
+        // matches: 123-456 || 123-456-7 || 123-456-789
+        new_number += number.substring(3,6) + '-';
+      }
+      if (number.length > 6) {
+        // matches: 123-456-7 || 123-456-789 || 123-456-7890
+        new_number += number.substring(6);
+      }
+    }
+    else {
+    	new_number = number;
+    }
+
+	    // if value is heigher than 12, last number is dropped
+	    // if inserting a number before the last character, numbers
+	    // are shifted right, only 12 characters will show
+	    ele.value =  (new_number.length > 12) ? new_number.substring(0,12) : new_number;
+
+	    // restore cursor selection,
+	    // prevent it from going to the end
+	    // UNLESS
+	    // cursor was at the end AND a dash was added
+
+	    if (new_number.slice(-1) === '-' && restore === false && (new_number.length === 8 && selection_end === 7) || (new_number.length === 4 && selection_end === 3)) {
+	    	selection_start = new_number.length;
+	    	selection_end = new_number.length;
+	    }
+	    else if (restore === 'revert') {
+	    	selection_start--;
+	    	selection_end--;
+	    }
+	    ele.setSelectionRange(selection_start, selection_end);
+	  }
+
+  function business_phone_number_check(field,e) {
+  	var key_code = e.keyCode,
+  	key_string = String.fromCharCode(key_code),
+  	press_delete = false,
+  	dash_key = 189,
+  	delete_key = [8,46],
+  	direction_key = [33,34,35,36,37,38,39,40],
+  	selection_end = field.selectionEnd;
+
+    // delete key was pressed
+    if (delete_key.indexOf(key_code) > -1) {
+    	press_delete = true;
+    }
+
+    // only force formatting is a number or delete key was pressed
+    if (key_string.match(/^\d+$/) || press_delete) {
+    	phone_formatting(field,press_delete);
+    }
+    // do nothing for direction keys, keep their default actions
+    else if(direction_key.indexOf(key_code) > -1) {
+      // do nothing
+    }
+    else if(dash_key === key_code) {
+    	if (selection_end === field.value.length) {
+    		field.value = field.value.slice(0,-1)
+    	}
+    	else {
+    		field.value = field.value.substring(0,(selection_end - 1)) + field.value.substr(selection_end)
+    		field.selectionEnd = selection_end - 1;
+    	}
+    }
+    // all other non numerical key presses, remove their value
+    else {
+    	e.preventDefault();
+      //    field.value = field.value.replace(/[^0-9\-]/g,'')
+      phone_formatting(field,'revert');
+    }
+  }
+
+  document.getElementById('business_phone_number').onkeyup = function(e) {
+  	business_phone_number_check(this,e);
+  }
+
 
 	function loadCalendar(target=null) {
 		if(target == null){
@@ -616,6 +747,11 @@
 	 	$(item).removeAttr('style');
 	 });
 
+	 function editUserInformationForm() {
+		 	$('#edit-user-info').toggle();
+		 	$('#user-info').toggle();
+	 }
+
 	 function auditorAddAddress(){
 	 	$('#auditor-add-address').toggle();
 	 }
@@ -688,6 +824,46 @@
 			selectday(".dayselector-"+name, name);
 		}
 	}
+
+	function submitUserInfoForm() {
+  	jQuery.ajaxSetup({
+  		headers: {
+  			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+  		}
+  	});
+
+  	var form = $('#edit-user-info');
+
+  	var data = { };
+  	$.each($('form').serializeArray(), function() {
+  		data[this.name] = this.value;
+  	});
+  	jQuery.ajax({
+  		url: "{{ url("modals/users/edit-my-info") }}",
+  		method: 'post',
+  		data: {
+  			first_name: data['first_name'],
+  			last_name: data['last_name'],
+	      password: data['password'],
+	      password_confirmation: data['password_confirmation'],
+	      // badge_color: data['badge_color'],
+	      business_phone_number: data['business_phone_number'],
+	      '_token' : '{{ csrf_token() }}'
+	    },
+	    success: function(data){
+	    	$('.alert-danger' ).empty();
+	    	if(data == 1) {
+	    		UIkit.modal.alert('User has been saved.',{stack: true});
+	    		dynamicModalClose();
+	    		$('#users-tab').trigger('click');
+	    	}
+	    	jQuery.each(data.errors, function(key, value){
+	    		jQuery('.alert-danger').show();
+	    		jQuery('.alert-danger').append('<p>'+value+'</p>');
+	    	});
+	    }
+	  });
+  }
 
 
 
