@@ -99,10 +99,9 @@ session(['projectDetailsOutput' => 0]);
 			'receipents' : receipents,
 			'check' : 1
 		}, function(data2) {
-
+			UIkit.modal.alert('Your message has been saved.',{stack: true});
+			window.location.href ='/report/{{ $report->id }}';
 		});
-		UIkit.modal.alert('Your message has been saved.',{stack: true});
-		window.location.href ='/report/{{ $report->id }}';
 	}
 
 	function reportAction(reportId,action,project_id = null){
@@ -284,20 +283,20 @@ session(['projectDetailsOutput' => 0]);
 <script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 	<?php // determin background type
-	$background = "";
-	if (1 == $report->crr_approval_type_id) {
-		$background = '-draft';
-	}
-	if (2 == $report->crr_approval_type_id) {
-		$background = '-pending';
-	}
-	if (3 == $report->crr_approval_type_id) {
-		$background = '-declined';
-	}
-	if (4 == $report->crr_approval_type_id) {
-		$background = '-revise';
-	}
-	?>
+$background = "";
+if (1 == $report->crr_approval_type_id) {
+	$background = '-draft';
+}
+if (2 == $report->crr_approval_type_id) {
+	$background = '-pending';
+}
+if (3 == $report->crr_approval_type_id) {
+	$background = '-declined';
+}
+if (4 == $report->crr_approval_type_id) {
+	$background = '-revise';
+}
+?>
 	.crr-sections {
 		width:90%;min-width:720px; min-height: 1502px; margin-left:auto; margin-right:auto; border:1px black solid; background-image: url('/paginate-2x{{ $background }}.gif'); padding: 72px;
 
@@ -445,17 +444,17 @@ session(['projectDetailsOutput' => 0]);
 
 			<?php
 // collect comments for this part
-			if ($auditor_access) {
-				$comments = collect($report->comments)->where('part_id', $piece->part_id);
+if ($auditor_access) {
+	$comments = collect($report->comments)->where('part_id', $piece->part_id);
 
-				if ($comments) {
-					$totalComments = count($comments);
-				}
-			} else {
-				$comments = [];
-				$totalComments = 0;
-			}
-			?>
+	if ($comments) {
+		$totalComments = count($comments);
+	}
+} else {
+	$comments = [];
+	$totalComments = 0;
+}
+?>
 			@if($auditor_access)<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a>
 				<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>
 
@@ -463,7 +462,7 @@ session(['projectDetailsOutput' => 0]);
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
 				<?php $pieceData = json_decode($piece->data);
 // set this so we only output details once from the blade.
-				;?>
+;?>
 
 				@if($pieceData[0]->type =='free-text')
 
@@ -480,34 +479,34 @@ session(['projectDetailsOutput' => 0]);
 					@if($pieceData[0]->type == 'blade')
 					<?php
 
-					if (array_key_exists(2, $pieceData)) {
-						$bladeData = $pieceData[2];
-					} else {
-						$bladeData = null;
-					}
-					?>
+if (array_key_exists(2, $pieceData)) {
+	$bladeData = $pieceData[2];
+} else {
+	$bladeData = null;
+}
+?>
 					@if($piece->blade == 'crr_parts.crr_inspections')
 					@include($piece->blade, [$inspections_type = 'site', $audit_id = $report->audit->id])
 					@endif
 					<?php
-					if (array_key_exists(3, $pieceData)) {
-						$bladeData = $pieceData[3];
-					} else {
-						$bladeData = null;
-					}
-					?>
+if (array_key_exists(3, $pieceData)) {
+	$bladeData = $pieceData[3];
+} else {
+	$bladeData = null;
+}
+?>
 					@if($piece->blade == 'crr_parts.crr_inspections')
 					@include($piece->blade, [$inspections_type = 'building', $audit_id = $report->audit->id])
 					@endif
 
 
 					<?php
-					if (array_key_exists(1, $pieceData)) {
-						$bladeData = $pieceData[1];
-					} else {
-						$bladeData = null;
-					}
-					?>
+if (array_key_exists(1, $pieceData)) {
+	$bladeData = $pieceData[1];
+} else {
+	$bladeData = null;
+}
+?>
 					@include($piece->blade, [$inspections_type = 'unit', $audit_id = $report->audit->id])
 
 
@@ -540,9 +539,9 @@ session(['projectDetailsOutput' => 0]);
 
 		<?php
 
-		session(['projectDetailsOutput' => 0]);
+session(['projectDetailsOutput' => 0]);
 
-		?>
+?>
 
 
 

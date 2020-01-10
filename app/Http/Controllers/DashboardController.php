@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\CachedAudit;
-use App\Models\CommunicationRecipient;
-use App\Models\GuideStep;
-use App\Models\Report;
-use App\Models\User;
 use Auth;
-use Carbon;
-use Illuminate\Http\Request;
-use Session;
 use View;
+use Carbon;
+use Session;
+use App\Models\User;
+use App\Models\Report;
+use App\Models\GuideStep;
+use App\Models\CachedAudit;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\CommunicationRecipient;
 
 class DashboardController extends Controller
 {

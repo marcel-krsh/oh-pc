@@ -2,82 +2,82 @@
 	resizeModal(80);
 </script>
 
-	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
-		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
-		@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit }}">@endif
-		<input type="hidden" name="report" value="{{$report->id}}">
-		<input type="hidden" name="notification_triggered_type" value="3">
-		<input type="hidden" name="notification_model_id" value="{{ $report_id }}">
-		<input type="hidden" name="report_approval_type" value="{{ $status }}">
-		<div class="uk-container uk-container-center"> <!-- start form container -->
-			<div uk-grid class="uk-grid-small ">
-				<div class="uk-width-1-1 uk-padding-small">
-					@if($project)
-					<h3>Report Message: <span id="current-file-id-dynamic-modal">{{ $project->project_number }}: {{ $project->project_name }}</span></h3>
-					@else
-					<h3>New Message</h3>
-					@endif
-				</div>
-			</div>
-			<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
-			<div uk-grid class="uk-grid-collapse">
-				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
-				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{ Auth::user()->full_name() }}</div>
-				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
-				@if($single_receipient)
-				<?php $recipient = $recipients->first(); ?>
-				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-					<li class="recipient-list-item {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-						<input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" checked="checked" onclick="return false;">
-						<label for="recipient-id-{{ $recipient->id }}">
-							{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
-						</label>
-					</li>
-				</div>
+<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
+	@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
+	@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit }}">@endif
+	<input type="hidden" name="report" value="{{$report->id}}">
+	<input type="hidden" name="notification_triggered_type" value="3">
+	<input type="hidden" name="notification_model_id" value="{{ $report_id }}">
+	<input type="hidden" name="report_approval_type" value="{{ $status }}">
+	<div class="uk-container uk-container-center"> <!-- start form container -->
+		<div uk-grid class="uk-grid-small ">
+			<div class="uk-width-1-1 uk-padding-small">
+				@if($project)
+				<h3>Report Message: <span id="current-file-id-dynamic-modal">{{ $project->project_number }}: {{ $project->project_name }}</span></h3>
 				@else
-				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-					@if(!is_null($audit))
-					@cannot('access_auditor')
+				<h3>New Message</h3>
+				@endif
+			</div>
+		</div>
+		<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
+		<div uk-grid class="uk-grid-collapse">
+			<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
+			<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{ Auth::user()->full_name() }}</div>
+			<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
+			@if($single_receipient)
+			<?php $recipient = $recipients->first();?>
+			<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+				<li class="recipient-list-item {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
+					<input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" checked="checked" onclick="return false;">
+					<label for="recipient-id-{{ $recipient->id }}">
+						{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
+					</label>
+				</li>
+			</div>
+			@else
+			<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+				@if(!is_null($audit))
+				@cannot('access_auditor')
 
-					@else
-					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
-					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
-						'recipient-name'></span>
-					</div>
-					@endCannot
-					@else
-					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
-					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
-						'recipient-name'></span>
-					</div>
-					@endIf
-
+				@else
+				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
+				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
+					'recipient-name'></span>
 				</div>
-				<div class="uk-width-1-5 recipient-list" style="display: none;"></div>
-				<div class="uk-width-4-5 recipient-list" id='recipients' style="border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:18px; padding-left:25px; position: relative;top:0px; display: none">
-					<!-- RECIPIENT LISTING -->
-					<div class="communication-selector uk-scrollable-box">
-						<ul class="uk-list document-menu">
-							@php $currentOrg = ''; @endphp
-							@foreach ($recipients as $recipient)
-							@if($currentOrg != $recipient->organization_name)
-							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->organization_name }}</strong></li>
-							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-							@php $currentOrg = $recipient->organization_name; @endphp
-							@endIf
-							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->name) }}">
-								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} ')">
-								<label for="recipient-id-{{ $recipient->id }}">
-									{{ ucwords($recipient->name) }}
-								</label>
-							</li>
-							@endforeach
-						</ul>
-					</div>
-					<div class="uk-form-row">
-						<input type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
-					</div>
-					<script>
+				@endCannot
+				@else
+				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
+				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
+					'recipient-name'></span>
+				</div>
+				@endIf
+
+			</div>
+			<div class="uk-width-1-5 recipient-list" style="display: none;"></div>
+			<div class="uk-width-4-5 recipient-list" id='recipients' style="border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:18px; padding-left:25px; position: relative;top:0px; display: none">
+				<!-- RECIPIENT LISTING -->
+				<div class="communication-selector uk-scrollable-box">
+					<ul class="uk-list document-menu">
+						@php $currentOrg = ''; @endphp
+						@foreach ($recipients as $recipient)
+						@if($currentOrg != $recipient->organization_name)
+						<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->organization_name }}</strong></li>
+						<hr class="recipient-list-item dashed-hr uk-margin-bottom">
+						@php $currentOrg = $recipient->organization_name; @endphp
+						@endIf
+						<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->name) }}">
+							<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} ')">
+							<label for="recipient-id-{{ $recipient->id }}">
+								{{ ucwords($recipient->name) }}
+							</label>
+						</li>
+						@endforeach
+					</ul>
+				</div>
+				<div class="uk-form-row">
+					<input type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
+				</div>
+				<script>
             // CLONE RECIPIENTS
             @if($audit)
             @cannot('access_auditor')
@@ -229,14 +229,14 @@
     				UIkit.modal.alert(data,{stack: true});
     			} else {
 
-            if($('#project-detail-tab-1').hasClass('uk-active')){
-                        $('#project-detail-tab-1').trigger('click');
-                    }else{
-                    	// debugger;
-                        updateStatus({{ $report_id }}, {{ $status }}, window.recipients_array);
-                    }
-    			}
-    		} );
+    				if($('#project-detail-tab-1').hasClass('uk-active')){
+    					$('#project-detail-tab-1').trigger('click');
+    				}else{
+            	// debugger;
+            	updateStatus({{ $report_id }}, {{ $status }}, window.recipients_array);
+            }
+          }
+        } );
     		@if($project)
     		var id = {{ $project->id }};
     		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);

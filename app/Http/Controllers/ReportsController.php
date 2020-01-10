@@ -163,7 +163,6 @@ class ReportsController extends Controller
 						$note = 'Changed report status from ' . $report->status_name() . ' to Approved.';
 						if (is_null($report->manager_id) || Auth::user()->id != $report->manger_id) {
 							$note .= ' Updated prior manager approval, and refreshed report to reflect the change.';
-							$this->generateReport($report, 0, 1);
 						}
 						$report->update(['crr_approval_type_id' => 5, 'manager_id' => Auth::user()->id]);
 						$this->generateReport($report, 0, 1);
@@ -181,7 +180,6 @@ class ReportsController extends Controller
 					} else {
 						$note = 'Unable to send report. There is no default email for a property manager on this project. Status will remain:' . $report->status_name() . '.';
 					}
-
 					break;
 				case 7:
 					// Viewed by PM...

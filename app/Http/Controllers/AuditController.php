@@ -1722,14 +1722,14 @@ class AuditController extends Controller
 			$details_new->save();
 		}
 		// Cached audit pm update
-		if ($cached_audit) {
-			$cached_audit->pm = $details_new->manager_poc;
-			$cached_audit->address = $details_new->manager_address;
-			$cached_audit->state = $details_new->manager_state;
-			$cached_audit->zip = $details_new->manager_zip;
-			$cached_audit->city = $details_new->manager_city;
-			$cached_audit->save();
-		}
+		// if ($cached_audit) {
+		// 	$cached_audit->pm = $details_new->manager_poc;
+		// 	$cached_audit->address = $details_new->manager_address;
+		// 	$cached_audit->state = $details_new->manager_state;
+		// 	$cached_audit->zip = $details_new->manager_zip;
+		// 	$cached_audit->city = $details_new->manager_city;
+		// 	$cached_audit->save();
+		// }
 
 		$default_org = UserOrganization::with('user', 'organization')->where('project_id', $id)->where('default', 1)->first();
 		if ($default_org) {
