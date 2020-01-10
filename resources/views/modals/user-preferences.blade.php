@@ -4,15 +4,15 @@
 			<div class="user-preference-col-1  uk-padding-remove uk-margin-small-top">
 				<div uk-grid>
 					<div class="uk-width-1-1 uk-padding-remove-left">
-						<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$data['summary']['name']}};" class="user-badge user-badge-{{$data['summary']['color']}} user-badge-bigger no-float uk-link">
-							{{$data['summary']['initials']}}
-						</span> {{$data['summary']['name']}} <br /><small>{{$data['summary']['email']}} | {{$data['summary']['phone']}}</small>
-						@if(Auth::user()->id == $data['summary']['id'])
+						<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{ $data['summary']['name'] }};" class="user-badge-{{ $data['summary']['color'] }} user-badge-v2 uk-align-center user-badge use-hand-cursor">
+							{{ $data['summary']['initials'] }}
+						</span> {{ $data['summary']['name'] }} <br /><small>{{ $data['summary']['email'] }} | {{ $data['summary']['phone'] }}</small>
+						@if($current_user->id == $data['summary']['id'])
 						<a href="javascript:logout()" class="uk-button uk-button-small uk-padding-small-top uk-align-right"><i class="a-circle-keyhole"></i> LOGOUT</a></h3>
 						<form id="logout-form" action="/logout" method="POST" style="display: none;" siq_id="autopick_1705">
-							<input type="hidden" name="_token" value="{{csrf_token()}}">
+							<input type="hidden" name="_token" value="{{ csrf_token() }}">
 						</form>
-						@can('access_auditor')
+						@if($auditor_access)
 						<a href="javascript:launchMobile()" class="uk-button uk-button-small uk-padding-small-top uk-align-left uk-visible@m" style="margin-left: 38px; padding-top: 3px;"><i class="a-mobile-home"></i> SEND AUTO-LOGIN TO YOUR PHONE</a>
 							<script>
 								function launchMobile(){
@@ -30,14 +30,13 @@
 										} );
 								}
 							</script>
-						@endCan
+						@endif
 						@endIf
 					</div>
-					@can('access_auditor')
-					@if(Auth::user()->id == $data['summary']['id'])
+					@if($auditor_access)
+					@if($current_user->id == $data['summary']['id'])
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<hr />
-
 						<h3 class="uk-margin-small-top uk-visible@m">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>@can('access_root')
 						<div class="uk-grid-small uk-margin-remove" uk-grid>
 							<div class="uk-width-1-3 uk-padding-remove">
@@ -154,10 +153,9 @@
 								</select>
 							</div>
 						</div>
-						@endIf
-						@endcan
+						@endif
+						@endif
 					</div>
-
 					@endcan
 
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
@@ -168,17 +166,17 @@
 								<div class="uk-width-1-3 uk-padding-remove">
 									<label class="uk-text-small">How often would you like to receive notifications? <span class="uk-text-danger uk-text-bold">*</span></label>
 									<select class="uk-select" id="notification_setting" name="notification_setting">
-										<option value="1" {{ $unp ? ($unp->frequency == 1 ? 'selected=selected': '') : ''}}>Immediately</option>
-										<option value="2" {{ $unp ? ($unp->frequency == 2 ? 'selected=selected': '') : 'selected=selected'}}>Hourly</option>
-										<option value="3" {{ $unp ? ($unp->frequency == 3 ? 'selected=selected': '') : ''}}>Daily</option>
+										<option value="1" {{ $unp ? ($unp->frequency == 1 ? 'selected=selected': '') : '' }}>Immediately</option>
+										<option value="2" {{ $unp ? ($unp->frequency == 2 ? 'selected=selected': '') : 'selected=selected' }}>Hourly</option>
+										<option value="3" {{ $unp ? ($unp->frequency == 3 ? 'selected=selected': '') : '' }}>Daily</option>
 									</select>
 								</div>
-								<div class="uk-width-1-3  {{ $unp ? ($unp->frequency != 3 ? 'uk-hidden': '') : 'uk-hidden'}}" id="delivery_time_select">
+								<div class="uk-width-1-3  {{ $unp ? ($unp->frequency != 3 ? 'uk-hidden': '') : 'uk-hidden' }}" id="delivery_time_select">
 									<label class="uk-text-small">Choose Deliver Time</label>
 									<select class="uk-select" id="delivery_time" name="delivery_time">
 										<option value="">Select Time</option>
 										@for($i = 0; $i < 24; $i++)
-										<option value="{{ $i }}:00:00" {{ ($unp && $unp->deliver_time)? (explode(":", $unp->deliver_time)[0] == $i ? 'selected=selected': '') : ''}}> {{ $i < 10 ? '0' : '' }}{{ ($i > 12 && ($i -12) < 10) ? '0' : '' }}{{ $i < 13 ? $i : $i - 12 }}:00 {{ $i < 12 ? 'AM' : 'PM' }}</option>
+										<option value="{{ $i }}:00:00" {{ ($unp && $unp->deliver_time)? (explode(":", $unp->deliver_time)[0] == $i ? 'selected=selected': '') : '' }}> {{ $i < 10 ? '0' : '' }}{{ ($i > 12 && ($i -12) < 10) ? '0' : '' }}{{ $i < 13 ? $i : $i - 12 }}:00 {{ $i < 12 ? 'AM' : 'PM' }}</option>
 										@endfor
 									</select>
 								</div>
@@ -186,12 +184,12 @@
 							</div>
 						</form>
 					</div>
-					@can('access_auditor')
+					@if($auditor_access)
 					<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
 						<hr />
-						<h3 class="uk-margin-small-top">Addresses @if(Auth::user()->id == $data['summary']['id'])<i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddAddress();"></i>@endIf</h3>
+						<h3 class="uk-margin-small-top">Addresses @if($current_user->id == $data['summary']['id'])<i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddAddress();"></i>@endIf</h3>
 						<div class="uk-grid-small uk-margin-remove" uk-grid>
-							@if(Auth::user()->id == $data['summary']['id']) <form id="auditor-add-address" method="post" class="uk-width-1-1 uk-margin-bottom" style="display:none;">
+							@if($current_user->id == $data['summary']['id']) <form id="auditor-add-address" method="post" class="uk-width-1-1 uk-margin-bottom" style="display:none;">
 								<div class="uk-grid-small" uk-grid>
 									<div class="uk-width-1-1 uk-padding-remove">
 										<label class="uk-text-small">Add a new address below</label>
@@ -214,13 +212,13 @@
 									</div>
 								</div>
 							</form>
-							@endIf
+							@endif
 							@if($data['summary']['organization']['address1'])
 							<div class="uk-width-1-1">
 								<div class="address">
 									<i class="a-mailbox"></i>
-									{{$data['summary']['organization']['name']}}<br />{{$data['summary']['organization']['address1']}}, @if($data['summary']['organization']['address2']){{$data['summary']['organization']['address2']}}@endif
-									@if($data['summary']['organization']['city']) {{$data['summary']['organization']['city']}}, {{$data['summary']['organization']['state']}} {{$data['summary']['organization']['zip']}}
+									{{ $data['summary']['organization']['name'] }}<br />{{ $data['summary']['organization']['address1'] }}, @if($data['summary']['organization']['address2']){{ $data['summary']['organization']['address2'] }}@endif
+									@if($data['summary']['organization']['city']) {{ $data['summary']['organization']['city'] }}, {{ $data['summary']['organization']['state'] }} {{ $data['summary']['organization']['zip'] }}
 									@endif
 								</div>
 							</div>
@@ -230,24 +228,24 @@
 							</div>
 						</div>
 						<div class="uk-grid-small" style="margin-top:30px;" uk-grid>
-							@if(Auth::user()->id == $data['summary']['id'])
+							@if($current_user->id == $data['summary']['id'])
 							<label>Default address</label>
 							<select id="default_address" class="uk-select" style="margin-left: 10px;">
-								<option value="{{$data['summary']['organization']['id']}}" @if($user->default_address_id == $data['summary']['organization']['id']) selected @endif>{{$data['summary']['organization']['address1']}}, @if($data['summary']['organization']['address2']){{$data['summary']['organization']['address2']}}@endif
-								@if($data['summary']['organization']['city']) {{$data['summary']['organization']['city']}}, {{$data['summary']['organization']['state']}} {{$data['summary']['organization']['zip']}} @endif</option>
+								<option value="{{ $data['summary']['organization']['id'] }}" @if($user->default_address_id == $data['summary']['organization']['id']) selected @endif>{{ $data['summary']['organization']['address1'] }}, @if($data['summary']['organization']['address2']){{ $data['summary']['organization']['address2'] }}@endif
+								@if($data['summary']['organization']['city']) {{ $data['summary']['organization']['city'] }}, {{ $data['summary']['organization']['state'] }} {{ $data['summary']['organization']['zip'] }} @endif</option>
 								@foreach($data['summary']['addresses'] as $address)
-								<option value="{{$address['address_id']}}" @if($user->default_address_id == $address['address_id']) selected @endif>{{$address['address']}}</option>
+								<option value="{{ $address['address_id'] }}" @if($user->default_address_id == $address['address_id']) selected @endif>{{ $address['address'] }}</option>
 								@endforeach
 							</select>
 
 
-							@endIf
+							@endif
 						</div>
 					</div>
-					@endcan
+					@endif
 				</div>
 			</div>
-			@can('access_auditor')
+			@if($auditor_access)
 			<div class="user-preference-col-2 uk-padding-remove uk-margin-small-top" style="display:none">
 				<div uk-grid>
 					<div class="uk-width-1-1">
@@ -429,7 +427,7 @@
 					</div>
 				</div>
 			</div>
-			@endcan
+			@endif
 		</div>
 	</div>
 </div>
@@ -446,7 +444,7 @@
 	}
 
 </style>
-@can('access_auditor')
+@if($auditor_access)
 <script>
 	$( document ).ready(function() {
 		loadCalendar();
@@ -456,7 +454,7 @@
 			var id = parseInt($(this).val(), 10);
 			console.log("default address "+id);
 
-			$.post("/auditors/{{$data['summary']['id']}}/addresses/"+id+"/default", {
+			$.post("/auditors/{{ $data['summary']['id'] }}/addresses/"+id+"/default", {
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
 				if(data!=1){
@@ -470,7 +468,7 @@
 
 	function loadCalendar(target=null) {
 		if(target == null){
-			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/';
+			var url = '/auditors/{{ $current_user->id }}/availability/loadcal/';
 			$.get(url, {}, function(data) {
 				if(data=='0'){
 					UIkit.modal.alert("There was a problem getting the calendar.");
@@ -480,7 +478,7 @@
 				}
 			});
 		}else{
-			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target;
+			var url = '/auditors/{{ $current_user->id }}/availability/loadcal/'+target;
 			$('#auditor-availability-calendar').fadeOut("fast", function() {
 				$('#auditor-availability-calendar').html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
 				$('#auditor-availability-calendar').fadeIn("fast");
@@ -498,7 +496,7 @@
 	function deleteAvailability(id){
 		UIkit.modal.confirm("Are you sure you want to delete this available time?", {center: true,  keyboard:false,  stack:true}).then(function() {
 
-			$.post("/auditors/{{Auth::user()->id}}/availability/"+id+"/delete", {
+			$.post("/auditors/{{ $current_user->id }}/availability/"+id+"/delete", {
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
 				if(data!=1){
@@ -536,7 +534,7 @@
 
 		    	console.log("we need to load a calendar before");
 
-		    	var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/before';
+		    	var url = '/auditors/{{ $current_user->id }}/availability/loadcal/'+target+'/before';
 		    	$.get(url, {}, function(data) {
 		    		if(data=='0'){
 		    			UIkit.modal.alert("There was a problem getting the calendar.");
@@ -551,7 +549,7 @@
 		    	console.log("there is another calendar available after");
 		    }else{
 		    	console.log("we need to load a calendar after");
-		    	var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/after';
+		    	var url = '/auditors/{{ $current_user->id }}/availability/loadcal/'+target+'/after';
 		    	$.get(url, {}, function(data) {
 		    		if(data=='0'){
 		    			UIkit.modal.alert("There was a problem getting the calendar.");
@@ -611,7 +609,7 @@
 	 }
 
 	 $('.uk-modal-body').animate({
-	 	@if(Auth::user()->id == $data['summary']['id']) width: "70%" @else width:"30%" @endIf
+	 	@if($current_user->id == $data['summary']['id']) width: "70%" @else width:"30%" @endIf
 	 });
 
 	 $(document).on('beforehide', '.uk-modal-body', function (item) {
@@ -626,7 +624,7 @@
 	 	e.preventDefault();
 	 	var form = $('#auditor-add-address');
 
-	 	$.post("/auditors/{{$data['summary']['id']}}/addresses/create", {
+	 	$.post("/auditors/{{ $data['summary']['id'] }}/addresses/create", {
 	 		'inputs' : form.serialize(),
 	 		'_token' : '{{ csrf_token() }}'
 	 	}, function(data) {
@@ -669,7 +667,7 @@
 			$("#endtime").removeClass('uk-form-danger');
 		}
 
-		$.post("/auditors/{{$data['summary']['id']}}/availability/create", {
+		$.post("/auditors/{{ $data['summary']['id'] }}/availability/create", {
 			'inputs' : form.serialize(),
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
@@ -694,7 +692,7 @@
 
 
 </script>
-@endCan
+@endif
 
 <script>
 
@@ -751,7 +749,7 @@
 			}
 		},
 		methods: {
-			@if(Auth::user()->id == $data['summary']['id'])
+			@if($current_user->id == $data['summary']['id'])
 			removeAddress: function(index) {
 				this.$delete(this.addresses, index)
 			}
