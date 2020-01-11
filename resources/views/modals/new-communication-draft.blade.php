@@ -265,13 +265,14 @@ session(['old_communication_modal' => $random]);
     		}, function(data) {
     			if(data!=1){
     				UIkit.modal.alert(data,{stack: true});
+		        // dynamicModalCommunicationClose();
     			} else {
     				@if(!$project || Auth::user()->cannot('access_auditor'))
     				$('#detail-tab-2').trigger('click');
     				@endif
     				UIkit.modal.alert('Your message has been saved.',{stack: true});
     			}
-    		} );
+    		});
 
     		@if($project && Auth::user()->can('access_auditor'))
     		var id = {{ $project->id }};

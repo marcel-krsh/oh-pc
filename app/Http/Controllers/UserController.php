@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use DB;
 use Auth;
 use View;
 use Carbon;
@@ -9,8 +10,10 @@ use Session;
 use Validator;
 use App\Models\User;
 use App\Models\Address;
+use App\Models\PhoneNumber;
 use App\Models\Availability;
 use Illuminate\Http\Request;
+use App\Models\PhoneNumberType;
 use App\Events\AuditorAddressEvent;
 use App\Http\Controllers\Controller;
 use App\Models\UserNotificationPreferences;
@@ -25,10 +28,10 @@ class UserController extends Controller
 			//Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
 		}
 		$this->middleware(function ($request, $next) {
-			$this->user = Auth::user();
-			$this->auditor_access = $this->user->auditor_access();
+			$this->current_user = Auth::user();
+			$this->auditor_access = $this->current_user->auditor_access();
 			View::share('auditor_access', $this->auditor_access);
-			View::share('current_user', $this->user);
+			View::share('current_user', $this->current_user);
 			return $next($request);
 		});
 	}
@@ -524,7 +527,7 @@ class UserController extends Controller
 		$unp = UserNotificationPreferences::where('user_id', $user->id)->first();
 
 		if ($user->person && $user->person->allita_phone) {
-			$phone_number = $user->person->allita_phone->number;
+			$phone_number = $user->person->allita_phone->number();
 		}
 
 		$first_name = null;
@@ -533,7 +536,7 @@ class UserController extends Controller
 			$first_name = $user->person->first_name;
 			$last_name = $user->person->last_name;
 		}
-		if (is_null($first_name)) {
+		if (!is_null($first_name)) {
 			$user->name = $first_name . ' ' . $last_name;
 		}
 
@@ -859,81 +862,88 @@ class UserController extends Controller
 
 	public function editMyInfo(Request $request)
 	{
-		$validator = Validator::make($request->all(), [
+		$current_user = $this->current_user;
+		$rules = [
 			'first_name' => 'required|max:255',
 			'last_name' => 'required|max:255',
-			'password' => ['string', 'min:8', 'confirmed'],
-			// 'business_phone_number' => 'required|min:12',
-			// 'zip' => 'nullable|min:5|max:5',
-			// 'state_id'              => 'required',
-		], [
-			'business_phone_number.min' => 'Enter valid Business Phone Number',
+			'email' => 'required|email|unique:users,email,' . $current_user->id,
+		];
+		if ($request->has('password') && $request->password != '') {
+			$rules = array_merge($rules, ['password' => ['string', 'min:8', 'confirmed']]);
+		}
+		if ($request->has('business_phone_number') && $request->business_phone_number != '') {
+			$rules = array_merge($rules, ['business_phone_number' => 'min:12']);
+		}
+		$validator = Validator::make($request->all(), $rules, [
+			'business_phone_number.min' => 'Enter valid Phone Number',
+			'email.unique' => 'This email is being used by another user',
 		]);
+
 		if ($validator->fails()) {
 			return response()->json(['errors' => $validator->errors()->all()]);
 		}
-		return $request->all();
-		$id = $this->current_user->id;
+
+		$id = $current_user->id;
 		$user = User::with('person.allita_phone')->find($id);
+		$person = $user->person;
 		try {
-			if ($user->person->allita_phone) {
-				$user_phone = $user->person->allita_phone->area_code . '-' . $user->person->allita_phone->phone_number;
-			} else {
-				$user_phone = null;
-			}
 			DB::beginTransaction();
-			$current_user = $this->current_user;
-			//Check if phone number is changed and if changed, save it
-			if ($request->filled('business_phone_number')) {
+			//Phone number validation
+			if ($request->has('business_phone_number') && $request->business_phone_number != '') {
 				$input_phone_number = $request->business_phone_number;
 				$split_number = explode('-', $input_phone_number);
-				$phone_number_type = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
-				$phone_number = new PhoneNumber;
-				$phone_number->phone_number_type_id = $phone_number_type->id;
-				$phone_number->area_code = $split_number[0];
-				$phone_number->phone_number = $split_number[1] . $split_number[2];
-				$phone_number->extension = $request->phone_extension;
-				$old_number = $user_phone;
-				$new_number = $phone_number->area_code . $phone_number->phone_number;
-				if ($old_number == $new_number && $user->person->allita_phone->extension == $request->extension) {
-					$phone_number = $user->person->allita_phone;
-				} else {
-					$phone_number->save();
+				$area_code = $split_number[0];
+				$phone_number = $split_number[1] . $split_number[2];
+				if ($person->allita_phone) {
+					$old_number = $person->allita_phone->area_code . $person->allita_phone->phone_number;
 				}
-				$phone_number_id = $phone_number->id;
-			} else {
-				$old_number = $user_phone;
-				$phone_number = false;
-				$phone_number_id = null;
+				if ($old_number != $area_code . $phone_number) {
+					$check_phone = PhoneNumber::where('area_code', $area_code)->where('phone_number', $phone_number)->first();
+					if ($check_phone) {
+						$validator->getMessageBag()->add('business_phone_number', 'This phone number is being used by another user');
+						return response()->json(['errors' => $validator->errors()->all()]);
+					} else {
+						$phone_number_type = PhoneNumberType::where('phone_number_type_name', 'Business')->first();
+						$new_number = $person->allita_phone;
+						$new_number->phone_number_type_id = $phone_number_type->id;
+						$new_number->area_code = $area_code;
+						$new_number->phone_number = $phone_number;
+						$new_number->save();
+						$person->default_phone_number_id = $new_number->id;
+						$person->save();
+					}
+				}
 			}
 
-			// Email address table, Editing email is not allowed for in edit for now!
-			// thus when they login - they should see the pending approval message as outlined in the flow. -- need to work on this, Div
-
-			// People table, check if first name, last name and default phone number id are changed, if so, remove old people and new record
-			if ($user->person->last_name != $request->last_name ||
-				$user->person->first_name != $request->first_name ||
-				$user->person->default_phone_number_id != $phone_number_id) {
-				$people = $user->person->replicate();
-				$people->last_name = $request->last_name;
-				$people->first_name = $request->first_name;
-				if ($phone_number) {
-					$people->default_phone_number_id = $phone_number->id;
-				} elseif (!is_null($old_number)) {
-					$people->default_phone_number_id = null;
-				}
-				$people->is_active = 1;
-				$people->save();
-				$user->person->delete();
-			} else {
-				$people = $user->person;
+			//Email
+			if ($current_user->email != $request->email) {
+				$current_user->email = $request->email;
+				$current_user->save();
 			}
 
-			// User table - There are numerous fileds, so just update the user records irrespective of changes made or not
-			$user->name = $people->first_name . ' ' . $people->last_name;
-			//$user->email = $email_address->email_address;
-			//$user->active        = 1;
-			$user->badge_color = $request->badge_color;
+			//Name
+			if ($person) {
+				if ($person->first_name != $request->first_name || $person->last_name != $request->last_name) {
+					$person->first_name = $request->first_name;
+					$person->last_name = $request->last_name;
+					$person->save();
+				}
+			} else {
+				$validator->getMessageBag()->add('first_name', 'Looks like allita record is missing, please contact admin.');
+				return response()->json(['errors' => $validator->errors()->all()]);
+			}
+
+			//Password
+			if ($request->has('password') && $request->password != '') {
+				$user->password = bcrypt($request->password);
+				$user->save();
+			}
+
+			//Color
+			if ($current_user->badge_color != $request->badge_color) {
+				$current_user->badge_color = $request->badge_color;
+				$current_user->save();
+			}
 
 			DB::commit();
 			return 1;
