@@ -210,6 +210,8 @@ Route::group(['middleware' => 'web'], function () {
 
 		//allita reports!
 		Route::get('/modals/new-report', 'ReportsController@newReportForm');
+		Route::get('/modals/report-dates/{id}', 'ReportsController@reportDates');
+		Route::post('/modals/save-report-dates/{id}', 'ReportsController@saveReportDates')->name('project.reports.dates');
 		Route::get('project/{project}/reports', 'ReportsController@reports')->name('project.reports');
 		Route::post('/new-report', 'ReportsController@createNewReport')->name('report.create');
 		Route::get('/report/{report}/generate', 'ReportsController@generateReport');

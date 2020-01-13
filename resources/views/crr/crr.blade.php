@@ -396,8 +396,7 @@ if (4 == $report->crr_approval_type_id) {
 
 <div uk-grid >
 	<div id="section-thumbnails" class="uk-panel-scrollable" style="background-color:lightgray; padding-top:30px; min-height: 100vh; max-width:130px;">
-
-		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @if($auditor_access)| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endif | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endIf
+		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @if($auditor_access)| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endif | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endif @if($auditor_access) | <a uk-tooltip title="CHANGE REPORT DATES" onclick="changeReportDates()" class=" uk-link-mute"> <i class="a-calendar-8" style="font-weight: bolder;"></i></a> @endif
 		@if($auditor_access)
 		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
 		<div id="comment-list" style="display: none;"></div>
@@ -416,37 +415,30 @@ if (4 == $report->crr_approval_type_id) {
 		@endForEach
 		<hr class="dashed-hr uk-margin-bottom">
 
-		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @if($auditor_access)| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endif | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endIf
+		<a href="/report/{{ $report->id }}?print=1" target="_blank" class=" uk-link-mute" uk-tooltip title="PRINT REPORT"> <i class="a-print" style="font-weight: bolder;"></i></a> @if($auditor_access)| <a uk-tooltip title="REFRESH REPORT CONTENT" onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" > <i class="a-rotate-left-3" style="font-weight: bolder;"></i></a> @endif | @if($oneColumn) <a uk-tooltip title="VIEW FINDINGS IN THREE COLUMNS" href="/report/{{ $report->id }}?three_column=1" target="_blank" class=" uk-link-mute"> <i class="a-grid" style="font-weight: bolder;"></i></a> @else <a uk-tooltip title="VIEW FINDINGS IN ONE COLUMN" href="/report/{{ $report->id }}?one_column=1" target="_blank" class=" uk-link-mute"> <i class="a-list" style="font-weight: bolder;"></i></a> @endif @if($auditor_access) | <a uk-tooltip title="CHANGE REPORT DATES" onclick="changeReportDates()" class=" uk-link-mute"> <i class="a-calendar-8" style="font-weight: bolder;"></i></a> @endif
 		@if($auditor_access)
 		<div id="close-comments" style="display: none" onclick="closeComments();" class="uk-link"><i class="a-circle-cross uk-contrast"></i> CLOSE COMMENTS<hr class="hr-dashed uk-margin-small-bottom"></div>
 		<div id="comment-list" style="display: none;"></div>
 		@endif
-
 	</div>
 	<div id="main-report-view" class=" uk-panel-scrollable" style=" min-height: 100vh; width: 90%; padding:0px; background-color: currentColor;">
 		@php
 		$j = 0;
-
 		@endphp
-
-		@forEach($data as $section)
-
+		@foreach($data as $section)
 		<a name="{{ str_replace(' ','',$section->crr_section_id) }}" ></a>
 		<hr class="dashed-hr" style="margin-bottom: 60px; margin-top: 0px; padding:0px; border-color: #3a3a3a;">
 		<small style="position: relative;top: -55px; left:15px; color:lightblue">VERSION: {{ $version }} @if($auditor_access) | <a onClick="UIkit.modal.confirm('<h1>Refresh report {{ $report->id }}?</h1><h3>Refreshing the dynamic content of the report will create a new version and move it to the status of draft.</h3>').then(function() {window.location.href ='/report/{{ $report->id }}/generate';}, function () {console.log('Rejected.')});" class="uk-link-mute refresh-content-button" style="color:lightblue">REFRESH REPORT CONTENT</a>@endif | <a href="/report/{{ $report->id }}?print=1" target="_blank" class="uk-contrast uk-link-mute"> <i class="a-print"></i> PRINT</a></small>
-
 		<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
 			@if(property_exists($section,'parts'))
 			<?php $pieceCount = 1;?>
-			@forEach($section->parts as $part)
-
-			@forEach($part as $piece)
-
+			{{-- {{ dd($section) }} --}}
+			@foreach($section->parts as $part)
+			@foreach($part as $piece)
 			<?php
 // collect comments for this part
 if ($auditor_access) {
 	$comments = collect($report->comments)->where('part_id', $piece->part_id);
-
 	if ($comments) {
 		$totalComments = count($comments);
 	}
@@ -455,230 +447,259 @@ if ($auditor_access) {
 	$totalComments = 0;
 }
 ?>
-			@if($auditor_access)<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endIf</a>
+			@if($auditor_access)
+			<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endif</a>
 				<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>
+			</div>
+			@endif
 
-			</div>@endif
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
-				<?php $pieceData = json_decode($piece->data);
+				<?php
+$pieceData = json_decode($piece->data);
 // set this so we only output details once from the blade.
 ;?>
-
 				@if($pieceData[0]->type =='free-text')
-
 				{!! $piece->content !!}
-
-				@endIf
+				@endif
 
 				{{-- @if($j > 3)
 				{{ dd($pieceData[1][1]) }}
 				@endif
 				@php
-					$j++;
-					@endphp --}}
-					@if($pieceData[0]->type == 'blade')
-					<?php
-
+				$j++;
+				@endphp --}}
+				@if($pieceData[0]->type == 'blade')
+				<?php
 if (array_key_exists(2, $pieceData)) {
 	$bladeData = $pieceData[2];
 } else {
 	$bladeData = null;
 }
 ?>
-					@if($piece->blade == 'crr_parts.crr_inspections')
-					@include($piece->blade, [$inspections_type = 'site', $audit_id = $report->audit->id])
-					@endif
-					<?php
+				@if($piece->blade == 'crr_parts.crr_inspections')
+				@include($piece->blade, [$inspections_type = 'site', $audit_id = $report->audit->id])
+				@endif
+				<?php
 if (array_key_exists(3, $pieceData)) {
 	$bladeData = $pieceData[3];
 } else {
 	$bladeData = null;
 }
 ?>
-					@if($piece->blade == 'crr_parts.crr_inspections')
-					@include($piece->blade, [$inspections_type = 'building', $audit_id = $report->audit->id])
-					@endif
-
-
-					<?php
+				@if($piece->blade == 'crr_parts.crr_inspections')
+				@include($piece->blade, [$inspections_type = 'building', $audit_id = $report->audit->id])
+				@endif
+				<?php
 if (array_key_exists(1, $pieceData)) {
 	$bladeData = $pieceData[1];
 } else {
 	$bladeData = null;
 }
 ?>
-					@include($piece->blade, [$inspections_type = 'unit', $audit_id = $report->audit->id])
+				@include($piece->blade, [$inspections_type = 'unit', $audit_id = $report->audit->id])
 
-
-					@endIf
-
-
-				</div>
-				<?php $pieceCount++;?>
-				@endForEach
-				@endForEach
-				@endIf
+				@endif
 			</div>
-			@endForEach
 
-			<?php /* Send Fax with Print Report PDF - Start */?>
-
-			<div id="fax-modal" uk-modal>
-				<div class="uk-modal-dialog uk-modal-body">
-					<h2 class="uk-modal-title" style="font-size: 20px;font-weight: 600;"><i class="a-fax-2"></i> FAX Number</h2>
-					<p><input id="faxnumber" name="faxnumber" type="text" style="width: 100%;" class="uk-input fieldDisable" placeholder="111-333-5555"></p>
-					<p class="uk-text-right">
-						<button class="uk-button uk-button-default uk-modal-close sendfaxbtnClose fieldDisable" type="button">Cancel</button>
-						<button class="uk-button uk-button-primary sendfaxbtn fieldDisable" type="button">Send</button>
-					</p>
-				</div>
-			</div>
-			<?php /* Send Fax with Print Report PDF - End */?>
+			<?php $pieceCount++;?>
+			@endforeach
+			@endforeach
+			@endif
 		</div>
+		@endforeach
 
-
-		<?php
-
+		<?php /* Send Fax with Print Report PDF - Start */?>
+		<div id="fax-modal" uk-modal>
+			<div class="uk-modal-dialog uk-modal-body">
+				<h2 class="uk-modal-title" style="font-size: 20px;font-weight: 600;"><i class="a-fax-2"></i> FAX Number</h2>
+				<p><input id="faxnumber" name="faxnumber" type="text" style="width: 100%;" class="uk-input fieldDisable" placeholder="111-333-5555"></p>
+				<p class="uk-text-right">
+					<button class="uk-button uk-button-default uk-modal-close sendfaxbtnClose fieldDisable" type="button">Cancel</button>
+					<button class="uk-button uk-button-primary sendfaxbtn fieldDisable" type="button">Send</button>
+				</p>
+			</div>
+		</div>
+		<?php /* Send Fax with Print Report PDF - End */?>
+	</div>
+	<?php
 session(['projectDetailsOutput' => 0]);
-
 ?>
 
-
-
-		<script type="text/javascript">
-			$("#faxnumber").mask("999-999-9999");
-			$(".sendfaxbtnClose").click(function(){
-				$('#faxnumber').val("");
-			});
-			$(".sendfaxbtn").click(function(){
-				var faxnumber = $('#faxnumber').val();
-				var _token= '{!! csrf_token() !!}';
-				var report='{{ $report->id }}';
-				$('.sendfaxbtn').html("<div uk-spinner></div> Please Wait");
-				$('.fieldDisable').prop('disabled', true);
-				$.ajax({
-					type:'POST',
-					url:"{{ URL('/report/sendfax') }}",
-					data:{faxnumber:faxnumber,_token:_token,report:report},
-					dataType:'json',
-					success:function(data){
-						$('.fieldDisable').prop('disabled', false);
-						$('.sendfaxbtn').html("Send");
-						$(".sendfaxbtnClose").trigger('click');
-						if(data.status){
-							UIkit.modal.dialog('<center style="color:green">'+data.message+'</center>');
-			/* UIkit.notification({
-				message: data.message,
-				status: 'success',
-				pos: 'top-center',
-				timeout: 30000
-			}); */
-		}else{
-			UIkit.notification({
-				message: data.message,
-				status: 'danger',
-				pos: 'top-center',
-				timeout: 30000
-			});
-		}
-
-	}
-});
-			});
-
-		</script>
-
-	</div>
-	@if($auditor_access)
-	@if($auditor_access)
-	@if($report->crr_approval_type_id !== 8)
-	<div id="report-actions-footer">
-		{{-- <select class="uk-form uk-select" id="crr-report-action-{{ $report->id }}"  style="width: 184px;"> --}}
-			<select class="uk-form uk-select" id="crr-report-action-{{ $report->id }}" onchange="reportAction({{ $report->id }},this.value, {{ $report->project->id }});" style="width: 184px;">
-				<optgroup label="REPORT ACTIONS">
-					<option value="0">ACTION</option>
-					<option value="1">DRAFT</option>
-					@if($report->requires_approval)
-					<option value="2">SEND TO MANAGER REVIEW</option>
-					@endif
-					@if($manager_access)
-					@if($report->requires_approval)
-					<option value="3">DECLINE</option>
-					<option value="4">APPROVE WITH CHANGES</option>
-					<option value="5">APPROVE</option>
-					@endif
-					@endif
-					@if( ($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
-					<option value="6">SEND TO PROPERTY CONTACT</option>
-					<option value="7">PROPERTY VIEWED IN PERSON</option>
-					<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
-				</optgroup>
-				<optgroup label="REPORT VERSIONS">
-					@for($i=0 ; $i<$versions_count ; $i++)
-					<option value="version={{ $i + 1 }}">Version - {{ $i + 1 }}</option>
-					@endfor
-				</optgroup>
-				@endif
-			</select>
-		</div>
-		@else
-		<div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
-		@endif
-		@endif
-		<div id="comments" class="uk-panel-scrollable" style="display: none;">
-			@endif
-
-		</div>
-		@else
-		<h1>Sorry!</h1>
-		<h2>The report you are trying to view has not been released for your review.</h2>
-		@endif
-		@stop
-
-		<script>
-			function dynamicModalLoadLocal(modalSource) {
-				var newmodalcontent = $('#dynamic-modal-content-communications');
-				$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
-				$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
-					if (status == "error") {
-						if(xhr.status == "401") {
-							var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
-						} else if( xhr.status == "500"){
-							var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
-						} else {
-							var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
-						}
-						UIkit.modal.alert(msg);
+	<script type="text/javascript">
+		$("#faxnumber").mask("999-999-9999");
+		$(".sendfaxbtnClose").click(function(){
+			$('#faxnumber').val("");
+		});
+		$(".sendfaxbtn").click(function(){
+			var faxnumber = $('#faxnumber').val();
+			var _token= '{!! csrf_token() !!}';
+			var report='{{ $report->id }}';
+			$('.sendfaxbtn').html("<div uk-spinner></div> Please Wait");
+			$('.fieldDisable').prop('disabled', true);
+			$.ajax({
+				type:'POST',
+				url:"{{ URL('/report/sendfax') }}",
+				data:{faxnumber:faxnumber,_token:_token,report:report},
+				dataType:'json',
+				success:function(data){
+					$('.fieldDisable').prop('disabled', false);
+					$('.sendfaxbtn').html("Send");
+					$(".sendfaxbtnClose").trigger('click');
+					if(data.status){
+						UIkit.modal.dialog('<center style="color:green">'+data.message+'</center>');
+						/* UIkit.notification({
+							message: data.message,
+							status: 'success',
+							pos: 'top-center',
+							timeout: 30000
+						}); */
+					}else{
+						UIkit.notification({
+							message: data.message,
+							status: 'danger',
+							pos: 'top-center',
+							timeout: 30000
+						});
 					}
-				});
-				var modal = UIkit.modal('#dynamic-modal-communications', {
-					escClose: false,
-					bgClose: false
-				});
-				modal.show();
-			}
 
-			function messageRead(messageId) {
-				$.post('{{ url('mark-message-read') }}/'+messageId, {
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					if(data!=1){
-						UIkit.modal.alert(data,{stack: true});
-					} else {
-		    				// var element = document.getElementById("show-message-"+messageId);
-		    				$(".show-message-"+messageId).removeClass("uk-hidden");
-								// var element = document.getElementById("hide-message-"+messageId);
-								$(".hide-message-"+messageId).addClass("uk-hidden");
-								$(".remove-action-"+messageId).removeClass("attention");
-								$(".remove-action-"+messageId).removeClass("ok-actionable");
-								UIkit.notification({
-									message: 'Message has been marked as read.',
-									status: 'success',
-									pos: 'top-right',
-									timeout: 1500
-								});
-							}
-						} );
+				}
+			});
+		});
+	</script>
 
+</div>
+@if($auditor_access)
+@if($auditor_access)
+@if($report->crr_approval_type_id !== 8)
+<div id="report-actions-footer">
+	<select class="uk-form uk-select" id="crr-report-action-{{ $report->id }}" onchange="reportAction({{ $report->id }},this.value, {{ $report->project->id }});" style="width: 184px;">
+		<optgroup label="REPORT ACTIONS">
+			<option value="0">ACTION</option>
+			<option value="1">DRAFT</option>
+			@if($report->requires_approval)
+			<option value="2">SEND TO MANAGER REVIEW</option>
+			@endif
+			@if($manager_access)
+			@if($report->requires_approval)
+			<option value="3">DECLINE</option>
+			<option value="4">APPROVE WITH CHANGES</option>
+			<option value="5">APPROVE</option>
+			@endif
+			@endif
+			@if( ($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
+			<option value="6">SEND TO PROPERTY CONTACT</option>
+			<option value="7">PROPERTY VIEWED IN PERSON</option>
+			<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
+		</optgroup>
+		<optgroup label="REPORT VERSIONS">
+			@for($i=0 ; $i<$versions_count ; $i++)
+			<option value="version={{ $i + 1 }}">Version - {{ $i + 1 }}</option>
+			@endfor
+		</optgroup>
+		@endif
+	</select>
+</div>
+@else
+<div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
+@endif
+@endif
+<div id="comments" class="uk-panel-scrollable" style="display: none;">
+	@endif
+
+</div>
+@else
+<h1>Sorry!</h1>
+<h2>The report you are trying to view has not been released for your review.</h2>
+@endif
+@stop
+
+<script>
+	function dynamicModalLoadLocal(modalSource) {
+		var newmodalcontent = $('#dynamic-modal-content-communications');
+		$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
+		$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
+			if (status == "error") {
+				if(xhr.status == "401") {
+					var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+				} else if( xhr.status == "500"){
+					var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+				} else {
+					var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+				}
+				UIkit.modal.alert(msg);
 			}
-		</script>
+		});
+		var modal = UIkit.modal('#dynamic-modal-communications', {
+			escClose: false,
+			bgClose: false
+		});
+		modal.show();
+	}
+
+	function messageRead(messageId) {
+		$.post('{{ url('mark-message-read') }}/'+messageId, {
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			if(data!=1){
+				UIkit.modal.alert(data,{stack: true});
+			} else {
+  				// var element = document.getElementById("show-message-"+messageId);
+  				$(".show-message-"+messageId).removeClass("uk-hidden");
+					// var element = document.getElementById("hide-message-"+messageId);
+					$(".hide-message-"+messageId).addClass("uk-hidden");
+					$(".remove-action-"+messageId).removeClass("attention");
+					$(".remove-action-"+messageId).removeClass("ok-actionable");
+					UIkit.notification({
+						message: 'Message has been marked as read.',
+						status: 'success',
+						pos: 'top-right',
+						timeout: 1500
+					});
+				}
+			} );
+	}
+
+	function changeReportDates() {
+		dynamicModalLoad('report-dates/'+{{ $report->id }});
+	}
+
+	function submitUserInfoForm() {
+		jQuery.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+			}
+		});
+		$("#dates_save_button").prop("disabled", true);
+		$("#dates_save_button").html('<span uk-spinner"></span>  Processing');
+		var form = $('#reportDatesForm');
+		var data = { };
+		$.each($('form').serializeArray(), function() {
+			data[this.name] = this.value;
+		});
+		jQuery.ajax({
+			url: "{{ URL::route("project.reports.dates", $report->id) }}",
+			method: 'post',
+			data: {
+				letter_date: data['letter_date'],
+				review_date: data['review_date'],
+				response_due_date: data['response_due_date'],
+				'_token' : '{{ csrf_token() }}'
+			},
+			success: function(data){
+				$('.alert-danger' ).empty();
+				if(data == 1) {
+					// UIkit.modal.alert('User has been saved.',{stack: true});
+					$("#dates_save_button").html('<span uk-spinner"></span>  Updating Report...');
+					window.location.href ='/report/{{ $report->id }}';
+					// dynamicModalClose();
+				}
+				jQuery.each(data.errors, function(key, value){
+					$("#dates_save_button").prop("disabled", false);
+					$("#dates_save_button").html('Save');
+					jQuery('.alert-danger').show();
+					jQuery('.alert-danger').append('<p>'+value+'</p>');
+				});
+			}
+		});
+	}
+</script>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Response;
+use Validator;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Audit;
 use App\Models\People;
@@ -514,8 +516,10 @@ class ReportsController extends Controller
 		$string = str_replace('||PROJECT NAME||', $audit->project->project_name, $string);
 		$string = str_replace('||AUDIT ID||', $audit->id, $string);
 		$string = str_replace('||PROJECT NUMBER||', $audit->project->project_number, $string);
-		if ($audit->start_date) {
-			$string = str_replace('||REVIEW DATE||', '<strong>' . date('m/d/Y', strtotime($audit->completed_date)) . '</strong>', $string);
+		// if ($audit->start_date) {
+		// 	$string = str_replace('||REVIEW DATE||', '<strong>' . date('m/d/Y', strtotime($audit->completed_date)) . '</strong>', $string);
+		if (!is_null($report->review_date)) {
+			$string = str_replace('||REVIEW DATE||', '<strong>' . date('m/d/Y', strtotime($report->review_date)) . '</strong>', $string);
 		} else {
 			$string = str_replace('||REVIEW DATE||', 'START DATE NOT SET', $string);
 		}
@@ -524,7 +528,8 @@ class ReportsController extends Controller
 		} else {
 			$string = str_replace('||RESPONSE DUE||', '<span style="color:red;" class="attention">DATE NOT SET</span>', $string);
 		}
-		$string = str_replace('||TODAY||', date('M d, Y', time()), $string);
+		$letter_date = is_null($report->letter_date) ? date('M d, Y', time()) : date('M d, Y', strtotime($report->letter_date));
+		$string = str_replace('||TODAY||', $letter_date, $string);
 		//return ['organization_id'=> $owner_organization_id,'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
 		$projectDetails = $audit->project->details($audit->id);
 		$string = str_replace('||OWNER ORGANIZATION NAME||', $projectDetails->owner_name, $string);
@@ -920,7 +925,8 @@ class ReportsController extends Controller
 				// process each section
 				$data[$index]['version-' . $version]['section-' . $sectionOrder] = ['crr_section_id' => $section->id];
 				$partOrder = 1;
-				foreach ($section->parts as $part) {
+				foreach ($section->parts as $pkey => $part) {
+					// return $part;
 					//dd($part);
 					//make magic happen.
 					$method = $part->crr_part_type->method_name;
@@ -1284,4 +1290,72 @@ class ReportsController extends Controller
 			);
 		}
 	}
-}
+
+	public function reportDates($id)
+	{
+		$report = CrrReport::select('letter_date', 'review_date', 'response_due_date')->find($id);
+		if ($report) {
+			// return $report->letter_date;
+			// return Carbon::parse(strtotime($report->letter_date))->format('F j, Y');
+			//get current dates
+			//||REVIEW DATE|| in header and Letter:  $audit->completed_date, review_date - add to audit too
+			//||TODAY|| in Letter:  date('M d, Y', time(), letter_date
+			//||RESPONSE DUE||in letter: $report->response_due_date,
+			return view('modals.report-dates', compact('report'));
+		} else {
+			return 'Report not found, please contact admin.';
+		}
+	}
+
+	public function saveReportDates($id, Request $request)
+	{
+		$report = CrrReport::find($id);
+		if ($report) {
+			$rules = [
+				'review_date' => 'required',
+				'letter_date' => 'required',
+			];
+			$validator = Validator::make($request->all(), $rules);
+			if ($validator->fails()) {
+				return response()->json(['errors' => $validator->errors()->all()]);
+			}
+
+			//use DB Transaction
+			$note = '';
+			$changes = [];
+			if (Carbon::parse($request->review_date) != $report->review_date) {
+				$changes = array_merge($changes, [' changed the review date from ' . Carbon::parse(strtotime($report->review_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->review_date))->format('F j, Y')]);
+				$note = $note . Auth::user()->full_name() . ' changed the review date from ' . Carbon::parse(strtotime($report->review_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->review_date))->format('F j, Y') . '. ';
+			}
+			if (Carbon::parse($request->letter_date) != $report->letter_date) {
+				$changes = array_merge($changes, [' changed review date from ' . Carbon::parse(strtotime($report->letter_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->letter_date))->format('F j, Y')]);
+				$note = $note . Auth::user()->full_name() . ' changed the letter date from ' . Carbon::parse(strtotime($report->letter_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->letter_date))->format('F j, Y') . '. ';
+			}
+			if (Carbon::parse($request->response_due_date) != $report->response_due_date) {
+				$changes = array_merge($changes, [' changed the response due date from ' . Carbon::parse(strtotime($report->response_due_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->response_due_date))->format('F j, Y')]);
+				$note = $note . Auth::user()->full_name() . ' changed the response due date from ' . Carbon::parse(strtotime($report->response_due_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->response_due_date))->format('F j, Y') . '. ';
+			}
+			$note = implode(', ', $changes);
+			if ($note == '') {
+				$validator->getMessageBag()->add('letter_date', 'Looks like dates are not changed, you can close this modal by clicking cancel button if no changes are required.');
+				return response()->json(['errors' => $validator->errors()->all()]);
+			} else {
+				$note = Auth::user()->full_name() . $note . '.';
+			}
+			// return $note;
+
+			$history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => $note];
+			$this->reportHistory($report, $history);
+			$report->review_date = Carbon::parse($request->review_date);
+			$report->letter_date = Carbon::parse($request->letter_date);
+			if ($request->has('response_due_date') && $request->response_due_date != '') {
+				$report->response_due_date = Carbon::parse($request->response_due_date);
+			}
+			$report->save();
+			$this->generateReport($report);
+			return 1;
+		} else {
+			return 'Report not found, please contact admin.';
+		}
+	}
+};
