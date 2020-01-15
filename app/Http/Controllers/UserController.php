@@ -91,7 +91,7 @@ class UserController extends Controller
 		parse_str($forminputs, $forminputs);
 
 		$current_user = Auth::user();
-		$daterange = $forminputs['daterange'];
+		$daterange = $forminputs['availabilitydaterange'];
 		$starttime = $forminputs['starttime'];
 		$endtime = $forminputs['endtime'];
 		$availability = $forminputs['availability']; //available or notavailable
