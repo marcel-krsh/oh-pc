@@ -789,7 +789,7 @@
 	 function saveAvailability(e){
 	 	e.preventDefault();
 	 	var form = $('#newavailabilityform');
-	 	debugger;
+	 	// debugger;
 		// check if date is not empty
 		if($("#availabilitydaterange").val().length === 0) {
 			$("#availabilitydaterange").addClass('uk-form-danger');

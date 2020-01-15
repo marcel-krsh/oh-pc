@@ -100,9 +100,9 @@
 						<form name="newavailabilityform" id="newavailabilityform" method="post">
 							<div uk-grid>
 								<div class="uk-width-1-2 uk-padding-remove">
-									<label class="uk-form-label" for="daterange">DATE RANGE</label>
+									<label class="uk-form-label" for="availabilitydaterange">DATE RANGE</label>
 									<div class="uk-form-controls">
-										<input type="text" id="daterange" name="daterange" value="" class="uk-input flatpickr flatpickr-input active"/>
+										<input type="text" id="availabilitydaterange" name="availabilitydaterange" value="" class="uk-input flatpickr flatpickr-input active"/>
 									</div>
 								</div>
 								<div class="uk-width-1-4">
@@ -490,11 +490,11 @@
 	 	var form = $('#newavailabilityform');
 
 		// check if date is not empty
-		if($("#daterange").val().length === 0) {
-			$("#daterange").addClass('uk-form-danger');
+		if($("#availabilitydaterange").val().length === 0) {
+			$("#availabilitydaterange").addClass('uk-form-danger');
 			return false;
 		}else{
-			$("#daterange").removeClass('uk-form-danger');
+			$("#availabilitydaterange").removeClass('uk-form-danger');
 		}
 
 		// at least one day should be selected
@@ -529,7 +529,7 @@
 	}
 
 	function setDate(date, name){
-		$('#daterange').val(date);
+		$('#availabilitydaterange').val(date);
 		// also make sure the day of the week is selected
 		if(!$("input[name='"+name+"']:checkbox").is(':checked')){
 			selectday(".dayselector-"+name, name);
@@ -623,7 +623,7 @@
 		<script>
 			flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
-			flatpickr("#daterange", {
+			flatpickr("#availabilitydaterange", {
 				mode: "range",
 				minDate: "today",
 				altFormat: "F j, Y",
