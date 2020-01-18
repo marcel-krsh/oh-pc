@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use DB;
-use Log;
 use DateTime;
 use App\Models\People;
 use App\Models\SyncPeople;
@@ -147,25 +146,37 @@ class SyncPeopleJob implements ShouldQueue
 										'default_phone_number_key' => $v['attributes']['defaultPhoneNumberKey'],
 										'default_fax_number_key' => $v['attributes']['defaultFaxNumberKey'],
 										'default_email_address_key' => $v['attributes']['defaultEmailAddressKey'],
+										'last_edited' => $v['attributes']['lastEdited'],
 									]);
 									// Create the sync table entry with the allita id
-									$syncTableRecord = SyncPeople::create([
-										'person_key' => $v['attributes']['personKey'],
-										'is_active' => $v['attributes']['isActive'],
-										'last_name' => $v['attributes']['lastName'],
-										'first_name' => $v['attributes']['firstName'],
-										'default_phone_number_key' => $v['attributes']['defaultPhoneNumberKey'],
-										'default_fax_number_key' => $v['attributes']['defaultFaxNumberKey'],
-										'default_email_address_key' => $v['attributes']['defaultEmailAddressKey'],
-										'last_edited' => $v['attributes']['lastEdited'],
-										'allita_id' => $allitaTableRecord->id,
-									]);
+									// $syncTableRecord = SyncPeople::create([
+									// 	'person_key' => $v['attributes']['personKey'],
+									// 	'is_active' => $v['attributes']['isActive'],
+									// 	'last_name' => $v['attributes']['lastName'],
+									// 	'first_name' => $v['attributes']['firstName'],
+									// 	'default_phone_number_key' => $v['attributes']['defaultPhoneNumberKey'],
+									// 	'default_fax_number_key' => $v['attributes']['defaultFaxNumberKey'],
+									// 	'default_email_address_key' => $v['attributes']['defaultEmailAddressKey'],
+									// 	'last_edited' => $v['attributes']['lastEdited'],
+									// 	'allita_id' => $allitaTableRecord->id,
+									// ]);
 									// Update the Allita Table Record with the Sync Table's updated at date
-									if (null !== $syncTableRecord && is_object($syncTableRecord)) {
-										$allitaTableRecord->update(['last_edited' => $syncTableRecord->updated_at]);
-									} else {
-										Log::info('Unable to update the last_edited for people record id ' . $allitaTableRecord->id . ' because the sync table did not return a record for SyncPeople record ' . $updateRecord['id']);
-									}
+									SyncPeople::where('id', $updateRecord['id'])
+										->update([
+											'is_active' => $v['attributes']['isActive'],
+											'last_name' => $v['attributes']['lastName'],
+											'first_name' => $v['attributes']['firstName'],
+											'default_phone_number_key' => $v['attributes']['defaultPhoneNumberKey'],
+											'default_fax_number_key' => $v['attributes']['defaultFaxNumberKey'],
+											'default_email_address_key' => $v['attributes']['defaultEmailAddressKey'],
+											'last_edited' => $v['attributes']['lastEdited'],
+											'allita_id' => $allitaTableRecord->id,
+										]);
+									// if (null !== $syncTableRecord && is_object($syncTableRecord)) {
+									// 	$allitaTableRecord->update(['last_edited' => $syncTableRecord->updated_at]);
+									// } else {
+									// 	Log::info('Unable to update the last_edited for people record id ' . $allitaTableRecord->id . ' because the sync table did not return a record for SyncPeople record ' . $updateRecord['id']);
+									// }
 								}
 							}
 						} else {
