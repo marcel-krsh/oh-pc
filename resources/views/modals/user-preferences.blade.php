@@ -751,7 +751,7 @@
 	 	}
 	 }
 
-	 $('.uk-modal-body').animate({
+	 $('.modal-user-preferences').animate({
 	 	@if($current_user->id == $data['summary']['id']) width: "70%" @else width:"30%" @endIf
 	 });
 
