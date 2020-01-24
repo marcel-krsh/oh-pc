@@ -283,20 +283,20 @@ session(['projectDetailsOutput' => 0]);
 <script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 	<?php // determin background type
-$background = "";
-if (1 == $report->crr_approval_type_id) {
-	$background = '-draft';
-}
-if (2 == $report->crr_approval_type_id) {
-	$background = '-pending';
-}
-if (3 == $report->crr_approval_type_id) {
-	$background = '-declined';
-}
-if (4 == $report->crr_approval_type_id) {
-	$background = '-revise';
-}
-?>
+	$background = "";
+	if (1 == $report->crr_approval_type_id) {
+		$background = '-draft';
+	}
+	if (2 == $report->crr_approval_type_id) {
+		$background = '-pending';
+	}
+	if (3 == $report->crr_approval_type_id) {
+		$background = '-declined';
+	}
+	if (4 == $report->crr_approval_type_id) {
+		$background = '-revise';
+	}
+	?>
 	.crr-sections {
 		width:90%;min-width:720px; min-height: 1502px; margin-left:auto; margin-right:auto; border:1px black solid; background-image: url('/paginate-2x{{ $background }}.gif'); padding: 72px;
 
@@ -437,16 +437,16 @@ if (4 == $report->crr_approval_type_id) {
 			@foreach($part as $piece)
 			<?php
 // collect comments for this part
-if ($auditor_access) {
-	$comments = collect($report->comments)->where('part_id', $piece->part_id);
-	if ($comments) {
-		$totalComments = count($comments);
-	}
-} else {
-	$comments = [];
-	$totalComments = 0;
-}
-?>
+			if ($auditor_access) {
+				$comments = collect($report->comments)->where('part_id', $piece->part_id);
+				if ($comments) {
+					$totalComments = count($comments);
+				}
+			} else {
+				$comments = [];
+				$totalComments = 0;
+			}
+			?>
 			@if($auditor_access)
 			<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endif</a>
 				<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>
@@ -455,9 +455,9 @@ if ($auditor_access) {
 
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
 				<?php
-$pieceData = json_decode($piece->data);
+				$pieceData = json_decode($piece->data);
 // set this so we only output details once from the blade.
-;?>
+				;?>
 				@if($pieceData[0]->type =='free-text')
 				{!! $piece->content !!}
 				@endif
@@ -470,32 +470,32 @@ $pieceData = json_decode($piece->data);
 				@endphp --}}
 				@if($pieceData[0]->type == 'blade')
 				<?php
-if (array_key_exists(2, $pieceData)) {
-	$bladeData = $pieceData[2];
-} else {
-	$bladeData = null;
-}
-?>
+				if (array_key_exists(2, $pieceData)) {
+					$bladeData = $pieceData[2];
+				} else {
+					$bladeData = null;
+				}
+				?>
 				@if($piece->blade == 'crr_parts.crr_inspections')
 				@include($piece->blade, [$inspections_type = 'site', $audit_id = $report->audit->id])
 				@endif
 				<?php
-if (array_key_exists(3, $pieceData)) {
-	$bladeData = $pieceData[3];
-} else {
-	$bladeData = null;
-}
-?>
+				if (array_key_exists(3, $pieceData)) {
+					$bladeData = $pieceData[3];
+				} else {
+					$bladeData = null;
+				}
+				?>
 				@if($piece->blade == 'crr_parts.crr_inspections')
 				@include($piece->blade, [$inspections_type = 'building', $audit_id = $report->audit->id])
 				@endif
 				<?php
-if (array_key_exists(1, $pieceData)) {
-	$bladeData = $pieceData[1];
-} else {
-	$bladeData = null;
-}
-?>
+				if (array_key_exists(1, $pieceData)) {
+					$bladeData = $pieceData[1];
+				} else {
+					$bladeData = null;
+				}
+				?>
 				@include($piece->blade, [$inspections_type = 'unit', $audit_id = $report->audit->id])
 
 				@endif
@@ -522,8 +522,8 @@ if (array_key_exists(1, $pieceData)) {
 		<?php /* Send Fax with Print Report PDF - End */?>
 	</div>
 	<?php
-session(['projectDetailsOutput' => 0]);
-?>
+	session(['projectDetailsOutput' => 0]);
+	?>
 
 	<script type="text/javascript">
 		$("#faxnumber").mask("999-999-9999");
@@ -569,41 +569,41 @@ session(['projectDetailsOutput' => 0]);
 
 </div>
 @if($auditor_access)
-	@if($auditor_access)
-	@if($report->crr_approval_type_id !== 8)
-	<div id="report-actions-footer">
-		<select class="uk-form uk-select" id="crr-report-action-{{ $report->id }}" onchange="reportAction({{ $report->id }},this.value, {{ $report->project->id }});" style="width: 184px;">
-			<optgroup label="REPORT ACTIONS">
-				<option value="0">ACTION</option>
-				@if(!($report->crr_approval_type_id >= 5))
-				<option value="1">DRAFT</option>
-				@if($report->requires_approval)
-				<option value="2">SEND TO MANAGER REVIEW</option>
-				@endif
-				@if($manager_access)
-				@if($report->requires_approval)
-				<option value="3">DECLINE</option>
-				<option value="4">APPROVE WITH CHANGES</option>
-				<option value="5">APPROVE</option>
-				@endif
-				@endif
-				@endif
-				@if( ($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
-				<option value="6">SEND TO PROPERTY CONTACT</option>
-				<option value="7">PROPERTY VIEWED IN PERSON</option>
-				<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
-			</optgroup>
-			<optgroup label="REPORT VERSIONS">
-				@for($i=0 ; $i<$versions_count ; $i++)
-				<option value="version={{ $i + 1 }}">Version - {{ $i + 1 }}</option>
-				@endfor
-			</optgroup>
+@if($auditor_access)
+@if($report->crr_approval_type_id !== 8)
+<div id="report-actions-footer">
+	<select class="uk-form uk-select" id="crr-report-action-{{ $report->id }}" onchange="reportAction({{ $report->id }},this.value, {{ $report->project->id }});" style="width: 184px;">
+		<optgroup label="REPORT ACTIONS">
+			<option value="0">ACTION</option>
+			@if(!($report->crr_approval_type_id >= 5))
+			<option value="1">DRAFT</option>
+			@if($report->requires_approval)
+			<option value="2">SEND TO MANAGER REVIEW</option>
 			@endif
-		</select>
-	</div>
-	@else
-	<div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
-	@endif
+			@if($manager_access)
+			@if($report->requires_approval)
+			<option value="3">DECLINE</option>
+			<option value="4">APPROVE WITH CHANGES</option>
+			<option value="5">APPROVE</option>
+			@endif
+			@endif
+			@endif
+			@if( ($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
+			<option value="6">SEND TO PROPERTY CONTACT</option>
+			<option value="7">PROPERTY VIEWED IN PERSON</option>
+			<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
+		</optgroup>
+		<optgroup label="REPORT VERSIONS">
+			@for($i=0 ; $i<$versions_count ; $i++)
+			<option value="version={{ $i + 1 }}">Version - {{ $i + 1 }}</option>
+			@endfor
+		</optgroup>
+		@endif
+	</select>
+</div>
+@else
+<div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
+@endif
 @endif
 <div id="comments" class="uk-panel-scrollable" style="display: none;">
 	@endif

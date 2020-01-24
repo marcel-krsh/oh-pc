@@ -11,7 +11,7 @@
 			<div class="uk-width-1-1 uk-margin-top">
 				<label for="name">Date of Letter<span class="uk-text-danger uk-text-bold">*</span> :</label>
 				<div class="uk-width-1-2">
-					<input id="date-of-letter" value="{{ !is_null($report->letter_date) ? Carbon\Carbon::parse(strtotime($report->letter_date))->format('F j, Y') : '' }}" type="text" class="uk-input" name="letter_date" placeholder="Select Date">
+					<input id="date-of-letter" value="{{ !is_null($report->letter_date) ? Carbon\Carbon::parse(strtotime($report->letter_date))->format('F j, Y') : Carbon\Carbon::parse(strtotime($report->created_at))->format('F j, Y') }}" type="text" class="uk-input" name="letter_date" placeholder="Select Date">
 				</div>
 			</div>
 			<div class="uk-width-1-1 uk-margin-top">

@@ -74,7 +74,8 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
 		<h2 id="units-summary-header">@if($totalUnits >1 || $totalUnits < 1) {{ $totalUnits }} Units @else 1 Unit @endIf @if($dpView) Selected: @else Audited: @endIf </h2> @if($auditor_access) <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{ $report->project->id }}/programs/0/summary/@if(isset($audit)){{ $audit->audit_id }}@else{{ $audit_id }} @endIf',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
-		@endif<style>
+		@endif
+		<style>
 			#modal-size {
 				height: 815px;
 			}
@@ -172,7 +173,7 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 
 		$inspections = collect($inspections);
 		$inspections = $inspections->sortBy('unit_name');
-//dd($inspections);
+ 		//dd($inspections);
 		$fileInspections = count(collect($inspections)->where('is_site_visit', 0)->groupBy('unit_id'));
 		$siteInspections = count(collect($inspections)->where('is_site_visit', 1)->groupBy('unit_id'));
 		$homeSiteInspections = count(collect($inspections)->where('group', 'HOME')->where('is_site_visit', 1)->groupBy('unit_id'));
@@ -210,14 +211,22 @@ $totalUnits = count(collect($inspections)->groupBy('unit_id'));
 				$currentUnit = $i->unit_id;
 				$thisUnitValues = collect($inspections)->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
 				$thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file'));
-				$thisUnitUnresolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
+				//$thisUnitUnresolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
+				//$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
+				//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
+				$thisUnitResolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('auditor_approved_resolution', 1));
+				$thisUnitUnresolvedFileFindings = $thisUnitFileFindings - $thisUnitResolvedFileFindings;
 				$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
-				$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
+				//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
+				$thisUnitResolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1));
+				$thisUnitUnresolvedSiteFindings = $thisUnitSiteFindings - $thisUnitResolvedSiteFindings;
 				$isHome = count(collect($inspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'HOME'));
-
 				$isOhtf = count(collect($inspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'OHTF'));
-
 				$isNhtf = count(collect($inspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'NHTF'));
+
+			//if ($thisBuildingSiteFindings || $thisBuildingFileFindings) {
+			//	$hasFindings = 1;
+			//}
 
 				?>
 				<div  class="unit-name"  >

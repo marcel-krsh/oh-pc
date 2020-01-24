@@ -4,9 +4,9 @@
 			<div class="user-preference-col-1  uk-padding-remove uk-margin-small-top">
 				<div uk-grid>
 					<div class="uk-width-1-1 uk-padding-remove-left">
-						<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{ $data['summary']['name'] }};" class="user-badge user-badge-{{ $data['summary']['color'] }} user-badge-bigger no-float uk-link">
+						<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{ $data['summary']['name'] }};" class="user-badge user-badge-{{ $data['summary']['color'] }} user-badge-v2 uk-align-center user-badge use-hand-cursor">
 							{{ $data['summary']['initials'] }}
-						</span> {{ $data['summary']['name'] }} <br /><small>{{ $data['summary']['email'] }} | {{ $data['summary']['phone'] }}</small>
+						</span> {{ $data['summary']['name'] }} <br /><small>{{ $data['summary']['email'] }} | {{ $data['summary']['phone'] }}</small> </h3>
 					</div>
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<form class="uk-form">
