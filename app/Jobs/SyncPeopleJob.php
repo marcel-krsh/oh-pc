@@ -49,6 +49,7 @@ class SyncPeopleJob implements ShouldQueue
 		/// We also need to select the column so we can order by it to get the newest first. So we apply an alias to the concated field.
 
 		$lastModifiedDate = SyncPeople::select(DB::raw("CONCAT(last_edited) as 'last_edited_convert'"), 'last_edited', 'id')->orderBy('last_edited', 'desc')->first();
+		// Log::info('StartedPeople');
 		// if the value is null set a default start date to start the sync.
 		if (is_null($lastModifiedDate)) {
 			$modified = '10/1/1900';
@@ -79,11 +80,13 @@ class SyncPeopleJob implements ShouldQueue
 					foreach ($syncData['data'] as $i => $v) {
 						// check if record exists
 						$updateRecord = SyncPeople::select('id', 'allita_id', 'last_edited', 'updated_at')->where('person_key', $v['attributes']['personKey'])->first();
+						// Log::info('InsideForeach');
 						// convert booleans
 						settype($v['attributes']['isActive'], 'boolean');
 						//dd($updateRecord,$updateRecord->updated_at);
 						if (isset($updateRecord->id)) {
 							// record exists - get matching table record
+							// Log::info('RecordExists');
 
 							/// NEW CODE TO UPDATE ALLITA TABLE PART 1
 							$allitaTableRecord = People::find($updateRecord->allita_id);
@@ -104,6 +107,8 @@ class SyncPeopleJob implements ShouldQueue
 
 							if ($devcoDateEval > $allitaDateEval) {
 								if (!is_null($allitaTableRecord) && $allitaTableRecord->last_edited <= $updateRecord->updated_at) {
+									// Log::info('RecordNewer');
+
 									// record is newer than the one currently on file in the allita db.
 									// update the sync table first
 									SyncPeople::where('id', $updateRecord['id'])
@@ -132,6 +137,8 @@ class SyncPeopleJob implements ShouldQueue
 									]);
 									//dd('inside.');
 								} elseif (is_null($allitaTableRecord)) {
+									// Log::info('AlltaDoesntExist');
+
 									// the allita table record doesn't exist
 									// create the allita table record and then update the record
 									// we create it first so we can ensure the correct updated at
@@ -180,6 +187,7 @@ class SyncPeopleJob implements ShouldQueue
 								}
 							}
 						} else {
+							// Log::info('NothingExist');
 							// Create the Allita Entry First
 							// We do this so the updated_at value of the Sync Table does not become newer
 							// when we add in the allita_id

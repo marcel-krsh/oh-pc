@@ -11,7 +11,7 @@
 |
  */
 //Route::get('/reset_tokens','PagesController@resetTokens');
-// Route::get('test-all', 'Helper\TestingController@getTestAll');
+Route::get('test-all', 'Helper\TestingController@getTestAll');
 Route::get('unified_login', function () {
 	//session(['brian'=>'test']);
 	return redirect('/');
