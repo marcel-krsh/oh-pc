@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Traits\DocumentTrait;
-use App\Models\CommunicationDraft;
+use Auth;
+use File;
+use View;
+use Storage;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Photo;
+use App\Models\Finding;
+use App\Models\Project;
 use App\Models\Document;
+use Illuminate\Http\Request;
 use App\Models\DocumentAudit;
 use App\Models\DocumentCategory;
+use App\Models\CommunicationDraft;
 use App\Models\LocalDocumentCategory;
-use App\Models\Photo;
-use App\Models\Project;
-use App\Models\User;
-use Auth;
-use Carbon\Carbon;
-use File;
-use Illuminate\Http\Request;
-use Storage;
+use App\Http\Controllers\Traits\DocumentTrait;
 
 class DocumentController extends Controller
 {
@@ -23,7 +25,14 @@ class DocumentController extends Controller
 
 	public function __construct(Request $request)
 	{
-		// $this->middleware('auth');
+		$this->middleware(function ($request, $next) {
+			$this->user = Auth::user();
+			$this->auditor_access = $this->user->auditor_access();
+			$this->admin_access = $this->user->admin_access();
+			View::share('auditor_access', $this->auditor_access);
+			View::share('admin_access', $this->admin_access);
+			return $next($request);
+		});
 	}
 
 	/**
@@ -50,20 +59,52 @@ class DocumentController extends Controller
 
 	public function getProjectLocalDocuments(Project $project, $audit_id = null, Request $request)
 	{
+		// ini_set('max_execution_time', 300);
 		//check if filters exist
 		// return $request->all();
 		$filter['filter_audit_id'] = "";
 		$filter['filter_finding_id'] = "";
 		$filter['filter_category_id'] = "";
 
-		$documents = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'project.audits', 'communications.communication', 'audits', 'user')->orderBy('created_at', 'DESC')->get();
-		$audits = $documents->pluck('audits')->flatten()->unique('id');
-		$categories = $documents->pluck('assigned_categories')->flatten()->unique('id');
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'project.audits', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+		$documents = $documents_query->get(); //->paginate(20);
+		$documents_all = $documents_query->get();
+		$documents_count = $documents_query->count();
+		$new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
+		$old_audits = $documents_all->pluck('audit')->flatten()->unique('id');
+		$audits = $new_audits->merge($old_audits)->filter()->unique('id'); //removes null records too
+		$categories = $documents_all->pluck('assigned_categories')->flatten()->unique('id');
 		$findings = collect([]);
+		$all_finding_ids = [];
+
 		foreach ($documents as $key => $document) {
-			$findings = $findings->merge($document->findings());
+			$finding_ids = [];
+			$doc_finding_ids = [];
+			foreach ($document->communications as $key => $communication) {
+				$finding_ids = $communication->communication->finding_ids;
+				if (!is_null($finding_ids)) {
+					$finding_ids = json_decode($finding_ids);
+					$doc_finding_ids = array_merge($doc_finding_ids, $finding_ids);
+					// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
+					// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
+					// $findings = $findings->merge($doc_findings);
+				}
+			}
+			if (!empty($doc_finding_ids)) {
+				$all_finding_ids = array_merge($all_finding_ids, $doc_finding_ids);
+				$document->has_findings = 1;
+				$document->finding_ids = $doc_finding_ids;
+			} else {
+				$document->has_findings = 0;
+				$document->finding_ids = [];
+			}
+			// return $document;
 		}
+		$findings = Finding::with('audit')->whereIn('id', $all_finding_ids)->get();
 		$findings = $findings->unique('id');
+		$findings_audits = $findings->pluck('audit')->flatten()->unique('id');
+		$audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
+
 		$filtered_documents = $documents;
 		if ($request->filter_audit_id) {
 			$filter['filter_audit_id'] = $request->filter_audit_id;
@@ -74,6 +115,7 @@ class DocumentController extends Controller
 		if ($request->filter_category_id) {
 			$filter['filter_category_id'] = $request->filter_category_id;
 		}
+
 		// return $filter;
 		// return $documents->first()->findings();
 		$document_categories = DocumentCategory::with('parent')
@@ -82,7 +124,10 @@ class DocumentController extends Controller
 			->orderBy('parent_id')
 			->orderBy('document_category_name')
 			->get();
-		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories', 'filter'));
+
+		// echo 19;
+		// return 12;
+		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories', 'filter', 'documents_count'));
 	}
 
 	public function localUpload(Project $project, Request $request)
