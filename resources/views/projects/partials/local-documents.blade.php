@@ -76,7 +76,7 @@
 
 <div class="uk-grid uk-margin-top uk-animation-fade" id="local-documents">
 	<div class="uk-width-3-5@m uk-width-1-1" id="local-documents-filter">
-		<table class="uk-table uk-table-striped uk-table-condensed uk-table-hover gray-link-table" id="">
+		<table class="uk-table uk-table-condensed gray-link-table" id="">
 			<thead>
 				<tr class="uk-text-small" style="color:#fff;background-color:#555;">
 					<th>CATEGORY: FILE</th>
