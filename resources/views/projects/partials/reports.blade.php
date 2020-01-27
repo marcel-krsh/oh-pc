@@ -358,3 +358,11 @@ $crrTypeSelection    = 'all';
     </div>
 @endif
 </div>
+<script>
+	function openUserPreferencesView(userId = null){
+		if(userId == null)
+			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences-view',0,0,1);
+		else
+			dynamicModalLoad('auditors/'+userId+'/preferences-view',0,0,1);
+	}
+</script>

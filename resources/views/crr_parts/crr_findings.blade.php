@@ -187,7 +187,7 @@ foreach($grouped_bf as $bk => $bf) {
 
 <script>
 
-	@can('access_auditor')
+	@if($auditor_access)
 	// Flatpickers in use for findings
 	 @stack('flatPickers')
 	// End Flatpickers
@@ -235,8 +235,8 @@ foreach($grouped_bf as $bk => $bf) {
 			console.log('Rejected.')
 		});
 	}
-	@endCan
-	// flatpickr(".flatpickr", {	
+	@endif
+	// flatpickr(".flatpickr", {
 	// 							altFormat: "F j, Y ",
 	// 							dateFormat: "F j, Y",
 	// 							enableTime: true,
@@ -249,4 +249,4 @@ foreach($grouped_bf as $bk => $bf) {
 @else
 <hr class="dashed-hr">
 <h3>NO FINDINGS</h3>
-@endIf
+@endif

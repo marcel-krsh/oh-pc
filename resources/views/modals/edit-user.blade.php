@@ -12,43 +12,43 @@
 </script>
 
 @if (count($errors) > 0)
-	<div class="uk-panel uk-margin-top uk-margin-bottom">
-		<ul>
-			@foreach ($errors->all() as $error)
-			<li>{{ $error }}</li>
-			@endforeach
-		</ul>
-	</div>
+<div class="uk-panel uk-margin-top uk-margin-bottom">
+	<ul>
+		@foreach ($errors->all() as $error)
+		<li>{{ $error }}</li>
+		@endforeach
+	</ul>
+</div>
 @endif
 
-	<h3 class="uk-text-uppercase">Edit User: <span class="uk-text-primary">{{ $user->name }}</span></h3>
-	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
-	<div class="alert alert-danger uk-text-danger" style="display:none"></div>
-	<form id="userForm" action="{{ url('modals/edituser', $user->id) }}" method="post" role="userForm">
-		<input type="hidden" name="_token" value="{{ csrf_token() }}">
-		<div class="uk-grid">
-			<div class="uk-width-1-2">
-				<div class="uk-width-1-1">
-					<label for="role">Role<span class="uk-text-danger uk-text-bold">*</span> : <br /></label>
-					<select id="role" name="role" class="uk-width-1-1 uk-select">
-            <option value="0" {{ !($user_role) ? 'selected=selected':'' }}>No Access</option>
-						@foreach($roles as $role)
-							<option {{ $user_role == $role->id ? 'selected=selected':'' }} value="{{ $role->id }}" >{{ $role->role_name }}</option>
-						@endforeach
-					</select>
-				</div>
-				<div class="uk-width-1-1 uk-margin-top">
-					<label for="name">First Name<span class="uk-text-danger uk-text-bold">*</span> :</label>
-					<input type="text" class="uk-input uk-width-1-1" name="first_name" placeholder="Enter First name" value="{{ $user->person->first_name }}">
-				</div>
-				<div class="uk-width-1-1 uk-margin-top">
-					<label for="name">Last Name<span class="uk-text-danger uk-text-bold">*</span> :</label>
-					<input type="text" class="uk-input uk-width-1-1" name="last_name" placeholder="Enter Last name" value="{{ $user->person->last_name }}">
-				</div>
-				<div class="uk-width-1-1 uk-margin-top">
-					<label for="name">Work Email<span class="uk-text-danger uk-text-bold">*</span> :</label>
-					<input disabled="disabled" type="text" class="uk-input uk-form-large uk-width-1-1" name="email" placeholder="Enter Email" value="{{ $user->email }}">
-				</div>
+<h3 class="uk-text-uppercase">Edit User: <span class="uk-text-primary">{{ $user->name }}</span></h3>
+<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
+<div class="alert alert-danger uk-text-danger" style="display:none"></div>
+<form id="userForm" action="{{ url('modals/edituser', $user->id) }}" method="post" role="userForm">
+	<input type="hidden" name="_token" value="{{ csrf_token() }}">
+	<div class="uk-grid">
+		<div class="uk-width-1-2">
+			<div class="uk-width-1-1">
+				<label for="role">Role<span class="uk-text-danger uk-text-bold">*</span> : <br /></label>
+				<select id="role" name="role" class="uk-width-1-1 uk-select">
+					<option value="0" {{ !($user_role) ? 'selected=selected':'' }}>No Access</option>
+					@foreach($roles as $role)
+					<option {{ $user_role == $role->id ? 'selected=selected':'' }} value="{{ $role->id }}" >{{ $role->role_name }}</option>
+					@endforeach
+				</select>
+			</div>
+			<div class="uk-width-1-1 uk-margin-top">
+				<label for="name">First Name<span class="uk-text-danger uk-text-bold">*</span> :</label>
+				<input type="text" class="uk-input uk-width-1-1" name="first_name" placeholder="Enter First name" value="{{ $user->person->first_name }}">
+			</div>
+			<div class="uk-width-1-1 uk-margin-top">
+				<label for="name">Last Name<span class="uk-text-danger uk-text-bold">*</span> :</label>
+				<input type="text" class="uk-input uk-width-1-1" name="last_name" placeholder="Enter Last name" value="{{ $user->person->last_name }}">
+			</div>
+			<div class="uk-width-1-1 uk-margin-top">
+				<label for="name">Work Email<span class="uk-text-danger uk-text-bold">*</span> :</label>
+				<input disabled="disabled" type="text" class="uk-input uk-form-large uk-width-1-1" name="email" placeholder="Enter Email" value="{{ $user->email }}">
+			</div>
        {{--  <div class="uk-width-1-1 uk-margin-top">
           <label for="name">Password<span class="uk-text-danger uk-text-bold">*</span> :</label>
           <input type="password" class="uk-input uk-form-large uk-width-1-1" name="password" placeholder="" pattern="^\S{6,}$" onchange="this.setCustomValidity(this.validity.patternMismatch ? 'Must have at least 6 characters' : ''); if(this.checkValidity()) form.password_confirmation.pattern = this.value;" >
@@ -133,27 +133,27 @@
     </div>
   </form>
 
-<script type="text/javascript">
+  <script type="text/javascript">
 
- $( document ).ready(function() {
-  	var value = $("#role").val();
-  	if(value >= 2){
-  		document.getElementById('api_token_block').style.display='block';
-  	} else {
-  		document.getElementById('api_token_block').style.display='none';
-  		$('#api_token').val('');
-  	}
-  	$('#business_phone_number').keyup();
-  });
+  	$( document ).ready(function() {
+  		var value = $("#role").val();
+  		if(value >= 2){
+  			document.getElementById('api_token_block').style.display='block';
+  		} else {
+  			document.getElementById('api_token_block').style.display='none';
+  			$('#api_token').val('');
+  		}
+  		$('#business_phone_number').keyup();
+  	});
 
 
-	function phone_formatting(ele,restore) {
-		var new_number,
-		selection_start = ele.selectionStart,
-		selection_end = ele.selectionEnd,
-		number = ele.value.replace(/\D/g,'');
-    // automatically add dashes
-    if (number.length > 2) {
+  	function phone_formatting(ele,restore) {
+  		var new_number,
+  		selection_start = ele.selectionStart,
+  		selection_end = ele.selectionEnd,
+  		number = ele.value.replace(/\D/g,'');
+    	// automatically add dashes
+    	if (number.length > 2) {
       // matches: 123 || 123-4 || 123-45
       new_number = number.substring(0,3) + '-';
       if (number.length === 4 || number.length === 5) {
@@ -173,26 +173,26 @@
     	new_number = number;
     }
 
-    // if value is heigher than 12, last number is dropped
-    // if inserting a number before the last character, numbers
-    // are shifted right, only 12 characters will show
-    ele.value =  (new_number.length > 12) ? new_number.substring(0,12) : new_number;
+	    // if value is heigher than 12, last number is dropped
+	    // if inserting a number before the last character, numbers
+	    // are shifted right, only 12 characters will show
+	    ele.value =  (new_number.length > 12) ? new_number.substring(0,12) : new_number;
 
-    // restore cursor selection,
-    // prevent it from going to the end
-    // UNLESS
-    // cursor was at the end AND a dash was added
+	    // restore cursor selection,
+	    // prevent it from going to the end
+	    // UNLESS
+	    // cursor was at the end AND a dash was added
 
-    if (new_number.slice(-1) === '-' && restore === false && (new_number.length === 8 && selection_end === 7) || (new_number.length === 4 && selection_end === 3)) {
-    	selection_start = new_number.length;
-    	selection_end = new_number.length;
-    }
-    else if (restore === 'revert') {
-    	selection_start--;
-    	selection_end--;
-    }
-    ele.setSelectionRange(selection_start, selection_end);
-  }
+	    if (new_number.slice(-1) === '-' && restore === false && (new_number.length === 8 && selection_end === 7) || (new_number.length === 4 && selection_end === 3)) {
+	    	selection_start = new_number.length;
+	    	selection_end = new_number.length;
+	    }
+	    else if (restore === 'revert') {
+	    	selection_start--;
+	    	selection_end--;
+	    }
+	    ele.setSelectionRange(selection_start, selection_end);
+	  }
 
   function business_phone_number_check(field,e) {
   	var key_code = e.keyCode,

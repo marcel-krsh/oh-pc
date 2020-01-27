@@ -89,7 +89,8 @@
 							var bar = document.getElementById('js-progressbar');
 							settings    = {
 								url: '{{ URL::route("documents.local-upload-draft", $project->id) }}',
-								allow : '*.(jpg|gif|png|pdf|doc|docx|xls|xlsx)',
+								multiple: true,
+								allow : '*.(jpg|jpeg|gif|png|pdf|doc|docx|xls|xlsx)',
 								beforeSend: function () {
 								},
 								beforeAll: function (settings) {
@@ -100,6 +101,7 @@
 									settings.params.categories = categoryArray;
 									settings.params.ohfa_file = 1;
 									settings.params.draft_id = "{{ $draft->id }}";
+									settings.params.audit_id = "{{ $audit_id }}";
 									settings.params.comment = $("input[name=local-comment]").val();
 									settings.params._token = '{{ csrf_token() }}';
 									if(categoryArray.length > 0){
@@ -113,7 +115,53 @@
 								},
 								error: function () {
 								},
-								complete: function () {
+								complete: function (response) {
+									var data = jQuery.parseJSON(response.response);
+									var documentids = data['document_ids'];
+									// debugger;
+									setTimeout(function () {
+										bar.setAttribute('hidden', 'hidden');
+									}, 250);
+			            //update existing doc list
+			            // get document filename and categories
+			            var document_info_array = [];
+			            $.post('{{ URL::route("documents.documentInfo", $project->id) }}', {
+			            	'postvars' : documentids,
+			            	'_token' : '{{ csrf_token() }}'
+			            }, function(data) {
+			            	if(data=='0'){
+			            		UIkit.modal.alert("There was a problem getting the documents' information.",{stack: true});
+			            	} else {
+			            		document_info_array = data;
+			            		documentids = documentids + '';
+			            		var documentid_array = documentids.split(',');
+			            		for (var i = 0; i < documentid_array.length; i++) {
+			            			did = documentid_array[i];
+			            			docnameActual = document_info_array[did]['categories']['category_name'] + ' : ' + document_info_array[did]['filename'];
+			            			docname = "'"+docnameActual+"'";
+			            			newinput = '<li>'+
+			            			'<input name="local_documents[]" id="list-document-id-local-'+did+'" value="local-'+did+'" type="checkbox" checked  class="uk-checkbox" onClick="addLocalDocument(this.value,'+docname+')">'+
+			            			'<label for="local-document-id-'+did+'">'+
+			            			'    ' +document_info_array[did]['categories']['category_name']+
+			            			' : ' +document_info_array[did]['filename']+
+			            			'</label>'+
+			            			'<br />'+
+			            			'<ul class="document-category-menu">';
+			            			for(var j = 0; j < document_info_array[did]['categories'].length; j++){
+			            				newinput = newinput +
+			            				'    <li>'+
+			            				'       '+document_info_array[did]['categories'][j]+
+			            				'    </li>';
+			            			}
+			            			newinput = newinput +
+			            			'</ul>'+
+			            			'</li>';
+			            			$("#existing-documents").append(newinput);
+			            			var newid = 'local-'+did;
+			            		}
+			            		addLocalDocument(newid, docnameActual);
+			            	}
+			            });
 								},
 								loadStart: function (e) {
 									bar.removeAttribute('hidden');
@@ -129,62 +177,18 @@
 									bar.value = e.loaded;
 								},
 								completeAll: function (response) {
-									var data = jQuery.parseJSON(response.response);
-									var documentids = data['document_ids'];
-									setTimeout(function () {
-										bar.setAttribute('hidden', 'hidden');
-									}, 250);
-		            //update existing doc list
-		            // get document filename and categories
-		            var document_info_array = [];
-		            $.post('{{ URL::route("documents.documentInfo", $project->id) }}', {
-		            	'postvars' : documentids,
-		            	'_token' : '{{ csrf_token() }}'
-		            }, function(data) {
-		            	if(data=='0'){
-		            		UIkit.modal.alert("There was a problem getting the documents' information.",{stack: true});
-		            	} else {
-		            		document_info_array = data;
-		            		documentids = documentids + '';
-		            		var documentid_array = documentids.split(',');
-		            		for (var i = 0; i < documentid_array.length; i++) {
-		            			did = documentid_array[i];
-		            			docnameActual = document_info_array[did]['categories']['category_name'] + ' : ' + document_info_array[did]['filename'];
-		            			docname = "'"+docnameActual+"'";
-		            			newinput = '<li>'+
-		            			'<input name="local_documents[]" id="list-document-id-local-'+did+'" value="local-'+did+'" type="checkbox" checked  class="uk-checkbox" onClick="addLocalDocument(this.value,'+docname+')">'+
-		            			'<label for="local-document-id-'+did+'">'+
-		            			'    ' +document_info_array[did]['categories']['category_name']+
-		            			' : ' +document_info_array[did]['filename']+
-		            			'</label>'+
-		            			'<br />'+
-		            			'<ul class="document-category-menu">';
-		            			for(var j = 0; j < document_info_array[did]['categories'].length; j++){
-		            				newinput = newinput +
-		            				'    <li>'+
-		            				'       '+document_info_array[did]['categories'][j]+
-		            				'    </li>';
-		            			}
-		            			newinput = newinput +
-		            			'</ul>'+
-		            			'</li>';
-		            			$("#existing-documents").append(newinput);
-		            			var newid = 'local-'+did;
-		            		}
-		            		addLocalDocument(newid, docnameActual);
-		            	}
-		            });
-		          }
-		        };
-		        var select = UIkit.upload('.js-upload', settings);
-		      });
-		    </script>
-		  </div>
-		  @cannot('access_auditor')
-		  <div class="uk-form-row" id="existing-documents"></div>
-		  @endCannot
-		</div>
-		<script>
+
+			          }
+			        };
+			        var select = UIkit.upload('.js-upload', settings);
+			      });
+			    </script>
+			  </div>
+			  @cannot('access_auditor')
+			  <div class="uk-form-row" id="existing-documents"></div>
+			  @endCannot
+			</div>
+			<script>
       // CLONE RECIPIENTS
       function addDocuwareDocument(formValue,name){
         //alert(formValue+' '+name);

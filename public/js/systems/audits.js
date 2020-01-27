@@ -1093,13 +1093,19 @@ function documentsDocuware(project_id) {
     });
 }
 
-function documentsLocal(project_id) {
+function documentsLocal(project_id, audit_id = null, filter = null) {
 	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 	$('#allita-documents').html(tempdiv);
 	$('#project-documents-button-1').removeClass('uk-button-success green-button');
 	$('#project-documents-button-2').addClass('uk-button-success green-button active');
 	$('#docuware-documents').empty();
-	var url = '/projects/'+project_id+'/local-documents';
+	var url = '/projects/'+project_id+'/local-documents/';
+	if(audit_id != null) {
+		url = url+ audit_id;
+	}
+	if(filter != null) {
+		url = url+ filter;
+	}
     $.get(url, {
         }, function(data) {
             if(data=='0'){

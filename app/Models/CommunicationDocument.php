@@ -13,31 +13,31 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class CommunicationDocument extends Model
 {
-    protected $fillable = [
-        'communication_id',
-        'document_id',
-        'sync_docuware_id'
-    ];
+	protected $fillable = [
+		'communication_id',
+		'document_id',
+		'sync_docuware_id',
+	];
 
-    public $timestamps = true;
+	public $timestamps = true;
 
-    /**
-     * Communication
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function communication() : HasOne
-    {
-        return $this->hasOne(\App\Models\Communication::class);
-    }
+	/**
+	 * Communication
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function communication(): HasOne
+	{
+		return $this->hasOne(\App\Models\Communication::class, 'id', 'communication_id');
+	}
 
-    /**
-     * Document
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function document() : HasOne
-    {
-        return $this->hasOne(\App\Models\Document::class, 'id', 'document_id');
-    }
+	/**
+	 * Document
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 */
+	public function document(): HasOne
+	{
+		return $this->hasOne(\App\Models\Document::class, 'id', 'document_id');
+	}
 }

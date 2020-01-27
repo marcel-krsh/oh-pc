@@ -1,6 +1,9 @@
 <script>
 	resizeModal(80);
 </script>
+@php
+	$submit_name = 'submitNewCommunication'. rand();
+@endphp
 
 	<form name="newOutboundEmailFormMain" id="newOutboundEmailFormMain" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
@@ -163,7 +166,7 @@
         <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
         <div class="uk-width-1-3">&nbsp;</div>
         <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="dynamicModalClose();"><i class="a-circle-cross"></i> CANCEL</a></div>
-        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="submitNewCommunication()"><i class="a-paper-plane"></i> SEND</a>
+        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="{{ $submit_name }}()"><i class="a-paper-plane"></i> SEND</a>
         </div>
       </div>
     </div>
@@ -197,7 +200,7 @@
     	$('#done-adding-documents-button').toggle();
     }
 
-    function submitNewCommunication() {
+    function {{ $submit_name }}() {
     	var form = $('#newOutboundEmailFormMain');
     	var no_alert = 1;
     	var recipients_array = [];

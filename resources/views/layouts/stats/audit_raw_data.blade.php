@@ -1,308 +1,274 @@
-<?php 
+<?php
 function decimalHours($time)
 {
-    $hms = explode(":", $time);
-    $hours = ($hms[0] + ($hms[1]/60) + ($hms[2]/3600));
-    return (number_format((float)$hours, 2, '.', ''));
+	$hms = explode(":", $time);
+	$hours = ($hms[0] + ($hms[1] / 60) + ($hms[2] / 3600));
+	return (number_format((float) $hours, 2, '.', ''));
 }
+
 ?>
 <html>
 <head>
-<title>Audit Stats - Ugly Output</title>
-<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
-<script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
-<script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>
-<script type="text/javascript" src="/js/systems/findings.js{{ asset_version() }}"></script>
-<script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
+	<title>Audit Stats - Excel Output</title>
+	<link rel="stylesheet" href="/css/documents-tab.css{{ asset_version() }}">
+	<script type="text/javascript" src="/js/systems/system.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/audits.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/findings.js{{ asset_version() }}"></script>
+	<script type="text/javascript" src="/js/systems/communications.js{{ asset_version() }}"></script>
 
-<script type="text/javascript" src="/js/jquery.mask.js"></script>
-<style type="text/css">
-	
-	body {
-		font-family: sans-serif;
-		font-size: 17pt;
-	}
-	table.greyGridTable {
-  border: 0px solid #FFFFFF;
-  
-  text-align: left;
-  border-collapse: collapse;
-}
-table.greyGridTable td, table.greyGridTable th {
-  border: 1px solid #A8A8A8;
-  padding: 6px 5px;
-}
-table.greyGridTable tbody td {
-  font-size: 13px;
-}
-table.greyGridTable td:nth-child(even) {
-  background: #EBEBEB;
-}
-table.greyGridTable thead {
-  background: #FFFFFF;
-  border-bottom: 4px solid #AAAAAA;
-}
-table.greyGridTable thead th {
-  font-size: 15px;
-  font-weight: bold;
-  color: #2B2B2B;
-  text-align: center;
-  border-left: 2px solid #AAAAAA;
-}
-table.greyGridTable thead th:first-child {
-  border-left: none;
-}
+	<script type="text/javascript" src="/js/jquery.mask.js"></script>
 
-table.greyGridTable tfoot {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333333;
-  border-top: 4px solid #AEAEAE;
-}
-table.greyGridTable tfoot td {
-  font-size: 14px;
-}
-</style>
 
 </head>
 <body>
 
 
-		<table class="greyGridTable" width="3500" >
-			<thead>
-				<tr>
-				<th width="100">
+	<table class="greyGridTable" width="3500" >
+		<thead>
+			<tr>
+				<th>
 					Audit Number
 				</th>
-				<th width="200">
+				<th>
 					Lead Auditor
 				</th>
-				<th width="200">
+				<th>
 					Inspection Date
 				</th>
-				<th width="200">
+				<th>
 					Project Manager
 				</th>
-				
-				<th width="200">
+
+				<th>
 					Project Number
 				</th>
-				<th width="200">
+				<th>
 					Project Name
 				</th>
-				<th width="100">
+				<th>
 					Address
 				</th>
-				<th width="100">
+				<th>
 					City
 				</th>
-				<th width="100">
+				<th>
 					State
 				</th>
-				<th width="100">
+				<th>
 					Zip
 				</th>
-				<th width="100">
+				<th>
 					Buildings Inspected
 				</th>
-				<th width="100">
+				<th>
 					Units Inspected
 				</th>
-				<th width="100">
+				<th>
 					Estimated Time
 				</th>
-				<th width="100">
+				<th>
 					Unscheduled
 				</th>
-				<th width="100">
+				<th>
 					File Findings
 				</th>
-				<th width="100">
+				<th>
 					Unresolved File Findings
 				</th>
-				<th width="100">
+				<th>
 					NLT Findings
 				</th>
-				<th width="100">
+				<th>
 					Unresolved NLT Findings
 				</th>
-				<th width="100">
+				<th>
 					LT Findings
 				</th>
-				<th width="100">
+				<th>
 					Unresolved LT Findings
 				</th>
-				
-				<th width="100">
+
+				<th>
 					CAR Status
 				</th>
-				
-				<th width="100">
+
+				<th>
 					EHS Status
 				</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr >
-					<td>
-						TOTALS
-					</td>
-					<td>
-						
-					</td>
-					<td>
-						
-					</td>
-					<td>
-						
-					</td>
-					<td >
-						{{$cachedAudits->count()}}
-						PROJECTS
-						
-					</td>
-					<td>
-					</td>
-					<td >
-					</td>
-					<td >
-					</td>
-					<td >
-					</td>
-					<td >
-					</td>
-					<td>
-						{{number_format($cachedAudits->sum('total_buildings'))}}
-					</td>
-					<td>
-						{{number_format($cachedAudits->sum('total_units'))}}
-					</td>
-					<td>
-						{{number_format($totalEstimatedTime/3600)}} HOURS
-					</td>
-					<td>
-						{{number_format($totalEstimatedTimeNeeded/3600)}} HOURS
-					</td>
-					<td>
-						{{number_format($cachedAudits->sum('file_findings_count'))}}
-					</td>
-					<td>
-						{{number_format($cachedAudits->sum('unresolved_file_findings_count'))}}
-					</td>
-					<td>
-						{{number_format($cachedAudits->sum('nlt_findings_count'))}}
-					</td>
-					<td>
-						{{number_format($cachedAudits->sum('unresolved_nlt_findings_count'))}}
-					</td>
-					<td>
-						{{number_format($cachedAudits->sum('lt_findings_count'))}}
-					</td>
-					<td>
-						{{number_format($cachedAudits->sum('unresolved_nlt_findings_count'))}}
-					</td>
-					<td >
-						
-					
-						
-					</td>
-					<td >
-						
-						
-					</td>
-				</tr>
-				@forEach($cachedAudits as $ca)
-				<tr>
-					<td>
-						{{$ca->audit_id}}
-					</td>
-					<td>
-						
-						{{$ca->lead_json->name}}
-					</td>
-					<td>
-						{{date('m-d-Y', strtotime($ca->inspection_schedule_date))}}
-					</td>
-					<td>
-						{{$ca->pm}}
-					</td>
-					
-					<td>
-						{{$ca->project_ref}}
-					</td>
-					<td>
-						{{$ca->title}}
-					</td>
-					<td>
-						{{$ca->address}}
-						
-					</td>
-					<td>
-						{{$ca->city}}
-						
-					</td>
-					<td>
-						{{$ca->state}}
-						
-					</td>
-					<td>
-						{{$ca->zip}}
-						
-					</td>
-					<td>
-						{{$ca->total_buildings}}
-					</td>
-					<td>
-						{{$ca->total_units}}
-					</td>
-					<td>
-						@if(!is_null($ca->estimated_time))
-							{{decimalHours($ca->estimated_time)}}
-						@else
-						0.0
-						@endif
-					</td>
-					<td>
-						@if(!is_null($ca->estimated_time_needed))
-							{{decimalHours($ca->estimated_time_needed)}}
-						@else
-						0.0
-						@endif
-					</td>
-					<td>
-						{{$ca->file_findings_count}}
-					</td>
-					<td>
-						{{$ca->unresolved_file_findings_count}}
-					</td>
-					<td>
-						{{$ca->nlt_findings_count}}
-					</td>
-					<td>
-						{{$ca->unresolved_nlt_findings_count}}
-					</td>
-					<td>
-						{{$ca->lt_findings_count}}
-					</td>
-					<td>
-						{{$ca->unresolved_nlt_findings_count}}
-					</td>
-					
-					<td>
-						@if(!is_null($ca->car_id)) {{$ca->car_status_text}} @else NA @endif
-					</td>
-					
-					<td>
-						@if(!is_null($ca->ehs_id)) {{$ca->ehs_status_text}} @else NA @endif
-					</td>
-				</tr>
-				@endForEach
-				
-			</tbody>
+			</tr>
+		</thead>
+		<tbody>
+			<tr >
+				<td>
+					TOTALS
+				</td>
+				<td>
+
+				</td>
+				<td>
+
+				</td>
+				<td>
+
+				</td>
+				<td >
+					{{-- =CONCATENATE(COUNTIF(E3:E30000, "*")," PROJECTS") --}}
+					=CONCATENATE(COUNTA(E3:E30000)," PROJECTS")
+				</td>
+				<td>
+				</td>
+				<td >
+				</td>
+				<td >
+				</td>
+				<td >
+				</td>
+				<td >
+				</td>
+				<td>
+					=SUM(K3:K30000)
+					{{-- {{ number_format($cachedAudits->sum('total_buildings')) }} --}}
+				</td>
+				<td>
+					=SUM(L3:L30000)
+					{{-- {{ number_format($cachedAudits->sum('total_units')) }} --}}
+				</td>
+				<td>
+					{{-- =SUM(M3:M30000) --}}
+					=CONCATENATE(SUM(M3:M30000)," HOURS")
+					{{-- {{ number_format($totalEstimatedTime/3600) }} HOURS --}}
+				</td>
+				<td>
+					{{-- =SUM(N3:N30000) --}}
+					=CONCATENATE(SUM(N3:N30000)," HOURS")
+					{{-- {{ number_format($totalEstimatedTimeNeeded/3600) }} HOURS --}}
+				</td>
+				<td>
+					=SUM(O3:O30000)
+					{{-- {{ number_format($cachedAudits->sum('file_findings_count')) }} --}}
+				</td>
+				<td>
+					=SUM(P3:P30000)
+					{{-- {{ number_format($cachedAudits->sum('unresolved_file_findings_count')) }} --}}
+				</td>
+				<td>
+					=SUM(Q3:Q30000)
+					{{-- {{ number_format($cachedAudits->sum('nlt_findings_count')) }} --}}
+				</td>
+				<td>
+					=SUM(R3:R30000)
+					{{-- {{ number_format($cachedAudits->sum('unresolved_nlt_findings_count')) }} --}}
+				</td>
+				<td>
+					=SUM(S3:S30000)
+					{{-- {{ number_format($cachedAudits->sum('lt_findings_count')) }} --}}
+				</td>
+				<td>
+					=SUM(T3:T30000)
+					{{-- {{ number_format($cachedAudits->sum('unresolved_nlt_findings_count')) }} --}}
+				</td>
+				<td >
 
 
-		</table>
-	
+
+				</td>
+				<td >
+
+
+				</td>
+			</tr>
+			@forEach($cachedAudits as $ca)
+			<tr>
+				<td>
+					{{ $ca->audit_id }}
+				</td>
+				<td>
+
+					{{ $ca->lead_json->name }}
+				</td>
+				<td>
+					{{ date('m-d-Y', strtotime($ca->inspection_schedule_date)) }}
+				</td>
+				<td>
+					{{ $ca->pm }}
+				</td>
+
+				<td>
+					{{ $ca->project_ref }}
+				</td>
+				<td>
+					{{ $ca->title }}
+				</td>
+				<td>
+					{{ $ca->address }}
+
+				</td>
+				<td>
+					{{ $ca->city }}
+
+				</td>
+				<td>
+					{{ $ca->state }}
+
+				</td>
+				<td>
+					{{ $ca->zip }}
+
+				</td>
+				<td>
+					{{ $ca->total_buildings }}
+				</td>
+				<td>
+					{{ $ca->total_units }}
+				</td>
+				<td>
+					@if(!is_null($ca->estimated_time))
+					{{ decimalHours($ca->estimated_time) }}
+					@else
+					0.0
+					@endif
+				</td>
+				<td>
+					@if(!is_null($ca->estimated_time_needed))
+					{{ decimalHours($ca->estimated_time_needed) }}
+					@else
+					0.0
+					@endif
+				</td>
+				<td>
+					{{ $ca->file_findings_count }}
+				</td>
+				<td>
+					{{ $ca->unresolved_file_findings_count }}
+				</td>
+				<td>
+					{{ $ca->nlt_findings_count }}
+				</td>
+				<td>
+					{{ $ca->unresolved_nlt_findings_count }}
+				</td>
+				<td>
+					{{ $ca->lt_findings_count }}
+				</td>
+				<td>
+					{{ $ca->unresolved_nlt_findings_count }}
+				</td>
+
+				<td>
+					@if(!is_null($ca->car_id)) {{ $ca->car_status_text }} @else NA @endif
+				</td>
+
+				<td>
+					@if(!is_null($ca->ehs_id)) {{ $ca->ehs_status_text }} @else NA @endif
+				</td>
+			</tr>
+			@endForEach
+
+		</tbody>
+
+
+	</table>
+
 
 </body>
 </html>

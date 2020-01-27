@@ -40,7 +40,7 @@ class EmailCommunicationNotification extends Mailable
     $owner        = $this->nt->from_user;
     $user         = $this->nt->to_user;
     $data         = $this->nt->data;
-    $greeting     = "Hello " . $user->person->first_name . ',';
+    $greeting     = "Hello " . $user->person ? $user->person->first_name : $user->name . ',';
     $action_text  = "VIEW COMMUNICATION";
     $action_url   = $data['base_url'] . $this->nt->token;
     $level        = "success";

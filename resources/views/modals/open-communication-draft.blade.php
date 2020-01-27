@@ -1,3 +1,6 @@
+@php
+	$submit_name = 'submitNewDraftCommunication'. rand();
+@endphp
 @if(session()->has('old_communication_modal'))
 <script>
 	window.oldCommunicationModal = "{{ session()->get('old_communication_modal') }}";
@@ -192,7 +195,7 @@ session(['old_communication_modal' => $random]);
         <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
         <div class="uk-width-1-3">&nbsp;</div>
         <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="dynamicModalCommunicationClose();"><i class="a-circle-cross"></i> CANCEL</a></div>
-        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="submitNewDraftCommunication()"><i class="a-paper-plane"></i> SEND</a>
+        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="{{ $submit_name }}()"><i class="a-paper-plane"></i> SEND</a>
         </div>
       </div>
     </div>
@@ -226,7 +229,7 @@ session(['old_communication_modal' => $random]);
     	$('#done-adding-documents-button').toggle();
     }
 
-    function submitNewDraftCommunication() {
+    function {{ $submit_name }}() {
     	var form = $('#newOutboundEmailFormDraft');
     	var no_alert = 1;
     	var recipients_array = [];

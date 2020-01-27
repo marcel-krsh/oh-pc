@@ -1,5 +1,10 @@
+ @php
+$projectIds = [];
+$projectsHtml = '';
+$thisProjectHtml = '';
+@endphp
  <a name="usertop"></a>
- <div class="uk-overflow-container uk-margin-top">
+ <div class="uk-overflow-container uk-margin-top" >
 
  	<div uk-grid class="uk-margin-remove">
  		<h4 class="uk-text-left uk-width-2-3" style="padding-top: 8px;">{{ number_format($users->total(), 0) }} TOTAL USERS</h4>
@@ -9,8 +14,8 @@
  	</div>
  	<hr>
  	{{ $users->links() }} <a onClick="dynamicModalLoad('createuser');" class="uk-badge uk-margin-top uk-badge-success"><i class="a-circle-plus"></i> CREATE USER</a> <a href="#userbottom" id="user-scroll-to-top" class="uk-badge uk-overlay-background uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a> @if( Session::get('users-search')) &nbsp;&nbsp; <a onclick="$('#users-search').val(''); searchUsers();" class="uk-badge uk-overlay-background uk-margin-top" uk-tooltip title="CLICK TO CLEAR SEARCH"><i class="a-circle-cross"></i> {{ strtoupper(Session::get('users-search')) }} &nbsp;</a> @endIf
- 	<table class="uk-table uk-table-hover uk-table-striped uk-overflow-container small-table-text">
- 		<thead>
+ 	<table class="uk-table uk-table-hover uk-table-striped uk-overflow-container small-table-text" >
+ 		<thead >
  			<th>
  				<small>ID</small>
  			</th>
@@ -38,7 +43,36 @@
  			<tr class="{{ !$user->active ? 'uk-text-muted' : '' }}">
  				<td><small>{{$user->id}}</small></td>
  				<td>@can('access_root')<span uk-tooltip title="USER_ID: {{$user->id}} USER_KEY: {{$user->devco_key}}">@endCan{{ $user->first_name }} {{ $user->last_name }}@can('access_root')</span>@endCan <br /><small>
- 					@if($user->role)ROLE:{{strtoupper($user->role->role->role_name)}}@else NO ACCESS @endIf</small></td>
+ 					@if($user->role)ROLE:{{strtoupper($user->role->role->role_name)}}@else NO ACCESS @endIf</small>
+ 					@php
+							$devco_projects = $user->person->projects;
+									// if($user->id == 6380)
+									// 	dd($devco_projects);
+							$allita_projects = $user->report_access->pluck('project');
+							$all_projects = $devco_projects->merge($allita_projects)->unique();
+							@endphp
+							@if(count($all_projects) > 0)
+							<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
+							<small>
+								<span onclick="$('#user-{{ $user->id }}-projects').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW PROJECT(S)"><i class="a-info-circle"></i>
+									Total Projects: {{ count($all_projects) }}
+								</span>
+							</small>
+							<div id="user-{{ $user->id }}-projects" style="display: none;">
+								<small><ul>
+									@forEach($all_projects as $p)
+									<li>
+										{{ $p->project_number }} : {{ $p->project_name }}
+									</li>
+									@php
+									array_push($projectIds, $p->id);
+									$projectsHtml = $projectsHtml . $p->project_number . ' : ' . $p->project_name . '<br>';
+									@endphp
+									@endForEach
+								</ul></small>
+							</div>
+							@endIf
+ 				</td>
  				<td><small>@if($user->organization_name)
  					{{ $user->organization_details->organization_name }}@else NA @endif</small></td>
  					<td><small>@if($user->has_address())

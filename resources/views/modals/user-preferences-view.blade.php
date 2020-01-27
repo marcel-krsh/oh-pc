@@ -4,9 +4,9 @@
 			<div class="user-preference-col-1  uk-padding-remove uk-margin-small-top">
 				<div uk-grid>
 					<div class="uk-width-1-1 uk-padding-remove-left">
-						<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{ $data['summary']['name'] }};" class="user-badge user-badge-{{ $data['summary']['color'] }} user-badge-bigger no-float uk-link">
+						<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{ $data['summary']['name'] }};" class="user-badge user-badge-{{ $data['summary']['color'] }} user-badge-v2 uk-align-center user-badge use-hand-cursor">
 							{{ $data['summary']['initials'] }}
-						</span> {{ $data['summary']['name'] }} <br /><small>{{ $data['summary']['email'] }} | {{ $data['summary']['phone'] }}</small>
+						</span> {{ $data['summary']['name'] }} <br /><small>{{ $data['summary']['email'] }} | {{ $data['summary']['phone'] }}</small> </h3>
 					</div>
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<form class="uk-form">
@@ -100,9 +100,9 @@
 						<form name="newavailabilityform" id="newavailabilityform" method="post">
 							<div uk-grid>
 								<div class="uk-width-1-2 uk-padding-remove">
-									<label class="uk-form-label" for="daterange">DATE RANGE</label>
+									<label class="uk-form-label" for="availabilitydaterange">DATE RANGE</label>
 									<div class="uk-form-controls">
-										<input type="text" id="daterange" name="daterange" value="" class="uk-input flatpickr flatpickr-input active"/>
+										<input type="text" id="availabilitydaterange" name="availabilitydaterange" value="" class="uk-input flatpickr flatpickr-input active"/>
 									</div>
 								</div>
 								<div class="uk-width-1-4">
@@ -455,7 +455,7 @@
 	 	}
 	 }
 
-	 $('.uk-modal-body').animate({
+	 $('.modal-user-preferences').animate({
 	 	@if(Auth::user()->id == $data['summary']['id']) width: "70%" @else width:"30%" @endIf
 	 });
 
@@ -490,11 +490,11 @@
 	 	var form = $('#newavailabilityform');
 
 		// check if date is not empty
-		if($("#daterange").val().length === 0) {
-			$("#daterange").addClass('uk-form-danger');
+		if($("#availabilitydaterange").val().length === 0) {
+			$("#availabilitydaterange").addClass('uk-form-danger');
 			return false;
 		}else{
-			$("#daterange").removeClass('uk-form-danger');
+			$("#availabilitydaterange").removeClass('uk-form-danger');
 		}
 
 		// at least one day should be selected
@@ -529,7 +529,7 @@
 	}
 
 	function setDate(date, name){
-		$('#daterange').val(date);
+		$('#availabilitydaterange').val(date);
 		// also make sure the day of the week is selected
 		if(!$("input[name='"+name+"']:checkbox").is(':checked')){
 			selectday(".dayselector-"+name, name);
@@ -623,7 +623,7 @@
 		<script>
 			flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
-			flatpickr("#daterange", {
+			flatpickr("#availabilitydaterange", {
 				mode: "range",
 				minDate: "today",
 				altFormat: "F j, Y",

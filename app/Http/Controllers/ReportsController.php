@@ -2,26 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Audit;
-use App\Models\CachedAudit;
-use App\Models\CrrApprovalType;
-use App\Models\CrrPart;
-use App\Models\CrrPartOrder;
-use App\Models\CrrReport;
-use App\Models\CrrSection;
-use App\Models\CrrSectionOrder;
-use App\Models\GuideProgress;
-use App\Models\GuideStep;
-use App\Models\People;
-use App\Models\Project;
-use App\Models\ProjectProgram;
-use App\Models\ReportAccess;
-use App\Models\User;
 use Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Response;
+use Validator;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Audit;
+use App\Models\People;
+use App\Models\CrrPart;
+use App\Models\Project;
 use Twilio\Rest\Client;
+use App\Models\CrrReport;
+use App\Models\GuideStep;
+use App\Models\CrrSection;
+use App\Models\CachedAudit;
+use Illuminate\Support\Arr;
+use App\Models\CrrPartOrder;
+use App\Models\ReportAccess;
+use Illuminate\Http\Request;
+use App\Models\GuideProgress;
+use App\Models\ProjectProgram;
+use App\Models\CrrApprovalType;
+use App\Models\CrrSectionOrder;
 
 class ReportsController extends Controller
 {
@@ -163,7 +165,6 @@ class ReportsController extends Controller
 						$note = 'Changed report status from ' . $report->status_name() . ' to Approved.';
 						if (is_null($report->manager_id) || Auth::user()->id != $report->manger_id) {
 							$note .= ' Updated prior manager approval, and refreshed report to reflect the change.';
-							$this->generateReport($report, 0, 1);
 						}
 						$report->update(['crr_approval_type_id' => 5, 'manager_id' => Auth::user()->id]);
 						$this->generateReport($report, 0, 1);
@@ -181,7 +182,6 @@ class ReportsController extends Controller
 					} else {
 						$note = 'Unable to send report. There is no default email for a property manager on this project. Status will remain:' . $report->status_name() . '.';
 					}
-
 					break;
 				case 7:
 					// Viewed by PM...
@@ -198,7 +198,7 @@ class ReportsController extends Controller
 					break;
 				case 9:
 					// All items resolved ...
-					if (Auth::user()->can('access_manager')) {
+					if (Auth::user()->can('access_auditor')) {
 						$note = Auth::user()->name . ' updated the status to ' . $report->status_name();
 						if (!is_null($report->manager_id)) {
 							$report->update(['crr_approval_type_id' => 9]);
@@ -512,12 +512,14 @@ class ReportsController extends Controller
 	{
 		//replace string value with current audit values.
 		$string = str_replace('||REPORT ID||', $report->id, $string);
-		$string = str_replace('||VERSION||', ($report->version + 1), $string);
+		$string = str_replace('||VERSION||', $report->version, $string);
 		$string = str_replace('||PROJECT NAME||', $audit->project->project_name, $string);
 		$string = str_replace('||AUDIT ID||', $audit->id, $string);
 		$string = str_replace('||PROJECT NUMBER||', $audit->project->project_number, $string);
-		if ($audit->start_date) {
-			$string = str_replace('||REVIEW DATE||', '<strong>' . date('m/d/Y', strtotime($audit->completed_date)) . '</strong>', $string);
+		// if ($audit->start_date) {
+		// 	$string = str_replace('||REVIEW DATE||', '<strong>' . date('m/d/Y', strtotime($audit->completed_date)) . '</strong>', $string);
+		if (!is_null($report->review_date)) {
+			$string = str_replace('||REVIEW DATE||', '<strong>' . date('m/d/Y', strtotime($report->review_date)) . '</strong>', $string);
 		} else {
 			$string = str_replace('||REVIEW DATE||', 'START DATE NOT SET', $string);
 		}
@@ -526,7 +528,8 @@ class ReportsController extends Controller
 		} else {
 			$string = str_replace('||RESPONSE DUE||', '<span style="color:red;" class="attention">DATE NOT SET</span>', $string);
 		}
-		$string = str_replace('||TODAY||', date('M d, Y', time()), $string);
+		$letter_date = is_null($report->letter_date) ? date('M d, Y', time()) : date('M d, Y', strtotime($report->letter_date));
+		$string = str_replace('||TODAY||', $letter_date, $string);
 		//return ['organization_id'=> $owner_organization_id,'organization'=> $owner_organization, 'name'=>$owner_name, 'email'=>$owner_email, 'phone'=>$owner_phone, 'fax'=>$owner_fax, 'address'=>$owner_address, 'line_1'=>$owner_line_1, 'line_2'=>$owner_line_2, 'city'=>$owner_city, 'state'=>$owner_state, 'zip'=>$owner_zip ];
 		$projectDetails = $audit->project->details($audit->id);
 		$string = str_replace('||OWNER ORGANIZATION NAME||', $projectDetails->owner_name, $string);
@@ -691,6 +694,8 @@ class ReportsController extends Controller
 						$newPartOrder->save();
 					}
 				}
+
+				$this->generateReport($report, 1);
 			} else {
 				if ($audit->cached_audit->step_id < 61) {
 					//dd($audit,$audit->cachedAudit);
@@ -818,10 +823,13 @@ class ReportsController extends Controller
 
 	public function getReport(CrrReport $report, Request $request)
 	{
+		// return $report;
 		if ($report) {
 			// return $report->status_name();
 			$oneColumn = null;
 			$current_user = Auth::user();
+			$auditor_access = $current_user->auditor_access();
+			$manager_access = $current_user->manager_access();
 			// check if logged in user has access to this report if they are not an auditor:
 			$loadReport = 0;
 			if (Auth::user()->cannot('access_auditor')) {
@@ -849,6 +857,8 @@ class ReportsController extends Controller
 					return '<meta http-equiv="refresh" content="0;url=/report/' . $report->id . '" />';
 				} else {
 					$data = json_decode($report->crr_data);
+					$versions_count = count($data);
+					// return count($data);
 					$version = $report->version;
 					if ($request->get('version')) {
 						$version = intval($request->get('version'));
@@ -872,11 +882,12 @@ class ReportsController extends Controller
 					$this->reportHistory($report, $history);
 					$x = json_decode($report->crr_data);
 					//return dd(collect($x)[48]);
-
+					// echo 12;
+					// return 12;
 					if ($request->get('print') != 1) {
-						return view('crr.crr', compact('report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn'));
+						return view('crr.crr', compact('versions_count', 'report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access'));
 					} else {
-						return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn'));
+						return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access'));
 					}
 				}
 			} else {
@@ -895,12 +906,14 @@ class ReportsController extends Controller
 
 	public function generateReport(CrrReport $report, $goToView = 1, $noStatusChange = 0)
 	{
-		// return $report = CrrReport::find($report);
+		//return $report = CrrReport::find($report);
 		if ($report) {
 			$data = [];
 			if (!is_null($report->crr_data)) {
 				// get current version and add 1 to it
 				$version = $report->version + 1;
+				$report->version = $version;
+				$report->save();
 				$data = collect(json_decode($report->crr_data))->toArray();
 			} else {
 				$version = 1;
@@ -912,7 +925,8 @@ class ReportsController extends Controller
 				// process each section
 				$data[$index]['version-' . $version]['section-' . $sectionOrder] = ['crr_section_id' => $section->id];
 				$partOrder = 1;
-				foreach ($section->parts as $part) {
+				foreach ($section->parts as $pkey => $part) {
+					// return $part;
 					//dd($part);
 					//make magic happen.
 					$method = $part->crr_part_type->method_name;
@@ -1276,4 +1290,72 @@ class ReportsController extends Controller
 			);
 		}
 	}
-}
+
+	public function reportDates($id)
+	{
+		$report = CrrReport::select('letter_date', 'review_date', 'response_due_date')->find($id);
+		if ($report) {
+			// return $report->letter_date;
+			// return Carbon::parse(strtotime($report->letter_date))->format('F j, Y');
+			//get current dates
+			//||REVIEW DATE|| in header and Letter:  $audit->completed_date, review_date - add to audit too
+			//||TODAY|| in Letter:  date('M d, Y', time(), letter_date
+			//||RESPONSE DUE||in letter: $report->response_due_date,
+			return view('modals.report-dates', compact('report'));
+		} else {
+			return 'Report not found, please contact admin.';
+		}
+	}
+
+	public function saveReportDates($id, Request $request)
+	{
+		$report = CrrReport::find($id);
+		if ($report) {
+			$rules = [
+				'review_date' => 'required',
+				'letter_date' => 'required',
+			];
+			$validator = Validator::make($request->all(), $rules);
+			if ($validator->fails()) {
+				return response()->json(['errors' => $validator->errors()->all()]);
+			}
+
+			//use DB Transaction
+			$note = '';
+			$changes = [];
+			if (Carbon::parse($request->review_date) != $report->review_date) {
+				$changes = array_merge($changes, [' changed the review date from ' . Carbon::parse(strtotime($report->review_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->review_date))->format('F j, Y')]);
+				$note = $note . Auth::user()->full_name() . ' changed the review date from ' . Carbon::parse(strtotime($report->review_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->review_date))->format('F j, Y') . '. ';
+			}
+			if (Carbon::parse($request->letter_date) != $report->letter_date) {
+				$changes = array_merge($changes, [' changed review date from ' . Carbon::parse(strtotime($report->letter_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->letter_date))->format('F j, Y')]);
+				$note = $note . Auth::user()->full_name() . ' changed the letter date from ' . Carbon::parse(strtotime($report->letter_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->letter_date))->format('F j, Y') . '. ';
+			}
+			if (Carbon::parse($request->response_due_date) != $report->response_due_date) {
+				$changes = array_merge($changes, [' changed the response due date from ' . Carbon::parse(strtotime($report->response_due_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->response_due_date))->format('F j, Y')]);
+				$note = $note . Auth::user()->full_name() . ' changed the response due date from ' . Carbon::parse(strtotime($report->response_due_date))->format('F j, Y') . ' to ' . Carbon::parse(strtotime($request->response_due_date))->format('F j, Y') . '. ';
+			}
+			$note = implode(', ', $changes);
+			if ($note == '') {
+				$validator->getMessageBag()->add('letter_date', 'Looks like dates are not changed, you can close this modal by clicking cancel button if no changes are required.');
+				return response()->json(['errors' => $validator->errors()->all()]);
+			} else {
+				$note = Auth::user()->full_name() . $note . '.';
+			}
+			// return $note;
+
+			$history = ['date' => date('m/d/Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => $note];
+			$this->reportHistory($report, $history);
+			$report->review_date = Carbon::parse($request->review_date);
+			$report->letter_date = Carbon::parse($request->letter_date);
+			if ($request->has('response_due_date') && $request->response_due_date != '') {
+				$report->response_due_date = Carbon::parse($request->response_due_date);
+			}
+			$report->save();
+			$this->generateReport($report);
+			return 1;
+		} else {
+			return 'Report not found, please contact admin.';
+		}
+	}
+};

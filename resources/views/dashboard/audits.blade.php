@@ -188,7 +188,8 @@
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-1-1 uk-margin-top">
-			<div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{ count($audits) }}  Audits </div>
+			<div class="uk-button-success green-button uk-badge uk-text-right@s uk-margin-right uk-margin-top" style="float:right;">&nbsp;<a href="{{ url('audit_raw_data') }}" class="uk-dark uk-light" uk-tooltip="title:Export All Matching Audits; pos: top-right;" title="" aria-expanded="false"><span class="a-lower"></span> EXPORT</a>&nbsp;</div>
+			<div class="uk-badge uk-align-right uk-label uk-margin-top uk-margin-right">{{ count($audits) }}  {{ count($audits) == 1 ?'AUDIT' : 'AUDITS' }} </div>
 			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
 				@if($auditor_access)
@@ -1237,7 +1238,7 @@
 				<?php $latestCachedAudit = '2000-01-01 12:00:00';?>
 				@foreach($audits as $audit)
 				<?php if (strtotime($audit->updated_at) > strtotime($latestCachedAudit)) {
-  $latestCachedAudit = $audit->updated_at;
+	$latestCachedAudit = $audit->updated_at;
 }
 ?>
 				<tr id="audit-r-{{ $audit->audit_id }}" class="{{ $audit['status'] }} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
@@ -2369,9 +2370,11 @@ function updateAuditBuildingInspection(e) {
 			}
 			loadCalendar();
 			console.log( "ready!" );
+			@if(!local())
 			window.setInterval(function(){
 				checkForUpdatedAudits(window.onPageAudits);
 			}, 5000);
+			@endif
 
 		});
 	</script>

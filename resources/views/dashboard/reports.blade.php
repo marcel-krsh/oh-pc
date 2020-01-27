@@ -266,7 +266,6 @@ $crrTypeSelection    = 'all';
     					</div>
     				</header>
     				<div class="uk-comment-body">
-
     				</div>
     			</article>
 
@@ -279,8 +278,11 @@ $crrTypeSelection    = 'all';
 <?php // keep this script at the bottom of page to ensure the tabs behave appropriately ?>
 <script>
 	window.reportsLoaded = 1;
-	function openUserPreferencesView(){
-		dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences-view',0,0,1);
+	function openUserPreferencesView(userId = null){
+		if(userId == null)
+			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences-view',0,0,1);
+		else
+			dynamicModalLoad('auditors/'+userId+'/preferences-view',0,0,1);
 	}
 </script>
 <?php // end script keep ?>

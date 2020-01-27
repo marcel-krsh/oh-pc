@@ -3,41 +3,90 @@
 		<div uk-grid>
 			<div class="user-preference-col-1  uk-padding-remove uk-margin-small-top">
 				<div uk-grid>
-					<div class="uk-width-1-1 uk-padding-remove-left">
-						<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{$data['summary']['name']}};" class="user-badge user-badge-{{$data['summary']['color']}} user-badge-bigger no-float uk-link">
-							{{$data['summary']['initials']}}
-						</span> {{$data['summary']['name']}} <br /><small>{{$data['summary']['email']}} | {{$data['summary']['phone']}}</small>
-						@if(Auth::user()->id == $data['summary']['id'])
+					<div class="uk-width-1-1 uk-padding-remove-left" id="user-info">
+						<h3><span id="audit-avatar-badge-1" uk-tooltip="pos:top-left;title:{{ $data['summary']['name'] }};" class="user-badge-{{ $data['summary']['color'] }} user-badge-v2 uk-align-center user-badge use-hand-cursor">
+							{{ $data['summary']['initials'] }}
+						</span> {{ $data['summary']['name'] }} <i class="a-edit use-hand-cursor" uk-tooltip title="EDIT MY INFORMATION"  onclick="editUserInformationForm();"></i> <br /><small>{{ $data['summary']['email'] }} | {{ $data['summary']['phone'] }}</small>
+						@if($current_user->id == $data['summary']['id'])
 						<a href="javascript:logout()" class="uk-button uk-button-small uk-padding-small-top uk-align-right"><i class="a-circle-keyhole"></i> LOGOUT</a></h3>
 						<form id="logout-form" action="/logout" method="POST" style="display: none;" siq_id="autopick_1705">
-							<input type="hidden" name="_token" value="{{csrf_token()}}">
+							<input type="hidden" name="_token" value="{{ csrf_token() }}">
 						</form>
-						@can('access_auditor')
+						@if($auditor_access)
 						<a href="javascript:launchMobile()" class="uk-button uk-button-small uk-padding-small-top uk-align-left uk-visible@m" style="margin-left: 38px; padding-top: 3px;"><i class="a-mobile-home"></i> SEND AUTO-LOGIN TO YOUR PHONE</a>
-							<script>
-								function launchMobile(){
-									var number = prompt("Please enter your mobile area code and phone number (no dashes or spaces please)");
-
-										$.post("/mobile/request_auto_login", {
-											'number' : number,
-											'_token' : '{{ csrf_token() }}'
-										}, function(data) {
-											if(data!=1){
-												UIkit.modal.alert(data+'<br /><br />NOTE: Do not dismiss this modal until you have input the code above on your phone.',{stack: true});
-											} else {
-												UIkit.notification('<span uk-icon="icon: check"></span> Unable to Send Link.', {pos:'top-right', timeout:1000, status:'warning'});
-											}
-										} );
-								}
-							</script>
-						@endCan
-						@endIf
+						<script>
+							function launchMobile(){
+								var number = prompt("Please enter your mobile area code and phone number (no dashes or spaces please)");
+								$.post("/mobile/request_auto_login", {
+									'number' : number,
+									'_token' : '{{ csrf_token() }}'
+								}, function(data) {
+									if(data!=1){
+										UIkit.modal.alert(data+'<br /><br />NOTE: Do not dismiss this modal until you have input the code above on your phone.',{stack: true});
+									} else {
+										UIkit.notification('<span uk-icon="icon: check"></span> Unable to Send Link.', {pos:'top-right', timeout:1000, status:'warning'});
+									}
+								} );
+							}
+						</script>
+						@endif
+						@endif
 					</div>
-					@can('access_auditor')
-					@if(Auth::user()->id == $data['summary']['id'])
+
+					<form id="edit-user-info" method="post" class="uk-width-1-1 uk-margin-bottom" style="display:none;">
+						<h3>Edit My Info</h3>
+						<div class="alert alert-danger uk-text-danger" style="display:none"></div>
+						<div class="uk-grid-small uk-grid" uk-grid="">
+							<div class="uk-width-1-2">
+								<input id="first_name" name="first_name" type="text" class="uk-input" value="{{ $data['summary']['first_name'] }}" placeholder="Enter first name*">
+							</div>
+							<div class="uk-width-1-2 uk-margin-bottom">
+								<input id="last_name" name="last_name" type="text" class="uk-input" value="{{ $data['summary']['last_name'] }}" placeholder="Enter last name*">
+							</div>
+							<div class="uk-width-1-2 uk-margin-bottom">
+								<input id="email" name="email" type="text" class="uk-input" value="{{ $data['summary']['email'] }}" placeholder="Email*">
+							</div>
+							<div class="uk-width-1-2">
+								<input id="business_phone_number" name="business_phone_number" type="text" class="uk-input" value="{{ $data['summary']['phone'] }}" placeholder="Phone, Format: xxx-xxx-xxxx">
+							</div>
+							<div class="uk-width-1-2 uk-margin-bottom">
+								<select name="badge_color" class="uk-width-1-1 uk-select">
+									<option value="blue">Select Badge</option>
+									<option {{ $data['summary']['color'] == 'blue' ? 'selected=selected' : '' }} value="blue">Blue</option>
+									<option {{ $data['summary']['color'] == 'green' ? 'selected=selected' : '' }} value="green">Green</option>
+									<option {{ $data['summary']['color'] == 'orange' ? 'selected=selected' : '' }} value="orange">Orange</option>
+									<option {{ $data['summary']['color'] == 'pink' ? 'selected=selected' : '' }} value="pink">Pink</option>
+									<option {{ $data['summary']['color'] == 'sky' ? 'selected=selected' : '' }} value="sky">Sky</option>
+									<option {{ $data['summary']['color'] == 'red' ? 'selected=selected' : '' }} value="red">Red</option>
+									<option {{ $data['summary']['color'] == 'purple' ? 'selected=selected' : '' }} value="purple">Purple</option>
+									<option {{ $data['summary']['color'] == 'yellow' ? 'selected=selected' : '' }} value="yellow">Yellow</option>
+								</select>
+							</div>
+							<div class="uk-width-1-1 uk-padding-remove-bottom">
+								<label class="uk-text-small">Leave blank if you don't want to change the password</label><br>
+							</div>
+							<div class="uk-width-1-2 uk-margin-remove-top">
+								<input id="password" name="password" type="password" class="uk-input" value="" placeholder="Enter password">
+							</div>
+							<div class="uk-width-1-2 uk-margin-remove-top">
+								<input id="password_confirmation" name="password_confirmation" type="password" class="uk-input" value="" placeholder="Confirm password">
+							</div>
+						</div>
+						<div class="uk-grid" uk-grid="">
+							<div class="uk-width-1-4 uk-padding-remove-left">
+								<a class="uk-button uk-button-default uk-width-1-1" onclick="editUserInformationForm()"><span uk-icon="times-circle" class="uk-icon"></span> CANCEL</a>
+							</div>
+							<div class="uk-width-1-4 ">
+								<a class="uk-button uk-width-1-1 uk-button uk-button-success" onclick="submitUserInfoForm()"><span uk-icon="save" class="uk-icon"></span> SAVE</a>
+							</div>
+						</div>
+					</form>
+
+
+					@if($auditor_access)
+					@if($current_user->id == $data['summary']['id'])
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<hr />
-
 						<h3 class="uk-margin-small-top uk-visible@m">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>@can('access_root')
 						<div class="uk-grid-small uk-margin-remove" uk-grid>
 							<div class="uk-width-1-3 uk-padding-remove">
@@ -154,10 +203,9 @@
 								</select>
 							</div>
 						</div>
-						@endIf
-						@endcan
+						@endif
+						@endif
 					</div>
-
 					@endcan
 
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
@@ -168,17 +216,17 @@
 								<div class="uk-width-1-3 uk-padding-remove">
 									<label class="uk-text-small">How often would you like to receive notifications? <span class="uk-text-danger uk-text-bold">*</span></label>
 									<select class="uk-select" id="notification_setting" name="notification_setting">
-										<option value="1" {{ $unp ? ($unp->frequency == 1 ? 'selected=selected': '') : ''}}>Immediately</option>
-										<option value="2" {{ $unp ? ($unp->frequency == 2 ? 'selected=selected': '') : 'selected=selected'}}>Hourly</option>
-										<option value="3" {{ $unp ? ($unp->frequency == 3 ? 'selected=selected': '') : ''}}>Daily</option>
+										<option value="1" {{ $unp ? ($unp->frequency == 1 ? 'selected=selected': '') : '' }}>Immediately</option>
+										<option value="2" {{ $unp ? ($unp->frequency == 2 ? 'selected=selected': '') : 'selected=selected' }}>Hourly</option>
+										<option value="3" {{ $unp ? ($unp->frequency == 3 ? 'selected=selected': '') : '' }}>Daily</option>
 									</select>
 								</div>
-								<div class="uk-width-1-3  {{ $unp ? ($unp->frequency != 3 ? 'uk-hidden': '') : 'uk-hidden'}}" id="delivery_time_select">
+								<div class="uk-width-1-3  {{ $unp ? ($unp->frequency != 3 ? 'uk-hidden': '') : 'uk-hidden' }}" id="delivery_time_select">
 									<label class="uk-text-small">Choose Deliver Time</label>
 									<select class="uk-select" id="delivery_time" name="delivery_time">
 										<option value="">Select Time</option>
 										@for($i = 0; $i < 24; $i++)
-										<option value="{{ $i }}:00:00" {{ ($unp && $unp->deliver_time)? (explode(":", $unp->deliver_time)[0] == $i ? 'selected=selected': '') : ''}}> {{ $i < 10 ? '0' : '' }}{{ ($i > 12 && ($i -12) < 10) ? '0' : '' }}{{ $i < 13 ? $i : $i - 12 }}:00 {{ $i < 12 ? 'AM' : 'PM' }}</option>
+										<option value="{{ $i }}:00:00" {{ ($unp && $unp->deliver_time)? (explode(":", $unp->deliver_time)[0] == $i ? 'selected=selected': '') : '' }}> {{ $i < 10 ? '0' : '' }}{{ ($i > 12 && ($i -12) < 10) ? '0' : '' }}{{ $i < 13 ? $i : $i - 12 }}:00 {{ $i < 12 ? 'AM' : 'PM' }}</option>
 										@endfor
 									</select>
 								</div>
@@ -186,12 +234,12 @@
 							</div>
 						</form>
 					</div>
-					@can('access_auditor')
+					@if($auditor_access)
 					<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
 						<hr />
-						<h3 class="uk-margin-small-top">Addresses @if(Auth::user()->id == $data['summary']['id'])<i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddAddress();"></i>@endIf</h3>
+						<h3 class="uk-margin-small-top">Addresses @if($current_user->id == $data['summary']['id'])<i class="a-circle-plus use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="auditorAddAddress();"></i>@endIf</h3>
 						<div class="uk-grid-small uk-margin-remove" uk-grid>
-							@if(Auth::user()->id == $data['summary']['id']) <form id="auditor-add-address" method="post" class="uk-width-1-1 uk-margin-bottom" style="display:none;">
+							@if($current_user->id == $data['summary']['id']) <form id="auditor-add-address" method="post" class="uk-width-1-1 uk-margin-bottom" style="display:none;">
 								<div class="uk-grid-small" uk-grid>
 									<div class="uk-width-1-1 uk-padding-remove">
 										<label class="uk-text-small">Add a new address below</label>
@@ -214,13 +262,13 @@
 									</div>
 								</div>
 							</form>
-							@endIf
+							@endif
 							@if($data['summary']['organization']['address1'])
 							<div class="uk-width-1-1">
 								<div class="address">
 									<i class="a-mailbox"></i>
-									{{$data['summary']['organization']['name']}}<br />{{$data['summary']['organization']['address1']}}, @if($data['summary']['organization']['address2']){{$data['summary']['organization']['address2']}}@endif
-									@if($data['summary']['organization']['city']) {{$data['summary']['organization']['city']}}, {{$data['summary']['organization']['state']}} {{$data['summary']['organization']['zip']}}
+									{{ $data['summary']['organization']['name'] }}<br />{{ $data['summary']['organization']['address1'] }}, @if($data['summary']['organization']['address2']){{ $data['summary']['organization']['address2'] }}@endif
+									@if($data['summary']['organization']['city']) {{ $data['summary']['organization']['city'] }}, {{ $data['summary']['organization']['state'] }} {{ $data['summary']['organization']['zip'] }}
 									@endif
 								</div>
 							</div>
@@ -230,24 +278,24 @@
 							</div>
 						</div>
 						<div class="uk-grid-small" style="margin-top:30px;" uk-grid>
-							@if(Auth::user()->id == $data['summary']['id'])
+							@if($current_user->id == $data['summary']['id'])
 							<label>Default address</label>
 							<select id="default_address" class="uk-select" style="margin-left: 10px;">
-								<option value="{{$data['summary']['organization']['id']}}" @if($user->default_address_id == $data['summary']['organization']['id']) selected @endif>{{$data['summary']['organization']['address1']}}, @if($data['summary']['organization']['address2']){{$data['summary']['organization']['address2']}}@endif
-								@if($data['summary']['organization']['city']) {{$data['summary']['organization']['city']}}, {{$data['summary']['organization']['state']}} {{$data['summary']['organization']['zip']}} @endif</option>
+								<option value="{{ $data['summary']['organization']['id'] }}" @if($user->default_address_id == $data['summary']['organization']['id']) selected @endif>{{ $data['summary']['organization']['address1'] }}, @if($data['summary']['organization']['address2']){{ $data['summary']['organization']['address2'] }}@endif
+								@if($data['summary']['organization']['city']) {{ $data['summary']['organization']['city'] }}, {{ $data['summary']['organization']['state'] }} {{ $data['summary']['organization']['zip'] }} @endif</option>
 								@foreach($data['summary']['addresses'] as $address)
-								<option value="{{$address['address_id']}}" @if($user->default_address_id == $address['address_id']) selected @endif>{{$address['address']}}</option>
+								<option value="{{ $address['address_id'] }}" @if($user->default_address_id == $address['address_id']) selected @endif>{{ $address['address'] }}</option>
 								@endforeach
 							</select>
 
 
-							@endIf
+							@endif
 						</div>
 					</div>
-					@endcan
+					@endif
 				</div>
 			</div>
-			@can('access_auditor')
+			@if($auditor_access)
 			<div class="user-preference-col-2 uk-padding-remove uk-margin-small-top" style="display:none">
 				<div uk-grid>
 					<div class="uk-width-1-1">
@@ -255,9 +303,9 @@
 						<form name="newavailabilityform" id="newavailabilityform" method="post">
 							<div uk-grid>
 								<div class="uk-width-1-2 uk-padding-remove">
-									<label class="uk-form-label" for="daterange">DATE RANGE</label>
+									<label class="uk-form-label" for="availabilitydaterange">DATE RANGE</label>
 									<div class="uk-form-controls">
-										<input type="text" id="daterange" name="daterange" value="" class="uk-input flatpickr flatpickr-input active"/>
+										<input type="text" id="availabilitydaterange" name="availabilitydaterange" value="" class="uk-input flatpickr flatpickr-input active"/>
 									</div>
 								</div>
 								<div class="uk-width-1-4">
@@ -429,7 +477,7 @@
 					</div>
 				</div>
 			</div>
-			@endcan
+			@endif
 		</div>
 	</div>
 </div>
@@ -446,17 +494,18 @@
 	}
 
 </style>
-@can('access_auditor')
+@if($auditor_access)
 <script>
 	$( document ).ready(function() {
 		loadCalendar();
 		fillSpacers();
+		$('#business_phone_number').keyup();
 
 		$( "#default_address" ).change(function() {
 			var id = parseInt($(this).val(), 10);
 			console.log("default address "+id);
 
-			$.post("/auditors/{{$data['summary']['id']}}/addresses/"+id+"/default", {
+			$.post("/auditors/{{ $data['summary']['id'] }}/addresses/"+id+"/default", {
 				'_token' : '{{ csrf_token() }}'
 			}, function(data) {
 				if(data!=1){
@@ -468,55 +517,147 @@
 		});
 	});
 
-	function loadCalendar(target=null) {
-		if(target == null){
-			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/';
-			$.get(url, {}, function(data) {
-				if(data=='0'){
-					UIkit.modal.alert("There was a problem getting the calendar.");
-				} else {
-					$('#auditor-availability-calendar').html(data);
-					fillSpacers();
-				}
-			});
-		}else{
-			var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target;
-			$('#auditor-availability-calendar').fadeOut("fast", function() {
-				$('#auditor-availability-calendar').html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
-				$('#auditor-availability-calendar').fadeIn("fast");
-				$.get(url, {}, function(data) {
-					if(data=='0'){
-						UIkit.modal.alert("There was a problem getting the calendar.");
-					} else {
-						loadCalendar();
-					}
-				});
-			});
-		}
-	}
 
-	function deleteAvailability(id){
-		UIkit.modal.confirm("Are you sure you want to delete this available time?", {center: true,  keyboard:false,  stack:true}).then(function() {
+	function phone_formatting(ele,restore) {
+		var new_number,
+		selection_start = ele.selectionStart,
+		selection_end = ele.selectionEnd,
+		number = ele.value.replace(/\D/g,'');
+    	// automatically add dashes
+    	if (number.length > 2) {
+      // matches: 123 || 123-4 || 123-45
+      new_number = number.substring(0,3) + '-';
+      if (number.length === 4 || number.length === 5) {
+        // matches: 123-4 || 123-45
+        new_number += number.substr(3);
+      }
+      else if (number.length > 5) {
+        // matches: 123-456 || 123-456-7 || 123-456-789
+        new_number += number.substring(3,6) + '-';
+      }
+      if (number.length > 6) {
+        // matches: 123-456-7 || 123-456-789 || 123-456-7890
+        new_number += number.substring(6);
+      }
+    }
+    else {
+    	new_number = number;
+    }
 
-			$.post("/auditors/{{Auth::user()->id}}/availability/"+id+"/delete", {
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				if(data!=1){
-					UIkit.modal.alert(data,{stack: true});
-				} else {
-					UIkit.notification('<span uk-icon="icon: check"></span> Availability Deleted', {pos:'top-right', timeout:1000, status:'success'});
-					loadCalendar();
-				}
-			} );
+	    // if value is heigher than 12, last number is dropped
+	    // if inserting a number before the last character, numbers
+	    // are shifted right, only 12 characters will show
+	    ele.value =  (new_number.length > 12) ? new_number.substring(0,12) : new_number;
 
-		}, function () {
-			return false;
-		});
-	}
+	    // restore cursor selection,
+	    // prevent it from going to the end
+	    // UNLESS
+	    // cursor was at the end AND a dash was added
 
-	function fetchCalendar(element){
+	    if (new_number.slice(-1) === '-' && restore === false && (new_number.length === 8 && selection_end === 7) || (new_number.length === 4 && selection_end === 3)) {
+	    	selection_start = new_number.length;
+	    	selection_end = new_number.length;
+	    }
+	    else if (restore === 'revert') {
+	    	selection_start--;
+	    	selection_end--;
+	    }
+	    ele.setSelectionRange(selection_start, selection_end);
+	  }
 
-		var target = $(element).attr('data-target');
+	  function business_phone_number_check(field,e) {
+	  	var key_code = e.keyCode,
+	  	key_string = String.fromCharCode(key_code),
+	  	press_delete = false,
+	  	dash_key = 189,
+	  	delete_key = [8,46],
+	  	direction_key = [33,34,35,36,37,38,39,40],
+	  	selection_end = field.selectionEnd;
+
+    // delete key was pressed
+    if (delete_key.indexOf(key_code) > -1) {
+    	press_delete = true;
+    }
+
+    // only force formatting is a number or delete key was pressed
+    if (key_string.match(/^\d+$/) || press_delete) {
+    	phone_formatting(field,press_delete);
+    }
+    // do nothing for direction keys, keep their default actions
+    else if(direction_key.indexOf(key_code) > -1) {
+      // do nothing
+    }
+    else if(dash_key === key_code) {
+    	if (selection_end === field.value.length) {
+    		field.value = field.value.slice(0,-1)
+    	}
+    	else {
+    		field.value = field.value.substring(0,(selection_end - 1)) + field.value.substr(selection_end)
+    		field.selectionEnd = selection_end - 1;
+    	}
+    }
+    // all other non numerical key presses, remove their value
+    else {
+    	e.preventDefault();
+      //    field.value = field.value.replace(/[^0-9\-]/g,'')
+      phone_formatting(field,'revert');
+    }
+  }
+
+  document.getElementById('business_phone_number').onkeyup = function(e) {
+  	business_phone_number_check(this,e);
+  }
+
+
+  function loadCalendar(target=null) {
+  	if(target == null){
+  		var url = '/auditors/{{ $current_user->id }}/availability/loadcal/';
+  		$.get(url, {}, function(data) {
+  			if(data=='0'){
+  				UIkit.modal.alert("There was a problem getting the calendar.");
+  			} else {
+  				$('#auditor-availability-calendar').html(data);
+  				fillSpacers();
+  			}
+  		});
+  	}else{
+  		var url = '/auditors/{{ $current_user->id }}/availability/loadcal/'+target;
+  		$('#auditor-availability-calendar').fadeOut("fast", function() {
+  			$('#auditor-availability-calendar').html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
+  			$('#auditor-availability-calendar').fadeIn("fast");
+  			$.get(url, {}, function(data) {
+  				if(data=='0'){
+  					UIkit.modal.alert("There was a problem getting the calendar.");
+  				} else {
+  					loadCalendar();
+  				}
+  			});
+  		});
+  	}
+  }
+
+  function deleteAvailability(id){
+  	UIkit.modal.confirm("Are you sure you want to delete this available time?", {center: true,  keyboard:false,  stack:true}).then(function() {
+
+  		$.post("/auditors/{{ $current_user->id }}/availability/"+id+"/delete", {
+  			'_token' : '{{ csrf_token() }}'
+  		}, function(data) {
+  			if(data!=1){
+  				UIkit.modal.alert(data,{stack: true});
+  			} else {
+  				UIkit.notification('<span uk-icon="icon: check"></span> Availability Deleted', {pos:'top-right', timeout:1000, status:'success'});
+  				loadCalendar();
+  			}
+  		} );
+
+  	}, function () {
+  		return false;
+  	});
+  }
+
+  function fetchCalendar(element){
+
+  	var target = $(element).attr('data-target');
 	    // hide all
 
 
@@ -536,7 +677,7 @@
 
 		    	console.log("we need to load a calendar before");
 
-		    	var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/before';
+		    	var url = '/auditors/{{ $current_user->id }}/availability/loadcal/'+target+'/before';
 		    	$.get(url, {}, function(data) {
 		    		if(data=='0'){
 		    			UIkit.modal.alert("There was a problem getting the calendar.");
@@ -551,7 +692,7 @@
 		    	console.log("there is another calendar available after");
 		    }else{
 		    	console.log("we need to load a calendar after");
-		    	var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target+'/after';
+		    	var url = '/auditors/{{ $current_user->id }}/availability/loadcal/'+target+'/after';
 		    	$.get(url, {}, function(data) {
 		    		if(data=='0'){
 		    			UIkit.modal.alert("There was a problem getting the calendar.");
@@ -610,13 +751,18 @@
 	 	}
 	 }
 
-	 $('.uk-modal-body').animate({
-	 	@if(Auth::user()->id == $data['summary']['id']) width: "70%" @else width:"30%" @endIf
+	 $('.modal-user-preferences').animate({
+	 	@if($current_user->id == $data['summary']['id']) width: "70%" @else width:"30%" @endIf
 	 });
 
 	 $(document).on('beforehide', '.uk-modal-body', function (item) {
 	 	$(item).removeAttr('style');
 	 });
+
+	 function editUserInformationForm() {
+	 	$('#edit-user-info').toggle();
+	 	$('#user-info').toggle();
+	 }
 
 	 function auditorAddAddress(){
 	 	$('#auditor-add-address').toggle();
@@ -626,7 +772,7 @@
 	 	e.preventDefault();
 	 	var form = $('#auditor-add-address');
 
-	 	$.post("/auditors/{{$data['summary']['id']}}/addresses/create", {
+	 	$.post("/auditors/{{ $data['summary']['id'] }}/addresses/create", {
 	 		'inputs' : form.serialize(),
 	 		'_token' : '{{ csrf_token() }}'
 	 	}, function(data) {
@@ -643,13 +789,13 @@
 	 function saveAvailability(e){
 	 	e.preventDefault();
 	 	var form = $('#newavailabilityform');
-
+	 	// debugger;
 		// check if date is not empty
-		if($("#daterange").val().length === 0) {
-			$("#daterange").addClass('uk-form-danger');
+		if($("#availabilitydaterange").val().length === 0) {
+			$("#availabilitydaterange").addClass('uk-form-danger');
 			return false;
 		}else{
-			$("#daterange").removeClass('uk-form-danger');
+			$("#availabilitydaterange").removeClass('uk-form-danger');
 		}
 
 		// at least one day should be selected
@@ -669,7 +815,7 @@
 			$("#endtime").removeClass('uk-form-danger');
 		}
 
-		$.post("/auditors/{{$data['summary']['id']}}/availability/create", {
+		$.post("/auditors/{{ $data['summary']['id'] }}/availability/create", {
 			'inputs' : form.serialize(),
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
@@ -684,83 +830,126 @@
 	}
 
 	function setDate(date, name){
-		$('#daterange').val(date);
+		$('#availabilitydaterange').val(date);
 		// also make sure the day of the week is selected
 		if(!$("input[name='"+name+"']:checkbox").is(':checked')){
 			selectday(".dayselector-"+name, name);
 		}
 	}
 
-
-
-</script>
-@endCan
-
-<script>
-
-		//Form notification preference ,
-	$('#notification_setting').change(function() {
-		var value = $("#notification_setting").val();
-		if(value == 3){
-			$('#delivery_time_select').removeClass('uk-hidden');
-			$('#delivery_time_select').addClass('uk-visible');
-		} else {
-			$('#delivery_time_select').removeClass('uk-visible');
-			$('#delivery_time_select').addClass('uk-hidden');
-		}
-	});
-
-		function submitNotificationPreference() {
+	function submitUserInfoForm() {
 		jQuery.ajaxSetup({
 			headers: {
 				'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
 			}
 		});
-		var data = [];
-		data['notification_setting'] = $('#notification_setting').val();
-		data['delivery_time'] = $('#delivery_time').val();
+
+		var form = $('#edit-user-info');
+
+		var data = { };
+		$.each($('form').serializeArray(), function() {
+			data[this.name] = this.value;
+		});
 		jQuery.ajax({
-			url: "{{ url('user/notification-preference', $user->id) }}",
+			url: "{{ url("modals/users/edit-my-info") }}",
 			method: 'post',
 			data: {
-				notification_setting: data['notification_setting'],
-				delivery_time: data['delivery_time'],
+				first_name: data['first_name'],
+				last_name: data['last_name'],
+				email: data['email'],
+				password: data['password'],
+				password_confirmation: data['password_confirmation'],
+				badge_color: data['badge_color'],
+				business_phone_number: data['business_phone_number'],
 				'_token' : '{{ csrf_token() }}'
 			},
 			success: function(data){
 				$('.alert-danger' ).empty();
 				if(data == 1) {
-					UIkit.modal.alert('Notification preference has been saved',{stack: true});
-					return;
-				}
-				UIkit.modal.alert(data.errors[0],{stack: true});
-    		return;
-			}
-		});
+					UIkit.notification('<span uk-icon="icon: check"></span> Your information has been saved', {pos:'top-right', timeout:1000, status:'success'});
+	    		// UIkit.modal.alert('User has been saved.',{stack: true});
+	    		// dynamicModalClose();
+	    		// openUserPreferences();
+	    		$('#apcsv-avatar').trigger('click');
+	    	}
+	    	jQuery.each(data.errors, function(key, value){
+	    		jQuery('.alert-danger').show();
+	    		jQuery('.alert-danger').append('<p>'+value+'</p>');
+	    	});
+	    }
+	  });
 	}
+
+
+
 </script>
+@endif
 
 <script>
 
-	new Vue({
-		el: '#addresses_list',
+		//Form notification preference ,
+		$('#notification_setting').change(function() {
+			var value = $("#notification_setting").val();
+			if(value == 3){
+				$('#delivery_time_select').removeClass('uk-hidden');
+				$('#delivery_time_select').addClass('uk-visible');
+			} else {
+				$('#delivery_time_select').removeClass('uk-visible');
+				$('#delivery_time_select').addClass('uk-hidden');
+			}
+		});
 
-		data: function() {
-			return {
-				addresses: {!! json_encode($data['summary']['addresses']) !!}
-			}
-		},
-		methods: {
-			@if(Auth::user()->id == $data['summary']['id'])
-			removeAddress: function(index) {
-				this.$delete(this.addresses, index)
-			}
-			@else
-			removeAddress: function(index) {
-				UIkit.modal.alert('<h2>Sorry!</h2><p>You need to be logged in as this user to delete their addresses.</p>');
-			}
-			@endIf
-		},
+		function submitNotificationPreference() {
+			jQuery.ajaxSetup({
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+				}
+			});
+			var data = [];
+			data['notification_setting'] = $('#notification_setting').val();
+			data['delivery_time'] = $('#delivery_time').val();
+			jQuery.ajax({
+				url: "{{ url('user/notification-preference', $user->id) }}",
+				method: 'post',
+				data: {
+					notification_setting: data['notification_setting'],
+					delivery_time: data['delivery_time'],
+					'_token' : '{{ csrf_token() }}'
+				},
+				success: function(data){
+					$('.alert-danger' ).empty();
+					if(data == 1) {
+						UIkit.modal.alert('Notification preference has been saved',{stack: true});
+						return;
+					}
+					UIkit.modal.alert(data.errors[0],{stack: true});
+					return;
+				}
+			});
+		}
+	</script>
+
+	<script>
+
+		new Vue({
+			el: '#addresses_list',
+
+			data: function() {
+				return {
+					addresses: {!! json_encode($data['summary']['addresses']) !!}
+				}
+			},
+			methods: {
+				@if($current_user->id == $data['summary']['id'])
+				removeAddress: function(index) {
+					this.$delete(this.addresses, index)
+				}
+				@else
+				removeAddress: function(index) {
+					UIkit.modal.alert('<h2>Sorry!</h2><p>You need to be logged in as this user to delete their addresses.</p>');
+				}
+				@endIf
+			},
 
       //       created() {
 		    //     Echo.channel('auditors.'+uid+'.'+sid)
@@ -778,7 +967,7 @@
 		<script>
 			flatpickr.defaultConfig.animate = window.navigator.userAgent.indexOf('MSIE') === -1;
 
-			flatpickr("#daterange", {
+			flatpickr("#availabilitydaterange", {
 				mode: "range",
 				minDate: "today",
 				altFormat: "F j, Y",

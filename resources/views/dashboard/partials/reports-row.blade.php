@@ -16,23 +16,24 @@
 			<option value="1">DRAFT</option>
 			@if($report->requires_approval)
 			<option value="2">SEND TO MANAGER REVIEW</option>
-			@endIf
+			@endif
 			@if($manager_access)
 			@if($report->requires_approval)
 			<option value="3">DECLINE</option>
 			<option value="4">APPROVE WITH CHANGES</option>
 			<option value="5">APPROVE</option>
-			@endIf
 			@endif
 			@endif
-			@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
+			@endif
+			@if($auditor_access)
 			<option value="6">SEND TO PROPERTY CONTACT</option>
 			<option value="7">PROPERTY VIEWED IN PERSON</option>
 			<option value="9">ALL ITEMS RESOLVED</option>
-			@endIf
+			@endif
 			{{-- @if(!$report->audit->is_archived() || $manager_access)
 				<option value="8">REFRESH DYNAMIC DATA</option>
-				@endIf --}}
+				@endIf
+				--}}
 				{{-- Commented above code to have refresh reports only from rports page and link in reports -Div 20190610 --}}
 
 				</select>
@@ -134,8 +135,8 @@
 						</thead>
 
 						<?php
-						$history = collect($report->report_history);
-						?>
+$history = collect($report->report_history);
+?>
 						@forEach($history as $h)
 						<tr>
 							<td> {{ $h['date'] }}</td>
