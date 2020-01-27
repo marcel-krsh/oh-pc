@@ -31,6 +31,7 @@ class DocumentController extends Controller
 			$this->admin_access = $this->user->admin_access();
 			View::share('auditor_access', $this->auditor_access);
 			View::share('admin_access', $this->admin_access);
+			View::share('current_user', $this->user);
 			return $next($request);
 		});
 	}
@@ -100,7 +101,7 @@ class DocumentController extends Controller
 			}
 			// return $document;
 		}
-		$findings = Finding::with('audit')->whereIn('id', $all_finding_ids)->get();
+		$findings = Finding::with('audit', 'building')->whereIn('id', $all_finding_ids)->get();
 		$findings = $findings->unique('id');
 		$findings_audits = $findings->pluck('audit')->flatten()->unique('id');
 		$audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too

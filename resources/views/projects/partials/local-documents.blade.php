@@ -152,16 +152,14 @@
 		    						Total Findings: {{ @count($document_findings) }}
 		    					</span>
 		    				</span>
+
 		    				<div id="document-{{ $document->id }}-findings" style="display: none;">
-		    					<small>
-		    						<ul>
-		    							@foreach($document_findings as $fin)
-		    							<li>
-												{{-- @include('non_modal.finding-summary', [$f = $fin]) --}}
-		    							</li>
-		    							@endforeach
-		    						</ul>
-		    					</small>
+    							@foreach($document_findings as $fin)
+									<hr class="uk-margin-bottom" style="border: 1px solid #bbbbbb" />
+    							<li>
+										@include('non_modal.finding-summary', [$f = $fin])
+    							</li>
+    							@endforeach
 		    				</div>
 
 
