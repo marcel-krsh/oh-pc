@@ -436,7 +436,7 @@ session(['projectDetailsOutput' => 0]);
 			@foreach($section->parts as $part)
 			@foreach($part as $piece)
 			<?php
-// collect comments for this part
+			// collect comments for this part
 			if ($auditor_access) {
 				$comments = collect($report->comments)->where('part_id', $piece->part_id);
 				if ($comments) {
@@ -456,7 +456,7 @@ session(['projectDetailsOutput' => 0]);
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
 				<?php
 				$pieceData = json_decode($piece->data);
-// set this so we only output details once from the blade.
+				// set this so we only output details once from the blade.
 				;?>
 				@if($pieceData[0]->type =='free-text')
 				{!! $piece->content !!}

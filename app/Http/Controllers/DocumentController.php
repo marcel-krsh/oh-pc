@@ -101,8 +101,8 @@ class DocumentController extends Controller
 			}
 			// return $document;
 		}
-		$findings = Finding::with('audit', 'building')->whereIn('id', $all_finding_ids)->get();
-		$findings = $findings->unique('id');
+		$findings = Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address')->whereIn('id', $all_finding_ids)->get();
+	  $findings = $findings->unique('id');
 		$findings_audits = $findings->pluck('audit')->flatten()->unique('id');
 		$audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
 

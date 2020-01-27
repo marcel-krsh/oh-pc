@@ -48,9 +48,16 @@ class Finding extends Model
     {
         return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');
     }
+
     public function audit(): HasOne
     {
         return $this->hasOne(\App\Models\Audit::class, 'id', 'audit_id');
+    }
+
+    public function audit_plain(): HasOne
+    {
+        return $this->hasOne(\App\Models\Audit::class, 'id', 'audit_id')
+        ->select('id', 'project_id', 'start_date', 'completed_date', 'person_id', 'monitoring_status_type_key', 'last_edited', 'created_at', 'updated_at');
     }
 
     public function amenity_inspection(): HasOne

@@ -89,10 +89,18 @@
 				@foreach ($documents as $document)
 				@php
 				$document_findings = $findings->whereIn('id', $document->finding_ids);
+				// dd($document_findings);
 				$audits_ids = ($document->audits->pluck('id')->toArray());
 				$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
 				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
 				$document_audits = $audits->whereIn('id', $all_ids);
+				$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
+				$building_findings = $document_findings->where('building_id', '<>', null)->where('unit_id', null);
+				$unit_findings = $document_findings->where('building_id', null)->where('unit_id', '<>', null);
+				// dd(count($site_findings));
+				// $x = $unit_findings->where('unit.building_id', 24961);
+				// $thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file'));
+				// $thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
 				// dd($document_audits);
 				@endphp
 				<tr class="all @foreach ($document_audits as $audit)audit-{{ $audit->id }} @endforeach @if($document->has_findings) @foreach($document_findings as $finding)finding-{{ $finding->id }} @endforeach @endif @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach">
@@ -151,6 +159,9 @@
 		    			{{-- <td><span uk-tooltip title="{{ date('h:i a', strtotime($document->updated_at)) }}">{{ date('m/d/Y', strtotime($document->updated_at)) }}</span>
 		    			</td> --}}
 		    			<td>
+
+
+
 		    				<span uk-tooltip="pos: right" title="{{ implode($document_audits->pluck('id')->toArray(), ', ') }}">Audits: {{ @count($document_audits) }}</span><br>
 		    				<span uk-tooltip="pos: right" title="@if($document->has_findings){{ implode($document_findings->pluck('id')->toArray(), ', ') }}@endif">
 		    					<span onclick="$('#document-{{ $document->id }}-findings').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW FINDING(S)"><i class="a-info-circle"></i>
@@ -159,13 +170,12 @@
 		    				</span>
 
 		    				<div id="document-{{ $document->id }}-findings" style="display: none;">
-		    					@foreach($document_findings as $fin)
+		    					{{-- @foreach($document_findings as $fin) --}}
 		    					<hr class="uk-margin-bottom" style="border: 1px solid #bbbbbb" />
-		    					<strong>F|N #{{ $fin->id }}</strong>
 		    					<li>
-		    						@include('non_modal.finding-summary', [$f = $fin])
+		    						@include('non_modal.finding-summary')
 		    					</li>
-		    					@endforeach
+		    					{{-- @endforeach --}}
 		    				</div>
 
 
