@@ -34,6 +34,12 @@ class Project extends Model
         return $this->hasMany(\App\Models\CachedAudit::class, 'project_key', 'project_key')->orderBy('id', 'desc');
     }
 
+    public function audits_plain() : HasMany
+    {
+        return $this->hasMany(\App\Models\CachedAudit::class, 'project_key', 'project_key')->orderBy('id', 'desc')
+        ->select(['id', 'project_key', 'project_id', 'audit_id', 'status', 'lead', 'title', 'address', 'city', 'total_items']);
+    }
+
     public function contactRoles() : HasMany
     {
         return $this->hasMany(\App\Models\ProjectContactRole::class, 'project_id');
