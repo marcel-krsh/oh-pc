@@ -20,7 +20,6 @@ class TestingController extends Controller
 
 	public function getTestAll()
 	{
-		return SyncFinancialType::orderBy('last_edited', 'DESC')->first()->last_edited;
 		DB::beginTransaction();
 		$repeat_contact_role = DB::select(DB::raw("SELECT project_contact_role_key,project_id,person_key, COUNT(person_key) FROM project_contact_roles GROUP BY person_key, project_contact_role_key, project_id HAVING COUNT(person_key) > 1"));
 
