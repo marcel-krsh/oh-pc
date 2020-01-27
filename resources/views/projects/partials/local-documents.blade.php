@@ -89,8 +89,13 @@
 				@foreach ($documents as $document)
 				@php
 				$document_findings = $findings->whereIn('id', $document->finding_ids);
+				$audits_ids = ($document->audits->pluck('id')->toArray());
+				$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
+				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
+				$document_audits = $audits->whereIn('id', $all_ids);
+				// dd($document_audits);
 				@endphp
-				<tr class="all @foreach ($document->audits as $audit)audit-{{ $audit->id }} @endforeach @if($document->has_findings) @foreach($document_findings as $finding)finding-{{ $finding->id }} @endforeach @endif @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach">
+				<tr class="all @foreach ($document_audits as $audit)audit-{{ $audit->id }} @endforeach @if($document->has_findings) @foreach($document_findings as $finding)finding-{{ $finding->id }} @endforeach @endif @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach">
 					<span uk-grid>
 						<td class="uk-width-1-2" style="vertical-align: middle;">
 							<ul class="uk-list document-category-menu">
@@ -146,7 +151,7 @@
 		    			{{-- <td><span uk-tooltip title="{{ date('h:i a', strtotime($document->updated_at)) }}">{{ date('m/d/Y', strtotime($document->updated_at)) }}</span>
 		    			</td> --}}
 		    			<td>
-		    				<span uk-tooltip="pos: right" title="{{ implode($document->audits->pluck('id')->toArray(), ', ') }}">Audits: {{ @count($document->audits) }}</span><br>
+		    				<span uk-tooltip="pos: right" title="{{ implode($document_audits->pluck('id')->toArray(), ', ') }}">Audits: {{ @count($document_audits) }}</span><br>
 		    				<span uk-tooltip="pos: right" title="@if($document->has_findings){{ implode($document_findings->pluck('id')->toArray(), ', ') }}@endif">
 		    					<span onclick="$('#document-{{ $document->id }}-findings').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW FINDING(S)"><i class="a-info-circle"></i>
 		    						Total Findings: {{ @count($document_findings) }}
