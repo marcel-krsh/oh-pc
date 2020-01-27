@@ -159,12 +159,13 @@
 		    				</span>
 
 		    				<div id="document-{{ $document->id }}-findings" style="display: none;">
-    							@foreach($document_findings as $fin)
-									<hr class="uk-margin-bottom" style="border: 1px solid #bbbbbb" />
-    							<li>
-										@include('non_modal.finding-summary', [$f = $fin])
-    							</li>
-    							@endforeach
+		    					@foreach($document_findings as $fin)
+		    					<hr class="uk-margin-bottom" style="border: 1px solid #bbbbbb" />
+		    					<strong>F|N #{{ $fin->id }}</strong>
+		    					<li>
+		    						@include('non_modal.finding-summary', [$f = $fin])
+		    					</li>
+		    					@endforeach
 		    				</div>
 
 
