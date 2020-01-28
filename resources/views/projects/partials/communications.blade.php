@@ -19,7 +19,7 @@
 		* Group 6
 		* 	New Message
 		*
-		--}}
+		 --}}
 
 		{{-- Group 2, Attachments and conversation list view --}}
 
@@ -38,7 +38,7 @@
 					FILTER BY RECIPIENT
 				</option>
 				@foreach ($owners_array as $owner)
-				<option value="staff-{{$owner['id']}}"><a class="uk-dropdown-close">{{$owner['name']}}</a></option>
+				<option value="staff-{{ $owner['id'] }}"><a class="uk-dropdown-close">{{ $owner['name'] }}</a></option>
 				@endforeach
 			</select>
 		</div>
@@ -51,7 +51,7 @@
   	</div>
   	<div class=" uk-width-1-1@s uk-width-1-6@m uk-text-right">
 
-				<div class="uk-align-right uk-label  uk-margin-top ">{{count($messages)}}  MESSAGES </div>
+				<div class="uk-align-right uk-label  uk-margin-top ">{{ count($messages) }}  MESSAGES </div>
 
 	</div>
 </div>
@@ -88,13 +88,12 @@
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small><br>
 					<span>
 						FROM: Me<hr class="dashed-hr uk-margin-bottom uk-width-1-1">
-							@if(count($message->recipients))TO:
-								<?php $recipients = $message->recipients->where('user_id', '<>', $current_user->id);?>
+							@if(count($message->message_recipients))TO:
+								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id);?>
 								@if(count($recipients)>0)
 									@foreach($recipients as $recipient)
-										@if($recipient->seen == null)
-										<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">
-											{{ $recipient->user->name }}</strong>@else {{ $recipient->user->name }}@endif{{ !$loop->last ? ', ': '' }}
+										@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
+											{{ $recipient->full_name() }}{{ $recipient->pivot->seen }}@if($recipient->pivot->seen == null)</strong>@endif{{ !$loop->last ? ', ': '' }}
 									@endforeach
 								@else
 									Me
@@ -111,8 +110,18 @@
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small>
 				</div>
-				FROM: {{ $message->owner->full_name() }}<hr class="dashed-hr uk-margin-bottom uk-width-1-1"> @if(count($message->message_recipients))TO: @foreach ($message->message_recipients as $recipient)
-				@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != '')@if($recipient->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf{{ $recipient->full_name() }}@if($recipient->seen == null)</strong>@endIf @elseif($recipient->id == $current_user->id) @if(!$loop->first),@endIf Me @endif @endforeach @endif
+				FROM: {{ $message->owner->full_name() }}<hr class="dashed-hr uk-margin-bottom uk-width-1-1"> @if(count($message->message_recipients))TO:
+					@foreach ($message->message_recipients->where('id', '<>', $message->owner_id) as $recipient)
+						@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != '')
+					{{-- {{ dd($recipient) }} --}}
+							@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
+								{{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}
+							@if($recipient->pivot->seen == null)</strong>@endIf
+						@elseif($recipient->id == $current_user->id)
+							Me{{ !$loop->last ? ', ': '' }}
+						@endIf
+					@endforeach
+				 @endif
 				@if($message->unseen > 0)
 				<div class="uk-label no-text-shadow user-badge-{{ Auth::user()->badge_color }}" uk-tooltip="pos:top-left;title:{{ $message->unseen }} unread messages">{{ $message->unseen }}</div>
 				@endif
