@@ -213,7 +213,7 @@
 							<hr />
 							<h3 class="uk-margin-small-top">Notification Preference<i class="a-bell-snooze uk-text-danger" style="vertical-align: middle; padding-left: 2px;"></i></h3>
 							<div class="uk-grid-small uk-margin-remove" uk-grid>
-								<div class="uk-width-1-3 uk-padding-remove">
+								<div class="uk-width-2-3 uk-padding-remove">
 									<label class="uk-text-small">How often would you like to receive notifications? <span class="uk-text-danger uk-text-bold">*</span></label>
 									<select class="uk-select" id="notification_setting" name="notification_setting">
 										<option value="1" {{ $unp ? ($unp->frequency == 1 ? 'selected=selected': '') : '' }}>Immediately</option>
@@ -230,7 +230,9 @@
 										@endfor
 									</select>
 								</div>
-								<a onclick="submitNotificationPreference()" class="uk-button save uk-margin-top uk-margin-left">Save</a>
+								<div style="max-height: 26px;vertical-align: bottom; margin-top:6px;" >
+								<a onclick="submitNotificationPreference()" class="uk-button save uk-margin-top uk-margin-left" >Save</a>
+								</div>
 							</div>
 						</form>
 					</div>
@@ -728,21 +730,21 @@
  	}
 
  	function expandModal(element) {
- 		if($(element).closest('.uk-modal-body')[0].style.width != '70%') {
+ 		if($(element).closest('.modal-user-preferences')[0].style.width != '95%') {
  			$('.user-preference-col-2').fadeOut("slow", function(){
  				$('.user-preference-col-1').animate({ width: "100%" }, 1000, function(){
 
  				});
- 				$(element).closest('.uk-modal-body').animate({ width: "70%" });
- 				$(element).closest('.uk-modal-body').toggleClass("modal-wide");
+ 				$(element).closest('.modal-user-preferences').animate({ width: "95%" });
+ 				$(element).closest('.modal-user-preferences').toggleClass("modal-wide");
  			});
 
  		}else{
- 			$(element).closest('.uk-modal-body').animate({ width: "90%" });
- 			$(element).closest('.uk-modal-body').toggleClass("modal-wide");
+ 			$(element).closest('.modal-user-preferences').animate({ width: "99%" });
+ 			$(element).closest('.modal-user-preferences').toggleClass("modal-wide");
 
- 			$('.user-preference-col-1').animate({ width: "30%" }, 1000, function(){
- 				$('.user-preference-col-2').css("width", "70%").fadeIn("slow");
+ 			$('.user-preference-col-1').animate({ width: "40%" }, 1000, function(){
+ 				$('.user-preference-col-2').css("width", "60%").fadeIn("slow");
  			});
 
 	 		// $('.user-preference-col-1').switchClass('uk-width-1-1', 'uk-width-1-2', 500, 'swing', function(item){
@@ -752,10 +754,10 @@
 	 }
 
 	 $('.modal-user-preferences').animate({
-	 	@if($current_user->id == $data['summary']['id']) width: "70%" @else width:"30%" @endIf
+	 	@if($current_user->id == $data['summary']['id']) width: "95%" @else width:"30%" @endIf
 	 });
 
-	 $(document).on('beforehide', '.uk-modal-body', function (item) {
+	 $(document).on('beforehide', '.modal-user-preferences', function (item) {
 	 	$(item).removeAttr('style');
 	 });
 

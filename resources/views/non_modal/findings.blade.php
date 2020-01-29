@@ -69,18 +69,18 @@
 	window.findingModalSelectedMine = 'true';
 	window.findingModalSelectedType = '{{ $type }}';
 	<?php
-	$passedAmenity = $amenity;
-	$passedBuilding = $building;
-	if(!is_null($passedBuilding) && !is_null($passedBuilding->building_id)) {
-		$passedBuildingId = $passedBuilding->id;
-	} else {
-		$passedBuildingId = null;
-	}
-	$passedUnit = $unit;
-	if ($amenity && $passedAmenity->building_id) {
-		$buildingName = $passedAmenity->building_inspection()->building_name;
-	}
-	?>
+$passedAmenity = $amenity;
+$passedBuilding = $building;
+if (!is_null($passedBuilding) && !is_null($passedBuilding->building_id)) {
+	$passedBuildingId = $passedBuilding->id;
+} else {
+	$passedBuildingId = null;
+}
+$passedUnit = $unit;
+if ($amenity && $passedAmenity->building_id) {
+	$buildingName = $passedAmenity->building_inspection()->building_name;
+}
+?>
 	window.findingModalSelectedAmenity = '';
 	window.findingModalSelectedLocationType = '';
 	window.scrollPosType = 0;
@@ -196,7 +196,7 @@
 							</div>
 							<div class="uk-margin-remove" uk-grid>
 								<div class="uk-width-1-3 uk-first-column">
-									<button class="uk-button " onclick="loadTypeView = ''; dynamicModalLoad('projects/{{$audit->project->id}}/programs/0/summary/{{ $audit->audit_id }}',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button>
+									<button class="uk-button " onclick="loadTypeView = ''; dynamicModalLoad('projects/{{ $audit->project->id }}/programs/0/summary/{{ $audit->audit_id }}',0,0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS</button>
 								</div>
 								<div class="uk-width-2-3">
 									<button class="uk-button uk-button-success uk-width-1-1 @if(!$checkDoneAddingFindings) uk-modal-close @endif" onClick="if($('#project-detail-tab-1').hasClass('uk-active') || window.project_detail_tab_1 != '1'){$('#project-detail-tab-1').trigger('click')} dynamicModalClose()">DONE ADDING FINDINGS</button>
@@ -585,28 +585,31 @@
 				window.findingModalSelectedAmenityInspection = 'amenity-inspection-{{ $passedAmenity->id }}';
 				window.selectedAmenityInspection = '{{ $passedAmenity->id }}';
 				<?php
-					if ($passedAmenity->project_id) { // is a project type
-						$locationType = 's-' . $passedAmenity->project_ref;
-						$locationText = "Site picked";
-					} elseif ($passedAmenity->building_id) { // is a building
-						$locationType = 'b-' . $passedAmenity->building_id;
-						$locationText = "BIN: " . addslashes($buildingName);
-						if ($passedAmenity->building->address) {
-							$locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
-						} else {
-							$locationText .= ", NO ADDRESSS SET IN DEVCO.";
-						}
-						echo "console.log('Passed amenity is a building type');";
-					} else { // is a unit
-						$locationType = 'u-' . $passedAmenity->unit_id;
-						$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_name;
-						if ($passedAmenity->unit->building->address) {
-							$locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
-						} else {
-							$locationText .= ", NO ADDRESSS SET IN DEVCO.";
-						}
-					}
-					?>
+if ($passedAmenity->project_id) {
+	// is a project type
+	$locationType = 's-' . $passedAmenity->project_ref;
+	$locationText = "Site picked";
+} elseif ($passedAmenity->building_id) {
+	// is a building
+	$locationType = 'b-' . $passedAmenity->building_id;
+	$locationText = "BIN: " . addslashes($buildingName);
+	if ($passedAmenity->building->address) {
+		$locationText .= ", ADDRESS: " . addslashes($passedAmenity->building->address->line_1);
+	} else {
+		$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+	}
+	echo "console.log('Passed amenity is a building type');";
+} else {
+	// is a unit
+	$locationType = 'u-' . $passedAmenity->unit_id;
+	$locationText = "Unit Name: " . $passedAmenity->cached_unit()->unit_name . ", in BIN: " . $passedAmenity->building_name;
+	if ($passedAmenity->unit->building->address) {
+		$locationText .= " at ADDRESS: " . $passedAmenity->unit->building->address->line_1;
+	} else {
+		$locationText .= ", NO ADDRESSS SET IN DEVCO.";
+	}
+}
+?>
 					// load the findings of selected amenities
 					@if(!is_null($passedUnit))
 					$.ajax({
@@ -632,8 +635,8 @@
 				console.log('Filtering to unit id:u-{{ $passedUnit->unit_id }}');
 			    	// set filter test for type
 			    	<?php
-			    	$locationType = 'u-' . $passedUnit->unit_id;
-			    	?>
+$locationType = 'u-' . $passedUnit->unit_id;
+?>
 						// set filter text for type
 						window.findingModalSelectedLocationType = '{{ $locationType }}';
 						// filterAmenities('u-{{ $passedUnit->unit_id }}', 'Unit NAME: {{ $passedUnit->unit_name }} in Building BIN:{{ $passedUnit->building_key }} ADDRESS: @if($passedUnit->building->address) {{ $passedUnit->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf',0);
@@ -647,8 +650,8 @@
 			    	@if($toplevel != 1)
 			    	console.log('Filtering to Building BIN: {{ $passedBuilding->building_name }}, ADDRESS: {{ $passedBuilding->address }}');
 			    	<?php
-			    	$locationType = 'b-' . $passedBuilding->building_id;
-			    	?>
+$locationType = 'b-' . $passedBuilding->building_id;
+?>
 							// set filter text for type
 							window.findingModalSelectedLocationType = '{{ $locationType }}';
 				    	// set filter test for type
@@ -661,11 +664,11 @@
 			  			// filter to type and allita type (nlt, lt, file)
 			  			@else
 			  			console.log('Filtering project-level amenities {{ $audit->project_ref }}');
-			  			filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
+			  			filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address ? $audit->project->address->basic_address() : '' }}')
 			  			@endif
 			  			@elseif(!is_null($passedBuilding))
 			  			console.log('Filtering project-level amenities {{ $audit->project_ref }}');
-			  			filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{$audit->project->address->basic_address()}}')
+			  			filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address ? $audit->project->address->basic_address() : '' }}')
 			  		//console.log('filtering by project-level');
 			  		// setTimeout(function() {
 			  		// 	typeList();

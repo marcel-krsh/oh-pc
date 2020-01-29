@@ -432,21 +432,21 @@
  	}
 
  	function expandModal(element) {
- 		if($(element).closest('.uk-modal-body')[0].style.width != '70%') {
+ 		if($(element).closest('.modal-user-preferences')[0].style.width != '95%') {
  			$('.user-preference-col-2').fadeOut("slow", function(){
  				$('.user-preference-col-1').animate({ width: "100%" }, 1000, function(){
 
  				});
- 				$(element).closest('.uk-modal-body').animate({ width: "70%" });
- 				$(element).closest('.uk-modal-body').toggleClass("modal-wide");
+ 				$(element).closest('.modal-user-preferences').animate({ width: "95%" });
+ 				$(element).closest('.modal-user-preferences').toggleClass("modal-wide");
  			});
 
  		}else{
- 			$(element).closest('.uk-modal-body').animate({ width: "90%" });
- 			$(element).closest('.uk-modal-body').toggleClass("modal-wide");
+ 			$(element).closest('.modal-user-preferences').animate({ width: "99%" });
+ 			$(element).closest('.modal-user-preferences').toggleClass("modal-wide");
 
- 			$('.user-preference-col-1').animate({ width: "30%" }, 1000, function(){
- 				$('.user-preference-col-2').css("width", "70%").fadeIn("slow");
+ 			$('.user-preference-col-1').animate({ width: "40%" }, 1000, function(){
+ 				$('.user-preference-col-2').css("width", "60%").fadeIn("slow");
  			});
 
 	 		// $('.user-preference-col-1').switchClass('uk-width-1-1', 'uk-width-1-2', 500, 'swing', function(item){
@@ -455,8 +455,32 @@
 	 	}
 	 }
 
+ 	// function expandModal(element) {
+ 	// 	if($(element).closest('.uk-modal-body')[0].style.width != '70%') {
+ 	// 		$('.user-preference-col-2').fadeOut("slow", function(){
+ 	// 			$('.user-preference-col-1').animate({ width: "100%" }, 1000, function(){
+
+ 	// 			});
+ 	// 			$(element).closest('.uk-modal-body').animate({ width: "70%" });
+ 	// 			$(element).closest('.uk-modal-body').toggleClass("modal-wide");
+ 	// 		});
+
+ 	// 	}else{
+ 	// 		$(element).closest('.uk-modal-body').animate({ width: "90%" });
+ 	// 		$(element).closest('.uk-modal-body').toggleClass("modal-wide");
+
+ 	// 		$('.user-preference-col-1').animate({ width: "30%" }, 1000, function(){
+ 	// 			$('.user-preference-col-2').css("width", "70%").fadeIn("slow");
+ 	// 		});
+
+	 // 		// $('.user-preference-col-1').switchClass('uk-width-1-1', 'uk-width-1-2', 500, 'swing', function(item){
+	 // 		// 	$('.user-preference-col-1').toggleClass('uk-width-1-2');
+	 // 		// });
+	 // 	}
+	 // }
+
 	 $('.modal-user-preferences').animate({
-	 	@if(Auth::user()->id == $data['summary']['id']) width: "70%" @else width:"30%" @endIf
+	 	@if(Auth::user()->id == $data['summary']['id']) width: "95%" @else width:"30%" @endIf
 	 });
 
 	 $(document).on('beforehide', '.uk-modal-body', function (item) {

@@ -653,6 +653,7 @@ class ReportsController extends Controller
 				$report->last_updated_by = Auth::user()->id;
 				$report->created_by = Auth::user()->id;
 				$report->requires_approval = $template->requires_approval;
+				$report->letter_date = Carbon::now();
 				$report->save();
 				// record creation history:
 				$history = ['date' => date('m-d-Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => 'Created report using template ' . $template->template_name . '.'];
@@ -1293,7 +1294,7 @@ class ReportsController extends Controller
 
 	public function reportDates($id)
 	{
-		$report = CrrReport::select('letter_date', 'review_date', 'response_due_date')->find($id);
+		$report = CrrReport::select('letter_date', 'review_date', 'response_due_date', 'id', 'created_at')->find($id);
 		if ($report) {
 			// return $report->letter_date;
 			// return Carbon::parse(strtotime($report->letter_date))->format('F j, Y');
