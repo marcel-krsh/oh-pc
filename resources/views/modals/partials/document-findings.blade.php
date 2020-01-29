@@ -1,5 +1,6 @@
 @php
 	$selected_icon = null;
+	$selected_finding = null;
 @endphp
 <h4 class="uk-text-primary uk-text-uppercase">Apply to These Findings:</h4>
 <!-- RECIPIENT LISTING -->
@@ -9,29 +10,29 @@
 			$findings = session()->get('selected_findings');
 		@endphp
 		@if(!empty($findings) && count($findings) > 0)
-		@foreach ($findings as $f)
-		@if($f->finding_type->type == 'nlt')
-			@php
-				$f_icon = '<i class="a-booboo"></i>';
-			@endphp
-		@endif
-		@if($f->finding_type->type == 'lt')
-			@php
-				$f_icon = '<i class="a-skull"></i>';
-			@endphp
-		@endif
-		@if($f->finding_type->type == 'file')
-			@php
-				$f_icon = '<i class="a-folder"></i>';
-			@endphp
-		@endif
-		<li class="findings-list-item finding-{{ $f->id }}">
-			@php
-				if($f->id == $all_findings)
-					$selected_finding = $f;
-				else
-					$selected_finding = null;
-			@endphp
+				@foreach ($findings as $f)
+					@if($f->finding_type->type == 'nlt')
+						@php
+							$f_icon = '<i class="a-booboo"></i>';
+						@endphp
+					@endif
+					@if($f->finding_type->type == 'lt')
+						@php
+							$f_icon = '<i class="a-skull"></i>';
+						@endphp
+					@endif
+					@if($f->finding_type->type == 'file')
+						@php
+							$f_icon = '<i class="a-folder"></i>';
+						@endphp
+					@endif
+				<li class="findings-list-item finding-{{ $f->id }}">
+					@php
+						if($f->id == $all_findings)
+							$selected_finding = $f;
+						else
+							$selected_finding = null;
+					@endphp
 			<input {{ $id == $f->id ? 'checked=checked' : '' }} name="findings[]" id="list-finding-id-{{ $f->id }}" value="{{ $f->id }}" type="checkbox" class="uk-checkbox" onClick="addFinding(this.value,'{{ $f_icon }}Finding-{{ ($f->id) }}')">
 			<label for="finding-id-{{ $f->id }}">
 				{!! $f_icon !!} Finding # {{ $f->id }} - @if(!is_null($f->building_id)) <strong>{{ $f->building->building_name }}</strong> @if(!is_null($f->building->address)) {{ $f->building->address->line_1 }} {{ $f->building->address->line_2 }} {{ $f->building->address->city }}, {{ $f->building->address->state }} {{ $f->building->address->zip }} @endif @endif
