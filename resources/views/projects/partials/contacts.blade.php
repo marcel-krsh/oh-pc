@@ -36,9 +36,9 @@ $thisProjectHtml = '';
 						<th class="uk-width-small" style="width: 140px;">
 							M &nbsp; | &nbsp;O : <small>ORG PHONE</small>
 						</th>
-						<th class="uk-width-small" style="width: 190px;">
+						<!-- <th class="uk-width-small" style="width: 190px;">
 							M &nbsp; | &nbsp;O : <small>USER EMAIL</small>
-						</th>
+						</th> -->
 						<th class="uk-width-small" style="width: 85px;">
 							<small class="uk-margin-left">ACCESS TYPES</small>
 						</th>
@@ -257,12 +257,12 @@ $thisProjectHtml = '';
 						{{-- EMAIL ADDRESS --}}
 						@php
 						// check if this project has entries in user phone numbers
-						$user_emails = $user->user_emails->where('project_id', $project->id);
+						// $user_emails = $user->user_emails->where('project_id', $project->id);
 						@endphp
-						<td>
+						<!-- <td>
 							@php
 							// Check if the user email exists in emailAddresss and exists in UserEmail
-							if($user->email_address) {
+							/* if($user->email_address) {
 								$exists_in_ue = $user_emails->where('email_address_id', $user->email_address->id)->where('default', 1)->first();
 								$exists_in_ue_owner = $user_emails->where('email_address_id', $user->email_address->id)->where('owner_default', 1)->first();
 								$default_email_id = $user_emails->where('email_address_id', $user->email_address->id)->first();
@@ -278,7 +278,7 @@ $thisProjectHtml = '';
 							}
 							if($user->id == 7965) {
 								// dd($user->email_address);
-							}
+							} 
 							@endphp
 							{{-- {{ dd($default_devco_user_id) }} --}}
 							<div style="display: inline-table; min-width: 40px;">
@@ -347,7 +347,7 @@ $thisProjectHtml = '';
 								$user_emails = $user_emails->where('devco', '!=', 1);
 							}
 
-
+							
 							@endphp
 							@foreach($user_emails as $email)
 							{{-- Manager --}}
@@ -364,7 +364,8 @@ $thisProjectHtml = '';
 							<hr class="dashed-hr  uk-margin-small-bottom">
 							@endforeach
 							<small class="use-hand-cursor uk-text-muted" id="add-email-{{ $user->id }}" onclick="addEmail({{ $user->id }})"  uk-tooltip="" title="ADD ANOTHER EMAIL ADDRESS" aria-expanded="false"><i class="a-circle-plus use-hand-cursor"></i> EMAIL</small>
-						</td>
+							*/ @endphp
+						</td> -->
 						@php
 						$pm_access = $user->pm_access();
 						@endphp
