@@ -281,11 +281,11 @@ $thisProjectHtml = '';
 							}
 							@endphp
 							{{-- {{ dd($default_devco_user_id) }} --}}
-							<div style="display: inline-table; min-width: 40px;">
-								<!-- <input style="margin-top: .1px" class="uk-radio" onchange='makeDefaultEmail({{ $default_email_id }}, {{ $user->id }}, 0, "{{ $user->email }}")' name="email" id="email-{{ $default_email_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER EMAIL" aria-expanded="false" {{ (($exists_in_ue) || (!$default_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> | -->
+							<!-- <div style="display: inline-table; min-width: 40px;">
+								<input style="margin-top: .1px" class="uk-radio" onchange='makeDefaultEmail({{ $default_email_id }}, {{ $user->id }}, 0, "{{ $user->email }}")' name="email" id="email-{{ $default_email_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT MANAGER EMAIL" aria-expanded="false" {{ (($exists_in_ue) || (!$default_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> | 
 								{{-- Owner --}}
-								<!-- <input style="margin-top: .1px" class="uk-radio" onchange='makeDefaultOwnerEmail({{ $default_email_id }}, {{ $user->id }}, 0, "{{ $user->email }}")' name="owner_email" id="owner-email-{{ $default_email_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ (($exists_in_ue_owner) || (!$default_owner_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> -->
-							</div>
+								 <input style="margin-top: .1px" class="uk-radio" onchange='makeDefaultOwnerEmail({{ $default_email_id }}, {{ $user->id }}, 0, "{{ $user->email }}")' name="owner_email" id="owner-email-{{ $default_email_id }}" type="radio" uk-tooltip="" title="SET AS DEFAULT OWNER EMAIL" aria-expanded="false" {{ (($exists_in_ue_owner) || (!$default_owner_email && $default_devco_user_id == $user->id)) ? 'checked=checked': '' }}> 
+							</div> -->
 							<div style="display:inline-table; min-width:100px;">
 								<small uk-tooltip title="This is the email address that notifications are sent to, as well as the email address used by the user to login to Allita directly."><a class="{{ !$user->active ? 'uk-text-muted' : '' }}" href="mailto:{{ $user->email }}">{{ $user->email }} <i class="a-avatar-approve"></i></a>
 								</small>
