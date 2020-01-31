@@ -74,40 +74,7 @@ Route::group(['middleware' => 'web'], function () {
 	Route::group(['prefix' => 'mobile', 'middleware' => 'can:access_pm'], function () {
 		Route::get('/reports', 'PC\Mobile\ReportController@index');
 	});
-	Route::group(['prefix' => '', 'middleware' => 'can:access_auditor'], function () {
-		Route::get('/audit_raw_data', 'PCStatsController@showStatsRawData');
-		Route::post('/cached_audit_check', 'AuditController@cachedAuditCheck');
-		Route::get('/updated_cached_audit/{audit_id}', 'AuditController@singleCachedAudit');
-		Route::get('/modals/household/{unit_id}', 'AuditController@householdInfo');
-		Route::get('/change_log', 'PagesController@changeLog');
-		Route::get('/compliance_rerun/{audit_id}', 'Phase1ComplianceSelection@runSimpleCompliance');
-		Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
-		Route::get('/modals/createuser_for_contact', 'PagesController@createUser');
-		Route::post('/modals/createuser_for_contact', 'PagesController@createUserForContactSave')->name('admin.createuser_for_contact');
-
-		// Route::get('/testProject/{project}', function($project){
-		//     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
-		//     //dd($project->programs);
-		//     $content = $project->id."<br />";
-		//     forEach($project->programs as $program){
-		//         $content.= $program->program->program_name."<br />";
-		//     }
-		//     return $content;
-		// });
-		// rerun compliance run
-		Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
-		Route::post('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
-
-		// run compliance run
-		Route::get('/project/{project}/runselection', 'AuditController@runCompliance');
-
-		Route::get('/cached_audit/{cached_audit}/caches', 'ComplianceGenerator@createCaches');
-
-		Route::get('/audit/{audit}/details', 'ComplianceGenerator@details');
-
-		// Document Test Route
-		Route::get('/document/list/{projectNumber}', 'SyncController@getDocs');
-		//Route::get('/document/{documentId}','SyncController@getDoc');
+	Route::group(['prefix' => '', 'middleware' => 'can:access_pm'], function(){
 		Route::get('/document/{documentId}', function ($documentId) {
 			$docRecord = \App\Models\SyncDocuware::where('docuware_doc_id', $documentId)->first();
 			// Do Devco Auth here?
@@ -146,6 +113,43 @@ Route::group(['middleware' => 'web'], function () {
 			//return public_path('TestFile.pdf');
 		});
 
+	});
+	
+	Route::group(['prefix' => '', 'middleware' => 'can:access_auditor'], function () {
+		Route::get('/audit_raw_data', 'PCStatsController@showStatsRawData');
+		Route::post('/cached_audit_check', 'AuditController@cachedAuditCheck');
+		Route::get('/updated_cached_audit/{audit_id}', 'AuditController@singleCachedAudit');
+		Route::get('/modals/household/{unit_id}', 'AuditController@householdInfo');
+		Route::get('/change_log', 'PagesController@changeLog');
+		Route::get('/compliance_rerun/{audit_id}', 'Phase1ComplianceSelection@runSimpleCompliance');
+		Route::get('/simple_compliance_test/{projection}', 'SimpleComplianceSelection@runSimpleCompliance');
+		Route::get('/modals/createuser_for_contact', 'PagesController@createUser');
+		Route::post('/modals/createuser_for_contact', 'PagesController@createUserForContactSave')->name('admin.createuser_for_contact');
+
+		// Route::get('/testProject/{project}', function($project){
+		//     $project = App\Models\Project::where('id',$project)->with('programs.program')->first();
+		//     //dd($project->programs);
+		//     $content = $project->id."<br />";
+		//     forEach($project->programs as $program){
+		//         $content.= $program->program->program_name."<br />";
+		//     }
+		//     return $content;
+		// });
+		// rerun compliance run
+		Route::get('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
+		Route::post('/audit/{audit}/rerun', 'AuditController@rerunCompliance');
+
+		// run compliance run
+		Route::get('/project/{project}/runselection', 'AuditController@runCompliance');
+
+		Route::get('/cached_audit/{cached_audit}/caches', 'ComplianceGenerator@createCaches');
+
+		Route::get('/audit/{audit}/details', 'ComplianceGenerator@details');
+
+		// Document Test Route
+		Route::get('/document/list/{projectNumber}', 'SyncController@getDocs');
+		//Route::get('/document/{documentId}','SyncController@getDoc');
+		
 		// Update Devco Test Routes
 		Route::get('/update_devco/{model}/{referenceId}/{crud}', 'SyncController@crudDevco');
 		Route::get('/test/apiroute', 'SyncController@testapi');
