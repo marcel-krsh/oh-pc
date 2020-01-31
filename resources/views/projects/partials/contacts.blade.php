@@ -37,7 +37,7 @@ $thisProjectHtml = '';
 							M &nbsp; | &nbsp;O : <small>ORG PHONE</small>
 						</th>
 						<th class="uk-width-small" style="width: 190px;">
-							M &nbsp; | &nbsp;O : <small>USER EMAIL</small>
+							<small>USER EMAIL</small>
 						</th>
 						<th class="uk-width-small" style="width: 85px;">
 							<small class="uk-margin-left">ACCESS TYPES</small>
