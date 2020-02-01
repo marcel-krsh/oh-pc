@@ -74,7 +74,7 @@ Route::group(['middleware' => 'web'], function () {
 	Route::group(['prefix' => 'mobile', 'middleware' => 'can:access_pm'], function () {
 		Route::get('/reports', 'PC\Mobile\ReportController@index');
 	});
-	Route::group(['prefix' => '', 'middleware' => 'can:access_pm'], function(){
+	Route::group(['prefix' => '', 'middleware' => 'can:access_pm'], function () {
 		Route::get('/document/{documentId}', function ($documentId) {
 			$docRecord = \App\Models\SyncDocuware::where('docuware_doc_id', $documentId)->first();
 			// Do Devco Auth here?
@@ -112,9 +112,8 @@ Route::group(['middleware' => 'web'], function () {
 			//return $response;
 			//return public_path('TestFile.pdf');
 		});
-
 	});
-	
+
 	Route::group(['prefix' => '', 'middleware' => 'can:access_auditor'], function () {
 		Route::get('/audit_raw_data', 'PCStatsController@showStatsRawData');
 		Route::post('/cached_audit_check', 'AuditController@cachedAuditCheck');
@@ -149,7 +148,7 @@ Route::group(['middleware' => 'web'], function () {
 		// Document Test Route
 		Route::get('/document/list/{projectNumber}', 'SyncController@getDocs');
 		//Route::get('/document/{documentId}','SyncController@getDoc');
-		
+
 		// Update Devco Test Routes
 		Route::get('/update_devco/{model}/{referenceId}/{crud}', 'SyncController@crudDevco');
 		Route::get('/test/apiroute', 'SyncController@testapi');
@@ -508,6 +507,9 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/modals/new-outbound-email-entry/{project_id?}/{audit_id?}/{report_id?}/{finding_id?}/{all_findings?}/{draft?}', 'CommunicationController@newCommunicationEntry');
 		Route::get('/modals/communication/{audit_id}/replies/{message}', 'CommunicationController@viewReplies');
 		Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
+		Route::post('/communications/filter-recipient', 'CommunicationController@filterCommunicationReceipient')->name('communications.filter-recipient');
+		Route::post('/communications/filter-recipient-project', 'CommunicationController@filterCommunicationReceipientProject')->name('communications.filter-recipient-project');
+
 		Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
 		Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
 		Route::post('/mark-message-read/{message_id}', 'CommunicationController@markMessageRead');

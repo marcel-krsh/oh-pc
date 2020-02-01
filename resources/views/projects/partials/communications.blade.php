@@ -33,12 +33,12 @@
 		</div>
 
 		<div class="uk-width-1-1@s uk-width-1-5@m" id="recipient-dropdown" style="vertical-align: top;">
-			<select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="filterByOwner();">
+			<select id="filter-by-owner-project" class="uk-select filter-drops uk-width-1-1" onchange="filterByOwnerProject();">
 				<option value="all" selected="">
 					FILTER BY RECIPIENT
 				</option>
 				@foreach ($owners_array as $owner)
-				<option value="staff-{{ $owner['id'] }}"><a class="uk-dropdown-close">{{ $owner['name'] }}</a></option>
+				<option  {{ (session()->has('filter-recipient-project') && session()->get('filter-recipient-project') == 'staff-' . $owner['id']) ? 'selected=selected' : ''  }} value="staff-{{ $owner['id'] }}"><a class="uk-dropdown-close">{{ $owner['name'] }}</a></option>
 				@endforeach
 			</select>
 		</div>
@@ -77,10 +77,11 @@
 </div>
 @endif
 
-<div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list" style="width: 98%">
+<div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list-project" style="width: 98%">
 	@if(count($messages))
 	@foreach ($messages as $message)
-	<div class="filter_element uk-width-1-1 communication-list-item @if($message->owner)staff-{{ $message->owner->id }}@endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
+<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endIf filter_element_project uk-width-1-1 communication-list-item @if($message->message_recipients) @foreach($message->message_recipients as $mr) staff-{{ $mr->id }} @endforeach @endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
+
 		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
 			@if($message->owner->id == $current_user->id)
 			<div class="uk-width-1-5@m uk-width-1-2@s communication-item-tt-to-from uk-margin-small-bottom" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
@@ -180,37 +181,47 @@
 
 <script>
 
-	function filterByOwner(){
-		var myGrid = UIkit.grid($('#communication-list'), {
+	function filterByOwnerProject(session = 1){
+		var myGrid = UIkit.grid($('#communication-list-project'), {
 			controls: '#message-filters',
 			animation: false
 		});
-		var textinput = $("#filter-by-owner").val();
+		var textinput = $("#filter-by-owner-project").val();
 
 		@if(Auth::user()->isFromEntity(1))
 		$('#filter-by-program').prop('selectedIndex',0);
 		@endif
-		filterElement(textinput, '.filter_element');
+		filterElement(textinput, '.filter_element_project');
+		if(session == 1) {
+			$.post('{{ URL::route("communications.filter-recipient-project") }}', {
+				'filter_recipient_project' : $("#filter-by-owner-project").val(),
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data[0]!='1'){
+					UIkit.modal.alert(data);
+				}
+			});
+		}
 	}
 
-	function filterElement(filterVal, filter_element){
+	function filterElement(filterVal, filter_element_project){
 		if (filterVal === 'all') {
-			$(filter_element).show();
+			$(filter_element_project).show();
 		}
 		else {
-			$(filter_element).hide().filter('.' + filterVal).show();
+			$(filter_element_project).hide().filter('.' + filterVal).show();
 		}
 		UIkit.update(event = 'update');
 	}
 
 	function filterByProgram(){
-		var myGrid = UIkit.grid($('#communication-list'), {
+		var myGrid = UIkit.grid($('#communication-list-project'), {
 			controls: '#message-filters',
 			animation: false
 		});
 		var textinput = $("#filter-by-program").val();
-		$('#filter-by-owner').prop('selectedIndex',0);
-		filterElement(textinput, '.filter_element');
+		$('#filter-by-owner-project').prop('selectedIndex',0);
+		filterElement(textinput, '.filter_element_project');
 	}
 
 	function searchMessages(){
@@ -253,7 +264,7 @@
 	 		}
 	 	});
 
-
+	filterByOwnerProject(0);
 	 	$('#communications-project-search').keydown(function (e) {
 	 		if (e.keyCode == 13) {
 	 			searchMessages();
@@ -273,15 +284,15 @@
 	 	// });
 	 	// @endif
 
-	 	var $filteredElements = $('.filter_element');
+	 	var $filteredElements = $('.filter_element_project');
 	 	$('.filter_link').click(function (e) {
 	 		e.preventDefault();
             // get the category from the attribute
             var filterVal = $(this).data('filter');
-            filterElement(filterVal, '.filter_element');
+            filterElement(filterVal, '.filter_element_project');
 
             // reset dropdowns
-            $('#filter-by-owner').prop('selectedIndex',0);
+            $('#filter-by-owner-project').prop('selectedIndex',0);
             @if(Auth::user()->isFromEntity(1))
             $('#filter-by-program').prop('selectedIndex',0);
             @endif

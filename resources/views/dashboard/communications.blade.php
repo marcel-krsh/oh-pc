@@ -19,7 +19,7 @@
 		* Group 6
 		* 	New Message
 		*
-		--}}
+		 --}}
 		<div uk-grid class="uk-grid-collapse uk-visible@m uk-width-1-5@m">
 			{{-- Group 1, Inbox and Sent message --}}
 			<div class="uk-button-group uk-margin-medium-left">
@@ -58,7 +58,7 @@
 					FILTER BY RECIPIENT
 				</option>
 				@foreach ($message_recipients as $owner)
-				<option value="staff-{{$owner['id']}}"><a class="uk-dropdown-close">{{$owner['name']}}</a></option>
+				<option {{ (session()->has('filter-recipient') && session()->get('filter-recipient') == 'staff-' . $owner['id']) ? 'selected=selected' : ''  }} value="staff-{{ $owner['id'] }}"><a class="uk-dropdown-close">{{ $owner['name'] }}</a></option>
 				@endforeach
 			</select>
 		</div>
@@ -70,7 +70,7 @@
 					FILTER BY PROJECT
 				</option>
 				@foreach ($projects_array as $projects)
-				<option value="program-{{$projects->id}}"><a  class="uk-dropdown-close">{{$projects->project_name}}</a></option>
+				<option value="program-{{ $projects->id }}"><a  class="uk-dropdown-close">{{ $projects->project_name }}</a></option>
 				@endforeach
 			</select>
 		</div>
@@ -83,19 +83,16 @@
 		</div>
 		<div class="uk-width-1-1 uk-margin-remove uk-text-right">
 
-				<?php // get unread count for this user
-$unreadCount = 0;
+				@php
+				$unreadCount = 0;
+				foreach ($messages as $urc) {
+					if ($urc->recipients->where('user_id', Auth::User()->id)->where('seen', null)->count()) {
+						$unreadCount++;
+					}
+				}
+				@endphp
 
-foreach ($messages as $urc) {
-  if ($urc->recipients->where('user_id', Auth::User()->id)->where('seen', null)->count()) {
-    $unreadCount++;
-  }
-}
-
-?>
-				<div class="uk-align-right uk-label  uk-margin-top ">{{$unreadCount}} UNREAD MESSAGES </div>
-
-
+				<div class="uk-align-right uk-label  uk-margin-top ">{{ $unreadCount }} UNREAD MESSAGES </div>
 		</div>
 	</div>
 </div>
@@ -260,7 +257,7 @@ foreach ($messages as $urc) {
 		});
 	}
 
-	function filterByOwner(){
+	function filterByOwner(session = 1){
 		var myGrid = UIkit.grid($('#communication-list'), {
 			controls: '#message-filters',
 			animation: false
@@ -271,6 +268,16 @@ foreach ($messages as $urc) {
 		$('#filter-by-program').prop('selectedIndex',0);
 		@endif
 		filterElement(textinput, '.filter_element');
+		if(session == 1) {
+			$.post('{{ URL::route("communications.filter-recipient") }}', {
+				'filter_recipient' : $("#filter-by-owner").val(),
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data[0]!='1'){
+					UIkit.modal.alert(data);
+				}
+			});
+		}
 	}
 
 	function filterElement(filterVal, filter_element){
@@ -303,7 +310,7 @@ foreach ($messages as $urc) {
 			} else {
 				$('#detail-tab-2').trigger('click');
 			}
-		} );
+		});
 	}
 
 	function showDraftMessages(){
@@ -359,7 +366,7 @@ foreach ($messages as $urc) {
 	 		}
 	 	});
 
-
+	 	filterByOwner(0);
 	 	$('#communications-search').keydown(function (e) {
 	 		if (e.keyCode == 13) {
 	 			searchMessages();

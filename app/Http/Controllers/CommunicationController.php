@@ -543,6 +543,32 @@ class CommunicationController extends Controller
 		return [1];
 	}
 
+	public function filterCommunicationReceipient(Request $request)
+	{
+		if ($request->has('filter_recipient')) {
+			if ($request->filter_recipient != 'all') {
+				Session::put('filter-recipient', $request->filter_recipient);
+			} else {
+				Session::forget('filter-recipient');
+			}
+		}
+		// return session('filter-recipient');
+		return [1];
+	}
+
+	public function filterCommunicationReceipientProject(Request $request)
+	{
+		if ($request->has('filter_recipient_project')) {
+			if ($request->filter_recipient_project != 'all') {
+				Session::put('filter-recipient-project', $request->filter_recipient_project);
+			} else {
+				Session::forget('filter-recipient-project');
+			}
+		}
+		// return session('filter-recipient-project');
+		return [1];
+	}
+
 	public function showDraftMessages($page = 0, Request $request)
 	{
 		$number_per_page = 100;
