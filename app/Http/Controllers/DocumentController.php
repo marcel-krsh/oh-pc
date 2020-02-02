@@ -67,7 +67,7 @@ class DocumentController extends Controller
 		$filter['filter_finding_id'] = "";
 		$filter['filter_category_id'] = "";
 
-		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding','communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
 		$documents = $documents_query->get(); //->paginate(20);
 		$documents_all = $documents_query->get();
 		$documents_count = $documents_query->count();
@@ -103,7 +103,7 @@ class DocumentController extends Controller
 		}
 
 		$findings = Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type')->whereIn('id', $all_finding_ids)->get();
-	  $findings = $findings->unique('id');
+		$findings = $findings->unique('id');
 		$findings_audits = $findings->pluck('audit_plain')->flatten()->unique('id');
 		$audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
 
@@ -386,6 +386,42 @@ class DocumentController extends Controller
 	public function downloadLocalDocument(Document $document)
 	{
 		$filepath = $document->file_path;
+		// Get the audit, projects, communication owner and communication receipients of this document
+		$current_user = $this->user->load('roles', 'person.projects', 'report_access', 'communications_receipient', 'communications_owner');
+		$user_details['project_ids'] = [];
+		$user_details['communication_ids'] = [];
+		if ($current_user->person && $current_user->person->projects) {
+			$user_details['project_ids'] = $current_user->person->projects->pluck('id')->toArray();
+		}
+		if ($current_user->communications_receipient || $current_user->communications_owner) {
+			if ($current_user->communications_receipient) {
+				$user_details['communication_ids'] = array_merge($user_details['communication_ids'], $current_user->communications_receipient->pluck('id')->toArray());
+			}
+			if ($current_user->communications_owner) {
+				$user_details['communication_ids'] = array_merge($user_details['communication_ids'], $current_user->communications_owner->pluck('id')->toArray());
+			}
+		}
+		// Get the audit, project, communications of this user
+		$current_document = $document->load('communications', 'audits.project', 'user', 'project', 'communication_details.owner', 'communication_details.recipients');
+		$document_details['project_ids'] = [];
+		$document_details['communication_ids'] = [];
+		if ($current_document->audits) {
+			$document_projects = $current_document->audits->pluck('project');
+			if ($document_projects) {
+				$document_details['project_ids'] = $document_projects->pluck('id')->toArray();
+			}
+		}
+		if ($current_document->communication_details) {
+			$document_details['communication_ids'] = $current_document->communication_details->pluck('id')->toArray();
+		}
+		// Check if there is any common item. If yes, allow download else don't
+		$projects_match = array_intersect($document_details['project_ids'], $user_details['project_ids']);
+		$communications_match = array_intersect($document_details['communication_ids'], $user_details['communication_ids']);
+
+		if (empty($projects_match) && empty($communications_match)) {
+			exit('You have no access to the requested file!  ' . $document->id);
+		}
+
 		if (Storage::exists($filepath)) {
 			$file = Storage::get($filepath);
 			ob_end_clean();

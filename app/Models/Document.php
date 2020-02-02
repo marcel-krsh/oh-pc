@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Document Model
@@ -76,6 +76,11 @@ class Document extends Model
 	public function communications(): HasMany
 	{
 		return $this->hasMany(\App\Models\CommunicationDocument::class, 'document_id', 'id');
+	}
+
+	public function communication_details()
+	{
+		return $this->hasManyThrough('App\Models\Communication', '\App\Models\CommunicationDocument', 'document_id', 'id', 'id', 'communication_id');
 	}
 
 	public function audits()
