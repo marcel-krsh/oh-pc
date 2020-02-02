@@ -953,4 +953,10 @@ class UserController extends Controller
 		}
 		return $this->extraCheckErrors($validator);
 	}
+
+	protected function extraCheckErrors($validator)
+	{
+		$validator->getMessageBag()->add('error', 'Something went wrong. Try again later or contact Technical Team');
+		return response()->json(['errors' => $validator->errors()->all()]);
+	}
 }
