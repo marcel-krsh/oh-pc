@@ -188,7 +188,7 @@ class ProjectContactsController extends Controller
 				->orderBy('organization_name', 'asc')
 				->orderBy('last_name', 'asc')
 				->get();
-			return view('modals.combine-contact-with-user', compact('roles', 'organizations', 'states', 'recipients', 'contact_id', 'using_project_user'));
+			return view('modals.combine-contact-with-user', compact('recipients', 'contact_id', 'using_project_user'));
 		} else {
 			$tuser = Auth::user();
 			return 'Sorry you do not have access to this page.';
