@@ -14,7 +14,7 @@ $f = $finding;
 @endphp
 <div class="modal-report-dates">
 	<h2 class="uk-text-uppercase uk-text-emphasis">{{ $finding_type }} {{ $f->project->project_name }}</h2>
-	<strong><span> F|N #{{ $f->id }}: AUDIT: {{ $f->audit_id }}, <small style="text-transform: uppercase;">{{ $f->project->address->line_1 }} {{ $f->project->address->line_2 }} | {{ $f->project->address->city }}, {{ $f->project->address->state }} {{ $f->project->address->zip }}
+	<strong><span> F|N #{{ $f->id }}: AUDIT: {{ $f->audit_id }}, <small style="text-transform: uppercase;">@if($f->project->address){{ $f->project->address->line_1 }} {{ $f->project->address->line_2 }} | {{ $f->project->address->city }}, {{ $f->project->address->state }} {{ $f->project->address->zip }}@endif
 	</small></span>
 </strong>
 <hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
