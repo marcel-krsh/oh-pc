@@ -25,6 +25,7 @@
         "pusher/pusher-php-server": "^3.3",
         "renatomarinho/laravel-page-speed": "^1.8",
         "sentry/sentry-laravel": "^1.4",
+        "staudenmeir/eloquent-json-relations": "^1.1",
         "torann/geoip": "^1.0",
         "tremby/laravel-git-version": "^1.1",
         "yajra/laravel-datatables": "^1.0"

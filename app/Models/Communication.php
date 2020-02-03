@@ -26,9 +26,11 @@ class Communication extends Model
 		'finding_ids',
 	];
 
+	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+
 	protected $casts = [
 		'communication_id' => 'json',
-		'findings_ids' => 'json',
+		'findings_ids' => 'array',
 	];
 
 	public static function boot()
