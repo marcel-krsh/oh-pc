@@ -6478,7 +6478,6 @@ class AuditController extends Controller
 					return json_encode($auditCheck);
 				}
 			}
-
 			return 0;
 		}
 	}

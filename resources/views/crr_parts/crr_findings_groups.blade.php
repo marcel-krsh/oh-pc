@@ -294,7 +294,7 @@
 								</div>
 								@endIf
 								@endIf
-								@if((is_null($f->level) || $f->level == 0) && $f->finding_type->type !== 'file')
+								@if( (is_null($f->level) || $f->level == 0) && $f->finding_type->type !== 'file')
 								<div style="margin-left:24px; margin-top:7px;">
 								<span style="color:red" class="attention">!!LEVEL NOT SET!!</span>
 								</div>

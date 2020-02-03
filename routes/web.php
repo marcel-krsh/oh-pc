@@ -290,6 +290,9 @@ Route::group(['middleware' => 'web'], function () {
 		Route::post('/documents/project/{project}/local-clearReview', 'DocumentController@clearLocalReview')->name('documents.local-clearReview');
 		Route::get('/modals/edit-local-document/{document}', 'DocumentController@editLocalDocument')->name('document.local-edit');
 		Route::post('/modals/edit-local-document/{document}', 'DocumentController@saveEditedLocalDocument')->name('document.local-saveedit');
+
+		Route::get('modals/finding-details/{finding}', 'FindingController@findingDetails')->name('finding.show-details');
+
 		Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
 		Route::post('/documents/audit/{audit}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
 

@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Communication Model
@@ -26,11 +26,9 @@ class Communication extends Model
 		'finding_ids',
 	];
 
-	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
-
 	protected $casts = [
 		'communication_id' => 'json',
-		'findings_ids' => 'array',
+		'findings_ids' => 'json',
 	];
 
 	public static function boot()

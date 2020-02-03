@@ -16,6 +16,7 @@ $f = [];
 $line = 0;
 @endphp
 
+{{-- Site --}}
 @if(count($site_findings))
 	@php
 	$f = $site_findings->first();
@@ -44,9 +45,9 @@ $line = 0;
 		@if($fin->finding_type->type == 'file')
 		<i class="a-folder"></i>
 		@endif
-		<span>F|N #{{ $fin->id }}:</span>
+		<span class="use-hand-cursor" onclick="openFindingDetails({{ $fin->id }})">F|N #{{ $fin->id }}:</span>
 		</strong>
-		<span>OH.{{ strtoupper($fin->finding_type->type) }}.{{ $fin->finding_type_id }} @if($fin->level) LEVEL {{ $fin->level }} @endif:{{ $fin->finding_type->name }}
+		<span> {{ $fin->amenity->amenity_description }}, OH.{{ strtoupper($fin->finding_type->type) }}.{{ $fin->finding_type_id }} @if($fin->level) LEVEL {{ $fin->level }} @endif:{{ $fin->finding_type->name }}
 		</span>
 	</div>
 	@endforeach
@@ -54,11 +55,11 @@ $line = 0;
 @endif
 
 
-
+{{-- Buildings --}}
 @if(count($building_findings))
-@if($line)
-<hr class="dashed-hr-small-margin uk-margin-small-bottom">
-@endif
+	@if($line)
+	<hr class="dashed-hr-small-margin uk-margin-small-bottom">
+	@endif
 	{{-- Check if there are any unit specific findings for this building --}}
 	@php
 	$line = 1;
@@ -91,9 +92,9 @@ $line = 0;
 		@if($fin->finding_type->type == 'file')
 		<i class="a-folder"></i>
 		@endif
-		<span>F|N #{{ $fin->id }}:</span>
+		<span class="use-hand-cursor" onclick="openFindingDetails({{ $fin->id }})">F|N #{{ $fin->id }}:</span>
 		</strong>
-		<span>OH.{{ strtoupper($fin->finding_type->type) }}.{{ $fin->finding_type_id }} @if($fin->level) LEVEL {{ $fin->level }} @endif:{{ $fin->finding_type->name }}
+		<span> {{ $fin->amenity->amenity_description }}, OH.{{ strtoupper($fin->finding_type->type) }}.{{ $fin->finding_type_id }} @if($fin->level) LEVEL {{ $fin->level }} @endif:{{ $fin->finding_type->name }}
 		</span>
 	</div>
 	@endforeach
@@ -119,9 +120,9 @@ $line = 0;
 			@if($fin->finding_type->type == 'file')
 			<i class="a-folder"></i>
 			@endif
-			<span>F|N #{{ $fin->id }}:</span>
+			<span class="use-hand-cursor" onclick="openFindingDetails({{ $fin->id }})">F|N #{{ $fin->id }}:</span>
 			</strong>
-			<span>OH.{{ strtoupper($fin->finding_type->type) }}.{{ $fin->finding_type_id }} @if($fin->level) LEVEL {{ $fin->level }} @endif:{{ $fin->finding_type->name }}
+			<span> {{ $fin->amenity->amenity_description }}, OH.{{ strtoupper($fin->finding_type->type) }}.{{ $fin->finding_type_id }} @if($fin->level) LEVEL {{ $fin->level }} @endif:{{ $fin->finding_type->name }}
 			</span>
 		</div>
 		@endforeach
@@ -129,7 +130,7 @@ $line = 0;
 	@endif
 @endif
 
-
+{{-- Unit --}}
 @if(count($unit_findings))
 @if($line)
 <hr class="dashed-hr-small-margin uk-margin-small-bottom">
@@ -160,9 +161,9 @@ $line = 0;
 			@if($fin->finding_type->type == 'file')
 			<i class="a-folder"></i>
 			@endif
-			<span>F|N #{{ $fin->id }}:</span>
+			<span class="use-hand-cursor" onclick="openFindingDetails({{ $fin->id }})">F|N #{{ $fin->id }}:</span>
 			</strong>
-			<span>OH.{{ strtoupper($fin->finding_type->type) }}.{{ $fin->finding_type_id }} @if($fin->level) LEVEL {{ $fin->level }} @endif:{{ $fin->finding_type->name }}
+			<span> {{ $fin->amenity->amenity_description }}, OH.{{ strtoupper($fin->finding_type->type) }}.{{ $fin->finding_type_id }} @if($fin->level) LEVEL {{ $fin->level }} @endif:{{ $fin->finding_type->name }}
 			</span>
 		</div>
 		@endforeach

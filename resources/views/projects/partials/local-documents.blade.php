@@ -423,6 +423,32 @@
 	}
 
 
+	function openFindingDetails(findingId) {
+		dynamicModalLoad('finding-details/'+findingId);
+	}
+
+	@if(Auth::user()->auditor_access())
+	function resolveFindingAS(findingid){
+		$.post('/findings/'+findingid+'/resolve', {
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			if(data != 0){
+				UIkit.notification({
+					message: 'Marked finding as resolved',
+					status: 'success',
+					pos: 'top-right',
+					timeout: 30000
+				});
+				$('#finding-resolve-button').html('<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFindingAS('+findingid+')"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
+			}else{
+				$("#finding-resolve-button").html('<span class="a-circle-checked"> </span> RESOLVED');
+				UIkit.modal.dialog('<center style="color:green">Marked finding as resolved</center>');
+			}
+		});
+	}
+	@endif
+
+
 
 
 </script>
