@@ -93,8 +93,8 @@
 								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id);?>
 								@if(count($recipients)>0)
 									@foreach($recipients as $recipient)
-										@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
-											{{ $recipient->full_name() }}{{ $recipient->pivot->seen }}@if($recipient->pivot->seen == null)</strong>@endif{{ !$loop->last ? ', ': '' }}
+										@if($recipient->pivot->seen != 1)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
+											{{ $recipient->full_name() }}@if($recipient->pivot->seen != 1)</strong>@endif{{ !$loop->last ? ', ': '' }}
 									@endforeach
 								@else
 									Me

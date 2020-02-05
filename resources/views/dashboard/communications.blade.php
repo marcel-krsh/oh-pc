@@ -121,7 +121,7 @@
 <div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list" style="width: 98%">
 	@if(count($messages))
 	@foreach ($messages as $message)
-	<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endIf filter_element uk-width-1-1 communication-list-item @if($message->message_recipients) @foreach($message->message_recipients as $mr) staff-{{ $mr->id }} @endforeach @endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
+	<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endif filter_element uk-width-1-1 communication-list-item @if($message->message_recipients) @foreach($message->message_recipients as $mr) staff-{{ $mr->id }} @endforeach @endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endif" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
 		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
 
 			@if($message->owner->id == $current_user->id)
@@ -134,14 +134,13 @@
 								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id);?>
 								@if(count($recipients)>0)
 									@foreach($recipients as $recipient)
-										@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
-											{{ $recipient->full_name() }}@if($recipient->pivot->seen == null)</strong>@endif{{ !$loop->last ? ', ': '' }}
+										@if($recipient->pivot->seen != 1)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endif
+											{{ $recipient->full_name() }}@if($recipient->pivot->seen != 1)</strong>@endif{{ !$loop->last ? ', ': '' }}
 									@endforeach
-
 								@else
 									Me
-								@endIf
-							@endIf
+								@endif
+							@endif
 					</span>
 				</div>
 				@if($message->unseen > 0)
@@ -157,12 +156,12 @@
 					@foreach ($message->message_recipients->where('id', '<>', $message->owner_id) as $recipient)
 						@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != '')
 					{{-- {{ dd($recipient) }} --}}
-							@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
+							@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endif
 								{{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}
-							@if($recipient->pivot->seen == null)</strong>@endIf
+							@if($recipient->pivot->seen == null)</strong>@endif
 						@elseif($recipient->id == $current_user->id)
 							Me{{ !$loop->last ? ', ': '' }}
-						@endIf
+						@endif
 					@endforeach
 				@endif
 				@if($message->unseen > 0)
@@ -198,7 +197,7 @@
 				<div uk-grid class="uk-grid-collapse">
 					<div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
 						@if($message->subject){{ $message->subject }}:<hr class="dashed-hr" /> @endif
-						{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endIf
+						{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endif
 					</div>
 					<div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt uk-align-center" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
 						<div class="communication-item-attachment uk-margin-large-left">
@@ -210,7 +209,7 @@
 				</div>
 				@else
 				@if($message->subject){{ $message->subject }}<hr class="dashed-hr" />@endif
-				{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endIf
+				{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endif
 				@endif
 			</div>
 		</div>

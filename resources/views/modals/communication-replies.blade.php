@@ -29,18 +29,16 @@
 			{{ $message->owner->full_name() }}
 		</div>
 		<div class="uk-width-1-5 uk-width-1-5@s communication-item-tt-to-from">
-			@if(count($message->recipient_details))
+			@if(count($message->message_recipients))
 			<span class="uk-text-muted">To: </span> <br>
-			@foreach ($message->recipients as $recipient)
-			@if($recipient->user->name)
-			@if($recipient->seen_at)
-			{{ $recipient->user->name }} <a class="uk-link-muted tooltipmodal" uk-tooltip="pos:top-left;title:First viewed on {{ date('F d, Y h:i A T', strtotime($recipient->seen_at)) }}"><i class="a-envelope-open_1"></i></a>@if(!$loop->last), @endif
+			@foreach ($message->message_recipients as $recipient)
+			@if($recipient->pivot->seen_at)
+			{{ $recipient->full_name() }} <a class="uk-link-muted tooltipmodal" uk-tooltip="pos:top-left;title:First viewed on {{ date('F d, Y h:i A T', strtotime($recipient->seen_at)) }}"><i class="a-envelope-open_1"></i></a>@if(!$loop->last), @endif
 			@else
-			@if($recipient->seen)
-			{{ $recipient->user->name }} <i class="a-envelope-open_1" uk-tooltip="pos:top-left;title:Viewed"></i>@if(!$loop->last),@endif
+			@if($recipient->pivot->seen == 1)
+			{{ $recipient->full_name() }} <i class="a-envelope-open_1" uk-tooltip="pos:top-left;title:Viewed"></i>@if(!$loop->last),@endif
 			@else
-			{{ $recipient->user->name }} <i class="a-envelope-4" uk-tooltip="pos:top-left;title:Not viewed yet"></i>@if(!$loop->last),@endif
-			@endif
+			{{ $recipient->full_name() }} <i class="a-envelope-4" uk-tooltip="pos:top-left;title:Not viewed yet"></i>@if(!$loop->last),@endif
 			@endif
 			@endif
 			@endforeach
@@ -245,7 +243,7 @@
     		} );
 	    	// debugger;
 	    	@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
-	    	var id = {{ $project->id }};
+	    		var id = {{ $project->id }};
 	    		// debugger;
 	    		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);
 	        //loadParcelSubTab('communications',id);
@@ -258,7 +256,7 @@
 
     	// debugger;
 		// refresh communications tabs
-		@if($project && Auth::user()->can('access_auditor'))
+		@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
 		$('#project-detail-tab-2').trigger('click');
 		@else
 		$('#detail-tab-2').trigger('click');
