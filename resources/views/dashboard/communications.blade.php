@@ -375,18 +375,6 @@
 	 		}
 	 	});
 
-	 	// @if (session()->has('dynamicModalLoad') && session('dynamicModalLoad') != '' )
-	 	// var dynamicModalLoadid = '';
-	 	// $.get( "/session/dynamicModalLoad", function( data ) {
-	 	// 	dynamicModalLoadid = data;
-	 	// 	console.log('Loading Message Id: '+dynamicModalLoadid);
-
-	 	// 	if(dynamicModalLoadid != ''){
-	 	// 		dynamicModalLoad("communication/0/replies/"+dynamicModalLoadid);
-	 	// 	}
-	 	// });
-	 	// @endif
-
 	 	var $filteredElements = $('.filter_element');
 	 	$('.filter_link').click(function (e) {
 	 		e.preventDefault();

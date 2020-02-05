@@ -508,7 +508,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('dashboard/communications/{page?}', 'CommunicationController@communicationsTab')->name('communication.tab');
 		Route::post('/modals/new-outbound-email-entry', 'CommunicationController@create')->name('communication.create');
 		Route::get('/modals/new-outbound-email-entry/{project_id?}/{audit_id?}/{report_id?}/{finding_id?}/{all_findings?}/{draft?}', 'CommunicationController@newCommunicationEntry');
-		Route::get('/modals/communication/{audit_id}/replies/{message}', 'CommunicationController@viewReplies');
+		Route::get('/modals/communication/{audit_id}/replies/{message}/{location?}', 'CommunicationController@viewReplies');
 		Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
 		Route::post('/communications/filter-recipient', 'CommunicationController@filterCommunicationReceipient')->name('communications.filter-recipient');
 		Route::post('/communications/filter-recipient-project', 'CommunicationController@filterCommunicationReceipientProject')->name('communications.filter-recipient-project');

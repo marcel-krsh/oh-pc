@@ -2,7 +2,7 @@
 	resizeModal(80);
 </script>
 
-<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
+<form name="newOutboundEmailFormToManager" id="newOutboundEmailFormToManager" method="post">
 	@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
 	@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit }}">@endif
 	<div class="uk-container uk-container-center"> <!-- start form container -->
@@ -196,7 +196,8 @@
     }
 
     function submitNewCommunication() {
-    	var form = $('#newOutboundEmailForm');
+    	debugger;
+    	var form = $('#newOutboundEmailFormToManager');
     	var no_alert = 1;
     	var recipients_array = [];
     	$("input[name='recipients[]']:checked").each(function (){

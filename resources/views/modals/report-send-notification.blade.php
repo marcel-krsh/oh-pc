@@ -2,7 +2,7 @@
 	resizeModal(80);
 </script>
 
-<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
+<form name="newOutboundEmailFormNotification" id="newOutboundEmailFormNotification" method="post">
 	@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
 	@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit }}">@endif
 	<input type="hidden" name="report" value="{{$report->id}}">
@@ -81,115 +81,115 @@
             // CLONE RECIPIENTS
             @if($audit)
             @cannot('access_auditor')
-                    // add the user selection
-                    var recipientClone = $('#recipient-template').clone();
-                    recipientClone.attr("id", "recipient-id-{{$audit->lead_user_id}}-holder");
-                    recipientClone.prependTo('#recipients-box');
+              // add the user selection
+              var recipientClone = $('#recipient-template').clone();
+              recipientClone.attr("id", "recipient-id-{{$audit->lead_user_id}}-holder");
+              recipientClone.prependTo('#recipients-box');
 
-                    $("#recipient-id-"+formValue+"-holder").slideDown();
-                    $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
-                    $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
-                    $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
+              $("#recipient-id-"+formValue+"-holder").slideDown();
+              $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
+              $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
+              $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
 
-                    $("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
-                    $("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
-                    function removeRecipient(id){
-                    	UIkit.modal.alert('<h1>Sorry</h1><h2>You cannot remove this recipient</h2>');
-                    }
-
-                    @else
-                    function addRecipient(formValue,name){
-                      //alert(formValue+' '+name);
-                      if($("#list-recipient-id-"+formValue).is(':checked')){
-                      	var recipientClone = $('#recipient-template').clone();
-                      	recipientClone.attr("id", "recipient-id-"+formValue+"-holder");
-                      	recipientClone.prependTo('#recipients-box');
-
-                      	$("#recipient-id-"+formValue+"-holder").slideDown();
-                      	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
-                      	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
-                      	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
-
-                      	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
-                      	$("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
-                      } else {
-                      	$("#recipient-id-"+formValue+"-holder").slideUp();
-                      	$("#recipient-id-"+formValue+"-holder").remove();
-                      }
-                    }
-                    function removeRecipient(id){
-                    	$("#recipient-id-"+id+"-holder").slideUp();
-                    	$("#recipient-id-"+id+"-holder").remove();
-                    	$("#list-recipient-id-"+id).prop("checked",false)
-                    }
-
-                    @endCannot
-                    @else
-                    function addRecipient(formValue,name){
-              //alert(formValue+' '+name);
-              if($("#list-recipient-id-"+formValue).is(':checked')){
-              	var recipientClone = $('#recipient-template').clone();
-              	recipientClone.attr("id", "recipient-id-"+formValue+"-holder");
-              	recipientClone.prependTo('#recipients-box');
-
-              	$("#recipient-id-"+formValue+"-holder").slideDown();
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
-
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
-              	$("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
-              } else {
-              	$("#recipient-id-"+formValue+"-holder").slideUp();
-              	$("#recipient-id-"+formValue+"-holder").remove();
+              $("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+              $("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+              function removeRecipient(id){
+              	UIkit.modal.alert('<h1>Sorry</h1><h2>You cannot remove this recipient</h2>');
               }
-            }
-            function removeRecipient(id){
-            	$("#recipient-id-"+id+"-holder").slideUp();
-            	$("#recipient-id-"+id+"-holder").remove();
-            	$("#list-recipient-id-"+id).prop("checked",false)
-            }
-            @endIf
-          </script>
-          <!-- END RECIPIENT LISTING -->
-        </div>
-        @endif
 
-        <div class="uk-width-1-5 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
-        <div class="uk-width-4-5"  style="padding:18px; border-bottom:1px #111 dashed;">
-        	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
-        		<div uk-grid class="uk-grid-collapse">
-        			<div class="uk-width-1-1">
-        				<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." value="{{ $data['subject'] }}">
-        			</div>
-        		</div>
-        	</fieldset>
-        </div>
+              @else
+              function addRecipient(formValue,name){
+                //alert(formValue+' '+name);
+                if($("#list-recipient-id-"+formValue).is(':checked')){
+                	var recipientClone = $('#recipient-template').clone();
+                	recipientClone.attr("id", "recipient-id-"+formValue+"-holder");
+                	recipientClone.prependTo('#recipients-box');
 
-        <div class="uk-width-1-5 " style="padding:18px; padding-top:40px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div>
-        <div class="uk-width-4-5 " style="padding:18px;">
-        	<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
-        		<div uk-grid class="uk-grid-collapse">
-        			<div class="uk-width-1-1">
-        				<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message.">{{ $data['message'] }}</textarea>
+                	$("#recipient-id-"+formValue+"-holder").slideDown();
+                	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
+                	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
+                	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
+
+                	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+                	$("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+                } else {
+                	$("#recipient-id-"+formValue+"-holder").slideUp();
+                	$("#recipient-id-"+formValue+"-holder").remove();
+                }
+              }
+              function removeRecipient(id){
+              	$("#recipient-id-"+id+"-holder").slideUp();
+              	$("#recipient-id-"+id+"-holder").remove();
+              	$("#list-recipient-id-"+id).prop("checked",false)
+              }
+
+              @endCannot
+              @else
+              function addRecipient(formValue,name){
+        				//alert(formValue+' '+name);
+        				if($("#list-recipient-id-"+formValue).is(':checked')){
+        					var recipientClone = $('#recipient-template').clone();
+        					recipientClone.attr("id", "recipient-id-"+formValue+"-holder");
+        					recipientClone.prependTo('#recipients-box');
+
+        					$("#recipient-id-"+formValue+"-holder").slideDown();
+        					$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
+        					$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
+        					$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
+
+        					$("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+        					$("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+        				} else {
+        					$("#recipient-id-"+formValue+"-holder").slideUp();
+        					$("#recipient-id-"+formValue+"-holder").remove();
+        				}
+        			}
+        			function removeRecipient(id){
+        				$("#recipient-id-"+id+"-holder").slideUp();
+        				$("#recipient-id-"+id+"-holder").remove();
+        				$("#list-recipient-id-"+id).prop("checked",false)
+        			}
+        			@endIf
+        		</script>
+        		<!-- END RECIPIENT LISTING -->
+        	</div>
+        	@endif
+
+        	<div class="uk-width-1-5 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
+        	<div class="uk-width-4-5"  style="padding:18px; border-bottom:1px #111 dashed;">
+        		<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
+        			<div uk-grid class="uk-grid-collapse">
+        				<div class="uk-width-1-1">
+        					<input type="text" name="subject" class="uk-width-1-1 uk-input uk-form-large uk-form-blank" placeholder="Recipients will see your subject in their notifications." value="{{ $data['subject'] }}">
+        				</div>
         			</div>
-        		</div>
-        	</fieldset>
-        </div>
-        <hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
-        <div class="uk-width-1-3">&nbsp;</div>
-        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="$('#crr-report-row-{{$report->id}}').slideDown();dynamicModalClose();"><i class="a-circle-cross"></i> CANCEL</a></div>
-        <div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="submitNewCommunication()"><i class="a-paper-plane"></i> SEND</a>
+        		</fieldset>
+        	</div>
+
+        	<div class="uk-width-1-5 " style="padding:18px; padding-top:40px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;MESSAGE:</div>
+        	<div class="uk-width-4-5 " style="padding:18px;">
+        		<fieldset class="uk-fieldset" style="min-height:3em; width: initial;">
+        			<div uk-grid class="uk-grid-collapse">
+        				<div class="uk-width-1-1">
+        					<textarea id="message-body" style="min-height: 100px;padding-left: 10px; border:none;" rows="11" class="uk-width-1-1 uk-form-large uk-input uk-form-blank uk-resize-vertical" name="messageBody" value="" placeholder="Recipients will have to log-in to view your message.">{{ $data['message'] }}</textarea>
+        				</div>
+        			</div>
+        		</fieldset>
+        	</div>
+        	<hr class="dashed-hr uk-width-1-1 uk-margin-bottom uk-margin-top">
+        	<div class="uk-width-1-3">&nbsp;</div>
+        	<div class="uk-width-1-3"><a class="uk-width-5-6 uk-button uk-align-right " onclick="$('#crr-report-row-{{$report->id}}').slideDown();dynamicModalClose();"><i class="a-circle-cross"></i> CANCEL</a></div>
+        	<div class="uk-width-1-3"><a class="uk-width-5-6 uk-align-right uk-button uk-button-success" onclick="submitNewCommunication()"><i class="a-paper-plane"></i> SEND</a>
+        	</div>
         </div>
       </div>
-    </div>
-  </form>
+    </form>
 
 
 
-{{-- </div></div></div></div> --}}
+        {{-- </div></div></div></div> --}}
 
-<script type="text/javascript">
+        <script type="text/javascript">
     // filter recipients based on class
     $('#recipient-filter').on('keyup', function () {
     	var searchString = $(this).val().toLowerCase();
@@ -208,7 +208,8 @@
     }
 
     function submitNewCommunication() {
-    	var form = $('#newOutboundEmailForm');
+    	debugger;
+    	var form = $('#newOutboundEmailFormNotification');
     	var no_alert = 1;
     	var recipients_array = [];
     	window.recipients_array = [];

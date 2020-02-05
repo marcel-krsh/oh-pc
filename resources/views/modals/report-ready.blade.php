@@ -2,7 +2,7 @@
 	resizeModal(80);
 </script>
 
-	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
+	<form name="newOutboundEmailFormReady" id="newOutboundEmailFormReady" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
 		@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit }}">@endif
 		<div class="uk-container uk-container-center"> <!-- start form container -->
@@ -202,7 +202,7 @@
     }
 
     function submitNewCommunication() {
-    	var form = $('#newOutboundEmailForm');
+    	var form = $('#newOutboundEmailFormReady');
     	var no_alert = 1;
     	var recipients_array = [];
     	window.recipients_array = [];

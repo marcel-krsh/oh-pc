@@ -598,7 +598,7 @@ class CommunicationController extends Controller
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 * @throws \Exception
 	 */
-	public function viewReplies($audit_id, $message_id)
+	public function viewReplies($audit_id, $message_id, $location = '')
 	{
 		$message = Communication::with('docuware_documents.assigned_categories.parent', 'local_documents.assigned_categories.parent', 'owner', 'report_notification')
 			->where('id', $message_id)
@@ -792,7 +792,7 @@ class CommunicationController extends Controller
 			->where('seen', 0)
 			->update(['seen' => 1]);
 		// return $project;
-		return view('modals.communication-replies', compact('message', 'replies', 'audit', 'noaudit', 'project', 'report_notification'));
+		return view('modals.communication-replies', compact('message', 'replies', 'audit', 'noaudit', 'project', 'report_notification', 'location'));
 	}
 
 	public function getCommunicationDocuments($project_id = 0)

@@ -80,11 +80,11 @@
 <div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list-project" style="width: 98%">
 	@if(count($messages))
 	@foreach ($messages as $message)
-<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endIf filter_element_project uk-width-1-1 communication-list-item @if($message->message_recipients) @foreach($message->message_recipients as $mr) staff-{{ $mr->id }} @endforeach @endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
+<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endIf filter_element_project uk-width-1-1 communication-list-item @if($message->message_recipients) @foreach($message->message_recipients as $mr) staff-{{ $mr->id }} @endforeach @endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }}@else{{ $message->id }}@endif/projects'); ">
 
 		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
 			@if($message->owner->id == $current_user->id)
-			<div class="uk-width-1-5@m uk-width-1-2@s communication-item-tt-to-from uk-margin-small-bottom" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
+			<div class="uk-width-1-5@m uk-width-1-2@s communication-item-tt-to-from uk-margin-small-bottom" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }}@else{{ $message->id }}@endif/projects')">
 				<div class="communication-item-date-time">
 					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small><br>
 					<span>
@@ -150,14 +150,14 @@
 				</p>
 				@endif
 			</div>
-			<div class="uk-width-3-5@m uk-width-1-1@s communication-item-excerpt " onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
+			<div class="uk-width-3-5@m uk-width-1-1@s communication-item-excerpt " onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }}@else{{ $message->id }}@endif/projects')" >
 				@if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0)
 				<div uk-grid class="uk-grid-collapse">
 					<div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" >
 						@if($message->subject)<strong>{{ $message->subject }}</strong><hr /> @endif
 						{{ $message->message }}
 					</div>
-					<div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt uk-align-center" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
+					<div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt uk-align-center" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }}@else{{ $message->id }}@endif/projects')" >
 						<div class="communication-item-attachment uk-margin-large-left">
 							<span uk-tooltip="pos:top-left;title:@foreach($message->local_documents as $document) {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} <br> @endforeach @foreach($message->docuware_documents as $document) {{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }} @endforeach">
 								<i class="a-paperclip-2"></i>
@@ -273,16 +273,6 @@
 	 		}
 	 	});
 
-	 	// @if (session()->has('dynamicModalLoad') && session('dynamicModalLoad') != '' )
-	 	// var dynamicModalLoadid = '';
-	 	// $.get( "/session/dynamicModalLoad", function( data ) {
-	 	// 	dynamicModalLoadid = data;
-	 	// 	console.log('Loading Message Id: '+dynamicModalLoadid);
-	 	// 	if(dynamicModalLoadid != ''){
-	 	// 		dynamicModalLoad("communication/0/replies/"+dynamicModalLoadid);
-	 	// 	}
-	 	// });
-	 	// @endif
 
 	 	var $filteredElements = $('.filter_element_project');
 	 	$('.filter_link').click(function (e) {
