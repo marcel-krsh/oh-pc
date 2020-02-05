@@ -35,7 +35,8 @@ $line = 0;
 	<small>
 	@foreach($site_findings as $fin)
 	<div class="small-line-height uk-margin-small-top uk-margin-small-left">
-		<strong>
+		<strong class="{{ $fin->auditor_approved_resolution == 1 ? '' : 'attention' }}">
+			{{-- auditor_approved_resolution --}}
 		@if($fin->finding_type->type == 'nlt')
 			<i class="a-booboo"></i>
 		@endif
@@ -82,7 +83,7 @@ $line = 0;
 	<small>
 	@foreach($building_findings as $fin)
 	<div class="small-line-height uk-margin-small-top uk-margin-small-left">
-		<strong>
+		<strong  class="{{ $fin->auditor_approved_resolution == 1 ? '' : 'attention' }}">
 		@if($fin->finding_type->type == 'nlt')
 			<i class="a-booboo"></i>
 		@endif
@@ -110,7 +111,7 @@ $line = 0;
 		<small>
 		@foreach($b_unit_findings as $fin)
 		<div class="small-line-height uk-margin-small-top uk-margin-small-left">
-			<strong>
+			<strong class="{{ $fin->auditor_approved_resolution == 1 ? '' : 'attention' }}">
 			@if($fin->finding_type->type == 'nlt')
 				<i class="a-booboo"></i>
 			@endif
@@ -151,7 +152,7 @@ $line = 0;
 		<small>
 		@foreach($unit_findings as $fin)
 		<div class="small-line-height uk-margin-small-top uk-margin-small-left">
-			<strong>
+			<strong class="{{ $fin->auditor_approved_resolution == 1 ? '' : 'attention' }}">
 			@if($fin->finding_type->type == 'nlt')
 				<i class="a-booboo"></i>
 			@endif

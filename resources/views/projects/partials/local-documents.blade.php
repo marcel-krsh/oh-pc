@@ -62,6 +62,8 @@
 				$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
 				$building_findings = $document_findings->where('building_id', '<>', null)->where('unit_id', null);
 				$unit_findings = $document_findings->where('building_id', null)->where('unit_id', '<>', null);
+				$resolved_findings = count(collect($document_findings)->where('auditor_approved_resolution', 1));
+				$unresolved_findings = count($document_findings) - $resolved_findings;
 				// dd(count($site_findings));
 				// $x = $unit_findings->where('unit.building_id', 24961);
 				// $thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file'));
@@ -125,7 +127,7 @@
 		    				<span uk-tooltip="pos: right" title="{{ implode($document_audits->pluck('id')->toArray(), ', ') }}">Audits: {{ @count($document_audits) }}</span><br>
 		    				<span uk-tooltip="pos: right" title="@if($document->has_findings){{ implode($document_findings->pluck('id')->toArray(), ', ') }}@endif">
 		    					<span onclick="$('#document-{{ $document->id }}-findings').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW FINDING(S)">
-		    						Total Findings: {{ @count($document_findings) }}
+		    						Total Findings: <span class="uk-badge finding-number {{ $unresolved_findings > 0 ? 'attention' : '' }} " uk-tooltip="" title="" aria-expanded="false"> {{ @count($document_findings) }}</span>
 		    					</span>
 		    				</span>
 
