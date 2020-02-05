@@ -38,7 +38,7 @@ $f = $finding;
 		</span>
 		@endif
 	</h2>
-	@if(null !== $f->date_of_finding)
+	@if(!is_null($f->date_of_finding))
 	<small>{{ date('l F jS, Y',strtotime($f->date_of_finding)) }}</small><br />
 	@endif
 	<strong style="page-break-inside: avoid; break-inside: avoid; ">VIOLATION CODE: <a href="/codes?code=3" target="code_reference">OH.{{ strtoupper($f->finding_type->type) }}.{{ $f->finding_type_id }} @if($f->level) LEVEL {{ $f->level }} @endif:{{ $f->finding_type->name }}</a>:
