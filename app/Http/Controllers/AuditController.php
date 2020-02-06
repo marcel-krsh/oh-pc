@@ -986,7 +986,7 @@ class AuditController extends Controller
 				$data['auditor'] = ['unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors, 'unit_id' => $unit_id, 'building_id' => $building_id, 'audit_id' => $audit_id];
 
 				$unit = CachedUnit::where('unit_id', '=', $unit_id)->first();
-				if ($unit->amenity_totals() != $unit->type_total) {
+				if ($unit && $unit->amenity_totals() != $unit->type_total) {
 					$unit->type_total = $unit->amenity_totals();
 					$unit->save();
 				}

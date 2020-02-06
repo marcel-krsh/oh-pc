@@ -54,7 +54,7 @@
 
 					@if($amenity->auditor_id)
 					<div class="amenity-auditor uk-margin-remove" id="unit-auditor-{{ $amenity->id }}-avatar-1">
-						<div uk-tooltip="pos:top-left;title:{{ $amenity->user->full_name() }};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float" onclick="assignUnitAuditor({{ $audit->audit_id }}, {{ $amenity->cached_unit()->building_id }}, {{ $amenity->unit_id }}, {{ $amenity->id }}, 'unit-auditor-{{ $amenity->id }}-avatar-1', 0, 0, 0, 2);">
+						<div uk-tooltip="pos:top-left;title:{{ $amenity->user->full_name() }};" class="auditor-badge auditor-badge-blue use-hand-cursor no-float" onclick="assignUnitAuditor({{ $audit->audit_id }}, {{ $amenity->cached_unit() ? $amenity->cached_unit()->building_id : '' }}, {{ $amenity->unit_id }}, {{ $amenity->id }}, 'unit-auditor-{{ $amenity->id }}-avatar-1', 0, 0, 0, 2);">
 							{{ $amenity->user->initials() }}
 						</div>
 					</div>

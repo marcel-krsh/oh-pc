@@ -174,14 +174,10 @@ class ReportsController extends Controller
 					break;
 				case 6:
 					// Sent...
-					if ($report->project->pm() && strlen($report->project->pm()['email']) > 3) {
-						// send notification that report is ready to be viewed.
-						$note = 'Changed report status from ' . $report->status_name() . ' to Sent.';
-						//and sent notification to " . $report->project->pm()['email'] . ".";
-						$report->update(['crr_approval_type_id' => 6]);
-					} else {
-						$note = 'Unable to send report. There is no default email for a property manager on this project. Status will remain:' . $report->status_name() . '.';
-					}
+					// send notification that report is ready to be viewed.
+					$note = 'Changed report status from ' . $report->status_name() . ' to Sent.' . $notified_text;
+					//and sent notification to " . $report->project->pm()['email'] . ".";
+					$report->update(['crr_approval_type_id' => 6]);
 					break;
 				case 7:
 					// Viewed by PM...
