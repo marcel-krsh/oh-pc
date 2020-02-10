@@ -208,7 +208,6 @@
     }
 
     function submitNewCommunication() {
-    	debugger;
     	var form = $('#newOutboundEmailFormNotification');
     	var no_alert = 1;
     	var recipients_array = [];
@@ -229,22 +228,9 @@
     			if(data!=1){
     				UIkit.modal.alert(data,{stack: true});
     			} else {
-
-    				if($('#project-detail-tab-1').hasClass('uk-active')){
-    					$('#project-detail-tab-1').trigger('click');
-    				}else{
-            	// debugger;
-            	updateStatus({{ $report_id }}, {{ $status }}, window.recipients_array);
-            }
+            updateStatus({{ $report_id }}, {{ $status }}, window.recipients_array);
           }
-        } );
-    		@if($project)
-    		var id = {{ $project->id }};
-    		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);
-        //loadParcelSubTab('communications',id);
-        @else
-        //loadDashBoardSubTab('dashboard','communications');
-        @endif
+        });
         dynamicModalClose();
       }
     }

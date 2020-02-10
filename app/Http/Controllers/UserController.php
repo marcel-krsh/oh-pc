@@ -526,6 +526,7 @@ class UserController extends Controller
 		$calendar = $this->getCalendar($d); //dd($calendar);
 		$unp = UserNotificationPreferences::where('user_id', $user->id)->first();
 
+		$phone_number = '';
 		if ($user->person && $user->person->allita_phone) {
 			$phone_number = $user->person->allita_phone->number();
 		}

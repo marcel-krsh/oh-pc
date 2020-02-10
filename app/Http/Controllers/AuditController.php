@@ -119,6 +119,7 @@ class AuditController extends Controller
 		//
 
 		// start by checking each cached_building and make sure there is a clear link to amenity_inspection records if this is a building-level amenity
+		// return CachedBuilding::first();
 		$buildings = CachedBuilding::where('audit_id', '=', $audit)->orderBy('amenity_id', 'desc')->orderBy('building_name', 'asc')->get();
 		//dd($buildings);
 
@@ -1001,8 +1002,14 @@ class AuditController extends Controller
 				$building_amenity = BuildingAmenity::where('building_id', '=', $building_id)->where('amenity_id', '=', $amenity_inspection->amenity_id)->first();
 
 				$amenity_inspection->delete();
-				$ordering_amenities->delete();
-				$building_amenity->delete();
+				if (null !== $ordering_amenities) {
+					$ordering_amenities->delete();
+				}
+				if (null !== $building_amenity) {
+					$building_amenity->delete();
+				}
+				// $ordering_amenities->delete();
+				// $building_amenity->delete();
 
 				$new_comment = new Comment([
 					'user_id' => Auth::user()->id,
@@ -1040,9 +1047,14 @@ class AuditController extends Controller
 					$amenity_inspection->delete();
 					$project_amenity->delete();
 				}
-
-				$ordering_buildings->delete();
-				$cached_building->delete();
+				if (null !== $ordering_buildings) {
+					$ordering_buildings->delete();
+				}
+				if (null !== $cached_building) {
+					$cached_building->delete();
+				}
+				// $ordering_buildings->delete();
+				// $cached_building->delete();
 
 				$new_comment = new Comment([
 					'user_id' => Auth::user()->id,

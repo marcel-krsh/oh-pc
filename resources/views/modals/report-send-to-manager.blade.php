@@ -223,7 +223,7 @@
     			}
     		} );
 
-    		@if($project)
+    		@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
     		var id = {{ $project->id }};
     		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);
         //loadParcelSubTab('communications',id);
