@@ -183,7 +183,7 @@ class AddDefaultAmenities extends Command
                     
                     $processBar->finish();
                 } else {
-                    $this->line(PHP_EOL.'NO DEFAULT PROJECT AMENITIES')
+                    $this->line(PHP_EOL.'NO DEFAULT PROJECT AMENITIES');
                 }
 
                 $this->info(PHP_EOL.'==================================================='.PHP_EOL);
