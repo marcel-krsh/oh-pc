@@ -37,6 +37,23 @@ class FixAmenities extends Command
         parent::__construct();
     }
 
+    public function getProject(){
+        $projectInput = $this->ask('Createe default amenities for which project id?');
+        $project = Project::find($projectInput);
+        if($project){
+            
+            $this->line(PHP_EOL.$project->project_number.': '.$project->project_name);
+            if($this->confirm('Is that the project you wanted?')){
+                return $project;
+            } else {
+                $this->line(PHP_EOL.'Sorry about that --- please try again with a different project number.');
+                return null;
+            }
+        }else{
+            $this->line(PHP_EOL.'Sorry I could not find an project matching that number:'.$projectInput);
+            return null;
+        }
+    }
     /**
      * Execute the console command.
      *
@@ -45,12 +62,12 @@ class FixAmenities extends Command
     public function handle()
     {
         //
-        // Get all the audits first:
-        $projects = Project::get()->all();
-        $this->info(PHP_EOL.'Processing '.count($projects).' Projects'.PHP_EOL);
+        // Get all the projects first:
+        $project = $this->getProject;
+        //$this->info(PHP_EOL.'Processing '.count($projects).' Projects'.PHP_EOL);
         
 
-        foreach ($projects as $project) {
+        
             if(count($project->amenities)>0){
                 $this->info('Project ID '.$project->id.' has '.count($project->amenities).' Project Amenities'.PHP_EOL);
                 $this->info(count($project->buildings).' Project Buildings with '.count($project->units).' Units total'.PHP_EOL);
@@ -103,6 +120,6 @@ class FixAmenities extends Command
             }
 
             
-        }
+        
     }
 }
