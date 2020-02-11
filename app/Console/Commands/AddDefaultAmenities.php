@@ -40,13 +40,32 @@ class AddDefaultAmenities extends Command
      *
      * @return mixed
      */
+
+     public function getProject(){
+        $projectInput = $this->ask('Createe default amenities for which project id?');
+        $project = Project::find($projectInput);
+        if($project){
+            
+            $this->line(PHP_EOL.$project->project_number.': '.$project->project_name);
+            if($this->confirm('Is that the project you wanted?')){
+                return $project;
+            } else {
+                $this->line(PHP_EOL.'Sorry about that --- please try again with a different project number.');
+                return null;
+            }
+        }else{
+            $this->line(PHP_EOL.'Sorry I could not find an project matching that number:'.$projectInput);
+            return null;
+        }
+    }
+
     public function handle()
     {
         //
         // Get all the projects first:
-        $chosen_id = $this->ask('Add default amenity assignments for which project id number? (not the project ref but the allita id)');
+       
 
-        $project = Project::where('id', $chosen_id)->first();
+        $project = $this->getProject;
         if($project){
             $this->line(PHP_EOL.$project->project_number.': '.$project->project_name.' project');
             if($this->confirm('Is that the project you wanted?')){
