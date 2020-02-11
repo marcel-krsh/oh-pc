@@ -168,7 +168,7 @@ class AddDefaultAmenities extends Command
                                 'amenity_id'=>$pa->id,
                                 'comment' =>'Allita automatically added this '.$pa->name.' assuming all projects have one.'
                             ]);
-                            $this->line(PHP_EOL.'Added amenity '.$pa->name.' to the site level, from site default list.')
+                            $this->line(PHP_EOL.'Added amenity '.$pa->name.' to the site level, from site default list.');
                         }
                         $processBar->advance();
                     }
