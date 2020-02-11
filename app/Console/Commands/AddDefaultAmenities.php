@@ -66,19 +66,8 @@ class AddDefaultAmenities extends Command
        
 
         $project = $this->getProject;
-        if($project){
-            $this->line(PHP_EOL.$project->project_number.': '.$project->project_name.' project');
-            if($this->confirm('Is that the project you wanted?')){
-                $run = 1;
-            } else {
-                $this->line(PHP_EOL.'Sorry about that --- please try again with a different project number.');
-                $run = 0;
-            }
-        }else{
-            $this->line(PHP_EOL.'Sorry I could not find an project matching that number:'.$auditInput);
-            $run = 0;
-        }
-        if($run == 1){
+        
+        if($project !== null){
         $settings = \App\Models\SystemSetting::where('key','bedroom_amenity_id')->first();
         $bedroomId = $settings->value;
         // get all the default amenities 
