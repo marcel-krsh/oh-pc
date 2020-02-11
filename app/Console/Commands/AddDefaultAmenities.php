@@ -65,7 +65,7 @@ class AddDefaultAmenities extends Command
         // Get all the projects first:
        
 
-        $project = $this->getProject;
+        $project = $this->getProject();
         
         if($project !== null){
         $settings = \App\Models\SystemSetting::where('key','bedroom_amenity_id')->first();
