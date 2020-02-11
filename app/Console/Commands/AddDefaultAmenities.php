@@ -124,7 +124,7 @@ class AddDefaultAmenities extends Command
                             );
                            $this->line(PHP_EOL.'Added amenity '.$ua->amenity_description.' to unit '.$unit->unit_name.' from unit default list.');
                        }else {
-                            $this->line->(PHP_EOL.'Skipping amenity '.$ua->amenity_description.' that was already added.');
+                            $this->line(PHP_EOL.'Skipping amenity '.$ua->amenity_description.' that was already added.');
                         }
                     }
                     
