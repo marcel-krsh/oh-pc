@@ -153,7 +153,7 @@ class AddDefaultAmenities extends Command
                             ]);
                             $this->line(PHP_EOL.'Added amenity '.$ba->amenity_description.' to building '.$b->building_name.' from building default list.');
                         }else {
-                            $this->line->(PHP_EOL.'Skipping amenity '.$ba->amenity_description.' that was already added.');
+                            $this->line(PHP_EOL.'Skipping amenity '.$ba->amenity_description.' that was already added.');
                         }
                     }
                     $processBar->advance();
@@ -176,7 +176,7 @@ class AddDefaultAmenities extends Command
                             ]);
                             $this->line(PHP_EOL.'Added amenity '.$pa->amenity_description.' to the site level, from site default list.');
                         } else {
-                            $this->line->(PHP_EOL.'Skipping amenity '.$pa->amenity_description.' that was already added.');
+                            $this->line(PHP_EOL.'Skipping amenity '.$pa->amenity_description.' that was already added.');
                         }
                         $processBar->advance();
                     }
