@@ -80,8 +80,8 @@ class AddDefaultAmenities extends Command
         
         
             if(count($project->units)>0){
-                $this->info('Project ID '.$project->id.' has '.count($project->amenities).' Project Amenities'.PHP_EOL);
-                $this->info(count($project->buildings).' Project Buildings with '.count($project->units).' Units total'.PHP_EOL);
+                $this->line('Project ID '.$project->id.' has '.count($project->amenities).' Project Amenities'.PHP_EOL);
+                $this->line(count($project->buildings).' Project Buildings with '.count($project->units).' Units total'.PHP_EOL);
             
                 $processBar = $this->output->createProgressBar(count($project->units));
 
@@ -103,6 +103,7 @@ class AddDefaultAmenities extends Command
                                 'comment' =>'Allita automatically added  bedroom '.$bedroomsAdded.' based on the total '.$unit->bedroomCount().' bedrooms listed for this unit.'
                                 ]
                             );
+                            $this->line(PHP_EOL.'Allita automatically added  bedroom '.$bedroomsAdded.' based on the total '.$unit->bedroomCount().' bedrooms listed for this unit.');
 
                         }while($bedroomsAdded < $neededBedrooms);
                         //$this->info(PHP_EOL.$project->id.' had '.$bedroomsAdded. 'bedrooms added.');
@@ -121,6 +122,7 @@ class AddDefaultAmenities extends Command
                                 'comment' =>'Allita automatically added this '.$ua->name.' assuming all units have one.'
                                 ]
                             );
+                           $this->line(PHP_EOL.'Added amenity '.$ua->name.' to unit '.$unit->unit_name.' from unit default list.');
                        }
                     }
                     
@@ -146,6 +148,7 @@ class AddDefaultAmenities extends Command
                                 'amenity_id'=>$ba->id,
                                 'comment' =>'Allita automatically added this '.$ua->name.' assuming all buildings have one.'
                             ]);
+                            $this->line(PHP_EOL.'Added amenity '.$ua->name.' to building '.$b->building_name.' from building default list.');
                         }
                     }
                     $processBar->advance();
@@ -165,6 +168,7 @@ class AddDefaultAmenities extends Command
                                 'amenity_id'=>$pa->id,
                                 'comment' =>'Allita automatically added this '.$pa->name.' assuming all projects have one.'
                             ]);
+                            $this->line(PHP_EOL.'Added amenity '.$pa->name.' to the site level, from site default list.')
                         }
                         $processBar->advance();
                     }
