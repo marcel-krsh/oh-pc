@@ -63,7 +63,7 @@ class FixAmenities extends Command
     {
         //
         // Get all the projects first:
-        $project = $this->getProject;
+        $project = $this->getProject();
         //$this->info(PHP_EOL.'Processing '.count($projects).' Projects'.PHP_EOL);
         
 
