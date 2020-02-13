@@ -65,9 +65,6 @@ class MakeTestFriendlyCommand extends Command
 						User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt('password1234')]);
 					}
 				}
-				if ($userNewEmail !== 0) {
-					User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt('password1234'));
-				}
 				$processBar->advance();
 			}
 			$this->line('All users now have password "password1234".');
