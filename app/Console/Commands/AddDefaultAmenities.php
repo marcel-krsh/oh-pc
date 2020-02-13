@@ -40,26 +40,34 @@ class AddDefaultAmenities extends Command
      *
      * @return mixed
      */
+
+     public function getProject(){
+        $projectInput = $this->ask('Createe default amenities for which project id?');
+        $project = Project::find($projectInput);
+        if($project){
+            
+            $this->line(PHP_EOL.$project->project_number.': '.$project->project_name);
+            if($this->confirm('Is that the project you wanted?')){
+                return $project;
+            } else {
+                $this->line(PHP_EOL.'Sorry about that --- please try again with a different project number.');
+                return null;
+            }
+        }else{
+            $this->line(PHP_EOL.'Sorry I could not find an project matching that number:'.$projectInput);
+            return null;
+        }
+    }
+
     public function handle()
     {
         //
         // Get all the projects first:
-        $chosen_id = $this->ask('Add default amenity assignments for which project id number? (not the project ref but the allita id)');
+       
 
-        $project = Project::where('id', $chosen_id)->first();
-        if($project){
-            $this->line(PHP_EOL.$project->project_number.': '.$project->project_name.' project');
-            if($this->confirm('Is that the project you wanted?')){
-                $run = 1;
-            } else {
-                $this->line(PHP_EOL.'Sorry about that --- please try again with a different project number.');
-                $run = 0;
-            }
-        }else{
-            $this->line(PHP_EOL.'Sorry I could not find an project matching that number:'.$auditInput);
-            $run = 0;
-        }
-        if($run == 1){
+        $project = $this->getProject();
+        
+        if($project !== null){
         $settings = \App\Models\SystemSetting::where('key','bedroom_amenity_id')->first();
         $bedroomId = $settings->value;
         // get all the default amenities 
@@ -72,8 +80,8 @@ class AddDefaultAmenities extends Command
         
         
             if(count($project->units)>0){
-                $this->info('Project ID '.$project->id.' has '.count($project->amenities).' Project Amenities'.PHP_EOL);
-                $this->info(count($project->buildings).' Project Buildings with '.count($project->units).' Units total'.PHP_EOL);
+                $this->line('Project ID '.$project->id.' has '.count($project->amenities).' Project Amenities'.PHP_EOL);
+                $this->line(count($project->buildings).' Project Buildings with '.count($project->units).' Units total'.PHP_EOL);
             
                 $processBar = $this->output->createProgressBar(count($project->units));
 
@@ -95,6 +103,7 @@ class AddDefaultAmenities extends Command
                                 'comment' =>'Allita automatically added  bedroom '.$bedroomsAdded.' based on the total '.$unit->bedroomCount().' bedrooms listed for this unit.'
                                 ]
                             );
+                            $this->line(PHP_EOL.'Added  bedroom '.$bedroomsAdded.' based on the total '.$unit->bedroomCount().' bedrooms listed for this unit.');
 
                         }while($bedroomsAdded < $neededBedrooms);
                         //$this->info(PHP_EOL.$project->id.' had '.$bedroomsAdded. 'bedrooms added.');
@@ -110,10 +119,13 @@ class AddDefaultAmenities extends Command
                                 [
                                 'unit_id'=>$unit->id,
                                 'amenity_id'=>$ua->id,
-                                'comment' =>'Allita automatically added this '.$ua->name.' assuming all units have one.'
+                                'comment' =>'Allita automatically added this '.$ua->amenity_description.' assuming all units have one.'
                                 ]
                             );
-                       }
+                           $this->line(PHP_EOL.'Added amenity '.$ua->amenity_description.' to unit '.$unit->unit_name.' from unit default list.');
+                       }else {
+                            $this->line(PHP_EOL.'Skipping amenity '.$ua->amenity_description.' that was already added.');
+                        }
                     }
                     
                     
@@ -125,9 +137,10 @@ class AddDefaultAmenities extends Command
                 $processBar->finish();
                     
                 // add building amenities
-                $processBar = $this->output->createProgressBar(count($project->buildings));
+                
             }
             if(count($project->buildings) > 0){
+                $processBar = $this->output->createProgressBar(count($project->buildings));
                 foreach($project->buildings as $b){
                     $bas = $defaultBuildingAmenities;
                     foreach ($bas as $ba) {
@@ -136,8 +149,11 @@ class AddDefaultAmenities extends Command
                             BuildingAmenity::create([
                                 'building_id'=>$b->id,
                                 'amenity_id'=>$ba->id,
-                                'comment' =>'Allita automatically added this '.$ua->name.' assuming all buildings have one.'
+                                'comment' =>'Allita automatically added this '.$ba->amenity_description.' assuming all buildings have one.'
                             ]);
+                            $this->line(PHP_EOL.'Added amenity '.$ba->amenity_description.' to building '.$b->building_name.' from building default list.');
+                        }else {
+                            $this->line(PHP_EOL.'Skipping amenity '.$ba->amenity_description.' that was already added.');
                         }
                     }
                     $processBar->advance();
@@ -147,6 +163,7 @@ class AddDefaultAmenities extends Command
             }
                 // add project amenities
                 $pas = $defaultProjectAmenities;
+                if(count($pas) > 0){
                     $processBar = $this->output->createProgressBar(count($defaultProjectAmenities));
                     foreach ($pas as $pa) {
                         // make sure it isn't on the project already
@@ -155,13 +172,20 @@ class AddDefaultAmenities extends Command
                             ProjectAmenity::create([
                                 'project_id'=>$project->id,
                                 'amenity_id'=>$pa->id,
-                                'comment' =>'Allita automatically added this '.$pa->name.' assuming all projects have one.'
+                                'comment' =>'Allita automatically added this '.$pa->amenity_description.' assuming all projects have one.'
                             ]);
+                            $this->line(PHP_EOL.'Added amenity '.$pa->amenity_description.' to the site level, from site default list.');
+                        } else {
+                            $this->line(PHP_EOL.'Skipping amenity '.$pa->amenity_description.' that was already added.');
                         }
                         $processBar->advance();
                     }
                     
                     $processBar->finish();
+                } else {
+                    $this->line(PHP_EOL.'NO DEFAULT PROJECT AMENITIES');
+                }
+
                 $this->info(PHP_EOL.'==================================================='.PHP_EOL);
                 
             }
