@@ -77,12 +77,13 @@ class DocumentController extends Controller
 		$categories = $documents_all->pluck('assigned_categories')->flatten()->unique('id');
 		$findings = collect([]);
 		$all_finding_ids = [];
+		// return $documents;
 
 		foreach ($documents as $key => $document) {
 			$finding_ids = [];
 			$doc_finding_ids = [];
 			foreach ($document->communications as $key => $communication) {
-				$finding_ids = $communication->communication->finding_ids;
+				$finding_ids = $communication->communication ? $communication->communication->finding_ids : null;
 				if (!is_null($finding_ids)) {
 					$finding_ids = json_decode($finding_ids);
 					$doc_finding_ids = array_merge($doc_finding_ids, $finding_ids);

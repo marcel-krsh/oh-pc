@@ -273,13 +273,9 @@ session(['old_communication_modal' => $random]);
     				UIkit.modal.alert('Your message has been saved.',{stack: true});
     			}
     		});
-
     		@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
     		var id = {{ $project->id }};
     		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);
-        //loadParcelSubTab('communications',id);
-        @else
-        //loadDashBoardSubTab('dashboard','communications');
         @endif
         dynamicModalCommunicationClose();
       }

@@ -260,8 +260,10 @@ class CommunicationController extends Controller
 		return 1;
 	}
 
-	public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0, $save_draft = 0, $draft_id = 0)
+	public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0, $save_draft = 0, $draft_id = 0, $location = '')
 	{
+		//44608/7155/null/null/null/1
+		// return $project_id;
 		if ($save_draft == 1) {
 			$draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
 		} elseif ($save_draft == 2) {
@@ -467,11 +469,11 @@ class CommunicationController extends Controller
 			// return $recipients;
 			//dd('values before modal',$finding,$findings);
 			if ($save_draft == 1) {
-				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 			}
-			return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+			return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 		} else {
 			$project = null;
 			$document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -524,11 +526,11 @@ class CommunicationController extends Controller
 			$recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
 			//dd('Values to modal',$finding,$findings);
 			if ($save_draft == 1) {
-				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 			}
-			return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft'));
+			return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft', 'location'));
 		}
 	}
 

@@ -44,7 +44,7 @@
 		</div>
 
   	<div class="uk-width-1-1@s uk-width-1-5@m " style="vertical-align:top">
-  		<a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoadLocal('new-outbound-email-entry/{{ $project->id }}/{{ $audit }}/null/null/null/1')">
+  		<a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoadLocal('new-outbound-email-entry/{{ $project->id }}/{{ $audit }}/null/null/null/1/0/projects')">
   			<span class="a-envelope-4"></span>
   			<span>NEW MESSAGE</span>
   		</a>
