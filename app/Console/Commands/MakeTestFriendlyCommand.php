@@ -53,7 +53,7 @@ class MakeTestFriendlyCommand extends Command
 			foreach ($users as $user) {
 				$i++;
 
-				if ($user->person) {
+				if (!is_null($user->person)) {
 					$userNewEmail = substr($user->person->first_name, 0, 1) . str_replace(' ', '', str_replace('(', '', str_replace(')', '', $user->person->last_name))) . $user->id . "@allita.org";
 					if ($userNewEmail !== 0) {
 						User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt('password1234'), 'name' => $user->person->first_name . ' ' . $user->person->last_name]);
