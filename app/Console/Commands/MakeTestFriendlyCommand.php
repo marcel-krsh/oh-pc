@@ -62,11 +62,11 @@ class MakeTestFriendlyCommand extends Command
 				} else {
 					$userNewEmail = str_replace(' ', '', str_replace('(', '', str_replace(')', '', $user->name))) . $user->id . "@allita.org";
 					if ($userNewEmail !== 0) {
-						User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt('password1234'), 'name' => $user->name]);
+						User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt('password1234')]);
 					}
 				}
 				if ($userNewEmail !== 0) {
-					User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt('password1234'), 'name' => $user->person->first_name . ' ' . $user->person->last_name]);
+					User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt('password1234'));
 				}
 				$processBar->advance();
 			}
