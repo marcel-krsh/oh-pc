@@ -264,6 +264,7 @@ class CommunicationController extends Controller
 	{
 		//44608/7155/null/null/null/1
 		// return $project_id;
+		// new-outbound-email-entry/44608/7155/7/9037/9037/1 - Reports
 		if ($save_draft == 1) {
 			$draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
 		} elseif ($save_draft == 2) {

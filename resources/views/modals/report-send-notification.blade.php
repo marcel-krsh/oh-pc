@@ -61,14 +61,14 @@
 						@php $currentOrg = ''; @endphp
 						@foreach ($recipients as $recipient)
 						@if($currentOrg != $recipient->organization_name)
-						<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->organization_name }}</strong></li>
+						<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->id }} | {{ $recipient->organization_name }} | {{ $recipient->email }}</strong></li>
 						<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 						@php $currentOrg = $recipient->organization_name; @endphp
 						@endIf
 						<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->name) }}">
-							<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} ')">
+							<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} | {{ $recipient->email }} ')">
 							<label for="recipient-id-{{ $recipient->id }}">
-								{{ ucwords($recipient->name) }}
+								{{ $recipient->id }} | {{ ucwords($recipient->name) }} | {{ $recipient->email }}
 							</label>
 						</li>
 						@endforeach
@@ -187,9 +187,9 @@
 
 
 
-        {{-- </div></div></div></div> --}}
+  {{-- </div></div></div></div> --}}
 
-        <script type="text/javascript">
+  <script type="text/javascript">
     // filter recipients based on class
     $('#recipient-filter').on('keyup', function () {
     	var searchString = $(this).val().toLowerCase();
@@ -220,18 +220,38 @@
     		no_alert = 0;
     		UIkit.modal.alert('You must select a recipient.',{stack: true});
     	}
+    	// debugger;
     	if(no_alert){
-    		$.post('{{ URL::route("communication.create") }}', {
-    			'inputs' : form.serialize(),
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data!=1){
-    				UIkit.modal.alert(data,{stack: true});
-    			} else {
-            updateStatus({{ $report_id }}, {{ $status }}, window.recipients_array);
-          }
+    		report_id = "{{ $report_id }}";
+    		action = "{{ $status }}";
+    		receipents = window.recipients_array;
+        // statusUpdate = updateStatus({{ $report_id }}, {{ $status }}, window.recipients_array);
+        // debugger;
+        $.get('/dashboard/reports', {
+        	'id' : report_id,
+        	'action' : action,
+        	'receipents' : receipents,
+        	'check' : 1
+        }).done(function (data2) {
+        	debugger;
+        	var data = jQuery.parseJSON(data2);
+        	if(data['data'][0]['crr_approval_type_id'] == action) {
+        		$.post('{{ URL::route("communication.create") }}', {
+        			'inputs' : form.serialize(),
+        			'_token' : '{{ csrf_token() }}'
+        		}, function(data) {
+        			if(data!=1){
+        				UIkit.modal.alert(data,{stack: true});
+        			} else {
+        				UIkit.modal.alert('Report was updated and notification was sent',{stack: true});
+        			}
+        			dynamicModalClose();
+        		});
+        	} else {
+        		UIkit.modal.alert('Report was not updated and notification was not sent',{stack: true});
+        		dynamicModalClose();
+        	}
         });
-        dynamicModalClose();
       }
     }
   </script>

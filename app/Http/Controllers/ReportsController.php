@@ -106,6 +106,7 @@ class ReportsController extends Controller
 			}
 			$notified_text = ' Notified to ' . $names . '.';
 		}
+		$status = 1;
 		if (Auth::user()->can('access_auditor')) {
 			switch ($data['action']) {
 				case 1:
@@ -144,6 +145,7 @@ class ReportsController extends Controller
 						}
 					} else {
 						$note = 'Attempted change to Declined by Manger can only be done by a manager or higher.';
+						$status = 0;
 					}
 					break;
 				case 4:
@@ -157,6 +159,7 @@ class ReportsController extends Controller
 						$this->generateReport($report, 0, 1);
 					} else {
 						$note = 'Attempted change to Approved with Changes can only be done by a manager or higher.';
+						$status = 0;
 					}
 					break;
 				case 5:
@@ -170,6 +173,7 @@ class ReportsController extends Controller
 						$this->generateReport($report, 0, 1);
 					} else {
 						$note = 'Attempted change to Approved can only be done by a manager or higher.';
+						$status = 0;
 					}
 					break;
 				case 6:
@@ -205,6 +209,7 @@ class ReportsController extends Controller
 						}
 					} else {
 						$note = 'Attempted change to All Items Resolved but something went wrong.';
+						$status = 0;
 					}
 					break;
 
@@ -216,7 +221,7 @@ class ReportsController extends Controller
 
 		$history = ['date' => date('m-d-Y g:i a'), 'user_id' => Auth::user()->id, 'user_name' => Auth::user()->full_name(), 'note' => $note . $notified_text];
 		$this->reportHistory($report, $history);
-
+		// return json_encode([$status, $note]);
 		return $note;
 	}
 

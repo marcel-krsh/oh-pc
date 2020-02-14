@@ -2,92 +2,92 @@
 	resizeModal(80);
 </script>
 
-	<form name="newOutboundEmailFormReady" id="newOutboundEmailFormReady" method="post">
-		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
-		@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit }}">@endif
-		<div class="uk-container uk-container-center"> <!-- start form container -->
-			<div uk-grid class="uk-grid-small ">
-				<div class="uk-width-1-1 uk-padding-small">
-					@if($project)
-					<h3>Report Message: <span id="current-file-id-dynamic-modal">{{ $project->project_number }}: {{ $project->project_name }}</span></h3>
-					<input type="hidden" name="report" value="{{$report->id}}">
-					@else
-					<h3>New Message</h3>
-					@endif
-				</div>
+<form name="newOutboundEmailFormReady" id="newOutboundEmailFormReady" method="post">
+	@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
+	@if(!is_null($audit))<input type="hidden" name="audit" value="{{ $audit }}">@endif
+	<div class="uk-container uk-container-center"> <!-- start form container -->
+		<div uk-grid class="uk-grid-small ">
+			<div class="uk-width-1-1 uk-padding-small">
+				@if($project)
+				<h3>Report Message: <span id="current-file-id-dynamic-modal">{{ $project->project_number }}: {{ $project->project_name }}</span></h3>
+				<input type="hidden" name="report" value="{{$report->id}}">
+				@else
+				<h3>New Message</h3>
+				@endif
 			</div>
-			<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
-			<div uk-grid class="uk-grid-collapse">
-				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
-				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{ Auth::user()->full_name() }}</div>
-				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
-				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-					@if(!is_null($audit))
-					@cannot('access_auditor')
+		</div>
+		<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
+		<div uk-grid class="uk-grid-collapse">
+			<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
+			<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{ Auth::user()->full_name() }}</div>
+			<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
+			<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+				@if(!is_null($audit))
+				@cannot('access_auditor')
 
-					@else
-					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
-					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
-						'recipient-name'></span>
-					</div>
-					@endCannot
-					@else
-					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
-					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
-						'recipient-name'></span>
-					</div>
-					@endIf
-
+				@else
+				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
+				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
+					'recipient-name'></span>
 				</div>
-				<div class="uk-width-1-5 recipient-list" style="display: none;"></div>
-				<div class="uk-width-4-5 recipient-list" id='recipients' style="border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:18px; padding-left:25px; position: relative;top:0px; display: none">
-					<!-- RECIPIENT LISTING -->
-					<div class="communication-selector uk-scrollable-box">
-						<ul class="uk-list document-menu">
-							@php $currentOrg = ''; @endphp
-							@foreach ($recipients as $recipient)
-							@if($currentOrg != $recipient->organization_name)
-							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->id }} | {{ $recipient->organization_name }} | {{ $recipient->email }}</strong></li>
-							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-							@php $currentOrg = $recipient->organization_name; @endphp
-							@endIf
-							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->name) }}">
-								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} | {{ $recipient->email }} ')">
-								<label for="recipient-id-{{ $recipient->id }}">
-									{{ $recipient->id }} | {{ ucwords($recipient->name) }} | {{ $recipient->email }}
-								</label>
-							</li>
-							@endforeach
-							<input type="hidden" name="notification_triggered_type" value="2">
-							<input type="hidden" name="notification_model_id" value="{{ $report_id }}">
-							<input type="hidden" name="report_approval_type" value="6">
-						</ul>
-					</div>
-					<div class="uk-form-row">
-						<input type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
-					</div>
-					<script>
+				@endCannot
+				@else
+				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
+				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
+					'recipient-name'></span>
+				</div>
+				@endIf
+
+			</div>
+			<div class="uk-width-1-5 recipient-list" style="display: none;"></div>
+			<div class="uk-width-4-5 recipient-list" id='recipients' style="border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:18px; padding-left:25px; position: relative;top:0px; display: none">
+				<!-- RECIPIENT LISTING -->
+				<div class="communication-selector uk-scrollable-box">
+					<ul class="uk-list document-menu">
+						@php $currentOrg = ''; @endphp
+						@foreach ($recipients as $recipient)
+						@if($currentOrg != $recipient->organization_name)
+						<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->id }} | {{ $recipient->organization_name }} | {{ $recipient->email }}</strong></li>
+						<hr class="recipient-list-item dashed-hr uk-margin-bottom">
+						@php $currentOrg = $recipient->organization_name; @endphp
+						@endIf
+						<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->name) }}">
+							<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} | {{ $recipient->email }} ')">
+							<label for="recipient-id-{{ $recipient->id }}">
+								{{ $recipient->id }} | {{ ucwords($recipient->name) }} | {{ $recipient->email }}
+							</label>
+						</li>
+						@endforeach
+						<input type="hidden" name="notification_triggered_type" value="2">
+						<input type="hidden" name="notification_model_id" value="{{ $report_id }}">
+						<input type="hidden" name="report_approval_type" value="6">
+					</ul>
+				</div>
+				<div class="uk-form-row">
+					<input type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
+				</div>
+				<script>
             // CLONE RECIPIENTS
             @if($audit)
             @cannot('access_auditor')
-                    // add the user selection
-                    var recipientClone = $('#recipient-template').clone();
-                    recipientClone.attr("id", "recipient-id-{{$audit->lead_user_id}}-holder");
-                    recipientClone.prependTo('#recipients-box');
+              // add the user selection
+              var recipientClone = $('#recipient-template').clone();
+              recipientClone.attr("id", "recipient-id-{{$audit->lead_user_id}}-holder");
+              recipientClone.prependTo('#recipients-box');
 
-                    $("#recipient-id-"+formValue+"-holder").slideDown();
-                    $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
-                    $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
-                    $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
+              $("#recipient-id-"+formValue+"-holder").slideDown();
+              $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
+              $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
+              $("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
 
-                    $("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
-                    $("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
-                    function removeRecipient(id){
-                    	UIkit.modal.alert('<h1>Sorry</h1><h2>You cannot remove this recipient</h2>');
-                    }
+              $("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+              $("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+              function removeRecipient(id){
+              	UIkit.modal.alert('<h1>Sorry</h1><h2>You cannot remove this recipient</h2>');
+              }
 
-                    @else
-                    function addRecipient(formValue,name){
+              @else
+              function addRecipient(formValue,name){
                       //alert(formValue+' '+name);
                       if($("#list-recipient-id-"+formValue).is(':checked')){
                       	var recipientClone = $('#recipient-template').clone();
@@ -202,6 +202,7 @@
     }
 
     function submitNewCommunication() {
+    	debugger;
     	var form = $('#newOutboundEmailFormReady');
     	var no_alert = 1;
     	var recipients_array = [];
@@ -215,18 +216,35 @@
     	}
     	window.recipients_array = recipients_array;
     	if(no_alert){
-    		$.post('{{ URL::route("communication.create") }}', {
-    			'inputs' : form.serialize(),
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data!=1){
-    				UIkit.modal.alert(data,{stack: true});
+    		report_id = "{{ $report_id }}";
+    		action = 6;
+    		receipents = window.recipients_array;
+    		$.get('/dashboard/reports', {
+    			'id' : report_id,
+    			'action' : action,
+    			'receipents' : receipents,
+    			'check' : 1
+    		}).done(function (data2) {
+    			var data = jQuery.parseJSON(data2);
+    			if(data['data'][0]['crr_approval_type_id'] == action) {
+    				$.post('{{ URL::route("communication.create") }}', {
+    					'inputs' : form.serialize(),
+    					'_token' : '{{ csrf_token() }}'
+    				}, function(data) {
+    					if(data!=1){
+    						UIkit.modal.alert(data,{stack: true});
+    					} else {
+    						UIkit.modal.alert('Report was updated and notification was sent',{stack: true});
+		    				// updateStatus({{ $report_id }}, 6, window.recipients_array);
+		    			}
+		    			dynamicModalClose();
+		    		} );
     			} else {
-    				updateStatus({{ $report_id }}, 6, window.recipients_array);
+    				UIkit.modal.alert('Report was not updated and notification was not sent',{stack: true});
+    				dynamicModalClose();
     			}
-    		} );
-        dynamicModalClose();
-      }
+    		});
+    	}
     }
   </script>
 </div>
