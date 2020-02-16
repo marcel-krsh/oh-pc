@@ -9,7 +9,8 @@
 			escClose: false,
 			bgClose: false
 		});
-
+		debugger;
+		$("#communication-modal-"+window.oldCommunicationModal).html('');
 	});
 </script>
 @else
@@ -26,8 +27,6 @@ session(['old_communication_modal' => $random]);
 		resizeModal(80);
 		window.currentCommunicationModal = "{{ $random }}";
 	</script>
-
-
 
 	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post">
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
@@ -57,18 +56,18 @@ session(['old_communication_modal' => $random]);
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
 				@if($single_receipient)
 				<?php $recipient = $recipients->first()->first();?>
-				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+				<div class="uk-width-4-5 "  id="recipients-box-pro" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 					<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-						<input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" checked="checked" onclick="return false;">
-						<label for="recipient-id-{{ $recipient->id }}">
+						<input name="recipients[]" id="recipient-id-pro-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" checked="checked" onclick="return false;">
+						<label for="recipient-id-pro-{{ $recipient->id }}">
 							{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
 						</label>
 					</li>
 				</div>
 				@else
-				<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-					<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
-					<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
+				<div class="uk-width-4-5 "  id="recipients-box-pro" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
+					<div id="add-recipients-button-pro" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button-pro" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
+					<div id='recipient-template-pro' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
 						'recipient-name'></span>
 					</div>
 				</div>
@@ -82,8 +81,8 @@ session(['old_communication_modal' => $random]);
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 							@foreach ($recipients_from_hfa as $recipient_from_hfa)
 							<li class="recipient-list-item ohfa {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name))))) }} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
-								<input name="" id="list-recipient-id-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}')">
-								<label for="recipient-id-{{ $recipient_from_hfa->id }}">
+								<input name="recipients[]" id="list-recipient-id-pro-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientPro(this.value,'{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}')">
+								<label for="recipient-id-pro-{{ $recipient_from_hfa->id }}">
 									{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }} | {{ $recipient_from_hfa->email }}
 								</label>
 							</li>
@@ -97,8 +96,8 @@ session(['old_communication_modal' => $random]);
 
 							@foreach($orgs as $recipient)
 							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
-								<label for="recipient-id-{{ $recipient->id }}">
+								<input name="recipients[]" id="list-recipient-id-pro-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientPro(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
+								<label for="recipient-id-pro-{{ $recipient->id }}">
 									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }} | {{ $recipient->email }}
 								</label>
 							</li>
@@ -110,8 +109,8 @@ session(['old_communication_modal' => $random]);
 							@php $currentOrg = $recipient->organization_name; @endphp
 							@endIf
 							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-								<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
-								<label for="recipient-id-{{ $recipient->id }}">
+								<input name="" id="list-recipient-id-pro-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientPro(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
+								<label for="recipient-id-pro-{{ $recipient->id }}">
 									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
 								</label>
 							</li>
@@ -125,29 +124,30 @@ session(['old_communication_modal' => $random]);
 					</div> --}}
 					<script>
             // CLONE RECIPIENTS
-            function addRecipient(formValue,name){
+            function addRecipientPro(formValue,name){
               //alert(formValue+' '+name);
-              if($("#list-recipient-id-"+formValue).is(':checked')){
-              	var recipientClone = $('#recipient-template').clone();
-              	recipientClone.attr("id", "recipient-id-"+formValue+"-holder");
-              	recipientClone.prependTo('#recipients-box');
+              if($("#list-recipient-id-pro-"+formValue).is(':checked')){
+        					var recipientClone = $('#recipient-template-pro').clone();
+        					recipientClone.attr("id", "recipient-id-pro-"+formValue+"-holder");
+        					recipientClone.prependTo('#recipients-box-pro');
 
-              	$("#recipient-id-"+formValue+"-holder").slideDown();
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
+        					$("#recipient-id-pro-"+formValue+"-holder").slideDown();
+        					$("#recipient-id-pro-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-pro-"+formValue);
+        					$("#recipient-id-pro-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
+        					$("#recipient-id-pro-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
 
-              	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
-              	$("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
-              } else {
-              	$("#recipient-id-"+formValue+"-holder").slideUp();
-              	$("#recipient-id-"+formValue+"-holder").remove();
-              }
+        					$("#recipient-id-pro-"+formValue+"-holder input[type=checkbox]").val(formValue);
+        					$("#recipient-id-pro-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+        				} else {
+        					$("#recipient-id-pro-"+formValue+"-holder").slideUp();
+        					$("#recipient-id-pro-"+formValue+"-holder").remove();
+        				}
+
             }
             function removeRecipient(id){
-            	$("#recipient-id-"+id+"-holder").slideUp();
-            	$("#recipient-id-"+id+"-holder").remove();
-            	$("#list-recipient-id-"+id).prop("checked",false)
+            	$("#recipient-id-pro-"+id+"-holder").slideUp();
+            	$("#recipient-id-pro-"+id+"-holder").remove();
+            	$("#list-recipient-id-pro-"+id).prop("checked",false)
             }
           </script>
           <!-- END RECIPIENT LISTING -->
@@ -213,9 +213,10 @@ session(['old_communication_modal' => $random]);
     });
 
     function showRecipients() {
+    	debugger;
     	$('.recipient-list').slideToggle();
-    	$('#add-recipients-button').toggle();
-    	$('#done-adding-recipients-button').toggle();
+    	$('#add-recipients-button-pro').toggle();
+    	$('#done-adding-recipients-button-pro').toggle();
     }
 
     function showDocuments() {

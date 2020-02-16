@@ -99,6 +99,7 @@
 
               @else
               function addRecipient(formValue,name){
+              	// debugger;
                 //alert(formValue+' '+name);
                 if($("#list-recipient-id-"+formValue).is(':checked')){
                 	var recipientClone = $('#recipient-template').clone();
@@ -233,7 +234,7 @@
         	'receipents' : receipents,
         	'check' : 1
         }).done(function (data2) {
-        	debugger;
+        	// debugger;
         	var data = jQuery.parseJSON(data2);
         	if(data['data'][0]['crr_approval_type_id'] == action) {
         		$.post('{{ URL::route("communication.create") }}', {

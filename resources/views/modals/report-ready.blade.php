@@ -27,8 +27,7 @@
 
 				@else
 				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
-				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
-					'recipient-name'></span>
+				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class='recipient-name'></span>
 				</div>
 				@endCannot
 				@else
@@ -52,7 +51,7 @@
 						@php $currentOrg = $recipient->organization_name; @endphp
 						@endIf
 						<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->name) }}">
-							<input name="" id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} | {{ $recipient->email }} ')">
+							<input name="recipients[]"  id="list-recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipient(this.value,'{{ ucwords($recipient->name) }} | {{ $recipient->email }} ')">
 							<label for="recipient-id-{{ $recipient->id }}">
 								{{ $recipient->id }} | {{ ucwords($recipient->name) }} | {{ $recipient->email }}
 							</label>
@@ -88,33 +87,34 @@
 
               @else
               function addRecipient(formValue,name){
-                      //alert(formValue+' '+name);
-                      if($("#list-recipient-id-"+formValue).is(':checked')){
-                      	var recipientClone = $('#recipient-template').clone();
-                      	recipientClone.attr("id", "recipient-id-"+formValue+"-holder");
-                      	recipientClone.prependTo('#recipients-box');
+              	// debugger;
+                //alert(formValue+' '+name);
+                if($("#list-recipient-id-"+formValue).is(':checked')){
+                	var recipientClone = $('#recipient-template').clone();
+                	recipientClone.attr("id", "recipient-id-"+formValue+"-holder");
+                	recipientClone.prependTo('#recipients-box');
 
-                      	$("#recipient-id-"+formValue+"-holder").slideDown();
-                      	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
-                      	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
-                      	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
+                	$("#recipient-id-"+formValue+"-holder").slideDown();
+                	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("id","recipient-id-"+formValue);
+                	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("name","recipients[]");
+                	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeRecipient("+formValue+");");
 
-                      	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
-                      	$("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
-                      } else {
-                      	$("#recipient-id-"+formValue+"-holder").slideUp();
-                      	$("#recipient-id-"+formValue+"-holder").remove();
-                      }
-                    }
-                    function removeRecipient(id){
-                    	$("#recipient-id-"+id+"-holder").slideUp();
-                    	$("#recipient-id-"+id+"-holder").remove();
-                    	$("#list-recipient-id-"+id).prop("checked",false)
-                    }
+                	$("#recipient-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+                	$("#recipient-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+                } else {
+                	$("#recipient-id-"+formValue+"-holder").slideUp();
+                	$("#recipient-id-"+formValue+"-holder").remove();
+                }
+              }
+              function removeRecipient(id){
+              	$("#recipient-id-"+id+"-holder").slideUp();
+              	$("#recipient-id-"+id+"-holder").remove();
+              	$("#list-recipient-id-"+id).prop("checked",false)
+              }
 
-                    @endCannot
-                    @else
-                    function addRecipient(formValue,name){
+              @endCannot
+              @else
+              function addRecipient(formValue,name){
               //alert(formValue+' '+name);
               if($("#list-recipient-id-"+formValue).is(':checked')){
               	var recipientClone = $('#recipient-template').clone();

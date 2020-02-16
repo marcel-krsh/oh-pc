@@ -868,7 +868,7 @@ class CommunicationController extends Controller
 		// return $forminputs;
 		$audit = null;
 		$report = null;
-
+		// return ($forminputs['recipients']);
 		// return $forminputs;
 		// if (!$forminputs['messageBody']) {
 		// 	return 'Message cannot be empty.';
