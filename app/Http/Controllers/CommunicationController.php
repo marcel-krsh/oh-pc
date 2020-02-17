@@ -260,8 +260,11 @@ class CommunicationController extends Controller
 		return 1;
 	}
 
-	public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0, $save_draft = 0, $draft_id = 0)
+	public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0, $save_draft = 0, $draft_id = 0, $location = '')
 	{
+		//44608/7155/null/null/null/1
+		// return $project_id;
+		// new-outbound-email-entry/44608/7155/7/9037/9037/1 - Reports
 		if ($save_draft == 1) {
 			$draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
 		} elseif ($save_draft == 2) {
@@ -467,11 +470,11 @@ class CommunicationController extends Controller
 			// return $recipients;
 			//dd('values before modal',$finding,$findings);
 			if ($save_draft == 1) {
-				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 			}
-			return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+			return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 		} else {
 			$project = null;
 			$document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -524,11 +527,11 @@ class CommunicationController extends Controller
 			$recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
 			//dd('Values to modal',$finding,$findings);
 			if ($save_draft == 1) {
-				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
 			}
-			return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft'));
+			return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft', 'location'));
 		}
 	}
 
@@ -540,6 +543,32 @@ class CommunicationController extends Controller
 			Session::forget('communications-search');
 		}
 
+		return [1];
+	}
+
+	public function filterCommunicationReceipient(Request $request)
+	{
+		if ($request->has('filter_recipient')) {
+			if ($request->filter_recipient != 'all') {
+				Session::put('filter-recipient', $request->filter_recipient);
+			} else {
+				Session::forget('filter-recipient');
+			}
+		}
+		// return session('filter-recipient');
+		return [1];
+	}
+
+	public function filterCommunicationReceipientProject(Request $request)
+	{
+		if ($request->has('filter_recipient_project')) {
+			if ($request->filter_recipient_project != 'all') {
+				Session::put('filter-recipient-project', $request->filter_recipient_project);
+			} else {
+				Session::forget('filter-recipient-project');
+			}
+		}
+		// return session('filter-recipient-project');
 		return [1];
 	}
 
@@ -572,7 +601,7 @@ class CommunicationController extends Controller
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 * @throws \Exception
 	 */
-	public function viewReplies($audit_id, $message_id)
+	public function viewReplies($audit_id, $message_id, $location = '')
 	{
 		$message = Communication::with('docuware_documents.assigned_categories.parent', 'local_documents.assigned_categories.parent', 'owner', 'report_notification')
 			->where('id', $message_id)
@@ -766,7 +795,7 @@ class CommunicationController extends Controller
 			->where('seen', 0)
 			->update(['seen' => 1]);
 		// return $project;
-		return view('modals.communication-replies', compact('message', 'replies', 'audit', 'noaudit', 'project', 'report_notification'));
+		return view('modals.communication-replies', compact('message', 'replies', 'audit', 'noaudit', 'project', 'report_notification', 'location'));
 	}
 
 	public function getCommunicationDocuments($project_id = 0)
@@ -839,7 +868,7 @@ class CommunicationController extends Controller
 		// return $forminputs;
 		$audit = null;
 		$report = null;
-
+		// return ($forminputs['recipients']);
 		// return $forminputs;
 		// if (!$forminputs['messageBody']) {
 		// 	return 'Message cannot be empty.';

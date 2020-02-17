@@ -29,20 +29,18 @@
 			{{ $message->owner->full_name() }}
 		</div>
 		<div class="uk-width-1-5 uk-width-1-5@s communication-item-tt-to-from">
-			@if(count($message->recipient_details))
+			@if(count($message->message_recipients))
 			<span class="uk-text-muted">To: </span> <br>
-			@foreach ($message->recipients as $recipient)
-				@if($recipient->user->name)
-					@if($recipient->seen_at)
-						{{$recipient->user->name}} <a class="uk-link-muted tooltipmodal" uk-tooltip="pos:top-left;title:First viewed on {{ date('F d, Y h:i A T', strtotime($recipient->seen_at)) }}"><i class="a-envelope-open_1"></i></a>@if(!$loop->last), @endif
-					@else
-						@if($recipient->seen)
-							{{$recipient->user->name}} <i class="a-envelope-open_1" uk-tooltip="pos:top-left;title:Viewed"></i>@if(!$loop->last),@endif
-						@else
-							{{$recipient->user->name}} <i class="a-envelope-4" uk-tooltip="pos:top-left;title:Not viewed yet"></i>@if(!$loop->last),@endif
-						@endif
-					@endif
-				@endif
+			@foreach ($message->message_recipients as $recipient)
+			@if($recipient->pivot->seen_at)
+			{{ $recipient->full_name() }} <a class="uk-link-muted tooltipmodal" uk-tooltip="pos:top-left;title:First viewed on {{ date('F d, Y h:i A T', strtotime($recipient->seen_at)) }}"><i class="a-envelope-open_1"></i></a>@if(!$loop->last), @endif
+			@else
+			@if($recipient->pivot->seen == 1)
+			{{ $recipient->full_name() }} <i class="a-envelope-open_1" uk-tooltip="pos:top-left;title:Viewed"></i>@if(!$loop->last),@endif
+			@else
+			{{ $recipient->full_name() }} <i class="a-envelope-4" uk-tooltip="pos:top-left;title:Not viewed yet"></i>@if(!$loop->last),@endif
+			@endif
+			@endif
 			@endforeach
 			@endif
 		</div>
@@ -142,11 +140,11 @@
 <hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 <div class="uk-container uk-grid-collapse uk-margin-top" id="communication-list" uk-grid style="position: relative; height: 222.5px; border-bottom:0px;">
 	@if(is_null($project))
-	<button class="uk-button uk-button-success uk-width-1-3@m uk-width-1-1@s toggle-form" onclick="this.style.visibility = 'hidden';" uk-toggle="target: #newOutboundEmailForm" >Write a reply</button>
+	<button class="uk-button uk-button-success uk-width-1-3@m uk-width-1-1@s toggle-form" onclick="this.style.visibility = 'hidden';" uk-toggle="target: #newOutboundEmailFormReplies" >Write a reply</button>
 	@else
-		<button class="uk-button uk-button-success uk-width-1-3@m uk-width-1-1@s toggle-form" onclick="this.style.visibility = 'hidden'; communicationDocuments({{ $project->id }});" uk-toggle="target: #newOutboundEmailForm" >Write a reply</button>
+	<button class="uk-button uk-button-success uk-width-1-3@m uk-width-1-1@s toggle-form" onclick="this.style.visibility = 'hidden'; communicationDocuments({{ $project->id }});" uk-toggle="target: #newOutboundEmailFormReplies" >Write a reply</button>
 	@endif
-	<form name="newOutboundEmailForm" id="newOutboundEmailForm" method="post" class="uk-margin-top toggle-form uk-width-1-1" hidden>
+	<form name="newOutboundEmailFormReplies" id="newOutboundEmailFormReplies" method="post" class="uk-margin-top toggle-form uk-width-1-1" hidden>
 		@if($audit)<input type="hidden" name="audit" value="{{ $audit->id }}">@endif
 		@if(!is_null($project))<input type="hidden" name="project_id" value="{{ $project->id }}">@endif
 		<input type="hidden" name="communication" value="{{ $message->id }}">
@@ -220,42 +218,48 @@
 	    }
 
 	    function submitNewCommunication() {
-	    	var form = $('#newOutboundEmailForm');
+	    	var form = $('#newOutboundEmailFormReplies');
 	    	var no_alert = 1;
 
 
-    		$.post('{{ URL::route("communication.create") }}', {
-    			'inputs' : form.serialize(),
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data!=1){
-    				UIkit.modal.alert(data,{stack: true});
-    			} else {
-    				//UIkit.modal.alert('Your message has been saved.',{stack: true});
-                    @if(!$project || Auth::user()->cannot('access_auditor'))
-                    $('#detail-tab-2').trigger('click');
-                    @endIf
+	    	$.post('{{ URL::route("communication.create") }}', {
+	    		'inputs' : form.serialize(),
+	    		'_token' : '{{ csrf_token() }}'
+	    	}, function(data) {
+	    		if(data!=1){
+	    			UIkit.modal.alert(data,{stack: true});
+	    		} else {
+	    				UIkit.notification({
+								message: 'Your message has been saved.',
+								status: 'success',
+								pos: 'top-right',
+								timeout: 5000
+							});
+    				// UIkit.modal.alert('Your message has been saved.',{stack: true});
+    				@if(!$project || Auth::user()->cannot('access_auditor'))
+    				$('#detail-tab-2').trigger('click');
+    				@endIf
     			}
     		} );
-
-	    	@if($project && Auth::user()->can('access_auditor'))
-	    		var id = {{$project->id}};
-	    		debugger;
-	        loadTab('/projects/'+{{$project->id}}+'/communications/', '2', 0, 0, 'project-', 1);
+	    	// debugger;
+	    	@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
+	    		var id = {{ $project->id }};
+	    		// debugger;
+	    		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);
 	        //loadParcelSubTab('communications',id);
-        @else
+	        @else
         //loadDashBoardSubTab('dashboard','communications');
         @endif
         dynamicModalClose();
-    	}
+      }
 
 
     	// debugger;
 		// refresh communications tabs
-		@if($project && Auth::user()->can('access_auditor'))
-			$('#project-detail-tab-2').trigger('click');
+		@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
+		$('#project-detail-tab-2').trigger('click');
 		@else
-			$('#detail-tab-2').trigger('click');
+		$('#detail-tab-2').trigger('click');
 		@endif
 
 		function communicationDocuments(projectId) {
@@ -263,16 +267,16 @@
 			$('#communication-documents-container').html(tempdiv);
 
 			var url = '/projects/'+projectId+'/reply-communications/documents';
-		    $.get(url, {
-		        }, function(data) {
-		            if(data=='0'){
-		                UIkit.modal.alert("There was a problem getting the project documents.");
-		            } else {
+			$.get(url, {
+			}, function(data) {
+				if(data=='0'){
+					UIkit.modal.alert("There was a problem getting the project documents.");
+				} else {
 
-						$('#communication-documents-container').html(data);
-		        	}
-		    });
+					$('#communication-documents-container').html(data);
+				}
+			});
 		}
 
-    </script>
-  </div>
+	</script>
+</div>

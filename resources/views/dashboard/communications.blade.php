@@ -19,7 +19,7 @@
 		* Group 6
 		* 	New Message
 		*
-		--}}
+		 --}}
 		<div uk-grid class="uk-grid-collapse uk-visible@m uk-width-1-5@m">
 			{{-- Group 1, Inbox and Sent message --}}
 			<div class="uk-button-group uk-margin-medium-left">
@@ -58,7 +58,7 @@
 					FILTER BY RECIPIENT
 				</option>
 				@foreach ($message_recipients as $owner)
-				<option value="staff-{{$owner['id']}}"><a class="uk-dropdown-close">{{$owner['name']}}</a></option>
+				<option {{ (session()->has('filter-recipient') && session()->get('filter-recipient') == 'staff-' . $owner['id']) ? 'selected=selected' : ''  }} value="staff-{{ $owner['id'] }}"><a class="uk-dropdown-close">{{ $owner['name'] }}</a></option>
 				@endforeach
 			</select>
 		</div>
@@ -70,7 +70,7 @@
 					FILTER BY PROJECT
 				</option>
 				@foreach ($projects_array as $projects)
-				<option value="program-{{$projects->id}}"><a  class="uk-dropdown-close">{{$projects->project_name}}</a></option>
+				<option value="program-{{ $projects->id }}"><a  class="uk-dropdown-close">{{ $projects->project_name }}</a></option>
 				@endforeach
 			</select>
 		</div>
@@ -83,19 +83,16 @@
 		</div>
 		<div class="uk-width-1-1 uk-margin-remove uk-text-right">
 
-				<?php // get unread count for this user
-$unreadCount = 0;
+				@php
+				$unreadCount = 0;
+				foreach ($messages as $urc) {
+					if ($urc->recipients->where('user_id', Auth::User()->id)->where('seen', null)->count()) {
+						$unreadCount++;
+					}
+				}
+				@endphp
 
-foreach ($messages as $urc) {
-  if ($urc->recipients->where('user_id', Auth::User()->id)->where('seen', null)->count()) {
-    $unreadCount++;
-  }
-}
-
-?>
-				<div class="uk-align-right uk-label  uk-margin-top ">{{$unreadCount}} UNREAD MESSAGES </div>
-
-
+				<div class="uk-align-right uk-label  uk-margin-top ">{{ $unreadCount }} UNREAD MESSAGES </div>
 		</div>
 	</div>
 </div>
@@ -124,7 +121,7 @@ foreach ($messages as $urc) {
 <div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list" style="width: 98%">
 	@if(count($messages))
 	@foreach ($messages as $message)
-	<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endIf filter_element uk-width-1-1 communication-list-item @if($message->message_recipients) @foreach($message->message_recipients as $mr) staff-{{ $mr->id }} @endforeach @endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
+	<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endif filter_element uk-width-1-1 communication-list-item @if($message->message_recipients) @foreach($message->message_recipients as $mr) staff-{{ $mr->id }} @endforeach @endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endif" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
 		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
 
 			@if($message->owner->id == $current_user->id)
@@ -137,14 +134,13 @@ foreach ($messages as $urc) {
 								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id);?>
 								@if(count($recipients)>0)
 									@foreach($recipients as $recipient)
-										@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
-											{{ $recipient->full_name() }}@if($recipient->pivot->seen == null)</strong>@endif{{ !$loop->last ? ', ': '' }}
+										@if($recipient->pivot->seen != 1)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endif
+											{{ $recipient->full_name() }}@if($recipient->pivot->seen != 1)</strong>@endif{{ !$loop->last ? ', ': '' }}
 									@endforeach
-
 								@else
 									Me
-								@endIf
-							@endIf
+								@endif
+							@endif
 					</span>
 				</div>
 				@if($message->unseen > 0)
@@ -160,12 +156,12 @@ foreach ($messages as $urc) {
 					@foreach ($message->message_recipients->where('id', '<>', $message->owner_id) as $recipient)
 						@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != '')
 					{{-- {{ dd($recipient) }} --}}
-							@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
+							@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endif
 								{{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}
-							@if($recipient->pivot->seen == null)</strong>@endIf
+							@if($recipient->pivot->seen == null)</strong>@endif
 						@elseif($recipient->id == $current_user->id)
 							Me{{ !$loop->last ? ', ': '' }}
-						@endIf
+						@endif
 					@endforeach
 				@endif
 				@if($message->unseen > 0)
@@ -201,7 +197,7 @@ foreach ($messages as $urc) {
 				<div uk-grid class="uk-grid-collapse">
 					<div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
 						@if($message->subject){{ $message->subject }}:<hr class="dashed-hr" /> @endif
-						{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endIf
+						{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endif
 					</div>
 					<div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt uk-align-center" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
 						<div class="communication-item-attachment uk-margin-large-left">
@@ -213,7 +209,7 @@ foreach ($messages as $urc) {
 				</div>
 				@else
 				@if($message->subject){{ $message->subject }}<hr class="dashed-hr" />@endif
-				{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endIf
+				{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endif
 				@endif
 			</div>
 		</div>
@@ -260,7 +256,7 @@ foreach ($messages as $urc) {
 		});
 	}
 
-	function filterByOwner(){
+	function filterByOwner(session = 1){
 		var myGrid = UIkit.grid($('#communication-list'), {
 			controls: '#message-filters',
 			animation: false
@@ -271,6 +267,16 @@ foreach ($messages as $urc) {
 		$('#filter-by-program').prop('selectedIndex',0);
 		@endif
 		filterElement(textinput, '.filter_element');
+		if(session == 1) {
+			$.post('{{ URL::route("communications.filter-recipient") }}', {
+				'filter_recipient' : $("#filter-by-owner").val(),
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data[0]!='1'){
+					UIkit.modal.alert(data);
+				}
+			});
+		}
 	}
 
 	function filterElement(filterVal, filter_element){
@@ -303,7 +309,7 @@ foreach ($messages as $urc) {
 			} else {
 				$('#detail-tab-2').trigger('click');
 			}
-		} );
+		});
 	}
 
 	function showDraftMessages(){
@@ -359,7 +365,7 @@ foreach ($messages as $urc) {
 	 		}
 	 	});
 
-
+	 	filterByOwner(0);
 	 	$('#communications-search').keydown(function (e) {
 	 		if (e.keyCode == 13) {
 	 			searchMessages();
@@ -367,18 +373,6 @@ foreach ($messages as $urc) {
 	 			return false;
 	 		}
 	 	});
-
-	 	// @if (session()->has('dynamicModalLoad') && session('dynamicModalLoad') != '' )
-	 	// var dynamicModalLoadid = '';
-	 	// $.get( "/session/dynamicModalLoad", function( data ) {
-	 	// 	dynamicModalLoadid = data;
-	 	// 	console.log('Loading Message Id: '+dynamicModalLoadid);
-
-	 	// 	if(dynamicModalLoadid != ''){
-	 	// 		dynamicModalLoad("communication/0/replies/"+dynamicModalLoadid);
-	 	// 	}
-	 	// });
-	 	// @endif
 
 	 	var $filteredElements = $('.filter_element');
 	 	$('.filter_link').click(function (e) {

@@ -1,10 +1,10 @@
 <?php
 if (!isset($projects_array)) {$projects_array = null;}
 if (!isset($hfa_users_array)) {$hfa_users_array = null;}
-$crrStatusSelection  = 'all';
+$crrStatusSelection = 'all';
 $crrProjectSelection = 'all';
-$crrLeadSelection    = 'all';
-$crrTypeSelection    = 'all';
+$crrLeadSelection = 'all';
+$crrTypeSelection = 'all';
 ?>
 <div id="reports_tab" class="uk-margin-large-top">
 	<div uk-grid class="uk-margin-top" id="message-filters" data-uk-button-radio="">
@@ -184,16 +184,28 @@ $crrTypeSelection    = 'all';
       	});
       	@if($auditor_access)
       	function updateStatus(report_id, action, receipents = []) {
-      		// debugger;
+      		// $.get('/dashboard/reports', {
+				    //  async: false,
+      		// 	'id' : report_id,
+      		// 	'action' : action,
+      		// 	'receipents' : receipents,
+      		// 	'check' : 1
+      		// }, function(data2) {
+      		// 	debugger;
+      		// 	var res = jQuery.parseJSON(data2);
+      		// 	debugger;
+	      	// 	// UIkit.modal.alert('Your message has been saved.',{stack: true});
+	      	// 	return data2;
+      		// });
       		$.get('/dashboard/reports', {
       			'id' : report_id,
       			'action' : action,
       			'receipents' : receipents,
       			'check' : 1
-      		}, function(data2) {
-
-      		});
-      		UIkit.modal.alert('Your message has been saved.',{stack: true});
+      		}).done(function (data2) {
+	      				var data = jQuery.parseJSON(data2);
+	      				return data;
+			        });
       	}
 
       	function reportAction(reportId,action,project_id = null){

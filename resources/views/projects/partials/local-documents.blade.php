@@ -62,6 +62,8 @@
 				$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
 				$building_findings = $document_findings->where('building_id', '<>', null)->where('unit_id', null);
 				$unit_findings = $document_findings->where('building_id', null)->where('unit_id', '<>', null);
+				$resolved_findings = count(collect($document_findings)->where('auditor_approved_resolution', 1));
+				$unresolved_findings = count($document_findings) - $resolved_findings;
 				// dd(count($site_findings));
 				// $x = $unit_findings->where('unit.building_id', 24961);
 				// $thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file'));
@@ -125,7 +127,7 @@
 		    				<span uk-tooltip="pos: right" title="{{ implode($document_audits->pluck('id')->toArray(), ', ') }}">Audits: {{ @count($document_audits) }}</span><br>
 		    				<span uk-tooltip="pos: right" title="@if($document->has_findings){{ implode($document_findings->pluck('id')->toArray(), ', ') }}@endif">
 		    					<span onclick="$('#document-{{ $document->id }}-findings').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW FINDING(S)">
-		    						Total Findings: {{ @count($document_findings) }}
+		    						Total Findings: <span class="uk-badge finding-number {{ $unresolved_findings > 0 ? 'attention' : '' }} " uk-tooltip="" title="" aria-expanded="false"> {{ @count($document_findings) }}</span>
 		    					</span>
 		    				</span>
 
@@ -421,6 +423,32 @@
 		// documentsLocal("{{ $project->id }}", "{{ $audit_id }}", filter);
 		// return filter = [auditId, findingId, categoryId, documentName];
 	}
+
+
+	function openFindingDetails(findingId) {
+		dynamicModalLoad('finding-details/'+findingId);
+	}
+
+	@if(Auth::user()->auditor_access())
+	function resolveFindingAS(findingid){
+		$.post('/findings/'+findingid+'/resolve', {
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			if(data != 0){
+				UIkit.notification({
+					message: 'Marked finding as resolved',
+					status: 'success',
+					pos: 'top-right',
+					timeout: 30000
+				});
+				$('#finding-resolve-button').html('<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFindingAS('+findingid+')"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
+			}else{
+				$("#finding-resolve-button").html('<span class="a-circle-checked"> </span> RESOLVED');
+				UIkit.modal.dialog('<center style="color:green">Marked finding as resolved</center>');
+			}
+		});
+	}
+	@endif
 
 
 

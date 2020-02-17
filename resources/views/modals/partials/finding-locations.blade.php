@@ -21,9 +21,9 @@
 				$mine = $site_auditors->where('id', Auth::user()->id);
 			}
 			@endphp
-			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor {{ (count($mine)) ? '' : 'not-mine-items' }}" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf " >
+			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor {{ (count($mine)) ? '' : 'not-mine-items' }}" style="color : @if($site_status == 0 && count($site) > 0) #000 @else #50b8ec @endIf " >
 				<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
-					<i @if($site_status != 0) onclick="markSiteComplete({{ $audit->audit_id }}, 0, 0, 0,'markcomplete', 1)" @endif class="{{ ($site_status == 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
+					<i @if($site_status != 0) onclick="markSiteComplete({{ $audit->audit_id }}, 0, 0, 0,'markcomplete', 1)" @endif class="{{ ($site_status == 0 && count($site) > 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 					</i>
 				</div>
 
@@ -43,7 +43,7 @@
 				@endif
 
 				<div class="uk-inline uk-padding-remove" style="flex:140px;">
-					<a onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address ? $audit->project->address->basic_address() : 'NA' }}')" style="color : @if($site_status == 0) #000 @else #50b8ec @endIf ">  Site: <strong style="color : @if($site_status == 0) #000 @else #50b8ec @endIf ">{{ $audit->project->address ?  $audit->project->address->basic_address() : '' }}</strong>
+					<a onclick="filterSiteAmenities({{ $audit->project_ref }}, 'Site: {{ $audit->project->address ? $audit->project->address->basic_address() : 'NA' }}')" style="color : @if($site_status == 0 && count($site) > 0) #000 @else #50b8ec @endIf ">  Site: <strong style="color : @if($site_status == 0 && count($site) > 0) #000 @else #50b8ec @endIf ">{{ $audit->project->address ?  $audit->project->address->basic_address() : '' }}</strong>
 					</a>
 				</div>
 			</li>
@@ -55,12 +55,14 @@
 			@php
 					// $building_auditors = $type->auditors($audit->audit_id);
         		// return $type;
+      $building_amenities = $amenities->where('building_id', '=', $type->building_id)->count();
 			$building_auditors = $amenities->where('building_id', '=', $type->building_id)->where('auditor_id', '<>', null);
 			$buildingUnits = $units->where('building_id', $type->building_id);
 						// return $buildingUnits->pluck('unit_id');
 			$mine = [];
 			if($buildingUnits) {
 				$bu_all_units = $amenities->whereIn('unit_id', $buildingUnits->pluck('unit_id'))->where('auditor_id', '<>', null);
+				$building_amenities = $building_amenities + $amenities->whereIn('unit_id', $buildingUnits->pluck('unit_id'))->count();
 				if($bu_all_units) {
 					$all_auditors = $bu_all_units->merge($building_auditors);
 					$bu_all_units_users = $all_auditors->pluck('user')->unique();
@@ -77,9 +79,9 @@
 			}
 			$buildingUnits = $buildingUnits->sortBy('unit_name')
 			@endphp
-			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor {{ (count($mine)) ? '' : 'not-mine-items' }}" style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf ">
+			<li class="uk-column-span uk-margin-top uk-margin-bottom use-hand-cursor {{ (count($mine)) ? '' : 'not-mine-items' }}" style="color : @if($type->complete == 1 && $building_amenities > 0) #000 @else #50b8ec @endIf ">
 				<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
-					<i @if($type->complete == 0 || is_null($type->complete)) onclick="markBuildingCompleteModal({{ $audit->audit_id }}, {{ $type->building_id }}, 0, 0,'markcomplete', 0)" @endif class="{{ ($type->complete)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
+					<i @if($type->complete == 0 || is_null($type->complete)) onclick="markBuildingCompleteModal({{ $audit->audit_id }}, {{ $type->building_id }}, 0, 0,'markcomplete', 0)" @endif class="{{ ($type->complete && $building_amenities > 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 					</i>
 				</div>
 
@@ -100,7 +102,7 @@
 				@endif
 				{{-- <input type="hidden" name="building-complete-baseLink-{{ $type->building_id }}" id="building-complete-baseLink-{{ $type->building_id }}" value="'amenities/0/audit/{{ $audit->audit_id }}/building/{{ $type->building_id }}/unit/0/1/complete'"> --}}
 				<div class="uk-inline uk-padding-remove" style="flex:140px;">
-					<a onclick="filterBuildingAmenities({{ $type->building_id }},'Building BIN: {{ $type->building->building_name }}, ADDRESS: @if($type->building->address){{ $type->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf')" style="color : @if($type->complete) #000 @else #50b8ec @endIf ">  BIN: <strong style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf ">{{ $type->building_name }}</strong> @ <strong style="color : @if($type->complete == 1) #000 @else #50b8ec @endIf ">{{ $type->address }}</strong>
+					<a onclick="filterBuildingAmenities({{ $type->building_id }},'Building BIN: {{ $type->building->building_name }}, ADDRESS: @if($type->building->address){{ $type->building->address->line_1 }} @else NO ADDRESS SET IN DEVCO @endIf')" style="color : @if($type->complete && $building_amenities > 0) #000 @else #50b8ec @endIf ">  BIN: <strong style="color : @if($type->complete == 1 && $building_amenities > 0) #000 @else #50b8ec @endIf ">{{ $type->building_name }}</strong> @ <strong style="color : @if($type->complete == 1 && $building_amenities > 0) #000 @else #50b8ec @endIf ">{{ $type->address }}</strong>
 					</a>
 				</div>
 			</li>
@@ -118,6 +120,7 @@
 				@forEach($buildingUnits as $bu)
 				@php
 				$unit_am_status = $amenities->where('unit_id', $bu->unit_id)->where('completed_date_time', null)->count();
+				$unit_amenities = $amenities->where('unit_id', $bu->unit_id)->count();
 				// if(count($building_auditors)) {
 				// 	$bu_unit_auditors = $unit_auditors->where('unit_id', $bu->unit_id);
 				// 	if(count($bu_unit_auditors))
@@ -136,9 +139,9 @@
 
 				// dd($unit_auditors);
 				@endphp
-				<li class="uk-margin-left use-hand-cursor uk-column-span uk-margin {{ (count($mine)) ? '' : 'not-mine-items' }}"  style="color : @if($bu->complete == 1 || ($unit_am_status == 0)) #000 @else #50b8ec @endIf ">
+				<li class="uk-margin-left use-hand-cursor uk-column-span uk-margin {{ (count($mine)) ? '' : 'not-mine-items' }}"  style="color : @if( ($bu->complete == 1 || ($unit_am_status == 0)) && $unit_amenities > 0) #000 @else #50b8ec @endIf ">
 					<div class="uk-inline uk-padding-remove" style="margin-top:2px; flex:140px;">
-						<i @if($bu->complete == 0 || is_null($bu->complete)) onclick="markUnitComplete({{ $audit->audit_id }}, 0, {{ $bu->unit_id }}, 0,'markcomplete', 0)" @endif class="{{ ($bu->complete) || ($unit_am_status == 0)  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
+						<i @if($bu->complete == 0 || is_null($bu->complete)) onclick="markUnitComplete({{ $audit->audit_id }}, 0, {{ $bu->unit_id }}, 0,'markcomplete', 0)" @endif class="{{ (($bu->complete) || ($unit_am_status == 0)) && $unit_amenities > 0  ? 'a-circle-checked': 'a-circle completion-icon use-hand-cursor' }} " style="font-size: 26px;">
 						</i>
 					</div>
 
@@ -161,7 +164,7 @@
 
 
 					<div class="uk-inline uk-padding-remove" style="flex:140px;">
-						<a onclick="filterUnitAmenities({{ $bu->unit_id }} ,'Unit {{ $bu->unit_name }} in BIN:{{ $bu->building->building_name }} ')" style="color : @if($bu->complete || ($unit_am_status == 0)) #000 @else #50b8ec @endIf "> Unit <strong>{{ $bu->unit_name }}</strong>
+						<a onclick="filterUnitAmenities({{ $bu->unit_id }} ,'Unit {{ $bu->unit_name }} in BIN:{{ $bu->building->building_name }} ')" style="color : @if( ($bu->complete || ($unit_am_status == 0)) && $unit_amenities > 0) #000 @else #50b8ec @endIf "> Unit <strong>{{ $bu->unit_name }}</strong>
 						</a>
 					</div>
 				</li>
