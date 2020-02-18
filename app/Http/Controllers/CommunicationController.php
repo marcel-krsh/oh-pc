@@ -18,9 +18,9 @@ use App\Models\CachedAudit;
 use App\Models\ReportAccess;
 use Illuminate\Http\Request;
 use App\Models\Communication;
+use App\Models\DocumentAudit;
 use App\Models\SystemSetting;
 use App\Models\DocumentCategory;
-//use App\LogConverter;
 use App\Models\CommunicationDraft;
 use App\Models\CommunicationDocument;
 use App\Models\LocalDocumentCategory;
@@ -1000,6 +1000,17 @@ class CommunicationController extends Controller
 						$document->communication_id = $message->id;
 						$document->document_id = $doc_id[1];
 						$document->save();
+
+						//saving audit id
+						if (!is_null($audit_id)) {
+							$check_doc_exists = DocumentAudit::where('document_id', $doc_id[1])->where('audit_id', $audit_id)->first();
+							if (!$check_doc_exists) {
+								$doc_audit = new DocumentAudit;
+								$doc_audit->audit_id = $audit_id;
+								$doc_audit->document_id = $document->id;
+								$doc_audit->save();
+							}
+						}
 					}
 				}
 				//saving docuware docs

@@ -9,7 +9,7 @@
 			escClose: false,
 			bgClose: false
 		});
-		debugger;
+		// debugger;
 		$("#communication-modal-"+window.oldCommunicationModal).html('');
 	});
 </script>
@@ -213,7 +213,7 @@ session(['old_communication_modal' => $random]);
     });
 
     function showRecipients() {
-    	debugger;
+    	// debugger;
     	$('.recipient-list').slideToggle();
     	$('#add-recipients-button-pro').toggle();
     	$('#done-adding-recipients-button-pro').toggle();
