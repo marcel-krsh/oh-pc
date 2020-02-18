@@ -12,6 +12,8 @@
  */
 //Route::get('/reset_tokens','PagesController@resetTokens');
 Route::get('test-all', 'Helper\TestingController@getTestAll');
+Route::get('developer/last-edited-date-to-decade-ago/{table}', 'Helper\DatafixController@changeSyncTableLastEditedDateBackDecade');
+Route::post('developer/last-edited-date-to-decade-ago', 'Helper\DatafixController@changeSyncTableLastEditedDateBackDecadeSave');
 Route::get('unified_login', function () {
 	//session(['brian'=>'test']);
 	return redirect('/');
