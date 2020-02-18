@@ -199,7 +199,7 @@ class ReportsController extends Controller
 				case 9:
 					// All items resolved ...
 					if (Auth::user()->can('access_auditor')) {
-						$note = Auth::user()->name . ' updated the status to ' . $report->status_name();
+						$note = Auth::user()->name . ' updated the status to ' . $report->status_name() . '. ';
 						if (!is_null($report->manager_id)) {
 							$report->update(['crr_approval_type_id' => 9]);
 							$note .= 'Removed prior status, and refreshed report to reflect the change.';
