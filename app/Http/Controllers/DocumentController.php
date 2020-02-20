@@ -420,7 +420,9 @@ class DocumentController extends Controller
 		$communications_match = array_intersect($document_details['communication_ids'], $user_details['communication_ids']);
 
 		if (empty($projects_match) && empty($communications_match)) {
-			exit('You have no access to the requested file!  ' . $document->id);
+			if (Auth::user()->cannot('access_auditor')) {
+				exit('You have no access to the requested file!  ' . $document->id);
+			}
 		}
 
 		if (Storage::exists($filepath)) {

@@ -376,7 +376,7 @@
 		@php
 		$communications = App\Models\Communication::whereJsonContains('finding_ids', "$f->id")
 		->with('owner')
-		->with('recipients', 'docuware_documents', 'local_documents')
+		->with('recipients', 'docuware_documents', 'local_documents', 'message_recipients')
 		->orderBy('created_at', 'desc')
 		->get();
 		$documents = App\Models\Document::whereJsonContains('finding_ids', "$f->id")
@@ -394,6 +394,8 @@
 		<div class="uk-width-1-5">
 			@endif
 			@php
+			// if($f->id == 9022)
+			// dd($communications);
 			$recipient_yes = 0;
 			$message_seen = 0;
 			$is_receipient = $message->message_recipients->where('id', $current_user->id);
@@ -414,7 +416,7 @@
 					<li>
 						<strong class="uk-text-small" style="float: left; margin-top: 2px;">From:&nbsp;</strong>
 						<label style="display: block; margin-left: 28px;" for="message-{{ $message->id }}">
-							@if($message->owner->id == $current_user->id)Me @else {{ $message->owner->full_name() }} @endif
+							@if($message->owner->id == $current_user->id)Me @else {{ $message->owner->full_name() }} {{-- {{ $message->id }} --}} @endif
 						</label>
 					</li>
 					<li>

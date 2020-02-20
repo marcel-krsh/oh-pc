@@ -1060,7 +1060,7 @@ class CommunicationController extends Controller
 					}
 				} else {
 					if (isset($forminputs['recipients'])) {
-						$message_recipients_array = $forminputs['recipients'];
+						$message_recipients_array = array_unique($forminputs['recipients']);
 						foreach ($message_recipients_array as $recipient_id) {
 							if ($recipient_id > 0) {
 								$notification_sessions = $this->notificationSessions($forminputs);
@@ -1776,7 +1776,7 @@ class CommunicationController extends Controller
 	public function markMessageRead($message_id)
 	{
 		$current_user = Auth::getUser();
-		$check_message = CommunicationRecipient::where('communication_id', $message_id)->where('user_id', $current_user->id)->where('seen', 0)->first();
+		$check_message = CommunicationRecipient::where('communication_id', $message_id)->where('user_id', $current_user->id)->first();
 		if ($check_message) {
 			$check_message->seen = 1;
 			$check_message->save();
