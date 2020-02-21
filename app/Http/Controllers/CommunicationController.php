@@ -1656,13 +1656,19 @@ class CommunicationController extends Controller
 				->orderBy('organization_name', 'asc')
 				->orderBy('last_name', 'asc')
 				->get();
+
+			$single_recipient = 1;
+
 			$audit = $report->audit_id;
 			$status = 3;
 			$data = ['subject' => 'Report has been declined for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
-			$single_recipient = 1;
-
-			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			
+			if($recipients == null){
+				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>"
+			} else {
+				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			}
 		} else {
 			return abort(403, 'No associated project was found');
 		}
@@ -1689,7 +1695,11 @@ class CommunicationController extends Controller
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
 			$single_recipient = 1;
 
-			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			if($recipients == null){
+				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>"
+			} else {
+				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			}
 		} else {
 			return abort(403, 'No associated project was found');
 		}
@@ -1716,7 +1726,11 @@ class CommunicationController extends Controller
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
 			$single_recipient = 1;
 
-			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			if($recipients == null){
+				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>"
+			} else {
+				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			}
 		} else {
 			return abort(403, 'No associated project was found');
 		}
@@ -1743,7 +1757,11 @@ class CommunicationController extends Controller
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your resolved report.'];
 			$single_recipient = 1;
 
-			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			if($recipients == null){
+				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>"
+			} else {
+				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			}
 		} else {
 			return abort(403, 'No associated project was found');
 		}
