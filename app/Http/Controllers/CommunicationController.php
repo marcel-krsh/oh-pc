@@ -281,7 +281,7 @@ class CommunicationController extends Controller
 		//   $ohfa_id = null;
 		// }
 		// return $ohfa_id;
-		$single_receipient = false;
+		$single_recipient = false;
 
 		$current_user = Auth::user();
 		$current_user = User::find($current_user->id);
@@ -461,7 +461,7 @@ class CommunicationController extends Controller
 					->orderBy('last_name', 'asc')
 					->get();
 				if ($current_user->hasRole(1)) {
-					$single_receipient = true;
+					$single_recipient = true;
 				}
 				// }
 			}
@@ -1629,7 +1629,7 @@ class CommunicationController extends Controller
 			$report = CrrReport::find($report_id);
 			$user_keys = $report->signators()->pluck('person_key')->toArray();
 			$status = 2;
-			$single_receipient = 0;
+			$single_recipient = 0;
 			$recipients = User::allManagers();
 			$audit = $report->audit_id;
 			$data = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
@@ -1660,7 +1660,7 @@ class CommunicationController extends Controller
 			$status = 3;
 			$data = ['subject' => 'Report has been declined for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
-			$single_receipient = 1;
+			$single_recipient = 1;
 
 			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
 		} else {
@@ -1687,7 +1687,7 @@ class CommunicationController extends Controller
 			$status = 4;
 			$data = ['subject' => 'Report has been approved with changes for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
-			$single_receipient = 1;
+			$single_recipient = 1;
 
 			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
 		} else {
@@ -1714,7 +1714,7 @@ class CommunicationController extends Controller
 			$status = 5;
 			$data = ['subject' => 'Report has been approved for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
-			$single_receipient = 1;
+			$single_recipient = 1;
 
 			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
 		} else {
@@ -1741,7 +1741,7 @@ class CommunicationController extends Controller
 			$status = 9;
 			$data = ['subject' => 'All items for ' . $project->project_number . ' : ' . $project->project_name . ' on report ' . $report->id . ' have been resolved.',
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your resolved report.'];
-			$single_receipient = 1;
+			$single_recipient = 1;
 
 			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
 		} else {

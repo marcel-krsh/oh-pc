@@ -26,14 +26,14 @@
 			<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
 			
 			<?php 
-                    if($single_recipient == 1){
+                    if($single_recipient){
                         $recipient = $recipients->first();
                         if($recipient == null){
                             $single_recipient = 0;
                         }
                     }
             ?>
-            @if($single_receipient)
+            @if($single_recipient)
 			<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 				<li class="recipient-list-item {{strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name)))))}} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
 					<input name="recipients[]" id="recipient-id-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" checked="checked" onclick="return false;">

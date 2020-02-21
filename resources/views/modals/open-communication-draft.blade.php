@@ -53,7 +53,7 @@ session(['old_communication_modal' => $random]);
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
 				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{ Auth::user()->full_name() }}</div>
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
-				@if($single_receipient)
+				@if($single_recipient)
 				<?php $recipient = $recipients->first()->first();?>
 				<div class="uk-width-4-5 "  id="recipients-box-draft" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 					<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
