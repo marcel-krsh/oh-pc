@@ -281,7 +281,7 @@ class CommunicationController extends Controller
 		//   $ohfa_id = null;
 		// }
 		// return $ohfa_id;
-		$single_receipient = false;
+		$single_recipient = false;
 
 		$current_user = Auth::user();
 		$current_user = User::find($current_user->id);
@@ -461,7 +461,7 @@ class CommunicationController extends Controller
 					->orderBy('last_name', 'asc')
 					->get();
 				if ($current_user->hasRole(1)) {
-					$single_receipient = true;
+					$single_recipient = true;
 				}
 				// }
 			}
@@ -470,11 +470,11 @@ class CommunicationController extends Controller
 			// return $recipients;
 			//dd('values before modal',$finding,$findings);
 			if ($save_draft == 1) {
-				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
+				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 			}
-			return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
+			return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 		} else {
 			$project = null;
 			$document_categories = DocumentCategory::where('parent_id', '<>', 0)->where('active', '1')->orderby('document_category_name', 'asc')->get();
@@ -527,11 +527,11 @@ class CommunicationController extends Controller
 			$recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
 			//dd('Values to modal',$finding,$findings);
 			if ($save_draft == 1) {
-				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
+				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_receipient', 'all_findings', 'draft', 'location'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 			}
-			return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_receipient', 'finding', 'findings', 'all_findings', 'draft', 'location'));
+			return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_recipient', 'finding', 'findings', 'all_findings', 'draft', 'location'));
 		}
 	}
 
@@ -1629,13 +1629,13 @@ class CommunicationController extends Controller
 			$report = CrrReport::find($report_id);
 			$user_keys = $report->signators()->pluck('person_key')->toArray();
 			$status = 2;
-			$single_receipient = 0;
+			$single_recipient = 0;
 			$recipients = User::allManagers();
 			$audit = $report->audit_id;
 			$data = ['subject' => 'Report ready for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report. Please be sure to view your report using the Chrome browser. PLEASE NOTE: If your default browser is not set to Chrome, it may open in a different browser when viewing your report from this email.'];
 			// return view('modals.report-send-to-manager', compact('audit', 'project', 'recipients', 'report_id', 'report'));
-			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_receipient'));
+			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'status', 'single_recipient'));
 		} else {
 			return abort(403, 'No associated project was found');
 		}
@@ -1656,13 +1656,19 @@ class CommunicationController extends Controller
 				->orderBy('organization_name', 'asc')
 				->orderBy('last_name', 'asc')
 				->get();
+
+			$single_recipient = 1;
+
 			$audit = $report->audit_id;
 			$status = 3;
 			$data = ['subject' => 'Report has been declined for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
-			$single_receipient = 1;
-
-			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
+			
+			if($recipients == null ){
+				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>";
+			} else {
+				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			}
 		} else {
 			return abort(403, 'No associated project was found');
 		}
@@ -1687,9 +1693,13 @@ class CommunicationController extends Controller
 			$status = 4;
 			$data = ['subject' => 'Report has been approved with changes for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
-			$single_receipient = 1;
+			$single_recipient = 1;
 
-			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
+			if($recipients == null){
+				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>";
+			} else {
+				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			}
 		} else {
 			return abort(403, 'No associated project was found');
 		}
@@ -1714,9 +1724,13 @@ class CommunicationController extends Controller
 			$status = 5;
 			$data = ['subject' => 'Report has been approved for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
-			$single_receipient = 1;
+			$single_recipient = 1;
 
-			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
+			if($recipients == null){
+				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>";
+			} else {
+				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			}
 		} else {
 			return abort(403, 'No associated project was found');
 		}
@@ -1741,9 +1755,13 @@ class CommunicationController extends Controller
 			$status = 9;
 			$data = ['subject' => 'All items for ' . $project->project_number . ' : ' . $project->project_name . ' on report ' . $report->id . ' have been resolved.',
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your resolved report.'];
-			$single_receipient = 1;
+			$single_recipient = 1;
 
-			return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_receipient', 'status'));
+			if(count($recipients) < 1){
+				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>";
+			} else {
+				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
+			}
 		} else {
 			return abort(403, 'No associated project was found');
 		}
