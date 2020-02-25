@@ -117,6 +117,7 @@ Route::group(['middleware' => 'web'], function () {
 	});
 
 	Route::group(['prefix' => '', 'middleware' => 'can:access_auditor'], function () {
+		Route::get('/contacts_to_project', 'AdhocReportController@contactsToProject');
 		Route::get('/audit_raw_data', 'PCStatsController@showStatsRawData');
 		Route::post('/cached_audit_check', 'AuditController@cachedAuditCheck');
 		Route::get('/updated_cached_audit/{audit_id}', 'AuditController@singleCachedAudit');
