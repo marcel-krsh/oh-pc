@@ -15,10 +15,10 @@ $lead = $audit->lead_json;
 		<small>@if(isset($loop)) {{ $loop->iteration }} @else  <i class="a-star" uk-tooltip title="THIS RECORD WAS UPDATED SINCE YOU LAST REFRESHED YOUR SCREEN" ></i>@endIf </small>
 	</span>
 </td>
-<td id="audit-c-2-{{ $audit->audit_id }}" class="audit-td-project">
-	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		<?php /* <span id="audit-i-project-detail-{{ $audit->audit_id }}" onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" uk-tooltip="title: VIEW BUILDINGS AND COMMON AREAS; pos: top-left;" class="uk-link" style="margin-right: 10px; margin-left: 7px; margin-top: 0px !important;"><i class="a-menu uk-text-muted"></i></span> */ ?>
-	</div>
+<td id="audit-c-2-{{ $audit->audit_id }}" class="audit-td-project" align="center">
+	<?php /*<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
+		 <span id="audit-i-project-detail-{{ $audit->audit_id }}" onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" uk-tooltip="title: VIEW BUILDINGS AND COMMON AREAS; pos: top-left;" class="uk-link" style="margin-right: 10px; margin-left: 7px; margin-top: 0px !important;"><i class="a-menu uk-text-muted"></i></span> 
+	</div>*/ ?>
 	<div class="uk-vertical-align-middle uk-display-inline-block use-hand-cursor"  onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" >
 		<h3 id="audit-project-name-{{ $audit->audit_id }}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip title="VIEW BUILDINGS AND COMMON AREAS"><span >{{ $audit->project_ref }}</span></h3>
 		<small id="audit-project-aid-{{ $audit->audit_id }}" class="uk-text-muted faded filter-search-project" uk-tooltip title="VIEW BUILDINGS AND COMMON AREAS;">AUDIT <span >{{ $audit->audit_id }}</span></small>
