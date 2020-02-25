@@ -17,7 +17,7 @@ $lead = $audit->lead_json;
 </td>
 <td id="audit-c-2-{{ $audit->audit_id }}" class="audit-td-project">
 	<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
-		<span id="audit-i-project-detail-{{ $audit->audit_id }}" onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" uk-tooltip="title: VIEW BUILDINGS AND COMMON AREAS; pos: top-left;" class="uk-link" style="margin-right: 10px; margin-left: 7px; margin-top: 0px !important;"><i class="a-menu uk-text-muted"></i></span>
+		@php /* <span id="audit-i-project-detail-{{ $audit->audit_id }}" onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" uk-tooltip="title: VIEW BUILDINGS AND COMMON AREAS; pos: top-left;" class="uk-link" style="margin-right: 10px; margin-left: 7px; margin-top: 0px !important;"><i class="a-menu uk-text-muted"></i></span> */ @endPhp
 	</div>
 	<div class="uk-vertical-align-middle uk-display-inline-block use-hand-cursor"  onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" >
 		<h3 id="audit-project-name-{{ $audit->audit_id }}" class="uk-margin-bottom-remove uk-link filter-search-project" uk-tooltip title="VIEW BUILDINGS AND COMMON AREAS"><span >{{ $audit->project_ref }}</span></h3>
