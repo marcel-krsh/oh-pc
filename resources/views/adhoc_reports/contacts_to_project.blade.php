@@ -127,7 +127,7 @@ ul.leaders li {
             					</td>
             					<td>
             						@forEach($project->contactRoles as $contact)
-            							{{$contact->person_id}} | {{$contact->person->first_name}} {{$contact->person->last_name}} | {{$contact->projectRole->role_name}} | User: @if($contact->person->matchingUserByEmail) {{$contact->person->matchingUserByEmail->email}} @else NA @endIf | @if(count($contact->person->organizations) > 0) Associated Organizations: @forEach($contact->person->organizations as $org) @if($org) {{$org->organization_name}} <br />@endIf @endForEach @else No Organizations @endIf <hr />
+            							{{$contact->person_id}} | {{$contact->person->first_name}} {{$contact->person->last_name}} | {{$contact->projectRole->role_name}} | User: @if($contact->person->user) {{$contact->person->user->id}} {{$contact->person->user->email}} @else NA @endIf @if($contact->person->email) | Contact Assigned Email: {{$contact->person->email->email_address}} @endIf | @if(count($contact->person->organizations) > 0) Associated Organizations: @forEach($contact->person->organizations as $org) @if($org) {{$org->organization_name}} <br />@endIf @endForEach @else No Organizations @endIf <hr />
             						@endForEach
             					</td>
             				</tr>
