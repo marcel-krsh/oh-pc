@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Helper;
 use DB;
 use Validator;
 use Carbon\Carbon;
+use App\Models\CrrReport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Schema;
@@ -51,6 +52,38 @@ class DatafixController extends Controller
 		}
 
 		return $this->extraCheckErrors($validator);
+	}
+
+	/**
+	 * This would fix the issues with report history which has missing punctuation and space.
+	 * 	Considering these for now:
+	 * 		ResolvedRemoved
+	 * 		PMRemoved
+	 * @return text Shows the script output
+	 */
+	public function fixReportsHistoryPunctuationAndSpace()
+	{
+		ini_set('max_execution_time', 300);
+		$reports = CrrReport::whereNotNull('report_history')->get();
+
+		$replace = ['ResolvedRemoved', 'PMRemoved', 'Draft Notified'];
+		$replace_with = ['Resolved. Removed', 'PM. Removed', 'Draft. Notified'];
+		foreach ($reports as $key => $report) {
+			$history = $report->report_history;
+			$new_history = [];
+			// if (!is_null($history['report_history'])) {
+			$old_history = $history;
+			foreach ($old_history as $key1 => $hist_item) {
+				$note = $hist_item['note']; //replace here
+				$new_note = str_replace($replace, $replace_with, $note);
+				$new_history[$key1] = $hist_item;
+				$new_history[$key1]['note'] = $new_note;
+			}
+			$report->report_history = ($new_history);
+			$report->save();
+			// }
+		}
+		return 'Done';
 	}
 
 	protected function extraCheckErrors($validator)
