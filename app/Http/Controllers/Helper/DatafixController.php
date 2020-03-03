@@ -64,7 +64,7 @@ class DatafixController extends Controller
 	public function fixReportsHistoryPunctuationAndSpace()
 	{
 		ini_set('max_execution_time', 300);
-		$reports = CrrReport::whereNotNull('report_history')->get();
+		$reports = CrrReport::whereNotNull('report_history')->select('id', 'report_history')->get();
 
 		$replace = ['ResolvedRemoved', 'PMRemoved', 'Draft Notified'];
 		$replace_with = ['Resolved. Removed', 'PM. Removed', 'Draft. Notified'];
