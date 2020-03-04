@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\User;
 use App\Models\People;
 use App\Models\Communication;
+use App\Models\HistoricEmail;
 use Illuminate\Console\Command;
 use App\Models\ProjectContactRole;
 use App\Models\CommunicationRecipient;
@@ -142,6 +143,11 @@ class mergeDuplicateUsersWithSelectedUser extends Command
 		foreach ($other_persons as $key => $op) {
 			$user = $op->user;
 			if ($user) {
+				$historic_emails = HistoricEmail::where('user_id', $user->id)->get();
+				foreach ($historic_emails as $key => $email) {
+					$email->user_id = $main_user->id;
+					$email->save();
+				}
 				$user->delete();
 			}
 			$op->delete();
