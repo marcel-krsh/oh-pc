@@ -551,10 +551,10 @@
 							</span>
 						</div>
 					</th>
-					<th style="width:145px;">
+					<th style="width:100px;">
 						<div uk-grid>
 							<div class="filter-box uk-width-1-1">
-								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT & AUDIT" value="@if(session()->has('filter-search-project')){{ session('filter-search-project') }}@endif">
+								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT" value="@if(session()->has('filter-search-project')){{ session('filter-search-project') }}@endif">
 							</div>
 							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT ID">
 								@if($sort_by == 'audit-sort-project')
