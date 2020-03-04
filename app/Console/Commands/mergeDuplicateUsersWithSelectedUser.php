@@ -109,7 +109,8 @@ class mergeDuplicateUsersWithSelectedUser extends Command
 			$user_id = $this->ask('Chooose user_id whose information is valid. Other users info will be moved to selected user_id');
 			$main_user = $persons->where('user.id', $user_id)->first();
 			if ($main_user) {
-				$this->removeDuplicates($main_user, $persons);
+				$this->removePeopleDuplicates($main_user, $persons);
+				$this->removeUserDuplicates($main_user);
 				$this->line('Removed the duplicate users.');
 			} else {
 				$this->line('Selected user_id does not belong to selected users list');
@@ -118,7 +119,7 @@ class mergeDuplicateUsersWithSelectedUser extends Command
 		return 1;
 	}
 
-	protected function removeDuplicates($main_user, $persons)
+	protected function removePeopleDuplicates($main_user, $persons)
 	{
 		//consider the following tables
 		//	People
@@ -151,6 +152,50 @@ class mergeDuplicateUsersWithSelectedUser extends Command
 				$user->delete();
 			}
 			$op->delete();
+		}
+
+		return 1;
+	}
+
+	protected function removeUserDuplicates($main_user)
+	{
+		//Check if user exists with this name without person record
+		$check_user = User::where('name', 'like', '%' . $main_user->first_name . ' ' . $main_user->last_name . '%')->get();
+		if (count($check_user) > 10) {
+			$this->line('Too many users found, please contact admin.');
+		} elseif (count($check_user) > 1) {
+			$this->line('Looks like there are users with no person associated with them.');
+			$this->line('COUNT' . '.| USER ID |     NAME    | DEVCO KEY |      EMAIL     ');
+			$user_exists = 0;
+			foreach ($check_user as $key => $user) {
+				$user_exists = 1;
+				$this->line($key + 1 . '.     | ' . $user->id . ' | ' . $user->name . ' | ' . $user->devco_key . ' | ' . $user->email);
+			}
+			$user_id = $this->ask('Chooose user_id whose information is valid. Other users info will be moved to selected user_id');
+			$main_user = $check_user->where('id', $user_id)->first();
+			if (!$main_user) {
+				$this->line('The chosen user_id does not exist');
+			} else {
+				$other_users = $check_user->where('id', '<>', $user_id);
+				$communications = Communication::whereIn('owner_id', $other_users->pluck('id'))->get();
+				foreach ($communications as $key => $pc) {
+					$pc->owner_id = $main_user->id;
+					$pc->save();
+				}
+				$communication_rcs = CommunicationRecipient::whereIn('user_id', $other_users->pluck('id'))->get();
+				foreach ($communication_rcs as $key => $pc) {
+					$pc->user_id = $main_user->id;
+					$pc->save();
+				}
+				foreach ($other_users as $key => $user) {
+					$historic_emails = HistoricEmail::where('user_id', $user->id)->get();
+					foreach ($historic_emails as $key => $email) {
+						$email->user_id = $main_user->id;
+						$email->save();
+					}
+					$user->delete();
+				}
+			}
 		}
 		return 1;
 	}
