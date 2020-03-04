@@ -145,7 +145,7 @@ class mergeDuplicateUsersWithSelectedUser extends Command
 			if ($user) {
 				$historic_emails = HistoricEmail::where('user_id', $user->id)->get();
 				foreach ($historic_emails as $key => $email) {
-					$email->user_id = $main_user->id;
+					$email->user_id = $main_user->user->id;
 					$email->save();
 				}
 				$user->delete();
