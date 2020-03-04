@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use App\Models\People;
 use App\Models\Communication;
 use Illuminate\Console\Command;
@@ -52,64 +53,99 @@ class mergeDuplicateUsersWithSelectedUser extends Command
 		if ($selection == 1) {
 			$first_name = $this->ask('Enter first name');
 			$last_name = $this->ask('Enter last name');
-			$persons = People::with('user')->where('first_name', $first_name)->where('last_name', $last_name)->get();
-			if ($persons->count() == 0) {
-				$this->line('No users found.');
-			} elseif ($persons->count() > 10) {
-				$this->line('Too many users found, please contact admin.');
-			} else {
-				$this->line('COUNT' . '. -- USER ID  -- FIRST NAME -- LAST NAME -- DEVCO KEY -- EMAIL');
-				$user_exists = 0;
-				foreach ($persons as $key => $person) {
-					if ($person->user) {
-						$user_exists = 1;
-						$this->line($key + 1 . '.     -- ' . $person->user->id . ' -- ' . $person->first_name . ' -- ' . $person->last_name . ' -- ' . $person->user->devco_key . ' -- ' . $person->user->email);
-					} else {
-						$this->line($key + 1 . '.     -- ' . 'NA' . ' -- ' . $person->first_name . ' -- ' . $person->last_name . ' -- ' . 'NA' . ' -- ' . 'NA');
-					}
-				}
-				if ($user_exists == 0) {
-					$this->line('No associate user exists for the selected people.');
-				}
-				$user_id = $this->ask('Chooose user_id whose information is valid. Other users info will be moved to selected user_id');
-				$main_user = $persons->where('user.id', $user_id)->first();
-				if ($main_user) {
-					//consider the following tables
-					//	People
-					//	Project Contact
-					//	Communications
-					$other_persons = $persons->where('user.id', '<>', $main_user->user->id);
-					$project_contacts = ProjectContactRole::whereIn('person_id', $other_persons->pluck('id'))->get();
-					foreach ($project_contacts as $key => $pc) {
-						$pc->person_id = $main_user->id;
-						$pc->save();
-					}
-					$communications = Communication::whereIn('owner_id', $other_persons->pluck('user.id'))->get();
-					foreach ($communications as $key => $pc) {
-						$pc->owner_id = $main_user->user->id;
-						$pc->save();
-					}
-					$communication_rcs = CommunicationRecipient::whereIn('user_id', $other_persons->pluck('user.id'))->get();
-					foreach ($communication_rcs as $key => $pc) {
-						$pc->user_id = $main_user->user->id;
-						$pc->save();
-					}
-					foreach ($other_persons as $key => $op) {
-						$user = $op->user;
-						if ($user) {
-							$user->delete();
-						}
-						$op->delete();
-					}
-					$this->line('completed');
-				} else {
-					$this->line('Selected user_id does not belong to selected users list');
-				}
-			}
+			$persons = People::with('user')->where('first_name', 'like', '%' . $first_name . '%')->where('last_name', 'like', '%' . $last_name . '%')->get();
+			$this->fetchPersons($persons);
 		} elseif ($selection == 2) {
+			// $this->line('Work in progress...');
+			$user_id = $this->ask('Enter user_id');
+			$user = User::with('person')->find($user_id);
+			if ($user) {
+				if ($user->person) {
+					$persons = People::with('user')->where('first_name', 'like', '%' . $user->person->first_name . '%')->where('last_name', 'like', '%' . $user->person->last_name . '%')->get();
+					$this->fetchPersons($persons);
+				} else {
+					$this->line('No user found with the provided user_id.');
+				}
+			} else {
+				$this->line('No user found with the provided ID');
+			}
 		} elseif ($selection == 3) {
+			$cs_user_ids = $this->ask('Enter multiple user_id\'s using comma seperated');
+			$user_ids = explode(',', $cs_user_ids);
+			$users = User::with('person')->whereIn('id', $user_ids)->get();
+			if (count($users)) {
+				$persons = $users->pluck('person');
+				$this->fetchPersons($persons);
+			} else {
+				$this->line('No user found with the provided ID');
+			}
+			// $this->line('Work in progress...');
 		} else {
 			$this->line('Selected option is not valid, try again by choosing the provided options. ');
 		}
+	}
+
+	protected function fetchPersons($persons)
+	{
+		if ($persons->count() == 0) {
+			$this->line('No users found.');
+		} elseif ($persons->count() > 10) {
+			$this->line('Too many users found, please contact admin.');
+		} else {
+			$this->line('COUNT' . '.| USER ID | FIRST NAME | LAST NAME | DEVCO KEY |      EMAIL     ');
+			$user_exists = 0;
+			foreach ($persons as $key => $person) {
+				if ($person->user) {
+					$user_exists = 1;
+					$this->line($key + 1 . '.     | ' . $person->user->id . ' | ' . $person->first_name . ' | ' . $person->last_name . ' | ' . $person->user->devco_key . ' | ' . $person->user->email);
+				} else {
+					$this->line($key + 1 . '.     | ' . 'NA' . ' | ' . $person->first_name . ' | ' . $person->last_name . ' | ' . 'NA' . ' | ' . 'NA');
+				}
+			}
+			if ($user_exists == 0) {
+				$this->line('No associate user exists for the selected people.');
+			}
+			$user_id = $this->ask('Chooose user_id whose information is valid. Other users info will be moved to selected user_id');
+			$main_user = $persons->where('user.id', $user_id)->first();
+			if ($main_user) {
+				$this->removeDuplicates($main_user, $persons);
+				$this->line('Removed the duplicate users.');
+			} else {
+				$this->line('Selected user_id does not belong to selected users list');
+			}
+		}
+		return 1;
+	}
+
+	protected function removeDuplicates($main_user, $persons)
+	{
+		//consider the following tables
+		//	People
+		//	Project Contact
+		//	Communications
+		$other_persons = $persons->where('user.id', '<>', $main_user->user->id);
+		$project_contacts = ProjectContactRole::whereIn('person_id', $other_persons->pluck('id'))->get();
+		foreach ($project_contacts as $key => $pc) {
+			$pc->person_id = $main_user->id;
+			$pc->save();
+		}
+		$communications = Communication::whereIn('owner_id', $other_persons->pluck('user.id'))->get();
+		foreach ($communications as $key => $pc) {
+			$pc->owner_id = $main_user->user->id;
+			$pc->save();
+		}
+		$communication_rcs = CommunicationRecipient::whereIn('user_id', $other_persons->pluck('user.id'))->get();
+		foreach ($communication_rcs as $key => $pc) {
+			$pc->user_id = $main_user->user->id;
+			$pc->save();
+		}
+		foreach ($other_persons as $key => $op) {
+			$user = $op->user;
+			if ($user) {
+				$user->delete();
+			}
+			$op->delete();
+		}
+		return 1;
 	}
 }
