@@ -346,6 +346,7 @@ class FindingController extends Controller
 
 				return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'level', 'all_findings'));
 			} elseif ($type == 'document') {
+				$audit = null;
 				if ($from->project_id) {
 					$project = Project::where('id', '=', $from->project_id)->first();
 				} elseif ($from->audit_id) {
@@ -358,7 +359,11 @@ class FindingController extends Controller
 				}
 
 				if ($project) {
-					$audit_details = $project->selected_audit();
+					if ($from->audit_id) {
+						$audit_details = $project->selected_audit($from->audit_id);
+					} else {
+						$audit_details = $project->selected_audit();
+					}
 
 					if ($current_user->hasRole(1)) {
 						$document_categories = DocumentCategory::where('parent_id', '<>', 0)
@@ -397,7 +402,7 @@ class FindingController extends Controller
 				} else {
 					$requested_categories = '';
 				}
-				return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories', 'level', 'all_findings', 'id'));
+				return view('modals.finding-reply-' . $type, compact('from', 'fromtype', 'project', 'document_categories', 'requested_categories', 'level', 'all_findings', 'id', 'audit'));
 			} elseif ($type == 'comment-edit') {
 				return view('modals.finding-reply-comment', compact('from', 'fromtype', 'level', 'type', 'all_findings'));
 			}

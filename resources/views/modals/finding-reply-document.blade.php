@@ -1,13 +1,12 @@
 	<div class="uk-modal-header">
-		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> FINDING #{{$from->id}} <small>ADD DOCUMENTS</small></div>
-
+		<div class="uk-modal-title uk-remove-margin"> <i class=" a-circle-plus"></i> FINDING #{{ $from->id }} <small>ADD DOCUMENTS</small></div>
 	</div>
 	<form id="add-document-finding-form" method="post">
-		<input type="hidden" name="id" value="{{$from->id}}">
-		<input type="hidden" name="fromtype" value="{{$fromtype}}">
+		<input type="hidden" name="id" value="{{ $from->id }}">
+		<input type="hidden" name="fromtype" value="{{ $fromtype }}">
+		<input type="hidden" name="audit_id" value="{{ $audit }}">
 		<input type="hidden" name="type" value="document">
 		<div class="form-default-followup uk-margin-top" uk-grid>
-
 			@if(!is_null($project))
 			@if($all_findings > 0)
 			<div class="uk-width-1-2">
@@ -16,7 +15,7 @@
 			@endif
 				<h4 class="uk-text-primary uk-text-uppercase">Upload new documents</h4>
 				@if($requested_categories != '')
-				<p>Requested Categories: {{$requested_categories}}</p>
+				<p>Requested Categories: {{ $requested_categories }}</p>
 				@endif
 				<div class="communication-selector uk-scrollable-box" >
 					<ul class="uk-list document-category-menu">
@@ -59,6 +58,7 @@
 								$("input:radio[name=category-id-checkbox]:checked").each(function(){
 									categoryArray.push($(this).val());
 								});
+								settings.params.audit_id = "{{ $audit }}";
 								settings.params.categories = categoryArray;
 								settings.params.ohfa_file = 1;
 								settings.params.comment = $("input[name=local-comment]").val();
@@ -183,7 +183,6 @@
 		function saveFindingDocument(e){
 			e.preventDefault();
 			var form = $('#add-document-finding-form');
-
 			var no_alert = 1;
 			var selected_documents_array = [];
 			$("input[name='local_documents[]']:checked").each(function (){
