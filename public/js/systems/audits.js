@@ -1020,6 +1020,83 @@ function loadProjectDetailsBuildings(id, target) {
     });
 }
 
+// get unit data using pagination
+$(document).on('click', '.site .pagination a', function(event){
+ 	event.preventDefault(); 
+	var page = $(this).attr('href').split('page=')[1];
+	var projectId = $(this).parents('#site').data('project-id');
+  	var auditId = $(this).parents('#site').data('audit-id');
+
+  	fetch_site_data(projectId, 'selections', auditId, page);
+});
+
+function fetch_site_data(id, type, audit, page) {
+	var tempdiv = '<div style="height:300px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	// $('#site').html(tempdiv);
+
+	var url = '/projects/'+id+'/details/'+type+'/'+audit+'/site?page=' + page;
+    $.get(url, {
+        }, function(data) {
+        	if(data=='0'){
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+            	$('#site').html(data);
+        	}
+    });
+}
+
+
+// get unit data using pagination
+$(document).on('click', '.unit .pagination a', function(event){
+ 	event.preventDefault(); 
+	var page = $(this).attr('href').split('page=')[1];
+	var projectId = $(this).parents('#unit').data('project-id');
+  	var auditId = $(this).parents('#unit').data('audit-id');
+
+  	fetch_unit_data(projectId, 'selections', auditId, page);
+});
+
+function fetch_unit_data(id, type, audit, page) {
+	var tempdiv = '<div style="height:300px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	// $('#unit').html(tempdiv);
+
+	var url = '/projects/'+id+'/details/'+type+'/'+audit+'/unit?page=' + page;
+    $.get(url, {
+        }, function(data) {
+        	if(data=='0'){
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+            	$('#unit').html(data);
+        	}
+    });
+}
+
+// get building data using pagination
+$(document).on('click', '.building .pagination a', function(event){
+  	event.preventDefault(); 
+	var page = $(this).attr('href').split('page=')[1];
+  	var projectId = $(this).parents('#building').data('project-id');
+  	var auditId = $(this).parents('#building').data('audit-id');
+  	
+  	fetch_building_data(projectId, 'selections', auditId, page);
+});
+
+function fetch_building_data(id, type, audit, page) {
+	
+	var tempdiv = '<div style="height:175px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	// $('#building').html(tempdiv);
+
+	var url = '/projects/'+id+'/details/'+type+'/'+audit+'/building?page=' + page;
+    $.get(url, {
+        }, function(data) {
+            if(data=='0'){
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+            	$('#building').html(data);
+        	}
+    });
+}
+
 function projectDetailsInfo(id, type, audit, target) {
 	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 	$('#project-details-info-container').html(tempdiv);

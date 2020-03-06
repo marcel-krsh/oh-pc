@@ -2307,7 +2307,35 @@ class AuditController extends Controller
 			case 'photos':
 				break;
 			case 'selections':
+
 				$details = $project->details();
+				// return_raw: site, building, unit
+				if ($return_raw) {
+					$dpView = 1;
+					$findings = $audit->audit->findings;
+					$print = null;
+					$report = $audit;
+					$detailsPage = 1;
+					switch ($return_raw) {
+						case 'site':
+							$inspections = $audit->audit->project_amenity_inspections()->paginate(5);
+							
+							return view('crr_parts.crr_inspections_site', compact('inspections','dpView','findings','print','report','detailsPage'));
+							break;
+						case 'building':
+							$selected_audit = $audit;
+							$inspections = $audit->audit->building_inspections()->paginate(10);
+							
+							return view('crr_parts.crr_inspections_building', compact('inspections','dpView','findings','print','report','selected_audit','detailsPage'));
+							break;
+						case 'unit':
+							$inspections = $audit->audit->unit_inspections()->paginate(10);
+						
+							return view('crr_parts.crr_inspections_unit', compact('inspections','dpView','print','report','findings','detailsPage','audit'));
+							break;
+						default:
+					}
+				}
 
 				return view('projects.partials.details-selections', compact('audit', 'details'));
 				break;
