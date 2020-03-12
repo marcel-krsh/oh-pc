@@ -6,14 +6,18 @@ if (isset($detailsPage)) {
 @if(!is_null($inspections))
 
 	<div uk-grid class="uk-margin-bottom site">
-		<div class="uk-width-1-2 " style="padding-top:4px;"> 
-	    {{ $inspections->links() }}
-	    </div>
+		
 		<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
 			<?php
 			// $inspections = collect($inspections);
 			?>
-			<h2>{{ number_format($inspections->total(), 0) }} @if(count($inspections) > 1 || count($inspections) < 1) Site Amenities @else Site Amenity @endIf @if($dpView) Selected: @else Audited: @endIf </h2><small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
+			<div id="containerIntro" style="display: flex;">
+				<h2>{{ number_format($inspections->total(), 0) }} @if(count($inspections) > 1 || count($inspections) < 1) Site Amenities @else Site Amenity @endIf @if($dpView) Selected: @else Audited: @endIf </h2>
+				<div class="uk-width-1-2" style="padding-left: 10px;"> 
+			    	{{ $inspections->links() }}
+			    </div>
+			</div>
+				<small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 			<hr class="dashed-hr uk-margin-bottom">
 
 			<div class="uk-column-1-3 uk-column-divider">

@@ -10,11 +10,15 @@ if (isset($detailsPage)) {
 	$totalUnits = number_format($inspections->total(), 0);
 ?>
 <div uk-grid class="uk-margin-bottom unit">
-	<div class="uk-width-1-2 " style="padding-top:4px;"> 
-    	{{ $inspections->links() }}
-    </div>
-	<div class="uk-width-1-1 crr-blocks" id="unit" style="page-break-inside: avoid;">
-		<h2 id="units-summary-header">@if($totalUnits >1 || $totalUnits < 1) {{ $totalUnits }} Units @else 1 Unit @endIf @if($dpView) Selected: @else Audited: @endIf </h2> @if($auditor_access) <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{ $report->project->id }}/programs/0/summary/@if(isset($audit)){{ $audit->audit_id }}@else{{ $audit_id }} @endIf',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
+	
+	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
+		<div id="containerIntro" style="display: flex;">
+			<h2 id="units-summary-header">@if($totalUnits >1 || $totalUnits < 1) {{ $totalUnits }} Units @else 1 Unit @endIf @if($dpView) Selected: @else Audited: @endIf </h2> 
+			<div class="uk-width-1-2" style="padding-left: 10px;"> 
+		    	{{ $inspections->links() }}
+		    </div>
+	    </div>
+		@if($auditor_access) <small> <span class="use-hand-cursor" onclick="dynamicModalLoad('projects/{{ $report->project->id }}/programs/0/summary/@if(isset($audit)){{ $audit->audit_id }}@else{{ $audit_id }} @endIf',0,0,3);"><i class="a-arrow-diagonal-both use-hand-cursor" uk-tooltip="pos:top-left;title:CLICK TO SWAP UNITS;"  title="" aria-expanded="false"></i> SWAP UNITS </span>  &nbsp;|  &nbsp;</small>
 		@endif
 		<style>
 			#modal-size {
@@ -105,12 +109,12 @@ if (isset($detailsPage)) {
 
 
 		<?php
-		$siteVisited = [];
-		$fileVisited = [];
-		$nameOutput = [];
-		$loops = 0;
+		// $siteVisited = [];
+		// $fileVisited = [];
+		// $nameOutput = [];
+		// $loops = 0;
 
-		$currentUnit = 0;
+		// $currentUnit = 0;
 
 		// $inspections = collect($inspections);
 		$inspections = $inspections->sortBy('unit_name');
@@ -138,88 +142,7 @@ if (isset($detailsPage)) {
 		<hr class="dashed-hr uk-margin-bottom">
 
 		<div id="unit-column-set" class="uk-column-1-3 uk-column-divider">
-			@forEach($inspections as $i)
-				<?php $noShow = 0;?>
-				@if($currentUnit != $i->unit_id)
-					<div id="unit-inspection-{{ $i->unit_id }}"  class="inspection-data-row">
-
-						@if(!in_array($i->unit_id, $nameOutput))
-							<?php
-							$currentUnit = $i->unit_id;
-							// $thisUnitValues = collect($inspections)->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
-							$thisUnitValues = $inspections->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
-							$thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file'));
-							//$thisUnitUnresolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
-							//$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
-							//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
-							$thisUnitResolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('auditor_approved_resolution', 1));
-							$thisUnitUnresolvedFileFindings = $thisUnitFileFindings - $thisUnitResolvedFileFindings;
-							$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
-							//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
-							$thisUnitResolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1));
-							$thisUnitUnresolvedSiteFindings = $thisUnitSiteFindings - $thisUnitResolvedSiteFindings;
-							$isHome = count(collect($inspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'HOME'));
-							$isOhtf = count(collect($inspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'OHTF'));
-							$isNhtf = count(collect($inspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'NHTF'));
-
-							//if ($thisBuildingSiteFindings || $thisBuildingFileFindings) {
-							//	$hasFindings = 1;
-							//}
-
-							?>
-							<div  class="unit-name"  >
-								@if($print !== 1 && !$dpView)<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('unit-{{ $i->unit_id }}-finding');"> @elseIf($dpView && $i->unit->household)<span onclick="dynamicModalLoad('household/{{ $i->unit_id }}')" class="use-hand-cursor" uk-tooltip title="VIEW HOUSEHOLD DETAILS"><i class="a-avatar-info"></i>
-									@endIf {{ $i->building->building_name }} : {{ $i->unit_name }}<?php $nameOutput[] = $i->unit_id;?> :
-								@if($print !== 1 && !$dpView)</a> @elseIf($dpView && $i->unit->household)</span>@endIf
-								@if($dpView)
-								@if($i->unit->bedroomCount())
-								<br />Bedrooms: <strong>{{ $i->unit->bedroomCount() }}</strong>
-								@endIf
-								@if(!is_null($i->unit->building->address))
-								<br /><small style="text-transform: uppercase;">{{ $i->unit->building->address->line_1 }} {{ $i->unit->building->address->line_2 }} <br />
-									{{ $i->unit->building->address->city }}, {{ $i->unit->building->address->state }} {{ $i->unit->building->address->zip }}</small>
-								@endIf
-
-
-								@endIf
-							</div>
-
-						@endIf
-						<div class="inspection-icons">
-							@forEach($thisUnitValues as $g)
-							<?php //dd($thisUnitValues, $g); ?>
-							@if($g->is_site_visit == 1)
-							@if(!in_array($g->unit_id, $siteVisited))
-
-
-							<i class="a-mobile uk-text-large uk-margin-small-right @if($auditor_access) @if(!$print)use-hand-cursor @endif @endif" @if($auditor_access) @if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, null, null,'0');" @endif @endif></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone @if($thisUnitUnresolvedSiteFindings > 0) attention @endIf" uk-tooltip title="{{ $thisUnitSiteFindings }} FINDINGS @if($thisUnitUnresolvedSiteFindings > 0) WITH {{ $thisUnitUnresolvedSiteFindings }} PENDING RESOLUTION @ELSE FULLY RESOLVED @endIf ">{{ $thisUnitSiteFindings }}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endIf <?php $siteVisited[] = $g->unit_id;?>
-							@else
-							<?php $noShow = 1;?>
-							@endIf
-
-							@elseIf(!in_array($g->unit_id, $fileVisited))
-							@if(!in_array($g->unit_id, $siteVisited))
-							<span style="color:#cecece"><i class="a-mobile uk-text-large uk-margin-small-right "  ></i> @if($thisUnitSiteFindings > 0) <span class="uk-badge finding-number on-phone" uk-tooltip title="{{ $thisUnitSiteFindings }}">{{ $thisUnitSiteFindings }}</span> @else<i class="a-circle-minus on-phone"></i> @endIf</span>
-							@endIf
-							<i class="a-folder uk-text-large @if($auditor_access)@if(!$print)use-hand-cursor @endif @endif" @if($auditor_access)@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endif></i> @if($thisUnitFileFindings > 0) <span class="uk-badge finding-number on-folder @if($thisUnitUnresolvedFileFindings > 0) attention @endIf" uk-tooltip title="{{ $thisUnitFileFindings }} FINDINGS @if($thisUnitUnresolvedFileFindings > 0) WITH {{ $thisUnitUnresolvedFileFindings }} PENDING RESOLUTION @ELSE FULLY RESOLVED @endIf ">{{ $thisUnitFileFindings }}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf
-							@if($isHome || $isOhtf || $isNhtf) <i class="a-home-2 home-folder"></i> @endIf
-							<?php $fileVisited[] = $g->unit_id;?>
-
-							@else
-							<?php $noShow = 1;?>
-							@endIf
-
-							@endForEach
-							@if(!in_array($g->unit_id, $fileVisited))
-							<span style="color:#cecece"><i class="a-folder uk-text-large"></i> <i class="a-circle-minus on-folder"></i></span>
-
-							@endIf
-
-						</div>
-						<hr class="dashed-hr uk-margin-small-bottom">
-					</div>
-				@endIf
-			@endForEach
+			@include('crr_parts.crr_inspections_unit_detail')
 		</div>
 	</div>
 </div>

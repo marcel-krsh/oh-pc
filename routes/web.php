@@ -208,6 +208,7 @@ Route::group(['middleware' => 'web'], function () {
 		// Route::get('/projects/{project}/details/title', 'AuditController@getProjectDetailsTitle')->name('project.details.title');
 		Route::post('/audits-required-units', 'AuditController@ajaxAuditRequiredUnits')->name('ajax.audit.required.units');
 
+		Route::post('/projects/{id}/building-details/{type}/{audit}', 'AuditController@getBuildingDetailsInfo')->name('building.details.info');
 		Route::get('/projects/{id}/details/{type}/{audit}/{return_raw?}', 'AuditController@getProjectDetailsInfo')->name('project.details.info');
 		Route::get('/projects/{project}/details/assignment/date/{dateid}', 'AuditController@getProjectDetailsAssignmentSchedule')->name('project.details.assignment.schedule');
 
