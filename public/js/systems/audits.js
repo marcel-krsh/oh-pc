@@ -1123,6 +1123,7 @@ function getSingleBuilding(e){
   		
   	}else if(((Array.isArray(id) && id.length) && is_uncorrected == true) || (!(Array.isArray(id) && id.length) && is_uncorrected == true)){
   		fetch_buidling_detail('building', id, is_uncorrected);
+  		fetch_buidling_detail('unit', id, is_uncorrected);
   	}else{
 		var projectId = $('#building').data('project-id');
   		var auditId = $('#building').data('audit-id');
@@ -1148,6 +1149,7 @@ function getUnCorrectedBuilding(e){
   		
   	}else if(((Array.isArray(id) && id.length) && is_uncorrected == true) || (!(Array.isArray(id) && id.length) && is_uncorrected == true)){
   		fetch_buidling_detail('building', id, is_uncorrected);
+  		fetch_buidling_detail('unit', id, is_uncorrected);
   	}else{
   		var projectId = $('#building').data('project-id');
   		var auditId = $('#building').data('audit-id');

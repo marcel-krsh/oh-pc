@@ -2,9 +2,9 @@
 <div id="project-details-selections" class="uk-width-1-1">
 		<?php
 			$siteInspections = $audit->audit->project_amenity_inspections()->paginate(5);
-			$buildingInspections = $audit->audit->building_inspections()->paginate(10);
+			$buildingInspections = $audit->audit->building_inspections()->paginate(12);
 			$allBuildingInspections = $audit->audit->building_inspections;
-			$unitInspections = $audit->audit->unit_inspections()->paginate(10);
+			$unitInspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
 			$allUnitInspections = $audit->audit->unit_inspections;
 			$pdtDetails = $details;
 			$pdtFindings = $audit->audit->findings;

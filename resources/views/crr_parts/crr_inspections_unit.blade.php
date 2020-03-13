@@ -7,7 +7,8 @@ if (isset($detailsPage)) {
 @if(!is_null($inspections))
 
 <?php
-	$totalUnits = number_format($inspections->total(), 0);
+	// $totalUnits = number_format($inspections->total(), 0);
+	$totalUnits = count(collect($allUnitInspections)->groupBy('unit_id'));
 ?>
 <div uk-grid class="uk-margin-bottom unit">
 	
@@ -118,17 +119,18 @@ if (isset($detailsPage)) {
 
 		// $inspections = collect($inspections);
 		$inspections = $inspections->sortBy('unit_name');
+		$allUnitInspections = $allUnitInspections->sortBy('unit_name');
 		//dd($inspections);
-		$fileInspections = count(collect($inspections)->where('is_site_visit', 0)->groupBy('unit_id'));
-		$siteInspections = count(collect($inspections)->where('is_site_visit', 1)->groupBy('unit_id'));
-		$homeSiteInspections = count(collect($inspections)->where('group', 'HOME')->where('is_site_visit', 1)->groupBy('unit_id'));
-		$homeFileInspections = count(collect($inspections)->whereIn('group', 'HOME')->where('is_site_visit', 0)->groupBy('unit_id'));
+		$fileInspections = count(collect($allUnitInspections)->where('is_site_visit', 0)->groupBy('unit_id'));
+		$siteInspections = count(collect($allUnitInspections)->where('is_site_visit', 1)->groupBy('unit_id'));
+		$homeSiteInspections = count(collect($allUnitInspections)->where('group', 'HOME')->where('is_site_visit', 1)->groupBy('unit_id'));
+		$homeFileInspections = count(collect($allUnitInspections)->whereIn('group', 'HOME')->where('is_site_visit', 0)->groupBy('unit_id'));
 
-		$ohtfSiteInspections = count(collect($inspections)->where('group', 'OHTF')->where('is_site_visit', 1)->groupBy('unit_id'));
-		$ohtfFileInspections = count(collect($inspections)->whereIn('group', 'OHTF')->where('is_site_visit', 0)->groupBy('unit_id'));
+		$ohtfSiteInspections = count(collect($allUnitInspections)->where('group', 'OHTF')->where('is_site_visit', 1)->groupBy('unit_id'));
+		$ohtfFileInspections = count(collect($allUnitInspections)->whereIn('group', 'OHTF')->where('is_site_visit', 0)->groupBy('unit_id'));
 
-		$nhtfSiteInspections = count(collect($inspections)->where('group', 'NHTF')->where('is_site_visit', 1)->groupBy('unit_id'));
-		$nhtfFileInspections = count(collect($inspections)->whereIn('group', 'NHTF')->where('is_site_visit', 0)->groupBy('unit_id'));
+		$nhtfSiteInspections = count(collect($allUnitInspections)->where('group', 'NHTF')->where('is_site_visit', 1)->groupBy('unit_id'));
+		$nhtfFileInspections = count(collect($allUnitInspections)->whereIn('group', 'NHTF')->where('is_site_visit', 0)->groupBy('unit_id'));
 		?>
 
 		<small>

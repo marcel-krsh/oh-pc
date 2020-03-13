@@ -35,7 +35,7 @@ if (isset($detailsPage)) {
 					<label class="switch">
 					  	<input type="checkbox" onchange="getUnCorrectedBuilding(this);" id="uncorrected_checkbox" {{ (session()->has('is_uncorrected') && session()->get('is_uncorrected') == 'true') ? 'checked' : ''  }} >
 					  	<span class="slider round"></span> 
-					</label> <span class="attention" style="color:red; display: inline-block;margin-top: 5px;position: absolute;margin-left: 5px;"><i class="a-multiply"></i> UNCORRECTED </span>
+					</label> <span class="attention" style="display: inline-block;margin-top: 5px;position: absolute;margin-left: 5px;"> PENDING RESOLUTIONS </span>
 				</div>
 				<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 			</div>
