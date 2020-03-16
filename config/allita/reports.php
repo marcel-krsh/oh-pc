@@ -68,5 +68,40 @@ return [
     '8823-report-selection-viewed'                => 7,
     '8823-report-selection-resolved'              => 9,
   ],
+  'pm_car_status'        => [
+    'car-report-selection-all'                   => 'ALL CAR REPORT STATUSES',
+    'car-report-selection-to-pm'                 => 'UNREAD',
+    'car-report-selection-viewed'                => 'OPENED - CORRECTIONS PENDING',
+    'car-report-selection-resolved'              => 'ALL ITEMS RESOLVED',
+  ],
+  'pm_ehs_status'        => [
+    'ehs-report-selection-all'                   => 'ALL EHS REPORT STATUSES',
+    'ehs-report-selection-to-pm'                 => 'UNREAD',
+    'ehs-report-selection-viewed'                => 'AKNOWLEDGED',
+  ],
+  'pm_8823_status'       => [
+    '8823-report-selection-all'                   => 'ALL 8823 REPORT STATUSES',
+    '8823-report-selection-to-pm'                 => 'UNREAD',
+    '8823-report-selection-viewed'                => 'OPENED - CORRECTIONS PENDING',
+    '8823-report-selection-resolved'              => 'ALL ITEMS RESOLVED',
+  ],
+  'pm_car_approval_type' => [
+    'car-report-selection-all'                   => 0,
+    'car-report-selection-to-pm'                 => 6,
+    'car-report-selection-viewed'                => 7,
+    'car-report-selection-resolved'              => 9,
+  ],
+  'pm_ehs_approval_type' => [
+    'ehs-report-selection-all'                   => 0,
+    'ehs-report-selection-to-pm'                 => 6,
+    'ehs-report-selection-viewed'                => 7,
+    'ehs-report-selection-resolved'              => 9,
+  ],
+  'pm_8823_approval_type' => [
+    '8823-report-selection-all'                   => 0,
+    '8823-report-selection-to-pm'                 => 6,
+    '8823-report-selection-viewed'                => 7,
+    '8823-report-selection-resolved'              => 9,
+  ],
 
 ];

@@ -44,6 +44,38 @@ function sortAuditList(sortBy, sortOrder, inputClass='') {
       	});
     });
 }
+function pmSortAuditList(sortBy, sortOrder, inputClass='') {
+	// 'audit-sort-by'
+    // 'audit-sort-order'
+
+    $('#audits').fadeOut('slow');
+
+    // capture input value if any
+    if(inputClass != ''){
+    	var filter = '';
+	    var filterId = 0;
+
+	    if( $('.'+inputClass).val().length ){
+	    	// clear all other session variables
+	    	$.get( '/pmsession/filters/filter-search-project-input/');
+	    	$.get( '/pmsession/filters/filter-search-pm-input/');
+	    	$.get( '/pmsession/filters/filter-search-address-input/');
+
+	    	// set new filter
+	    	filter = $('.'+inputClass).val();
+	    	$.get( '/pmsession/filters/'+inputClass+'/'+filter, function( data ) {});
+	    }
+
+    }
+
+	$.get( '/pmsession/filters/audit-sort-by/'+sortBy, function( data ) {
+		$.get( '/pmsession/filters/audit-sort-order/'+sortOrder, function( data ) {
+			//?filter="+filter+"&filterId="+filterId
+			loadTab("dashboard/pmaudits", "1", 0, 0, '', 1);
+
+      	});
+    });
+}
 
 function filterAudits(type, value=''){
 	$.get( '/session/filters/'+type+'/'+value, function( data ) {
@@ -51,6 +83,17 @@ function filterAudits(type, value=''){
 			$('#auditstable').html(tempdiv);
 		setTimeout(function () {
 		    loadTab("dashboard/audits", "1", 0, 0, '', 1);
+		}, 1000);
+
+    });
+}
+
+function pmFilterAudits(type, value=''){
+	$.get( '/pmsession/filters/'+type+'/'+value, function( data ) {
+		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+			$('#auditstable').html(tempdiv);
+		setTimeout(function () {
+		    loadTab("dashboard/pmaudits", "1", 0, 0, '', 1);
 		}, 1000);
 
     });
@@ -87,7 +130,42 @@ function filterAuditList(element, searchClass){
 	// });
 }
 
+function pmFilterAuditList(element, searchClass){
+	// clear all other filters
+	// $('.filter-box').not(element).val('');
+
+	var value = $(element).val().toLowerCase();
+
+	// if(value == '') {value = 0;}
+
+	$.get( '/pmsession/filters/'+searchClass+'/'+value, function( data ) {
+       loadTab("dashboard/pmaudits", "1", 0, 0, '', 1);
+    });
+
+	// $('tr[id^="audit-r-"]').each(function() {
+	// 	var parentElement = this;
+	// 	var found = 0; // we may look through multiple fields with the same class
+
+	// 	$(this).find('.'+searchClass).each(function() {
+ //    		if($(this).text().toLowerCase().search(value) > -1) {
+ //    			if(found == 0){
+ //    				found = 1;
+ //    				$(parentElement).show();
+ //    			}
+ //    		}else{
+ //    			if(found == 0){
+ //    				$(parentElement).hide();
+ //    			}
+ //    		}
+ //    	});
+	// });
+}
+
 function toggleArchivedAudits() {
+	$(".archived-icon").toggle();
+}
+
+function pmToggleArchivedAudits() {
 	$(".archived-icon").toggle();
 }
 
@@ -134,6 +212,59 @@ function projectDetails(id, target, buildingcount = 10, reload = 0) {
 
 		// fetch and display new details
 		var url = 'dashboard/audits/'+id+'/buildings';
+	    $.get(url, {
+        	'context' : 'audits',
+            'target' : target
+            }, function(data) {
+                if(data=='0'){
+                    UIkit.modal.alert("There was a problem getting the buildings' information.");
+                } else {
+
+					$('#audit-r-'+target+'-buildings').html(data);
+            	}
+	    });
+	}
+}
+
+function pmProjectDetails(id, target, buildingcount = 10, reload = 0) {
+	if ($('#audit-r-'+target+'-buildings').length && reload == 0){
+
+		// close own details
+		$('#audit-r-'+target+'-buildings').remove();
+		$('tr[id^="audit-r-"]').show();
+		$('html, body').animate({
+			scrollTop: $('#audit-r-'+target).offset().top - 59
+			}, 500, 'linear');
+	}else{
+		if(reload == 1){
+			$('#audit-r-'+target+'-buildings').remove();
+		}
+
+		// scroll to row early
+    	$('html, body').animate({
+			scrollTop: $('#audit-r-'+target).offset().top - 59
+			}, 500, 'linear');
+
+		// close all details
+		$('tr[id$="-buildings"]').remove();
+		$('tr[id^="audit-r-"]').not( 'tr[id="audit-r-'+target+'"]' ).hide();
+
+		// open the expanded div early based on expected number of buildings
+		if($('#audit-r-'+target).hasClass('notcritical')){
+			var tempdiv = '<tr id="audit-r-'+target+'-buildings" class="notcritical rowinset"><td colspan="10">';
+		}else{
+			var tempdiv = '<tr id="audit-r-'+target+'-buildings" class="rowinset"><td colspan="10">';
+		}
+
+    	if(buildingcount){
+    		var tempdivheight = 150 * buildingcount;
+    		tempdiv = tempdiv + '<div style="height:'+tempdivheight+'px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
+    	}
+    	tempdiv = tempdiv + '</td></tr>';
+    	$('#audit-r-'+target).after(tempdiv);
+
+		// fetch and display new details
+		var url = 'dashboard/pmaudits/'+id+'/buildings';
 	    $.get(url, {
         	'context' : 'audits',
             'target' : target
@@ -1028,6 +1159,25 @@ function projectDetailsInfo(id, type, audit, target) {
 	$('#project-details-buttons').find('.uk-button').removeClass('active');
 	$(target).addClass('active');
 	var url = '/projects/'+id+'/details/'+type+'/'+audit;
+    $.get(url, {
+        }, function(data) {
+            if(data=='0'){
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+
+				$('#project-details-info-container').html(data);
+        	}
+    });
+}
+
+function pmProjectDetailsInfo(id, type, audit, target) {
+	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	$('#project-details-info-container').html(tempdiv);
+
+	// remove active buttons
+	$('#project-details-buttons').find('.uk-button').removeClass('active');
+	$(target).addClass('active');
+	var url = '/pm-projects/'+id+'/details/'+type+'/'+audit;
     $.get(url, {
         }, function(data) {
             if(data=='0'){

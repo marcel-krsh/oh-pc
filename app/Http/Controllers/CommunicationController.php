@@ -447,8 +447,9 @@ class CommunicationController extends Controller
 				}
 			}
 
-			if (null !== $report_id && Auth::user()->cannot('access_auditor')) {
+			if (null !== $report_id && Auth::user()->cannot('access_auditor') && $report_id != 0) {
 				$report = CrrReport::with('lead')->find($report_id);
+				
 				// if ('CAR' == $report->template()->template_name) {
 				$lead_id = $report->lead->id;
 				$recipients = User::where('users.id', $lead_id)
@@ -464,6 +465,20 @@ class CommunicationController extends Controller
 					$single_recipient = true;
 				}
 				// }
+			} else if(null !== $report_id && Auth::user()->cannot('access_auditor') && $report_id == 0) {
+				$lead_id = $audit->lead_user_id;
+				$recipients = User::where('users.id', $lead_id)
+					->leftJoin('people', 'people.id', 'users.person_id')
+					->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+					->join('users_roles', 'users_roles.user_id', 'users.id')
+					->select('users.*', 'last_name', 'first_name', 'organization_name')
+					->where('active', 1)
+					->orderBy('organization_name', 'asc')
+					->orderBy('last_name', 'asc')
+					->get();
+				if ($current_user->hasRole(1)) {
+					$single_recipient = true;
+				}
 			}
 			$recipients = $recipients->sortBy('organization_name')->groupBy('organization_name');
 

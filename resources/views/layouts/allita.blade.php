@@ -24,7 +24,7 @@ if ($allowPageLoad) {
 			@can('access_auditor')
 			Allita Program Compliance
 			@else
-			Dev|Co Inspection
+			OHFA Inspect
 			@endCan
 		</title>
 
@@ -229,7 +229,7 @@ if ($allowPageLoad) {
 	<div id="phone" class="uk-visible-touch uk-hidden@s">
 		<div id="phone-app" class="uk-container uk-padding-small uk-align-center" >
 			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 100px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
-				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h3 style="margin-bottom: 0px"><i class="a-menu uk-text-muted uk-contrast" style="color:white !important; font-weight: bolder; margin-right:5px; font-size: 20px;"></i> Dev|Co Mobile Inspection Launcher</h3></a>
+				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h3 style="margin-bottom: 0px"><i class="a-menu uk-text-muted uk-contrast" style="color:white !important; font-weight: bolder; margin-right:5px; font-size: 20px;"></i> OHFA Mobile Inspection Launcher</h3></a>
 			</div>
 			<div class="uk-container">
 
@@ -281,8 +281,7 @@ if ($allowPageLoad) {
 				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
 					<div uk-grid>
 						<div class="uk-width-1-1">
-							<img id="apcsv-logo" src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" >
-
+							
 							@can('access_auditor')
 							<div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
 								<div class="uk-autocomplete quick-lookup-box uk-inline">
@@ -306,12 +305,21 @@ if ($allowPageLoad) {
 											</span>
 										</a>
 									</li>
+									@else
+										<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.pmaudits') }}','1','','','',1);}">
+											<a href="" style="">
+												<span class="list-tab-text">
+
+													<i class="a-mobile-home"></i> MY AUDITS
+												</span>
+											</a>
+										</li>
 									@endCan
 									@can('access_pm')
 									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
-												<i class="a-envelope-3"></i> COMMUNICATIONS
+												<i class="a-envelope-3"></i> MY COMMUNICATIONS
 											</span>
 										</a>
 									</li>
@@ -340,7 +348,7 @@ if ($allowPageLoad) {
 										<a href="https://devco.ohiohome.org/AuthorityOnline/" style="font-weight: 400">DEV|CO Compliance</a>
 									</div>
 									<div class="apcsv-menu-item">
-										<a href="/" style="font-weight: 400">DEV|CO Inspection</a>
+										<a href="/" style="font-weight: 400">OHFA Inspect</a>
 									</div>
 									@if(Auth::user()->allowed_tablet && Auth::user()->auditor_access())
 									<div class="apcsv-menu-item uk-hidden-notouch">
@@ -354,7 +362,7 @@ if ($allowPageLoad) {
 				</div>
 
 				<ul id="tabs" class="maintabs uk-switcher" >
-					@can('access_auditor')<li>
+					@can('access_pm')<li>
 						<div id="detail-tab-1-content"></div>
 					</li>
 					@endCan
@@ -436,7 +444,7 @@ if ($allowPageLoad) {
 				@if(Auth::check() && Auth::user()->auditor_access())
 				Allita Program Compliance
 				@else
-				Dev|Co Inspect
+				OHFA Inspect
 				@endif
 				&copy; 2018<?php if (date('Y', time()) != '2018') {
     echo " — " . date('Y', time());

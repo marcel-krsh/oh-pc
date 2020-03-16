@@ -466,7 +466,23 @@ Route::group(['middleware' => 'web'], function () {
 	//===============================================================================================================//
 
 	Route::group(['prefix' => '', 'middleware' => 'can:access_pm'], function () {
+		//project details
+		Route::get('/pm-projects/view/{id}/{audit_id?}', 'PMAuditController@getPMProject')->name('pm-project-view');
+		Route::get('/pm-projects/view/{id}/{audit_id}/title', 'PMAuditController@getPMProjectTitle')->name('pm-project.title-with-audit');
+		Route::get('/pm-projects/{id}', 'PMAuditController@getPMProject')->name('pm-project');
+		Route::get('/pm-projects/{id}/title', 'PMAuditController@getPMProjectTitle')->name('pm-project.title');
+		Route::get('/pm-projects/{id}/details', 'PMAuditController@getPMProjectDetails')->name('pm-project.details');
+		Route::get('/pm-projects/{id}/audit-details/{audit_id?}', 'PMAuditController@getPMProjectDetails')->name('pm-project.details-with-audit');
+		Route::get('/pm-projects/{id}/details/{type}/{audit}', 'PMAuditController@getProjectDetailsInfo')->name('pm-project.details.info');
+		
 
+		//session controls
+		Route::get('/pmsession/filters/{type}/{value?}', 'DataController@pmRemoveSession')->name('pmsession.setfilter');
+
+		Route::post('/pmsession/{name?}/{value?}', 'DataController@pmSetSession');
+		Route::post('/pmsession-new/{name?}/{value?}', 'DataController@pmSetSessionNew')->name('pmsession.auditfilters');
+
+		Route::get('dashboard/pmaudits', 'DashboardController@pmAudits')->name('dashboard.pmaudits');
 		Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
 		Route::get('/modals/auditors/{id}/preferences-view', 'UserController@preferencesView')->name('auditor.preferences-view');
 

@@ -17,15 +17,6 @@
 	.finding-number {
 	    font-size: 9px;
 	    background: #666;
-	    padding: 0px 4px 0px;
-	    border: 0px;
-	    min-width: 13px;
-	    max-height: 13px;
-	    line-height: 1.5;
-	}
-	.finding-number {
-	    font-size: 9px;
-	    background: #666;
 	    
 	    border: 0px;
 	    min-width: 13px;
@@ -54,209 +45,40 @@
 	    font-weight: bolder;
 	}
 </style>
-<template class="uk-hidden" id="inspection-left-template">
-	<div class="inspection-menu">
-	</div>
-</template>
 
-<template class="uk-hidden" id="inspection-menu-item-template">
-	<button class="uk-button uk-link menuStatus" onclick="switchInspectionMenu('menuAction', 'menuLevel', 'menuTarget', 'menuAudit', 'menuBuilding', 'menuUnit');" style="menuStyle"><i class="menuIcon"></i> menuName</button>
-</template>
-
-<template class="uk-hidden" id="inspection-comment-reply-template">
-	<div class="uk-width-1-1 uk-margin-remove inspec-tools-tab-finding-comment">
-		<div uk-grid>
-			<div class="uk-width-1-4">
-				<i class="tplCommentTypeIcon"></i> tplCommentType
-			</div>
-			<div class="uk-width-3-4 borderedcomment">
-				<p>tplCommentCreatedAt: By tplCommentUserName<br />
-					<span class="finding-comment">tplCommentContent</span>
-				</p>
-				<button class="uk-button inspec-tools-tab-finding-reply uk-link">
-					<i class="a-comment-pencil"></i> REPLY
-				</button>
-			</div>
-		</div>
-	</div>
-</template>
-
-<template class="uk-hidden" id="inspection-comment-template">
-	<li class="comment-type">
-		<div class="inspec-tools-tab-finding tplCommentStatus" uk-grid>
-			<div class="uk-width-1-1" style="padding-top: 15px;">
-				<div uk-grid>
-					<div class="uk-width-1-4">
-						<i class="tplCommentTypeIcon"></i> tplCommentType<br />
-						<span class="auditinfo">AUDIT tplCommentAuditId</span><br />
-						tplCommentResolve
-					</div>
-					<div class="uk-width-3-4 bordered">
-						<p>tplCommentCreatedAt: By tplCommentUserName<br />
-						tplCommentContent</p>
-					</div>
-				</div>
-			</div>
-
-			tplCommentReplies
-
-			<div class="uk-width-1-1 uk-margin-remove">
-				<div uk-grid>
-					tplCommentActions
-				</div>
-			</div>
-		</div>
-	</li>
-</template>
-
-<template class="uk-hidden" id="inspection-areas-template">
-	<div class="inspection-areas uk-height-large uk-height-max-large uk-panel uk-panel-scrollable sortable" uk-sortable="handle: .uk-sortable-inspec-area;" data-context="areaContext">
-	</div>
-</template>
-
-<template class="uk-hidden" id="inspection-area-template">
-	<div id="inspection-areaContext-area-r-areaRowId" class="inspection-area uk-flex uk-flex-row areaStatus" style="padding:6px 0 0 0;" data-context="areaContext" data-audit="areaDataAudit" data-building="areaDataBuilding" data-area="areaDataArea" data-amenity="areaDataAmenity">
-		<div class="uk-inline uk-sortable-inspec-area" style="min-width: 16px; padding: 0 3px;">
-			<div class="linespattern"></div>
-			<span id="" class="uk-position-bottom-center colored"><small><span class="rowindex" style="display:none;">areaRowId</span></small></span>
-		</div>
-		<div class="uk-inline uk-padding-remove" style="margin-top:10px; ">
-			<div class="area-avatar">
-				<div id="auditor-areaAuditorIdareaDataAuditareaDataBuildingareaDataAreaareaDataAmenity" uk-tooltip="pos:top-left;title:areaAuditorName;" title="" aria-expanded="false" class="user-badge auditor-badge-areaAuditorColor no-float use-hand-cursor" onclick="assignAuditor(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'auditor-areaAuditorIdareaDataAuditareaDataBuildingareaDataAreaareaDataAmenity');">
-					areaAuditorInitials
-				</div>
-			</div>
-		</div>
-		<div class="uk-inline uk-padding-remove" style="margin-top:7px; flex:140px;">
-			<i id="completed-areaDataAuditareaDataBuildingareaDataAreaareaDataAmenity" class="areaCompletedIcon completion-icon use-hand-cursor" uk-tooltip="title:CLICK TO COMPLETE" onclick="markAmenityComplete(areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, 'completed-areaDataAuditareaDataBuildingareaDataAreaareaDataAmenity')"></i>
-			<div class="area-name">
-				areaName
-			</div>
-		</div>
-		<div class="uk-inline uk-padding-remove">
-			<div class="findings-icon uk-inline areaNLTStatus fileHiddenStatus"  onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'nlt', areaDataAmenity);">
-				<i class="a-booboo"></i>
-				<div class="findings-icon-status plus">
-					<span class="uk-badge">+</span>
-				</div>
-			</div>
-			<div class="findings-icon uk-inline areaLTStatus fileHiddenStatus" onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'lt', areaDataAmenity);">
-				<i class="a-skull"></i>
-				<div class="findings-icon-status plus">
-					<span class="uk-badge">+</span>
-				</div>
-			</div>
-			<div class="findings-icon uk-inline areaFILEStatus fileShowStatus uk-hidden" onclick="openFindings(this, areaDataAudit, areaDataBuilding, areaDataArea, 'file', areaDataAmenity);">
-				<i class="a-folder"></i>
-				<div class="findings-icon-status plus">
-					<span class="uk-badge">+</span>
-				</div>
-			</div>
-			<div class="findings-icon uk-inline areaSDStatus" style="display:none">
-				<i class="a-bell-2"></i>
-				<div class="findings-icon-status plus">
-					<span class="uk-badge">+</span>
-				</div>
-			</div>
-		</div>
-		<div class="uk-inline" style="padding: 0 15px; display:none">
-			<div class="findings-icon uk-inline areaPicStatus">
-				<i class="a-picture"></i>
-				<div class="findings-icon-status plus">
-					<span class="uk-badge">+</span>
-				</div>
-			</div>
-			<div class="findings-icon uk-inline areaCommentStatus" style="display:none">
-				<i class="a-comment-text"></i>
-				<div class="findings-icon-status plus">
-					<span class="uk-badge">+</span>
-				</div>
-			</div>
-		</div>
-		<div class="uk-inline uk-padding-remove">
-			<div class="findings-icon uk-inline areaCopyStatus" onclick="copyAmenity('inspection-areaContext-area-r-areaRowId', areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity);">
-				<i class="a-file-copy-2"></i>
-				<div class="findings-icon-status plus">
-					<span class="uk-badge">+</span>
-				</div>
-			</div>
-			<div class="findings-icon uk-inline areaTrashStatus" onclick="deleteAmenity('inspection-areaContext-area-r-areaRowId', areaDataAudit, areaDataBuilding, areaDataArea, areaDataAmenity, areaDataHasFindings);">
-				<i class="a-trash-4"></i>
-				<div class="findings-icon-status plus">
-					<span class="uk-badge">-</span>
-				</div>
-			</div>
-		</div>
-	</div>
-</template>
-
-<template class="uk-hidden" id="inspection-tools-template">
-	<div class="inspection-tools"  uk-grid>
-		<div class="inspection-tools-top uk-width-1-1">
-			<div uk-grid>
-				<div class="uk-width-1-3">
-
-				</div>
-				<div class="uk-width-1-3 uk-text-right" hidden>
-					<i class="a-horizontal-expand"></i>
-				</div>
-			</div>
-		</div>
-		<div class="inspection-tools-tabs uk-width-1-1" uk-filter="target: .js-filter-comments">
-			<ul class="uk-subnav uk-subnav-pill" style="display:none">
-				<li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-finding">FINDINGS</li>
-				<li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-comment">COMMENTS</li>
-				<li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-photo">PHOTOS</li>
-				<li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-file">DOCUMENTS</li>
-				<li class="uk-badge use-hand-cursor" uk-filter-control=".comment-type-followup">FOLLOW UPS</li>
-			</ul>
-
-			<div style="color:#bbb; display:none">
-				<i class="fas fa-filter"></i> FILTER FINDINGS
-			</div>
-
-			<img src="images/fpo_finding.png" style="width: 100%;">
-
-
-			<ul class="uk-margin js-filter-comments inspec-tools-tab-findings-container uk-panel uk-panel-scrollable uk-height-large uk-height-max-large">
-			</ul>
-		</div>
-	</div>
-</template>
 
 <div id="audits" class="uk-no-margin-top" uk-grid>
 	<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 		<div id="auditsfilters" class="uk-width-1-1 uk-margin-top">
-			<div class="uk-button-success green-button uk-badge uk-text-right@s uk-margin-right uk-margin-top" style="float:right;">&nbsp;<a href="{{ url('audit_raw_data') }}" class="uk-dark uk-light" uk-tooltip="title:Export All Matching Audits; pos: top-right;" title="" aria-expanded="false"><span class="a-lower"></span> EXPORT</a>&nbsp;</div>
+			
 			<div class="uk-badge uk-align-right uk-label uk-margin-top uk-margin-right">{{ count($audits) }}  {{ count($audits) == 1 ?'AUDIT' : 'AUDITS' }} </div>
 			@if(isset($auditFilterMineOnly) && $auditFilterMineOnly == 1)
 			<div id="audit-filter-mine" class="uk-badge uk-text-right@s badge-filter">
-				@if($auditor_access)
-				<a onClick="filterAudits('audit-my-audits',0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
-				@else
-				@endif
+				
+				<a onClick="pmFilterAudits('audit-my-audits',0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>MY AUDITS ONLY</span></a>
+				
 			</div>
 			@endif
 			@if(isset($auditFilterProjectId) && $auditFilterProjectId != 0)
 			<div id="audit-filter-project" class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('filter-search-project');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>PROJECT/AUDIT ID "{{ $auditFilterProjectId }}"</span></a>
+				<a onClick="pmFilterAudits('filter-search-project');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>PROJECT/AUDIT ID "{{ $auditFilterProjectId }}"</span></a>
 			</div>
 			@endif
 			@if(isset($auditFilterProjectName) && $auditFilterProjectName != '')
 			<div id="audit-filter-name" class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('filter-search-pm', '');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>PROJECT/PM NAME "{{ $auditFilterProjectName }}"</span></a>
+				<a onClick="pmFilterAudits('filter-search-pm', '');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>PROJECT/PM NAME "{{ $auditFilterProjectName }}"</span></a>
 			</div>
 			@endif
 			@if(isset($auditFilterAddress) && $auditFilterAddress != '')
 			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('filter-search-address', '');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>ADDRESS "{{ $auditFilterAddress }}"</span></a>
+				<a onClick="pmFilterAudits('filter-search-address', '');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>ADDRESS "{{ $auditFilterAddress }}"</span></a>
 			</div>
 			@endif
 
 			@foreach($steps as $step)
 			@if(session($step->session_name) == 1)
 			<div id="audit-filter-step" class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('{{ $step->session_name }}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>STEP "{{ $step->name }}"</span></a>
+				<a onClick="pmFilterAudits('{{ $step->session_name }}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>STEP "{{ $step->name }}"</span></a>
 			</div>
 			@endif
 			@endforeach
@@ -265,7 +87,7 @@
 			{{-- CAR --}}
 			@if(session($rkey) == 1)
 			<div id="audit-filter-car" class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('{{ $rkey }}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>CAR "{{ $rvalue }}"</span></a>
+				<a onClick="pmFilterAudits('{{ $rkey }}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>CAR "{{ $rvalue }}"</span></a>
 			</div>
 			@endif
 			@endforeach
@@ -274,7 +96,7 @@
 			{{-- CAR --}}
 			@if(session($rkey) == 1)
 			<div id="audit-filter-ehs" class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('{{ $rkey }}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>EHS "{{ $rvalue }}"</span></a>
+				<a onClick="pmFilterAudits('{{ $rkey }}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>EHS "{{ $rvalue }}"</span></a>
 			</div>
 			@endif
 			@endforeach
@@ -283,196 +105,196 @@
 			{{-- CAR --}}
 			@if(session($rkey) == 1)
 			<div id="audit-filter-8823" class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('{{ $rkey }}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>8823 "{{ $rvalue }}"</span></a>
+				<a onClick="pmFilterAudits('{{ $rkey }}', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>8823 "{{ $rvalue }}"</span></a>
 			</div>
 			@endif
 			@endforeach
 
 			@if(isset($auditFilterComplianceRR) && $auditFilterComplianceRR != '0')
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('compliance-status-rr', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>UNITS REQUIRE REVIEW</span></a>
+				<a onClick="pmFilterAudits('compliance-status-rr', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>UNITS REQUIRE REVIEW</span></a>
 			</div>
 			@endif
 
 			@if(isset($auditFilterComplianceNC) && $auditFilterComplianceNC != '0')
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('compliance-status-nc', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>NOT COMPLIANT</span></a>
+				<a onClick="pmFilterAudits('compliance-status-nc', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>NOT COMPLIANT</span></a>
 			</div>
 			@endif
 
 			@if(isset($auditFilterComplianceC) && $auditFilterComplianceC != '0')
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('compliance-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>COMPLIANT</span></a>
+				<a onClick="pmFilterAudits('compliance-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>COMPLIANT</span></a>
 			</div>
 			@endif
 
 			@if(session('file-audit-status-h') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('file-audit-status-h', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS FILE AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('file-audit-status-h', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS FILE AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(session('file-audit-status-r') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('file-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ALL RESOLVED FILE AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('file-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ALL RESOLVED FILE AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(session('file-audit-status-ar') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('file-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS UNRESOLVED FILE AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('file-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS UNRESOLVED FILE AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			{{-- @if(session('file-audit-status-c') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('file-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL FILE AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('file-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL FILE AUDIT FINDINGS</span></a>
 			</div>
 			@endif --}}
 
 			@if(session('file-audit-status-nf') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('file-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE FILE AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('file-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE FILE AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 
 			@if(session('nlt-audit-status-h') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('nlt-audit-status-h', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NLT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('nlt-audit-status-h', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NLT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(session('nlt-audit-status-r') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('nlt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ALL RESOLVED NLT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('nlt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ALL RESOLVED NLT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(session('nlt-audit-status-ar') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('nlt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS UNRESOLVED NLT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('nlt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS UNRESOLVED NLT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			{{-- @if(session('nlt-audit-status-c') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('nlt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL NLT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('nlt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL NLT AUDIT FINDINGS</span></a>
 			</div>
 			@endif --}}
 
 			@if(session('nlt-audit-status-nf') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('nlt-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE NLT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('nlt-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE NLT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 
 			@if(session('lt-audit-status-h') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('lt-audit-status-h', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS LT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('lt-audit-status-h', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS LT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(session('lt-audit-status-r') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('lt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ALL RESOLVED LT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('lt-audit-status-r', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS ALL RESOLVED LT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(session('lt-audit-status-ar') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('lt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS UNRESOLVED LT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('lt-audit-status-ar', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS UNRESOLVED LT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 {{--
 			@if(session('lt-audit-status-c') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('lt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL LT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('lt-audit-status-c', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS CRITICAL LT AUDIT FINDINGS</span></a>
 			</div>
 			@endif --}}
 
 			@if(session('lt-audit-status-nf') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('lt-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE LT AUDIT FINDINGS</span></a>
+				<a onClick="pmFilterAudits('lt-audit-status-nf', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOES NOT HAVE LT AUDIT FINDINGS</span></a>
 			</div>
 			@endif
 
 			@if(isset($auditFilterInspection) && $auditFilterInspection != '')
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('total_inspection_amount', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ $auditFilterInspection }}</span></a>
+				<a onClick="pmFilterAudits('total_inspection_amount', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ $auditFilterInspection }}</span></a>
 			</div>
 			@endif
 
 			@if(isset($auditBuildingFilterInspection) && $auditBuildingFilterInspection != '')
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('total_building_inspection_amount', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ $auditBuildingFilterInspection }}</span></a>
+				<a onClick="pmFilterAudits('total_building_inspection_amount', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>{{ $auditBuildingFilterInspection }}</span></a>
 			</div>
 			@endif
 
 
 			@if(session('schedule_assignment_unassigned') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('schedule_assignment_unassigned', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH UNASSIGNED AMENITIES</span></a>
+				<a onClick="pmFilterAudits('schedule_assignment_unassigned', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH UNASSIGNED AMENITIES</span></a>
 			</div>
 			@endif
 
 			@if(session('schedule_assignment_not_enough') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('schedule_assignment_not_enough', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NOT ENOUGH HOURS SCHEDULED</span></a>
+				<a onClick="pmFilterAudits('schedule_assignment_not_enough', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NOT ENOUGH HOURS SCHEDULED</span></a>
 			</div>
 			@endif
 
 			@if(session('schedule_assignment_no_estimated') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('schedule_assignment_no_estimated', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NO ESTIMATED HOURS ENTERED</span></a>
+				<a onClick="pmFilterAudits('schedule_assignment_no_estimated', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NO ESTIMATED HOURS ENTERED</span></a>
 			</div>
 			@endif
 
 			@if(session('documents_all') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('documents_all', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>ALL DOCUMENT STATUSES</span></a>
+				<a onClick="pmFilterAudits('documents_all', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>ALL DOCUMENT STATUSES</span></a>
 			</div>
 			@endif
 			@if(session('documents_reviewd') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('documents_reviewd', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOCUMENTS REVIEWED</span></a>
+				<a onClick="pmFilterAudits('documents_reviewd', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOCUMENTS REVIEWED</span></a>
 			</div>
 			@endif
 			@if(session('documents_needs_review') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('documents_needs_review', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOCUMENTS NEED REVIEW</span></a>
+				<a onClick="pmFilterAudits('documents_needs_review', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOCUMENTS NEED REVIEW</span></a>
 			</div>
 			@endif
 			@if(session('documents_not_found') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('documents_not_found', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOCUMENTS NOT AVAILABLE</span></a>
+				<a onClick="pmFilterAudits('documents_not_found', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>DOCUMENTS NOT AVAILABLE</span></a>
 			</div>
 			@endif
 
 			@if(session('messages_unread') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('messages_unread', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>UNREAD MESSAGES</span></a>
+				<a onClick="pmFilterAudits('messages_unread', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>UNREAD MESSAGES</span></a>
 			</div>
 			@endif
 			@if(session('messages_all_read') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('messages_all_read', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NO UNREAD MESSAGES</span></a>
+				<a onClick="pmFilterAudits('messages_all_read', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NO UNREAD MESSAGES</span></a>
 			</div>
 			@endif
 			@if(session('messages_not_available') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('messages_not_available', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NO MESSAGES</span></a>
+				<a onClick="pmFilterAudits('messages_not_available', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>HAS NO MESSAGES</span></a>
 			</div>
 			@endif
 			@if(session('schedule_date') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('schedule_date', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>SCHEDULE DATE: {{ strtoupper(session('daterange')) }}</span></a>
+				<a onClick="pmFilterAudits('schedule_date', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>SCHEDULE DATE: {{ strtoupper(session('daterange')) }}</span></a>
 			</div>
 			@endif
 			@if(session('schedule_no_date') == 1)
 			<div class="uk-badge uk-text-right@s badge-filter">
-				<a onClick="filterAudits('schedule_no_date', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NO SCHEDULED DATE</span></a>
+				<a onClick="pmFilterAudits('schedule_no_date', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>AUDITS WITH NO SCHEDULED DATE</span></a>
 			</div>
 			@endif
 
@@ -541,7 +363,7 @@
 			}
 			@endphp
 			<div id="audit-filter-address" class="uk-badge uk-text-right@s badge-filter" uk-tooltip="title:{{ $assigned_auditors_hover_text }}">
-				<a onClick="filterAudits('assignment-auditor', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>@if(count(session('assignment-auditor')) > 1)AUDITORS ASSIGNED: @else AUDITOR ASSIGNED:@endif {{ $assigned_auditors }}</span></a>
+				<a onClick="pmFilterAudits('assignment-auditor', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>@if(count(session('assignment-auditor')) > 1)AUDITORS ASSIGNED: @else AUDITOR ASSIGNED:@endif {{ $assigned_auditors }}</span></a>
 			</div>
 			@endif
 		</div>
@@ -581,11 +403,11 @@
 
 								</div>
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LEAD AUDITOR">
+							<span uk-tooltip="delay:1000" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LEAD AUDITOR">
 								@if($sort_by == 'audit-sort-lead')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-lead', @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-lead', @php echo 1-$sort_order; @endphp);"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-lead', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-lead', 1);"></a>
 								@endif
 							</span>
 						</div>
@@ -595,11 +417,11 @@
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-project" class="filter-box filter-search-project-input" type="text" placeholder="PROJECT" value="@if(session()->has('filter-search-project')){{ session('filter-search-project') }}@endif">
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT ID">
+							<span uk-tooltip="delay:1000" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT ID">
 								@if($sort_by == 'audit-sort-project')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-project', @php echo 1-$sort_order; @endphp, 'filter-search-project');"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-project', @php echo 1-$sort_order; @endphp, 'filter-search-project');"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-project', 1, 'filter-search-project');"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-project', 1, 'filter-search-project');"></a>
 								@endif
 							</span>
 							<div class="uk-dropdown" aria-expanded="false"></div>
@@ -610,18 +432,18 @@
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-name" class="filter-box filter-search-pm-input" type="text" placeholder="PROJECT / PM NAME" value="@if(session()->has('filter-search-pm')){{ session('filter-search-pm') }}@endif">
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT NAME">
+							<span uk-tooltip="delay:1000" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROJECT NAME">
 								@if($sort_by == 'audit-sort-project-name')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-project-name',  @php echo 1-$sort_order; @endphp, 'filter-search-pm-input');"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-project-name',  @php echo 1-$sort_order; @endphp, 'filter-search-pm-input');"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-project-name', 1, 'filter-search-pm-input');"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-project-name', 1, 'filter-search-pm-input');"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROPERTY MANAGER NAME">
+							<span uk-tooltip="delay:1000" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY PROPERTY MANAGER NAME">
 								@if($sort_by == 'audit-sort-pm')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-pm',  @php echo 1-$sort_order; @endphp, 'filter-search-pm-input');"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-pm',  @php echo 1-$sort_order; @endphp, 'filter-search-pm-input');"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-pm', 1, 'filter-search-pm-input');"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-pm', 1, 'filter-search-pm-input');"></a>
 								@endif
 							</span>
 							<div class="uk-dropdown" aria-expanded="false"></div>
@@ -632,35 +454,35 @@
 							<div class="filter-box uk-width-1-1">
 								<input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" value="@if(session()->has('filter-search-address')){{ session('filter-search-address') }}@endif">
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY STREET ADDRESS">
+							<span uk-tooltip="delay:1000" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY STREET ADDRESS">
 								@if($sort_by == 'audit-sort-address')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-address',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-address',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-address', 1, 'filter-search-address-input');"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-address', 1, 'filter-search-address-input');"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY CITY">
+							<span uk-tooltip="delay:1000" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY CITY">
 								@if($sort_by == 'audit-sort-city')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-city',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-city',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-city', 1, 'filter-search-address-input');"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-city', 1, 'filter-search-address-input');"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY ZIP">
+							<span uk-tooltip="delay:1000" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY ZIP">
 								@if($sort_by == 'audit-sort-zip')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-zip',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-zip',  @php echo 1-$sort_order; @endphp, 'filter-search-address-input');"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-zip', 1, 'filter-search-address-input');"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-zip', 1, 'filter-search-address-input');"></a>
 								@endif
 							</span>
 							<div class="uk-dropdown" aria-expanded="false"></div>
 						</div>
 					</th>
-					<th @if($auditor_access) style="width:185px;" @else style="max-width:50px;" @endif>
+					<th style="width:185px;" >
 						<div uk-grid>
 							<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1" uk-grid>
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
-								<span class="@if($auditor_access) uk-width-1-2 @else uk-width-1-1 @endif uk-text-center uk-padding-remove-top uk-margin-remove-top" >
+								<span class="uk-width-1-2  uk-text-center uk-padding-remove-top uk-margin-remove-top" >
 									<span id="daterangefilterbutton" class="use-hand-cursor">
 										<i class="a-calendar-8 uk-vertical-align-middle  use-hand-cursor"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text  use-hand-cursor"></i> <i class="a-calendar-8 uk-vertical-align-middle  use-hand-cursor" onclick="$('#daterange').trigger( 'click' );"></i>
 									</span>
@@ -690,7 +512,7 @@
 										</form>
 									</div>
 								</span>
-								@if($auditor_access)
+								
 								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-right uk-link">
 									<i id="totalbuildinginspectionbutton" class="a-buildings"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
@@ -741,51 +563,52 @@
 										</form>
 									</div>
 								</span>
-								@endif
+								
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="@if($auditor_access) uk-width-1-2 @else uk-width-1-1 @endif uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
+							<span uk-tooltip="delay:1000" class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top" title="SORT BY SCHEDULED DATE">
 								@if($sort_by == 'audit-sort-scheduled-date')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-scheduled-date',  @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-scheduled-date',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-scheduled-date', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-scheduled-date', 1);"></a>
 								@endif
 							</span>
-							@if($auditor_access)
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
+							
+							<span uk-tooltip="delay:1000" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL ASSIGNED INSPECTION AREAS">
 								@if($sort_by == 'audit-sort-assigned-areas')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-assigned-areas',  @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-assigned-areas',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-assigned-areas', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-assigned-areas', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL INSPECTION AREAS">
+							<span uk-tooltip="delay:1000" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY TOTAL INSPECTION AREAS">
 								@if($sort_by == 'audit-sort-total-areas')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-total-areas',  @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-total-areas',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-total-areas', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-total-areas', 1);"></a>
 								@endif
 							</span>
 
-							@endif
+							
 						</div>
 					</th>
-					<th style="@if($auditor_access) width:165px; @else max-width: 50px @endif">
+					<th style=" max-width: 50px;">
 						<div uk-grid>
-							{{-- <div class="filter-box filter-date-expire uk-vertical-align uk-width-1-1 uk-text-center">
-								<span>
-									<i class="a-calendar-8 uk-vertical-align-middle"></i> <i class="uk-icon-asterisk  uk-vertical-align-middle uk-text-small tiny-middle-text"></i> <i class="a-calendar-8 uk-vertical-align-middle"></i>
-								</span>
-							</div> --}}
+							
 							<div class="filter-box filter-date-aging uk-vertical-align uk-width-1-1 uk-text-center fullwidth" uk-grid>
 								<!-- SPAN TAG TITLE NEEDS UPDATED TO REFLECT CURRENT DATE RANGE -->
-								@if($auditor_access)
+								@php 
+									// Allowed Statuses to Show
+
+
+								@endphp
 								<span class="uk-width-1-3 uk-remove-margin uk-padding-remove uk-text-center uk-link">
 									<i id="carselectionbutton" class="a-file-chart-3"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="car_report_selection" method="post">
 											<fieldset class="uk-fieldset">
 												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
-													@foreach($report_config['car_status'] as $rkey => $rvalue)
+													@foreach($report_config['pm_car_status'] as $rkey => $rvalue)
+
 													<input id="{{ $rkey }}" class="{{ $rkey != 'car-report-selection-all' ? 'carselector' : '' }}" type="checkbox" @if(session($rkey) == 1) checked @endif/>
 													<label for="{{ $rkey }}">{{ $rvalue }}</label>
 													@endforeach
@@ -809,7 +632,7 @@
 										<form id="ehs_report_selection" method="post">
 											<fieldset class="uk-fieldset">
 												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
-													@foreach($report_config['ehs_status'] as $rkey => $rvalue)
+													@foreach($report_config['pm_ehs_status'] as $rkey => $rvalue)
 													<input id="{{ $rkey }}" class="{{ $rkey != 'ehs-report-selection-all' ? 'ehsselector' : '' }}" type="checkbox" @if(session($rkey) == 1) checked @endif/>
 													<label for="{{ $rkey }}">{{ $rvalue }}</label>
 													@endforeach
@@ -833,7 +656,7 @@
 										<form id="8823_report_selection" method="post">
 											<fieldset class="uk-fieldset">
 												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
-													@foreach($report_config['8823_status'] as $rkey => $rvalue)
+													@foreach($report_config['pm_8823_status'] as $rkey => $rvalue)
 													<input id="{{ $rkey }}" class="{{ $rkey != '8823-report-selection-all' ? '8823selector' : '' }}" type="checkbox" @if(session($rkey) == 1) checked @endif/>
 													<label for="{{ $rkey }}">{{ $rvalue }}</label>
 													@endforeach
@@ -852,13 +675,13 @@
 								</span>
 								@endif
 
-								@endif
+								
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FOLLOW-UP DATE">
+							<span  class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top" >
 								@if($sort_by == 'audit-sort-followup-date')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-followup-date',  @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-followup-date', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick=""></a>
 								@endif
 							</span>
 						</div>
@@ -866,7 +689,7 @@
 					<th style="@if($auditor_access) width: 100px; @else max-width: 103px; @endif ">
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
-								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link uk-text-center">
 									<i id="file_audit_status_button" class="a-folder"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
 										<form id="file_audit_status_selection" method="post">
@@ -895,7 +718,7 @@
 												</div>
 												<div class="uk-margin-remove" uk-grid>
 													<div class="uk-width-1-2">
-														<button onclick="updateFileAuditStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
+														<button onclick="updateFileAuditStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter uk-tex"></i> APPLY FILTER</button>
 													</div>
 													<div class="uk-width-1-2">
 														<button onclick="$('#file_audit_status_button').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
@@ -906,8 +729,8 @@
 
 									</div>
 								</span>
-								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i id="nlt_audit_status_button" class="a-booboo"></i>
+								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link uk-text-center">
+									<i id="nlt_audit_status_button" class="a-booboo uk-text-center"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
 										<form id="nlt_audit_status_selection" method="post">
 											<fieldset class="uk-fieldset">
@@ -944,7 +767,7 @@
 
 									</div>
 								</span>
-								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top uk-link uk-text-center">
 									<i id="lt_audit_status_button" class="a-skull"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="width: 420px; top: 26px; left: 0px; text-align:left;">
 										<form id="lt_audit_status_selection" method="post">
@@ -983,25 +806,25 @@
 									</div>
 								</span>
 							</div>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FILE FINDING COUNT">
+							<span uk-tooltip="delay:1000" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY FILE FINDING COUNT">
 								@if($sort_by == 'audit-sort-finding-file')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-file',  @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-finding-file',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-file', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-finding-file', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY NLT FINDING COUNT">
+							<span uk-tooltip="delay:1000" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY NLT FINDING COUNT">
 								@if($sort_by == 'audit-sort-finding-nlt')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-nlt',  @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-finding-nlt',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-nlt', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-finding-nlt', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LT FINDING COUNT">
+							<span uk-tooltip="delay:1000" class="uk-width-1-3 uk-padding-remove-top uk-margin-remove-top" title="SORT BY LT FINDING COUNT">
 								@if($sort_by == 'audit-sort-finding-lt')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-lt',  @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-finding-lt',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-finding-lt', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-finding-lt', 1);"></a>
 								@endif
 							</span>
 						</div>
@@ -1009,68 +832,8 @@
 					<th  @if($auditor_access) style="width: 140px;" @else style="max-width: 70px;" @endif >
 						<div uk-grid>
 							<div class="filter-box filter-icons uk-vertical-align uk-width-1-1" uk-grid>
-								@if($auditor_access)
-								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-text-center uk-link">
-									<i id="complianceselectionbutton" class="a-circle-checked"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
-										<form id="audit_compliance_status_selection" method="post">
-											<fieldset class="uk-fieldset">
-												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
-
-													<input id="compliance-status-all" class="" type="checkbox" @if(session('compliance-status-all') == 1) checked @endif/>
-													<label for="compliance-status-all">ALL COMPLIANCE STATUSES</label>
-
-													<input id="compliance-status-rr" class=" complianceselector" type="checkbox" @if(session('compliance-status-rr') == 1) checked @endif/>
-													<label for="compliance-status-rr"><i class="a-circle-ellipsis action-required"></i> <span class="action-required">UNITS REQUIRE REVIEW</span></label>
-
-													<input id="compliance-status-nc" class=" complianceselector" type="checkbox" @if(session('compliance-status-nc') == 1) checked @endif/>
-													<label for="compliance-status-nc"><i class="a-circle-cross action-required"></i> <span class="action-required">NOT COMPLIANT</span></label>
-
-													<input id="compliance-status-c" class=" complianceselector" type="checkbox" @if(session('compliance-status-c') == 1) checked @endif/>
-													<label for="compliance-status-c"><i class="a-circle-checked ok-actionable"></i><span class="ok-actionable">IS COMPLIANT</span></label>
-
-												</div>
-												<div class="uk-margin-remove" uk-grid>
-													<div class="uk-width-1-2">
-														<button onclick="updateAuditComplianceStatus(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
-													</div>
-													<div class="uk-width-1-2">
-														<button onclick="$('#complianceselectionbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
-													</div>
-												</div>
-											</fieldset>
-										</form>
-
-									</div>
-								</span>
-								<span class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top uk-link">
-									<i id="scheduleassignmentfilterbutton" class="a-clock-3"></i>
-									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
-										<form id="schedule_assignment_filter" method="post">
-											<fieldset class="uk-fieldset">
-												<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
-													<input id="schedule_assignment_unassigned" class="" type="checkbox" @if(session('schedule_assignment_unassigned') == 1) checked @endif/>
-													<label for="schedule_assignment_unassigned">UNASSIGNED AMENITIES</label>
-													<input id="schedule_assignment_not_enough" class="" type="checkbox" @if(session('schedule_assignment_not_enough') == 1) checked @endif/>
-													<label for="schedule_assignment_not_enough">NOT ENOUGH HOURS SCHEDULED</label>
-													<input id="schedule_assignment_no_estimated" class="" type="checkbox" @if(session('schedule_assignment_no_estimated') == 1) checked @endif/>
-													<label for="schedule_assignment_no_estimated">NO ESTIMATED HOURS ENTERED</label>
-
-												</div>
-												<div class="uk-margin-remove" uk-grid>
-													<div class="uk-width-1-2">
-														<button onclick="updateAuditScheduleAssignment(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
-													</div>
-													<div class="uk-width-1-2">
-														<button onclick="$('#scheduleassignmentfilterbutton').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
-													</div>
-												</div>
-											</fieldset>
-										</form>
-									</div>
-								</span>
-								@endif
-								<span class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top uk-link">
+								
+								<span class=" uk-width-1-2 uk-padding-remove-top uk-margin-remove-top uk-link uk-text-center">
 									<i id="messagesfilter" class="a-envelope-4"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="messages_filter" method="post">
@@ -1096,60 +859,9 @@
 									</div>
 
 
-{{--
-									<i class="a-envelope-4"></i>
-									<div class="uk-dropdown uk-dropdown-bottom" uk-dropdown="flip: false; pos: bottom-right; animation: uk-animation-slide-top-small; mode: click" style="top: 26px; left: 0px;">
-										<ul class="uk-nav uk-nav-dropdown uk-text-small uk-list">
-											<li>
-												<span style="padding-left:10px; border-bottom: 1px solid #ddd;display: block;padding-bottom: 5px;color: #bbb;margin-bottom: 0px;margin-top: 5px;">MESSAGES</span>
-											</li>
 
-											<li>
-												<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-message',1);">
-													@if(session('audit-message') == 1)
-													<span class="a-checkbox-checked"></span>
-													@else
-													<span class="a-checkbox"></span>
-													@endif
-													Unread messages
-												</button>
-											</li>
-											<li>
-												<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-message',2);">
-													@if(session('audit-message') == 2)
-													<span class="a-checkbox-checked"></span>
-													@else
-													<span class="a-checkbox"></span>
-													@endif
-													Has no messages
-												</button>
-											</li>
-											<li>
-												<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-message',0);">
-													@if(session('audit-message') == 0)
-													<span class="a-checkbox-checked"></span>
-													@else
-													<span class="a-checkbox"></span>
-													@endif
-													Has no unread messages
-												</button>
-											</li><li>
-												<span style="padding-left:10px; border-bottom: 1px solid #ddd;padding-top: 5px;display: block;padding-bottom: 5px;color: #bbb;margin-bottom: 0px;margin-top: 5px;">WHO</span>
-											</li>
-											<li>
-												<button class="uk-button uk-text-left uk-button-link uk-button-small" onclick="applyFilter('audit-mymessage',1);">
-													@if(session('audit-mymessage') == 1)
-													<span class="a-checkbox-checked"></span>
-													@else
-													<span class="a-checkbox"></span>
-													@endif
-													Only messages for me
-												</button>
-											</li>
-										</ul>
-									</div> --}}
 								</span>
-								<span class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top uk-link">
+								<span class="uk-width-1-2 uk-padding-remove-top uk-margin-remove-top uk-link uk-text-center">
 									<i id="documentfilter" class="a-files"></i>
 									<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px; text-align:left;">
 										<form id="document_filter" method="post">
@@ -1178,34 +890,19 @@
 								</span>
 
 							</div>
-							@if($auditor_access)
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY COMPLIANCE STATUS">
-								@if($sort_by == 'audit-sort-compliance-status')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status',  @php echo 1-$sort_order; @endphp);"></a>
-								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-compliance-status', 1);"></a>
-								@endif
-							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="uk-width-1-4 uk-padding-remove-top uk-margin-remove-top" title="SORT BY AUDITOR ASSIGNMENT STATUS">
-								@if($sort_by == 'audit-sort-status-auditor')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor',  @php echo 1-$sort_order; @endphp);"></a>
-								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-auditor', 1);"></a>
-								@endif
-							</span>
-							@endif
-							<span data-uk-tooltip="{pos:'bottom'}" class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
+							
+							<span uk-tooltip="delay:1000" class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top" title="SORT BY MESSAGE STATUS">
 								@if($sort_by == 'audit-sort-status-message')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message',  @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-status-message',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-message', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-status-message', 1);"></a>
 								@endif
 							</span>
-							<span data-uk-tooltip="{pos:'bottom'}" class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
+							<span uk-tooltip="delay:1000" class="@if($auditor_access) uk-width-1-4 @else uk-width-1-2 @endif uk-padding-remove-top uk-margin-remove-top" title="SORT BY DOCUMENT STATUS">
 								@if($sort_by == 'audit-sort-status-document')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document',  @php echo 1-$sort_order; @endphp);"></a>
+								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="pmSortAuditList('audit-sort-status-document',  @php echo 1-$sort_order; @endphp);"></a>
 								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-status-document', 1);"></a>
+								<a id="" class="sort-neutral uk-margin-small-top" onclick="pmSortAuditList('audit-sort-status-document', 1);"></a>
 								@endif
 							</span>
 
@@ -1213,64 +910,23 @@
 						</div>
 
 					</th>
-					@if($auditor_access)
-					<th  class="uk-table-shrink">
+					
+					
+					<th style="vertical-align:top; ">
 						<div uk-grid>
-							<div class="filter-box filter-icons uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link">
-								<i class="a-checklist" id="checklist-button"></i>
-								<div class="uk-dropdown uk-dropdown-bottom filter-dropdown " uk-dropdown="flip: false; pos: bottom-right; mode: click;" style="top: 26px; left: 0px;">
-									<form id="audit_steps_selection" method="post">
-										<fieldset class="uk-fieldset">
-											<div class="dropdown-max-height uk-margin uk-child-width-auto uk-grid">
-												@if(session('step-all') == 0)
-												<input id="step-all" type="checkbox" />
-												<label for="step-all">ALL STEPS (CLICK TO SELECT ALL)</label>
-												@else
-												<input id="step-all" type="checkbox" checked/>
-												<label for="step-all">ALL STEPS (CLICK TO DESELECT ALL)</label>
-												@endif
-												@foreach($steps as $step)
-												<input id="{{ $step->session_name }}" class="stepselector" type="checkbox" @if(session($step->session_name) == 1) checked @endif/>
-												<label for="{{ $step->session_name }}"><i class="{{ $step->icon }}"></i> {{ $step->name }}</label>
-												@endforeach
-											</div>
-											<div class="uk-margin-remove" uk-grid>
-												<div class="uk-width-1-2">
-													<button onclick="updateAuditStepSelection(event);" class="uk-button uk-button-primary uk-width-1-1"><i class="fas fa-filter"></i> APPLY FILTER</button>
-												</div>
-												<div class="uk-width-1-2">
-													<button onclick="$('#checklist-button').trigger( 'click' );return false;" class="uk-button uk-button-secondary uk-width-1-1"><i class="a-circle-cross"></i> CANCEL</button>
-												</div>
-											</div>
-										</fieldset>
-									</form>
-
-								</div>
+							<div class="uk-link uk-width-1-1 archived-icon" onclick="toggleArchivedAudits();" uk-tooltip="delay:1000" title="CLICK TO HIDE ARCHIVED AUDITS" style="height: 30px;">
+								<span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-link uk-text-center">
+									<i class="a-folder-box"></i>
+								</span>
 							</div>
-
-							<span data-uk-tooltip="{pos:'bottom'}" title="SORT BY NEXT TASK" class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top">
-								@if($sort_by == 'audit-sort-next-task')
-								<a id="" class="@if($sort_order) sort-desc @else sort-asc @endif uk-margin-small-top" onclick="sortAuditList('audit-sort-next-task',  @php echo 1-$sort_order; @endphp);"></a>
-								@else
-								<a id="" class="sort-neutral uk-margin-small-top" onclick="sortAuditList('audit-sort-next-task', 1);"></a>
-								@endif
-							</span>
-
-						</div>
-					</th>
-					@endif
-					@if(1==0)
-					<th style="vertical-align:top;">
-						<div uk-grid>
-							<div class="uk-link uk-width-1-1 archived-icon" onclick="toggleArchivedAudits();" data-uk-tooltip="{pos:'bottom'}" title="Click to Hide Archived Audits">
-								<i class="a-folder-box"></i>
-							</div>
-							<div class="uk-link uk-width-1-1 archived-icon selected" onclick="toggleArchivedAudits();" data-uk-tooltip="{pos:'bottom'}" title="Click to Show Archived Audits" style="display:none;">
-								<i class="a-folder-box"></i>
+							<div class="uk-link uk-width-1-1 archived-icon selected" onclick="toggleArchivedAudits();" uk-tooltip="delay:1000" title="CLICK TO SHOW ARCHIVED AUDITS" style="display:none; height: 30px;">
+								<span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top  uk-contrast uk-text-center">
+									<i class="a-folder-box"></i>
+								</span>
 							</div>
 						</div>
 					</th>
-					@endif
+					
 				</tr>
 			</thead>
 			<tbody>
@@ -1281,7 +937,7 @@
 }
 ?>
 				<tr id="audit-r-{{ $audit->audit_id }}" class="{{ $audit['status'] }} @if($audit['status'] != 'critical') notcritical @endif" style=" @if(session('audit-hidenoncritical') == 1 && $audit['status'] != 'critical') display:none; @endif ">
-					@include('dashboard.partials.audit_row')
+					@include('dashboard.partials.pm_audit_row')
 				</tr>
 				@endforeach
 
@@ -1298,18 +954,7 @@
 The following div is defined in this particular tab and pushed to the main layout's footer.
  */
 ?>
-<div id="footer-actions" hidden>
-	@if($auditor_access)
-	@if(session('audit-hidenoncritical') != 1)
-	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
-	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
-	@else
-	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();" style="display:none;"><i class="a-eye-not"></i> HIDE NON CRITICAL</button>
-	<button class="uk-button uk-button-primary btnToggleCritical" onclick="toggleCritical();"><i class="a-eye-2"></i> SHOW NON CRITICAL</button>
-	@endif
-	@endif
-	<a href="#top" id="smoothscrollLink" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
-</div>
+
 
 <script>
 	var hide_confirm_modal_js = "{{ session()->has('hide_confirm_modal') }}";
@@ -1397,9 +1042,9 @@ The following div is defined in this particular tab and pushed to the main layou
 			if (event.which == 13) {
 				event.preventDefault();
 				if($(this).val() != ''){
-					filterAuditList(this, 'filter-search-project');
+					pmFilterAuditList(this, 'filter-search-project');
 				}else{
-					filterAudits('filter-search-project', '');
+					pmFilterAudits('filter-search-project', '');
 				}
 			}
 		});
@@ -1408,9 +1053,9 @@ The following div is defined in this particular tab and pushed to the main layou
 			if (event.which == 13) {
 				event.preventDefault();
 				if($(this).val() != ''){
-					filterAuditList(this, 'filter-search-pm');
+					pmFilterAuditList(this, 'filter-search-pm');
 				}else{
-					filterAudits('filter-search-pm', '');
+					pmFilterAudits('filter-search-pm', '');
 				}
 			}
 		});
@@ -1419,9 +1064,9 @@ The following div is defined in this particular tab and pushed to the main layou
 			if (event.which == 13) {
 				event.preventDefault();
 				if($(this).val() != ''){
-					filterAuditList(this, 'filter-search-address');
+					pmFilterAuditList(this, 'filter-search-address');
 				}else{
-					filterAudits('filter-search-address', '');
+					pmFilterAudits('filter-search-address', '');
 				}
 			}
 		});
@@ -1480,276 +1125,12 @@ The following div is defined in this particular tab and pushed to the main layou
 
 	});
 
-@if($auditor_access)
-function rerunCompliance(audit){
-
-	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>RERUN COMPLIANCE SELECTION?</h2></div><div class="uk-width-2-3"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to rerun the automated compliance selection? <br /><br />Depending on how many are currently being processed, this could take up to 10 minutes to complete.</h3><p><strong>Why does it take up to 10 minutes?</strong> When a compliance selection is run, it performs all the unit selections based on the criteria for each program used by the project. Because each selection process uses an element of randomness, the total number of units that need inspected may be different each time it is run due to overlaps of programs to units. So, we run the process 10 times, and pick the one that has the highest amount of program overlap to units. This keeps the audit federally compliant while also making the most efficient use of your time.</p></div><div class="uk-width-1-3"><hr class="dashed-hr uk-margin-bottom"><h3><em style="color:#ca3a8d">WARNING!</em></h3><p style="color:#ca3a8d"> While this will not affect the days and times you have auditors scheduled for your audit, it will remove any auditor assignments to inspect specific areas and units.<br /><br /><small>PLEASE NOTE THAT THIS WILL NOT RUN ON AUDITS WITH FINDINGS RECORDED. YOU WILL NEED TO DO YOUR SELECTION MANUALY.</small></p></div><div class="uk-width-1-1"></div></div>').then(function() {
-		console.log('Re-running Audit.');
-
-		$.post('/audit/'+audit+'/rerun', {
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			if(data == 1){
-				UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection In Progress', {pos:'top-right', timeout:1000, status:'success'});
-
-				$('#audit-r-'+audit).remove();
-			}else{
-				UIkit.notification('<span uk-icon="icon: check"></span> Compliance Selection Failed. Findings were found.', {pos:'top-right', timeout:5000, status:'warning'});
-			}
-		});
-
-	}, function () {
-		console.log('Rejected.')
-	});
-}
-function assignAuditor(audit_id, building_id, unit_id=0, amenity_id=0, element, fullscreen=null,warnAboutSave=null,fixedHeight=0,inmodallevel=0){
-	if(inmodallevel)
-		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element+'/1', fullscreen,warnAboutSave,fixedHeight,inmodallevel);
-	else
-		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/assign/'+element, fullscreen,warnAboutSave,fixedHeight,inmodallevel);
-}
-
-function swapAuditor(auditor_id, audit_id, building_id, unit_id, element, amenity_id=0){
-	dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/swap/'+auditor_id+'/'+element);
-}
-
-function deleteAmenity(element, audit_id, building_id, unit_id, amenity_id, has_findings = 0, toplevel=0){
-	if(has_findings){
-		UIkit.modal.alert('<p class="uk-modal-body">This amenity has some findings and cannot be deleted.</p>').then(function () {  });
-	}else{
-		console.log('element '+element);
-		dynamicModalLoad('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/delete/'+element);
-	}
-
-}
-
-function copyAmenity(element, audit_id, building_id, unit_id, amenity_id, toplevel=0) {
-	@if(!session()->has('hide_confirm_modal'))
-	var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
-	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>MAKE A DUPLICATE?</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to make a duplicate?</h3>'+modal_confirm_input+'</div>').then(function() {
-		@endif
-		var newAmenities = [];
-		hide_confirm_modal = $("#hide_confirm_modal").is(':checked');
-		$.post('/modals/amenities/save', {
-			'project_id' : 0,
-			'audit_id' : audit_id,
-			'building_id' : building_id,
-			'unit_id' : unit_id,
-			'new_amenities' : newAmenities,
-			'amenity_id' : amenity_id,
-			'toplevel': toplevel,
-			@if(!session()->has('hide_confirm_modal'))
-			'hide_confirm_modal': hide_confirm_modal,
-			@endif
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			hide_confirm_modal_js = data.hide_confirm_modal;
-			if(toplevel == 1){
-				projectDetails(audit_id, audit_id, 10, 1);
-			} else {
-				console.log('unit or building');
-					// locate where to update data
-					var mainDivId = '';
-					if(unit_id != ''){
-						mainDivId = $('.inspection-detail-main-list .inspection-areas').parent().attr("id");
-					}else{
-						mainDivId = $('.inspection-areas').parent().attr("id");
-					}
-					var mainDivContainerId = $('#'+mainDivId).parent().attr("id");
-					// also get context
-					var context = $('.inspection-areas').first().attr("data-context");
-
-					// show spinner
-					var spinner = '<div style="height:200px;width: 100%;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>';
-					$('#'+mainDivId).html(spinner);
-
-					// add a row in .inspection-areas
-					var inspectionMainTemplate = $('#inspection-areas-template').html();
-					var inspectionAreaTemplate = $('#inspection-area-template').html();
-
-					var areas = '';
-					var newarea = '';
-
-					data.amenities.forEach(function(area) {
-						newarea = inspectionAreaTemplate;
-						newarea = newarea.replace(/areaContext/g, context);
-						newarea = newarea.replace(/areaRowId/g, area.id);
-						newarea = newarea.replace(/areaName/g, area.name); // missing
-						newarea = newarea.replace(/areaStatus/g, area.status);  // missing
-						newarea = newarea.replace(/areaAuditorId/g, area.auditor_id);  // missing
-						newarea = newarea.replace(/areaAuditorInitials/g, area.auditor_initials);  // missing
-						newarea = newarea.replace(/areaAuditorName/g, area.auditor_name);  // missing
-						newarea = newarea.replace(/areaCompletedIcon/g, area.completed_icon);
-						newarea = newarea.replace(/areaNLTStatus/g, area.finding_nlt_status);  // missing
-						newarea = newarea.replace(/areaLTStatus/g, area.finding_lt_status);
-						newarea = newarea.replace(/areaSDStatus/g, area.finding_sd_status);
-						newarea = newarea.replace(/areaPicStatus/g, area.finding_photo_status);
-						newarea = newarea.replace(/areaCommentStatus/g, area.finding_comment_status);
-						newarea = newarea.replace(/areaCopyStatus/g, area.finding_copy_status);
-						newarea = newarea.replace(/areaTrashStatus/g, area.finding_trash_status);
-
-						newarea = newarea.replace(/areaDataAudit/g, area.audit_id);
-						newarea = newarea.replace(/areaDataBuilding/g, area.building_id);
-						newarea = newarea.replace(/areaDataArea/g, area.unit_id);
-						newarea = newarea.replace(/areaDataAmenity/g, area.id);
-
-						newarea = newarea.replace(/areaAuditorColor/g, area.auditor_color);
-						areas = areas + newarea.replace(/areaDataHasFindings/g, area.has_findings);
-
-					//console.log("unit id "+area.unit_id+" - building_id "+area.building_id);
-					// update building auditor's list
-					if(area.unit_id == null && area.building_id != null){
-						console.log('updating building auditors ');
-
-						if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
-            		// we don't know if/which unit is open
-            		var unitelement = 'div[id^=unit-auditors-]  .uk-slideshow-items li.uk-active > div';
-            		$(unitelement).html('');
-            		$.each(data.unit_auditors, function(index, value){
-            			var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
-            			$(unitelement).append(newcontent);
-            		});
-            	} else {
-            		// we don't know if/which unit is open
-            		var unitelement = 'div[id^=unit-auditors-]';
-            		$(unitelement).html('');
-            		$.each(data.auditor.unit_auditors, function(index, value){
-            			var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
-            			$(unitelement).append(newcontent);
-            		});
-            	}
-
-            	var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
-
-            	$(buildingelement).html('');
-            	$.each(data.auditor.building_auditors, function(index, value){
-            		var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
-            		$(buildingelement).append(newcontent);
-            	});
-            } else {
-							// update unit auditor's list
-							console.log('units auditor list update');
-							var unitelement = '#unit-auditors-'+area.unit_id+' .uk-slideshow-items li.uk-active > div';
-							$(unitelement).html('');
-              //console.log(unitelement);
-              $.each(data.auditor.unit_auditors, function(index, value){
-              	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', '+area.unit_id+', \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
-              	$(unitelement).append(newcontent);
-
-              	if($('#unit-auditors-'+area.unit_id).hasClass('hasAuditors')){
-              		$(buildingelement).append(newcontent);
-              	}else{
-              		$(buildingelement).html(newcontent);
-              	}
-              });
-              var buildingelement = '#building-auditors-'+area.building_id+' .uk-slideshow-items li.uk-active > div';
-              //console.log(buildingelement);
-              $(buildingelement).html('');
-              $.each(data.auditor.building_auditors, function(index, value){
-              	var newcontent = '<div id="unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'" class="building-auditor uk-width-1-2 uk-margin-remove"><div uk-tooltip="pos:top-left;title:'+value.full_name+';" title="" aria-expanded="false" class="auditor-badge '+value.badge_color+' no-float use-hand-cursor" onclick="swapAuditor('+value.id+', '+area.audit_id+', '+area.building_id+', 0, \'unit-auditor-'+value.id+area.audit_id+area.building_id+area.unit_id+'\')">'+value.initials+'</div>';
-
-              	if($('#building-auditors-'+area.building_id).hasClass('hasAuditors')){
-              		//$('#building-auditors-'+area.building_id).append(newcontent);
-              		$(buildingelement).append(newcontent);
-              	}else{
-              		//$('#building-auditors-'+area.building_id).html(newcontent);
-              		$(buildingelement).html(newcontent);
-              	}
-              });
-            }
-          });
-
-$('#unit-amenity-count-'+audit_id+building_id+unit_id).html(data.amenities.length + ' AMENITIES');
-
-$('#'+mainDivId).html(inspectionMainTemplate);
-$('#'+mainDivId+' .inspection-areas').html(areas);
-$('#'+mainDivContainerId).fadeIn( "slow", function() {
-		    // Animation complete
-		    console.log("Area list updated");
-		  });
-}
-});
-
-@if(!session()->has('hide_confirm_modal'))
-}, function () {
-	console.log('Rejected.')
-});
-@endif
-}
-@endif
 
 
-function markAmenityComplete(audit_id, building_id, unit_id, amenity_id, element, toplevel = 0){
-	@if(!session()->has('hide_confirm_modal'))
-	if(element){
-		if($('#'+element).hasClass('a-circle-checked')){
-			var title = 'MARK THIS INCOMPLETE?';
-			var message = 'Are you sure you want to mark this incomplete?';
-		}else{
-			var title = 'MARK THIS COMPLETE?';
-			var message = 'Are you sure you want to mark this complete?';
-		}
-	}else{
-		var title = 'MARK THIS COMPLETE?';
-		var message = 'Are you sure you want to mark this complete?';
-	}
 
 
-	var modal_confirm_input = '<br><div><label><input class="uk-checkbox" id="hide_confirm_modal" type="checkbox" name="hide_confirm_modal"> DO NOT SHOW AGAIN FOR THIS SESSION</label></div>';
-	UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>'+title+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>'+message+'</h3>'+modal_confirm_input+'</div>', {stack: true}).then(function() {
-		var hide_confirm_modal = $("#hide_confirm_modal").is(':checked');
-		@endif
-
-		$.post('amenities/'+amenity_id+'/audit/'+audit_id+'/building/'+building_id+'/unit/'+unit_id+'/'+toplevel+'/complete', {
-			@if(!session()->has('hide_confirm_modal'))
-			'hide_confirm_modal': hide_confirm_modal,
-			@endif
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			if(data==0){
-				UIkit.modal.alert(data,{stack: true});
-			} else {console.log(data.status);
-				if(data.status == 'complete'){
-					if(toplevel == 1){
-						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-						$('#'+element).toggleClass('a-circle');
-						$('#'+element).toggleClass('a-circle-checked');
-					}else if(amenity_id == 0){
-						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-						$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle');
-						$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle-checked');
-					}else{
-						UIkit.notification('<span uk-icon="icon: check"></span> Marked Completed', {pos:'top-right', timeout:1000, status:'success'});
-						$('#'+element).toggleClass('a-circle');
-						$('#'+element).toggleClass('a-circle-checked');
-					}
-
-				}else{
-
-					if(toplevel == 1){
-						UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
-						$('#'+element).toggleClass('a-circle');
-						$('#'+element).toggleClass('a-circle-checked');
-					}else if(amenity_id == 0){
-						UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
-						$('[id^=completed-'+audit_id+building_id+']').removeClass('a-circle-checked');
-						$('[id^=completed-'+audit_id+building_id+']').addClass('a-circle');
-					}else{
-						UIkit.notification('<span uk-icon="icon: check"></span> Marked Not Completed', {pos:'top-right', timeout:1000, status:'success'});
-						$('#'+element).toggleClass('a-circle-checked');
-						$('#'+element).toggleClass('a-circle');
-					}
-				}
-			}
-		} );
 
 
-		@if(!session()->has('hide_confirm_modal'))
-	}, function () {
-		console.log('Rejected.')
-	});
-	@endif
-}
 
 function updateAuditInspection(e){
 	e.preventDefault();
@@ -1763,12 +1144,12 @@ function updateAuditInspection(e){
 
 	var amount = $('#total_inspection_amount').val();
 
-	$.post("/session-new/", {
+	$.post("/pmsession-new/", {
 		'data' : [['total_inspection_amount', amount], ['total_inspection_filter', total_inspection_filter]],
 		'_token' : '{{ csrf_token() }}'
 	}, function(data) {
 		$('#totalinspectionbutton').trigger( 'click' );
-		loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+		loadTab('{{ route('dashboard.pmaudits') }}','1','','','',1);
 	} );
 }
 
@@ -1785,7 +1166,7 @@ function updateAuditBuildingInspection(e) {
 	var amount = $('#total_building_inspection_amount').val();
 		// $('#totalbuildinginspectionbutton').trigger( 'click' );
 
-		$.post("/session-new/", {
+		$.post("/pmsession-new/", {
 			'data' : [['total_building_inspection_amount', amount], ['total_building_inspection_filter', total_building_inspection_filter]],
 			'_token' : '{{ csrf_token() }}'
 		}, function(data) {
@@ -1796,7 +1177,7 @@ function updateAuditBuildingInspection(e) {
 			// 	pos: 'top-right',
 			// 	timeout: 5000
 			// });
-			loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+			loadTab('{{ route('dashboard.pmaudits') }}','1','','','',1);
 		});
 	}
 
@@ -1825,12 +1206,12 @@ function updateAuditBuildingInspection(e) {
 				}
 
 
-				$.post("/session-new/", {
+				$.post("/pmsession-new/", {
 					'data' : [['assignment-auditor', selected],['audit-my-audits',myAudits]],
 					'_token' : '{{ csrf_token() }}'
 				}, function(data) {
 					$('#assignmentselectionbutton').trigger( 'click' );
-					loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+					loadTab('{{ route('dashboard.pmaudits') }}','1','','','',1);
 				} );
 
 			}
@@ -1999,7 +1380,7 @@ function updateAuditBuildingInspection(e) {
 
 			function setSession(alloptions, selected, clickbutton) {
 				jQuery.ajax({
-					url: "{{ URL::route("session.auditfilters") }}",
+					url: "{{ URL::route("pmsession.auditfilters") }}",
 					method: 'post',
 					data: {
 						data: alloptions,
@@ -2009,7 +1390,7 @@ function updateAuditBuildingInspection(e) {
 					success: function(data){
 						if(data) {
 							$(clickbutton).trigger( 'click' );
-							loadTab('{{ route('dashboard.audits') }}','1','','','',1);
+							loadTab('{{ route('dashboard.pmaudits') }}','1','','','',1);
 						}
 					}
 				});
@@ -2124,7 +1505,7 @@ function updateAuditBuildingInspection(e) {
 				}
 			}
 
-			@if($auditor_access)
+			
 			function updateAuditStepSelection(e){
 				e.preventDefault();
 				var form = $('#audit_steps_selection');
@@ -2246,82 +1627,39 @@ function updateAuditBuildingInspection(e) {
 			}
 
 
+			function openAssignment (projectKey, auditId) {
+				loadTab('/pm-projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
+                // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
+            }
 
+			function openFindings (projectKey, auditId) {
+				loadTab('/pm-projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
+                // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
+            }
 
-			function openFindings (element, auditid, buildingid, unitid='null', type='null',amenity='null') {
-				dynamicModalLoad('findings/'+type+'/audit/'+auditid+'/building/'+buildingid+'/unit/'+unitid+'/amenity/'+amenity,1,0,1);
-			}
-
-			function updateStep (auditId) {
-				dynamicModalLoad('audits/'+auditId+'/updateStep',0,0,0);
-			}
-			function openContactInfo (projectId) {
-				dynamicModalLoad('projects/'+projectId+'/contact',0,0,0);
-			}
+			
 			function openProject (projectKey,auditId, subtab = 0) {
 				window.selectedProjectKey = projectKey;
 				window.selectedAuditId = auditId;
-				loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
+				loadTab('/pm-projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
 				if(subtab != 0) {
 					window.subtab = subtab;
 				}
 			}
-			function openProjectDetails (auditId, total_buildings) {
-				projectDetails(auditId, auditId, total_buildings);
-			}
-			function scheduleAudit (projectRef,auditId) {
-				loadTab('/projects/view/'+projectRef+'/'+auditId, '4', 1, 1, '', 1, auditId);
-			}
+			
 			function openMapLink (mapLink) {
 				window.open(mapLink);
 			}
-			function openAssignment (projectKey, auditId) {
-				loadTab('/projects/view/'+projectKey+'/'+auditId, '4', 1, 1, '', 1, auditId);
-                // dynamicModalLoad('projects/'+this.audit.projectKey+'/assignments/addauditor',1,0,1);
-              }
-              function submitNewReportAL(audit_id,template_id,target) {
-              	console.log('Submitting Request for New Report.');
-              	$.post('/new-report', {
-              		'template_id' : template_id,
-              		'audit_id' : audit_id,
-              		'_token' : '{{ csrf_token() }}'
-              	}, function(data) {
-              		if(data!=1){
-              			UIkit.notification({
-              				message: data,
-              				status: 'danger',
-              				pos: 'top-right',
-              				timeout: 5000
-              			});
-
-
-              		} else {
-
-              			UIkit.notification({
-              				message: 'Report Created',
-              				status: 'success',
-              				pos: 'top-right',
-              				timeout: 1500
-              			});
-						//$('#detail-tab-1').trigger('click');
-						$(target).removeClass('a-file-plus');
-
-						$(target).addClass('a-file-repeat attention');
-						$(target).attr("title","GENERATING YOUR REPORT");
-						$(target).attr("onclick","");
-
-					}
-				} );
-
+			
 		// by nature this note is it's history note - so no need to ask them for a comment.
 
 
-	}
+	
 
 
 
 
-	@endif
+	
 </script>
 <script>
 	window.onPageAudits = {@forEach($audits as $audit) '{{ $audit->audit_id }}' :["{{ $audit->audit_id }}","{{ $audit->updated_at }}"] @if(!$loop->last),@endIf @endForEach };
@@ -2373,32 +1711,7 @@ function updateAuditBuildingInspection(e) {
 			}
 		}
 
-		function loadCalendar(target=null) {
-			if(target == null){
-				var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/';
-				$.get(url, {}, function(data) {
-					if(data=='0'){
-						UIkit.modal.alert("There was a problem getting the calendar.");
-					} else {
-						$('#auditor-availability-calendar').html(data);
-						fillSpacers();
-					}
-				});
-			}else{
-				var url = '/auditors/{{Auth::user()->id}}/availability/loadcal/'+target;
-				$('#auditor-availability-calendar').fadeOut("fast", function() {
-					$('#auditor-availability-calendar').html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
-					$('#auditor-availability-calendar').fadeIn("fast");
-					$.get(url, {}, function(data) {
-						if(data=='0'){
-							UIkit.modal.alert("There was a problem getting the calendar.");
-						} else {
-							loadCalendar();
-						}
-					});
-				});
-			}
-		}
+		
 		// set the base variables.
 		window.latest_cached_audit = '{{ $latestCachedAudit }}';
 		window.checking_latest_cached_audit = 0;
@@ -2407,7 +1720,7 @@ function updateAuditBuildingInspection(e) {
 			if (window.hide_confirm_modal_flag === undefined) {
 				window.hide_confirm_modal_flag = 0;
 			}
-			loadCalendar();
+			
 			console.log( "ready!" );
 			@if(!local())
 			window.setInterval(function(){
