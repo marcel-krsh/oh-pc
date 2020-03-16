@@ -1151,6 +1151,196 @@ function loadProjectDetailsBuildings(id, target) {
     });
 }
 
+// get unit data using pagination
+$(document).on('click', '.site .pagination a', function(event){
+ 	event.preventDefault(); 
+	var page = $(this).attr('href').split('page=')[1];
+	var projectId = $(this).parents('#site').data('project-id');
+  	var auditId = $(this).parents('#site').data('audit-id');
+
+  	fetch_site_data(projectId, 'selections', auditId, page);
+});
+
+function fetch_site_data(id, type, audit, page) {
+	var tempdiv = '<div style="height:300px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	// $('#site').html(tempdiv);
+
+	var url = '/projects/'+id+'/details/'+type+'/'+audit+'/site?page=' + page;
+    $.get(url, {
+        }, function(data) {
+        	if(data=='0'){
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+            	$('#site').html(data);
+        	}
+    });
+}
+
+
+// get unit data using pagination
+$(document).on('click', '.unit .pagination a', function(event){
+ 	event.preventDefault(); 
+	var page = $(this).attr('href').split('page=')[1];
+	var projectId = $(this).parents('#unit').data('project-id');
+  	var auditId = $(this).parents('#unit').data('audit-id');
+
+  	fetch_unit_data(projectId, 'selections', auditId, page);
+});
+
+function fetch_unit_data(id, type, audit, page) {
+	var tempdiv = '<div style="height:300px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	// $('#unit').html(tempdiv);
+
+	var url = '/projects/'+id+'/details/'+type+'/'+audit+'/unit?page=' + page;
+    $.get(url, {
+        }, function(data) {
+        	if(data=='0'){
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+            	$('#unit').html(data);
+        	}
+    });
+}
+
+// get building data using pagination
+$(document).on('click', '.building .pagination a', function(event){
+  	event.preventDefault(); 
+	var page = $(this).attr('href').split('page=')[1];
+  	var projectId = $(this).parents('#building').data('project-id');
+  	var auditId = $(this).parents('#building').data('audit-id');
+  	
+  	fetch_building_data(projectId, 'selections', auditId, page);
+});
+
+function fetch_building_data(id, type, audit, page) {
+	
+	var tempdiv = '<div style="height:175px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	// $('#building').html(tempdiv);
+
+	var url = '/projects/'+id+'/details/'+type+'/'+audit+'/building?page=' + page;
+    $.get(url, {
+        }, function(data) {
+            if(data=='0'){
+                UIkit.modal.alert("There was a problem getting the project information.");
+            } else {
+            	$('#building').html(data);
+            	AfterBuildingUpLoad();
+            }
+    });
+}
+
+function AfterBuildingUpLoad(){
+	// console.log('test');
+	$('#building_dropdown').select2({
+		placeholder: "FILTER BY BUILDING"
+	});
+}
+// get single building data record by filter
+// e: click emlemet object
+function getSingleBuilding(e){
+	var id = $('#building_dropdown').val();
+  	id = id.map(Number);
+
+  	var is_uncorrected;
+  	if($('#uncorrected_checkbox:checkbox:checked').length > 0){
+  		is_uncorrected = true;
+  	}else{
+  		is_uncorrected = false;
+  	}
+  	if((Array.isArray(id) && id.length) && is_uncorrected == false){
+  		// get building wise data
+  		fetch_buidling_detail('building', id);
+  		fetch_buidling_detail('unit', id);
+  		
+  	}else if(((Array.isArray(id) && id.length) && is_uncorrected == true) || (!(Array.isArray(id) && id.length) && is_uncorrected == true)){
+  		fetch_buidling_detail('building', id, is_uncorrected);
+  		fetch_buidling_detail('unit', id, is_uncorrected);
+  	}else{
+		var projectId = $('#building').data('project-id');
+  		var auditId = $('#building').data('audit-id');
+  		// fetch_building_data(projectId, 'selections', auditId, 1);
+  		// fetch_unit_data(projectId, 'selections', auditId, 1);
+  		// get 1 first page data if first option selected FILTER BY BUILDING
+  		fetch_buidling_detail('all', id);
+  		console.log('all clear');
+	}
+	// console.log(is_uncorrected, id, $('#uncorrected_checkbox').val(), $('#uncorrected_checkbox:checkbox:checked').length);
+	console.log((Array.isArray(id) && id.length),is_uncorrected)
+}
+
+function getUnCorrectedBuilding(e){
+	var id = $('#building_dropdown').val();
+	
+  	id = id.map(Number);
+  	var is_uncorrected = e.checked;
+  	if((Array.isArray(id) && id.length) && is_uncorrected == false){
+  		// get building wise data
+  		fetch_buidling_detail('building', id);
+  		fetch_buidling_detail('unit', id);
+  		
+  	}else if(((Array.isArray(id) && id.length) && is_uncorrected == true) || (!(Array.isArray(id) && id.length) && is_uncorrected == true)){
+  		fetch_buidling_detail('building', id, is_uncorrected);
+  		fetch_buidling_detail('unit', id, is_uncorrected);
+  	}else{
+  		var projectId = $('#building').data('project-id');
+  		var auditId = $('#building').data('audit-id');
+  		// fetch_building_data(projectId, 'selections', auditId, 1);
+  		// fetch_unit_data(projectId, 'selections', auditId, 1);
+  		fetch_buidling_detail('all', id);
+  		// get 1 first page data if first option selected FILTER BY BUILDING
+  		// fetch_buidling_detail('all', id);
+  		// console.log('all clear');
+	}
+  	// if(!(Array.isArray(id) && id.length) && e.checked == 'false'){
+  	// 	fetch_building_data(projectId, 'selections', auditId, 1);
+  	// 	fetch_unit_data(projectId, 'selections', auditId, 1);
+  	// }else{
+  	// 	fetch_buidling_detail('building', id);
+  	// }
+
+  	// 	// get building wise data
+  	// 	fetch_buidling_detail('building', id, true);
+  	// 	// fetch_buidling_detail(projectId, 'unit', auditId, id);
+  		
+  	// }else if((Array.isArray(id) && id.length) && e.checked){
+  	// }else{
+  		// get 1 first page data if first option selected FILTER BY BUILDING
+	
+	// }
+	console.log(is_uncorrected, id);
+}
+
+function fetch_buidling_detail(type, id = [], is_uncorrected = null){
+	var projectId = $('#building').data('project-id');
+  	var auditId = $('#building').data('audit-id');
+	var url = '/projects/'+projectId+'/building-details/'+type+'/'+auditId;
+	
+    $.post(
+    	url,
+    	{ 
+    		'_token' : $('#token').val(),
+    		type_id: id,
+    		is_uncorrected: is_uncorrected
+		},
+    	function(data) {
+	    	if(data=='0'){
+	            UIkit.modal.alert("There was a problem getting the project information.");
+	        } else {
+	        	if(type == 'building'){
+	        		$('#building').html(data);
+	        		AfterBuildingUpLoad();
+	        	}else if(type == 'unit'){
+	        		$('#unit').html(data);
+	        	}else if(type == 'all'){
+	        		// get 1 first page data if first option selected FILTER BY BUILDING
+			  		fetch_building_data(projectId, 'selections', auditId, 1);
+			  		fetch_unit_data(projectId, 'selections', auditId, 1);
+	        	}
+	        }
+    	}
+    );
+}
+
 function projectDetailsInfo(id, type, audit, target) {
 	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 	$('#project-details-info-container').html(tempdiv);
@@ -1166,6 +1356,7 @@ function projectDetailsInfo(id, type, audit, target) {
             } else {
 
 				$('#project-details-info-container').html(data);
+				AfterBuildingUpLoad();
         	}
     });
 }
@@ -1265,7 +1456,3 @@ function documentsLocal(project_id, audit_id = null, filter = null) {
         	}
     });
 }
-
-
-
-
