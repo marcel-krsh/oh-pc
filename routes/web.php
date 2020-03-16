@@ -473,7 +473,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/pm-projects/{id}/title', 'PMAuditController@getPMProjectTitle')->name('pm-project.title');
 		Route::get('/pm-projects/{id}/details', 'PMAuditController@getPMProjectDetails')->name('pm-project.details');
 		Route::get('/pm-projects/{id}/audit-details/{audit_id?}', 'PMAuditController@getPMProjectDetails')->name('pm-project.details-with-audit');
-		Route::get('/pm-projects/{id}/details/{type}/{audit}', 'PMAuditController@getProjectDetailsInfo')->name('pm-project.details.info');
+		Route::get('/pm-projects/{id}/details/{type}/{audit}', 'PMAuditController@getPMProjectDetailsInfo')->name('pm-project.details.info');
 		
 
 		//session controls
