@@ -89,6 +89,9 @@ function clickTab(){
 function loadProjectTab() {
 	loadTab('/projects/view/'+window.selectedProjectKey+'/'+window.selectedAuditId, '4', 0, 0, '', 1);
 }
+function pmLoadProjectTab() {
+	pmLoadTab('/pm-projects/view/'+window.selectedProjectKey+'/'+window.selectedAuditId, '4', 0, 0, '', 1);
+}
 
 function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceReload=0, audit=0) {
 	// check if tab already exist, if not create it
@@ -100,6 +103,80 @@ function loadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceRe
 	if($('#'+prefix+'detail-tab-'+tabNumber).length == 0){
 
 		var newTabTitle = '<li id="'+prefix+'detail-tab-'+tabNumber+'" onclick="if($(\'#detail-tab-'+tabNumber+'\').hasClass(\'uk-active\')){loadProjectTab();}" class="detail-tab-'+tabNumber+'" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" >';
+		newTabTitle = newTabTitle + '<a href=""></a>';
+		newTabTitle = newTabTitle + '</li>';
+        $( newTabTitle ).appendTo( $('#'+prefix+'top-tabs') );
+	}
+
+	// check if tab has already been loaded
+	// if content is already there, just switch tab, do not reload
+	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').length && $('#'+prefix+'detail-tab-'+tabNumber+'-content').html().length == 0 || forceReload == 1){
+		// display spinner
+		var tempdiv = '<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% auto;"></div></div>';
+		$('#'+prefix+'detail-tab-'+tabNumber+'-content').html(tempdiv);
+
+		// get the tab title and statuses
+		if(loadTitle){
+			$('#'+prefix+'detail-tab-'+tabNumber+' a').load(route+'/title', function(response, status, xhr) {
+				if (status == "error") {
+				  	if(xhr.status == "401") {
+				  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+				  	} else if( xhr.status == "500"){
+				  		var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+				  	} else {
+				  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+				  	}
+
+				    UIkit.modal.alert(msg);
+				}
+			});
+		}
+
+		//load the selected detail tab content
+		$('#'+prefix+'detail-tab-'+tabNumber+'-content').load(route, function(response, status, xhr) {
+			console.log('loadTab() Loading into tab '+prefix+'detail-tab-'+tabNumber+'-content');
+			if (status == "error") {
+			  	if(xhr.status == "401") {
+			  		var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+			  	} else if( xhr.status == "500"){
+			  		var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+			  	} else {
+			  		var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+			  	}
+
+			    UIkit.modal.alert(msg);
+			}
+
+			// if tab is opened by a link, trigger click to switch tab
+			if(doTheClick == 1){
+				$("#"+prefix+"top-tabs").find($('#'+prefix+'detail-tab-'+tabNumber)).trigger("click");
+			}
+
+			//take back to top
+		 	$('#smoothscrollLink').trigger("click");
+		});
+	}else{
+		if(doTheClick == 1){
+			$("#"+prefix+"top-tabs").find($('#'+prefix+'detail-tab-'+tabNumber)).trigger("click");
+		}
+		//take back to top
+		$('#smoothscrollLink').trigger("click");
+	}
+
+
+
+}
+
+function pmLoadTab(route, tabNumber, doTheClick=0, loadTitle=0, prefix='', forceReload=0, audit=0) {
+	// check if tab already exist, if not create it
+	// debugger;
+	if($('#'+prefix+'detail-tab-'+tabNumber+'-content').length == 0){
+		var newTabContent = '<li><div id="'+prefix+'detail-tab-'+tabNumber+'-content"></div></li>';
+        $( newTabContent ).appendTo( $('#tabs') );
+	}
+	if($('#'+prefix+'detail-tab-'+tabNumber).length == 0){
+
+		var newTabTitle = '<li id="'+prefix+'detail-tab-'+tabNumber+'" onclick="if($(\'#detail-tab-'+tabNumber+'\').hasClass(\'uk-active\')){pmLoadProjectTab();}" class="detail-tab-'+tabNumber+'" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" >';
 		newTabTitle = newTabTitle + '<a href=""></a>';
 		newTabTitle = newTabTitle + '</li>';
         $( newTabTitle ).appendTo( $('#'+prefix+'top-tabs') );

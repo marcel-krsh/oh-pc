@@ -26,7 +26,7 @@
 	.on-folder {
 	    position: relative;
 	    left: -4px;
-	    top: -16.5px;
+	    top: -17.5px;
 	    font-size: 9px;
 	    font-weight: bolder;
 	}

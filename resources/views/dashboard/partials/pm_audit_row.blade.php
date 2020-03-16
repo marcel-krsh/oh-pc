@@ -19,14 +19,14 @@ $lead = $audit->lead_json;
 	<?php /*<div class="uk-vertical-align-middle uk-display-inline-block uk-margin-small-top">
 		 <span id="audit-i-project-detail-{{ $audit->audit_id }}" onClick="openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }})" uk-tooltip="title: VIEW BUILDINGS AND COMMON AREAS; pos: top-left;" class="uk-link" style="margin-right: 10px; margin-left: 7px; margin-top: 0px !important;"><i class="a-menu uk-text-muted"></i></span> 
 	</div>*/ ?>
-	<div class="uk-vertical-align-middle uk-display-inline-block use-hand-cursor"  onClick="openProject({{$audit->project_key}},{{$audit->audit_id}}); <?php /* openProjectDetails({{ $audit->audit_id }},{{ $audit->total_buildings }}) */ ?>" uk-tooltip=" delay: 1000" title="VIEW AUDIT DETAILS">
+	<div class="uk-vertical-align-middle uk-display-inline-block use-hand-cursor"  onClick="pmLoadTab('/pm-projects/view/{{$audit->project_key}}/{{$audit->audit_id}}', '4', 1, 1, '', 1, {{$audit->audit_id}});window.selectedProjectKey={{$audit->project_key}};window.selectedAuditId={{$audit->audit_id}}" uk-tooltip=" delay: 1000" title="VIEW AUDIT DETAILS">
 		<h3 id="audit-project-name-{{ $audit->audit_id }}" class="uk-margin-bottom-remove uk-link filter-search-project" ><span >{{ $audit->project_ref }}</span></h3>
 		<small id="audit-project-aid-{{ $audit->audit_id }}" class="uk-text-muted faded filter-search-project" >AUDIT <span >{{ $audit->audit_id }}</span></small>
 	</div>
 </td>
 <td class="audit-td-name ">
 	
-	<div class="uk-vertical-align-top use-hand-cursor uk-display-inline-block @if(isset($audits) && count($audits) < 50)fadetext @endIf use-hand-cursor uk-padding-left"  onClick="openProject({{$audit->project_key}},{{$audit->audit_id}});" uk-tooltip=" delay: 1000" title="VIEW AUDIT DETAILS">
+	<div class="uk-vertical-align-top use-hand-cursor uk-display-inline-block @if(isset($audits) && count($audits) < 50)fadetext @endIf use-hand-cursor uk-padding-left"  onClick="pmLoadTab('/pm-projects/view/{{$audit->project_key}}/{{$audit->audit_id}}', '4', 1, 1, '', 1, {{$audit->audit_id}});window.selectedProjectKey={{$audit->project_key}};window.selectedAuditId={{$audit->audit_id}}" uk-tooltip=" delay: 1000" title="VIEW AUDIT DETAILS">
 		<h3 class="uk-margin-bottom-remove filter-search-pm" >{{$audit->title}}</h3>
 		<small class="uk-text-muted faded filter-search-pm" >{{$audit->pm}}</small>
 	</div>
@@ -124,6 +124,7 @@ $lead = $audit->lead_json;
 	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
 		
 		<div class="uk-width-1-2">
+
 			<i onClick="openProjectSubtab({{ $audit->project_key }},{{ $audit->audit_id }}, 'communications')" class="{{ $audit->message_status_icon }} use-hand-cursor {{ $audit->message_status }}" uk-tooltip=" delay: 1000" title="{{ $audit->message_status_text }}"></i>
 		</div>
 		<div class="uk-width-1-2">

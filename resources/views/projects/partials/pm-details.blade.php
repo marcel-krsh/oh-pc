@@ -330,6 +330,7 @@ if (env('APP_ENV') != 'production') {
 				{{-- <div class="uk-width-1-4">
 					<button id="project-details-button-1" class="uk-button uk-link " onclick="pmProjectDetailsInfo({{$project->id}}, 'compliance', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 				</div> --}}
+				{{-- 
 				@if(!is_null($selected_audit->inspection_schedule_date))
 				<div class="uk-width-1-4">
 					<button id="project-details-button-2" class="uk-button uk-link" onclick="pmProjectDetailsInfo({{$project->id}}, 'assignment', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-calendar-person"></i> SCHEDULE</button>
@@ -339,6 +340,7 @@ if (env('APP_ENV') != 'production') {
 					<button id="project-details-button-2" class="uk-button "  type="button"><i class="a-calendar-fail"></i> SCHEDULE UNAVAILABLE</button>
 				</div>
 				@endIf
+				--}}
 			</div>
 
 		</div>
