@@ -104,7 +104,7 @@ class ReportsController extends Controller
 					$names = $names . ', ' . $receipent->full_name();
 				}
 			}
-			$notified_text = ' Notified to ' . $names . '.';
+			$notified_text = ' Notification sent to ' . $names . '.';
 		}
 		$status = 1;
 		if (Auth::user()->can('access_auditor')) {
@@ -199,7 +199,6 @@ class ReportsController extends Controller
 				case 9:
 					// All items resolved ...
 					if (Auth::user()->can('access_auditor')) {
-						$note = Auth::user()->name . ' updated the status to ' . $report->status_name() . '. ';
 						if (!is_null($report->manager_id)) {
 							$report->update(['crr_approval_type_id' => 9]);
 							$note .= 'Removed prior status, and refreshed report to reflect the change.';
@@ -207,6 +206,7 @@ class ReportsController extends Controller
 						} else {
 							$report->update(['crr_approval_type_id' => 9]);
 						}
+						$note = Auth::user()->name . ' updated the status to ' . $report->status_name() . '. ';
 					} else {
 						$note = 'Attempted change to All Items Resolved but something went wrong.';
 						$status = 0;

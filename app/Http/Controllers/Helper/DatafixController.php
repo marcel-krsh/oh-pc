@@ -66,8 +66,8 @@ class DatafixController extends Controller
 		ini_set('max_execution_time', 300);
 		$reports = CrrReport::whereNotNull('report_history')->select('id', 'report_history')->get();
 
-		$replace = ['ResolvedRemoved', 'PMRemoved', 'Draft Notified'];
-		$replace_with = ['Resolved. Removed', 'PM. Removed', 'Draft. Notified'];
+		$replace = ['ResolvedRemoved', 'PMRemoved', 'Draft Notified', 'Notified to'];
+		$replace_with = ['Resolved. Removed', 'PM. Removed', 'Draft. Notified', 'Notification sent to'];
 		foreach ($reports as $key => $report) {
 			$history = $report->report_history;
 			$new_history = [];
