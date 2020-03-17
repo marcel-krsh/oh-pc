@@ -45,7 +45,7 @@ class FixCommunicationDocumentAuditAssignment extends Command
 		})->count();
 		$progressBar = $this->output->createProgressBar($total);
 		$progressBar->setProgressCharacter("\xf0\x9f\x8c\x80");
-		$chunk = 2;
+		$chunk = 50;
 		$progress = $total / $chunk;
 		$communication_documents = CommunicationDocument::whereHas('communication', function ($query) {
 			$query->whereNotNull('audit_id');
