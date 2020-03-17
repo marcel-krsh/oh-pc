@@ -385,7 +385,7 @@ class FindingController extends Controller
 					$categories_used = [];
 					// category keys for name reference ['id' => 'name']
 					$document_categories_key = [];
-					$audit = $audit_details->id;
+					$audit = $audit_details->audit_id;
 				}
 
 				// list the requested categories to help the user
