@@ -6,7 +6,7 @@ if (isset($detailsPage)) {
 }
 ?>
 @if(!is_null($inspections))
-	<div uk-grid class="uk-margin-bottom building">
+	<div uk-grid class="uk-margin-bottom pm-building">
 
 		
 		<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
@@ -16,7 +16,7 @@ if (isset($detailsPage)) {
 			    	{{ $inspections->links() }}
 			    </div>
 			    <div class="uk-width-1-1@s uk-width-1-5@m">
-			    	<select onchange="getSingleBuilding(this);" class="uk-select filter-drops uk-width-1-1" multiple="multiple" id="building_dropdown">
+			    	<select onchange="pmGetSingleBuilding(this);" class="uk-select filter-drops uk-width-1-1" multiple="multiple" id="building_dropdown">
 			    		<!-- <option value="all" selected="">
 							FILTER BY BUILDING
 						</option> -->
@@ -33,7 +33,7 @@ if (isset($detailsPage)) {
 				</div>
 			 	<div class="uk-width-1-1@s uk-width-1-5@m" style="padding-left: 10px;">
 					<label class="switch">
-					  	<input type="checkbox" onchange="getUnCorrectedBuilding(this);" id="uncorrected_checkbox" {{ (session()->has('is_uncorrected') && session()->get('is_uncorrected') == 'true') ? 'checked' : ''  }} >
+					  	<input type="checkbox" onchange="pmGetUnCorrectedBuilding(this);" id="uncorrected_checkbox" {{ (session()->has('is_uncorrected') && session()->get('is_uncorrected') == 'true') ? 'checked' : ''  }} >
 					  	<span class="slider round"></span> 
 					</label> <span class="attention" style="display: inline-block;margin-top: 5px;position: absolute;margin-left: 5px;"> PENDING RESOLUTIONS </span>
 				</div>

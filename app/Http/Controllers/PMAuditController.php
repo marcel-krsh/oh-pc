@@ -2384,7 +2384,7 @@ class PMAuditController extends Controller
 		$auditor_access = Auth::user()->auditor_access();
 		$audits = $audit->toArray();
 		if (null !== $audit) {
-			return view('dashboard.partials.audit_row', compact('audit', 'auditor_access', 'audits'));
+			return view('dashboard.partials.pm_audit_row', compact('audit', 'auditor_access', 'audits'));
 		} else {
 			return 0;
 		}
@@ -2404,253 +2404,201 @@ class PMAuditController extends Controller
 
 		//// Optimized code...
 		if (count($buildings)) {
-			$duplicates = []; // to store amenity_inspection_ids for each amenity_id to see when we have duplicates
-			$previous_name = []; // used in case we have building-level amenity duplicates
+			// $duplicates = []; // to store amenity_inspection_ids for each amenity_id to see when we have duplicates
+			// $previous_name = []; // used in case we have building-level amenity duplicates
 
-			foreach ($buildings as $building) {
-				if (null === $building->building_id && null === $building->amenity_inspection_id) {
-					// this is a building-level amenity without a clear link to the amenity inspection
-					// we need to add amenity_inspection_id
+			// foreach ($buildings as $building) {
+			// 	if (null === $building->building_id && null === $building->amenity_inspection_id) {
+			// 		// this is a building-level amenity without a clear link to the amenity inspection
+			// 		// we need to add amenity_inspection_id
 
-					// first there may already be an amenity_inspection with cachedbuilding_id
-					$amenity_inspection = AmenityInspection::where('audit_id', '=', $audit)
-						->where('amenity_id', '=', $building->amenity_id)
-						->whereNull('building_id')
-						->where('cachedbuilding_id', '=', $building->id)
-						->first();
-					if ($amenity_inspection) {
-						$building->amenity_inspection_id = $amenity_inspection->id;
-						$building->save();
+			// 		// first there may already be an amenity_inspection with cachedbuilding_id
+			// 		$amenity_inspection = AmenityInspection::where('audit_id', '=', $audit)
+			// 			->where('amenity_id', '=', $building->amenity_id)
+			// 			->whereNull('building_id')
+			// 			->where('cachedbuilding_id', '=', $building->id)
+			// 			->first();
+			// 		if ($amenity_inspection) {
+			// 			$building->amenity_inspection_id = $amenity_inspection->id;
+			// 			$building->save();
 
-						// $amenity_inspection->cachedbuilding_id = $building->id;
-						// $amenity_inspection->save();
-					} else {
-						$amenity_inspection = AmenityInspection::where('audit_id', '=', $audit)
-							->where('amenity_id', '=', $building->amenity_id)
-							->whereNull('building_id')
-							->whereNull('cachedbuilding_id')
-							->first();
-						if ($amenity_inspection) {
-							$building->amenity_inspection_id = $amenity_inspection->id;
-							$building->save();
+			// 			// $amenity_inspection->cachedbuilding_id = $building->id;
+			// 			// $amenity_inspection->save();
+			// 		} else {
+			// 			$amenity_inspection = AmenityInspection::where('audit_id', '=', $audit)
+			// 				->where('amenity_id', '=', $building->amenity_id)
+			// 				->whereNull('building_id')
+			// 				->whereNull('cachedbuilding_id')
+			// 				->first();
+			// 			if ($amenity_inspection) {
+			// 				$building->amenity_inspection_id = $amenity_inspection->id;
+			// 				$building->save();
 
-							$amenity_inspection->cachedbuilding_id = $building->building->id;
-							//$amenity_inspection->cachedbuilding_id = $building->id;
-							$amenity_inspection->save();
-						}
-					}
-					//dd($building, $amenity_inspection);
-				} elseif (null === $building->building_id && null !== $building->amenity_inspection_id && $building->amenity() === null) {
-					// we had a case where a amenity_inspection_id was referring to a record on the wrong audit
-					$building->amenity_inspection_id = null;
-					$building->save();
-				}
-				if ($building && isset($updateRow)) {
-					$building->recount_findings();
-				}
-				if (null === $building->building_id && $building->amenity_id && null === $building->amenity_inspection_id) {
-					// this is an amenity with no link to the amenity inspection -> there might be issues in case of duplicates.
+			// 				$amenity_inspection->cachedbuilding_id = $building->building->id;
+			// 				//$amenity_inspection->cachedbuilding_id = $building->id;
+			// 				$amenity_inspection->save();
+			// 			}
+			// 		}
+			// 		//dd($building, $amenity_inspection);
+			// 	} elseif (null === $building->building_id && null !== $building->amenity_inspection_id && $building->amenity() === null) {
+			// 		// we had a case where a amenity_inspection_id was referring to a record on the wrong audit
+			// 		$building->amenity_inspection_id = null;
+			// 		$building->save();
+			// 	}
+			// 	if ($building && isset($updateRow)) {
+			// 		$building->recount_findings();
+			// 	}
+			// 	if (null === $building->building_id && $building->amenity_id && null === $building->amenity_inspection_id) {
+			// 		// this is an amenity with no link to the amenity inspection -> there might be issues in case of duplicates.
 
-					$amenity_id = $building->amenity_id;
-					$audit_id = $building->audit_id;
+			// 		$amenity_id = $building->amenity_id;
+			// 		$audit_id = $building->audit_id;
 
-					// we look to see if amenityinspection has a record for this amenity
-					if (!array_key_exists($amenity_id, $duplicates)) {
-						$duplicates[$amenity_id] = [];
-					}
+			// 		// we look to see if amenityinspection has a record for this amenity
+			// 		if (!array_key_exists($amenity_id, $duplicates)) {
+			// 			$duplicates[$amenity_id] = [];
+			// 		}
 
-					$cached_building = CachedBuilding::where('audit_id', '=', $audit_id)
-						->where('amenity_id', '=', $amenity_id)
-						->whereNotIn('amenity_inspection_id', $duplicates[$amenity_id])
-						->first();
+			// 		$cached_building = CachedBuilding::where('audit_id', '=', $audit_id)
+			// 			->where('amenity_id', '=', $amenity_id)
+			// 			->whereNotIn('amenity_inspection_id', $duplicates[$amenity_id])
+			// 			->first();
 
-					if ($cached_building) {
-						$duplicates[$amenity_id][] = $cached_building->amenity_inspection_id;
-						$building->amenity_inspection_id = $cached_building->amenity_inspection_id;
-						$building->save();
-					}
-				}
-				if (null === $building->building_id && $building->building) {
-					// naming duplicates should only apply to amenities
-					if (!array_key_exists($building->building->building_name, $previous_name)) {
-						$previous_name[$building->building->building_name]['counter'] = 1; // counter
-						$first_encounter = $building->building;
-					} else {
-						if (1 == $previous_name[$building->building->building_name]['counter']) {
-							// this is our second encounter, change the first one since we now know there are more
-							$first_encounter->building_name = $first_encounter->building_name . ' 1';
-						}
+			// 		if ($cached_building) {
+			// 			$duplicates[$amenity_id][] = $cached_building->amenity_inspection_id;
+			// 			$building->amenity_inspection_id = $cached_building->amenity_inspection_id;
+			// 			$building->save();
+			// 		}
+			// 	}
+			// 	if (null === $building->building_id && $building->building) {
+			// 		// naming duplicates should only apply to amenities
+			// 		if (!array_key_exists($building->building->building_name, $previous_name)) {
+			// 			$previous_name[$building->building->building_name]['counter'] = 1; // counter
+			// 			$first_encounter = $building->building;
+			// 		} else {
+			// 			if (1 == $previous_name[$building->building->building_name]['counter']) {
+			// 				// this is our second encounter, change the first one since we now know there are more
+			// 				$first_encounter->building_name = $first_encounter->building_name . ' 1';
+			// 			}
 
-						$previous_name[$building->building->building_name]['counter'] = $previous_name[$building->building->building_name]['counter'] + 1;
-						$building->building->building_name = $building->building->building_name . ' ' . $previous_name[$building->building->building_name]['counter'];
-					}
-				}
-			}
+			// 			$previous_name[$building->building->building_name]['counter'] = $previous_name[$building->building->building_name]['counter'] + 1;
+			// 			$building->building->building_name = $building->building->building_name . ' ' . $previous_name[$building->building->building_name]['counter'];
+			// 		}
+			// 	}
+			// }
 		}
 
-		// end optimized code
-		// count buildings & count ordering_buildings
-
-		// we need to do a few checks to fix incorrect data
-		// 1) when amenity_inspection_id has duplicates, rebuild with correct references
-		// 2) when amenity_inspection_id is null, make sure we get the next amenity_inspection reference and not a duplicate
-
-		// are there duplicates in amenity_inspection_id?
-		// $check_ordering_buildings = OrderingBuilding::whereNull('building_id')
-		//                                 ->where('audit_id', '=', $audit)
-		//                                 ->where('user_id', '=', Auth::user()->id)
-		//                                 ->pluck('amenity_inspection_id')
-		//                                 ->toArray();
-
-		// if(count($check_ordering_buildings) !== count(array_unique($check_ordering_buildings))){
-		//     // rebuild with correct references
-		//     // each orderingbuilding should corresponds to a cachedbuilding that has a correct amenity_inspection_id
-		//     $ordering_buildings = OrderingBuilding::whereNull('building_id')
-		//                                 ->where('audit_id', '=', $audit)
-		//                                 ->where('user_id', '=', Auth::user()->id)
-		//                                 ->get();
-
-		//     $already_in_there_array = array();
-		//     foreach($ordering_buildings as $ordering_building){
-		//         if( in_array($ordering_building->amenity_inspection_id, $already_in_there_array) ){
-
-		//             // get a corresponding cachedbuilding record that has a different amenity_inspection_id (and not already in there)
-		//             $checked_cached_building = CachedBuilding::where('audit_id', '=', $audit)->where('amenity_id', '=', $ordering_building->amenity_id)->whereNotIn('amenity_inspection_id',$already_in_there_array)->first();
-
-		//             // update record
-		//             if($checked_cached_building){
-		//                 $ordering_building->amenity_inspection_id = $checked_cached_building->amenity_inspection_id;
-		//                 $ordering_building->save();
-		//             }
-
-		//             $already_in_there_array[] = $ordering_building->amenity_inspection_id;
-		//         }else{
-
-		//             $already_in_there_array[] = $ordering_building->amenity_inspection_id;
-
-		//         }
-		//     }
-		// }
-
-		// if (CachedBuilding::where('audit_id', '=', $audit)->count() != OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->count() && CachedBuilding::where('audit_id', '=', $audit)->count() != 0) {
-		//     // this case shouldn't happen
-		//     // delete all ordered records
-		//     // reorder them
-		//     // OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->delete();
-		// }
-
-		// if (OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->count() == 0 && CachedBuilding::where('audit_id', '=', $audit)->count() != 0) {
-		// if ordering_buildings is empty, create a default entry for the ordering
-		// if there is a previous audit and that user has ordering records, use those as default
-
-		// also make sure that we have the same buildings now
-
-		// is there a previous record in the OrderingBuilding for the same project and user?
-		// if yes, we get it and check if all the buildings match
-		// if they do we copy the ordering
-		// if they don't we apply the default ordering
-
-		// if not we apply the default ordering
-
-		// $default_ordering_needed = 0;
-
-		// // get the project from audit_id
-		// $project_id = Audit::where('id', '=', $audit)->first()->project_id;
-
-		// // is there a previous record in the OrderingBuilding for the same project and user?
-		// $previous_ordering_records_check = OrderingBuilding::where('project_id', '=', $project_id)->where('user_id', '=', Auth::user()->id)->where('audit_id', '!=', $audit)->orderBy('audit_id', 'desc')->first();
-
-		// if ($previous_ordering_records_check) {
-		//     $previous_ordering_records_audit_id = $previous_ordering_records_check->audit_id;
-
-		//     // if yes, we get it and check if all the buildings match
-		//     $previous_ordering_records = OrderingBuilding::where('project_id', '=', $project_id)->where('user_id', '=', Auth::user()->id)->where('audit_id', '=', $previous_ordering_records_audit_id)->orderBy('order', 'asc')->get();
-
-		//     // compare count first
-		//     if (count($previous_ordering_records) == CachedBuilding::where('audit_id', '=', $audit)->count()) {
-		//         // check if buildings are the same
-		//         foreach ($previous_ordering_records as $ordering_building) {
-		//             if (!CachedBuilding::where('audit_id', '=', $audit)->where('building_id', '=', $ordering_building->building_id)->count()) {
-		//                 // use the default ordering
-		//                 $default_ordering_needed = 1;
-		//                 break;
-		//             }
-		//         }
-
-		//         // all good, let's copy the previous ordering
-		//         if ($default_ordering_needed == 0) {
-		//             foreach ($previous_ordering_records as $ordering_building) {
-		//                 $ordering = new OrderingBuilding([
-		//                     'user_id' => Auth::user()->id,
-		//                     'audit_id' => $audit,
-		//                     'project_id' => $ordering_building->project_id,
-		//                     'building_id' => $ordering_building->building_id,
-		//                     'amenity_id' => $ordering_building->amenity_id,
-		//                     'amenity_inspection_id' => $ordering_building->amenity_inspection_id,
-		//                     'order' => $ordering_building->order,
-		//                 ]);
-		//                 $ordering->save();
-		//             }
-		//         }
-		//     } else {
-		//         // use the default ordering
-		//         $default_ordering_needed = 1;
-		//     }
-
-		// } else {
-		//     // use the default ordering
-		//     $default_ordering_needed = 1;
-		// }
-
-		// use the default ordering
-		// if ($default_ordering_needed) {
-
-		//     $buildings = CachedBuilding::where('audit_id', '=', $audit)->orderBy('id', 'desc')->get();
-
-		//     $i = 1;
-
-		//     foreach ($buildings as $building) {
-		//         if ($building->building_id !== null) {
-		//             $ordering = new OrderingBuilding([
-		//                 'user_id' => Auth::user()->id,
-		//                 'audit_id' => $audit,
-		//                 'project_id' => $building->project_id,
-		//                 'building_id' => $building->building_id,
-		//                 'amenity_id' => 0,
-		//                 'order' => $i,
-		//             ]);
-		//             $ordering->save();
-		//             $i++;
-		//         } else {
-		//             // it is a building-level amenity
-		//             $ordering = new OrderingBuilding([
-		//                 'user_id' => Auth::user()->id,
-		//                 'audit_id' => $audit,
-		//                 'project_id' => $building->project_id,
-		//                 'building_id' => null,
-		//                 'amenity_id' => $building->amenity_id,
-		//                 'amenity_inspection_id' => $building->amenity_inspection_id,
-		//                 'order' => $i,
-		//             ]);
-		//             $ordering->save();
-		//             $i++;
-		//         }
-		//     }
-		// }
-
-		//}
-
-		// $buildings = OrderingBuilding::where('audit_id', '=', $audit)->where('user_id', '=', Auth::user()->id)->orderBy('order', 'asc')->get();
-
-		// in the case of an amenity at the building level (like a parking lot), there won't be a clear link between the amenityinspection and the cachedbuilding
-
-		//return $buildings;
 		$amenities_query = AmenityInspection::where('audit_id', $audit)->with('amenity', 'user', 'building.units');
 		$amenities = $amenities_query->get();
-		// echo 'ets';
-		// return 12;
 
-		return view('dashboard.partials.audit_buildings', compact('audit', 'target', 'buildings', 'context', 'amenities'));
+		return view('dashboard.partials.pm_audit_buildings', compact('audit', 'target', 'buildings', 'context', 'amenities'));
+	}
+
+	public function getPMBuildingDetailsInfo(Request $request, $id, $type, $audit)
+	{
+		$type_id = $request->post('type_id');
+		$is_uncorrected = $request->post('is_uncorrected');
+		
+		if($type == 'all'){
+			Session::forget('type_id');
+			Session::forget('is_uncorrected');
+			return 1;
+		}
+
+	 	if (!empty($type_id)){
+	 		Session::put('type_id', $type_id);
+		}else{
+			Session::forget('type_id');
+		}
+		if ($is_uncorrected == 'true') {
+			Session::put('is_uncorrected', $is_uncorrected);
+		}else{
+			Session::forget('is_uncorrected');
+		}
+
+		// dd($request->all());
+
+		
+		// types:building, unit
+		// project: project_id?
+		// type_id: building or unit id
+		$project = Project::where('id', '=', $id)->first();
+		$audit = CachedAudit::with('auditors', 'audit', 'lead_auditor')->where('audit_id', $audit)->first();
+		$current_user = Auth::user();
+		$manager_access = $current_user->manager_access();
+		$details = $project->details();
+
+		$dpView = 1;
+		$findings = $audit->audit->findings;
+		$print = null;
+		$report = $audit;
+		$detailsPage = 1;
+		switch ($type) {
+			
+			case 'building':
+
+				$allBuildingInspections = $audit->audit->building_inspections;
+				
+				$selected_audit = $audit;
+				if(session()->has('type_id') && session()->has('is_uncorrected')){
+					$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
+					$result = array_intersect($bulidingUnresolved, $type_id);
+					// print_r($type_id);
+					// print_r($bulidingUnresolved);
+					// print_r($result);
+					$inspections = $audit->audit->building_inspections()->whereIn('building_id',$result)->paginate(12);
+				}
+				else if(session()->has('is_uncorrected')){
+					$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
+					// print_r($bulidingUnresolved);
+
+					$inspections = $audit->audit->building_inspections()->whereIn('building_id',$bulidingUnresolved)->paginate(12);
+				}
+				// if(session()->has('type_id') && session()->has('is_uncorrected')){
+				// 	$inspections = $audit->audit->building_inspections()->whereIn('building_id',$type_id)->paginate(10);
+				// }else 
+				else if(session()->has('type_id')){
+					$inspections = $audit->audit->building_inspections()->whereIn('building_id',$type_id)->paginate(12);
+				}
+				// else if(!session()->has('type_id') && session()->has('is_uncorrected')){
+				// 	$inspections = $audit->audit->building_inspections()->paginate(12);
+				// }
+				else{
+					$inspections = $audit->audit->building_inspections()->paginate(12);
+				}
+				
+				
+				return view('crr_parts.pm_crr_inspections_building', compact('inspections','allBuildingInspections','dpView','findings','print','report','selected_audit','detailsPage'));
+				break;
+			case 'unit':
+				$allUnitInspections = $audit->audit->unit_inspections;
+				if(session()->has('type_id') && session()->has('is_uncorrected')){
+					$allBuildingInspections = $audit->audit->building_inspections;
+					$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
+					$result = array_intersect($bulidingUnresolved, $type_id);
+					$unitUnresolvedId = $audit->audit->unitUnResolved($allUnitInspections, $findings);
+					// print_r($type_id);
+					// print_r($bulidingUnresolved);
+					// print_r($result);
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$result)->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
+				}
+				else if(session()->has('is_uncorrected')){
+					$allUnitInspections1 = $audit->audit->unit_inspections()->groupBy('unit_id')->get();
+					// echo count($allUnitInspections);exit;
+					$unitUnresolvedId = $audit->audit->unitUnResolved($allUnitInspections1, $findings);
+					
+					$inspections = $audit->audit->unit_inspections()->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
+				}
+				else if(session()->has('type_id')){
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$type_id)->paginate(12);
+				}else{
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
+				}
+				
+				return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit'));
+				break;
+			default:
+		}
 	}
 
 	

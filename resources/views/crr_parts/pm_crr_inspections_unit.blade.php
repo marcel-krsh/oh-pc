@@ -10,7 +10,7 @@ if (isset($detailsPage)) {
 	// $totalUnits = number_format($inspections->total(), 0);
 	$totalUnits = count(collect($allUnitInspections)->groupBy('unit_id'));
 ?>
-<div uk-grid class="uk-margin-bottom unit">
+<div uk-grid class="uk-margin-bottom pm-unit">
 	
 	<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
 		<div id="containerIntro" style="display: flex;">

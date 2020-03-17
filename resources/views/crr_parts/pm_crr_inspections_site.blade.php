@@ -5,7 +5,7 @@ if (isset($detailsPage)) {
 ?>
 @if(!is_null($inspections))
 
-	<div uk-grid class="uk-margin-bottom site">
+	<div uk-grid class="uk-margin-bottom pm-site">
 		
 		<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
 			<?php

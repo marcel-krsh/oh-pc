@@ -474,7 +474,7 @@ if (env('APP_ENV') != 'production') {
 				openDocuments();
 				window.subtab = '';
 			}
-			loadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
+			pmLoadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
 			UIkit.dropdown('#car-dropdown-{{$selected_audit->audit_id}}', 'mode:click');
 
 		});
