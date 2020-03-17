@@ -46,7 +46,7 @@ class FixCommunicationDocumentAuditAssignment extends Command
 		$progressBar = $this->output->createProgressBar($total);
 		$progressBar->setProgressCharacter("\xf0\x9f\x8c\x80");
 		$chunk = 50;
-		$communication_documents = CommunicationDocument::whereHas('communication', function ($query) {
+		$communication_documents = CommunicationDocument::whereNotNull('document_id')->whereHas('communication', function ($query) {
 			$query->whereNotNull('audit_id');
 		})->chunk($chunk, function ($cds) use ($progressBar, $chunk) {
 			$progressBar->advance($chunk);
