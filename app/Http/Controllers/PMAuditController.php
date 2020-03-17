@@ -776,6 +776,52 @@ class PMAuditController extends Controller
 				break;
 			case 'selections':
 				$details = $project->details();
+				// return_raw: site, building, unit
+				if ($return_raw) {
+					$dpView = 1;
+					$findings = $audit->audit->findings;
+					$print = null;
+					$report = $audit;
+					$detailsPage = 1;
+					switch ($return_raw) {
+						case 'site':
+							$inspections = $audit->audit->project_amenity_inspections()->paginate(5);
+							return view('crr_parts.pm_crr_inspections_site', compact('inspections','dpView','findings','print','report','detailsPage'));
+							break;
+						case 'building':
+							$selected_audit = $audit;
+							// if(session()->has('type_id') && session()->has('is_uncorrected')){
+							// 	$inspections = $audit->audit->building_inspections()->whereIn('building_id',$type_id)->paginate(10);
+							// }else 
+							if(session()->has('type_id')){
+								$inspections = $audit->audit->building_inspections()->whereIn('building_id',$type_id)->paginate(12);
+							}
+							// else if(!session()->has('type_id') && session()->has('is_uncorrected')){
+							// 	$inspections = $audit->audit->building_inspections()->paginate(12);
+							// }
+							else{
+								$inspections = $audit->audit->building_inspections()->paginate(12);
+							}
+
+							// $inspections = $audit->audit->building_inspections()->paginate(10);
+							$allBuildingInspections = $audit->audit->building_inspections;
+							return view('crr_parts.pm_crr_inspections_building', compact('inspections','allBuildingInspections','dpView','findings','print','report','selected_audit','detailsPage'));
+							break;
+						case 'unit':
+							if(session()->has('type_id')){
+								$inspections = $audit->audit->unit_inspections()->whereIn('building_id',session()->get('type_id'))->groupBy('unit_id')->paginate(12);
+							}else{
+								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
+							}
+							$allUnitInspections = $audit->audit->unit_inspections;
+							return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit'));
+							break;
+						default:
+					}
+				}
+				
+				Session::forget('type_id');
+				Session::forget('is_uncorrected');
 
 				return view('projects.partials.pm-details-selections', compact('audit', 'details'));
 				break;

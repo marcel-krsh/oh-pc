@@ -57,5 +57,6 @@
 				@include('crr_parts.crr_inspections_unit', [$inspections_type = 'unit',$detailsPage = 1])
 			</div>
 		@endif
+		<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 </div>
 </div>

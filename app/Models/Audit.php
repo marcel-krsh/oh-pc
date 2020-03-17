@@ -96,7 +96,7 @@ class Audit extends Model
     }
 
     public function building_inspections() : HasMany {
-       return $this->hasMany('\App\Models\BuildingInspection')->with('building')->orderBy('building_id');
+       return $this->hasMany('\App\Models\BuildingInspection')->with('building')->orderBy('building_name');
     }
     public function unit_inspections() : HasMany {
        return $this->hasMany('\App\Models\UnitInspection')->with('program')->with('building')->orderBy('building_id')->orderBy('unit_id');

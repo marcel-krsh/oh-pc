@@ -475,7 +475,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/pm-projects/{id}/details', 'PMAuditController@getPMProjectDetails')->name('pm-project.details');
 		Route::get('/pm-projects/{id}/details/{type}/{audit}/{return_raw?}', 'PMAuditController@getPMProjectDetailsInfo')->name('pm-project.details.info');
 		Route::get('/pm-projects/{id}/audit-details/{audit_id?}', 'PMAuditController@getPMProjectDetails')->name('pm-project.details-with-audit');
-		Route::get('/pm-projects/{id}/details/{type}/{audit}', 'PMAuditController@getPMProjectDetailsInfo')->name('pm-project.details.info');
+		Route::get('/pm-projects/{id}/details/{type}/{audit}/{return_raw?}', 'PMAuditController@getPMProjectDetailsInfo')->name('pm-project.details.info');
 		Route::get('pm-dashboard/audits/{audit}/buildings', 'PMAuditController@pmBuildingsFromAudit')->name('pm-audit.buildings');
 		Route::post('/pm-projects/{id}/building-details/{type}/{audit}', 'PMAuditController@getPMBuildingDetailsInfo')->name('building.details.info');
 		

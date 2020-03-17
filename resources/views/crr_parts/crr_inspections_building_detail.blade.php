@@ -64,6 +64,8 @@
 			<br /> <small onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" class="use-hand-cursor"><i class="a-circle"></i> INSPECTION IN PROGRESS</small>
 			@elseif($dpView && !count($thisBuildingUnfinishedInspections) && !$hasFindings)
 			<br /><small onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" class="use-hand-cursor"><i class="a-circle-checked"></i> INSPECTION COMPLETE </small>
+			@elseif($dpView && !count($thisBuildingUnfinishedInspections) && $hasFindings)
+			<br /><small onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" class="use-hand-cursor"><i class="a-circle"></i> INSPECTION INCOMPLETE </small>
 			@endIf
 
 			@if($dpView)

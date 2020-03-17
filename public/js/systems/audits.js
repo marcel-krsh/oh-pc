@@ -1163,7 +1163,7 @@ $(document).on('click', '.site .pagination a', function(event){
 
 function fetch_site_data(id, type, audit, page) {
 	var tempdiv = '<div style="height:300px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-	// $('#site').html(tempdiv);
+	$('#site').html(tempdiv);
 
 	var url = '/projects/'+id+'/details/'+type+'/'+audit+'/site?page=' + page;
     $.get(url, {
@@ -1189,7 +1189,7 @@ $(document).on('click', '.unit .pagination a', function(event){
 
 function fetch_unit_data(id, type, audit, page) {
 	var tempdiv = '<div style="height:300px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-	// $('#unit').html(tempdiv);
+	$('#unit').html(tempdiv);
 
 	var url = '/projects/'+id+'/details/'+type+'/'+audit+'/unit?page=' + page;
     $.get(url, {
@@ -1215,7 +1215,7 @@ $(document).on('click', '.building .pagination a', function(event){
 function fetch_building_data(id, type, audit, page) {
 	
 	var tempdiv = '<div style="height:175px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-	// $('#building').html(tempdiv);
+	$('#building').html(tempdiv);
 
 	var url = '/projects/'+id+'/details/'+type+'/'+audit+'/building?page=' + page;
     $.get(url, {
@@ -1470,7 +1470,7 @@ function getSingleBuilding(e){
   		console.log('all clear');
 	}
 	// console.log(is_uncorrected, id, $('#uncorrected_checkbox').val(), $('#uncorrected_checkbox:checkbox:checked').length);
-	console.log((Array.isArray(id) && id.length),is_uncorrected)
+	// console.log((Array.isArray(id) && id.length),is_uncorrected)
 }
 
 function getUnCorrectedBuilding(e){
@@ -1512,10 +1512,18 @@ function getUnCorrectedBuilding(e){
   		// get 1 first page data if first option selected FILTER BY BUILDING
 	
 	// }
-	console.log(is_uncorrected, id);
+	// console.log(is_uncorrected, id);
 }
 
 function fetch_buidling_detail(type, id = [], is_uncorrected = null){
+	
+	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	if(type == 'building'){
+		$('#building').html(tempdiv);
+	}else if(type == 'unit'){
+		$('#unit').html(tempdiv);
+	}
+
 	var projectId = $('#building').data('project-id');
   	var auditId = $('#building').data('audit-id');
 	var url = '/projects/'+projectId+'/building-details/'+type+'/'+auditId;
@@ -1581,6 +1589,7 @@ function pmProjectDetailsInfo(id, type, audit, target) {
             } else {
 
 				$('#project-details-info-container').html(data);
+				AfterBuildingUpLoad();
         	}
     });
 }
