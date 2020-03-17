@@ -436,8 +436,57 @@ class Audit extends Model
         }
     }
 
+    public function buildingUnResolved($inspection, $findings)  {
+        
+        $bulidingUnresolvedId = [];
+        foreach ($inspection as $i) {
+            $currentBuilding = $i->building_id;
+            
+            $findingCount = collect($findings);
+            $findingCount = $findingCount->filter(function ($item) use ($currentBuilding) {
+                if ($item->building && $item->building->id == $currentBuilding) {
+                    return $item;
+                }
+                if ($item->unit && $item->unit->building_id == $currentBuilding) {
+                    return $item;
+                }
+            });
+            $thisBuildingSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file'));
+            $thisBuildingResolvedSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1));
+            $thisBuildingUnresolvedSiteFindings = $thisBuildingSiteFindings - $thisBuildingResolvedSiteFindings;
+            // echo $thisBuildingUnresolvedSiteFindings." ";
+            if($thisBuildingUnresolvedSiteFindings > 0){
+                $bulidingUnresolvedId[] = $currentBuilding;
+            }
+        }
+        return $bulidingUnresolvedId;
+    }
 
+    public function unitUnResolved($inspection, $findings)  {
+        $unitUnresolvedId = [];
+        $currentUnit = 0;
+        $nameOutput = [];
+        
+        foreach ($inspection as $i) {
+            // ;
+            // echo $i->unit_id;
+            // exit;
+            if($currentUnit != $i->unit_id){
+                if(!in_array($i->unit_id, $nameOutput)){
+                    $currentUnit = $i->unit_id;
+                    $nameOutput[] = $i->unit_id;
+                    $thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
+                    $thisUnitResolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1));
+                    $thisUnitUnresolvedSiteFindings = $thisUnitSiteFindings - $thisUnitResolvedSiteFindings; 
+                    if($thisUnitUnresolvedSiteFindings > 0){
+                        $unitUnresolvedId[] = $i->unit_id;
+                    }
+                }
+            }
+            
+        }
+        return $unitUnresolvedId;
+    }
 
-
-
+    
 }
