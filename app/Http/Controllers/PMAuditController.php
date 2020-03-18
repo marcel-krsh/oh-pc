@@ -72,6 +72,7 @@ class PMAuditController extends Controller
 		});
 		$this->htc_group_id = 7;
 		View::share('htc_group_id', $this->htc_group_id);
+		ini_set('memory_limit', '8G');
 	}
 
 	public function getPMProject($id = null, $audit_id = 0)
@@ -117,7 +118,7 @@ class PMAuditController extends Controller
 			// } else {
 			//  $selected_audit = $project->selected_audit();
 			// }
-			$selected_audit = $project->selected_audit($audit_id, 1);
+			$selected_audit = $project->selected_audit($audit_id, 0);
 			//dd($id, $project, $selected_audit);
 			// get that audit's stats and contact info from the project_details table
 			$details = $project->details();
@@ -125,13 +126,14 @@ class PMAuditController extends Controller
 			$audits = $project->audits;
 			//dd($selected_audit->checkStatus('schedules'));
 			// get auditors from user roles
-			$auditors = User::whereHas('roles', function ($query) {
-				$query->where('role_id', '=', 2);
-				$query->orWhere('role_id', '=', 3);
-			})
-				->where('active', '=', 1)
-				->orderBy('name', 'asc')
-				->get();
+			// $auditors = User::whereHas('roles', function ($query) {
+			// 	$query->where('role_id', '=', 2);
+			// 	$query->orWhere('role_id', '=', 3);
+			// })
+			// 	->where('active', '=', 1)
+			// 	->orderBy('name', 'asc')
+			// 	->get();
+			$auditors = [];
 			return view('projects.partials.pm-details', compact('details', 'audits', 'project', 'selected_audit', 'auditors'));
 		} catch (\Exception $e) {
 			app('sentry')->captureException($e);

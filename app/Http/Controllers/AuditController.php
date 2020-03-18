@@ -72,6 +72,9 @@ class AuditController extends Controller
 		});
 		$this->htc_group_id = 7;
 		View::share('htc_group_id', $this->htc_group_id);
+		// increase the memory for this controller
+		ini_set('memory_limit', '8G'); // change as needed, as long as your system can support it
+
 	}
 
 	public function rerunCompliance(Audit $audit)

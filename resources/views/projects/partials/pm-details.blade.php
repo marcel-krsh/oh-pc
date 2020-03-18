@@ -48,24 +48,19 @@
 
 <?php
 
-if ($selected_audit->update_cached_audit()) {
-	$selected_audit->refresh();
-}
+// if ($selected_audit->update_cached_audit()) {
+// 	$selected_audit->refresh();
+// }
 
-$fileCount = count($selected_audit->audit->files);
-$correctedFileCount = count($selected_audit->audit->files->where('auditor_last_approved_resolution_at', '<>', null));
-$nltCount = count($selected_audit->audit->nlts);
-$correctedNltCount = count($selected_audit->audit->nlts->where('auditor_last_approved_resolution_at', '<>', null));
+$fileCount = $selected_audit->file_findings_count;
+$correctedFileCount = $fileCount - $selected_audit->unresolved_file_findings_count;
+$nltCount = $selected_audit->nlt_findings_count;
+$correctedNltCount = $nltCount - $selected_audit->unresolved_nlt_findings_count;
 
-$ltCount = count($selected_audit->audit->lts);
-$correctedLtCount = count($selected_audit->audit->lts->where('auditor_last_approved_resolution_at', '<>', null));
+$ltCount = $selected_audit->lt_findings_count;
+$correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
 
-$car = collect($selected_audit->audit->reports)->where('from_template_id', '1')->first();
-$ehs = collect($selected_audit->audit->reports)->where('from_template_id', '2')->first();
-if (env('APP_ENV') != 'production') {
-	$_8823 = collect($selected_audit->audit->reports)->where('from_template_id', '5')->first();
-  //dd($selected_audit->audit->reports,collect($selected_audit->audit->reports)->where('from_template_id','1')->first());
-}
+
 ?>
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
@@ -87,7 +82,7 @@ if (env('APP_ENV') != 'production') {
 
 					</div>
 					<div class="uk-width-3-5" style="padding-left:1.2em">
-						<h3 id="audit-project-name-1" class="uk-margin-bottom-remove uk-text-align-center" style="font-size: 1.5em; padding-top: .5em;">{{$project->project_number}}</h3>
+						<h3 id="audit-project-name-1" class="uk-margin-bottom-remove uk-text-align-center" style="font-size: 1.5em; padding-top: .5em;">{{$selected_audit->project_ref}}</h3>
 						<small class="uk-text-muted" style="font-size: 1em;">AUDIT {{$selected_audit->audit_id}}</small>
 					</div>
 				</div>
@@ -114,9 +109,9 @@ if (env('APP_ENV') != 'production') {
 										</div>
 									</div>
 									<div class="uk-width-1-2 uk-padding-remove">
-										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->building_inspections)}} @if(count($selected_audit->audit->building_inspections) > 1 || count($selected_audit->audit->building_inspections) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{count($selected_audit->audit->building_inspections)}}</div>
+										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_buildings}} @if($selected_audit->total_buildings > 1 || $selected_audit->total_buildings) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{$selected_audit->total_buildings}}</div>
 										<hr class="uk-width-1-1" style="margin-bottom: 8px; margin-top: 0px" >
-										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->unique_unit_inspections)}} @if(count($selected_audit->audit->unique_unit_inspections) > 1 || count($selected_audit->audit->unique_unit_inspections) < 1) UNITS @else UNIT @endIf"><i class="a-buildings-2" style="font-size: 25px;"></i> : {{count($selected_audit->audit->unique_unit_inspections)}}</div>
+										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_units}} @if($selected_audit->total_units > 1 || $selected_audit->total_units < 1) UNITS @else UNIT @endIf"><i class="a-buildings-2" style="font-size: 25px;"></i> : {{$selected_audit->total_units}}</div>
 
 									</div>
 
@@ -127,123 +122,44 @@ if (env('APP_ENV') != 'production') {
 								<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 
 									<div class="uk-width-1-3">
-										@if(($car))
+										
 										<?php
-										switch ($car->crr_approval_type_id) {
-											case '1':
-											    $carIcon = "a-file-pencil-2"; // draft
-											    break;
-											    case '2':
-											    $carIcon = "a-file-clock"; // pending manager review
-											    break;
-											    case '3':
-											    $carIcon = "a-file-fail manager-fail attention"; // declined by manager
-											    break;
-											    case '4':
-											    $carIcon = "a-file-repeat"; // approved with changes
-											    break;
-											    case '5':
-											    $carIcon = "a-file-certified"; // approved
-											    break;
-											    case '6':
-											    $carIcon = "a-file-mail"; // Unopened by PM
-											    break;
-											    case '7':
-											    $carIcon = "a-file-person"; // Viewed by a PM
-											    break;
-											    case '9':
-											    $carIcon = "a-file-approve"; // All items resolved
-											    break;
-											    default:
-											    $carIcon = "a-file-fail";
-											    break;
-											  }
+												$carIcon = $selected_audit->car_icon;
+												$ehsIcon = $selected_audit->ehs_icon;
+												$_8823Icon = $selected_audit->_8823_icon;
+												$carId = $selected_audit->car_id;
+												$ehsId = $selected_audit->ehs_id;
+												$_8823Id = $selected_audit->_8823_id;
+												$carStatus = $selected_audit->car_status_text;
+												$ehsStatus = $selected_audit->ehs_status_text;
+												$_8823Status = $selected_audit->_8823_status_text;
 											  ?>
-											  <a class="uk-link-mute" href="/report/{{$car->id}}" target="report-{{$car->id}}" uk-tooltip="title:VIEW CAR {{$car->id}} : {{strtoupper($car->status_name())}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a> 
-											  <br /><small>CAR #{{$car->id}}</small>
+											  @if($carIcon)
+											  <a class="uk-link-mute" href="/report/{{$carId}}" target="report-{{$carId}}" uk-tooltip="title:VIEW CAR {{$carId}} : {{strtoupper($carStatus)}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a> 
+											  <br /><small>CAR #{{$carId}}</small>
 
 											  @else
 											  <i class="a-file-fail" uk-tooltip="title:CAR UNAVAILABLE"></i><br /><small>CAR</small>
 											  @endIf
 											</div><div class="uk-width-1-3">
-												@if(($ehs))
-												<?php
-												switch ($ehs->crr_approval_type_id) {
-													case '1':
-											    $ehsIcon = "a-file-pencil-2"; // draft
-											    break;
-											    case '2':
-											    $ehsIcon = "a-file-clock"; // pending manager review
-											    break;
-											    case '3':
-											    $ehsIcon = "a-file-fail manager-fail attention"; // declined by manager
-											    break;
-											    case '4':
-											    $ehsIcon = "a-file-repeat"; // approved with changes
-											    break;
-											    case '5':
-											    $ehsIcon = "a-file-certified"; // approved
-											    break;
-											    case '6':
-											    $ehsIcon = "a-file-mail"; // Unopened by PM
-											    break;
-											    case '7':
-											    $ehsIcon = "a-file-pen"; // Viewed by a PM
-											    break;
-											    case '9':
-											    $ehsIcon = "a-file-approve"; // All items resolved
-											    break;
-											    default:
-											    $ehsIcon = "a-file-fail";
-											    break;
-											  }
-											  ?>
-											  <a class="uk-link-mute" href="/report/{{$ehs->id}}" target="report-{{$ehs->id}}" uk-tooltip="title:{{$ehs->status_name()}}"><i class="{{$ehsIcon}}" style="font-size: 30px;" ></i></a>
+												@if(($ehsIcon))
+												
+											  		<a class="uk-link-mute" href="/report/{{$ehsId}}" target="report-{{$ehsId}}" uk-tooltip="title:{{$ehsStatus}}"><i class="{{$ehsIcon}}" style="font-size: 30px;" ></i></a>
 
 											  
-											  <br /><small>EHS #{{$ehs->id}}</small></a>
+											 		 <br /><small>EHS #{{$ehsId}}</small></a>
 											  @else
 											  <i class="a-file-fail" uk-tooltip="title:EHS UNAVAILABLE" ></i><br /><small>EHS</small>
 											  @endIf
 											</div>
 											<div class="uk-width-1-3">
 												@if(env('APP_ENV') != 'production')
-												@if(($_8823))
-												<?php
-												switch ($_8823->crr_approval_type_id) {
-													case '1':
-											    $_8823Icon = "a-file-pencil-2"; // draft
-											    break;
-											    case '2':
-											    $_8823Icon = "a-file-clock"; // pending manager review
-											    break;
-											    case '3':
-											    $_8823Icon = "a-file-fail manager-fail attention"; // declined by manager
-											    break;
-											    case '4':
-											    $_8823Icon = "a-file-repeat"; // approved with changes
-											    break;
-											    case '5':
-											    $_8823Icon = "a-file-certified"; // approved
-											    break;
-											    case '6':
-											    $_8823Icon = "a-file-mail"; // Unopened by PM
-											    break;
-											    case '7':
-											    $_8823Icon = "a-file-pen"; // Viewed by a PM
-											    break;
-											    case '9':
-											    $_8823Icon = "a-file-approve"; // All items resolved
-											    break;
-											    default:
-											    $_8823Icon = "a-file-fail";
-											    break;
-											  }
-											  ?>
-											  <a class="uk-link-mute" href="/report/{{$_8823->id}}" target="report-{{$_8823->id}}" uk-tooltip="title:{{$_8823->status_name()}}" ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
+												@if(($_8823Icon))
+												
+											  <a class="uk-link-mute" href="/report/{{$_8823Id}}" target="report-{{$_8823Id}}" uk-tooltip="title:{{$_8823Status}}" ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
 
 											  
-											  <br /><small>8823 #{{$_8823->id}}</small></a>
+											  <br /><small>8823 #{{$_8823Id}}</small></a>
 											  @else
 											   <i class="a-file-fail" uk-tooltip="title:8823 UNAVAILABLE" ></i><br /><small>8823</small>
 											  @endIf
@@ -259,9 +175,9 @@ if (env('APP_ENV') != 'production') {
 
 										<div class="divider"></div>
 										<div class="uk-text-center hasdivider uk-margin-top" uk-grid>
-											<div class="uk-width-1-3 use-hand-cursor  uk-first-column pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'file', null,'0');"><i class="a-folder"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedFileCount < $fileCount) attention @endIf" uk-tooltip title="{{$correctedFileCount}} / {{$fileCount}} @if($fileCount < 1 || $fileCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$fileCount}}</span></div>
-											<div  class="uk-width-1-3 use-hand-cursor pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'nlt', null,'0');"><i class="a-booboo"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedNltCount < $nltCount) attention @endIf" uk-tooltip title="{{$correctedNltCount}} / {{$nltCount}} @if($nltCount < 1 || $nltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$nltCount}}</span></div>
-											<div  class="uk-width-1-3 use-hand-cursor pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'lt', null,'0');"><i class="a-skull"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedLtCount < $ltCount) attention @endIf" uk-tooltip title="{{$correctedLtCount}} / {{$ltCount}} @if($ltCount < 1 || $ltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$ltCount}}</span></div>
+											<div class="uk-width-1-3  uk-first-column pd-findings-column" title="" aria-expanded="false" ><i class="a-folder"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedFileCount < $fileCount) attention @endIf" uk-tooltip title="{{$correctedFileCount}} / {{$fileCount}} @if($fileCount < 1 || $fileCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$fileCount}}</span></div>
+											<div  class="uk-width-1-3  pd-findings-column" title="" aria-expanded="false" ><i class="a-booboo"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedNltCount < $nltCount) attention @endIf" uk-tooltip title="{{$correctedNltCount}} / {{$nltCount}} @if($nltCount < 1 || $nltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$nltCount}}</span></div>
+											<div  class="uk-width-1-3 pd-findings-column" title="" aria-expanded="false"><i class="a-skull"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedLtCount < $ltCount) attention @endIf" uk-tooltip title="{{$correctedLtCount}} / {{$ltCount}} @if($ltCount < 1 || $ltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$ltCount}}</span></div>
 										</div>
 
 									</div>
@@ -298,13 +214,11 @@ if (env('APP_ENV') != 'production') {
 		<div id="project-details-general" class="uk-width-1-1">
 			<div uk-grid>
 				<div class="uk-width-2-3">
-					<h3>{{$project->project_name}}<br /><small>Project {{$project->project_number}} @if($selected_audit->audit_id)| Current Audit {{ $selected_audit->audit_id }}@endif</small></h3>
+					<h3>{{$selected_audit->title}}<br /><small>Project {{$selected_audit->project_ref}} @if($selected_audit->audit_id)| Current Audit {{ $selected_audit->audit_id }}@endif</small></h3>
 				</div>
 				<div class="uk-width-1-3">
 					<div class="audit-info" style="width: 80%;float: left;">
-						Last Audit Completed: {{$project->lastAuditCompleted()}}<br />
-						Next Audit Due By: {{$project->nextDueDate()}}<br />
-						Current Project Score : N/A
+						
 					</div>
 					
 				</div>
@@ -322,7 +236,7 @@ if (env('APP_ENV') != 'production') {
 
 			<div uk-grid>
 				<div class="uk-width-1-4">
-					<button id="project-details-button-3" class="uk-button uk-link  active" onclick="pmProjectDetailsInfo({{$project->id}}, 'selections', {{$selected_audit->audit_id}},this);" type="button">
+					<button id="project-details-button-3" class="uk-button uk-link  active" onclick="pmProjectDetailsInfo({{$selected_audit->project_id}}, 'selections', {{$selected_audit->audit_id}},this);" type="button">
 						<i class="a-mobile"></i> <i class="a-folder"></i>
 
 					INSPECTIONS</button>

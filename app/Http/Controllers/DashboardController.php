@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\CommunicationRecipient;
 use App\Models\ProjectContactRole;
+use App\Models\ReportAccess;
 
 class DashboardController extends Controller
 {
@@ -1238,8 +1239,14 @@ class DashboardController extends Controller
 		} else {
 			$sort_order_query = "desc";
 		}
-		$myProjects = ProjectContactRole::where('person_id',Auth::user()->person_id)->pluck('project_id');
-		$audits = CachedAudit::with('auditors')->whereIn('project_id',$myProjects);
+		$myProjects = ProjectContactRole::where('person_id',Auth::user()->person_id)->pluck('project_id')->toArray();
+		$myProjects2 = ReportAccess::where('user_id',Auth::user()->id)->pluck('project_id')->toArray();
+		$myProjects = array_merge($myProjects,$myProjects2);
+
+		//dd($myProjects);
+		$audits = CachedAudit::with('auditors')
+									->whereIn('project_id',$myProjects);
+									//->whereIn('project_id',$myProjects2);
 		if ($request->get('my_audits') && $request->get('my_audits') == 1) {
 			session(['audit-my-audits' => 1]);
 		} elseif ($request->get('my_audits') && $request->get('my_audits') == 0) {
@@ -1251,9 +1258,10 @@ class DashboardController extends Controller
 			session(['first_load' => 1]);
 			session(['audit-my-audits' => 1]);
 		}
-		if (session()->has('audit-my-audits') && session('audit-my-audits') == 1) {
+		if (session()->has('audit-my-audits') && session('audit-my-audits') == 100000) {
 			$auditFilterMineOnly = 1;
 			$current_person_id = Auth::user()->person_id;
+			
 			$audits = $audits->where(function ($query) use ($current_person_id) {
 				$query->whereHas('contacts', function ($query2) use ($current_person_id) {
 						$query2->where('person_id', '=', $current_person_id);
