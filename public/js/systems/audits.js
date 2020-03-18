@@ -1243,7 +1243,7 @@ $(document).on('click', '.pm-site .pagination a', function(event){
 
 function pm_fetch_site_data(id, type, audit, page) {
 	var tempdiv = '<div style="height:300px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-	// $('#site').html(tempdiv);
+	$('#site').html(tempdiv);
 
 	var url = '/pm-projects/'+id+'/details/'+type+'/'+audit+'/site?page=' + page;
     $.get(url, {
@@ -1269,7 +1269,7 @@ $(document).on('click', '.pm-unit .pagination a', function(event){
 
 function pm_fetch_unit_data(id, type, audit, page) {
 	var tempdiv = '<div style="height:300px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-	// $('#unit').html(tempdiv);
+	$('#unit').html(tempdiv);
 
 	var url = '/pm-projects/'+id+'/details/'+type+'/'+audit+'/unit?page=' + page;
     $.get(url, {
@@ -1295,7 +1295,7 @@ $(document).on('click', '.pm-building .pagination a', function(event){
 function pm_fetch_building_data(id, type, audit, page) {
 	
 	var tempdiv = '<div style="height:175px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-	// $('#building').html(tempdiv);
+	$('#building').html(tempdiv);
 
 	var url = '/pm-projects/'+id+'/details/'+type+'/'+audit+'/building?page=' + page;
     $.get(url, {
@@ -1404,6 +1404,13 @@ function pmGetSingleBuilding(e){
 }
 
 function pm_fetch_buidling_detail(type, id = [], is_uncorrected = null){
+	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	if(type == 'building'){
+		$('#building').html(tempdiv);
+	}else if(type == 'unit'){
+		$('#unit').html(tempdiv);
+	}
+
 	var projectId = $('#building').data('project-id');
   	var auditId = $('#building').data('audit-id');
 	var url = '/pm-projects/'+projectId+'/building-details/'+type+'/'+auditId;
@@ -1434,12 +1441,6 @@ function pm_fetch_buidling_detail(type, id = [], is_uncorrected = null){
     );
 }
 
-function AfterBuildingUpLoad(){
-	// console.log('test');
-	$('#building_dropdown').select2({
-		placeholder: "FILTER BY BUILDING"
-	});
-}
 // get single building data record by filter
 // e: click emlemet object
 function getSingleBuilding(e){
@@ -1692,4 +1693,191 @@ function pmDocumentsLocal(project_id, audit_id = null, filter = null) {
 				$('#allita-documents').html(data);
         	}
     });
+}
+
+function AfterBuildingUpLoad(){
+
+	// console.log('test');
+	// $('#building_dropdown').select2({
+	// 	placeholder: "FILTER BY BUILDING"
+	// });
+
+	"use strict";
+  
+  	/*---------------
+  	--------- Converting Options into list (own structure) -------- */
+
+	  var myUl = [];
+
+	  $(".custom-select option").each(function() {
+		    var optionText = $(this).text();
+		    var optionValue = $(this).val();
+		    var optionSelected = $(this).is(':selected');
+		    var thisList = $(this).parent();
+		    console.log(optionSelected);
+		    myUl.push(
+		      '<li><label data-id='+optionValue+'><input type="checkbox" '+(optionSelected ? 'checked' : '')+'/>' + optionText + '</label></li>'
+		    );
+	  });
+
+	  var $p = $("<p />", {
+	    class: "select",
+	    html:
+	      '<span class="placeholder">FILTER BY BUILDING</span><em class="fa fa-angle-down"></em>'
+	  });
+
+	  var $ul = $("<ul/>", {
+	    class: "filter_list_ul",
+	    html: myUl.join("")
+	  });
+
+	  var expendBefore = $("<div />", {
+	    class: "select_box_area",
+	    html: [$p, $ul]
+	  });
+
+	  $(".custom-select").before(expendBefore);
+
+}
+
+$(document).ready(function() {
+	/*---------------
+	--------- Toggle Multiselect list -------- */
+    var idArr = [];
+    var nameArr = [];
+	$(document).on("click", ".select", function() {
+	    var filterList = $(this).next(".filter_list_ul");
+
+	    if (filterList.is(":hidden")) {
+	      $(filterList).fadeIn();
+	      $(this).find("em").addClass("angle-up");
+	    } else {
+	      $(filterList).fadeOut();
+	      $(this).find("em").removeClass("angle-up");
+	    }
+	});
+
+	/*---------------
+	--------- Check and uncheck Options from the list -------- */
+
+	$(document).on("click", '.filter_list_ul input[type="checkbox"]', function() {
+	    var inputVal = $(this).parent("label").text();
+	    var inputValId = $(this).parent("label").data('id');
+	    var placeholderSpan = $(".placeholder");
+	    var findVal = $(".show_buildings").find('div[data-title="' + inputVal + '"]');
+	    
+	    if ($(this).is(":checked")) {
+	      // placeholderSpan.remove();
+	      // $(".show_buildings").append(
+	      //   '<span data-title="' +
+	      //     inputVal +
+	      //     '" class="option">' +
+	      //     inputVal +
+	      //     "</span>"
+	      // );
+	      idArr.push(inputValId);
+	      nameArr.push(inputVal);
+	      $(".show_buildings").append(
+	      		'<div id="audit-filter-step" class="uk-badge uk-text-right@s badge-filter" style="margin-top:0px;" data-title="' +inputVal +'">'+
+	      		'<span class="option">' +
+	          inputVal +
+	          "</span></div>"
+	      )
+	    } else {
+	      if ($(".show_buildings div").length >= 1) {
+	        findVal.remove();
+	        Array.prototype.remove = function() {
+			    var what, a = arguments, L = a.length, ax;
+			    while (L && this.length) {
+			        what = a[--L];
+			        while ((ax = this.indexOf(what)) !== -1) {
+			            this.splice(ax, 1);
+			        }
+			    }
+			    return this;
+			};
+
+			idArr.remove(inputValId);
+			nameArr.remove(inputVal);
+	      }
+	      // if ($(".show_buildings span").length < 1) {
+	      //   $(".show_buildings").append('<span class="placeholder">Select</span>');
+	      // }
+	    }
+	    console.log(idArr);
+	    getSingleBuildingNew(idArr, nameArr);
+	});
+});
+
+// get single building data record by filter
+// e: click emlemet object
+function getSingleBuildingNew(id, name){
+	// var id = $('#building_dropdown').val();
+ //  	id = id.map(Number);
+
+  	var is_uncorrected;
+  	if($('#uncorrected_checkbox:checkbox:checked').length > 0){
+  		is_uncorrected = true;
+  	}else{
+  		is_uncorrected = false;
+  	}
+  	if((Array.isArray(id) && id.length) && is_uncorrected == false){
+  		// get building wise data
+  		fetch_buidling_detailNew('building', id, name);
+  		// fetch_buidling_detail('unit', id);
+  		
+  	}else if(((Array.isArray(id) && id.length) && is_uncorrected == true) || (!(Array.isArray(id) && id.length) && is_uncorrected == true)){
+  		fetch_buidling_detailNew('building', id, name , is_uncorrected);
+  		// fetch_buidling_detail('unit', id, is_uncorrected);
+  	}else{
+		var projectId = $('#building').data('project-id');
+  		var auditId = $('#building').data('audit-id');
+  		// fetch_building_data(projectId, 'selections', auditId, 1);
+  		// fetch_unit_data(projectId, 'selections', auditId, 1);
+  		// get 1 first page data if first option selected FILTER BY BUILDING
+  		fetch_buidling_detailNew('all', id, name);
+  		// console.log('all clear');
+	}
+	// console.log(is_uncorrected, id, $('#uncorrected_checkbox').val(), $('#uncorrected_checkbox:checkbox:checked').length);
+	// console.log((Array.isArray(id) && id.length),is_uncorrected)
+}
+
+function fetch_buidling_detailNew(type, id = [],name = [], is_uncorrected = null){
+	
+	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	if(type == 'building'){
+		$('#building').html(tempdiv);
+	}else if(type == 'unit'){
+		$('#unit').html(tempdiv);
+	}
+
+	var projectId = $('#building').data('project-id');
+  	var auditId = $('#building').data('audit-id');
+	var url = '/projects/'+projectId+'/building-details/'+type+'/'+auditId;
+	
+    $.post(
+    	url,
+    	{ 
+    		'_token' : $('#token').val(),
+    		type_id: id,
+    		is_uncorrected: is_uncorrected,
+    		name: name
+		},
+    	function(data) {
+	    	if(data=='0'){
+	            UIkit.modal.alert("There was a problem getting the project information.");
+	        } else {
+	        	if(type == 'building'){
+	        		$('#building').html(data);
+	        		AfterBuildingUpLoad();
+	        	}else if(type == 'unit'){
+	        		$('#unit').html(data);
+	        	}else if(type == 'all'){
+	        		// get 1 first page data if first option selected FILTER BY BUILDING
+			  		fetch_building_data(projectId, 'selections', auditId, 1);
+			  		fetch_unit_data(projectId, 'selections', auditId, 1);
+	        	}
+	        }
+    	}
+    );
 }

@@ -1858,6 +1858,7 @@ class AuditController extends Controller
 	public function getBuildingDetailsInfo(Request $request, $id, $type, $audit)
 	{
 		$type_id = $request->post('type_id');
+		$name = $request->post('name');
 		$is_uncorrected = $request->post('is_uncorrected');
 		// if (!empty($type_id) && $is_uncorrected) {
 		// 	$type_id = $request->post('type_id');
@@ -1877,12 +1878,14 @@ class AuditController extends Controller
 		// }
 		if($type == 'all'){
 			Session::forget('type_id');
+			Session::forget('name');
 			Session::forget('is_uncorrected');
 			return 1;
 		}
 
 	 	if (!empty($type_id)){
 	 		Session::put('type_id', $type_id);
+	 		Session::put('name', $name);
 		}else{
 			Session::forget('type_id');
 		}
@@ -2475,6 +2478,7 @@ class AuditController extends Controller
 					}
 				}
 				
+				Session::forget('name');
 				Session::forget('type_id');
 				Session::forget('is_uncorrected');
 
