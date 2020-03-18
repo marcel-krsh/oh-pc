@@ -18,7 +18,8 @@ if (isset($detailsPage)) {
 			    <div uk-grid class="uk-grid" style="width: 350px;">
 			    	<div class="filter-box uk-width-1-1 uk-first-column">
 						<!-- <input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" value=""> -->
-						<select onchange="getSingleBuilding(this);" class="uk-select filter-box filter-search-address-input" multiple="multiple" id="building_dropdown">
+						<!-- <select onchange="getSingleBuilding(this);" class="uk-select filter-box filter-search-address-input" multiple="multiple" id="building_dropdown"> -->
+						<select onchange="getSingleBuilding(this);" class="custom-select">
 				    		<!-- <option value="all" selected="">
 								FILTER BY BUILDING
 							</option> -->
@@ -116,7 +117,111 @@ if (isset($detailsPage)) {
 				    border-radius: 0 !important !important;
 				    height: 30px !important;
 				}
+
+				.select_box_area {
+				  position: relative;
+				  display: inline-block;
+				}
+				.select_box_area p {
+				  /*margin-bottom: 0px;*/
+				  min-width: 300px;
+				  max-width: 300px;
+				 /* background: #31599c;
+				  padding: 10px 15px;
+				  border: 1px solid rgba(255, 255, 255, 0.5);
+				  line-height: 24px;
+				  padding-right: 30px;
+				  cursor: pointer;*/
+				  box-sizing: border-box;
+				    border: none;
+				    background-color: aliceblue;
+				    font-size: 12px;
+				    color: black;
+				    padding-left: 10px;
+				    border-radius: 0;
+				    height: 30px;
+				}
+				.select_box_area p em {
+				  position: absolute;
+				  right: 15px;
+				  top: 6px;
+				  font-size: 20px;
+				  transition: all 0.3s linear;
+				  color: #000;
+				}
+				.select_box_area p em.angle-up {
+				  transform: rotate(180deg);
+				}
+				.select_box_area p .option {
+				  position: relative;
+				  display: inline-block;
+				  padding-right: 15px;
+				}
+				.select_box_area p .option::after {
+				  content: ",";
+				  position: absolute;
+				  right: 5px;
+				  top: 0;
+				}
+				.select_box_area p .option:last-of-type {
+				  padding-right: 0px;
+				}
+				.select_box_area p .option:last-of-type::after {
+				  display: none;
+				}
+
+				.filter_list_ul {
+				  padding: 0px;
+				  background: aliceblue;
+				  border: 1px solid #999999;
+				  border-top: none;
+				  display: none;
+				  max-height: 300px;
+				  overflow-y: scroll;
+				  position: relative;
+				  z-index: 999999
+				}
+				.filter_list_ul li {
+				  list-style: none;
+				}
+				.filter_list_ul li label {
+				  display: block;
+				  width: 100%;
+				  padding: 10px;
+				  margin: 0px;
+				  font-size: 14px;
+				  cursor: pointer;
+				}
+				.filter_list_ul li input[type="checkbox"] {
+				  margin-right: 5px;
+				}
+				.filter_list_ul li + li {
+				  border-top: 1px solid #999999;
+				}
+
+				.custom-select {
+				  display: none;
+				}
 			</style>
+		 	<div class="show_buildings" style="width: 500px;">
+		 		<?php
+		 			if(session()->has('name')){
+		 				$BuildingsId = session()->get('name');
+    				    foreach ($BuildingsId as $key => $value) {
+    				    ?>
+    				    <div id="audit-filter-step" class="uk-badge uk-text-right@s badge-filter">
+							<!-- <a onclick="filterAudits('step-schedule-audit', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>STEP "Schedule audit"</span></a> -->
+							<span><?php echo $value; ?></span>
+						</div>
+    				    <?php
+    					}
+    				}
+    			?>
+		    	<!-- <div id="audit-filter-step" class="uk-badge uk-text-right@s badge-filter">
+					<a onclick="filterAudits('step-schedule-audit', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>STEP "Schedule audit"</span></a>
+					<span>STEP "Schedule audit"</span>
+				</div> -->
+		    </div>
 		    <small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 
 			<hr class="dashed-hr uk-margin-bottom">

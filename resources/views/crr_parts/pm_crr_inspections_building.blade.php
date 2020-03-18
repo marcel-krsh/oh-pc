@@ -37,7 +37,7 @@ if (isset($detailsPage)) {
 					  	<span class="slider round"></span> 
 					</label> <span class="attention" style="display: inline-block;margin-top: 5px;position: absolute;margin-left: 5px;"> PENDING RESOLUTIONS </span>
 				</div>
-				<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+				
 			</div>
 			<style>
 				/*for toggler*/
