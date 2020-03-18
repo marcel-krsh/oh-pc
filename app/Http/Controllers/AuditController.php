@@ -1667,7 +1667,7 @@ class AuditController extends Controller
 			// } else {
 			//  $selected_audit = $project->selected_audit();
 			// }
-			$selected_audit = $project->selected_audit($audit_id, 1);
+			$selected_audit = $project->selected_audit($audit_id, 0);
 			//dd($id, $project, $selected_audit);
 			// get that audit's stats and contact info from the project_details table
 			$details = $project->details();

@@ -48,24 +48,13 @@
 
 <?php
 
-if ($selected_audit->update_cached_audit()) {
-	$selected_audit->refresh();
-}
+$fileCount = $selected_audit->file_findings_count;
+$correctedFileCount = $fileCount - $selected_audit->unresolved_file_findings_count;
+$nltCount = $selected_audit->nlt_findings_count;
+$correctedNltCount = $nltCount - $selected_audit->unresolved_nlt_findings_count;
 
-$fileCount = count($selected_audit->audit->files);
-$correctedFileCount = count($selected_audit->audit->files->where('auditor_last_approved_resolution_at', '<>', null));
-$nltCount = count($selected_audit->audit->nlts);
-$correctedNltCount = count($selected_audit->audit->nlts->where('auditor_last_approved_resolution_at', '<>', null));
-
-$ltCount = count($selected_audit->audit->lts);
-$correctedLtCount = count($selected_audit->audit->lts->where('auditor_last_approved_resolution_at', '<>', null));
-
-$car = collect($selected_audit->audit->reports)->where('from_template_id', '1')->first();
-$ehs = collect($selected_audit->audit->reports)->where('from_template_id', '2')->first();
-if (env('APP_ENV') != 'production') {
-	$_8823 = collect($selected_audit->audit->reports)->where('from_template_id', '5')->first();
-  //dd($selected_audit->audit->reports,collect($selected_audit->audit->reports)->where('from_template_id','1')->first());
-}
+$ltCount = $selected_audit->lt_findings_count;
+$correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
 ?>
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">
@@ -108,7 +97,7 @@ if (env('APP_ENV') != 'production') {
 
 					</div>
 					<div class="uk-width-3-5" style="padding-left:1.2em">
-						<h3 id="audit-project-name-1" class="uk-margin-bottom-remove uk-text-align-center" style="font-size: 1.5em; padding-top: .5em;">{{$project->project_number}}</h3>
+						<h3 id="audit-project-name-1" class="uk-margin-bottom-remove uk-text-align-center" style="font-size: 1.5em; padding-top: .5em;">{{$selected_audit->project_ref}}</h3>
 						<small class="uk-text-muted" style="font-size: 1em;">AUDIT {{$selected_audit->audit_id}}</small>
 					</div>
 				</div>
@@ -135,9 +124,9 @@ if (env('APP_ENV') != 'production') {
 										</div>
 									</div>
 									<div class="uk-width-1-2 uk-padding-remove">
-										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->building_inspections)}} @if(count($selected_audit->audit->building_inspections) > 1 || count($selected_audit->audit->building_inspections) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{count($selected_audit->audit->building_inspections)}}</div>
+										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_buildings}} @if($selected_audit->total_buildings > 1 || $selected_audit->total_buildings) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{$selected_audit->total_buildings}}</div>
 										<hr class="uk-width-1-1" style="margin-bottom: 8px; margin-top: 0px" >
-										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{count($selected_audit->audit->unique_unit_inspections)}} @if(count($selected_audit->audit->unique_unit_inspections) > 1 || count($selected_audit->audit->unique_unit_inspections) < 1) UNITS @else UNIT @endIf"><i class="a-buildings-2" style="font-size: 25px;"></i> : {{count($selected_audit->audit->unique_unit_inspections)}}</div>
+										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_units}} @if($selected_audit->total_units > 1 || $selected_audit->total_units < 1) UNITS @else UNIT @endIf"><i class="a-buildings-2" style="font-size: 25px;"></i> : {{$selected_audit->total_units}}</div>
 
 									</div>
 
@@ -148,183 +137,106 @@ if (env('APP_ENV') != 'production') {
 								<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 
 									<div class="uk-width-1-3">
-										@if(($car))
+										
 										<?php
-										switch ($car->crr_approval_type_id) {
-											case '1':
-											    $carIcon = "a-file-pencil-2"; // draft
-											    break;
-											    case '2':
-											    $carIcon = "a-file-clock"; // pending manager review
-											    break;
-											    case '3':
-											    $carIcon = "a-file-fail manager-fail attention"; // declined by manager
-											    break;
-											    case '4':
-											    $carIcon = "a-file-repeat"; // approved with changes
-											    break;
-											    case '5':
-											    $carIcon = "a-file-certified"; // approved
-											    break;
-											    case '6':
-											    $carIcon = "a-file-mail"; // Unopened by PM
-											    break;
-											    case '7':
-											    $carIcon = "a-file-person"; // Viewed by a PM
-											    break;
-											    case '9':
-											    $carIcon = "a-file-approve"; // All items resolved
-											    break;
-											    default:
-											    $carIcon = "a-file-fail";
-											    break;
-											  }
-											  ?>
-											  <a class="uk-link-mute" href="/report/{{$car->id}}" target="report-{{$car->id}}" uk-tooltip="title:VIEW CAR {{$car->id}} : {{strtoupper($car->status_name())}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a> &nbsp; <i class="a-square-right-2 use-hand-cursor" id="car-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION"></i>
+												$carIcon = $selected_audit->car_icon;
+												$ehsIcon = $selected_audit->ehs_icon;
+												$_8823Icon = $selected_audit->_8823_icon;
+												$carId = $selected_audit->car_id;
+												$ehsId = $selected_audit->ehs_id;
+												$_8823Id = $selected_audit->_8823_id;
+												$carStatus = $selected_audit->car_status_text;
+												$ehsStatus = $selected_audit->ehs_status_text;
+												$_8823Status = $selected_audit->_8823_status_text;
+												$carApprovalTypeId = $selected_audit->car_approval_type_id;
+												$ehsApprovalTypeId = $selected_audit->ehs_approval_type_id;
+												$_8823ApprovalTypeId = $selected_audit->_8823_approval_type_id;
+											  ?>@if(($carIcon))
+											  <a class="uk-link-mute" href="/report/{{$carId}}" target="report-{{$carId}}" uk-tooltip="title:VIEW CAR {{$carId}} : {{strtoupper($carStatus)}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a> &nbsp; <i class="a-square-right-2 use-hand-cursor" id="car-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION"></i>
 											  <div  uk-dropdown="mode:click">
 											  	<ul class="uk-nav uk-dropdown-nav " style="text-align: left !important;">
-											  		<li @if($car->crr_approval_type_id == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$car->id}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
-											  		@if($car->requires_approval)
-											  		<li @if($car->crr_approval_type_id == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
-											  		@endIf
+											  		<li @if($carApprovalTypeId == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$carId}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
+											  		
+											  		<li @if($carApprovalTypeId == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
+											  		
 											  		@can('access_manager')
-											  		<li @if($car->crr_approval_type_id == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
-											  		<li @if($car->crr_approval_type_id == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
-											  		<li @if($car->crr_approval_type_id == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
+											  		<li @if($carApprovalTypeId == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
+											  		<li @if($carApprovalTypeId == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
+											  		<li @if($carApprovalTypeId == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
 											  		@endCan
-											  		@if(($car->requires_approval == 1 && $car->crr_approval_type_id > 3) || $car->requires_approval == 0 || Auth::user()->can('access_manager'))
-											  		<li @if($car->crr_approval_type_id == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
-											  		<li @if($car->crr_approval_type_id == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
-											  		<li @if($car->crr_approval_type_id == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$car->id}},9,{{$selected_audit->project_id}});"><i class="a-file-approve"></i> ALL ITEMS RESOLVED</a></li>
+											  		@if(($carApprovalTypeId > 3) || Auth::user()->can('access_manager'))
+											  		<li @if($carApprovalTypeId == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
+											  		<li @if($carApprovalTypeId == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
+											  		<li @if($carApprovalTypeId == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},9,{{$selected_audit->project_id}});"><i class="a-file-approve"></i> ALL ITEMS RESOLVED</a></li>
 											  		@endIf
 
 											  	</ul>
-											  </div><br /><small>CAR #{{$car->id}}</small>
+											  </div><br /><small>CAR #{{$carId}}</small>
 
 											  @else
 											  <i  @if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) class="a-file-plus" uk-tooltip="title:GENERATE THIS AUDIT'S CAR" onclick="submitNewReportPD({{$selected_audit->audit_id}},1)" @else class="a-file-fail" uk-tooltip="title:SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A CAR TO BE GENERATED." @endIf></i><br /><small>CAR</small>
 											  @endIf
 											</div><div class="uk-width-1-3">
-												@if(($ehs))
-												<?php
-												switch ($ehs->crr_approval_type_id) {
-													case '1':
-											    $ehsIcon = "a-file-pencil-2"; // draft
-											    break;
-											    case '2':
-											    $ehsIcon = "a-file-clock"; // pending manager review
-											    break;
-											    case '3':
-											    $ehsIcon = "a-file-fail manager-fail attention"; // declined by manager
-											    break;
-											    case '4':
-											    $ehsIcon = "a-file-repeat"; // approved with changes
-											    break;
-											    case '5':
-											    $ehsIcon = "a-file-certified"; // approved
-											    break;
-											    case '6':
-											    $ehsIcon = "a-file-mail"; // Unopened by PM
-											    break;
-											    case '7':
-											    $ehsIcon = "a-file-pen"; // Viewed by a PM
-											    break;
-											    case '9':
-											    $ehsIcon = "a-file-approve"; // All items resolved
-											    break;
-											    default:
-											    $ehsIcon = "a-file-fail";
-											    break;
-											  }
-											  ?>
-											  <a class="uk-link-mute" href="/report/{{$ehs->id}}" target="report-{{$ehs->id}}" uk-tooltip="title:{{$ehs->status_name()}}"><i class="{{$ehsIcon}}" style="font-size: 30px;" ></i></a>
+												@if(($ehsIcon))
+												
+											  <a class="uk-link-mute" href="/report/{{$ehsId}}" target="report-{{$ehsId}}" uk-tooltip="title:{{$ehsStatus}}"><i class="{{$ehsIcon}}" style="font-size: 30px;" ></i></a>
 
 											  &nbsp; <i class="a-square-right-2 use-hand-cursor" id="ehs-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION"></i>
 											  <div  uk-dropdown="mode:click">
 											  	<ul class="uk-nav uk-dropdown-nav " style="text-align: left !important;">
-											  		<li @if($ehs->crr_approval_type_id == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$ehs->id}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
-											  		@if($ehs->requires_approval)
-											  		<li @if($ehs->crr_approval_type_id == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
+											  		<li @if($ehsApprovalTypeId == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$ehsId}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
+											  		
+											  		<li @if($ehsApprovalTypeId == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
 
 											  		@can('access_manager')
-											  		<li @if($ehs->crr_approval_type_id == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
-											  		<li @if($ehs->crr_approval_type_id == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
-											  		<li @if($ehs->crr_approval_type_id == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
+											  		<li @if($ehsApprovalTypeId == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
+											  		<li @if($ehsApprovalTypeId == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
+											  		<li @if($ehsApprovalTypeId == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
 											  		@endCan
-											  		@endIf
-											  		@if(($ehs->requires_approval == 1 && $ehs->crr_approval_type_id > 3) || $ehs->requires_approval == 0 || Auth::user()->can('access_manager'))
-											  		<li @if($ehs->crr_approval_type_id == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
-											  		<li @if($ehs->crr_approval_type_id == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
-											  		<li @if($ehs->crr_approval_type_id == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehs->id}},9,{{$selected_audit->project_id}});"><i class="a-file-approve"></i> ALL ITEMS RESOLVED</a></li>
+											  		
+											  		@if(($ehsApprovalTypeId > 3) || Auth::user()->can('access_manager'))
+											  		<li @if($ehsApprovalTypeId == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
+											  		<li @if($ehsApprovalTypeId == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
+											  		<li @if($ehsApprovalTypeId == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},9,{{$selected_audit->project_id}});"><i class="a-file-approve"></i> ALL ITEMS RESOLVED</a></li>
 											  		@endIf
 
 											  	</ul>
 											  </div>
-											  <br /><small>EHS #{{$ehs->id}}</small></a>
+											  <br /><small>EHS #{{$ehsId}}</small></a>
 											  @else
 											  @if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S EHS" onclick="submitNewReportPD({{$selected_audit->audit_id}},2)"><i  class="a-file-plus"></i><br /><small>EHS</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A EHS TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
 											  @endIf
 											</div>
 											<div class="uk-width-1-3">
 												@if(env('APP_ENV') != 'production')
-												@if(($_8823))
-												<?php
-												switch ($_8823->crr_approval_type_id) {
-													case '1':
-											    $_8823Icon = "a-file-pencil-2"; // draft
-											    break;
-											    case '2':
-											    $_8823Icon = "a-file-clock"; // pending manager review
-											    break;
-											    case '3':
-											    $_8823Icon = "a-file-fail manager-fail attention"; // declined by manager
-											    break;
-											    case '4':
-											    $_8823Icon = "a-file-repeat"; // approved with changes
-											    break;
-											    case '5':
-											    $_8823Icon = "a-file-certified"; // approved
-											    break;
-											    case '6':
-											    $_8823Icon = "a-file-mail"; // Unopened by PM
-											    break;
-											    case '7':
-											    $_8823Icon = "a-file-pen"; // Viewed by a PM
-											    break;
-											    case '9':
-											    $_8823Icon = "a-file-approve"; // All items resolved
-											    break;
-											    default:
-											    $_8823Icon = "a-file-fail";
-											    break;
-											  }
-											  ?>
-											  <a class="uk-link-mute" @can('access_manager') href="/report/{{$_8823->id}}" target="report-{{$_8823->id}}" uk-tooltip="title:{{$_8823->status_name()}}" @else onClick="alert('Sorry, this feature is still under development. It will be availble in a future release.');" @endCan ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
+												@if(($_8823Icon))
+												
+											  <a class="uk-link-mute" @can('access_manager') href="/report/{{$_8823Id}}" target="report-{{$_8823Id}}" uk-tooltip="title:{{$_8823Status}}" @else onClick="alert('Sorry, this feature is still under development. It will be availble in a future release.');" @endCan ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
 
 											  &nbsp; <i class="a-square-right-2 use-hand-cursor" @can('access_manager') id="8823-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION" @else onClick="alert('Sorry, this feature is still under development. It will be availble in a future release.');" @endCan></i>
 											  <div  uk-dropdown="mode:click">
 											  	@can('access_manager')
 											  	<ul class="uk-nav uk-dropdown-nav " style="text-align: left !important;">
-											  		<li @if($_8823->crr_approval_type_id == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$_8823->id}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
-											  		@if($_8823->requires_approval)
-											  		<li @if($_8823->crr_approval_type_id == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
+											  		<li @if($_8823ApprovalTypeId == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$_8823Id}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
+											  		
+											  		<li @if($_8823ApprovalTypeId == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
 
 											  		@can('access_manager')
-											  		<li @if($_8823->crr_approval_type_id == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
-											  		<li @if($_8823->crr_approval_type_id == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
-											  		<li @if($_8823->crr_approval_type_id == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
+											  		<li @if($_8823ApprovalTypeId == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
+											  		<li @if($_8823ApprovalTypeId == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
+											  		<li @if($_8823ApprovalTypeId == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
 											  		@endCan
-											  		@endIf
-											  		@if(($_8823->requires_approval == 1 && $_8823->crr_approval_type_id > 3) || $_8823->requires_approval == 0 || Auth::user()->can('access_manager'))
-											  		<li @if($_8823->crr_approval_type_id == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
-											  		<li @if($_8823->crr_approval_type_id == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
-											  		<li @if($_8823->crr_approval_type_id == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823->id}},9,{{$selected_audit->project_id}});"><i class="a-file-approve"></i> ALL ITEMS RESOLVED</a></li>
+											  		
+											  		@if(($_8823ApprovalTypeId > 3) ||  Auth::user()->can('access_manager'))
+											  		<li @if($_8823ApprovalTypeId == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
+											  		<li @if($_8823ApprovalTypeId == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
+											  		<li @if($_8823ApprovalTypeId == 9) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},9,{{$selected_audit->project_id}});"><i class="a-file-approve"></i> ALL ITEMS RESOLVED</a></li>
 											  		@endIf
 
 											  	</ul>
 											  	@endCan
 											  </div>
-											  <br /><small>8823 #{{$_8823->id}}</small></a>
+											  <br /><small>8823 #{{$_8823Id}}</small></a>
 											  @else
 											  @if($selected_audit->step_id > 59 && $selected_audit->step_id < 67) <span class="use-hand-cursor" uk-tooltip="title:GENERATE THIS AUDIT'S 8823" onclick="submitNewReportPD({{$selected_audit->audit_id}},5)"><i  class="a-file-plus"></i><br /><small>8823</small></span>  @else <i class="a-file-fail" uk-tooltip="title:SORRY, THE AUDIT'S STATUS DOES NOT ALLOW A 8823 TO BE GENERATED." ></i><br /><small>EHS</small>@endIf
 											  @endIf
@@ -340,18 +252,22 @@ if (env('APP_ENV') != 'production') {
 
 										<div class="divider"></div>
 										<div class="uk-text-center hasdivider uk-margin-top" uk-grid>
-											<div uk-tooltip="title: CLICK TO ADD A FILE FINDING" class="uk-width-1-3 use-hand-cursor  uk-first-column pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'file', null,'0');"><i class="a-folder"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedFileCount < $fileCount) attention @endIf" uk-tooltip title="{{$correctedFileCount}} / {{$fileCount}} @if($fileCount < 1 || $fileCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$fileCount}}</span></div>
-											<div uk-tooltip="title: CLICK TO ADD A NLT FINDING" class="uk-width-1-3 use-hand-cursor pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'nlt', null,'0');"><i class="a-booboo"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedNltCount < $nltCount) attention @endIf" uk-tooltip title="{{$correctedNltCount}} / {{$nltCount}} @if($nltCount < 1 || $nltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$nltCount}}</span></div>
-											<div uk-tooltip="title: CLICK TO ADD A LT FINDING" class="uk-width-1-3 use-hand-cursor pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'lt', null,'0');"><i class="a-skull"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedLtCount < $ltCount) attention @endIf" uk-tooltip title="{{$correctedLtCount}} / {{$ltCount}} @if($ltCount < 1 || $ltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$ltCount}}</span></div>
+											<div uk-tooltip="title: CLICK TO ADD A FILE FINDING" class="uk-width-1-3 use-hand-cursor  uk-first-column pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'file', null,'0');" ><i class="a-folder"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedFileCount < $fileCount) attention @endIf" uk-tooltip title="{{$correctedFileCount}} / {{$fileCount}} @if($fileCount < 1 || $fileCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$fileCount}}</span></div>
+
+											<div  uk-tooltip="title: CLICK TO ADD A NLT FINDING" class="uk-width-1-3 use-hand-cursor pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'nlt', null,'0');" ><i class="a-booboo"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedNltCount < $nltCount) attention @endIf" uk-tooltip title="{{$correctedNltCount}} / {{$nltCount}} @if($nltCount < 1 || $nltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$nltCount}}</span></div>
+
+											<div  uk-tooltip="title: CLICK TO ADD A LT FINDING" class="uk-width-1-3 use-hand-cursor pd-findings-column" title="" aria-expanded="false" onclick="openFindings(this, {{$selected_audit->audit_id}}, {{$selected_audit->id}}, null, 'lt', null,'0');"><i class="a-skull"></i><span class="uk-badge finding-number-pd on-phone-pd @if($correctedLtCount < $ltCount) attention @endIf" uk-tooltip title="{{$correctedLtCount}} / {{$ltCount}} @if($ltCount < 1 || $ltCount > 1) FINDINGS @else FINDING @endIf CORRECTED" aria-expanded="false">{{$ltCount}}</span></div>
 										</div>
+
 
 									</div>
 									<div class="uk-width-2-5 uk-padding-remove">
 										<div class="divider"></div>
+
 										<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 
 											<div class="uk-width-1-4 pd-findings-column">
-												<i onclick="openCompliance()" class="{{$selected_audit->audit_compliance_icon}} {{$selected_audit->audit_compliance_status}} use-hand-cursor"  uk-tooltip="title:{{$selected_audit->audit_compliance_status_text}};"></i> @if(!count($selected_audit->audit->findings))<i class="use-hand-cursor a-rotate-left" uk-tooltip title="CLICK TO RERUN AUDIT SELECTION"></i>@endIf
+												<i onclick="openCompliance()" class="{{$selected_audit->audit_compliance_icon}} {{$selected_audit->audit_compliance_status}} use-hand-cursor"  uk-tooltip="title:{{$selected_audit->audit_compliance_status_text}};"></i> @if(!$selected_audit->file_findings_count || !$selected_audit->lt_findings_count || !$selected_audit->nlt_findings_count))<i class="use-hand-cursor a-rotate-left" uk-tooltip title="CLICK TO RERUN AUDIT SELECTION"></i>@endIf
 											</div>
 											<div class="uk-width-1-4 pd-findings-column">
 												<i class="{{$selected_audit->auditor_status_icon}}" uk-tooltip="title:{{$selected_audit->auditor_status_text}}"></i>
@@ -386,16 +302,13 @@ if (env('APP_ENV') != 'production') {
 		<div id="project-details-general" class="uk-width-1-1">
 			<div uk-grid>
 				<div class="uk-width-2-3">
-					<h3>{{$project->project_name}}<br /><small>Project {{$project->project_number}} @if($selected_audit->audit_id)| Current Audit {{ $selected_audit->audit_id }}@endif</small></h3>
+					<h3>{{$selected_audit->title}}<br /><small>Project {{$selected_audit->project_ref}} @if($selected_audit->audit_id)| Current Audit {{ $selected_audit->audit_id }}@endif</small></h3>
 				</div>
 				<div class="uk-width-1-3">
 					<div class="audit-info" style="width: 80%;float: left;">
-						Last Audit Completed: {{$project->lastAuditCompleted()}}<br />
-						Next Audit Due By: {{$project->nextDueDate()}}<br />
-						Current Project Score : N/A
 					</div>
 					<div class="audit-refresh">
-						<a onclick="refresh_details({{ $project->id }}, {{ $selected_audit->audit_id }});" style="padding: 10px;border-radius: 5px;width: 25px;float: left;height: 25px;" href="javascript:void(0);" class="btn btn-refresh"><i class="a-rotate-right-2 iheader" style="font-size: 25px;color: #000;"></i></a>
+						<a onclick="refresh_details({{ $selected_audit->project_id }}, {{ $selected_audit->audit_id }});" style="padding: 10px;border-radius: 5px;width: 25px;float: left;height: 25px;" href="javascript:void(0);" class="btn btn-refresh"><i class="a-rotate-right-2 iheader" style="font-size: 25px;color: #000;"></i></a>
 					</div>
 				</div>
 			</div>
@@ -412,16 +325,16 @@ if (env('APP_ENV') != 'production') {
 
 			<div uk-grid>
 				<div class="uk-width-1-4">
-					<button id="project-details-button-3" class="uk-button uk-link  active" onclick="projectDetailsInfo({{$project->id}}, 'selections', {{$selected_audit->audit_id}},this);" type="button">
+					<button id="project-details-button-3" class="uk-button uk-link  active" onclick="projectDetailsInfo({{$selected_audit->project_id}}, 'selections', {{$selected_audit->audit_id}},this);" type="button">
 						<i class="a-mobile"></i> <i class="a-folder"></i>
 
 					SELECTIONS</button>
 				</div>
 				<div class="uk-width-1-4">
-					<button id="project-details-button-1" class="uk-button uk-link " onclick="projectDetailsInfo({{$project->id}}, 'compliance', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
+					<button id="project-details-button-1" class="uk-button uk-link " onclick="projectDetailsInfo({{$selected_audit->project_id}}, 'compliance', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 				</div>
 				<div class="uk-width-1-4">
-					<button id="project-details-button-2" class="uk-button uk-link" onclick="projectDetailsInfo({{$project->id}}, 'assignment', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-calendar-person"></i> SCHEDULING</button>
+					<button id="project-details-button-2" class="uk-button uk-link" onclick="projectDetailsInfo({{$selected_audit->project_id}}, 'assignment', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-calendar-person"></i> SCHEDULING</button>
 				</div>
 			</div>
 
@@ -520,10 +433,10 @@ if (env('APP_ENV') != 'production') {
     	UIkit.modal('#modal-select-audit').hide();
     	$('#modal-select-audit').remove();
     	dynamicModalClose();
-    	$.post("/session/project.{{$project->id}}.selectedaudit/"+nextAudit, {
+    	$.post("/session/project.{{$selected_audit->project_id}}.selectedaudit/"+nextAudit, {
     		'_token' : '{{ csrf_token() }}'
     	}, function(data) {
-    		loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);
+    		loadTab('{{ route('project.details', $selected_audit->project_id) }}', '1', 0, 0, 'project-',1);
 
     	} );
 
@@ -569,7 +482,7 @@ if (env('APP_ENV') != 'production') {
     				pos: 'top-right',
     				timeout: 1500
     			});
-    			loadTab('{{ route('project.details', $project->id) }}', '1', 0, 0, 'project-',1);
+    			loadTab('{{ route('project.details', $selected_audit->project_id) }}', '1', 0, 0, 'project-',1);
 
     		}
     	} );
@@ -639,7 +552,7 @@ if (env('APP_ENV') != 'production') {
 				openDocuments();
 				window.subtab = '';
 			}
-			loadProjectDetailsBuildings( {{$project->id}}, {{$project->id}} ) ;
+			loadProjectDetailsBuildings( {{$selected_audit->project_id}}, {{$selected_audit->project_id}} ) ;
 			UIkit.dropdown('#car-dropdown-{{$selected_audit->audit_id}}', 'mode:click');
 
 		});
