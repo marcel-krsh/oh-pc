@@ -1,11 +1,12 @@
 <div class="uk-margin-large-top" uk-grid>
 <div id="project-details-selections" class="uk-width-1-1">
 		<?php
-			$siteInspections = $audit->audit->project_amenity_inspections()->paginate(5);
+			$siteInspections = $audit->audit->project_amenity_inspections()->paginate(12);
 			$buildingInspections = $audit->audit->building_inspections()->paginate(12);
 			$allBuildingInspections = $audit->audit->building_inspections;
 			$unitInspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
 			$allUnitInspections = $audit->audit->unit_inspections;
+			
 			$pdtDetails = $details;
 			$pdtFindings = $audit->audit->findings;
 			$pieceData = [];

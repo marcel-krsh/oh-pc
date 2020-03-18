@@ -70,6 +70,19 @@ class Audit extends Model
         return $this->hasMany(\App\Models\AuditAuditor::class, 'audit_id');
     }
 
+    public function unit_documents() : HasMany
+    {
+        return $this->hasMany(\App\Models\Document::class, 'audit_id')->whereNotNull('unit_id');
+    }
+    public function building_documents() : HasMany
+    {
+        return $this->hasMany(\App\Models\Document::class, 'audit_id')->whereNotNull('building_id');
+    }
+    public function site_documents() : HasMany
+    {
+        return $this->hasMany(\App\Models\Document::class, 'audit_id')->whereNotNull('site_id');
+    }
+
     public function total_inspection_units(){
         return \App\Models\UnitInspection::where('audit_id',$this->id)->groupBy('unit_id')->count();
     }

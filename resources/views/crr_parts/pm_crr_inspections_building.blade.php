@@ -11,7 +11,7 @@ if (isset($detailsPage)) {
 		
 		<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
 			<div id="containerIntro" style="display: flex;">
-				<h2 class="uk-width-1-1@s uk-width-1-5@m">{{number_format($inspections->total(), 0)}} @if(count($inspections) > 1 || count($inspections) < 1) Buildings @else Building @endIf @if($dpView) Selected: @else Audited: @endIf </h2> 
+				<h2 class="uk-width-1-1@s uk-width-1-5@m">{{ count($allBuildingInspections) }} @if(count($inspections) > 1 || count($inspections) < 1) Buildings @else Building @endIf @if($dpView) Selected: @else Audited: @endIf </h2> 
 				<div class="uk-width-1-2" style="padding-left: 10px;"> 
 			    	{{ $inspections->links() }}
 			    </div>

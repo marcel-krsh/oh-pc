@@ -779,13 +779,13 @@ class PMAuditController extends Controller
 				// return_raw: site, building, unit
 				if ($return_raw) {
 					$dpView = 1;
-					$findings = $audit->audit->findings;
+					$findings = $audit->audit->findings->where('cancelled_at',NULL);
 					$print = null;
 					$report = $audit;
 					$detailsPage = 1;
 					switch ($return_raw) {
 						case 'site':
-							$inspections = $audit->audit->project_amenity_inspections()->paginate(5);
+							$inspections = $audit->audit->project_amenity_inspections()->paginate(12);
 							return view('crr_parts.pm_crr_inspections_site', compact('inspections','dpView','findings','print','report','detailsPage'));
 							break;
 						case 'building':
@@ -809,9 +809,9 @@ class PMAuditController extends Controller
 							break;
 						case 'unit':
 							if(session()->has('type_id')){
-								$inspections = $audit->audit->unit_inspections()->whereIn('building_id',session()->get('type_id'))->groupBy('unit_id')->paginate(12);
+								$inspections = $audit->audit->unit_inspections()->whereIn('building_id',session()->get('type_id'))->groupBy('unit_id')->with('documents')->paginate(12);
 							}else{
-								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
+								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->with('documents')->paginate(12);
 							}
 							$allUnitInspections = $audit->audit->unit_inspections;
 							return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit'));
@@ -2575,7 +2575,7 @@ class PMAuditController extends Controller
 		$details = $project->details();
 
 		$dpView = 1;
-		$findings = $audit->audit->findings;
+		$findings = $audit->audit->findings->where('cancelled_at',NULL);
 		$print = null;
 		$report = $audit;
 		$detailsPage = 1;
@@ -2626,19 +2626,19 @@ class PMAuditController extends Controller
 					// print_r($type_id);
 					// print_r($bulidingUnresolved);
 					// print_r($result);
-					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$result)->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$result)->whereIn('unit_id',$unitUnresolvedId)->with('documents')->paginate(12);
 				}
 				else if(session()->has('is_uncorrected')){
 					$allUnitInspections1 = $audit->audit->unit_inspections()->groupBy('unit_id')->get();
 					// echo count($allUnitInspections);exit;
 					$unitUnresolvedId = $audit->audit->unitUnResolved($allUnitInspections1, $findings);
 					
-					$inspections = $audit->audit->unit_inspections()->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
+					$inspections = $audit->audit->unit_inspections()->whereIn('unit_id',$unitUnresolvedId)->with('documents')->paginate(12);
 				}
 				else if(session()->has('type_id')){
-					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$type_id)->paginate(12);
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$type_id)->with('documents')->paginate(12);
 				}else{
-					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->with('documents')->paginate(12);
 				}
 				
 				return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit'));

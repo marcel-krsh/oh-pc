@@ -20,6 +20,10 @@ class UnitInspection extends Model
     {
         return $this->hasMany(\App\Models\UnitAmenity::class, 'unit_id', 'unit_id');
     }
+    public function documents() : HasMany
+    {
+        return $this->hasMany(\App\Models\Document::class, 'unit_id', 'unit_id')->where('audit_id',$this->audit_id);
+    }
 
     public function amenity_inspections() : HasMany
     {

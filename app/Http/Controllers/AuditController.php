@@ -78,7 +78,7 @@ class AuditController extends Controller
 	{
 		// if there are findings, we cannot rerun the compliance
 		// dd($audit->findings->count(), count($audit->findings));
-		if ($audit->findings->count() < 1) {
+		if ($audit->findings->where('cancelled_at',NULL)->count() < 1) {
 			$auditsAhead = Job::where('queue', 'compliance')->count();
 			$audit->rerun_compliance = 1;
 			$audit->save();
@@ -696,7 +696,7 @@ class AuditController extends Controller
 			}
 
 			// check if this amenity has findings (to disable trash)
-			if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit_id)->count()) {
+			if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit_id)->where('cancelled_at',NULL)->count()) {
 				$has_findings = 1;
 			} else {
 				$has_findings = 0;
@@ -875,7 +875,7 @@ class AuditController extends Controller
 			}
 
 			// check if this amenity has findings (to disable trash)
-			if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit_id)->count()) {
+			if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit_id)->where('cancelled_at',NULL)->count()) {
 				$has_findings = 1;
 			} else {
 				$has_findings = 0;
@@ -1905,7 +1905,7 @@ class AuditController extends Controller
 		$details = $project->details();
 
 		$dpView = 1;
-		$findings = $audit->audit->findings;
+		$findings = $audit->audit->findings->where('cancelled_at',NULL);
 		$print = null;
 		$report = $audit;
 		$detailsPage = 1;
@@ -1956,19 +1956,19 @@ class AuditController extends Controller
 					// print_r($type_id);
 					// print_r($bulidingUnresolved);
 					// print_r($result);
-					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$result)->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$result)->whereIn('unit_id',$unitUnresolvedId)->with('documents')->paginate(12);
 				}
 				else if(session()->has('is_uncorrected')){
 					$allUnitInspections1 = $audit->audit->unit_inspections()->groupBy('unit_id')->get();
 					// echo count($allUnitInspections);exit;
 					$unitUnresolvedId = $audit->audit->unitUnResolved($allUnitInspections1, $findings);
 					
-					$inspections = $audit->audit->unit_inspections()->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
+					$inspections = $audit->audit->unit_inspections()->whereIn('unit_id',$unitUnresolvedId)->with('documents')->paginate(12);
 				}
 				else if(session()->has('type_id')){
-					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$type_id)->paginate(12);
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->with('documents')->whereIn('building_id',$type_id)->paginate(12);
 				}else{
-					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->with('documents')->paginate(12);
 				}
 				
 				return view('crr_parts.crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit'));
@@ -2434,7 +2434,7 @@ class AuditController extends Controller
 				// return_raw: site, building, unit
 				if ($return_raw) {
 					$dpView = 1;
-					$findings = $audit->audit->findings;
+					$findings = $audit->audit->findings->where('cancelled_at',NULL);
 					$print = null;
 					$report = $audit;
 					$detailsPage = 1;
@@ -2464,9 +2464,9 @@ class AuditController extends Controller
 							break;
 						case 'unit':
 							if(session()->has('type_id')){
-								$inspections = $audit->audit->unit_inspections()->whereIn('building_id',session()->get('type_id'))->groupBy('unit_id')->paginate(12);
+								$inspections = $audit->audit->unit_inspections()->whereIn('building_id',session()->get('type_id'))->groupBy('unit_id')->with('documents')->paginate(12);
 							}else{
-								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
+								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->with('documents')->paginate(12);
 							}
 							$allUnitInspections = $audit->audit->unit_inspections;
 							return view('crr_parts.crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit'));
@@ -5870,7 +5870,7 @@ class AuditController extends Controller
 							$name = $amenity->amenity->amenity_description;
 						}
 
-						if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit->audit_id)->count()) {
+						if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit->audit_id)->where('cancelled_at',NULL)->count()) {
 							$has_findings = 1;
 						} else {
 							$has_findings = 0;
@@ -6145,7 +6145,7 @@ class AuditController extends Controller
 					$name = $amenity->amenity->amenity_description;
 				}
 
-				if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit->audit_id)->count()) {
+				if (Finding::where('amenity_id', '=', $amenity->amenity_inspection_id)->where('audit_id', '=', $audit->audit_id)->where('cancelled_at',NULL)->count()) {
 					$has_findings = 1;
 				} else {
 					$has_findings = 0;
@@ -6304,11 +6304,11 @@ class AuditController extends Controller
 	{
 		$audit = CachedAudit::where('audit_id', '=', $id)->with('audit')->first();
 		$steps = GuideStep::where('guide_step_type_id', '=', 1)->orderBy('order', 'asc');
-		if (count($audit->audit->findings) || count($audit->audit->reports)) {
+		if (count($audit->audit->findings->where('cancelled_at',NULL)) || count($audit->audit->reports)) {
 			$steps = $steps->where('id', '>', 59);
-		} elseif (!count($audit->audit->reports) && count($audit->audit->findings)) {
+		} elseif (!count($audit->audit->reports) && count($audit->audit->findings->where('cancelled_at',NULL))) {
 			$steps = $steps->where('id', '<', 61)->where('id', '>', 59);
-		} elseif (!count($audit->audit->reports) && !count($audit->audit->findings)) {
+		} elseif (!count($audit->audit->reports) && !count($audit->audit->findings->where('cancelled_at',NULL))) {
 			$steps = $steps->where('id', '<', 61);
 		}
 		$steps = $steps->get();
@@ -6325,7 +6325,7 @@ class AuditController extends Controller
 		$message = 1;
 		$audit = CachedAudit::where('id', '=', $id)->with('audit')->first();
 		$step_id = intval($request->get('step'));
-		if ((count($audit->audit->findings) || count($audit->audit->reports)) && $step_id < 60) {
+		if ((count($audit->audit->findings->where('cancelled_at',NULL)) || count($audit->audit->reports)) && $step_id < 60) {
 			$step_id = 60;
 			//if there are findings or a report- the step must be defaulted to inprogress - it cannot be lower.
 			$message = 'There is either a report, or findings on this audit. The lowest step possible to set this audit to is In Progress.';

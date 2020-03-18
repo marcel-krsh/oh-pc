@@ -16,6 +16,11 @@ class BuildingInspection extends Model
     return $this->hasMany(\App\Models\BuildingAmenity::class, 'building_id', 'building_id');
   }
 
+  public function documents(): HasMany
+  {
+    return $this->hasMany(\App\Models\Document::class, 'building_id', 'building_id')->where('audit_id',$this->audit_id);
+  }
+
   public function building(): HasOne
   {
     return $this->hasOne(\App\Models\Building::class, 'id', 'building_id');

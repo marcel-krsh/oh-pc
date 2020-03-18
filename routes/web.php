@@ -478,6 +478,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/pm-projects/{id}/details/{type}/{audit}/{return_raw?}', 'PMAuditController@getPMProjectDetailsInfo')->name('pm-project.details.info');
 		Route::get('pm-dashboard/audits/{audit}/buildings', 'PMAuditController@pmBuildingsFromAudit')->name('pm-audit.buildings');
 		Route::post('/pm-projects/{id}/building-details/{type}/{audit}', 'PMAuditController@getPMBuildingDetailsInfo')->name('building.details.info');
+		Route::get('/pm-projects/{project}/local-documents/{audit_id?}', 'DocumentController@getPMProjectLocalDocuments')->name('project.pm-local-documents');
 		
 
 		//session controls

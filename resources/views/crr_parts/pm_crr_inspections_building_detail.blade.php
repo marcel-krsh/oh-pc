@@ -43,9 +43,9 @@
 	<div  class="inspection-data-row">
 		<div  class="unit-name"  >
 			@if($print !== 1 && !$dpView)
-			<a href="#findings-list" class="uk-link-mute" onClick="showOnlyFindingsFor('building-{{ $i->building_id }}-finding');">
+			<a href="#findings-list" class="uk-link-mute">
 				@elseif($dpView)
-				<span class="use-hand-cursor" onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" >
+				<span  >
 					@endIf
 					{{ $i->building_name }}
 					@if($print !== 1 && !$dpView)
@@ -58,12 +58,14 @@
 			@elseIf(($hasFindings && property_exists($i,'latest_resolution')) || ($dpView && !count($thisBuildingUnfinishedInspections) && $hasFindings && $i->latest_resolution == null))
 			<br /> <span class="attention" style="color:red; display: inline-block;margin-top: 5px;"><i class="a-multiply"></i> UNCORRECTED </span>
 			@if($dpView)
-			<br/> <small onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" class="use-hand-cursor"><i class="a-circle-checked"></i> INSPECTION COMPLETE</small>
+			<br/> <small><i class="a-circle-checked"></i> INSPECTION COMPLETE</small>
 			@endIf
 			@elseif($dpView && count($thisBuildingUnfinishedInspections) && ($selected_audit->step_id > 59 || count($selected_audit->audit->findings)))
-			<br /> <small onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" class="use-hand-cursor"><i class="a-circle"></i> INSPECTION IN PROGRESS</small>
+			<br /> <small><i class="a-circle"></i> INSPECTION IN PROGRESS</small>
 			@elseif($dpView && !count($thisBuildingUnfinishedInspections) && !$hasFindings)
-			<br /><small onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" class="use-hand-cursor"><i class="a-circle-checked"></i> INSPECTION COMPLETE </small>
+			<br /><small><i class="a-circle-checked"></i> INSPECTION COMPLETE </small>
+			@elseif($dpView && !count($thisBuildingUnfinishedInspections) && $hasFindings)
+			<br /><small ><i class="a-circle"></i> INSPECTION INCOMPLETE </small>
 			@endIf
 
 			@if($dpView)
@@ -71,14 +73,14 @@
 			<br /><small>AUDITORS ASSIGNED:</small>
 			@foreach($building_auditors as $auditor)
 			<div class="amenity-auditor uk-margin-remove auditor-badge-on-details">
-				<div id="building-{{ $i->building_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ strtoupper($auditor->full_name()) }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} use-hand-cursor no-float" onclick="swapFindingsAuditor({{ $auditor->id }}, {{ $selected_audit->audit_id }}, {{ $i->building_id }}, 0, 'building-auditors-{{ $i->building_id }}',1)">
+				<div id="building-{{ $i->building_id }}-avatar-{{ $loop->iteration }}" uk-tooltip="pos:top-left;title:{{ strtoupper($auditor->full_name()) }};" title="" aria-expanded="false" class="auditor-badge auditor-badge-{{ $auditor->badge_color }} no-float">
 					{{ $auditor->initials() }}
 				</div>
 			</div>
 			@endforeach
 			@else
 			<div class="uk-inline uk-padding-remove" style="margin-top:6px; margin: 3px 3px 3px 3px; font-size: 20px">
-				<i class="a-avatar-plus_1" uk-tooltip title="NEEDS ASSIGNED" onclick="assignFindingAuditor({{ $selected_audit->audit_id }}, {{ $i->building_id }}, 0, 0, 'building-auditor-0', 0, 0, 0, 2,1);">
+				<i class="a-avatar" uk-tooltip title="UNASSIGNED">
 				</i>
 			</div>
 			@endif
@@ -89,8 +91,8 @@
 			{{ $i->building_name }}
 		</div> --}}
 		<div style="float: right;">
-			<i class="a-mobile uk-text-large uk-margin-small-right @if($auditor_access)@if(!$print)use-hand-cursor @endif @endif"  @if($auditor_access)@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, null, null,'0');" @endif  @endif></i> @if($thisBuildingSiteFindings > 0) <span class="uk-badge finding-number on-phone @if($thisBuildingUnresolvedSiteFindings > 0) attention @endIf" uk-tooltip title="{{ $thisBuildingSiteFindings }} @if($thisBuildingSiteFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedSiteFindings > 0) WITH {{ $thisBuildingUnresolvedSiteFindings }} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{ $thisBuildingSiteFindings }}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
-			<i class="a-folder uk-text-large @if($auditor_access)@if(!$print)use-hand-cursor @endif @endif" @if($auditor_access)@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, {{ $i->building_id }}, null, 'file',null,'0');" @endif @endif></i> @if($thisBuildingFileFindings > 0) <span class="uk-badge finding-number on-folder @if($thisBuildingUnresolvedFileFindings > 0) attention @endIf" uk-tooltip title="{{ $thisBuildingFileFindings }} @if($thisBuildingFileFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedFileFindings > 0) WITH {{ $thisBuildingUnresolvedFileFindings }} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{ $thisBuildingFileFindings }}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf
+			<i class="a-mobile uk-text-large uk-margin-small-right" ></i> @if($thisBuildingSiteFindings > 0) <span class="uk-badge finding-number on-phone @if($thisBuildingUnresolvedSiteFindings > 0) attention @endIf" uk-tooltip title="{{ $thisBuildingSiteFindings }} @if($thisBuildingSiteFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedSiteFindings > 0) WITH {{ $thisBuildingUnresolvedSiteFindings }} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{ $thisBuildingSiteFindings }}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
+			<i class="a-folder uk-text-large @if($auditor_access)@if(!$print)use-hand-cursor @endif @endif" ></i> @if($thisBuildingFileFindings > 0) <span class="uk-badge finding-number on-folder @if($thisBuildingUnresolvedFileFindings > 0) attention @endIf" uk-tooltip title="{{ $thisBuildingFileFindings }} @if($thisBuildingFileFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedFileFindings > 0) WITH {{ $thisBuildingUnresolvedFileFindings }} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{ $thisBuildingFileFindings }}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf
 
 		</div>
 		<hr class="dashed-hr uk-margin-small-bottom">

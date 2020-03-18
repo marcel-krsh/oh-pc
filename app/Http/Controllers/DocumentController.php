@@ -66,6 +66,88 @@ class DocumentController extends Controller
 		$filter['filter_audit_id'] = "";
 		$filter['filter_finding_id'] = "";
 		$filter['filter_category_id'] = "";
+		$filter['filter_unit_id'] = "";
+
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+		$documents = $documents_query->get(); //->paginate(20);
+		$documents_all = $documents_query->get();
+		$documents_count = $documents_query->count();
+		$new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
+		$old_audits = $documents_all->pluck('audit')->flatten()->unique('id');
+		$audits = $new_audits->merge($old_audits)->filter()->unique('id'); //removes null records too
+		$categories = $documents_all->pluck('assigned_categories')->flatten()->unique('id');
+		$findings = collect([]);
+		$units = $project->units->whereIn('id',$documents->where('unit_id','<>',NULL)->pluck('unit_id'));
+		$all_finding_ids = [];
+		$allUnits = $project->units()->orderBy('unit_name')->get();
+		//dd($allUnits);
+		$allFindings = $project->findings;
+		
+		$allAudits = $project->audits;
+		// return $documents;
+
+		foreach ($documents as $key => $document) {
+			$finding_ids = [];
+			$doc_finding_ids = [];
+			foreach ($document->communications as $key => $communication) {
+				$finding_ids = $communication->communication ? $communication->communication->finding_ids : null;
+				if (!is_null($finding_ids)) {
+					$finding_ids = json_decode($finding_ids);
+					$doc_finding_ids = array_merge($doc_finding_ids, $finding_ids);
+					// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
+					// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
+					// $findings = $findings->merge($doc_findings);
+				}
+			}
+			if (!empty($doc_finding_ids)) {
+				$all_finding_ids = array_merge($all_finding_ids, $doc_finding_ids);
+				$document->has_findings = 1;
+				$document->finding_ids = $doc_finding_ids;
+			} else {
+				$document->has_findings = 0;
+				$document->finding_ids = [];
+			}
+			// return $document;
+		}
+
+		$findings = Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type')->whereIn('id', $all_finding_ids)->get();
+		$findings = $findings->unique('id');
+		$findings_audits = $findings->pluck('audit_plain')->flatten()->unique('id');
+		$audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
+
+		$filtered_documents = $documents;
+		if ($request->filter_audit_id) {
+			$filter['filter_audit_id'] = $request->filter_audit_id;
+		}
+		if ($request->filter_finding_id) {
+			$filter['filter_finding_id'] = $request->filter_finding_id;
+		}
+		if ($request->filter_category_id) {
+			$filter['filter_category_id'] = $request->filter_category_id;
+		}
+		if ($request->filter_unit_id) {
+			$filter['filter_unit_id'] = $request->filter_unit_id;
+		}
+
+		// return $filter;
+		// return $documents->first()->findings();
+		$document_categories = DocumentCategory::with('parent')
+			->where('parent_id', '<>', 0)
+			->active()
+			->orderBy('parent_id')
+			->orderBy('document_category_name')
+			->get();
+		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories', 'filter', 'documents_count','units','allUnits','allFindings','allAudits'));
+	}
+
+	public function getPMProjectLocalDocuments(Project $project, $audit_id = null, Request $request)
+	{
+		// ini_set('max_execution_time', 300);
+		//check if filters exist
+		// return $request->all();
+		$filter['filter_audit_id'] = "";
+		$filter['filter_finding_id'] = "";
+		$filter['filter_category_id'] = "";
 
 		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
 		$documents = $documents_query->get(); //->paginate(20);

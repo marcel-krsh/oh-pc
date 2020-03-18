@@ -28,11 +28,11 @@
 	});
 	$hasFindings = 0;
 	// dd($currentBuilding,$findingCount);
-	$thisBuildingSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file'));
-	$thisBuildingResolvedSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1));
+	$thisBuildingSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file')->where('cancelled_at',NULL));
+	$thisBuildingResolvedSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1)->where('cancelled_at',NULL));
 	$thisBuildingUnresolvedSiteFindings = $thisBuildingSiteFindings - $thisBuildingResolvedSiteFindings;
-	$thisBuildingFileFindings = count($findingCount->where('finding_type.type', '==', 'file'));
-	$thisBuildingResolvedFileFindings = count($findingCount->where('finding_type.type', '==', 'file')->where('auditor_approved_resolution', 1));
+	$thisBuildingFileFindings = count($findingCount->where('finding_type.type', '==', 'file')->where('cancelled_at',NULL));
+	$thisBuildingResolvedFileFindings = count($findingCount->where('finding_type.type', '==', 'file')->where('auditor_approved_resolution', 1)->where('cancelled_at',NULL));
 	$thisBuildingUnresolvedFileFindings = $thisBuildingFileFindings - $thisBuildingResolvedFileFindings;
 
 	if ($thisBuildingSiteFindings || $thisBuildingFileFindings) {

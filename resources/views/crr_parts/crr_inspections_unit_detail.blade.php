@@ -17,20 +17,20 @@
 				<?php
 				$currentUnit = $i->unit_id;
 				// $thisUnitValues = collect($inspections)->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
-				$thisUnitValues = $inspections->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
-				$thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file'));
+				$thisUnitValues = $allUnitInspections->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
+				$thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('cancelled_at',NULL));
 				//$thisUnitUnresolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
 				//$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
 				//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
-				$thisUnitResolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('auditor_approved_resolution', 1));
+				$thisUnitResolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('auditor_approved_resolution', 1)->where('cancelled_at',NULL));
 				$thisUnitUnresolvedFileFindings = $thisUnitFileFindings - $thisUnitResolvedFileFindings;
-				$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
+				$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('cancelled_at',NULL));
 				//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
 				$thisUnitResolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1));
 				$thisUnitUnresolvedSiteFindings = $thisUnitSiteFindings - $thisUnitResolvedSiteFindings;
-				$isHome = count(collect($inspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'HOME'));
-				$isOhtf = count(collect($inspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'OHTF'));
-				$isNhtf = count(collect($inspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'NHTF'));
+				$isHome = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'HOME')->where('cancelled_at',NULL));
+				$isOhtf = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'OHTF')->where('cancelled_at',NULL));
+				$isNhtf = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'NHTF')->where('cancelled_at',NULL));
 
 				//if ($thisBuildingSiteFindings || $thisBuildingFileFindings) {
 				//	$hasFindings = 1;
