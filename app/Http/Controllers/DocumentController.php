@@ -72,18 +72,18 @@ class DocumentController extends Controller
 		$documents = $documents_query->get(); //->paginate(20);
 		$documents_all = $documents_query->get();
 		$documents_count = $documents_query->count();
-		$new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
-		$old_audits = $documents_all->pluck('audit')->flatten()->unique('id');
-		$audits = $new_audits->merge($old_audits)->filter()->unique('id'); //removes null records too
+		
 		$categories = $documents_all->pluck('assigned_categories')->flatten()->unique('id');
 		$findings = collect([]);
-		$units = $project->units->whereIn('id',$documents->where('unit_id','<>',NULL)->pluck('unit_id'));
 		$all_finding_ids = [];
-		$allUnits = $project->units()->orderBy('unit_name')->get();
+		//$allUnits = $project->units()->orderBy('unit_name')->get();
+		$allBuildings = $project->buildings()->with('units')->orderBy('building_name')->get();
 		//dd($allUnits);
 		$allFindings = $project->findings;
-		
+		$allUnits = [];
 		$allAudits = $project->audits;
+
+		//dd($allBuildings);
 		// return $documents;
 
 		foreach ($documents as $key => $document) {
@@ -113,7 +113,7 @@ class DocumentController extends Controller
 		$findings = Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type')->whereIn('id', $all_finding_ids)->get();
 		$findings = $findings->unique('id');
 		$findings_audits = $findings->pluck('audit_plain')->flatten()->unique('id');
-		$audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
+		
 
 		$filtered_documents = $documents;
 		if ($request->filter_audit_id) {
@@ -131,13 +131,15 @@ class DocumentController extends Controller
 
 		// return $filter;
 		// return $documents->first()->findings();
-		$document_categories = DocumentCategory::with('parent')
-			->where('parent_id', '<>', 0)
-			->active()
-			->orderBy('parent_id')
-			->orderBy('document_category_name')
+		$document_categories = DocumentCategory::select('parent.document_category_name as parent_category_name', 'document_categories.*')->join('document_categories as parent', 'document_categories.parent_id', '=', 'parent.id')
+			->where('document_categories.parent_id', '<>', 0)
+			->where('document_categories.active',1)
+			->orderBy('parent.document_category_name')
+			->orderBy('document_categories.document_category_name')
 			->get();
-		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories', 'filter', 'documents_count','units','allUnits','allFindings','allAudits'));
+
+			//dd($document_categories);
+		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'findings', 'categories', 'filter', 'documents_count','allBuildings','allUnits','allFindings','allAudits'));
 	}
 
 	public function getPMProjectLocalDocuments(Project $project, $audit_id = null, Request $request)

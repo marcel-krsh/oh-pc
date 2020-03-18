@@ -7,22 +7,22 @@
 					<option value="" selected="">
 						FILTER BY AUDIT
 					</option><option disabled>___________________________________________________________________</option>
-					@foreach($audits as $audit)
-					<option value="audit-{{ $audit->id }}" {{ $filter['filter_audit_id'] == $audit->id ? 'selected=selected': '' }}>{{ $audit->id }}</option><option disabled>___________________________________________________________________</option>
+					@foreach($allAudits as $audit)
+					<option value="audit-{{ $audit->id }}" {{ $filter['filter_audit_id'] == $audit->id ? 'selected=selected': '' }}>{{date('m/d/Y',strtotime($audit->inspection_schedule_date))}} AUDIT {{$audit->audit_id}} | FILE {{$audit->file_findings_count}} | NLT {{$audit->file_findings_count}} | LT {{$audit->file_findings_count}} | {{$audit->step_status_text}}</option><option disabled>___________________________________________________________________</option>
 					@endforeach
 				</select>
 			</div>
-			<div class="uk-width-1-1@s uk-width-1-5@m" id="recipient-dropdown" style="vertical-align: top;">
+			<div class="uk-width-1-1@s uk-width-1-5@m" id="units-dropdown" style="vertical-align: top;">
 				<select id="document-filter-by-unit" class="uk-select filter-drops uk-width-1-1" onchange="getSelectedFilters();" style="font-size:13px; padding:0px">
 					<option value="" selected="">
 						FILTER BY UNIT
 					</option><option disabled>___________________________________________________________________</option>
-					@foreach($units as $unit)
-					<option value="unit-{{ $unit->id }}" {{ $filter['filter_unit_id'] == $unit->id ? 'selected=selected': '' }}>{{ $unit->unit_name}} in {{$unit->building->building_name}}</option><option disabled>___________________________________________________________________</option>
+					@foreach($allUnits as $unit)
+					<option value="unit-{{ $unit->id }}">UNIT {{ $unit->unit_name}} in {{$unit->building->building_name}}</option><option disabled>___________________________________________________________________</option>
 					@endforeach
 				</select>
 			</div>
-			<div class="uk-width-1-1@s uk-width-1-5@m" id="recipient-dropdown" style="vertical-align: top;">
+			<div class="uk-width-1-1@s uk-width-1-5@m" id="findings-dropdown" style="vertical-align: top;">
 				<select id="document-filter-by-finding" class="uk-select filter-drops uk-width-1-1" onchange="getSelectedFilters();" style="font-size:13px; padding:0px">
 					<option value="" selected="">
 						FILTER BY FINDING
@@ -34,7 +34,7 @@
 					@endforeach
 				</select>
 			</div>
-			<div class="uk-width-1-1@s uk-width-1-5@m" id="recipient-dropdown" style="vertical-align: top;">
+			<div class="uk-width-1-1@s uk-width-1-5@m" id="categories-dropdown" style="vertical-align: top;">
 				<select id="document-filter-by-category" class="uk-select filter-drops uk-width-1-1" onchange="getSelectedFilters();" style="font-size:13px; padding:0px">
 					<option value="" selected="">
 						FILTER BY CATEGORY
@@ -68,11 +68,23 @@
 					<div uk-grid id="category-list" style="border:none; border-bottom: 1px dashed gray;height: 426px; border-radius: 0px;">
 						<div class="uk-width-1-1 uk-margin-small-bottom">
 							<ul class="uk-list document-category-menu"  style="font-size: 13px">
+								<?php $currentGroup = ""; $opened = 0; ?>
 								@foreach ($document_categories as $category)
-								<li>
+								<?php 
+								if($currentGroup !== $category->parent_category_name){
+									if($opened == 1){
+										echo "<li><hr /></li>";
+									} else {
+										$opened = 1;
+									}
+									echo "<li onclick=\"$('.child-of-".$category->parent_id."').slideToggle();\" class='use-hand-cursor'><h3><i class='a-circle-down'></i> ".$category->parent_category_name.":</h3></li>";
+									$currentGroup = $category->parent_category_name;
+								}
+								?>
+								<li class="child-of-{{$category->parent_id}}" style="display: none;">
 									<input style="float: left; margin-top: 3px" name="category-id-checkbox" class="uk-radio document-category-selection" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio">
 									<label style="display: block; margin-left: 30px" for="category-id-{{ $category->id }}">
-										{{ $category->parent->document_category_name }} : {{ $category->document_category_name }}
+										{{ $category->document_category_name }}
 									</label>
 								</li>
 								@endforeach
@@ -98,12 +110,22 @@
 						</select>
 						<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
 						
-						<select class="uk-select filter-drops uk-width-1-1"><option>UNIT  (OPTIONAL)</option>
-								@forEach($allUnits as $uploadUnit)
+						<select name="building_unit" class="uk-select filter-drops uk-width-1-1" value=""><option>BUILDING / UNIT  (OPTIONAL)</option>
+							<option disabled>___________________________________________________________________</option>
+								@forEach($allBuildings as $uploadBuilding)
 
-									<option>{{$allFindings->where('auditor_approved_resolution',NULL)->where('unit_id',$uploadUnit->id)->count()}} Unresolved Findings :: UNIT {{$uploadUnit->unit_name}} in {{$uploadUnit->building->building_name}} 
+									<option value="building-{{$uploadBuilding->id}}">BIN {{$uploadBuilding->building_name}} | FINDINGS :: {{$allFindings->where('auditor_approved_resolution',NULL)->where('building_id',$uploadBuilding->id)->count()}} UNRESOLVED 
 										</option>
 										<option disabled>___________________________________________________________________</option>
+										@if($uploadBuilding->units != NULL && count($uploadBuilding->units))
+											@forEach($uploadBuilding->units->sortBy('unit_name') as $uploadUnit)
+
+											<option value="unit-{{$uploadUnit->id}}"> --- UNIT {{$uploadUnit->unit_name}} | FINDINGS :: {{$allFindings->where('auditor_approved_resolution',NULL)->where('unit_id',$uploadUnit->id)->count()}} UNRESOLVED    
+												</option>
+												<option disabled>___________________________________________________________________</option>
+											@endForEach
+
+										@endIf
 								@endForEach
 
 						</select>
@@ -115,7 +137,7 @@
 								<div class="uk-width-1-1 uk-margin-small-bottom">
 									<ul class="uk-list document-category-menu"  style="font-size: 13px">
 										@forEach($allFindings as $uploadFinding)
-										<li class="all upload-finding finding-{{$uploadFinding->id}} unit-{{$uploadFinding->unit_id}} audit-{{$uploadFinding->audit_id}} @if($uploadFinding->auditor_approved_resolution) finding-resolved @else finding-unresolved @endIf">
+										<li class="all upload-finding audit-{{$uploadFinding->audit_id}} @if($uploadFinding->building_id != NULL) building-{{$uploadFinding->building_id}} @endIf @if($uploadFinding->unit_id != NULL) building-{{$uploadFinding->unit->building_id}} unit-{{$uploadFinding->unit_id}} @endIf finding-{{$uploadFinding->id}}   @if($uploadFinding->auditor_approved_resolution) finding-resolved @else finding-unresolved @endIf">
 											<input style="float: left; margin-top: 3px" name="finding-id-checkbox" class="uk-checkbox document-category-selection" id="upload-finding-id-{{ $uploadFinding->id }}" value="{{ $uploadFinding->id }}" type="checkbox">
 											<label style="display: block; margin-left: 30px" for="category-id-{{ $category->id }}">
 												@if($uploadFinding->auditor_approved_resolution)<span>RESOLVED @else <span class=" attention" style="color:red"><strong>UNRESOLVED</strong> @endIf </span> | {{strtoupper($uploadFinding->finding_type->type)}} | @if($uploadFinding->building_id) BUILDING {{$uploadFinding->building->building_name}} @elseIf($uploadFinding->unit_id) UNIT {{$uploadFinding->unit->unit_name}}  @elseIf($uploadFinding->site) SITE @endIf | AUDIT # {{$uploadFinding->audit_id}} | FINDING # {{$uploadFinding->id}}<br /> {{$uploadFinding->amenity->amenity_description}}: {{$uploadFinding->level_description()}}  @if($uploadFinding->comments != NULL && count($uploadFinding->comments))<br />Auditor Comment: "{{$uploadFinding->comments->first()->comment}}"@endIf
@@ -257,7 +279,7 @@
 				$audits_ids = ($document->audits->pluck('id')->toArray());
 				$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
 				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
-				$document_audits = $audits->whereIn('id', $all_ids);
+				$document_audits = $allAudits->whereIn('id', $all_ids);
 				$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
 				$building_findings = $document_findings->where('building_id', '<>', null)->where('unit_id', null);
 				$unit_findings = $document_findings->where('building_id', null)->where('unit_id', '<>', null);
@@ -269,7 +291,7 @@
 				// $thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
 				// dd($document_audits);
 				@endphp
-				<tr class="all @foreach ($document_audits as $audit)audit-{{ $audit->id }} @endforeach @if($document->has_findings) @foreach($document_findings as $finding)finding-{{ $finding->id }} @endforeach @endif @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach unit-{{$document->unit_id}}">
+				<tr class="all @foreach ($document_audits as $audit)audit-{{ $audit->id }} @endforeach @if($document->has_findings) @foreach($document_findings as $finding)finding-{{ $finding->id }} @endforeach @endif @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach @if($document->unit_id != NULL) unit-{{$document->unit_id}} @endIf">
 						<td style="vertical-align: middle;"><span class="uk-margin-top uk-padding-left" uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
 		    			</td>
 						<td class="uk-width-1-2" style="vertical-align: middle;">
@@ -505,16 +527,14 @@
 		if(categoryId != "") {
 			//filter = filter + '&filter_category_id='+categoryId;
 			
-			cssFilter = cssFilter+' .' +categoryId;
-			//$("."+categoryId).show();
+			//cssFilter = cssFilter+' .' +categoryId;
+			$("."+categoryId).show();
 		}
 		if(auditId != "") {
 			filter = filter + '&filter_audit_id='+auditId;
 			
 			//hide other audits
-			$('html').hide(function (index, css) {
-				return (css.match (/\baudit-\S+/g) || []).join(' '); // removes anything that starts with "audit-"
-			});
+			$('li[class*=audit-]').hide();
 			
 			//cssFilter = '.' +auditId;
 			$("."+auditId).show();
@@ -522,28 +542,39 @@
 		}		
 		if(unitId != "") {
 			filter = filter + '&filter_unit_id='+unitId;
-			$('html').hide(function (index, css) {
-				return (css.match (/\bunit-\S+/g) || []).join(' '); // removes anything that starts with "unit-"
-			});
+			$('li[class*=unit-]').hide();
 			//if(cssFilter.length) { cssFilter = cssFilter+" , "; }
 			//cssFilter = cssFilter+' .' +unitId;
-			$("."+unitId).show();
+			
+			if(findingId != "" && findingId == 'finding-resolved'){
+				$("."+unitId).show();
+				$(".finding-unresolved").hide();
+			} else if(findingId != "" && findingId == 'finding-unresolved'){
+				$("."+unitId).show();
+				$(".finding-resolved").hide();
+			} else if(findingId != "") {
+				$("."+findingId+", ."+unitId).show();
+			} else {
+				$("."+unitId).show();
+			}
+			console.log('showing unit '+unitId);
 		}
-		if(findingId != "") {
+		if(findingId != "" && unitId == "") {
 			filter = filter + '&filter_finding_id='+findingId;
 			//if(auditId.length) { cssFilter = cssFilter+" , "; }
 			//cssFilter = cssFilter+' .' +findingId;
-			$('html').hide(function (index, css) {
-				return (css.match (/\bfinding-\S+/g) || []).join(' '); // removes anything that starts with "finding-"
-			});
+			$('li[class*=finding-]').hide();
 			$("."+findingId).show();
 		}
+
 		// if(cssFilter.length) { 
 		// 	$(cssFilter).show();
 		// 	console.log('Showing '+cssFilter); 
 		// }
-		if(auditId == "" && findingId == "" && categoryId == "" && auditId== "") {
+		if(auditId == "" && findingId == "" && categoryId == "" && unitId== "") {
 			$(".all").show();
+			console.log('showing all');
+
 		}
 
 		// documentsLocal("{{ $project->id }}", "{{ $audit_id }}", filter);
