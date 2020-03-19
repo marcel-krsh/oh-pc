@@ -71,12 +71,16 @@ class DocumentController extends Controller
 				session(['document-upload-documents-unresolved' => 1]);
 			} else if($request->get('document-upload-unresolved') == 'off')  {
 				$unresolved = 2;
-				session(['document-upload-documents-unresolved' => 0]);
-			} else {
+				session(['document-upload-documents-unresolved' => 2]);
+			} else if($request->get('document-upload-unresolved') == 'both'){
 				$unresolved = 3; // both
+				session(['document-upload-documents-unresolved' => 3]);
+			}else if($request->get('document-upload-unresolved') == 'reset'){
+				$unresolved = 3; // both
+				$request->session()->forget('document-upload-documents-unresolved');
 			}
 			
-		} else if(session('document-upload-documents-unresolved') == 0){
+		} else if(session('document-upload-documents-unresolved') > 0){
 			$unresolved =session('document-upload-documents-unresolved');
 		} else {
 			$unresolved = 3;
@@ -89,14 +93,20 @@ class DocumentController extends Controller
 			if(substr($request->get('document-upload-building-unit'), 0,9) == "building-"){
 				$isBuilding = 1;
 				$buSearchValue = intval(str_replace('building-', '', $request->get('document-upload-building-unit')));
-			}else{
+				session(['document-upload-findings-filter-is-building' => $isBuilding]);
+				session(['document-upload-findings-filter-search-value' => $buSearchValue]);
+			}else if(substr($request->get('document-upload-building-unit'), 0,5) == "unit-"){
 				$isBuilding = 2;
 				$buSearchValue = intval(str_replace('unit-', '', $request->get('document-upload-building-unit')));
+				session(['document-upload-findings-filter-is-building' => $isBuilding]);
+				session(['document-upload-findings-filter-search-value' => $buSearchValue]);
+			} else if($request->get('document-upload-building-unit') == 'reset'){
+				$isBuilding = NULL;
+				$buSearchValue = NULL;
+				$request->session()->forget('document-upload-findings-filter-is-building' );
+				$request->session()->forget('document-upload-findings-filter-search-value' );
 			}
 
-			
-			session(['document-upload-findings-filter-is-building' => $isBuilding]);
-			session(['document-upload-findings-filter-search-value' => $buSearchValue]);
 			
 			
 		} else if(session('document-upload-findings-filter-search-value') > 0){
@@ -109,10 +119,13 @@ class DocumentController extends Controller
 
 		if ($request->has('document-upload-audit')) {
 			//dd($request->get('document-upload-unresolved'));
-			$audit_id = $request->get('document-upload-audit');
-
-			
-			session(['document-upload-findings-filter-audit' => $audit_id]);
+			if($request->get('document-upload-audit') == "reset"){
+				$audit_id = NULL;
+				$request->session()->forget('document-upload-findings-filter-audit');
+			}else{
+				$audit_id = $request->get('document-upload-audit');
+				session(['document-upload-findings-filter-audit' => $audit_id]);
+			}
 			
 		} else if(session('document-upload-findings-filter-audit') > 0){
 			$audit_id =session('document-upload-findings-filter-audit');

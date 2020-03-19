@@ -4,7 +4,20 @@
     width: 358px;
     vertical-align: top;
 	}
-
+				.help-badge {
+					    box-sizing: border-box;
+					    min-width: 22px;
+					    height: 22px;
+					    padding: 0 5px;
+					    border-radius: 500px;
+					    vertical-align: middle;
+					    background:  #6aa26a;;
+					    color: #fff;
+					    font-size: .875rem;
+					    display: inline-flex;
+					    justify-content: center;
+					    align-items: center;
+				}
 				/*for toggler*/
 				#document-upload .switch {
 				  position: relative;
@@ -177,7 +190,8 @@
 			<div class="uk-grid-collapse" uk-grid>
 				<div class="uk-width-1-1" style="border-right: 1px dotted gray;min-height: 500px;">
 
-					<h2><span class="uk-icon-button uk-contrast" style="font-family: sans-serif; background-color: #005086;line-height: 31px;">1</span> <SMALL>SELECT DOCUMENT CATEGORY</SMALL></h2>
+					<h2><span class="uk-icon-button uk-contrast" style="font-family: sans-serif; background-color: #005086;line-height: 31px;">1</span> <SMALL>SELECT DOCUMENT CATEGORY </SMALL> <div class="uk-badge uk-text-right " style="    background: #6aa26a;"><a uk-tooltip title="WHAT DOES STEP 1 DO?"  class="uk-dark uk-light use-hand-cursor" style="    position: relative; top: -5px; margin-right: 0.85px; padding-left: 0px;font-size: 15px;" aria-expanded="false" onclick="UIkit.modal.alert('<div class=\'uk-grid\'><div class=\'uk-width-1-1 uk-margin-bottom\'><h1>Step 1 Assigns a Category to the Document:</h1></div><div class=\'uk-width-1-2\'><h3><strong>A Document Category is required for every document uploaded.</strong></h3><h3>How to Select Your Category: <ul><li>Only one document category can be assigned per document, selecting a second category automatically unselects the first</li><li>Find the top level category for your document</li><li>Click on its name to view the subcategories</li><li>From the expanded list click on the radio button to select your document category</li><li>The other two steps are now available.</li></ul></h3></div><div class=\'uk-width-1-2\'><img src=\'/help_graphics/selecting_category.gif\'></div></div>');">? 
+						</a></div></h2>
 					<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
 
 					<div id="upload-category-list" class="uk-width-1-1" style="height: 735px; border:none; border-bottom: 1px dashed gray;  border-radius: 0px;overflow-x: hidden;
@@ -215,11 +229,15 @@
 		<div id="document-upload-form-top" class="uk-width-1-3@m uk-width-1-1 uk-margin-top" >
 			<div class="uk-grid-collapse" uk-grid>
 				<div class="uk-width-1-1" style="border-right: 1px dotted gray; min-height: 500px;">
-					<h2><span class="uk-icon-button uk-contrast" style="font-family: sans-serif; background-color: #005086;line-height: 31px;">2</span> <SMALL>ASSIGN AUDIT, BIN/UNIT, FINDINGS</SMALL></h2>
+					<h2><span class="uk-icon-button uk-contrast" style="font-family: sans-serif; background-color: #005086;line-height: 31px;">2</span> <SMALL>ASSIGN AUDIT, BIN/UNIT, OR FINDINGS </SMALL><div class="uk-badge uk-text-right " style="    background: #6aa26a;">
+						<a uk-tooltip="" title="WHAT DOES STEP 2 DO?" onclick="UIkit.modal.alert('<h1>Step 2 Completes One of Two Optional Actions:</h1><h3><strong>1. Uploading Documentation for File Review:</strong> <ul><li>This allows you to assign the document to a specific audit, building, and or unit.</li></ul><strong>2. Resolving a Finding:</strong><ul><li>You can use the drop downs to narrow the list of findings to a specific audit, building, unit and resolved status. When findings are selected, the auidt, building, and unit data associated with the findings is used.</li></ul>Documents for File Review can only be assigned to a single building or unit. Documents for Finding Resolution, however, can be assinged to multiple findings.</h3>');" class="uk-dark uk-light use-hand-cursor" style="    position: relative; top: -5px; margin-right: 0.85px; padding-left: 0px;font-size: 15px;" aria-expanded="false">? 
+						</a>
+					</div>
+				</h2>
 					<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
 					<div class="document-upload-step-2"><h3 class="uk-align-center gray-text">PLEASE SELECT A DOCUMENT CATEGORY FIRST</h3></div>
 					<div class="document-upload-step-2-selection" style="display: none;">
-						<select name="audit" id="upload-document-audit" class="uk-select filter-drops uk-width-1-1"><option value="">AUDIT (OPTIONAL)</option>
+						<select name="audit" id="upload-document-audit" class="uk-select filter-drops uk-width-1-1"><option value="reset">AUDIT (OPTIONAL)</option>
 							@forEach($allAudits as $uploadAudit)
 								<option value="{{$uploadAudit->audit_id}}">{{date('m/d/Y',strtotime($uploadAudit->inspection_schedule_date))}} AUDIT {{$uploadAudit->audit_id}} | FILE {{$uploadAudit->file_findings_count}} | NLT {{$uploadAudit->nlt_findings_count}} | LT {{$uploadAudit->lt_findings_count}} | {{$uploadAudit->step_status_text}} </option>
 								<option disabled>___________________________________________________________________</option>
@@ -227,7 +245,7 @@
 						</select>
 						<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
 						
-						<select name="building_unit" id="upload-document-building-unit"class="uk-select filter-drops uk-width-1-1" value=""><option value="">BUILDING / UNIT  (OPTIONAL)</option>
+						<select name="building_unit" id="upload-document-building-unit"class="uk-select filter-drops uk-width-1-1" value=""><option value="reset">BUILDING / UNIT  (OPTIONAL)</option>
 							<option disabled>___________________________________________________________________</option>
 								@forEach($allBuildings as $uploadBuilding)
 									<option disabled>|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||</option>
@@ -248,48 +266,36 @@
 
 						</select>
 						<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
-						@if($loadFindingsSeperately)
 						<select name="unresolved" id="upload-document-resolution" class="uk-select filter-drops uk-width-1-1" value="">
-															<option value="">FILTER FINDING STATUS</option>
+															<option value="reset">FINDING STATUS (OPTIONAL)</option>
 															<option value="on">ONLY UNRESOLVED</option>
 															<option value="off">ONLY RESOLVED</option>
 															<option value="both">BOTH RESOLVED &amp; UNRESOLVED</option>
 														</select>
 														<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
 														<a class="uk-button uk-button-success uk-button-small uk-width-1-1 uk-link-mute"  onclick="filterUploaderFindings();" style="">
-														<span>APPLY SELECTION TO FINDINGS</span>
+														<span>VIEW MATCHING FINDINGS</span>
 													</a>
 													<hr />
-						@else
-						<a class="uk-select filter-drops uk-width-1-1 uk-link-mute"  onclick="$('.all').toggle();openFindingsList();" style="text-align: left;">
-						<span>FINDINGS (OPTIONAL)</span>
-						</a>
-						<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">@endIf
-							<div uk-grid  style="border:none; border-bottom: 1px dashed gray;height:510px; border-radius: 0px;overflow-x: hidden; max-height:510px; padding-top: 10px;">
+						
+							<div uk-grid  style="border:none; border-bottom: 1px dashed gray;height:510px; border-radius: 0px;overflow-x: hidden; max-height: 452px; min-height: 452px; padding-top: 10px;">
 								<div class="uk-width-1-1 uk-margin-small-bottom">
 									<ul id="document-upload-findings-list" class="uk-list document-category-menu"  style="font-size: 13px">
-										@if($allFindings != null && $loadFindingsSeperately !== 1) 
 										
-										  		@include('projects.partials.findings-list-for-uploader')
-										
-										@else
-											@if($loadFindingsSeperately)
-												<li class="all" ><h3>This Project Has Over 100 Findings</h3><p>Please limit filter them down using the audit and building/unit selections above and the toggle options below.</p>
+											
+												<li class="all" ><h3>Attaching findings?</h3><p> You can use the above drop down options for Audit, Building/Unit, and Finding Status to filter narrow your selection, or just click "VIEW MATCHING FINDINGS" to view them all.</p>
 												
 													
 													</a>
 													<hr />
 												</li>
-
-
-											@else
-												<li class="all" style="display: none;"><h2 class="gray-text">NO FINDINGS ON THIS PROJECT</h2></li>
-											@endIf
-										@endIf
-									</ul>
+											</ul>
 									
 								</div>
 							</div>
+
+
+									
 							
 						
 					</div>
@@ -391,6 +397,11 @@
 								</script>
 							</div>
 						</div>
+						<div id="document-findings-box">
+							<h2 style="display: none">ASSOCIATED FINDINGS</h2>
+							<div id='finding-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox finding-selector"><span class='finding-name'></span>
+							</div>
+						</div>
 						<p>Knowingly submitting incorrect documentation, request for reimbursements for expenses not incurred or those expenses where payment was received from another source, constitutes fraud and will be prosecuted to the fullest extent of the law.</p>
 					</div>
 				</div>
@@ -401,13 +412,7 @@
 </div>
 
 <script type="text/javascript">
-	function openFindingsList(){
-		var id = 'document-upload-form-top';
-		var yourElement = document.getElementById(id);
-		var y = yourElement.getBoundingClientRect().top + window.pageYOffset;
-
-		window.scrollTo({top: y - 63});
-	}
+	
 	$('.document-category-selection').on('click', function(){
 		$('.document-upload-step-2').slideUp();
 		$('.document-upload-step-2-selection').slideDown();
@@ -419,6 +424,11 @@
     function filterUploaderFindings(){
 		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 		var unresolved = 'off';
+		var id = 'document-upload-form-top';
+		var yourElement = document.getElementById(id);
+		var y = yourElement.getBoundingClientRect().top + window.pageYOffset;
+
+		window.scrollTo({top: y - 63});
 		
 		$('#document-upload-findings-list').html(tempdiv);
 		
@@ -440,9 +450,39 @@
 				//$('#usertop').trigger("click");
 				$('#document-upload-findings-list').html(data);
 
+				
+
 			}
 		} );
 	}
+
+	function addFinding(formValue,name){
+    //alert(formValue+' '+name);
+    if($("#list-finding-id-"+formValue).is(':checked')){
+    	var recipientClone = $('#finding-template').clone();
+    	recipientClone.attr("id", "finding-id-"+formValue+"-holder");
+    	recipientClone.prependTo('#document-findings-box');
+
+    	$("#finding-id-"+formValue+"-holder").slideDown();
+    	$("#finding-id-"+formValue+"-holder input[type=checkbox]").attr("id","finding-id-"+formValue);
+    	$("#finding-id-"+formValue+"-holder input[type=checkbox]").attr("name","findings[]");
+    	$("#finding-id-"+formValue+"-holder input[type=checkbox]").attr("onClick","removeFinding("+formValue+");");
+
+    	$("#finding-id-"+formValue+"-holder input[type=checkbox]").val(formValue);
+    	$("#finding-id-"+formValue+"-holder span").html('&nbsp; '+name+' ');
+    } else {
+    	$("#finding-id-"+formValue+"-holder").slideUp();
+    	$("#finding-id-"+formValue+"-holder").remove();
+    }
+    updateMessage();
+  }
+
+  function removeFinding(id){
+  	$("#finding-id-"+id+"-holder").slideUp();
+  	$("#finding-id-"+id+"-holder").remove();
+  	$("#list-finding-id-"+id).prop("checked",false)
+    updateMessage();
+  }
 
 
 	
