@@ -439,6 +439,28 @@ class DocumentController extends Controller
 		if (!$request->has('categories') || is_null($request->categories)) {
 			return 'You must select at least one category!';
 		}
+		if ($request->has('findings')) {
+			/// we will ignore the selected audit and get it from the findings
+			
+			$findingIds = explode(',', $request->findings);
+			//dd($findingsToInsert, $request->comment, $request->categories, $request->buValue, $request->audit_id);
+			$findingDetails = Finding::whereIn('id',$findingIds)->get();
+			// get unit ids from findings
+			$unitIds = $findingDetails->pluck('unit_id')->unique()->toArray();
+			// get the building ids of the units
+			$unitBuildingIds = Unit::whereIn('id',$unitIds)->pluck('building_id')->unique()->get();
+			// get the building ids from the findings
+			$findingBuildingIds = $findingDetails->pluck('unit_id')->unique()->toArray();
+			// merge them togeter merging duplicates
+			$buildingIds = $unitBuildingIds->merge($findingBuildingIds)->unique()->toArray();
+			// get site ids from findings
+			$siteIds = $findingDetails->where('site',1)->pluck('amenity_id')->unique()->toArray();
+
+			$unitIds = $findingDetails->pluck('unit_id')->unique()->toArray();
+
+			dd($findingIds,$unitIds,$buildingIds,$unitIds,$siteIds);
+		
+		}
 		if ($request->hasFile('files')) {
 			$data = [];
 			$user = Auth::user();

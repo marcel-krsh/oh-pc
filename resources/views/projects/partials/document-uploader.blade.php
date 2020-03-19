@@ -329,6 +329,10 @@
 										var uploaddiv = document.getElementById('list-item-upload-step-2');
 										$('.uk-radio').change(function() {
 											var categoryArray = [];
+											var findingsSelectedArray = [];
+											$("input:checkbox[name='findings[]']:checked").each(function(){
+														findingsSelectedArray.push($(this).val());
+														});
 											$("input:radio[name=category-id-checkbox]:checked").each(function(){
 												categoryArray.push($(this).val());
 											});
@@ -350,12 +354,18 @@
 											beforeAll: function (settings) {
 												// debugger;
 												var categoryArray = [];
+												var findingsSelectedArray = [];
 												$("input:radio[name=category-id-checkbox]:checked").each(function(){
 													categoryArray.push($(this).val());
 												});
+												$("input:checkbox[name='findings[]']:checked").each(function(){
+														findingsSelectedArray.push($(this).val());
+														});
+												settings.params.findings = findingsSelectedArray;
 												settings.params.categories = categoryArray;
+												settings.params.buValue = $("#upload-document-building-unit").val();
+												settings.params.audit_id = $("#upload-document-audit").val();
 												settings.params.comment = $("#local-comment").val();
-												settings.params.audit_id = "{{ $audit_id }}";
 												settings.params._token = '{{ csrf_token() }}';
 												if(categoryArray.length > 0){
 													console.log('Categories selected: '+categoryArray);
