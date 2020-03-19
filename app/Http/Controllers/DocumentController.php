@@ -8,6 +8,7 @@ use View;
 use Storage;
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Unit;
 use App\Models\Photo;
 use App\Models\Finding;
 use App\Models\FindingType;
@@ -456,7 +457,7 @@ class DocumentController extends Controller
 			// get site ids from findings
 			$siteIds = $findingDetails->where('site',1)->pluck('amenity_id')->unique()->toArray();
 
-			$unitIds = $findingDetails->pluck('unit_id')->unique()->toArray();
+			
 
 			dd($findingIds,$unitIds,$buildingIds,$unitIds,$siteIds);
 		
