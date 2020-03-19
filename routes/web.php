@@ -500,7 +500,8 @@ Route::group(['middleware' => 'web'], function () {
 		Route::post('/communications/project/{project?}', 'CommunicationController@searchCommunications')->name('communications.search');
 
 		//allita documents!
-
+		Route::post('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('documents.local-search');
+		
 		Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
 		Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
 		Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');

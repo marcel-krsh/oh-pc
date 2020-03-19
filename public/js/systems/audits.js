@@ -1636,8 +1636,11 @@ function documentsDocuware(project_id) {
 	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 	$('#docuware-documents').html(tempdiv);
 	$('#project-documents-button-2').removeClass('uk-button-success green-button');
+	$('#project-documents-button-3').removeClass('uk-button-success green-button');
 	$('#project-documents-button-1').addClass('uk-button-success green-button active');
 	$('#allita-documents').empty();
+	$('#document-upload').empty();
+	$('#docuware-documents').fadeIn();
 	var url = '/projects/'+project_id+'/docuware-documents';
     $.get(url, {
         }, function(data) {
@@ -1645,6 +1648,7 @@ function documentsDocuware(project_id) {
                 UIkit.modal.alert("There was a problem getting the project information.");
             } else {
 				$('#docuware-documents').html(data);
+				
         	}
     });
 }
@@ -1653,8 +1657,13 @@ function documentsLocal(project_id, audit_id = null, filter = null) {
 	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 	$('#allita-documents').html(tempdiv);
 	$('#project-documents-button-1').removeClass('uk-button-success green-button');
+	$('#project-documents-button-3').removeClass('uk-button-success green-button');
 	$('#project-documents-button-2').addClass('uk-button-success green-button active');
 	$('#docuware-documents').empty();
+	$('#document-upload').empty();
+	$('#docuware-documents').hide();
+	$('#document-upload').hide();
+	$('#allita-documents').fadeIn();
 	var url = '/projects/'+project_id+'/local-documents/';
 	if(audit_id != null) {
 		url = url+ audit_id;
@@ -1668,17 +1677,23 @@ function documentsLocal(project_id, audit_id = null, filter = null) {
                 UIkit.modal.alert("There was a problem getting the project information.");
             } else {
 				$('#allita-documents').html(data);
+				
         	}
     });
 }
 
-function pmDocumentsLocal(project_id, audit_id = null, filter = null) {
+function documentUpload(project_id, audit_id = null, filter = null) {
 	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-	$('#allita-documents').html(tempdiv);
-	$('#project-documents-button-1').removeClass('uk-button-success green-button');
-	$('#project-documents-button-2').addClass('uk-button-success green-button active');
+	$('#document-upload').html(tempdiv);
+	$('#project-documents-button-1').removeClass('uk-button-success green-button active');
+	$('#project-documents-button-2').removeClass('uk-button-success green-button active');
+	$('#project-documents-button-3').addClass('uk-button-success green-button active');
 	$('#docuware-documents').empty();
-	var url = '/pm-projects/'+project_id+'/local-documents/';
+	$('#allita-documents').empty();
+	$('#docuware-documents').hide();
+	$('#allita-documents').hide();
+	$('#document-upload').fadeIn();
+	var url = '/projects/'+project_id+'/document-upload/';
 	if(audit_id != null) {
 		url = url+ audit_id;
 	}
@@ -1688,12 +1703,14 @@ function pmDocumentsLocal(project_id, audit_id = null, filter = null) {
     $.get(url, {
         }, function(data) {
             if(data=='0'){
-                UIkit.modal.alert("There was a problem getting the project information.");
+                UIkit.modal.alert("There was a problem getting the uploader.");
             } else {
-				$('#allita-documents').html(data);
+				$('#document-upload').html(data);
+				
         	}
     });
 }
+
 
 function AfterBuildingUpLoad(){
 

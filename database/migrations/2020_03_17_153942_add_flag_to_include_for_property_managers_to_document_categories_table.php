@@ -13,8 +13,9 @@ class AddFlagToIncludeForPropertyManagersToDocumentCategoriesTable extends Migra
      */
     public function up()
     {
-        Schema::table('include_for_property_managers_to_document_categories', function (Blueprint $table) {
+        Schema::table('document_categories', function (Blueprint $table) {
             //
+            $table->boolean('show_pm');
         });
     }
 
@@ -25,8 +26,9 @@ class AddFlagToIncludeForPropertyManagersToDocumentCategoriesTable extends Migra
      */
     public function down()
     {
-        Schema::table('include_for_property_managers_to_document_categories', function (Blueprint $table) {
+        Schema::table('document_categories', function (Blueprint $table) {
             //
+            $table->dropColum('show_pm');
         });
     }
 }
