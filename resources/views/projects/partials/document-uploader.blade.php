@@ -402,7 +402,7 @@
 							<div id='finding-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox finding-selector"><span class='finding-name'></span>
 							</div>
 						</div>
-						<p>Knowingly submitting incorrect documentation, request for reimbursements for expenses not incurred or those expenses where payment was received from another source, constitutes fraud and will be prosecuted to the fullest extent of the law.</p>
+						<p>Knowingly submitting incorrect, altered or falsified documentation constitutes fraud and will be prosecuted to the fullest extent of the law.</p>
 					</div>
 				</div>
 			</div><!--6-10-->
