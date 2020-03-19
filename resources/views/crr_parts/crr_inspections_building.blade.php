@@ -2,6 +2,7 @@
 if (isset($detailsPage)) {
 	$dpView = 1;
 	// print_r(session()->get('type_id'));
+	// print_r(session()->get('name'));
 	// print_r(session()->get('is_uncorrected'));
 }
 ?>
@@ -19,18 +20,11 @@ if (isset($detailsPage)) {
 			    	<div class="filter-box uk-width-1-1 uk-first-column">
 						<!-- <input id="filter-by-address" class="filter-box filter-search-address-input" type="text" placeholder="PRIMARY ADDRESS" value=""> -->
 						<!-- <select onchange="getSingleBuilding(this);" class="uk-select filter-box filter-search-address-input" multiple="multiple" id="building_dropdown"> -->
-						<select onchange="getSingleBuilding(this);" class="custom-select">
-				    		<!-- <option value="all" selected="">
-								FILTER BY BUILDING
-							</option> -->
+
+						<select class="custom-select">
+							<option value="" style="display:none"></option>
 				    		@forEach($allBuildingInspections as $i)
-				    			<?php
-				    				$selected = "";
-				    				if(session()->has('type_id')){
-				    				   $selected=in_array($i->building_id, session()->get('type_id'))? "selected" : ""; 	
-				    				}
-				    			?>
-				    			<option <?php echo $selected;?> value="<?php echo $i->building_id; ?>"><?php echo $i->building_name; ?></option>
+				    			<option value="<?php echo $i->building_id; ?>"><?php echo $i->building_name; ?></option>
 				    		@endforeach
 				    	</select>
 					</div>
@@ -179,7 +173,8 @@ if (isset($detailsPage)) {
 				  max-height: 300px;
 				  overflow-y: scroll;
 				  position: relative;
-				  z-index: 999999
+				  z-index: 999999;
+				  margin-top: -14px;
 				}
 				.filter_list_ul li {
 				  list-style: none;
@@ -187,7 +182,7 @@ if (isset($detailsPage)) {
 				.filter_list_ul li label {
 				  display: block;
 				  width: 100%;
-				  padding: 10px;
+				  padding: 5px;
 				  margin: 0px;
 				  font-size: 14px;
 				  cursor: pointer;
@@ -209,18 +204,13 @@ if (isset($detailsPage)) {
 		 				$BuildingsId = session()->get('name');
     				    foreach ($BuildingsId as $key => $value) {
     				    ?>
-    				    <div id="audit-filter-step" class="uk-badge uk-text-right@s badge-filter">
-							<!-- <a onclick="filterAudits('step-schedule-audit', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>STEP "Schedule audit"</span></a> -->
-							<span><?php echo $value; ?></span>
-						</div>
+	    				    <div id="audit-filter-step" class="uk-badge uk-text-right@s badge-filter" style="margin-top:0px; height: auto;">
+								<a onclick="closeSelectedBuilding('<?php echo $value['id'];?>');" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span><?php echo $value['name']; ?></span></a>
+							</div>
     				    <?php
     					}
     				}
     			?>
-		    	<!-- <div id="audit-filter-step" class="uk-badge uk-text-right@s badge-filter">
-					<a onclick="filterAudits('step-schedule-audit', 0);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>STEP "Schedule audit"</span></a>
-					<span>STEP "Schedule audit"</span>
-				</div> -->
 		    </div>
 		    <small><i class="a-mobile"></i> : PHYSICAL INSPECTION </small>
 
