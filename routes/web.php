@@ -289,6 +289,9 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
 		Route::get('/projects/{project}/docuware-documents', 'DocumentController@getProjectDocuwareDocuments')->name('project.docuware-documents');
 		Route::get('/projects/{project}/local-documents/{audit_id?}', 'DocumentController@getProjectLocalDocuments')->name('project.local-documents');
+		Route::get('/projects/{project}/upload-document-findings-list/{audit_id?}', 'DocumentController@getProjectUploadFindingsList')->name('documents.upload-finding-list');
+		Route::post('/projects/{project}/upload-document-findings-list/{audit_id?}', 'DocumentController@getProjectUploadFindingsList')->name('documents.upload-finding-filter');
+		Route::get('/projects/{project}/document-upload/{audit_id?}', 'DocumentController@projectLocalDocumentUpload')->name('project.local-document-upload');
 		Route::post('/documents/project/{project}/local-approve', 'DocumentController@approveLocalDocument')->name('documents.local-approve');
 		Route::post('/documents/project/{project}/local-notapprove', 'DocumentController@notApproveLocalDocument')->name('documents.local-notapprove');
 		Route::post('/documents/project/{project}/local-clearReview', 'DocumentController@clearLocalReview')->name('documents.local-clearReview');

@@ -459,11 +459,7 @@
     });
   
 
-	$('.document-category-selection').on('click', function(){
-		$('.document-upload-step-2').slideUp();
-		$('.document-upload-step-2-selection').slideDown();
-		
-	});
+	
 	function markApproved(id,catid){
 		UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
 			$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
