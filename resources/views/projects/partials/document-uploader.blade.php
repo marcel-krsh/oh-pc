@@ -26,7 +26,7 @@
 				  height: 26px;
 				}
 
-				#document-upload .switch input { 
+				#document-upload .switch input {
 				  opacity: 0;
 				  width: 0;
 				  height: 0;
@@ -182,7 +182,7 @@
 			</style>
 <div uk-grid>
 <div class="uk-width-1-1">
-<hr>			
+<hr>
 			<h2><i class="a-file-up"></i> DOCUMENT UPLOAD</h2>
 			<hr class="dashed-hr uk-margin-bottom uk-width-1-1" />
 		</div>
@@ -190,7 +190,7 @@
 			<div class="uk-grid-collapse" uk-grid>
 				<div class="uk-width-1-1" style="border-right: 1px dotted gray;min-height: 500px;">
 
-					<h2><span class="uk-icon-button uk-contrast" style="font-family: sans-serif; background-color: #005086;line-height: 31px;">1</span> <SMALL>SELECT DOCUMENT CATEGORY </SMALL> <div class="uk-badge uk-text-right " style="    background: #6aa26a;"><a uk-tooltip title="WHAT DOES STEP 1 DO?"  class="uk-dark uk-light use-hand-cursor" style="    position: relative; top: -5px; margin-right: 0.85px; padding-left: 0px;font-size: 15px;" aria-expanded="false" onclick="UIkit.modal.alert('<div class=\'uk-grid\'><div class=\'uk-width-1-1 uk-margin-bottom\'><h1>Step 1 Assigns a Category to the Document:</h1></div><div class=\'uk-width-1-2\'><h3><strong>A Document Category is required for every document uploaded.</strong></h3><h3>How to Select Your Category: <ul><li>Only one document category can be assigned per document, selecting a second category automatically unselects the first</li><li>Find the top level category for your document</li><li>Click on its name to view the subcategories</li><li>From the expanded list click on the radio button to select your document category</li><li>The other two steps are now available.</li></ul></h3></div><div class=\'uk-width-1-2\'><img src=\'/help_graphics/selecting_category.gif\'></div></div>');">? 
+					<h2><span class="uk-icon-button uk-contrast" style="font-family: sans-serif; background-color: #005086;line-height: 31px;">1</span> <SMALL>SELECT DOCUMENT CATEGORY </SMALL> <div class="uk-badge uk-text-right " style="    background: #6aa26a;"><a uk-tooltip title="WHAT DOES STEP 1 DO?"  class="uk-dark uk-light use-hand-cursor" style="    position: relative; top: -5px; margin-right: 0.85px; padding-left: 0px;font-size: 15px;" aria-expanded="false" onclick="UIkit.modal.alert('<div class=\'uk-grid\'><div class=\'uk-width-1-1 uk-margin-bottom\'><h1>Step 1 Assigns a Category to the Document:</h1></div><div class=\'uk-width-1-2\'><h3><strong>A Document Category is required for every document uploaded.</strong></h3><h3>How to Select Your Category: <ul><li>Only one document category can be assigned per document, selecting a second category automatically unselects the first</li><li>Find the top level category for your document</li><li>Click on its name to view the subcategories</li><li>From the expanded list click on the radio button to select your document category</li><li>The other two steps are now available.</li></ul></h3></div><div class=\'uk-width-1-2\'><img src=\'/help_graphics/selecting_category.gif\'></div></div>');">?
 						</a></div></h2>
 					<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
 
@@ -198,19 +198,20 @@
     padding-top: 10px;"><div uk-grid>
 							<div class="uk-width-1-1 uk-margin-small-bottom">
 								<ul class="uk-list document-category-menu"  style="font-size: 13px">
-									<?php $currentGroup = ""; $opened = 0; ?>
+									<?php $currentGroup = "";
+$opened = 0;?>
 									@foreach ($document_categories as $category)
-									<?php 
-									if($currentGroup !== $category->parent_category_name){
-										if($opened == 1){
-											echo "<li><hr /></li>";
-										} else {
-											$opened = 1;
-										}
-										echo "<li onclick=\"$('.child-of-".$category->parent_id."').slideToggle();\" class='use-hand-cursor'><h3><i class='a-circle-down'></i> <div class='main-document-category-name'>".$category->parent_category_name."</div></h3></li>";
-										$currentGroup = $category->parent_category_name;
-									}
-									?>
+									<?php
+if ($currentGroup !== $category->parent_category_name) {
+	if ($opened == 1) {
+		echo "<li><hr /></li>";
+	} else {
+		$opened = 1;
+	}
+	echo "<li onclick=\"$('.child-of-" . $category->parent_id . "').slideToggle();\" class='use-hand-cursor'><h3><i class='a-circle-down'></i> <div class='main-document-category-name'>" . $category->parent_category_name . "</div></h3></li>";
+	$currentGroup = $category->parent_category_name;
+}
+?>
 									<li class="child-of-{{$category->parent_id}}" style="display: none;">
 										<input style="float: left; margin-top: 3px" name="category-id-checkbox" class="uk-radio document-category-selection" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio">
 										<label style="display: block; margin-left: 30px" for="category-id-{{ $category->id }}">
@@ -219,7 +220,7 @@
 									</li>
 									@endforeach
 								</ul>
-								
+
 							</div>
 						</div>
 					</div>
@@ -230,7 +231,7 @@
 			<div class="uk-grid-collapse" uk-grid>
 				<div class="uk-width-1-1" style="border-right: 1px dotted gray; min-height: 500px;">
 					<h2><span class="uk-icon-button uk-contrast" style="font-family: sans-serif; background-color: #005086;line-height: 31px;">2</span> <SMALL>ASSIGN AUDIT, BIN/UNIT, OR FINDINGS </SMALL><div class="uk-badge uk-text-right " style="    background: #6aa26a;">
-						<a uk-tooltip="" title="WHAT DOES STEP 2 DO?" onclick="UIkit.modal.alert('<h1>Step 2 Completes One of Two Optional Actions:</h1><h3><strong>1. Uploading Documentation for File Review:</strong> <ul><li>This allows you to assign the document to a specific audit, building, and or unit.</li></ul><strong>2. Resolving a Finding:</strong><ul><li>You can use the drop downs to narrow the list of findings to a specific audit, building, unit and resolved status. When findings are selected, the auidt, building, and unit data associated with the findings is used.</li></ul>Documents for File Review can only be assigned to a single building or unit. Documents for Finding Resolution, however, can be assinged to multiple findings.</h3>');" class="uk-dark uk-light use-hand-cursor" style="    position: relative; top: -5px; margin-right: 0.85px; padding-left: 0px;font-size: 15px;" aria-expanded="false">? 
+						<a uk-tooltip="" title="WHAT DOES STEP 2 DO?" onclick="UIkit.modal.alert('<h1>Step 2 Completes One of Two Optional Actions:</h1><h3><strong>1. Uploading Documentation for File Review:</strong> <ul><li>This allows you to assign the document to a specific audit, building, and or unit.</li></ul><strong>2. Resolving a Finding:</strong><ul><li>You can use the drop downs to narrow the list of findings to a specific audit, building, unit and resolved status. When findings are selected, the auidt, building, and unit data associated with the findings is used.</li></ul>Documents for File Review can only be assigned to a single building or unit. Documents for Finding Resolution, however, can be assinged to multiple findings.</h3>');" class="uk-dark uk-light use-hand-cursor" style="    position: relative; top: -5px; margin-right: 0.85px; padding-left: 0px;font-size: 15px;" aria-expanded="false">?
 						</a>
 					</div>
 				</h2>
@@ -244,12 +245,12 @@
 							@endForEach
 						</select>
 						<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
-						
+
 						<select name="building_unit" id="upload-document-building-unit"class="uk-select filter-drops uk-width-1-1" value=""><option value="reset">BUILDING / UNIT  (OPTIONAL)</option>
 							<option disabled>___________________________________________________________________</option>
 								@forEach($allBuildings as $uploadBuilding)
 									<option disabled>|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||</option>
-									<option value="building-{{$uploadBuilding->id}}">BIN {{$uploadBuilding->building_name}} | @if($allFindings !== null) FINDINGS :: {{$allFindings->where('auditor_approved_resolution',NULL)->where('building_id',$uploadBuilding->id)->count()}} UNRESOLVED @else NO FINDINGS @endIf 
+									<option value="building-{{$uploadBuilding->id}}">BIN {{$uploadBuilding->building_name}} | @if($allFindings !== null) FINDINGS :: {{$allFindings->where('auditor_approved_resolution',NULL)->where('building_id',$uploadBuilding->id)->count()}} UNRESOLVED @else NO FINDINGS @endIf
 										</option>
 										<option disabled>|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||</option>
 										@if($uploadBuilding->units != NULL && count($uploadBuilding->units))
@@ -277,27 +278,27 @@
 														<span>VIEW MATCHING FINDINGS</span>
 													</a>
 													<hr />
-						
+
 							<div uk-grid  style="border:none; border-bottom: 1px dashed gray;height:510px; border-radius: 0px;overflow-x: hidden; max-height: 452px; min-height: 452px; padding-top: 10px;">
 								<div class="uk-width-1-1 uk-margin-small-bottom">
 									<ul id="document-upload-findings-list" class="uk-list document-category-menu"  style="font-size: 13px">
-										
-											
+
+
 												<li class="all" ><h3>Attaching findings?</h3><p> You can use the above drop down options for Audit, Building/Unit, and Finding Status to filter narrow your selection, or just click "VIEW MATCHING FINDINGS" to view them all.</p>
-												
-													
+
+
 													</a>
 													<hr />
 												</li>
 											</ul>
-									
+
 								</div>
 							</div>
 
 
-									
-							
-						
+
+
+
 					</div>
 				</div>
 			</div>
@@ -399,7 +400,18 @@
 												setTimeout(function () {
 													bar.setAttribute('hidden', 'hidden');
 												}, 250);
-												documentsLocal('{{ $project->id }}', '{{ $audit_id }}');
+												UIkit.notification('<span uk-icon="icon: check"></span> Document uploaded successfully', {pos:'top-right', timeout:1000, status:'success'});
+												// documentsLocal('{{ $project->id }}', '{{ $audit_id }}');
+												// documentUpload('{{ $project->id }}', '{{ $audit_id }}');
+												$("#local-comment").val('');
+												$('.document-category-selection').on('click', function(){
+													$('.document-upload-step-2').slideUp();
+													$('.document-upload-step-2-selection').slideDown();
+												});
+												actualData = '<li class="all" ><h3>Attaching findings?</h3><p> You can use the above drop down options for Audit, Building/Unit, and Finding Status to filter narrow your selection, or just click "VIEW MATCHING FINDINGS" to view them all.</p></a><hr /></li>';
+												$('#document-upload-findings-list').html(actualData);
+												actualData = '<h2 style="display: none">ASSOCIATED FINDINGS</h2><div id="finding-template" class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox finding-selector"><span class="finding-name"></span></div>'
+												$('#document-findings-box').html(actualData);
 											}
 										};
 										var select = UIkit.upload('.js-upload', settings);
@@ -409,7 +421,7 @@
 						</div>
 						<div id="document-findings-box">
 							<h2 style="display: none">ASSOCIATED FINDINGS</h2>
-							<div id='finding-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox finding-selector"><span class='finding-name'></span>
+							<div id="finding-template" class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox finding-selector"><span class='finding-name'></span>
 							</div>
 						</div>
 						<p>Knowingly submitting incorrect, altered or falsified documentation constitutes fraud and will be prosecuted to the fullest extent of the law.</p>
@@ -422,11 +434,11 @@
 </div>
 
 <script type="text/javascript">
-	
+
 	$('.document-category-selection').on('click', function(){
 		$('.document-upload-step-2').slideUp();
 		$('.document-upload-step-2-selection').slideDown();
-		
+
 	});
 
 
@@ -439,16 +451,16 @@
 		var y = yourElement.getBoundingClientRect().top + window.pageYOffset;
 
 		window.scrollTo({top: y - 63});
-		
+
 		$('#document-upload-findings-list').html(tempdiv);
-		
+
 		unresolved =  $("#upload-document-resolution").val();
-		
-		
+
+
 		//alert(unresolved);
 		$.post('{{ URL::route("documents.upload-finding-filter", $project->id) }}', {
 			'document-upload-unresolved' : unresolved,
-			
+
 			'document-upload-audit' : $("#upload-document-audit").val(),
 			'document-upload-building-unit' : $("#upload-document-building-unit").val(),
 			'_token' : '{{ csrf_token() }}'
@@ -460,7 +472,7 @@
 				//$('#usertop').trigger("click");
 				$('#document-upload-findings-list').html(data);
 
-				
+
 
 			}
 		} );
@@ -494,6 +506,10 @@
     updateMessage();
   }
 
+  function updateMessage() {
+  	//not sure why this was being called in above functions @brian, any idea? -Div 2019-03-19
+  }
 
-	
+
+
 </script>

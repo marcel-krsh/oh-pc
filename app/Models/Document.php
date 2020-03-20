@@ -21,6 +21,9 @@ class Document extends Model
 
 	protected $casts = [
 		'findings_ids' => 'array',
+		'unit_ids' => 'array',
+		'building_ids' => 'array',
+		'site_ids' => 'array',
 	];
 
 	public function finding(): HasOne
