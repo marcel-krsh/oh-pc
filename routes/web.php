@@ -482,7 +482,6 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('pm-dashboard/audits/{audit}/buildings', 'PMAuditController@pmBuildingsFromAudit')->name('pm-audit.buildings');
 		Route::post('/pm-projects/{id}/building-details/{type}/{audit}', 'PMAuditController@getPMBuildingDetailsInfo')->name('building.details.info');
 		Route::get('/pm-projects/{project}/local-documents/{audit_id?}', 'DocumentController@getPMProjectLocalDocuments')->name('project.pm-local-documents');
-		
 
 		//session controls
 		Route::get('/pmsession/filters/{type}/{value?}', 'DataController@pmRemoveSession')->name('pmsession.setfilter');
@@ -503,8 +502,11 @@ Route::group(['middleware' => 'web'], function () {
 		Route::post('/communications/project/{project?}', 'CommunicationController@searchCommunications')->name('communications.search');
 
 		//allita documents!
-		Route::post('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('documents.local-search');
-		
+		Route::get('/pm-projects/{project}/documents', 'DocumentController@getPMProjectDocuments')->name('pm-project.documents');
+		Route::post('/pm-projects/{project}/local-documents', 'DocumentController@getPMProjectLocalDocuments')->name('documents.local-search');
+
+		Route::get('/pm-projects/{project}/document-upload/{audit_id?}', 'DocumentController@projectPMLocalDocumentUpload')->name('project.local-document-upload');
+		Route::post('/pm-projects/{project}/upload-document-findings-list/{audit_id?}', 'DocumentController@getProjectUploadFindingsList')->name('pm-documents.upload-finding-filter');
 		Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
 		Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
 		Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');

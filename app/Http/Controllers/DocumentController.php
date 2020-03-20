@@ -202,6 +202,40 @@ class DocumentController extends Controller
 		return view('projects.partials.document-uploader', compact('project', 'audit_id', 'searchTerm', 'audits', 'findings', 'resolved', 'unresolved', 'document_categories', 'allAudits', 'allFindings', 'allUnits', 'allBuildings', 'loadFindingsSeperately', 'showLinks'));
 	}
 
+	public function projectPMLocalDocumentUpload(Project $project, $audit_id = null, Request $request)
+	{
+		$showLinks = 0;
+		$resolved = 1;
+		$unresolved = 1;
+		$searchTerm = NULL;
+		$audits = collect([]);
+		$findings = collect([]);
+		$document_categories = DocumentCategory::select('parent.document_category_name as parent_category_name', 'document_categories.*')->join('document_categories as parent', 'document_categories.parent_id', '=', 'parent.id')
+			->where('document_categories.parent_id', '<>', 0)
+			->where('document_categories.active', 1)
+			->orderBy('parent.document_category_name')
+			->orderBy('document_categories.document_category_name')
+			->get();
+
+		//dd($document_categories);
+
+		//$allUnits = $project->units()->orderBy('unit_name')->get();
+		$allBuildings = $project->buildings()->with('units')->orderBy('building_name')->get();
+		//dd($allUnits);
+		$allFindings = $project->findings()->count();
+		$loadFindingsSeperately = 0;
+		if ($allFindings > 100) {
+			$allFindings = collect([]); //$project->findings()->paginate(50);
+			$loadFindingsSeperately = 1;
+		} else {
+			$allFindings = $project->findings()->get();
+		}
+		$allUnits = [];
+		$allAudits = $project->audits;
+
+		return view('projects.partials.pm-document-uploader', compact('project', 'audit_id', 'searchTerm', 'audits', 'findings', 'resolved', 'unresolved', 'document_categories', 'allAudits', 'allFindings', 'allUnits', 'allBuildings', 'loadFindingsSeperately', 'showLinks'));
+	}
+
 	public function getProjectLocalDocuments(Project $project, $audit_id = null, Request $request)
 	{
 		// ini_set('max_execution_time', 300);
@@ -348,14 +382,101 @@ class DocumentController extends Controller
 		return view('projects.partials.local-documents', compact('project', 'documents', 'audit_id', 'categories', 'searchTerm', 'audits', 'findings', 'resolved', 'unresolved', 'reviewed', 'unreviewed'));
 	}
 
+	public function getPMProjectDocuments(Project $project, Request $request)
+	{
+		$audit_id = $request->audit_id;
+		return view('projects.partials.pm-documents', compact('project', 'audit_id'));
+	}
+
 	public function getPMProjectLocalDocuments(Project $project, $audit_id = null, Request $request)
 	{
 		// ini_set('max_execution_time', 300);
 		//check if filters exist
 		// return $request->all();
+		/// SEARCH TERM
+		if ($request->has('local-search')) {
+			if ($request->get('local-search') == "") {
+				// reset the search
+				$searchTerm = NULL;
+				session(['local-documents-search-term' => NULL]);
+			} else {
+				$searchTerm = $request->get('local-search');
+				session(['local-documents-search-term' => $request->get('local-search')]);
+			}
+		} else if (session('local-documents-search-term') != NULL) {
+			$searchTerm = session('local-documents-search-term');
+		} else {
+			$searchTerm = NULL;
+		}
 
+		//SHOW HIDE RESOLVED / UNRESOLVED
+		if ($request->has('local-unresolved')) {
+			//dd($request->get('local-unresolved'));
+			if ($request->get('local-unresolved') == 'on') {
+				$unresolved = 1;
+				session(['local-documents-unresolved' => 1]);
+			} else {
+				$unresolved = 0;
+				session(['local-documents-unresolved' => 0]);
+			}
+		} else if (session('local-documents-unresolved') == 0) {
+			$unresolved = session('local-documents-unresolved');
+		} else {
+			$unresolved = 1;
+		}
+
+		if ($request->has('local-resolved')) {
+			if ($request->get('local-resolved') == 'on') {
+				$resolved = 1;
+				session(['local-documents-resolved' => 1]);
+			} else {
+				$resolved = 0;
+				session(['local-documents-resolved' => 0]);
+			}
+		} else if (session('local-documents-resolved') == 0) {
+			$resolved = session('local-documents-resolved');
+		} else {
+			$resolved = 1;
+		}
+
+		//SHOW HIDE REVIEWED / UNREVIEWED
+		if ($request->has('local-unreviewed')) {
+			//dd($request->get('local-unreviewed'));
+			if ($request->get('local-unreviewed') == 'on') {
+				$unreviewed = 1;
+				session(['local-documents-unreviewed' => 1]);
+			} else {
+				$unreviewed = 0;
+				session(['local-documents-unreviewed' => 0]);
+			}
+		} else if (session('local-documents-unreviewed') == 0) {
+			$unreviewed = session('local-documents-unreviewed');
+		} else {
+			$unreviewed = 1;
+		}
+
+		if ($request->has('local-reviewed')) {
+			if ($request->get('local-reviewed') == 'on') {
+				$reviewed = 1;
+				session(['local-documents-reviewed' => 1]);
+			} else {
+				$reviewed = 0;
+				session(['local-documents-reviewed' => 0]);
+			}
+		} else if (session('local-documents-reviewed') == 0) {
+			$reviewed = session('local-documents-reviewed');
+		} else {
+			$reviewed = 1;
+		}
+
+		$documents_all = [];
+		///
+
+		$findings = collect([]);
+		$all_finding_ids = [];
+		$allUnits = $project->units()->orderBy('unit_name')->get();
 		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
-		$documents = $documents_query->get(); //->paginate(20);
+		$documents = $documents_query->paginate(20);
 		$documents_all = $documents_query->get();
 		$documents_count = $documents_query->count();
 		$new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
@@ -395,6 +516,7 @@ class DocumentController extends Controller
 		$findings_audits = $findings->pluck('audit_plain')->flatten()->unique('id');
 		$audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
 
+		$filter = [];
 		$filtered_documents = $documents;
 		if ($request->filter_audit_id) {
 			$filter['filter_audit_id'] = $request->filter_audit_id;
@@ -414,7 +536,7 @@ class DocumentController extends Controller
 			->orderBy('parent_id')
 			->orderBy('document_category_name')
 			->get();
-		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories', 'filter', 'documents_count'));
+		return view('projects.partials.pm-local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories', 'filter', 'documents_count', 'unreviewed', 'reviewed', 'resolved', 'unresolved', 'searchTerm'));
 	}
 
 	public function localUpload(Project $project, Request $request)
