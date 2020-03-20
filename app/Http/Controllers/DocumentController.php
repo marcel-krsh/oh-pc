@@ -16,6 +16,7 @@ use App\Models\Project;
 use App\Models\Document;
 use App\Models\CachedAudit;
 use App\Models\FindingType;
+use App\Models\ReportAccess;
 use Illuminate\Http\Request;
 use App\Models\DocumentAudit;
 use App\Models\DocumentCategory;
@@ -390,6 +391,7 @@ class DocumentController extends Controller
 
 	public function getPMProjectLocalDocuments(Project $project, $audit_id = null, Request $request)
 	{
+		$current_user = $this->user;
 		// ini_set('max_execution_time', 300);
 		//check if filters exist
 		// return $request->all();
@@ -475,7 +477,23 @@ class DocumentController extends Controller
 		$findings = collect([]);
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
-		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+
+		//Check if this PM is primary one
+		$project_report_access = ReportAccess::where('project_id', $project->id)->get();
+		$default_report_user = $project_report_access->where('default', 1)->first();
+		$project = Project::with('contactRoles.person.user')->find($project->id); //DEVCO
+		$default_user = $project->contactRoles->where('project_role_key', 21)->first();
+		if ($default_report_user) {
+			$default_user_id = $default_report_user->user_id;
+		} elseif ($default_user && $default_user->person && $default_user->person->user) {
+			$default_user_id = $default_devco_user_id = $default_user->person->user->id;
+		}
+		if ($default_user_id == $current_user->id) {
+			$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+		} else {
+			$documents_query = Document::where('project_id', $project->id)->where('user_id', $current_user->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+		}
+
 		$documents = $documents_query->paginate(20);
 		$documents_all = $documents_query->get();
 		$documents_count = $documents_query->count();

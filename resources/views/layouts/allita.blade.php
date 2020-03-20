@@ -4,15 +4,15 @@
 $allowPageLoad = false;
 
 if (Auth::check()) {
-  if (Auth::user()->active == 1) {
-    $allowPageLoad = true;
-  }
+	if (Auth::user()->active == 1) {
+		$allowPageLoad = true;
+	}
 } else {
-  /// user is not logged in -- the auth middleware will protect against that access.
-  $allowPageLoad = true;
+	/// user is not logged in -- the auth middleware will protect against that access.
+	$allowPageLoad = true;
 }
 if ($allowPageLoad) {
-  ?>
+	?>
 	<!DOCTYPE html>
 	<html lang="en" dir="ltr" id="parentHTML" class="no-js">
 	<head>
@@ -170,8 +170,8 @@ if ($allowPageLoad) {
 			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
 		}
 		window.Laravel = <?php echo json_encode([
-    'csrfToken' => csrf_token(),
-  ]); ?>
+		'csrfToken' => csrf_token(),
+	]); ?>
 		</script>
 
 		<script src="/js/jquery.js{{ asset_version() }}"></script>
@@ -280,7 +280,7 @@ if ($allowPageLoad) {
 				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
 					<div uk-grid>
 						<div class="uk-width-1-1">
-							
+
 							@can('access_auditor')
 							<div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
 								<div class="uk-autocomplete quick-lookup-box uk-inline">
@@ -315,7 +315,7 @@ if ($allowPageLoad) {
 										</li>
 									@endCan
 									@can('access_pm')
-									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
+									<li id="detail-tab-2" class="detail-tab-2 uk-hidden" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
 												<i class="a-envelope-3"></i> MY COMMUNICATIONS
@@ -446,9 +446,9 @@ if ($allowPageLoad) {
 				OHFA Inspect
 				@endif
 				&copy; 2018<?php if (date('Y', time()) != '2018') {
-    echo " — " . date('Y', time());
-  }
-  ?>: @include('git-version::version-comment')</a> </p>
+		echo " — " . date('Y', time());
+	}
+	?>: @include('git-version::version-comment')</a> </p>
 			</div>
 			<div id="footer-content" class="uk-width-1-3">
 				<div id="footer-actions-tpl"  class="uk-text-right"></div>
@@ -585,7 +585,7 @@ if ($allowPageLoad) {
 				$('#detail-tab-1').trigger("click");
 			@else
 				// property default
-				$('#detail-tab-2').trigger("click");
+				$('#detail-tab-1').trigger("click");
 			@endCan
 		},100);
 
@@ -623,7 +623,7 @@ if ($allowPageLoad) {
 </html>
 
 <?php } else {
-  /// show for inactive users ?>
+	/// show for inactive users ?>
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
@@ -644,8 +644,8 @@ if ($allowPageLoad) {
 
 	<script>
 		window.Laravel = <?php echo json_encode([
-    'csrfToken' => csrf_token(),
-  ]); ?>
+		'csrfToken' => csrf_token(),
+	]); ?>
 		</script>
 		@if(session('disablePacer') != 1)
 		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}">{{session('disablePacer')}}</script>

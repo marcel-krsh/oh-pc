@@ -433,78 +433,6 @@
     	});
     });
 
-
-
-    function markApproved(id,catid){
-    	UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
-    		$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
-    			'id' : id,
-    			'catid' : catid,
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data != 1 ) {
-    				console.log("processing");
-    				UIkit.modal.alert(data);
-    			} else {
-    				dynamicModalClose();
-    			}
-    			documentsLocal('{{ $project->id }}');
-    		}
-    		);
-    	});
-    }
-
-    function markUnreviewed(id,catid){
-    	UIkit.modal.confirm("Are you sure you want to clear the review on this file?").then(function() {
-    		$.post('{{ URL::route("documents.local-clearReview", $project->id) }}', {
-    			'id' : id,
-    			'catid' : catid,
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data != 1){
-    				console.log("processing");
-    				UIkit.modal.alert(data);
-    			} else {
-    				dynamicModalClose();
-    			}
-    			documentsLocal('{{ $project->id }}');
-    		}
-    		);
-    	});
-    }
-
-    function markNotApproved(id,catid){
-    	UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
-    		$.post('{{ URL::route("documents.local-notapprove", $project->id) }}', {
-    			'id' : id,
-    			'catid' : catid,
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data != 1){
-    				UIkit.modal.alert(data);
-    			} else {
-    				dynamicModalClose();
-    			}
-    			documentsLocal('{{ $project->id }}');
-    		});
-    	});
-    }
-
-    function deleteFile(id){
-    	UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
-    		$.post('{{ URL::route("documents.local-deleteDocument", $project->id) }}', {
-    			'id' : id,
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data!= 1){
-    				UIkit.modal.alert(data);
-    			} else {
-    			}
-    			documentsLocal('{{ $project->id }}');
-    		});
-    	});
-    }
-
     function filterByAudit(){
     	console.log('ada');
     	$(".all").hide();
@@ -600,32 +528,9 @@
 		// return filter = [auditId, findingId, categoryId, documentName];
 	}
 
-
 	function openFindingDetails(findingId) {
 		dynamicModalLoad('finding-details/'+findingId);
 	}
-
-	@if(Auth::user()->auditor_access())
-	function resolveFindingAS(findingid){
-		$.post('/findings/'+findingid+'/resolve', {
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			if(data != 0){
-				UIkit.notification({
-					message: 'Marked finding as resolved',
-					status: 'success',
-					pos: 'top-right',
-					timeout: 30000
-				});
-				$('#finding-resolve-button').html('<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON '+data.toUpperCase()+';" onclick="resolveFindingAS('+findingid+')"><span class="a-circle-checked">&nbsp; </span>RESOLVED</button>');
-			}else{
-				$("#finding-resolve-button").html('<span class="a-circle-checked"> </span> RESOLVED');
-				UIkit.modal.dialog('<center style="color:green">Marked finding as resolved</center>');
-			}
-		});
-	}
-	@endif
-
 
 
 
