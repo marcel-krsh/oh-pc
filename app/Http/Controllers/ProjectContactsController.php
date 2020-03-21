@@ -24,9 +24,10 @@ use App\Models\ProjectContactRole;
 
 class ProjectContactsController extends Controller
 {
-	 public function __construct(){
-        $this->allitapc();
-    }
+	public function __construct()
+	{
+		$this->allitapc();
+	}
 
 	public function contacts($project)
 	{

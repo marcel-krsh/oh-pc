@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Helper;
 //
 use DB;
 use Log;
+use App\Models\Unit;
 use App\Models\User;
 use App\Models\People;
 use GuzzleHttp\Client;
+use App\Models\Finding;
 use GuzzleHttp\Promise;
+use App\Models\Document;
 use App\Models\SyncPeople;
+use App\Models\DocumentAudit;
 use App\Models\ProjectContactRole;
 use App\Http\Controllers\Controller;
 
@@ -17,12 +21,96 @@ use App\Http\Controllers\Controller;
 class TestingController extends Controller
 {
 
-	public function __construct(){
+	public function __construct()
+	{
 		$this->allitapc();
 	}
 
 	public function getTestAll()
 	{
+		// echo 12;
+		$total = Document::count();
+		$chunk = 20;
+		$progressBar = '';
+		$progress = $total / $chunk;
+		$documents = Document::with('communication_details')->get();
+
+		foreach ($documents as $key => $doc) {
+			if (count($doc->communication_details) > 0) {
+				$all_findings = [];
+				$all_units = [];
+				$all_buildings = [];
+				$all_sites = [];
+				$exist = false;
+				foreach ($doc->communication_details as $cd) {
+					if (!is_null($cd->finding_ids)) {
+						$exist = true;
+
+						$findingIds = json_decode($cd->finding_ids);
+						//dd($findingsToInsert, $request->comment, $request->categories, $request->buValue, $request->audit_id);
+						$findingDetails = Finding::whereIn('id', $findingIds)->get();
+						// get unit ids from findings
+						$unitIds = $findingDetails->pluck('unit_id')->unique()->filter()->toArray();
+						// get the building ids of the units
+						$unitBuildingIds = Unit::whereIn('id', $unitIds)->pluck('building_id')->unique()->filter();
+						// get the building ids from the findings
+						$findingBuildingIds = $findingDetails->pluck('building_id')->unique()->filter();
+						// merge them togeter merging duplicates
+						$buildingIds = $unitBuildingIds->merge($findingBuildingIds)->unique()->toArray();
+						// get site ids from findings
+						$siteIds = $findingDetails->where('site', 1)->pluck('amenity_id')->unique()->toArray();
+						$unitIds = array_values($unitIds);
+						if (!empty($findingIds)) {
+							$all_findings = array_merge($all_findings, $findingIds);
+							// $document->finding_ids = json_encode($findingIds, true);
+						}
+						if (!empty($siteIds)) {
+							$all_sites = array_merge($all_sites, $siteIds);
+							// $document->site_ids = json_encode($siteIds, true);
+						}
+						if (!empty($buildingIds)) {
+							$all_buildings = array_merge($all_buildings, $buildingIds);
+							// $document->building_ids = json_encode($buildingIds, true);
+						}
+						if (!empty($unitIds)) {
+							$all_units = array_merge($all_units, $unitIds);
+							// $document->unit_ids = json_encode($unitIds, true);
+						}
+					}
+				}
+
+				if ($exist) {
+					if (!empty($all_findings)) {
+						$doc->finding_ids = json_encode(array_unique($all_findings), true);
+					}
+					if (!empty($all_sites)) {
+						$doc->site_ids = json_encode(array_unique($all_sites), true);
+					}
+					if (!empty($all_buildings)) {
+						$doc->building_ids = json_encode(array_unique($all_buildings), true);
+					}
+					if (!empty($all_units)) {
+						$doc->unit_ids = json_encode(array_unique($all_units), true);
+					}
+					$doc->save();
+				}
+			}
+		}
+		return 'done';
+
+		$communication_documents = Document::with('communication_details')
+			->chunk($chunk, function ($cds) use ($progressBar, $progress) {
+				$progressBar->advance($progress);
+				foreach ($cds as $key => $cd) {
+					$check_audit = DocumentAudit::where('audit_id', $cd->communication->audit_id)->where('document_id', $cd->document_id)->first();
+					if (!$check_audit) {
+						$doc_audit = new DocumentAudit;
+						$doc_audit->audit_id = $cd->communication->audit_id;
+						$doc_audit->document_id = $cd->document_id;
+						$doc_audit->save();
+					}
+				}
+			});
 
 		return 'Already completed';
 
