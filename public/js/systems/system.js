@@ -406,19 +406,28 @@ function reloadUnseenMessages(){
 
 // DYNAMIC MODAL FUNCTION //
 function dynamicModalLoad(modalSource,fullscreen,warnAboutSave,fixedHeight=0,inmodallevel) {
+	// debugger;
+	var mcom = document.getElementById("dynamic-modal-content-communications");
+  if(mcom){
+     $(mcom).html('');
+  }
 	if(inmodallevel > 0){
 		// copy modal divs and rename ids if it doesn't alreay exist
 		if($('#dynamic-modal-'+inmodallevel).length){
 			var newmodal = $('#dynamic-modal-'+inmodallevel);
+			$('#dynamic-modal-content-'+inmodallevel).html("");
+	    // $(newmodal).html("");
 			var newmodalsize = $('#modal-size-'+inmodallevel);
 			var newmodalcontent = $('#dynamic-modal-content-'+inmodallevel);
 		}else{
+	    $("#dynamic-modal-content-2").html("");
 			var newmodal = $('#dynamic-modal').clone().prop('id', 'dynamic-modal-'+inmodallevel);
-			$('#dynamic-modal').after(newmodal);
+			$('#dynamic-modal'+inmodallevel).after(newmodal);
 			var newmodalsize = $(newmodal).find('#modal-size').prop('id', 'modal-size-'+inmodallevel);
 			var newmodalcontent = $(newmodal).find('#dynamic-modal-content').prop('id', 'dynamic-modal-content-'+inmodallevel);
 		}
 	}else{
+    $("#dynamic-modal-content").html("");
 		var newmodal = $('#dynamic-modal');
 		var newmodalsize = $('#modal-size');
 		var newmodalcontent = $('#dynamic-modal-content');

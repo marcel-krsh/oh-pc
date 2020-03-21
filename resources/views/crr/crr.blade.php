@@ -283,20 +283,20 @@ session(['projectDetailsOutput' => 0]);
 <script src="/js/components/tooltip.js{{ asset_version() }}"></script> -->
 <style>
 	<?php // determin background type
-	$background = "";
-	if (1 == $report->crr_approval_type_id) {
-		$background = '-draft';
-	}
-	if (2 == $report->crr_approval_type_id) {
-		$background = '-pending';
-	}
-	if (3 == $report->crr_approval_type_id) {
-		$background = '-declined';
-	}
-	if (4 == $report->crr_approval_type_id) {
-		$background = '-revise';
-	}
-	?>
+$background = "";
+if (1 == $report->crr_approval_type_id) {
+	$background = '-draft';
+}
+if (2 == $report->crr_approval_type_id) {
+	$background = '-pending';
+}
+if (3 == $report->crr_approval_type_id) {
+	$background = '-declined';
+}
+if (4 == $report->crr_approval_type_id) {
+	$background = '-revise';
+}
+?>
 	.crr-sections {
 		width:90%;min-width:720px; min-height: 1502px; margin-left:auto; margin-right:auto; border:1px black solid; background-image: url('/paginate-2x{{ $background }}.gif'); padding: 72px;
 
@@ -436,17 +436,17 @@ session(['projectDetailsOutput' => 0]);
 			@foreach($section->parts as $part)
 			@foreach($part as $piece)
 			<?php
-			// collect comments for this part
-			if ($auditor_access) {
-				$comments = collect($report->comments)->where('part_id', $piece->part_id);
-				if ($comments) {
-					$totalComments = count($comments);
-				}
-			} else {
-				$comments = [];
-				$totalComments = 0;
-			}
-			?>
+// collect comments for this part
+if ($auditor_access) {
+	$comments = collect($report->comments)->where('part_id', $piece->part_id);
+	if ($comments) {
+		$totalComments = count($comments);
+	}
+} else {
+	$comments = [];
+	$totalComments = 0;
+}
+?>
 			@if($auditor_access)
 			<div class="crr-comment-edit"><a class="uk-contrast" onClick="showComments({{ $piece->part_id }});" >#{{ $pieceCount }}<hr class="dashed-hr uk-margin-bottom"><i class="a-comment"></i> @if($comments) {{ $totalComments }} @else 0 @endif</a>
 				<hr class="dashed-hr uk-margin-bottom"><a class="uk-contrast"><i class="a-pencil" style="font-size: 19px;"></i></a>
@@ -455,9 +455,9 @@ session(['projectDetailsOutput' => 0]);
 
 			<div class="crr-part-{{ $piece->part_id }} crr-part @if(!$print) crr-part-comment-icons @endIf"> <a name="part-{{ $piece->part_id }}"></a>
 				<?php
-				$pieceData = json_decode($piece->data);
-				// set this so we only output details once from the blade.
-				;?>
+$pieceData = json_decode($piece->data);
+// set this so we only output details once from the blade.
+;?>
 				@if($pieceData[0]->type =='free-text')
 				{!! $piece->content !!}
 				@endif
@@ -470,32 +470,32 @@ session(['projectDetailsOutput' => 0]);
 				@endphp --}}
 				@if($pieceData[0]->type == 'blade')
 				<?php
-				if (array_key_exists(2, $pieceData)) {
-					$bladeData = $pieceData[2];
-				} else {
-					$bladeData = null;
-				}
-				?>
+if (array_key_exists(2, $pieceData)) {
+	$bladeData = $pieceData[2];
+} else {
+	$bladeData = null;
+}
+?>
 				@if($piece->blade == 'crr_parts.crr_inspections')
 				@include($piece->blade, [$inspections_type = 'site', $audit_id = $report->audit->id])
 				@endif
 				<?php
-				if (array_key_exists(3, $pieceData)) {
-					$bladeData = $pieceData[3];
-				} else {
-					$bladeData = null;
-				}
-				?>
+if (array_key_exists(3, $pieceData)) {
+	$bladeData = $pieceData[3];
+} else {
+	$bladeData = null;
+}
+?>
 				@if($piece->blade == 'crr_parts.crr_inspections')
 				@include($piece->blade, [$inspections_type = 'building', $audit_id = $report->audit->id])
 				@endif
 				<?php
-				if (array_key_exists(1, $pieceData)) {
-					$bladeData = $pieceData[1];
-				} else {
-					$bladeData = null;
-				}
-				?>
+if (array_key_exists(1, $pieceData)) {
+	$bladeData = $pieceData[1];
+} else {
+	$bladeData = null;
+}
+?>
 				@include($piece->blade, [$inspections_type = 'unit', $audit_id = $report->audit->id])
 
 				@endif
@@ -522,8 +522,8 @@ session(['projectDetailsOutput' => 0]);
 		<?php /* Send Fax with Print Report PDF - End */?>
 	</div>
 	<?php
-	session(['projectDetailsOutput' => 0]);
-	?>
+session(['projectDetailsOutput' => 0]);
+?>
 
 	<script type="text/javascript">
 		$("#faxnumber").mask("999-999-9999");
@@ -618,6 +618,11 @@ session(['projectDetailsOutput' => 0]);
 <script>
 	function dynamicModalLoadLocal(modalSource) {
 		var newmodalcontent = $('#dynamic-modal-content-communications');
+		var mcom = document.getElementById("dynamic-modal-content-2");
+	  if(mcom){
+	     $(mcom).html('');
+	  }
+		$(newmodalcontent).html("");
 		$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
 		$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
 			if (status == "error") {

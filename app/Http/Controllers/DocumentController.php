@@ -16,15 +16,13 @@ use App\Models\Project;
 use App\Models\Document;
 use App\Models\CachedAudit;
 use App\Models\FindingType;
-use App\Models\ReportAccess;
-use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use App\Models\DocumentAudit;
+use App\Models\SystemSetting;
 use App\Models\DocumentCategory;
 use App\Models\CommunicationDraft;
 use App\Models\LocalDocumentCategory;
 use App\Http\Controllers\Traits\DocumentTrait;
-
 
 class DocumentController extends Controller
 {
@@ -396,10 +394,10 @@ class DocumentController extends Controller
 		/// released yet, we must not show those documents to the property mangement or owner until that audit's
 		/// report has been released... so we set a system setting pm_can_see_findings_with_audit_step with the statuses allowed.
 
-		$allowedSteps = SystemSetting::where('key','pm_can_see_findings_with_audit_step')->first();
-		$allowedSteps = explode(',',$allowedSteps->value);
+		$allowedSteps = SystemSetting::where('key', 'pm_can_see_findings_with_audit_step')->first();
+		$allowedSteps = explode(',', $allowedSteps->value);
 
-		$allowedDocumentsOnFindings = $project->audits()->whereIn('step_id',$pmCanViewFindingsStepIds)->pluck('audit_id')->toArray();
+		$allowedDocumentsOnFindings = $project->audits()->whereIn('step_id', $pmCanViewFindingsStepIds)->pluck('audit_id')->toArray();
 
 		dd($allowedAuditsForFindings, $allowedSteps, $project->audits);
 		if ($request->has('local-search')) {
@@ -484,7 +482,6 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
-
 		// CLIENT REVERSED DECISION ---
 		//Check if this PM is primary one
 		// $project_report_access = ReportAccess::where('project_id', $project->id)->get();
@@ -498,7 +495,7 @@ class DocumentController extends Controller
 		// }
 		// if ($default_user_id == $current_user->id) {
 
-			$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
 		// } else {
 		// 	$documents_query = Document::where('project_id', $project->id)->where('user_id', $current_user->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
 		// }
@@ -575,7 +572,7 @@ class DocumentController extends Controller
 		if (!$request->has('categories') || is_null($request->categories)) {
 			return 'You must select at least one category!';
 		}
-		if ($request->has('findings')) {
+		if ($request->has('findings') && $request->findings != '') {
 			/// we will ignore the selected audit and get it from the findings
 
 			$findingIds = explode(',', $request->findings);
@@ -594,6 +591,7 @@ class DocumentController extends Controller
 			$unitIds = array_values($unitIds);
 			// dd($findingIds, $unitIds, $buildingIds, $siteIds);
 		}
+		// return $request->findings;
 		if ($request->hasFile('files')) {
 			$data = [];
 			$user = Auth::user();
@@ -617,7 +615,7 @@ class DocumentController extends Controller
 					'project_id' => $project->id,
 					'comment' => $request->comment,
 				]);
-				if ($request->has('findings')) {
+				if ($request->has('findings') && $request->findings != '') {
 					if (!empty($findingIds)) {
 						$document->finding_ids = json_encode($findingIds, true);
 					}
@@ -1315,6 +1313,25 @@ class DocumentController extends Controller
 		if (!$request->has('categories') || is_null($request->categories)) {
 			return 'You must select at least one category!';
 		}
+		if ($request->has('findings') && $request->findings != '') {
+			/// we will ignore the selected audit and get it from the findings
+			$findingIds = explode(',', $request->findings);
+			//dd($findingsToInsert, $request->comment, $request->categories, $request->buValue, $request->audit_id);
+			$findingDetails = Finding::whereIn('id', $findingIds)->get();
+			// get unit ids from findings
+			$unitIds = $findingDetails->pluck('unit_id')->unique()->filter()->toArray();
+			// get the building ids of the units
+			$unitBuildingIds = Unit::whereIn('id', $unitIds)->pluck('building_id')->unique()->filter();
+			// get the building ids from the findings
+			$findingBuildingIds = $findingDetails->pluck('building_id')->unique()->filter();
+			// merge them togeter merging duplicates
+			$buildingIds = $unitBuildingIds->merge($findingBuildingIds)->unique()->toArray();
+			// get site ids from findings
+			$siteIds = $findingDetails->where('site', 1)->pluck('amenity_id')->unique()->toArray();
+			$unitIds = array_values($unitIds);
+			// dd($findingIds, $unitIds, $buildingIds, $siteIds);
+		}
+		// return $findingIds;
 		$audit_id = $request->audit_id;
 		if ($request->hasFile('files')) {
 			$data = [];
@@ -1338,6 +1355,20 @@ class DocumentController extends Controller
 					'project_id' => $project->id,
 					'comment' => $request->comment,
 				]);
+				if ($request->has('findings') && $request->findings != '') {
+					if (!empty($findingIds)) {
+						$document->finding_ids = json_encode($findingIds, true);
+					}
+					if (!empty($siteIds)) {
+						$document->site_ids = json_encode($siteIds, true);
+					}
+					if (!empty($buildingIds)) {
+						$document->building_ids = json_encode($buildingIds, true);
+					}
+					if (!empty($unitIds)) {
+						$document->unit_ids = json_encode($unitIds, true);
+					}
+				}
 				$document->save();
 				if (!is_null($audit_id)) {
 					$doc_audit = new DocumentAudit;

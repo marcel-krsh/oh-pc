@@ -179,9 +179,9 @@
 		      });
 		    </script>
 		  </div>
-		  @cannot('access_auditor')
+		  @if(!$auditor_access)
 		  <div class="uk-form-row" id="existing-documents"></div>
-      @endIfnot
+      @endif
 		</div>
 		<script>
       // CLONE RECIPIENTS

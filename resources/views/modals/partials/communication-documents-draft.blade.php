@@ -98,12 +98,17 @@
 									$("input:radio[name=category-id-checkbox]:checked").each(function(){
 										categoryArray.push($(this).val());
 									});
+									var findingsArray = [];
+									$("input[name='findings[]']:checked").each(function (){
+						    		findingsArray.push(parseInt($(this).val()));
+						    	});
 									settings.params.categories = categoryArray;
 									settings.params.ohfa_file = 1;
 									settings.params.draft_id = "{{ $draft->id }}";
 									settings.params.audit_id = "{{ $audit_id }}";
 									settings.params.comment = $("input[name=local-comment]").val();
 									settings.params._token = '{{ csrf_token() }}';
+									settings.params.findings = findingsArray;
 									if(categoryArray.length > 0){
 										console.log('Categories selected: '+categoryArray);
 									} else{
@@ -184,9 +189,9 @@
 			      });
 			    </script>
 			  </div>
-			  @cannot('access_auditor')
+			  @if(!$auditor_access)
 			  <div class="uk-form-row" id="existing-documents"></div>
-			  @endIfnot
+			  @endif
 			</div>
 			<script>
       // CLONE RECIPIENTS
