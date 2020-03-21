@@ -32,15 +32,7 @@ class DocumentController extends Controller
 
 	public function __construct(Request $request)
 	{
-		$this->middleware(function ($request, $next) {
-			$this->user = Auth::user();
-			$this->auditor_access = $this->user->auditor_access();
-			$this->admin_access = $this->user->admin_access();
-			View::share('auditor_access', $this->auditor_access);
-			View::share('admin_access', $this->admin_access);
-			View::share('current_user', $this->user);
-			return $next($request);
-		});
+		$this->allitapc();
 	}
 
 	/**
@@ -407,7 +399,7 @@ class DocumentController extends Controller
 		$allowedSteps = SystemSetting::where('key','pm_can_see_findings_with_audit_step')->first();
 		$allowedSteps = explode(',',$allowedSteps->value);
 
-		$allowedAuditsForFindings = $project->audits()->whereIn('step_id',$allowedSteps)->pluck('audit_id')->toArray();
+		$allowedDocumentsOnFindings = $project->audits()->whereIn('step_id',$pmCanViewFindingsStepIds)->pluck('audit_id')->toArray();
 
 		dd($allowedAuditsForFindings, $allowedSteps, $project->audits);
 		if ($request->has('local-search')) {
