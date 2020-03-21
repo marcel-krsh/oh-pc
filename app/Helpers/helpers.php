@@ -5,6 +5,57 @@ use Carbon\Carbon;
 use App\DocumentCategory;
 use Illuminate\Support\Str;
 use App\Mail\EmailSystemAdmin;
+use App\Models\SystemSetting;
+
+
+
+
+function pmCanViewAuditIds(){
+	// This function returns all the possible step ids that an audit can have for an audit to be visible to a property manager.
+	// This does not guarantee which inspections they can see, nor does it determine if they can see the findings.
+	// Those values are determined in other helpers below
+	$fileOnlyids = SystemSetting::where('key','pm_can_see_file_inspections_only_with_audit_step')->first();
+	$siteOnlyids = SystemSetting::where('key','pm_can_see_site_inspections_only_with_audit_step')->first();
+	$bothIds = SystemSetting::where('key','pm_can_see_all_inspections_with_step_id')->first();
+	
+	// convert to arrays
+	$fileOnlyids = $fileOnlyids = explode(',', $fileOnlyids->value);
+	$siteOnlyids = $siteOnlyids = explode(',', $siteOnlyids->value);
+	$bothIds = $bothIds = explode(',', $bothIds->value);
+
+	/// merge
+	$allIds = collect([]);
+	$allIds = $allIds->merge([$fileOnlyids,$siteOnlyids,$bothIds])->flatten()->unique()->toArray();
+	//return
+	//dd($fileOnlyids,$siteOnlyids,$bothIds,$allIds);
+	return $allIds;
+}
+
+function pmCanViewFindingsIds(){
+	$canSeeFindingsIds = SystemSetting::where('key','pm_can_see_findings_with_audit_step')->first();
+	// convert to arrays
+	$canSeeFindingsIds = $canSeeFindingsIds = explode(',', $canSeeFindingsIds->value);
+	return $canSeeFindingsIds;
+}
+
+function pmCanViewFileInspectionIds(){
+	$fileOnlyids = SystemSetting::where('key','pm_can_see_file_inspections_only_with_audit_step')->first();
+	// convert to arrays
+	$fileOnlyids = $fileOnlyids = explode(',', $fileOnlyids->value);
+	//dd($fileOnlyids,$siteOnlyids,$bothIds,$allIds);
+	return $fileOnlyids;
+
+}
+function pmCanViewSiteInspectionIds(){
+	$siteOnlyids = SystemSetting::where('key','pm_can_see_site_inspections_only_with_audit_step')->first();
+	$siteOnlyids = $siteOnlyids = explode(',', $siteOnlyids->value);
+	return $siteOnlyids;
+}
+function pmCanViewBothInspectionIds(){
+	$bothIds = SystemSetting::where('key','pm_can_see_all_inspections_with_step_id')->first();
+	$bothIds = $bothIds = explode(',', $bothIds->value);
+	return $bothIds;
+}
 
 function formatDate($date, $format = "F d, Y", $from_format = "Y-m-d H:i:s")
 {
@@ -143,6 +194,8 @@ function system_message($message, $action_link = null, $action_text = null, $rec
 
 	return true;
 }
+
+
 
 function camelCase($str, array $noStrip = [])
 {

@@ -9,6 +9,9 @@ use App\Models\CachedAudit;
 class AdhocReportController extends Controller
 {
     //
+    public function __construct(){
+        $this->allitapc();
+    }
 
     public function contactsToProject(){
     	$cachedAudits = CachedAudit::select('project_id')->pluck('project_id');

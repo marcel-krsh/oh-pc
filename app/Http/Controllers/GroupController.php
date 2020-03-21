@@ -12,11 +12,8 @@ use Auth;
 class GroupController extends Controller
 {
 
-    public function __construct()
-    {
-        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-            Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-        }
+     public function __construct(){
+        $this->allitapc();
     }
 
     public function getGroupsJson()

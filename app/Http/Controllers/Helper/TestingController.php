@@ -17,6 +17,10 @@ use App\Http\Controllers\Controller;
 class TestingController extends Controller
 {
 
+	public function __construct(){
+		$this->allitapc();
+	}
+
 	public function getTestAll()
 	{
 

@@ -50,6 +50,7 @@ class LoginController extends Controller
   {
     // $this->middleware('guest', ['except' => ['logout', 'getApproveAccess', 'postApproveAccess']]);
     $this->verification_number = 1299;
+    $this->allitapc();
   }
 
   public function requestAutoLogin(Request $request){

@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Gate;
 
 class AccountingController extends Controller
 {
+    public function __construct(){
+        $this->allitapc();
+    }
     /**
      * Invoice List
      *

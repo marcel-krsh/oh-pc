@@ -53,11 +53,8 @@ class DispositionController extends Controller
     * computeDisposition
     */
 
-    public function __construct(Request $request)
-    {
-        // $this->middleware('auth');
-        // for testing only! //////////////////////////////////////////////////////////
-        //Auth::onceUsingId(3);
+    public function __construct(){
+        $this->allitapc();
     }
 
     public function dispositionList(Request $request)

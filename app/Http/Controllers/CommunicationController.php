@@ -32,17 +32,9 @@ class CommunicationController extends Controller
 {
 	use DocumentTrait;
 
-	public function __construct(Request $request)
-	{
-		// $this->middleware('auth');
-		//Auth::onceUsingId(2);
-		//
-		if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-			//Auth::onceUsingId(1); // TEST BRIAN
-			//Auth::onceUsingId(286); // TEST BRIAN
-			//Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-		}
-	}
+	public function __construct(){
+        $this->allitapc();
+    }
 
 	/**
 	 * Show the communication list for a specific project.

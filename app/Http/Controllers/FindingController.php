@@ -32,23 +32,9 @@ class FindingController extends Controller
 {
 	use DocumentTrait;
 
-	public function __construct()
-	{
-		// $this->middleware('auth');
-		if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-			//Auth::onceUsingId(286); // TEST BRIAN
-			Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-		}
-		$this->middleware(function ($request, $next) {
-			$this->user = Auth::user();
-			$this->auditor_access = $this->user->auditor_access();
-			$this->admin_access = $this->user->admin_access();
-			View::share('auditor_access', $this->auditor_access);
-			View::share('admin_access', $this->admin_access);
-			View::share('current_user', $this->user);
-			return $next($request);
-		});
-	}
+	 public function __construct(){
+        $this->allitapc();
+    }
 
 	public function addFindingForm($findingtypeid, AmenityInspection $amenityinspectionid, Request $request)
 	{

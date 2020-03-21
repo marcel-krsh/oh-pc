@@ -13,13 +13,8 @@ use Carbon;
 
 class DataController extends Controller
 {
-    public function __construct()
-    {
-        // $this->middleware('auth');
-        if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-            //Auth::onceUsingId(286); // TEST BRIAN
-            Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-        }
+    public function __construct(){
+        $this->allitapc();
     }
 
     public function autosave(Request $request) {

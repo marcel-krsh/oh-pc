@@ -27,10 +27,9 @@ use App\Models\CrrSectionOrder;
 
 class ReportsController extends Controller
 {
-	public function __construct(Request $request)
-	{
-		// $this->middleware('auth');
-	}
+	 public function __construct(){
+        $this->allitapc();
+    }
 
 	public function reportHistory(CrrReport $report, $data)
 	{

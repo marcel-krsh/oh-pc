@@ -17,6 +17,7 @@ class DatafixController extends Controller
 	public function __construct()
 	{
 		$this->middleware('allita.developer');
+		$this->allitapc();
 	}
 
 	public function changeSyncTableLastEditedDateBackDecade($table)

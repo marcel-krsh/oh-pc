@@ -20,33 +20,8 @@ class DashboardController extends Controller
 {
 	public function __construct()
 	{
-		$this->middleware('allita.auth');
-		// if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-		//   //Auth::onceUsingId(1); // TEST BRIAN
-		//   //Auth::onceUsingId(286); // TEST BRIAN
-		//   Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-
-		//   // this is normally setup upon login
-		//   $current_user = Auth::user();
-		//   if (null === $current_user->socket_id) {
-		//     // create a socket id and store in user table
-		//     $token                   = str_random(10);
-		//     $current_user->socket_id = $token;
-		//     $current_user->save();
-		//   }
-		// $this->middleware(function ($request, $next) {
-		//     $current_user = Auth::user();
-		//   $auditor_access = Auth::user()->auditor_access();
-		//   view::share('current_user');
-		//   view::share('auditor_access');
-
-		//   return $next($request);
-		// });
-
-		// view()->composer('*', function ($view) {
-		//     $view->with('current_user', auth()->user());
-		//     $view->with('auditor_access', auth()->user()->auditor_access());
-		// });
+		$this->allitapc();
+		
 	}
 
 	public function login()
@@ -1134,6 +1109,9 @@ class DashboardController extends Controller
 	public function pmAudits(Request $request, $page = 0)
 	{
 		ini_set('max_execution_time', 1800); //3 minutes
+		
+
+		dd($this->user);
 
 		// TEST EVENT
 		// $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();

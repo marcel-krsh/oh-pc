@@ -57,19 +57,9 @@ class AuditController extends Controller
 
 	public function __construct()
 	{
-		// $this->middleware('auth');
-		if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-			Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-			//Auth::onceUsingId(286); // TEST BRIAN
-			// 6281 holly
-			// 6346 Robin (Abigail)
-		}
-		$this->middleware(function ($request, $next) {
-			$this->user = Auth::user();
-			$this->auditor_access = $this->user->auditor_access();
-			View::share('auditor_access', $this->auditor_access);
-			return $next($request);
-		});
+		
+        $this->allitapc();
+
 		$this->htc_group_id = 7;
 		View::share('htc_group_id', $this->htc_group_id);
 		// increase the memory for this controller

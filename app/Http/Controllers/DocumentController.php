@@ -17,12 +17,14 @@ use App\Models\Document;
 use App\Models\CachedAudit;
 use App\Models\FindingType;
 use App\Models\ReportAccess;
+use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use App\Models\DocumentAudit;
 use App\Models\DocumentCategory;
 use App\Models\CommunicationDraft;
 use App\Models\LocalDocumentCategory;
 use App\Http\Controllers\Traits\DocumentTrait;
+
 
 class DocumentController extends Controller
 {
@@ -396,6 +398,18 @@ class DocumentController extends Controller
 		//check if filters exist
 		// return $request->all();
 		/// SEARCH TERM
+
+		/// determine what findings/docs can be shown
+		/// the issue here is if a document is attached to a finding but the report for that audit has not been
+		/// released yet, we must not show those documents to the property mangement or owner until that audit's
+		/// report has been released... so we set a system setting pm_can_see_findings_with_audit_step with the statuses allowed.
+
+		$allowedSteps = SystemSetting::where('key','pm_can_see_findings_with_audit_step')->first();
+		$allowedSteps = explode(',',$allowedSteps->value);
+
+		$allowedAuditsForFindings = $project->audits()->whereIn('step_id',$allowedSteps)->pluck('audit_id')->toArray();
+
+		dd($allowedAuditsForFindings, $allowedSteps, $project->audits);
 		if ($request->has('local-search')) {
 			if ($request->get('local-search') == "") {
 				// reset the search
@@ -478,21 +492,24 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
+
+		// CLIENT REVERSED DECISION ---
 		//Check if this PM is primary one
-		$project_report_access = ReportAccess::where('project_id', $project->id)->get();
-		$default_report_user = $project_report_access->where('default', 1)->first();
+		// $project_report_access = ReportAccess::where('project_id', $project->id)->get();
+		// $default_report_user = $project_report_access->where('default', 1)->first();
 		$project = Project::with('contactRoles.person.user')->find($project->id); //DEVCO
-		$default_user = $project->contactRoles->where('project_role_key', 21)->first();
-		if ($default_report_user) {
-			$default_user_id = $default_report_user->user_id;
-		} elseif ($default_user && $default_user->person && $default_user->person->user) {
-			$default_user_id = $default_devco_user_id = $default_user->person->user->id;
-		}
-		if ($default_user_id == $current_user->id) {
+		// $default_user = $project->contactRoles->where('project_role_key', 21)->first();
+		// if ($default_report_user) {
+		// 	$default_user_id = $default_report_user->user_id;
+		// } elseif ($default_user && $default_user->person && $default_user->person->user) {
+		// 	$default_user_id = $default_devco_user_id = $default_user->person->user->id;
+		// }
+		// if ($default_user_id == $current_user->id) {
+
 			$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
-		} else {
-			$documents_query = Document::where('project_id', $project->id)->where('user_id', $current_user->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
-		}
+		// } else {
+		// 	$documents_query = Document::where('project_id', $project->id)->where('user_id', $current_user->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+		// }
 
 		$documents = $documents_query->paginate(20);
 		$documents_all = $documents_query->get();

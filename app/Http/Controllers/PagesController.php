@@ -43,11 +43,8 @@ use \DB;
 ini_set('max_execution_time', 600);
 class PagesController extends Controller
 {
-    public function __construct()
-    {
-        if (env('APP_ENV') == 'local') {
-            Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-        }
+    public function __construct(){
+        $this->allitapc();
     }
 
     public function changeLog(Request $request)

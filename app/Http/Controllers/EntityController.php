@@ -9,6 +9,9 @@ use App\LogConverter;
 
 class EntityController extends Controller
 {
+    public function __construct(){
+        $this->allitapc();
+    }
 
     /**
      * @param \Illuminate\Http\Request $request

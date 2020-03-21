@@ -27,9 +27,8 @@ use App\Models\Mail\EmailNotificationPaymentRequested;
 
 class InvoiceController extends Controller
 {
-    public function __construct(Request $request)
-    {
-        // $this->middleware('auth');
+    public function __construct(){
+        $this->allitapc();
     }
 
     public function getInvoice(ReimbursementInvoice $invoice)
