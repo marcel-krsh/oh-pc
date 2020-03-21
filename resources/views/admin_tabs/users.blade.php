@@ -42,7 +42,7 @@ $thisProjectHtml = '';
  			@foreach($users as $user)
  			<tr class="{{ !$user->active ? 'uk-text-muted' : '' }}">
  				<td><small>{{$user->id}}</small></td>
- 				<td>@can('access_root')<span uk-tooltip title="USER_ID: {{$user->id}} USER_KEY: {{$user->devco_key}}">@endCan{{ $user->first_name }} {{ $user->last_name }}@can('access_root')</span>@endCan <br /><small>
+ 				<td>@if($root_access)<span uk-tooltip title="USER_ID: {{$user->id}} USER_KEY: {{$user->devco_key}}">@endIf{{ $user->first_name }} {{ $user->last_name }}@if($root_access)</span>@endIf <br /><small>
  					@if($user->role)ROLE:{{strtoupper($user->role->role->role_name)}}@else NO ACCESS @endIf</small>
  					@php
 							$devco_projects = $user->person->projects;

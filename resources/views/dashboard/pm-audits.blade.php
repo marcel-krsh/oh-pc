@@ -23,7 +23,7 @@
 	    max-height: 13px;
 	    line-height: 1.5;
 	}
-	.on-folder {
+	.main-on-folder {
 	    position: relative;
 	    left: -4px;
 	    top: -17.5px;
@@ -43,6 +43,9 @@
 	    top: -16.5px;
 	    font-size: 9px;
 	    font-weight: bolder;
+	}
+	.audit-finding-counts i.a-folder, .audit-finding-counts i.a-booboo, .audit-finding-counts i.a-skull {
+		font-size:23px !important;
 	}
 </style>
 
@@ -1653,15 +1656,6 @@ function updateAuditBuildingInspection(e) {
 			
 		// by nature this note is it's history note - so no need to ask them for a comment.
 
-
-	
-
-
-
-
-	
-</script>
-<script>
 	window.onPageAudits = {@forEach($audits as $audit) '{{ $audit->audit_id }}' :["{{ $audit->audit_id }}","{{ $audit->updated_at }}"] @if(!$loop->last),@endIf @endForEach };
 	function checkForAudit(audit_id){
 			//
@@ -1748,6 +1742,7 @@ function updateAuditBuildingInspection(e) {
 		  <script>
 		  	function openProjectSubtab(project_key, audit_id, subtab = 0) {
 		  		openProject(project_key, audit_id, subtab);
+		  		//loadTab('/projects/view/'+project_key+'/'+audit_id, '4', 1, 1, '', 1, audit_id);
 		  	}
 		  </script>
 		  <script>window.auditsLoaded = 1; </script>

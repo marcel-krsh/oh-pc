@@ -1111,7 +1111,7 @@ class DashboardController extends Controller
 		ini_set('max_execution_time', 1800); //3 minutes
 		
 
-		dd($this->user);
+		//dd($this->user);
 
 		// TEST EVENT
 		// $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();

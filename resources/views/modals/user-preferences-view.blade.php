@@ -33,7 +33,7 @@
 							</div>
 						</form>
 					</div>
-					@can('access_auditor')
+					@if($auditor_access)
 					<div class="uk-width-1-1 uk-margin-remove uk-padding-remove-left">
 						<hr />
 						<h3 class="uk-margin-small-top">Addresses</h3>
@@ -89,10 +89,10 @@
 							@endIf
 						</div>
 					</div>
-					@endcan
+					@endIf
 				</div>
 			</div>
-			@can('access_auditor')
+			@if($auditor_access)
 			<div class="user-preference-col-2 uk-padding-remove uk-margin-small-top" style="display:none">
 				<div uk-grid>
 					<div class="uk-width-1-1">
@@ -274,7 +274,7 @@
 					</div>
 				</div>
 			</div>
-			@endcan
+			@endIf
 		</div>
 	</div>
 </div>
@@ -291,7 +291,7 @@
 	}
 
 </style>
-@can('access_auditor')
+@if($auditor_access)
 <script>
 	$( document ).ready(function() {
 		loadCalendar();
@@ -563,7 +563,7 @@
 
 
 </script>
-@endCan
+@endIf
 
 <script>
 

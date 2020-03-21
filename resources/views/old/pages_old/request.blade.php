@@ -560,22 +560,22 @@ $accountingBalance = $accountingBalance - ($stat['Total_Invoiced'] - $stat['Reim
 		<br />User id: {{Auth::user()->id}}<br />
 		@can('create-disposition')
 1
-		@endcan
+		@endIf
 		@can('authorize-disposition-request')
 2
-		@endcan
+		@endIf
 		@can('submit-disposition')
 3
-		@endcan
+		@endIf
 		@can('hfa-review-disposition')
 4
-		@endcan
+		@endIf
 		@can('hfa-sign-disposition')
 5
-		@endcan
+		@endIf
 		@can('hfa-release-disposition')
 6
-		@endcan
+		@endIf
 	</div>
 <script type="text/javascript">
 

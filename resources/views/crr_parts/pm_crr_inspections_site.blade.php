@@ -35,7 +35,7 @@ if (isset($detailsPage)) {
 						@if($print !== 1)</a>@endIf
 					</div>
 				{{-- <div style="float: right;">
-					<i class="a-mobile uk-text-large uk-margin-small-right @can('access_auditor')@if(!$print)use-hand-cursor @endif @endcan" @can('access_auditor')@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endcan></i>
+					<i class="a-mobile uk-text-large uk-margin-small-right @if($auditor_access)@if(!$print)use-hand-cursor @endif @endIf" @if($auditor_access)@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endIf></i>
 				</div> --}}
 				<div style="float: right;">
 					<i class="a-mobile uk-text-large uk-margin-small-right @if($auditor_access)@if(!$print)use-hand-cursor @endif @endif" @if($auditor_access)@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, null, null, {{ $i->amenity_id }},'0');" @endif  @endif></i> @if($thisAmenityFindings > 0) <span class="uk-badge finding-number on-phone @if($thisAmenityUnresolvedFindings > 0) attention @endIf" uk-tooltip title="{{ $thisAmenityFindings }} @if($thisAmenityFindings > 1) FINDINGS @else FINDING @endIf @if($thisAmenityUnresolvedFindings > 0) WITH {{ $thisAmenityUnresolvedFindings }} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{ $thisAmenityFindings }}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif

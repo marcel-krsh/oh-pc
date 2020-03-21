@@ -116,7 +116,7 @@ ul.leaders li {
             				<th width="160">
             					APPLIES TO
             				</th>
-            				@can('access_root')
+            				@if($root_access)
 	            				<!-- <th >
 	            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 30 DAYS" >30 Days</span>
 	            				</th>
@@ -133,7 +133,7 @@ ul.leaders li {
 	            				<th>
 	            					<span uk-tooltip title="VIOLATIONS FOR JANUARY 1, {{date('Y',strtotime('last year'))}} - {{date('M, d Y')}} COMPARED TO THIS YEAR TO DATE" >Y/YTD</span>
 	            				</th> -->
-            				@endCan
+            				@endIf
             				</tr>
             			</thead>
             			<tbody>
@@ -169,7 +169,7 @@ ul.leaders li {
 		            					</ul>
 		            					</small>
 		            				</td>
-		            				@can('access_root')
+		            				@if($root_access)
 			            				<!-- <td>
 			            					<span uk-tooltip title="VIOLATIONS FOR THE LAST 30 DAYS" >30 Days</span>
 			            				</td>
@@ -186,13 +186,13 @@ ul.leaders li {
 			            				<td>
 			            					<span uk-tooltip title="VIOLATIONS FOR JANUARY 1, {{date('Y',strtotime('last year'))}} - {{date('M, d Y')}} COMPARED TO THIS YEAR TO DATE" >Y/YTD</span>
 			            				</td> -->
-		            				@endCan
+		            				@endIf
             				</tr>
             				@if(0 !== $code->one || 0 !== $code->two || 0 !== $code->three )
             				<tr class="code-{{$code->id}}-rows rows">
             					<td></td>
             					<td></td>
-            					<td @can('access_root') colspan="9" @else colspan="" @endCan>
+            					<td @if($root_access) colspan="9" @else colspan="" @endIf>
             						@if($code->one)<a name="code-{{$code->id}}-level-1"></a><strong>LEVEL 1</strong>: {{$code->one_description}} @if(0 !== $code->two || 0 !== $code->three)<hr> @endIf @endIf
             						@if($code->two)<a name="code-{{$code->id}}-level-2"></a><strong>LEVEL 2</strong>: {{$code->two_description}} @if(0 !== $code->three)<hr> @endIf @endIf
             						@if($code->three)<a name="code-{{$code->id}}-level-3"></a><strong>LEVEL 3</strong>: {{$code->three_description}} @endIf

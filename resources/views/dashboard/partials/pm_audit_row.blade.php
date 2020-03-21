@@ -1,13 +1,13 @@
 <?php
 $lead = $audit->lead_json;
-
+$showFindings = in_array($audit->step_id, $pmCanViewFindingsStepIds);
 // if($audit->update_cached_audit()){
 //   //refreshed - update values.
 //   $audit->refresh();
 // }
 ?>
 
-<td id="'audit-c-1-'{{ $audit->audit_id }}" class="uk-text-center audit-td-lead use-hand-cursor" >
+<td id="audit-c-1-{{ $audit->audit_id }}" class="uk-text-center audit-td-lead use-hand-cursor" >
 	<span id="audit-avatar-badge-{{ $audit->audit_id }}"  uk-tooltip=" delay: 1000" title="YOUR LEAD AUDITOR IS {{ strtoupper($lead->name) }}" aria-expanded="false" class="user-badge-{{ $lead->color }} user-badge-v2 uk-align-center no-float uk-link" style="margin-right: auto !important; margin-left: auto; margin-bottom: 0px; margin-top: 0px; float: none;">
 		<span >{{ $lead->initials }}</span>
 	</span>
@@ -76,17 +76,17 @@ $lead = $audit->lead_json;
 	<div class="uk-text-center fullwidth  uk-remove-margin" uk-grid>
 		<div class="uk-width-1-3 uk-remove-margin uk-padding-remove audit-list-report-holder" style="overflow: hidden;">
 			<div class="audit-list-report-icons">
-				@if($audit->car_id)
-				<a href="/report/{{ $audit->car_id }}" target="car{{ $audit->car_id }}"><i class="{{ $audit->car_icon }} {{ $audit->car_status }}" uk-tooltip=" delay: 1000" title="{{ $audit->car_status_text }}"></i></a><br /><small>CAR</small>
+				@if($audit->car_id && $showFindings)
+				<a href="/report/{{ $audit->car_id }}" target="car{{ $audit->car_id }}"><i class="{{ $audit->car_icon }} {{ $audit->car_status }}" @if($showFindings) uk-tooltip=" delay: 1000" title="{{ $audit->car_status_text }}" @endIf></i></a><br /><small>CAR</small>
 				@else
-				<i  class="a-file-fail gray-text" uk-tooltip=" delay: 1000" title="CAR NOT AVAILABLE."></i><br /><small class="gray-text">CAR</small>
+				<i  class="a-file-fail gray-text"  uk-tooltip=" delay: 1000" title="CAR NOT AVAILABLE."></i><br /><small class="gray-text">CAR</small>
 				@endIf
 			</div>
 		</div>
 		<div class="uk-width-1-3  uk-remove-margin uk-padding-remove audit-list-report-holder" style="overflow: hidden;">
 			<div class="audit-list-report-icons">
-				@if($audit->ehs_id)
-				<a href="/report/{{ $audit->ehs_id }}" target="ehs{{ $audit->ehs_id }}"><i class="{{ $audit->ehs_icon }} {{ $audit->ehs_status }}" uk-tooltip=" delay: 1000" title="{{ $audit->ehs_status_text }}"></i></a><br /><small>EHS</small>
+				@if($audit->ehs_id && $showFindings)
+				<a href="/report/{{ $audit->ehs_id }}" target="ehs{{ $audit->ehs_id }}"><i class="{{ $audit->ehs_icon }} {{ $audit->ehs_status }}" @if($showFindings) uk-tooltip=" delay: 1000" title="{{ $audit->ehs_status_text }}" @endIf></i></a><br /><small>EHS</small>
 				@else
 				<i   class="a-file-fail gray-text" uk-tooltip=" delay: 1000" title="EHS NOT AVAILALBE"></i><br /><small class="gray-text">EHS</small>
 				@endIf
@@ -95,7 +95,7 @@ $lead = $audit->lead_json;
 		@if(env('APP_ENV') != 'production')
 		<div class="uk-width-1-3  uk-remove-margin uk-padding-remove audit-list-report-holder" style="overflow: hidden;">
 			<div class="audit-list-report-icons">
-				@if($audit->_8823_id)
+				@if($audit->_8823_id && $showFindings)
 				<a href="/report/{{ $audit->_8823_id }}" target="_8823{{ $audit->_8823_id }}"><i class="{{ $audit->_8823_icon }} {{ $audit->_8823_status }}" uk-tooltip=" delay: 1000" title="{{ $audit->_8823_status_text }}"></i></a><br /><small>8823</small>
 				@else
 				<i  class="a-file-fail gray-text" uk-tooltip=" delay: 1000" title="8823 NOT AVAILALBE"></i><br /><small class="gray-text">8823</small>
@@ -105,17 +105,17 @@ $lead = $audit->lead_json;
 		@endif
 	</div>
 </td>
-<td class="hasdivider">
+<td class="hasdivider audit-finding-counts">
 	<div class="divider"></div>
 	<div class="uk-display-inline-block uk-text-center fullwidth uk-margin-small-top " uk-grid>
-		<div class="uk-width-1-3 use-hand-cursor {{ $audit->file_audit_status }} uk-link" uk-tooltip=" delay: 1000" title="{{ $audit->file_audit_status_text }}" onClick="openFindings(this, {{ $audit->audit_id }}, null, null, 'file')">
-			<i class="{{ $audit->file_audit_icon }} "></i><span class="uk-badge finding-number on-folder @if($audit->unresolved_file_findings_count > 0) attention @endIf" >{{$audit->file_findings_count}}</span>
+		<div class="uk-width-1-3  @if($showFindings){{ $audit->file_audit_status }}@endIf " @if($showFindings) uk-tooltip=" delay: 1000" title="{{ $audit->file_audit_status_text }}"@endif >
+			<i class="@if($showFindings){{ $audit->file_audit_icon }} @else a-folder @endIf "></i>@if($showFindings)<span class="uk-badge finding-number main-on-folder @if($audit->unresolved_file_findings_count > 0) attention @endIf" >{{$audit->file_findings_count}}</span>@else<span class="uk-badge finding-number main-on-folder" >NA</span> @endIf
 		</div>
-		<div class="uk-width-1-3 use-hand-cursor {{ $audit->nlt_audit_status }} uk-link" uk-tooltip=" delay: 1000" title="{{ $audit->nlt_audit_status_text }}" onClick="openFindings(this, {{ $audit->audit_id }}, null, null, 'nlt')">
-			<i class="{{ $audit->nlt_audit_icon }}"></i><span class="uk-badge finding-number on-boo-boo @if($audit->unresolved_nlt_findings_count > 0) attention @endIf" >{{$audit->nlt_findings_count}}</span>
+		<div class="uk-width-1-3  @if($showFindings){{ $audit->nlt_audit_status }} @endIf " @if($showFindings) uk-tooltip=" delay: 1000"  title="{{ $audit->nlt_audit_status_text }}" @endIf>
+			<i class="@if($showFindings) {{ $audit->nlt_audit_icon }} @else a-booboo @endIf"></i>@if($showFindings)<span class="uk-badge finding-number on-boo-boo @if($audit->unresolved_nlt_findings_count > 0) attention @endIf" >{{$audit->nlt_findings_count}}</span> @else <span class="uk-badge finding-number on-boo-boo " >NA</span> @endIf
 		</div>
-		<div class="uk-width-1-3 use-hand-cursor {{ $audit->lt_audit_status }} uk-link" uk-tooltip=" delay: 1000" title="{{ $audit->lt_audit_status_text }}" onClick="openFindings(this, {{ $audit->audit_id }}, null, null, 'lt')">
-			<i class="{{ $audit->lt_audit_icon }}"></i><span class="uk-badge finding-number on-death @if($audit->unresolved_lt_findings_count > 0) attention @endIf" >{{$audit->lt_findings_count}}</span>
+		<div class="uk-width-1-3  @if($showFindings) {{ $audit->lt_audit_status }} @endIf " @if($showFindings) uk-tooltip=" delay: 1000"  title="{{ $audit->lt_audit_status_text }}" @endIf >
+			<i class="@if($showFindings) {{ $audit->lt_audit_icon }} @else a-skull @endIf"></i>@if($showFindings) <span class="uk-badge finding-number on-death @if($audit->unresolved_lt_findings_count > 0) attention @endIf" >{{$audit->lt_findings_count}}</span> @else <span class="uk-badge finding-number on-death " >NA</span> @endIf
 		</div>
 	</div>
 </td>
@@ -125,10 +125,10 @@ $lead = $audit->lead_json;
 		
 		<div class="uk-width-1-2">
 
-			<i onClick="openProjectSubtab({{ $audit->project_key }},{{ $audit->audit_id }}, 'communications')" class="{{ $audit->message_status_icon }} use-hand-cursor {{ $audit->message_status }}" uk-tooltip=" delay: 1000" title="{{ $audit->message_status_text }}"></i>
+			<i onClick="openProjectSubtab({{ $audit->project_key }},{{ $audit->audit_id }}, 'communications')" class="{{ $audit->message_status_icon }}  {{ $audit->message_status }}" uk-tooltip=" delay: 1000" title="{{ $audit->message_status_text }}"></i>
 		</div>
 		<div class="uk-width-1-2">
-			<i onClick="openProjectSubtab({{ $audit->project_key }},{{ $audit->audit_id }}, 'documents')" class="{{ $audit->document_status_icon }} use-hand-cursor {{ $audit->document_status }}" uk-tooltip=" delay: 1000" title="{{ $audit->document_status_text }}"></i>
+			<i onClick="openProjectSubtab({{ $audit->project_key }},{{ $audit->audit_id }}, 'project-detail-tab-2')" class="{{ $audit->document_status_icon }} use-hand-cursor {{ $audit->document_status }}" uk-tooltip=" delay: 1000" title="{{ $audit->document_status_text }}"></i>
 		</div>
 
 	</div>
@@ -136,7 +136,7 @@ $lead = $audit->lead_json;
 <td>
 	<div class="uk-margin-top" uk-grid>
 		<div class="uk-width-1-1  uk-padding-remove-top uk-text-center use-hand-cursor">
-			<i class="a-file-up" uk-tooltip=" delay: 1000" title="UPLOAD DOCUMENTS"></i>
+			<i class="a-file-up" uk-tooltip=" delay: 1000" title="UPLOAD DOCUMENTS" onClick="openProjectSubtab({{ $audit->project_key }},{{ $audit->audit_id }}, 'project-detail-tab-2')"></i>
 		</div>
 		<script>
 			if(window.onPageAudits !== undefined){

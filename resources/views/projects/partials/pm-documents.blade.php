@@ -12,11 +12,11 @@
 </div>
 <div id="project-documents-container">
 	{{-- Docuware documents --}}
-	@can('access_auditor')
+	@if($auditor_access)
 	<div id="docuware-documents">
 
 	</div>
-	@endCan
+	@endIf
 	{{-- Allita documents --}}
 	<div id="allita-documents">
 

@@ -28,9 +28,7 @@
 	</ul>
 </div>
 
-<div id="footer-actions-project" hidden>
-		<a href="#top" id="smoothscrollLink" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
-</div>
+
 
 <script>
 $( document ).ready(function() {
@@ -43,10 +41,11 @@ $( document ).ready(function() {
 		@endif
 	@endif
 
-	@if($tab !== null)
-	$('#{{$tab}}').trigger("click");
-	@else
-	$('#project-detail-tab-1').trigger("click");
-	@endif
+	if(window.subtab != ""){
+		$('#'+window.subtab).trigger("click");
+		window.subtab = "";
+	}else{
+		$('#project-detail-tab-1').trigger("click");
+	}
 });
 </script>
