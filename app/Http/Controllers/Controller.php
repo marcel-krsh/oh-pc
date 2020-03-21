@@ -26,9 +26,11 @@ class Controller extends BaseController
 		//dd('hello world');
 		$this->middleware('allita.auth');
 		$this->middleware(function ($request, $next) {
-			$this->user = Auth::user()->load('roles');
+			$this->user = Auth::user();
 			//dd('My life as a user',$this->user);
 			if ($this->user != null) {
+				$this->user = $this->user->load('roles');
+				View::share('current_user', $this->user);
 				$this->auditor_access = $this->access($this->user, 'auditor');
 				// $this->auditor_access = $this->user->auditor_access();
 				View::share('auditor_access', $this->auditor_access);

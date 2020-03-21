@@ -67,7 +67,7 @@ Route::get('tablet_login', function () {
 });
 
 Route::group(['middleware' => 'web'], function () {
-	app('debugbar')->disable();
+	// app('debugbar')->disable();
 
 	Route::group(['prefix' => 'mobile', 'middleware' => 'can:access_auditor'], function () {
 		Route::get('/audits', 'PC\Mobile\AuditController@index');

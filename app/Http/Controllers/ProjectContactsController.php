@@ -32,7 +32,7 @@ class ProjectContactsController extends Controller
 	public function contacts($project)
 	{
 		// return         $last_record = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
-		// return $project;
+		// return $this->user;
 		$project_user_ids = $this->projectUserIds($project);
 		$allita_user_ids = $this->allitaUserIds($project);
 		$projectUserPersonIds = $this->projectUserPersonIds($project);
