@@ -27,12 +27,12 @@
 						<td><span uk-tooltip title="{{ date('g:h a', strtotime($document->dw_mod_date_time)) }}">{{ date('m/d/Y', strtotime($document->dw_mod_date_time)) }}
 						</td>
 						<td>
-							@can('access_admin')
+							@if($admin_access)
 							<a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
 								<span class="a-trash-4"></span>
 							</a>
 							&nbsp;&nbsp;|&nbsp;&nbsp;
-							@endcan
+							@endIf
 							@if($document->dw_extension == '.dwtiff' || $document->dw_extension == '.tif' || $document->dw_extension == '.DWTIFF' || $document->dw_extension == '.tiff' || $document->dw_extension == '.TIF' ||$document->dw_extension == '.TIFF' )
 							<?php $url = "http://docuware/DocuWare/Platform/WebClient/NTLM/1/Integration?fc={$document->cabinet_id}&did={$document->docuware_doc_id}&p=V";
 							?>

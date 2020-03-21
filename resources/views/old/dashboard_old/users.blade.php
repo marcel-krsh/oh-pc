@@ -91,7 +91,7 @@ $(document).ready(function() {
          <td >
             @can('edit-user')
             <a onClick="dynamicModalLoad('user/{{ $user->id }}');" target="_blank" class="uk-link"><i class="a-pencil-2"></i></a>&nbsp;
-            @endcan
+            @endIf
             
             <a @if($user->active == 1) style="display:none;" @endIf class='activateuser uk-link-muted' href="/user/activate/{{ $user->id }}" uk-tooltip title="Click to Activate User" class="uk-link-muted"><i class="a-locked-2" onmouseout="$(this).removeClass('a-avatar');$(this).addClass('a-locked-2');" onmouseover="$(this).removeClass('a-locked-2');$(this).addClass('a-avatar');"></i></a>
             <a @if($user->active == 0) style="display:none;" @endIf class='deactivateuser' href="/user/deactivate/{{ $user->id }}" uk-tooltip title="Click to Deactivate User"><i class="a-avatar" onmouseover="$(this).removeClass('a-avatar');$(this).addClass('a-locked-2');" onmouseout="$(this).removeClass('a-locked-2');$(this).addClass('a-avatar');"></i></a>

@@ -8,7 +8,7 @@
 	</div>
 	<div class="uk-width-1-5 documents-list" style="display: none;"></div>
 	<div class="uk-width-5-5 uk-grid documents-list" id='recipients' style="border-top: 1px #111 dashed; border-left: 1px #111 dashed; border-right: 1px #111 dashed; border-bottom: 1px #111 dashed; padding:10px 2px 2px 2px; position: relative;top:0px; display: none">
-		@can('access_auditor')
+		@if($auditor_access)
 		<div class="uk-width-1-2@m uk-width-1-1@s">
 			<h4>Select from exising documents</h4>
 			<div class="communication-selector  uk-scrollable-box">
@@ -49,13 +49,13 @@
 				<input type="text" style="width: 100%" id="document-filter" class="uk-input uk-width-1-1" placeholder="Filter Documents" >
 			</div>
 		</div>
-		@endCan
+		@endIf
 
-		@can('access_auditor')
+		@if($auditor_access)
 		<div class="uk-width-1-2@m uk-width-1-1@s">
 		@else
 		<div class="uk-width-1-1">
-		@endCan
+		@endIf
 			<h4 class="uk-text-primary uk-text-uppercase">Upload new documents</h4>
 			<div class="communication-selector uk-scrollable-box" >
 				<ul class="uk-list document-category-menu">
@@ -181,7 +181,7 @@
 		  </div>
 		  @cannot('access_auditor')
 		  <div class="uk-form-row" id="existing-documents"></div>
-      @endCannot
+      @endIfnot
 		</div>
 		<script>
       // CLONE RECIPIENTS

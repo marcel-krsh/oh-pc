@@ -94,7 +94,7 @@
 									<span class="auditinfo">AUDIT {{ $finding->audit_id }}</span>
 								</div>
 								<div id="as-inspec-tools-finding-resolve-{{ $finding->id }}" class="uk-display-block" style="margin: 15px 0;">
-									@can('access_auditor')
+									@if($auditor_access)
 									@if(!$finding->cancelled_at)
 									@if($finding->auditor_approved_resolution != 1)
 									<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFindingAS({{ $finding->id }})"><span class="a-circle"></span> RESOLVE</button>
@@ -106,7 +106,7 @@
 									@if($finding->auditor_approved_resolution == 1)
 									<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-left;title:RESOLVED ON {{ strtoupper(formatDate($finding->auditor_last_approved_resolution_at)) }};"><span class="a-circle-checked"></span> RESOLVED</button>
 									@endif
-									@endcan
+									@endIf
 								</div>
 								<div class="inspec-tools-tab-finding-stats" style="margin: 0 0 15px 0;">
 									<i class="a-bell"></i> <span id="inspec-tools-tab-finding-stat-reminders">{{ count($finding->followups) }}</span><br />
@@ -187,7 +187,7 @@
 									<p>
 										{{$finding->level_description()}}
 									</p>
-									@can('access_auditor')
+									@if($auditor_access)
 									<div class="inspec-tools-tab-finding-actions">
 										@if(!$finding->cancelled_at)
 										<button class="uk-button uk-link" onclick="dynamicModalLoad('edit/finding/{{ $finding->id }}',0,0,0,2)"><i class="a-pencil-2"></i> EDIT</button>
@@ -198,7 +198,7 @@
 										<button class="uk-button uk-link" onclick="cancelFindingAS({{ $finding->id }})"><i class="a-trash-3"></i> CANCEL</button>
 										@endif
 									</div>
-									@endcan
+									@endIf
 								</div>
 							</div>
 						</div>
@@ -255,7 +255,7 @@
 			}
 		});
 
-	@can('access_auditor')
+	@if($auditor_access)
 	function resolveFindingAS(findingid){
 		$.post('/findings/'+findingid+'/resolve', {
 			'_token' : '{{ csrf_token() }}'
@@ -309,7 +309,7 @@
 			console.log('Rejected.')
 		});
 	}
-	@endcan
+	@endIf
 
 	$(".inspec-tools-tab-findings-container").on( 'scroll', function(){
 

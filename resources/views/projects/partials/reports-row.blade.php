@@ -2,9 +2,9 @@
 <tr id="crr-project-report-row-{{$report->id}}">
 
                     <td><a href="/report/{{$report->id}}" target="report-{{$report->id}}" class="uk-mute"><i class="a-file-chart-3"></i> #{{$report->id}}</a></td>
-                    <td>@can('access_auditor')<a onclick="loadTab('/projects/{{$report->project->project_key}}', '4', 1, 1,'',1);" class="uk-mute"> @endCan {{$report->project->project_number}} : {{$report->project->project_name}}@can('access_auditor')</a>@endCan</td>
+                    <td>@if($auditor_access)<a onclick="loadTab('/projects/{{$report->project->project_key}}', '4', 1, 1,'',1);" class="uk-mute"> @endIf {{$report->project->project_number}} : {{$report->project->project_name}}@if($auditor_access)</a>@endIf</td>
                     <td>{{$report->audit_id}}</td>
-                    @can('access_auditor')<td>@if($report->lead->person){{$report->lead->person->first_name}} {{$report->lead->person->last_name}}@else NA @endif</td>@endCan
+                    @if($auditor_access)<td>@if($report->lead->person){{$report->lead->person->first_name}} {{$report->lead->person->last_name}}@else NA @endif</td>@endIf
                     <td>{{$report->template()->template_name}}</td>
                     <td>{{$report->crr_approval_type->name}}</td>
 
@@ -21,7 +21,7 @@
                             @endIf
                         @endIf
 
-                        @can('access_auditor')
+                        @if($auditor_access)
                             @if(!is_null($report->response_due_date))
                                  <a class=" flatpickr selectday{{$report->id}} flatpickr-input "><input type="text" placeholder="Edit Due Date.." data-input="" style="display:none" ><i class="a-pencil " ></i></a>
                             @else
@@ -72,16 +72,16 @@
 
 
                             </script>
-                        @endCan
+                        @endIf
                     </td>
-                    @can('access_auditor')
+                    @if($auditor_access)
                     <td><i @if($report->report_history) class="a-person-clock uk-link"  uk-toggle="target: #project-report-{{$report->id}}-history;" @else class="a-clock-not" @endIf></i></td>
-                    @endCan
-                    @can('access_auditor')<td>
+                    @endIf
+                    @if($auditor_access)<td>
                        <?php
 //ACTION OPTIONS BASED ON STATUS AND USER ROLE
 ?>
-                        @can('access_auditor')
+                        @if($auditor_access)
                                     @if($report->crr_approval_type_id !== 8)
                                     <select id="crr-report-action-{{$report->id}}" onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});" style="width: 184px;">
                                         <option value="0">ACTION</option>
@@ -89,13 +89,13 @@
                                         @if($report->requires_approval)
                                         <option value="2">SEND TO MANAGER REVIEW</option>
                                         @endIf
-                                        @can('access_manager')
+                                        @if($manager_access)
                                             @if($report->requires_approval)
                                             <option value="3">DECLINE</option>
                                             <option value="4">APPROVE WITH CHANGES</option>
                                             <option value="5">APPROVE</option>
                                             @endIf
-                                        @endCan
+                                        @endIf
                                         @if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
                                         <option value="6">SEND TO PROPERTY CONTACT</option>
                                         <option value="7">PROPERTY VIEWED IN PERSON</option>
@@ -110,15 +110,15 @@
                                     @else
                                     <div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
                                     @endIf
-                        @endCan
+                        @endIf
 
                     </td>
-                    @endCan
-                     @can('access_admin')
+                    @endIf
+                     @if($admin_access)
                     <td><i class="a-trash use-hand-cursor" onclick="deleteThisReport{{$report->id}}();"></i></td>
-                    @endCan
+                    @endIf
                 </tr>
-                @can('access_auditor')
+                @if($auditor_access)
                 @if($report->report_history)
 
                 <tr id="project-report-{{$report->id}}-history" hidden>
@@ -141,19 +141,19 @@ $history = collect($report->report_history);
                             @forEach($history as $h)
                                 <tr>
                                     <td> {{$h['date']}}</td>
-                                    <td>{{$h['user_name']}} @can('access_admin')<i class="a-info-circle uk-link"  onClick="openUserPreferencesView({{$h['user_id']}});"></i>@endCan</td>
+                                    <td>{{$h['user_name']}} @if($admin_access)<i class="a-info-circle uk-link"  onClick="openUserPreferencesView({{$h['user_id']}});"></i>@endIf</td>
                                     <td>{{$h['note']}}</td>
                                 </tr>
                             @endForEach
 
                         </table>
-                        @can('access_admin')
+                        @if($admin_access)
 
                                     <div class="uk-width-1-1 uk-margin-top uk-margin-bottom"><small> ADMINS: Information presented was current at time of recording the record. Click the <i class="a-info-circle"></i> icon to view a user's current information.</small></div>
-                            @endCan
+                            @endIf
                     </td>
 
                 </tr>
                 @endIf
-                @endCan
+                @endIf
 @endForEach

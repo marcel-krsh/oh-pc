@@ -159,11 +159,11 @@ $correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
 											  		
 											  		<li @if($carApprovalTypeId == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
 											  		
-											  		@can('access_manager')
+											  		@if($manager_access)
 											  		<li @if($carApprovalTypeId == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
 											  		<li @if($carApprovalTypeId == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
 											  		<li @if($carApprovalTypeId == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
-											  		@endCan
+											  		@endIf
 											  		@if(($carApprovalTypeId > 3) || Auth::user()->can('access_manager'))
 											  		<li @if($carApprovalTypeId == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
 											  		<li @if($carApprovalTypeId == 7) class="uk-active" @endIf ><a onclick="reportActionPDT({{$carId}},7,{{$selected_audit->project_id}});"><i class="a-file-person"></i> PROPERTY VIEWED IN PERSON</a></li>
@@ -188,11 +188,11 @@ $correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
 											  		
 											  		<li @if($ehsApprovalTypeId == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
 
-											  		@can('access_manager')
+											  		@if($manager_access)
 											  		<li @if($ehsApprovalTypeId == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
 											  		<li @if($ehsApprovalTypeId == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
 											  		<li @if($ehsApprovalTypeId == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
-											  		@endCan
+											  		@endIf
 											  		
 											  		@if(($ehsApprovalTypeId > 3) || Auth::user()->can('access_manager'))
 											  		<li @if($ehsApprovalTypeId == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$ehsId}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
@@ -211,21 +211,21 @@ $correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
 												@if(env('APP_ENV') != 'production')
 												@if(($_8823Icon))
 												
-											  <a class="uk-link-mute" @can('access_manager') href="/report/{{$_8823Id}}" target="report-{{$_8823Id}}" uk-tooltip="title:{{$_8823Status}}" @else onClick="alert('Sorry, this feature is still under development. It will be availble in a future release.');" @endCan ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
+											  <a class="uk-link-mute" @if($manager_access) href="/report/{{$_8823Id}}" target="report-{{$_8823Id}}" uk-tooltip="title:{{$_8823Status}}" @else onClick="alert('Sorry, this feature is still under development. It will be availble in a future release.');" @endIf ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
 
-											  &nbsp; <i class="a-square-right-2 use-hand-cursor" @can('access_manager') id="8823-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION" @else onClick="alert('Sorry, this feature is still under development. It will be availble in a future release.');" @endCan></i>
+											  &nbsp; <i class="a-square-right-2 use-hand-cursor" @if($manager_access) id="8823-dropdown-{{$selected_audit->audit_id}}" uk-tooltip title="ACTION" @else onClick="alert('Sorry, this feature is still under development. It will be availble in a future release.');" @endIf></i>
 											  <div  uk-dropdown="mode:click">
-											  	@can('access_manager')
+											  	@if($manager_access)
 											  	<ul class="uk-nav uk-dropdown-nav " style="text-align: left !important;">
 											  		<li @if($_8823ApprovalTypeId == 1) class="uk-active" @endIf><a onclick="reportActionPDT({{$_8823Id}},1,{{$selected_audit->project_id}});"><i class="a-file-pencil-2"></i> DRAFT</a></li>
 											  		
 											  		<li @if($_8823ApprovalTypeId == 2) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},2,{{$selected_audit->project_id}});"><i class="a-file-clock"></i> SEND TO HFA MANAGER REVIEW</a></li>
 
-											  		@can('access_manager')
+											  		@if($manager_access)
 											  		<li @if($_8823ApprovalTypeId == 3) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},3,{{$selected_audit->project_id}});"><i class="a-file-fail"></i> DECLINE</a></li>
 											  		<li @if($_8823ApprovalTypeId == 4) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},4,{{$selected_audit->project_id}});"><i class="a-file-repeat"></i> APPROVE WITH CHANGES</a></li>
 											  		<li @if($_8823ApprovalTypeId == 5) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},5,{{$selected_audit->project_id}});"><i class="a-file-certified"></i> APPROVE</a></li>
-											  		@endCan
+											  		@endIf
 											  		
 											  		@if(($_8823ApprovalTypeId > 3) ||  Auth::user()->can('access_manager'))
 											  		<li @if($_8823ApprovalTypeId == 6) class="uk-active" @endIf ><a onclick="reportActionPDT({{$_8823Id}},6,{{$selected_audit->project_id}});"><i class="a-file-mail"></i> SEND TO PROPERTY CONTACT</a></li>
@@ -234,7 +234,7 @@ $correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
 											  		@endIf
 
 											  	</ul>
-											  	@endCan
+											  	@endIf
 											  </div>
 											  <br /><small>8823 #{{$_8823Id}}</small></a>
 											  @else

@@ -21,11 +21,11 @@ if ($allowPageLoad) {
 		<meta name="csrf-token" content="{{ csrf_token() }}">
 
 		<title>
-			@can('access_auditor')
+			@if($auditor_access)
 			Allita Program Compliance
 			@else
 			OHFA Inspect
-			@endCan
+			@endIf
 		</title>
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -233,12 +233,12 @@ if ($allowPageLoad) {
 			<div class="uk-container">
 
 				<div id="mobile-content" uk-grid style="height: 1600px; padding:20px !important">
-					@can('access_auditor')
+					@if($auditor_access)
 					<i onclick="window.location.href='/mobile/audits'" class="a-mobile-home uk-contrast uk-align-center use-hand-cursor" style="font-size: 116px; padding-right: 13px; padding-bottom: 16px;border-radius: 27px;border: 10px solid;padding-top: 16px;" ></i>
 					<div onclick="window.location.href='/mobile/audits'" class="uk-button uk-padding-small-top uk-margin-top uk-width-1-1"><strong>LAUNCH MOBILE INSPECTION</strong></div>
 					@else
 						<h2 class="uk-contrast">Sorry, we do not currently support access on this device for property managers and owners.</h2>
-					@endCan
+					@endIf
 				</div>
 				<script type="text/javascript">
 					isMobile = function(){
@@ -258,7 +258,7 @@ if ($allowPageLoad) {
 
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
-			@can('access_auditor')
+			@if($auditor_access)
 			<h3 style="font-weight: bolder;">Using Your Phone Instead?</h3>
 
 			<p style="font-weight: bolder;">Click the launch button to open the mobile version of the site optimized for your phone. The features are limited in this version and will be added to over time.</p>
@@ -266,7 +266,7 @@ if ($allowPageLoad) {
 			<h3 style="font-weight: bolder;">Using Your Phone?</h3>
 
 			<p style="font-weight: bolder;">Please tell your contact about how you would like to be able to utilize your phone to review and resolve your items.</p>
-			@endCan
+			@endIf
 		</div>
 	</div>
 
@@ -280,8 +280,8 @@ if ($allowPageLoad) {
 				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
 					<div uk-grid>
 						<div class="uk-width-1-1">
-
-							@can('access_auditor')
+							
+							@if($auditor_access)
 							<div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
 								<div class="uk-autocomplete quick-lookup-box uk-inline">
 									<span class="uk-form-icon a-magnify-2"></span>
@@ -290,12 +290,12 @@ if ($allowPageLoad) {
 							</div>
 							@else
 							<div style="width: 20px; display: inline-block;"></div>
-							@endCan
+							@endIf
 
 							<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
 
 								<ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
-									@can('access_auditor')
+									@if($auditor_access)
 									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 										<a href="" style="">
 											<span class="list-tab-text">
@@ -313,8 +313,8 @@ if ($allowPageLoad) {
 												</span>
 											</a>
 										</li>
-									@endCan
-									@can('access_pm')
+									@endIf
+									@if($pm_access)
 									<li id="detail-tab-2" class="detail-tab-2 uk-hidden" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
@@ -327,12 +327,12 @@ if ($allowPageLoad) {
 										<a href=""><span class="list-tab-text"><i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
 
-									@can('access_admin')
+									@if($admin_access)
 									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
 										<a href=""><span class="list-tab-text">ADMIN</span></a>
 									</li>
-									@endcan
-								@endcan
+									@endIf
+								@endIf
 								</ul>
 
 							</div>
@@ -361,11 +361,11 @@ if ($allowPageLoad) {
 				</div>
 
 				<ul id="tabs" class="maintabs uk-switcher" >
-					@can('access_pm')<li>
+					@if($pm_access)<li>
 						<div id="detail-tab-1-content"></div>
 					</li>
-					@endCan
-					@can('access_pm')
+					@endIf
+					@if($pm_access)
 					<li>
 						<div id="detail-tab-2-content"></div>
 					</li>
@@ -373,7 +373,7 @@ if ($allowPageLoad) {
 					<li>
 						<div id="detail-tab-3-content" style=" margin-top: 70px;"></div>
 					</li>
-					@endCan
+					@endIf
 					@if(Auth::user()->admin_access())
 					<li>
 						<div id="detail-tab-5-content" style="padding-top:20px;"></div>
@@ -580,13 +580,13 @@ if ($allowPageLoad) {
 
 		// Click on initial tab to load it:
 		setTimeout(function(){
-			@can('access_auditor')
+			@if($auditor_access)
 				// auditor default
 				$('#detail-tab-1').trigger("click");
 			@else
 				// property default
 				$('#detail-tab-1').trigger("click");
-			@endCan
+			@endIf
 		},100);
 
 		window.currentSite='allita_pc';

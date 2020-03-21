@@ -308,7 +308,7 @@
 
 								@if(is_null($c->deleted_at))
 								@if($c->hide_on_reports != 1)
-								@if(!$print)<span style="page-break-inside: avoid; break-inside: avoid; color: black">@can('access_auditor')<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endcan @else <span style="page-break-inside: avoid; break-inside: avoid; color: black">  @endif <i class="a-person-chat-2" ></i></span> <div style="display:inline-table;margin-left: 2px;color:black;line-height: 23px;">{!!  nl2br($c->comment) !!}</div>
+								@if(!$print)<span style="page-break-inside: avoid; break-inside: avoid; color: black">@if($auditor_access)<i class="a-pencil use-hand-cursor" onclick="addChildItem({{ $c->id }}, 'comment-edit', 'comment')"></i>@endIf @else <span style="page-break-inside: avoid; break-inside: avoid; color: black">  @endif <i class="a-person-chat-2" ></i></span> <div style="display:inline-table;margin-left: 2px;color:black;line-height: 23px;">{!!  nl2br($c->comment) !!}</div>
 								{!! !$loop->last ?  '<hr class="dashed-hr uk-margin-bottom">' : ''!!}
 								@endIf
 								@endif
