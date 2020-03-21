@@ -315,7 +315,7 @@ if ($allowPageLoad) {
 										</li>
 									@endIf
 									@if($pm_access)
-									<li id="detail-tab-2" class="detail-tab-2 uk-hidden" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
+									<li id="detail-tab-2" class="detail-tab-2 " uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
 												<i class="a-envelope-3"></i> MY COMMUNICATIONS
@@ -448,7 +448,7 @@ if ($allowPageLoad) {
 				&copy; 2018<?php if (date('Y', time()) != '2018') {
 		echo " — " . date('Y', time());
 	}
-	?>: @include('git-version::version-comment')</a> </p>
+	?></a> </p>
 			</div>
 			<div id="footer-content" class="uk-width-1-3">
 				<div id="footer-actions-tpl"  class="uk-text-right"></div>
