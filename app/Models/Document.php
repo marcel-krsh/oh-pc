@@ -15,17 +15,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Document extends Model
 {
-	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 	protected $table = 'documents';
 
 	protected $guarded = ['id'];
 
 	protected $casts = [
-		'findings_ids' => 'array',
+		'findings_ids' => 'json',
 		'unit_ids' => 'json',
-		'building_ids' => 'array',
-		'site_ids' => 'array',
+		'building_ids' => 'json',
+		'site_ids' => 'json',
 	];
 
 	public function finding(): HasOne
@@ -93,6 +92,8 @@ class Document extends Model
 		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id');
 	}
 
+	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+
 	public function units()
 	{
 		return $this->belongsToJson('App\Models\Unit', 'units_ids');
@@ -105,7 +106,7 @@ class Document extends Model
 
 	public function findings()
 	{
-		return $this->belongsTo('App\Models\Finding', 'finding_ids', 'id');
+		return $this->belongsToJson('App\Models\Finding', 'finding_ids', 'id');
 	}
 
 	// public function findings()
