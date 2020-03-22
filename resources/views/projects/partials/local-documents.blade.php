@@ -343,12 +343,6 @@
 		</div>
 	</div>
 
-
-@php
-echo 12;
-	return 1;
-@endphp
-
 </div>
 
 
