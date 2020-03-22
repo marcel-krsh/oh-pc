@@ -125,8 +125,12 @@ class DocumentController extends Controller
 		//'66','Pending Property Resolution'
 		//'67','Archive audit'
 		//'68','Audit Score'
+		if ($this->auditor_access) {
+			$considered_audits = CachedAudit::where('project_id', $project->id)->pluck('audit_id');
+		} else {
+			$considered_audits = CachedAudit::where('project_id', $project->id)->whereIn('step_id', [66, 67, 68])->pluck('audit_id');
+		}
 
-		$considered_audits = CachedAudit::whereIn('step_id', [66, 67, 68])->pluck('audit_id');
 		$useOrWhere = 'where';
 		$allFindings = Finding::where('project_id', $project->id)->whereIn('audit_id', $considered_audits);
 		if ($isBuilding != NULL) {
@@ -318,7 +322,7 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
-		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user', 'sites', 'units', 'buildings', 'findings')->orderBy('created_at', 'DESC');
 		if ($searchTerm != NULL) {
 			// apply search term to documents
 			$searchCategoryIds = DocumentCategory::where('document_category_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
