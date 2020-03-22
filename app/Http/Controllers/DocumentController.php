@@ -322,7 +322,7 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
-		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user', 'sites', 'units', 'buildings', 'findings')->orderBy('created_at', 'DESC');
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user', 'units', 'buildings', 'findings')->orderBy('created_at', 'DESC');
 		if ($searchTerm != NULL) {
 			// apply search term to documents
 			$searchCategoryIds = DocumentCategory::where('document_category_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
@@ -332,7 +332,7 @@ class DocumentController extends Controller
 
 			//dd($searchAuditId,$searchFindingId,$searchFindingTypeIds,$searchCategoryIds );
 		}
-		$documents = $documents_query->paginate(20);
+		return $documents = $documents_query->paginate(20);
 		$documents_all = $documents_query->get();
 		$documents_count = $documents_query->count();
 		$new_audits = $documents_all->pluck('audits')->flatten()->unique('id');

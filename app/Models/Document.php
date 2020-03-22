@@ -15,13 +15,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Document extends Model
 {
+	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+
 	protected $table = 'documents';
 
 	protected $guarded = ['id'];
 
 	protected $casts = [
 		'findings_ids' => 'array',
-		'unit_ids' => 'array',
+		'unit_ids' => 'json',
 		'building_ids' => 'array',
 		'site_ids' => 'array',
 	];
@@ -91,20 +93,35 @@ class Document extends Model
 		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id');
 	}
 
+	public function units()
+	{
+		return $this->belongsToJson('App\Models\Unit', 'units_ids');
+	}
+
+	public function buildings()
+	{
+		return $this->hasMany('App\Models\Building', 'id', 'building_ids');
+	}
+
 	public function findings()
 	{
-		$communications = \App\Models\CommunicationDocument::where('document_id', '=', $this->id)->with('communication')->get();
-		foreach ($communications as $key => $communication) {
-			$finding_ids = $communication->communication->finding_ids;
-			if (!is_null($finding_ids)) {
-				$finding_ids = json_decode($finding_ids);
-				return \App\Models\Finding::whereIn('id', $finding_ids)->get();
-			} else {
-				return null;
-			}
-		}
-		return null;
+		return $this->belongsTo('App\Models\Finding', 'finding_ids', 'id');
 	}
+
+	// public function findings()
+	// {
+	// 	$communications = \App\Models\CommunicationDocument::where('document_id', '=', $this->id)->with('communication')->get();
+	// 	foreach ($communications as $key => $communication) {
+	// 		$finding_ids = $communication->communication->finding_ids;
+	// 		if (!is_null($finding_ids)) {
+	// 			$finding_ids = json_decode($finding_ids);
+	// 			return \App\Models\Finding::whereIn('id', $finding_ids)->get();
+	// 		} else {
+	// 			return null;
+	// 		}
+	// 	}
+	// 	return null;
+	// }
 
 	public function document_categories()
 	{
