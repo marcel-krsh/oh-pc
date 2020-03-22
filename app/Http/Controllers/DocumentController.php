@@ -132,9 +132,9 @@ class DocumentController extends Controller
 		}
 
 		$useOrWhere = 'where';
-		$allFindings = Finding::where('project_id', $project->id)->whereIn('audit_id', $considered_audits);
+		$allFindings = Finding::whereNull('cancelled_at')->where('project_id', $project->id)->whereIn('audit_id', $considered_audits);
 		if ($isBuilding != NULL) {
-			if ($isBuilding) {
+			if ($isBuilding == 1) {
 				$allFindings = $allFindings->where('building_id', $buSearchValue);
 			} else {
 				$allFindings = $allFindings->where('unit_id', $buSearchValue);
@@ -185,6 +185,7 @@ class DocumentController extends Controller
 		//$allUnits = $project->units()->orderBy('unit_name')->get();
 		$allBuildings = $project->buildings()->with('units')->orderBy('building_name')->get();
 		//dd($allUnits);
+		// return $allFindings = $project->load('findings');
 		$allFindings = $project->findings()->count();
 		$loadFindingsSeperately = 0;
 		if ($allFindings > 100) {
@@ -322,7 +323,7 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
-		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user', 'units', 'buildings', 'findings')->orderBy('created_at', 'DESC');
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
 		if ($searchTerm != NULL) {
 			// apply search term to documents
 			$searchCategoryIds = DocumentCategory::where('document_category_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
@@ -332,51 +333,53 @@ class DocumentController extends Controller
 
 			//dd($searchAuditId,$searchFindingId,$searchFindingTypeIds,$searchCategoryIds );
 		}
-		return $documents = $documents_query->paginate(20);
+		// return $documents = $documents_query->first()->all_findings();
+
+		$documents = $documents_query->paginate(20);
 		$documents_all = $documents_query->get();
 		$documents_count = $documents_query->count();
-		$new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
-		$old_audits = $documents_all->pluck('audit')->flatten()->unique('id');
-		$audits = $new_audits->merge($old_audits)->filter()->unique('id'); //removes null records too
+		// $new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
+		// $old_audits = $documents_all->pluck('audit')->flatten()->unique('id');
+		// $audits = $new_audits->merge($old_audits)->filter()->unique('id'); //removes null records too
 		$categories = $documents_all->pluck('assigned_categories')->flatten()->unique('id');
-		$findings = collect([]);
-		$all_finding_ids = [];
+		// $findings = collect([]);
+		// $all_finding_ids = [];
 		// return $documents;
 
-		foreach ($documents as $key => $document) {
-			$finding_ids = [];
-			$doc_finding_ids = [];
-			foreach ($document->communications as $key => $communication) {
-				$finding_ids = $communication->communication ? $communication->communication->finding_ids : null;
-				if (!is_null($finding_ids)) {
-					$finding_ids = json_decode($finding_ids);
-					$doc_finding_ids = array_merge($doc_finding_ids, $finding_ids);
-					// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
-					// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
-					// $findings = $findings->merge($doc_findings);
-				}
-			}
-			if (!empty($doc_finding_ids)) {
-				$all_finding_ids = array_merge($all_finding_ids, $doc_finding_ids);
-				$document->has_findings = 1;
-				$document->finding_ids = $doc_finding_ids;
-			} else {
-				$document->has_findings = 0;
-				$document->finding_ids = [];
-			}
-			// return $document;
-		}
+		// foreach ($documents as $key => $document) {
+		// 	$finding_ids = [];
+		// 	$doc_finding_ids = [];
+		// 	foreach ($document->communications as $key => $communication) {
+		// 		$finding_ids = $communication->communication ? $communication->communication->finding_ids : null;
+		// 		if (!is_null($finding_ids)) {
+		// 			$finding_ids = json_decode($finding_ids);
+		// 			$doc_finding_ids = array_merge($doc_finding_ids, $finding_ids);
+		// 			// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
+		// 			// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
+		// 			// $findings = $findings->merge($doc_findings);
+		// 		}
+		// 	}
+		// 	if (!empty($doc_finding_ids)) {
+		// 		$all_finding_ids = array_merge($all_finding_ids, $doc_finding_ids);
+		// 		$document->has_findings = 1;
+		// 		$document->finding_ids = $doc_finding_ids;
+		// 	} else {
+		// 		$document->has_findings = 0;
+		// 		$document->finding_ids = [];
+		// 	}
+		// 	// return $document;
+		// }
 
-		$findings = Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type')->whereIn('id', $all_finding_ids)->get();
-		$findings = $findings->unique('id');
-		$findings_audits = $findings->pluck('audit_plain')->flatten()->unique('id');
-		$audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
+		// $findings = Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type')->whereIn('id', $all_finding_ids)->get();
+		// $findings = $findings->unique('id');
+		// $findings_audits = $findings->pluck('audit_plain')->flatten()->unique('id');
+		// $audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
 
 		// return $filter;
 		// return $documents->first()->findings();
 
 		//dd($document_categories);
-		return view('projects.partials.local-documents', compact('project', 'documents', 'audit_id', 'categories', 'searchTerm', 'audits', 'findings', 'resolved', 'unresolved', 'reviewed', 'unreviewed'));
+		return view('projects.partials.local-documents', compact('project', 'documents', 'audit_id', 'categories', 'searchTerm', 'findings', 'resolved', 'unresolved', 'reviewed', 'unreviewed'));
 	}
 
 	public function getPMProjectDocuments(Project $project, Request $request)

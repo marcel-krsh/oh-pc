@@ -30,13 +30,6 @@ class Finding extends Model
 		return $this->hasMany(\App\Models\Comment::class, 'finding_id', 'id')->whereNULL('photo_id')->orderBy('id', 'asc');
 	}
 
-	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
-
-	public function document()
-	{
-		return $this->hasManyJson('App\Models\Document', 'finding_ids');
-	}
-
 	// public function documents(): HasMany
 	// {
 	// 	return $this->hasMany(\App\Models\Document::class, 'finding_id', 'id')->orderBy('id', 'asc');

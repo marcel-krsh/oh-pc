@@ -60,7 +60,7 @@ class Communication extends Model
 		return $this->hasOne(\App\Models\User::class, 'id', 'owner_id');
 	}
 
-	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+	// use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 	/**
 	 * Parent Communication

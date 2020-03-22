@@ -229,12 +229,14 @@
 			<tbody id="sent-document-list" style="font-size: 13px">
 				@foreach ($documents as $document)
 				@php
-				$document_findings = $document->findings;
+				$document_findings = $document->all_findings();
+				$buildings = !is_null($document->building_ids) ? json_decode($document->building_ids) : [];
+				$units = !is_null($document->unit_ids) ? json_decode($document->unit_ids) : [];
 				// dd($document_findings);
 				$audits_ids = ($document->audits->pluck('id')->toArray());
 				$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
 				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
-				$document_audits = $audits->whereIn('id', $all_ids);
+				// $document_audits = $audits->whereIn('id', $all_ids);
 
 				$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
 				$building_findings = $document_findings->where('building_id', '<>', null)->where('unit_id', null);
@@ -248,7 +250,7 @@
 				// $thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
 				// dd($document_audits);
 				@endphp
-				<tr class="all @foreach ($document->audits as $audit)audit-{{ $audit->id }} @endforeach @foreach($document->findings as $finding)finding-{{ $finding->id }} @endforeach @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach @foreach($document->units as $unit)finding-{{ $unit->id }} @endforeach @foreach($document->buildings as $building)finding-{{ $building->id }} @endforeach">
+				<tr class="all @foreach ($document->audits as $audit)audit-{{ $audit->id }} @endforeach @foreach($document_findings as $finding)finding-{{ $finding->id }} @endforeach @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach @foreach($units as $unit)finding-{{ $unit }} @endforeach @foreach($buildings as $building)finding-{{ $building }} @endforeach">
 					<td style="vertical-align: middle;"><span class="uk-margin-top uk-padding-left" uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
 					</td>
 					<td class="uk-width-1-2" style="vertical-align: middle;">
@@ -290,7 +292,7 @@
 						</ul>
 					</td>
 					<td style="padding-left: 10px">
-						BUILDINGS {{ count($building_findings) }} | UNITS {{ count($unit_findings) }}
+						BUILDINGS {{ count($buildings) }} | UNITS {{ count($units) }}
 					</td>
 					<td style="padding-left: 10px">
 						@if(count($all_ids) > 0)
@@ -340,6 +342,13 @@
 			{{ $documents->links() }}
 		</div>
 	</div>
+
+
+@php
+echo 12;
+	return 1;
+@endphp
+
 </div>
 
 
@@ -612,8 +621,6 @@
 		});
 	}
 	@endif
-
-
 
 
 </script>

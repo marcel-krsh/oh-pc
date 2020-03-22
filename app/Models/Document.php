@@ -92,21 +92,30 @@ class Document extends Model
 		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id');
 	}
 
-	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+	// use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
-	public function units()
-	{
-		return $this->belongsToJson('App\Models\Unit', 'units_ids');
-	}
+	// public function units()
+	// {
+	// 	return $this->belongsToJson('App\Models\Unit', 'units_ids', 'id');
+	// }
 
-	public function buildings()
-	{
-		return $this->hasMany('App\Models\Building', 'id', 'building_ids');
-	}
+	// public function buildings()
+	// {
+	// 	return $this->hasMany('App\Models\Building', 'id', 'building_ids');
+	// }
 
-	public function findings()
+	// public function findings()
+	// {
+	// 	return $this->belongsToJson('App\Models\Finding', 'finding_ids', 'id');
+	// }
+
+	public function all_findings()
 	{
-		return $this->belongsToJson('App\Models\Finding', 'finding_ids', 'id');
+		if (!is_null($this->finding_ids)) {
+			return \App\Models\Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type', 'amenity')->whereIn('id', json_decode($this->finding_ids))->get();
+		} else {
+			return \App\Models\Finding::where('id', 0)->get();
+		}
 	}
 
 	// public function findings()

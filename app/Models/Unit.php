@@ -19,13 +19,6 @@ class Unit extends Model
 	//
 	protected $guarded = ['id'];
 
-	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
-
-	public function document()
-	{
-		return $this->hasManyJson('App\Models\Document', 'units_ids');
-	}
-
 	public function household(): HasOne
 	{
 		return $this->hasOne(\App\Models\Household::class, 'unit_id', 'id');
