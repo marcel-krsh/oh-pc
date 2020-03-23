@@ -1885,7 +1885,7 @@ class AuditController extends Controller
 		$details = $project->details();
 
 		$dpView = 1;
-		$findings = $audit->audit->findings->where('cancelled_at',NULL);
+		$findings = $audit->audit->findings;
 		$print = null;
 		$report = $audit;
 		$detailsPage = 1;
@@ -2405,7 +2405,7 @@ class AuditController extends Controller
 				// return_raw: site, building, unit
 				if ($return_raw) {
 					$dpView = 1;
-					$findings = $audit->audit->findings->where('cancelled_at',NULL);
+					$findings = $audit->audit->findings;
 					$print = null;
 					$report = $audit;
 					$detailsPage = 1;
