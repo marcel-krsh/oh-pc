@@ -230,9 +230,10 @@
 				@foreach ($documents as $document)
 				@php
 				$document_findings = $document->all_findings();
-				$buildings = !is_null($document->building_ids) ? json_decode($document->building_ids) : [];
-				$units = !is_null($document->unit_ids) ? json_decode($document->unit_ids) : [];
-				// dd($document_findings);
+				$buildings = !is_null($document->building_ids) ? ($document->building_ids) : [];
+				$units = !is_null($document->unit_ids) ? ($document->unit_ids) : [];
+				// if(!is_array($units))
+				// dd($document);
 				$audits_ids = ($document->audits->pluck('id')->toArray());
 				$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
 				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
@@ -244,13 +245,27 @@
 
 				$resolved_findings = count(collect($document_findings)->where('auditor_approved_resolution', 1));
 				$unresolved_findings = count($document_findings) - $resolved_findings;
+
 				// dd(count($site_findings));
 				// $x = $unit_findings->where('unit.building_id', 24961);
 				// $thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file'));
 				// $thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
 				// dd($document_audits);
 				@endphp
-				<tr class="all @foreach ($document->audits as $audit)audit-{{ $audit->id }} @endforeach @foreach($document_findings as $finding)finding-{{ $finding->id }} @endforeach @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach @foreach($units as $unit)finding-{{ $unit }} @endforeach @foreach($buildings as $building)finding-{{ $building }} @endforeach">
+				<tr class="all @foreach ($document->audits as $audit)audit-{{ $audit->id }} @endforeach
+
+
+					@foreach($document_findings as $finding)finding-{{ $finding->id }}
+
+
+
+					 @endforeach @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach
+
+
+					 @foreach($units as $unit)finding-{{ $unit }} @endforeach
+
+
+					 @foreach($buildings as $building)finding-{{ $building }} @endforeach">
 					<td style="vertical-align: middle;"><span class="uk-margin-top uk-padding-left" uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
 					</td>
 					<td class="uk-width-1-2" style="vertical-align: middle;">
@@ -381,7 +396,6 @@
 		var reviewed = 'off';
 		var unreviewed = 'off';
 		$('#local-documents').html(tempdiv);
-
 		if($("#documents-unreviewed-checkbox").prop("checked") == true){
 			unreviewed = "on";
 		}

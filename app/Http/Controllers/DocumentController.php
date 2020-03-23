@@ -250,7 +250,7 @@ class DocumentController extends Controller
 				$searchTerm = $request->get('local-search');
 				session(['local-documents-search-term' => $request->get('local-search')]);
 			}
-		} else if (session('local-documents-search-term') != NULL) {
+		} else if (session()->has('local-documents-search-term') && session('local-documents-search-term') != NULL) {
 			$searchTerm = session('local-documents-search-term');
 		} else {
 			$searchTerm = NULL;
@@ -266,7 +266,7 @@ class DocumentController extends Controller
 				$unresolved = 0;
 				session(['local-documents-unresolved' => 0]);
 			}
-		} else if (session('local-documents-unresolved') == 0) {
+		} else if (session()->has('local-documents-unresolved') && session('local-documents-unresolved') == 0) {
 			$unresolved = session('local-documents-unresolved');
 		} else {
 			$unresolved = 1;
@@ -280,7 +280,7 @@ class DocumentController extends Controller
 				$resolved = 0;
 				session(['local-documents-resolved' => 0]);
 			}
-		} else if (session('local-documents-resolved') == 0) {
+		} else if (session()->has('local-documents-resolved') && session('local-documents-resolved') == 0) {
 			$resolved = session('local-documents-resolved');
 		} else {
 			$resolved = 1;
@@ -296,7 +296,7 @@ class DocumentController extends Controller
 				$unreviewed = 0;
 				session(['local-documents-unreviewed' => 0]);
 			}
-		} else if (session('local-documents-unreviewed') == 0) {
+		} else if (session()->has('local-documents-unreviewed') && session('local-documents-unreviewed') == 0) {
 			$unreviewed = session('local-documents-unreviewed');
 		} else {
 			$unreviewed = 1;
@@ -310,7 +310,7 @@ class DocumentController extends Controller
 				$reviewed = 0;
 				session(['local-documents-reviewed' => 0]);
 			}
-		} else if (session('local-documents-reviewed') == 0) {
+		} else if (session()->has('local-documents-reviewed') && session('local-documents-reviewed') == 0) {
 			$reviewed = session('local-documents-reviewed');
 		} else {
 			$reviewed = 1;
@@ -333,6 +333,29 @@ class DocumentController extends Controller
 
 			//dd($searchAuditId,$searchFindingId,$searchFindingTypeIds,$searchCategoryIds );
 		}
+		// return $documents_query->count();
+		if ($unreviewed == 0) {
+			// filter to show unreviewed
+			$documents_query = $documents_query->whereNull('notapproved');
+		}
+		if ($reviewed == 0) {
+			// filter to show reviewed
+			$documents_query = $documents_query->whereNull('approved');
+		}
+
+		// if ($unresolved == 0) {
+		// 	// filter to show unresolved
+		// 	$finding_ids = Finding::where('project_id', $project->id)->where('auditor_approved_resolution', '<>', 1)->orWhereNull('auditor_approved_resolution')->pluck('id')->toArray();
+
+		// 	return $documents_query = $documents_query->whereJsonContains('finding_ids', ["9035"])->get();
+		// }
+		// return (($documents_query->pluck('building_ids')->flatten()->filter()));
+		// return (json_decode($documents_query->first()->building_ids));
+		// if ($resolved == 0) {
+		// 	// filter to show resolved
+		// 	$documents_query = $documents_query->whereNull('approved');
+		// }
+
 		// return $documents = $documents_query->first()->all_findings();
 
 		$documents = $documents_query->paginate(20);
@@ -596,8 +619,16 @@ class DocumentController extends Controller
 			// get site ids from findings
 			$siteIds = $findingDetails->where('site', 1)->pluck('amenity_id')->unique()->toArray();
 			$unitIds = array_values($unitIds);
-			// dd($findingIds, $unitIds, $buildingIds, $siteIds);
+
+			$unitIds = array_map('strval', $unitIds);
+			$findingIds = array_map('strval', $findingIds);
+			$siteIds = array_map('strval', $siteIds);
+			$buildingIds = array_map('strval', $buildingIds);
 		}
+
+		// return [$findingIds, $unitIds, $buildingIds, $siteIds];
+		// dd(is_array($buildingIds));
+
 		// return $request->findings;
 		if ($request->hasFile('files')) {
 			$data = [];
@@ -624,19 +655,20 @@ class DocumentController extends Controller
 				]);
 				if ($request->has('findings') && $request->findings != '') {
 					if (!empty($findingIds)) {
-						$document->finding_ids = json_encode($findingIds, true);
+						$document->finding_ids = json_encode($findingIds);
 					}
 					if (!empty($siteIds)) {
-						$document->site_ids = json_encode($siteIds, true);
+						$document->site_ids = ($siteIds);
 					}
 					if (!empty($buildingIds)) {
-						$document->building_ids = json_encode($buildingIds, true);
+						$document->building_ids = ($buildingIds);
 					}
 					if (!empty($unitIds)) {
-						$document->unit_ids = json_encode($unitIds, true);
+						$document->unit_ids = ($unitIds);
 					}
 				}
 				$document->save();
+				// return $document;
 				if (!is_null($audit_id)) {
 					$doc_audit = new DocumentAudit;
 					$doc_audit->audit_id = $audit_id;
@@ -1337,6 +1369,9 @@ class DocumentController extends Controller
 			$siteIds = $findingDetails->where('site', 1)->pluck('amenity_id')->unique()->toArray();
 			$unitIds = array_values($unitIds);
 			// dd($findingIds, $unitIds, $buildingIds, $siteIds);
+			$unitIds = array_map('strval', $unitIds);
+			$siteIds = array_map('strval', $siteIds);
+			$buildingIds = array_map('strval', $buildingIds);
 		}
 		// return $findingIds;
 		$audit_id = $request->audit_id;
@@ -1367,13 +1402,13 @@ class DocumentController extends Controller
 						$document->finding_ids = json_encode($findingIds, true);
 					}
 					if (!empty($siteIds)) {
-						$document->site_ids = json_encode($siteIds, true);
+						$document->site_ids = ($siteIds);
 					}
 					if (!empty($buildingIds)) {
-						$document->building_ids = json_encode($buildingIds, true);
+						$document->building_ids = ($buildingIds);
 					}
 					if (!empty($unitIds)) {
-						$document->unit_ids = json_encode($unitIds, true);
+						$document->unit_ids = ($unitIds);
 					}
 				}
 				$document->save();

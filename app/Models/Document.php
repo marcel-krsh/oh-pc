@@ -21,11 +21,16 @@ class Document extends Model
 	protected $guarded = ['id'];
 
 	protected $casts = [
-		'findings_ids' => 'json',
-		'unit_ids' => 'json',
-		'building_ids' => 'json',
-		'site_ids' => 'json',
+		'findings_ids' => 'array',
+		'unit_ids' => 'array',
+		'building_ids' => 'array',
+		'site_ids' => 'array',
 	];
+
+	// public function getBuildingIdsAttribute($value)
+	// {
+	// 	return json_decode($value, true);
+	// }
 
 	public function finding(): HasOne
 	{

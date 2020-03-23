@@ -302,6 +302,7 @@ Route::group(['middleware' => 'web'], function () {
 
 		Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
 		Route::post('/documents/audit/{audit}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
+		Route::post('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('documents.local-search');
 
 		//notes
 		Route::get('/projects/{project_id}/notes', 'NoteController@showTabFromProjectId')->name('project.notes');
@@ -503,7 +504,7 @@ Route::group(['middleware' => 'web'], function () {
 
 		//allita documents!
 		Route::get('/pm-projects/{project}/documents', 'DocumentController@getPMProjectDocuments')->name('pm-project.documents');
-		Route::post('/pm-projects/{project}/local-documents', 'DocumentController@getPMProjectLocalDocuments')->name('documents.local-search');
+		Route::post('/pm-projects/{project}/local-documents', 'DocumentController@getPMProjectLocalDocuments')->name('pm-documents.local-search');
 
 		Route::get('/pm-projects/{project}/document-upload/{audit_id?}', 'DocumentController@projectPMLocalDocumentUpload')->name('project.local-document-upload');
 		Route::post('/pm-projects/{project}/upload-document-findings-list/{audit_id?}', 'DocumentController@getProjectUploadFindingsList')->name('pm-documents.upload-finding-filter');

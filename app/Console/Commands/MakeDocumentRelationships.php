@@ -49,12 +49,51 @@ class MakeDocumentRelationships extends Command
 		$communication_documents = Document::with('communication_details')->chunk($chunk, function ($documents) use ($progressBar, $progress) {
 			$progressBar->advance($progress);
 			foreach ($documents as $key => $doc) {
+				$all_findings = [];
+				$all_units = [];
+				$all_buildings = [];
+				$all_sites = [];
+				$exist = false;
+				if (!is_null($doc->finding_ids)) {
+					$exist = true;
+					//dd($findingsToInsert, $request->comment, $request->categories, $request->buValue, $request->audit_id);
+					$findingIds = json_decode($doc->finding_ids, true);
+					$findingDetails = Finding::whereIn('id', $findingIds)->get();
+					// get unit ids from findings
+					$unitIds = $findingDetails->pluck('unit_id')->unique()->filter()->toArray();
+					// get the building ids of the units
+					$unitBuildingIds = Unit::whereIn('id', $unitIds)->pluck('building_id')->unique()->filter();
+					// get the building ids from the findings
+					$findingBuildingIds = $findingDetails->pluck('building_id')->unique()->filter();
+					// merge them togeter merging duplicates
+					$buildingIds = $unitBuildingIds->merge($findingBuildingIds)->unique()->toArray();
+					// get site ids from findings
+					$siteIds = $findingDetails->where('site', 1)->pluck('amenity_id')->unique()->toArray();
+					$unitIds = array_values($unitIds);
+
+					if (!empty($findingIds)) {
+						$all_findings = array_merge($all_findings, $findingIds);
+						// $document->finding_ids = json_encode($findingIds, true);
+					}
+					if (!empty($siteIds)) {
+						$all_sites = array_merge($all_sites, $siteIds);
+						// $document->site_ids = json_encode($siteIds, true);
+					}
+					if (!empty($buildingIds)) {
+						$all_buildings = array_merge($all_buildings, $buildingIds);
+						// $document->building_ids = json_encode($buildingIds, true);
+					}
+					if (!empty($unitIds)) {
+						$all_units = array_merge($all_units, $unitIds);
+						// $document->unit_ids = json_encode($unitIds, true);
+					}
+				}
 				if (count($doc->communication_details) > 0) {
-					$all_findings = !is_null($doc->finding_ids) ? json_decode($doc->finding_ids) : [];
-					$all_units = !is_null($doc->unit_ids) ? json_decode($doc->unit_ids) : [];
-					$all_buildings = !is_null($doc->building_ids) ? json_decode($doc->building_ids) : [];
-					$all_sites = !is_null($doc->site_ids) ? json_decode($doc->site_ids) : [];
-					$exist = false;
+					$all_findings = !is_null($doc->finding_ids) ? array_merge($all_findings, json_decode($doc->finding_ids)) : $all_findings;
+					$all_units = !is_null($doc->unit_ids) ? array_merge($all_units, $doc->unit_ids) : $all_units;
+					$all_buildings = !is_null($doc->building_ids) ? array_merge($all_buildings, $doc->building_ids) : $all_buildings;
+					$all_sites = !is_null($doc->site_ids) ? array_merge($all_sites, $doc->site_ids) : $all_sites;
+
 					foreach ($doc->communication_details as $cd) {
 						if (!is_null($cd->finding_ids)) {
 							$exist = true;
@@ -89,24 +128,31 @@ class MakeDocumentRelationships extends Command
 								$all_units = array_merge($all_units, $unitIds);
 								// $document->unit_ids = json_encode($unitIds, true);
 							}
-						}
-					}
 
-					if ($exist) {
-						if (!empty($all_findings)) {
-							$doc->finding_ids = json_encode(array_unique($all_findings), true);
+							// $all_sites = array_map('strval', $all_sites);
+							// $all_buildings = array_map('strval', $all_buildings);
+							// $all_units = array_map('strval', $all_units);
 						}
-						if (!empty($all_sites)) {
-							$doc->site_ids = json_encode(array_unique($all_sites), true);
-						}
-						if (!empty($all_buildings)) {
-							$doc->building_ids = json_encode(array_unique($all_buildings), true);
-						}
-						if (!empty($all_units)) {
-							$doc->unit_ids = json_encode(array_unique($all_units), true);
-						}
-						$doc->save();
 					}
+				}
+				if ($exist) {
+					$all_sites = array_map('strval', $all_sites);
+					$all_buildings = array_map('strval', $all_buildings);
+					$all_units = array_map('strval', $all_units);
+
+					if (!empty($all_findings)) {
+						$doc->finding_ids = (array_unique($all_findings));
+					}
+					if (!empty($all_sites)) {
+						$doc->site_ids = (array_unique($all_sites));
+					}
+					if (!empty($all_buildings)) {
+						$doc->building_ids = (array_unique($all_buildings));
+					}
+					if (!empty($all_units)) {
+						$doc->unit_ids = (array_unique($all_units));
+					}
+					$doc->save();
 				}
 			}
 		});
