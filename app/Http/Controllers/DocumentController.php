@@ -336,18 +336,25 @@ class DocumentController extends Controller
 		// return $documents_query->count();
 		if ($unreviewed == 0) {
 			// filter to show unreviewed
-			$documents_query = $documents_query->whereNull('notapproved');
+			$documents_query = $documents_query->whereNull('notapproved')->whereNull('approved');
 		}
 		if ($reviewed == 0) {
 			// filter to show reviewed
-			$documents_query = $documents_query->whereNull('approved');
+			$documents_query = $documents_query->where(function ($query) {
+				$query->where('notapproved', 1);
+				$query->orWhere('approved', 1);
+			});
 		}
+		// return $documents_query->count();
 
 		// if ($unresolved == 0) {
 		// 	// filter to show unresolved
-		// 	$finding_ids = Finding::where('project_id', $project->id)->where('auditor_approved_resolution', '<>', 1)->orWhereNull('auditor_approved_resolution')->pluck('id')->toArray();
+		// 	$unresolved_finding_ids = Finding::where('project_id', $project->id)->where('auditor_approved_resolution', '<>', 1)->orWhereNull('auditor_approved_resolution')->pluck('id')->toArray();
+		// 	$all_finding_ids = $documents_query->pluck('finding_ids', 'id')->toArray();
 
-		// 	return $documents_query = $documents_query->whereJsonContains('finding_ids', ["9035"])->get();
+		// 	return dd(array_diff($unresolved_finding_ids, $all_finding_ids));
+
+		// 	return $documents_query = $documents_query->whereJsonContains('finding_ids', ["9007", "18385"])->get()->pluck('id');
 		// }
 		// return (($documents_query->pluck('building_ids')->flatten()->filter()));
 		// return (json_decode($documents_query->first()->building_ids));

@@ -1153,7 +1153,7 @@ function loadProjectDetailsBuildings(id, target) {
 
 // get unit data using pagination
 $(document).on('click', '.site .pagination a', function(event){
- 	event.preventDefault(); 
+ 	event.preventDefault();
 	var page = $(this).attr('href').split('page=')[1];
 	var projectId = $(this).parents('#site').data('project-id');
   	var auditId = $(this).parents('#site').data('audit-id');
@@ -1179,7 +1179,7 @@ function fetch_site_data(id, type, audit, page) {
 
 // get unit data using pagination
 $(document).on('click', '.unit .pagination a', function(event){
- 	event.preventDefault(); 
+ 	event.preventDefault();
 	var page = $(this).attr('href').split('page=')[1];
 	var projectId = $(this).parents('#unit').data('project-id');
   	var auditId = $(this).parents('#unit').data('audit-id');
@@ -1204,16 +1204,16 @@ function fetch_unit_data(id, type, audit, page) {
 
 // get building data using pagination
 $(document).on('click', '.building .pagination a', function(event){
-  	event.preventDefault(); 
+  	event.preventDefault();
 	var page = $(this).attr('href').split('page=')[1];
   	var projectId = $(this).parents('#building').data('project-id');
   	var auditId = $(this).parents('#building').data('audit-id');
-  	
+
   	fetch_building_data(projectId, 'selections', auditId, page);
 });
 
 function fetch_building_data(id, type, audit, page) {
-	
+
 	var tempdiv = '<div style="height:175px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 	$('#building').html(tempdiv);
 
@@ -1233,7 +1233,7 @@ function fetch_building_data(id, type, audit, page) {
 /// pm specific
 // get unit data using pagination
 $(document).on('click', '.pm-site .pagination a', function(event){
- 	event.preventDefault(); 
+ 	event.preventDefault();
 	var page = $(this).attr('href').split('page=')[1];
 	var projectId = $(this).parents('#site').data('project-id');
   	var auditId = $(this).parents('#site').data('audit-id');
@@ -1259,7 +1259,7 @@ function pm_fetch_site_data(id, type, audit, page) {
 
 // get unit data using pagination
 $(document).on('click', '.pm-unit .pagination a', function(event){
- 	event.preventDefault(); 
+ 	event.preventDefault();
 	var page = $(this).attr('href').split('page=')[1];
 	var projectId = $(this).parents('#unit').data('project-id');
   	var auditId = $(this).parents('#unit').data('audit-id');
@@ -1284,16 +1284,16 @@ function pm_fetch_unit_data(id, type, audit, page) {
 
 // get building data using pagination
 $(document).on('click', '.pm-building .pagination a', function(event){
-  	event.preventDefault(); 
+  	event.preventDefault();
 	var page = $(this).attr('href').split('page=')[1];
   	var projectId = $(this).parents('#building').data('project-id');
   	var auditId = $(this).parents('#building').data('audit-id');
-  	
+
   	pm_fetch_building_data(projectId, 'selections', auditId, page);
 });
 
 function pm_fetch_building_data(id, type, audit, page) {
-	
+
 	var tempdiv = '<div style="height:175px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 	$('#building').html(tempdiv);
 
@@ -1426,12 +1426,13 @@ function documentsDocuware(project_id) {
                 UIkit.modal.alert("There was a problem getting the project information.");
             } else {
 				$('#docuware-documents').html(data);
-				
+
         	}
     });
 }
 
 function documentsLocal(project_id, audit_id = null, filter = null) {
+	window.currentDocumentsPage = 0;
 	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 	$('#allita-documents').html(tempdiv);
 	$('#project-documents-button-1').removeClass('uk-button-success green-button');
@@ -1455,7 +1456,7 @@ function documentsLocal(project_id, audit_id = null, filter = null) {
                 UIkit.modal.alert("There was a problem getting the project information.");
             } else {
 				$('#allita-documents').html(data);
-				
+
         	}
     });
 }
@@ -1484,7 +1485,7 @@ function documentUpload(project_id, audit_id = null, filter = null) {
                 UIkit.modal.alert("There was a problem getting the uploader.");
             } else {
 				$('#document-upload').html(data);
-				
+
         	}
     });
 }
@@ -1501,12 +1502,12 @@ function AfterBuildingUpLoad(){
 	    var optionValue = $(this).val();
 	    var thisList = $(this).parent();
 	    var isChecked = buildingIdArr.includes(parseInt(optionValue));
-	 
+
 	    // check first option value for default not selected first option
 	    if(optionValue != ""){
 	    	myUl.push(
 		      '<li><label data-id='+optionValue+'><input type="checkbox" '+( isChecked ? 'checked' : '')+'/>' + optionText + '</label></li>'
-		    );	
+		    );
 	    }
 	});
 
@@ -1549,7 +1550,7 @@ $(document).on("click", ".select", function(e) {
     }
 });
 
-// Check and uncheck Options from the list 
+// Check and uncheck Options from the list
 $(document).on("click", '.filter_list_ul input[type="checkbox"]', function() {
     var inputVal = $(this).parent("label").text();
     var inputValId = $(this).parent("label").data('id');
@@ -1557,7 +1558,7 @@ $(document).on("click", '.filter_list_ul input[type="checkbox"]', function() {
     var findVal = $(".show_buildings").find('div[data-title="' + inputVal + '"]');
     // console.log($(this).is(":checked"));
     if ($(this).is(":checked")) {
-     
+
         buildingIdArr.push(inputValId);
     	var obj = {};
 		obj['id'] = inputValId	;
@@ -1580,9 +1581,9 @@ $(document).on("click", '.filter_list_ul input[type="checkbox"]', function() {
 		var removeByAttr = function(arr, attr, value){
 		    var i = arr.length;
 		    while(i--){
-		       if( arr[i] 
-		           && arr[i].hasOwnProperty(attr) 
-		           && (arguments.length > 2 && arr[i][attr] === value ) ){ 
+		       if( arr[i]
+		           && arr[i].hasOwnProperty(attr)
+		           && (arguments.length > 2 && arr[i][attr] === value ) ){
 
 		           arr.splice(i,1);
 
@@ -1597,7 +1598,7 @@ $(document).on("click", '.filter_list_ul input[type="checkbox"]', function() {
 
 // selected building close button click
 function closeSelectedBuilding(id){
-	
+
 	Array.prototype.remove = function() {
 	    var what, a = arguments, L = a.length, ax;
 	    while (L && this.length) {
@@ -1613,9 +1614,9 @@ function closeSelectedBuilding(id){
 	var removeByAttr = function(arr, attr, value){
 	    var i = arr.length;
 	    while(i--){
-	       if( arr[i] 
-	           && arr[i].hasOwnProperty(attr) 
-	           && (arguments.length > 2 && arr[i][attr] === value ) ){ 
+	       if( arr[i]
+	           && arr[i].hasOwnProperty(attr)
+	           && (arguments.length > 2 && arr[i][attr] === value ) ){
 
 	           arr.splice(i,1);
 
@@ -1631,7 +1632,7 @@ function closeSelectedBuilding(id){
 // get single building data record by filter
 // e: click emlemet object
 function getSingleBuilding(){
-	
+
  	var id = buildingIdArr;
   	var is_uncorrected;
   	if($('#uncorrected_checkbox:checkbox:checked').length > 0){
@@ -1643,7 +1644,7 @@ function getSingleBuilding(){
   		// get building wise data
   		fetch_buidling_detail('building');
   		fetch_buidling_detail('unit');
-  		
+
   	}else if(((Array.isArray(id) && id.length) && is_uncorrected == true) || (!(Array.isArray(id) && id.length) && is_uncorrected == true)){
   		fetch_buidling_detail('building', is_uncorrected);
   		fetch_buidling_detail('unit', is_uncorrected);
@@ -1653,7 +1654,7 @@ function getSingleBuilding(){
   	}
 }
 
-// pending resolution toggle filter  
+// pending resolution toggle filter
 function getUnCorrectedBuilding(e){
 	var id = buildingIdArr;
 	var is_uncorrected = e.checked;
@@ -1661,7 +1662,7 @@ function getUnCorrectedBuilding(e){
   		// get building wise data
   		fetch_buidling_detail('building');
   		fetch_buidling_detail('unit');
-  		
+
   	}else if(((Array.isArray(id) && id.length) && is_uncorrected == true) || (!(Array.isArray(id) && id.length) && is_uncorrected == true)){
   		fetch_buidling_detail('building', is_uncorrected);
   		fetch_buidling_detail('unit', is_uncorrected);
@@ -1682,10 +1683,10 @@ function fetch_buidling_detail(type, is_uncorrected = null){
 	var projectId = $('#building').data('project-id');
   	var auditId = $('#building').data('audit-id');
 	var url = '/projects/'+projectId+'/building-details/'+type+'/'+auditId;
-	
+
     $.post(
     	url,
-    	{ 
+    	{
     		'_token' : $('#token').val(),
     		type_id: buildingIdArr,
     		is_uncorrected: is_uncorrected,
@@ -1710,7 +1711,7 @@ function fetch_buidling_detail(type, is_uncorrected = null){
     );
 }
 
-// PM Audits 
+// PM Audits
 // generate custome multi select dorpdown for buildings
 function AfterPMBuildingUpLoad(){
 
@@ -1723,12 +1724,12 @@ function AfterPMBuildingUpLoad(){
 	    var optionValue = $(this).val();
 	    var thisList = $(this).parent();
 	    var isChecked = pmBuildingIdArr.includes(parseInt(optionValue));
-	 
+
 	    // check first option value for default not selected first option
 	    if(optionValue != ""){
 	    	myUl.push(
 		      '<li><label data-id='+optionValue+'><input type="checkbox" '+( isChecked ? 'checked' : '')+'/>' + optionText + '</label></li>'
-		    );	
+		    );
 	    }
 	});
 
@@ -1765,7 +1766,7 @@ $(document).on("click", ".pmselect", function(e) {
     }
 });
 
-// Check and uncheck Options from the list 
+// Check and uncheck Options from the list
 $(document).on("click", '.pmfilter_list_ul input[type="checkbox"]', function() {
     var inputVal = $(this).parent("label").text();
     var inputValId = $(this).parent("label").data('id');
@@ -1773,7 +1774,7 @@ $(document).on("click", '.pmfilter_list_ul input[type="checkbox"]', function() {
     var findVal = $(".pmshow_buildings").find('div[data-title="' + inputVal + '"]');
     // console.log($(this).is(":checked"));
     if ($(this).is(":checked")) {
-     
+
         pmBuildingIdArr.push(inputValId);
     	var obj = {};
 		obj['id'] = inputValId	;
@@ -1796,9 +1797,9 @@ $(document).on("click", '.pmfilter_list_ul input[type="checkbox"]', function() {
 		var removeByAttr = function(arr, attr, value){
 		    var i = arr.length;
 		    while(i--){
-		       if( arr[i] 
-		           && arr[i].hasOwnProperty(attr) 
-		           && (arguments.length > 2 && arr[i][attr] === value ) ){ 
+		       if( arr[i]
+		           && arr[i].hasOwnProperty(attr)
+		           && (arguments.length > 2 && arr[i][attr] === value ) ){
 
 		           arr.splice(i,1);
 
@@ -1813,7 +1814,7 @@ $(document).on("click", '.pmfilter_list_ul input[type="checkbox"]', function() {
 
 // selected building close button click
 function closePMSelectedBuilding(id){
-	
+
 	Array.prototype.remove = function() {
 	    var what, a = arguments, L = a.length, ax;
 	    while (L && this.length) {
@@ -1829,9 +1830,9 @@ function closePMSelectedBuilding(id){
 	var removeByAttr = function(arr, attr, value){
 	    var i = arr.length;
 	    while(i--){
-	       if( arr[i] 
-	           && arr[i].hasOwnProperty(attr) 
-	           && (arguments.length > 2 && arr[i][attr] === value ) ){ 
+	       if( arr[i]
+	           && arr[i].hasOwnProperty(attr)
+	           && (arguments.length > 2 && arr[i][attr] === value ) ){
 
 	           arr.splice(i,1);
 
@@ -1847,7 +1848,7 @@ function closePMSelectedBuilding(id){
 // e: click emlemet object
 function pmGetSingleBuilding(){
 	var id = pmBuildingIdArr;
-  	
+
   	var is_uncorrected;
   	if($('#uncorrected_checkbox:checkbox:checked').length > 0){
   		is_uncorrected = true;
@@ -1858,7 +1859,7 @@ function pmGetSingleBuilding(){
   		// get building wise data
   		pm_fetch_buidling_detail('building');
   		pm_fetch_buidling_detail('unit');
-  		
+
   	}else if(((Array.isArray(id) && id.length) && is_uncorrected == true) || (!(Array.isArray(id) && id.length) && is_uncorrected == true)){
   		pm_fetch_buidling_detail('building', is_uncorrected);
   		pm_fetch_buidling_detail('unit', is_uncorrected);
@@ -1873,13 +1874,13 @@ function pmGetSingleBuilding(){
 // pending resolution toggle filter for pm
 function pmGetUnCorrectedBuilding(e){
 	var id = pmBuildingIdArr;
-	
+
   	var is_uncorrected = e.checked;
   	if((Array.isArray(id) && id.length) && is_uncorrected == false){
   		// get building wise data
   		pm_fetch_buidling_detail('building');
   		pm_fetch_buidling_detail('unit');
-  		
+
   	}else if(((Array.isArray(id) && id.length) && is_uncorrected == true) || (!(Array.isArray(id) && id.length) && is_uncorrected == true)){
   		pm_fetch_buidling_detail('building', is_uncorrected);
   		pm_fetch_buidling_detail('unit', is_uncorrected);
@@ -1900,10 +1901,10 @@ function pm_fetch_buidling_detail(type, is_uncorrected = null){
 	var projectId = $('#building').data('project-id');
   	var auditId = $('#building').data('audit-id');
 	var url = '/pm-projects/'+projectId+'/building-details/'+type+'/'+auditId;
-	
+
     $.post(
     	url,
-    	{ 
+    	{
     		'_token' : $('#token').val(),
     		type_id: pmBuildingIdArr,
     		is_uncorrected: is_uncorrected,

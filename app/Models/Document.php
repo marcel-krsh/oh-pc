@@ -27,10 +27,10 @@ class Document extends Model
 		'site_ids' => 'array',
 	];
 
-	// public function getBuildingIdsAttribute($value)
-	// {
-	// 	return json_decode($value, true);
-	// }
+	public function getFindingIdsAttribute($value)
+	{
+		return json_decode($value, true);
+	}
 
 	public function finding(): HasOne
 	{
@@ -117,7 +117,7 @@ class Document extends Model
 	public function all_findings()
 	{
 		if (!is_null($this->finding_ids)) {
-			return \App\Models\Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type', 'amenity')->whereIn('id', json_decode($this->finding_ids))->get();
+			return \App\Models\Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type', 'amenity')->whereIn('id', ($this->finding_ids))->get();
 		} else {
 			return \App\Models\Finding::where('id', 0)->get();
 		}
