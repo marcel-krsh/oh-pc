@@ -28,6 +28,7 @@ class TestingController extends Controller
 
 	public function getTestAll()
 	{
+		ini_set('max_execution_time', 180);
 		// echo 12;
 		$total = Document::count();
 		$chunk = 20;
@@ -47,9 +48,6 @@ class TestingController extends Controller
 					$exist = true;
 					//dd($findingsToInsert, $request->comment, $request->categories, $request->buValue, $request->audit_id);
 					$findingIds = json_decode($doc->finding_ids, true);
-					if (!is_array($findingIds)) {
-						dd($doc);
-					}
 					$findingDetails = Finding::whereIn('id', $findingIds)->get();
 					// get unit ids from findings
 					$unitIds = $findingDetails->pluck('unit_id')->unique()->filter()->toArray();
@@ -81,10 +79,13 @@ class TestingController extends Controller
 					}
 				}
 				if (count($doc->communication_details) > 0) {
-					$all_findings = !is_null($doc->finding_ids) ? json_decode($doc->finding_ids) : [];
-					$all_units = !is_null($doc->unit_ids) ? json_decode($doc->unit_ids) : [];
-					$all_buildings = !is_null($doc->building_ids) ? json_decode($doc->building_ids) : [];
-					$all_sites = !is_null($doc->site_ids) ? json_decode($doc->site_ids) : [];
+					// $all_findings = !is_null($doc->finding_ids) ? array_merge($all_findings, json_decode($doc->finding_ids)) : $all_findings;
+					// if(!is_array($doc->unit_ids))
+					// 	dd($)
+
+					// $all_units = !is_null($doc->unit_ids) ? array_merge($all_units, $doc->unit_ids) : $all_units;
+					// $all_buildings = !is_null($doc->building_ids) ? array_merge($all_buildings, $doc->building_ids) : $all_buildings;
+					// $all_sites = !is_null($doc->site_ids) ? array_merge($all_sites, $doc->site_ids) : $all_sites;
 
 					foreach ($doc->communication_details as $cd) {
 						if (!is_null($cd->finding_ids)) {
@@ -121,9 +122,9 @@ class TestingController extends Controller
 								// $document->unit_ids = json_encode($unitIds, true);
 							}
 
-							$all_sites = array_map('strval', $all_sites);
-							$all_buildings = array_map('strval', $all_buildings);
-							$all_units = array_map('strval', $all_units);
+							// $all_sites = array_map('strval', $all_sites);
+							// $all_buildings = array_map('strval', $all_buildings);
+							// $all_units = array_map('strval', $all_units);
 						}
 					}
 				}
@@ -133,16 +134,16 @@ class TestingController extends Controller
 					$all_units = array_map('strval', $all_units);
 
 					if (!empty($all_findings)) {
-						$doc->finding_ids = json_encode(array_unique($all_findings), true);
+						$doc->finding_ids = (array_unique($all_findings));
 					}
 					if (!empty($all_sites)) {
-						$doc->site_ids = json_encode(array_unique($all_sites), true);
+						$doc->site_ids = (array_unique($all_sites));
 					}
 					if (!empty($all_buildings)) {
-						$doc->building_ids = json_encode(array_unique($all_buildings), true);
+						$doc->building_ids = (array_unique($all_buildings));
 					}
 					if (!empty($all_units)) {
-						$doc->unit_ids = json_encode(array_unique($all_units), true);
+						$doc->unit_ids = (array_unique($all_units));
 					}
 					$doc->save();
 				}

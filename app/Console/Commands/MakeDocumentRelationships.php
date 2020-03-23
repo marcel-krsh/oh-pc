@@ -89,10 +89,10 @@ class MakeDocumentRelationships extends Command
 					}
 				}
 				if (count($doc->communication_details) > 0) {
-					$all_findings = !is_null($doc->finding_ids) ? array_merge($all_findings, json_decode($doc->finding_ids)) : $all_findings;
-					$all_units = !is_null($doc->unit_ids) ? array_merge($all_units, $doc->unit_ids) : $all_units;
-					$all_buildings = !is_null($doc->building_ids) ? array_merge($all_buildings, $doc->building_ids) : $all_buildings;
-					$all_sites = !is_null($doc->site_ids) ? array_merge($all_sites, $doc->site_ids) : $all_sites;
+					// $all_findings = !is_null($doc->finding_ids) ? array_merge($all_findings, json_decode($doc->finding_ids)) : $all_findings;
+					// $all_units = !is_null($doc->unit_ids) ? array_merge($all_units, $doc->unit_ids) : $all_units;
+					// $all_buildings = !is_null($doc->building_ids) ? array_merge($all_buildings, $doc->building_ids) : $all_buildings;
+					// $all_sites = !is_null($doc->site_ids) ? array_merge($all_sites, $doc->site_ids) : $all_sites;
 
 					foreach ($doc->communication_details as $cd) {
 						if (!is_null($cd->finding_ids)) {
