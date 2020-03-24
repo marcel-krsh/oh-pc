@@ -420,10 +420,11 @@ class DocumentController extends Controller
 			// filter to show unresolved
 			$documents_query = $documents_query->get();
 			$documents_query = $documents_query->map(function ($doc) {
-				foreach ($doc->findings as $key => $finding) {
-					if ($finding->auditor_approved_resolution == 1) {
-						return $doc;
-					}
+				$total = count($doc->findings);
+				$criteria = $doc->findings->where('auditor_approved_resolution', 1);
+				$meets_criteria_count = count($criteria);
+				if ($total == $meets_criteria_count) {
+					return $doc;
 				}
 			});
 			$documents_ids = $documents_query->filter()->pluck('id');
@@ -438,17 +439,23 @@ class DocumentController extends Controller
 			// 	// $query->orWhereNull('auditor_approved_resolution');
 			// });
 			$documents_query = $documents_query->map(function ($doc) use ($unresolved) {
-				foreach ($doc->findings as $key => $finding) {
-					if ($finding->auditor_approved_resolution != 1 || is_null($finding->auditor_approved_resolution)) {
-						if ($unresolved == 0) {
-							if ($finding->auditor_approved_resolution == 1) {
-								return $doc;
-							}
-						} else {
-							return $doc;
-						}
-					}
+				$total = count($doc->findings);
+				$criteria = $doc->findings->where('auditor_approved_resolution', '<>', 1);
+				$meets_criteria_count = count($criteria);
+				if ($total == $meets_criteria_count) {
+					return $doc;
 				}
+				// foreach ($doc->findings as $key => $finding) {
+				// 	if ($finding->auditor_approved_resolution != 1 || is_null($finding->auditor_approved_resolution)) {
+				// 		if ($unresolved == 0) {
+				// 			if ($finding->auditor_approved_resolution == 1) {
+				// 				return $doc;
+				// 			}
+				// 		} else {
+				// 			return $doc;
+				// 		}
+				// 	}
+				// }
 			});
 			$documents_ids = $documents_query->filter()->pluck('id');
 			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
