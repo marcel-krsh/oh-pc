@@ -92,6 +92,11 @@ class Document extends Model
 		return $this->hasManyThrough('App\Models\Communication', '\App\Models\CommunicationDocument', 'document_id', 'id', 'id', 'communication_id');
 	}
 
+	// public function audits()
+	// {
+	// 	return $this->hasMany('App\Models\DocumentAudit', 'document_id');
+	// }
+
 	public function audits()
 	{
 		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id');

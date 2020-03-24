@@ -11,8 +11,11 @@ use App\Models\Unit;
 use App\Models\User;
 use App\Models\Audit;
 use App\Models\Photo;
+use App\Models\People;
+use App\Models\Amenity;
 use App\Models\Finding;
 use App\Models\Project;
+use App\Models\Building;
 use App\Models\Document;
 use App\Models\CachedAudit;
 use App\Models\FindingType;
@@ -323,25 +326,83 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
-		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity')->orderBy('created_at', 'DESC');
 		// return $documents_query->get();
 		if ($searchTerm != NULL) {
 			// apply search term to documents
 			// The Query Searches:
-			// 	Document Categories
-			// 	Finding Types
-			// 	Building Names
-			// 	Unit Names
-			// 	Amenity Names
-			// 	First and Last Names of Uploaders
-			// 	Audit Numbers
-			// 	Finding Number
+			// 	Document Categories - OK
+			// 	Finding Types - OK
+			// 	Building Names - OK
+			// 	Unit Names - OK
+			// 	Amenity Names - amenity_description
+			// 	First and Last Names of Uploaders - OK
+			// 	Audit Numbers - OK
+			// 	Finding Number - OK
+			// 	Document Comments - OK
 			$searchCategoryIds = DocumentCategory::where('document_category_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			$searchFindingTypeIds = FindingType::where('name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			$searchFindingId = Finding::where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
-			$searchAuditId = Audit::where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
+			$searchAuditId = Audit::where('id', intval($searchTerm))->pluck('id')->toArray();
+			$searchBuildingId = Building::where('building_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchUnitId = Unit::where('unit_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchAmenitiesIds = Amenity::where('amenity_description', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			//dd($searchAuditId,$searchFindingId,$searchFindingTypeIds,$searchCategoryIds );
+			$searchDocumentCommentId = Document::where('project_id', $project->id)->where('comment', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+
+			$documents_query = $documents_query->get();
+			$uploader_ids = $documents_query->pluck('user.person.id');
+			// return $searchTerm;
+			$searchUserId = People::whereIn('id', $uploader_ids)->with('user')->where(function ($query) use ($searchTerm) {
+				$query->where('first_name', 'like', '%' . $searchTerm . '%');
+				$query->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+			})->get()->pluck('user.id')->toArray();
+
+			$documents_query = $documents_query->map(function ($doc) use ($searchCategoryIds, $searchFindingTypeIds, $searchFindingId, $searchAuditId, $searchUserId, $searchTerm, $searchDocumentCommentId, $searchBuildingId, $searchUnitId, $searchAmenitiesIds) {
+				//document categories
+				foreach ($doc->assigned_categories as $key => $cat) {
+					if (in_array($cat->id, $searchCategoryIds) || in_array($cat->parent->id, $searchCategoryIds)) {
+						return $doc;
+					}
+				}
+				//Finding number or finding types or amenities
+				foreach ($doc->findings as $key => $finding) {
+					if (in_array($finding->id, $searchFindingId) || in_array($finding->finding_type->id, $searchFindingTypeIds) || in_array($finding->amenity->id, $searchAmenitiesIds)) {
+						return $doc;
+					}
+				}
+				// Buildings
+				foreach ($doc->buildings as $key => $building) {
+					if (in_array($building->id, $searchBuildingId)) {
+						return $doc;
+					}
+				}
+				//Unit
+				foreach ($doc->units as $key => $unit) {
+					if (in_array($unit->id, $searchUnitId)) {
+						return $doc;
+					}
+				}
+				//First and Last Names of Uploaders
+				if (!empty($searchUserId) && in_array($doc->user_id, $searchUserId)) {
+					return $doc;
+				}
+				//Audit Numbers
+				foreach ($doc->audits as $key => $audit) {
+					if (in_array($audit->id, $searchAuditId)) {
+						return $doc;
+					}
+				}
+				//Document comment
+				if (in_array($doc->id, $searchDocumentCommentId)) {
+					return $doc;
+				}
+			});
+
+			$documents_ids = $documents_query->filter()->pluck('id');
+			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
 		}
+
 		// return $documents_query->count();
 		if ($unreviewed == 0) {
 			// filter to show unreviewed
@@ -392,6 +453,7 @@ class DocumentController extends Controller
 			$documents_ids = $documents_query->filter()->pluck('id');
 			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
 		}
+		// return $documents_query->pluck('id');
 
 		$documents = $documents_query->paginate(20);
 		$documents_all = $documents_query->get();
@@ -622,6 +684,7 @@ class DocumentController extends Controller
 			$siteIds = $findingDetails->where('site', 1)->pluck('amenity_id')->unique()->toArray();
 			$unitIds = array_values($unitIds);
 
+			$audit_ids = $findingDetails->pluck('audit_id')->unique()->toArray();
 			$unitIds = array_map('strval', $unitIds);
 			$findingIds = array_map('strval', $findingIds);
 			$siteIds = array_map('strval', $siteIds);
@@ -671,11 +734,19 @@ class DocumentController extends Controller
 				}
 				$document->save();
 				// return $document;
-				if (!is_null($audit_id)) {
+				if (!is_null($audit_id) && $audit_id != 'reset') {
 					$doc_audit = new DocumentAudit;
 					$doc_audit->audit_id = $audit_id;
 					$doc_audit->document_id = $document->id;
 					$doc_audit->save();
+				}
+				foreach ($audit_ids as $key => $a_id) {
+					if (!DocumentAudit::where('audit_id', $a_id)->where('document_id')->first()) {
+						$doc_audit = new DocumentAudit;
+						$doc_audit->audit_id = $a_id;
+						$doc_audit->document_id = $document->id;
+						$doc_audit->save();
+					}
 				}
 				//Parent
 				$document_categories = new LocalDocumentCategory;

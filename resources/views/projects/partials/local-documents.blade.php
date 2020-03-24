@@ -166,7 +166,7 @@
 		<hr>
 		<div uk-grid class="uk-grid-collapse">
 			<div class="uk-width-1-1" uk-grid>
-				<input type="text" id="local-documents-search" class="filter-box uk-width-1-5" placeholder="SEARCH DOCUMENTS">
+				<input type="text" value="{{ session()->has('local-documents-search-term') ? $searchTerm : '' }}" id="local-documents-search" class="filter-box uk-width-1-5" placeholder="SEARCH DOCUMENTS">
 				<div class="uk-width-1-5">
 					<label class="switch">
 						<input type="checkbox" onchange="searchDocuments(this);" id="documents-unreviewed-checkbox" @if($unreviewed) checked="true" @endIf >
@@ -237,6 +237,7 @@
 				$audits_ids = ($document->audits->pluck('id')->toArray());
 				$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
 				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
+				$all_ids = collect($all_ids)->unique()->filter()->toArray();
 				// $document_audits = $audits->whereIn('id', $all_ids);
 
 				$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
@@ -311,7 +312,7 @@
 					</td>
 					<td style="padding-left: 10px">
 						@if(count($all_ids) > 0)
-						<span  >@if(count($all_ids) > 1) Audits: {{ implode(', ',$all_ids) }} @elseIf(count($all_ids)) Audit:{{ implode(', ',$all_ids) }} @endIf</span> |
+						<span  >@if(count($all_ids) > 1) Audits: {{ implode(', ',$all_ids) }} @elseIf(count($all_ids)) Audit: {{ implode(', ',$all_ids) }} @endIf</span> |
 						<span uk-tooltip="pos: right" title="@if(count($document_findings) > 0){{ implode(', ', $document_findings->pluck('id')->toArray()) }}@endif">
 							<span onclick="$('#document-{{ $document->id }}-findings').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW FINDING(S)">
 								Total Findings: <span class="uk-badge finding-number {{ $unresolved_findings > 0 ? 'attention' : '' }} " uk-tooltip="" title="" aria-expanded="false"> {{ @count($document_findings) }}</span>

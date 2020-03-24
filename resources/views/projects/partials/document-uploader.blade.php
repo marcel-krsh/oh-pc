@@ -471,7 +471,6 @@ if ($currentGroup !== $category->parent_category_name) {
 		//alert(unresolved);
 		$.post('{{ URL::route("documents.upload-finding-filter", $project->id) }}', {
 			'document-upload-unresolved' : unresolved,
-
 			'document-upload-audit' : $("#upload-document-audit").val(),
 			'document-upload-building-unit' : $("#upload-document-building-unit").val(),
 			'_token' : '{{ csrf_token() }}'
