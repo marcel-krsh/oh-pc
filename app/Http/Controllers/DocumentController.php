@@ -323,47 +323,75 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
-		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		// return $documents_query->get();
 		if ($searchTerm != NULL) {
 			// apply search term to documents
+			// The Query Searches:
+			// 	Document Categories
+			// 	Finding Types
+			// 	Building Names
+			// 	Unit Names
+			// 	Amenity Names
+			// 	First and Last Names of Uploaders
+			// 	Audit Numbers
+			// 	Finding Number
 			$searchCategoryIds = DocumentCategory::where('document_category_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			$searchFindingTypeIds = FindingType::where('name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			$searchFindingId = Finding::where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
 			$searchAuditId = Audit::where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
-
 			//dd($searchAuditId,$searchFindingId,$searchFindingTypeIds,$searchCategoryIds );
 		}
 		// return $documents_query->count();
 		if ($unreviewed == 0) {
 			// filter to show unreviewed
-			$documents_query = $documents_query->whereNull('notapproved')->whereNull('approved');
-		}
-		if ($reviewed == 0) {
-			// filter to show reviewed
 			$documents_query = $documents_query->where(function ($query) {
 				$query->where('notapproved', 1);
 				$query->orWhere('approved', 1);
 			});
 		}
-		// return $documents_query->count();
+		if ($reviewed == 0) {
+			// filter to show reviewed
+			$documents_query = $documents_query->whereNull('notapproved')->whereNull('approved');
+		}
 
-		// if ($unresolved == 0) {
-		// 	// filter to show unresolved
-		// 	$unresolved_finding_ids = Finding::where('project_id', $project->id)->where('auditor_approved_resolution', '<>', 1)->orWhereNull('auditor_approved_resolution')->pluck('id')->toArray();
-		// 	$all_finding_ids = $documents_query->pluck('finding_ids', 'id')->toArray();
+		if ($unresolved == 0) {
+			// filter to show unresolved
+			$documents_query = $documents_query->get();
+			$documents_query = $documents_query->map(function ($doc) {
+				foreach ($doc->findings as $key => $finding) {
+					if ($finding->auditor_approved_resolution == 1) {
+						return $doc;
+					}
+				}
+			});
+			$documents_ids = $documents_query->filter()->pluck('id');
+			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		}
 
-		// 	return dd(array_diff($unresolved_finding_ids, $all_finding_ids));
-
-		// 	return $documents_query = $documents_query->whereJsonContains('finding_ids', ["9007", "18385"])->get()->pluck('id');
-		// }
-		// return (($documents_query->pluck('building_ids')->flatten()->filter()));
-		// return (json_decode($documents_query->first()->building_ids));
-		// if ($resolved == 0) {
-		// 	// filter to show resolved
-		// 	$documents_query = $documents_query->whereNull('approved');
-		// }
-
-		// return $documents = $documents_query->first()->all_findings();
+		if ($resolved == 0) {
+			$documents_query = $documents_query->get();
+			// filter to show resolved
+			// $documents_query = $documents_query->whereHas('findings', function ($query) use ($request) {
+			// 	$query->where('auditor_approved_resolution', '<>', 1);
+			// 	// $query->orWhereNull('auditor_approved_resolution');
+			// });
+			$documents_query = $documents_query->map(function ($doc) use ($unresolved) {
+				foreach ($doc->findings as $key => $finding) {
+					if ($finding->auditor_approved_resolution != 1 || is_null($finding->auditor_approved_resolution)) {
+						if ($unresolved == 0) {
+							if ($finding->auditor_approved_resolution == 1) {
+								return $doc;
+							}
+						} else {
+							return $doc;
+						}
+					}
+				}
+			});
+			$documents_ids = $documents_query->filter()->pluck('id');
+			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		}
 
 		$documents = $documents_query->paginate(20);
 		$documents_all = $documents_query->get();
@@ -376,39 +404,6 @@ class DocumentController extends Controller
 		// $all_finding_ids = [];
 		// return $documents;
 
-		// foreach ($documents as $key => $document) {
-		// 	$finding_ids = [];
-		// 	$doc_finding_ids = [];
-		// 	foreach ($document->communications as $key => $communication) {
-		// 		$finding_ids = $communication->communication ? $communication->communication->finding_ids : null;
-		// 		if (!is_null($finding_ids)) {
-		// 			$finding_ids = json_decode($finding_ids);
-		// 			$doc_finding_ids = array_merge($doc_finding_ids, $finding_ids);
-		// 			// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
-		// 			// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
-		// 			// $findings = $findings->merge($doc_findings);
-		// 		}
-		// 	}
-		// 	if (!empty($doc_finding_ids)) {
-		// 		$all_finding_ids = array_merge($all_finding_ids, $doc_finding_ids);
-		// 		$document->has_findings = 1;
-		// 		$document->finding_ids = $doc_finding_ids;
-		// 	} else {
-		// 		$document->has_findings = 0;
-		// 		$document->finding_ids = [];
-		// 	}
-		// 	// return $document;
-		// }
-
-		// $findings = Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type')->whereIn('id', $all_finding_ids)->get();
-		// $findings = $findings->unique('id');
-		// $findings_audits = $findings->pluck('audit_plain')->flatten()->unique('id');
-		// $audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
-
-		// return $filter;
-		// return $documents->first()->findings();
-
-		//dd($document_categories);
 		return view('projects.partials.local-documents', compact('project', 'documents', 'audit_id', 'categories', 'searchTerm', 'findings', 'resolved', 'unresolved', 'reviewed', 'unreviewed'));
 	}
 

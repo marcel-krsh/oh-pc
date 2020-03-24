@@ -30,10 +30,10 @@ class Finding extends Model
 		return $this->hasMany(\App\Models\Comment::class, 'finding_id', 'id')->whereNULL('photo_id')->orderBy('id', 'asc');
 	}
 
-	// public function documents(): HasMany
-	// {
-	// 	return $this->hasMany(\App\Models\Document::class, 'finding_id', 'id')->orderBy('id', 'asc');
-	// }
+	public function documents(): HasMany
+	{
+		return $this->hasMany(\App\Models\Document::class, 'finding_id', 'id')->orderBy('id', 'asc');
+	}
 
 	public function project(): HasOne
 	{

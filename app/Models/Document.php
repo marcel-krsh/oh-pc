@@ -97,22 +97,22 @@ class Document extends Model
 		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id');
 	}
 
-	// use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
-	// public function units()
-	// {
-	// 	return $this->belongsToJson('App\Models\Unit', 'units_ids', 'id');
-	// }
+	public function units()
+	{
+		return $this->belongsToJson('App\Models\Unit', 'unit_ids');
+	}
 
-	// public function buildings()
-	// {
-	// 	return $this->hasMany('App\Models\Building', 'id', 'building_ids');
-	// }
+	public function buildings()
+	{
+		return $this->belongsToJson('App\Models\Building', 'building_ids');
+	}
 
-	// public function findings()
-	// {
-	// 	return $this->belongsToJson('App\Models\Finding', 'finding_ids', 'id');
-	// }
+	public function findings()
+	{
+		return $this->belongsToJson('App\Models\Finding', 'finding_ids');
+	}
 
 	public function all_findings()
 	{
