@@ -673,6 +673,7 @@ class DocumentController extends Controller
 		if (!$request->has('categories') || is_null($request->categories)) {
 			return 'You must select at least one category!';
 		}
+		$audit_ids = [];
 		if ($request->has('findings') && $request->findings != '') {
 			/// we will ignore the selected audit and get it from the findings
 

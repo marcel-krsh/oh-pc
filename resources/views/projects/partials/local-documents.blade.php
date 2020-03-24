@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css{{ asset_version() }}">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <style>
 	/*for toggler*/
 	#allita-documents .switch {
