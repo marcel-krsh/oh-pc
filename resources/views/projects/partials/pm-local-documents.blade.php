@@ -280,31 +280,12 @@
 								</span>
 							</div>
 							<li class="{{ ($document->notapproved == 1) ? "declined-category s" : "" }} {{ ($document->approved == 1) ? "approved-category" : "" }}">
-								<a id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
+								<span id="sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}" class="">
 									<span style="float: left;margin-top:8px;margin-left: 5px"  id="sent-id-{{ $document->id }}-category-id-1-recieved-icon" class="a-checkbox-checked {{ ($document->approved == 1) ? "received-yes uk-float-left" : "check-received-no received-no" }}"></span>
 									<span style="float: left;margin-top:8px;margin-left: 5px" id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
 									<span style="display: block; margin-left: 55px;margin-top:2px">{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }} </span>
-								</a>
-								<div uk-dropdown="mode: click" id="#sent-id-{{ $document->id }}-category-id-{{ $document_category->id }}">
-									<ul class="uk-nav uk-nav-dropdown">
-
-										<li>
-											<a onclick="markApproved({{ $document->id }},{{ $document_category->id }});">
-												Mark as approved
-											</a>
-										</li>
-										<li>
-											<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
-												Mark as declined
-											</a>
-										</li>
-										<li>
-											<a onclick="markUnreviewed({{ $document->id }},{{ $document_category->id }});">
-												Clear review status
-											</a>
-										</li>
-									</ul>
-								</div>
+								</span>
+								
 								@if($document->comment) <div style="display: block; margin-left:35.25px;"><i class="a-comment"></i> "{{ $document->comment }}" </div>@endif
 							</li>
 							@endforeach
@@ -335,20 +316,8 @@
 						@endIf
 					</td>
 					<td>
-						<a class="uk-link-muted " uk-tooltip="@foreach($document->assigned_categories as $document_category){{ $document_category->parent->document_category_name }}/{{ $document_category->document_category_name }}@endforeach">
-							<span class="a-info-circle"  style="color: #56b285;"></span>
-						</a>
-						&nbsp;|&nbsp;
-						<a class="uk-link-muted " onclick="dynamicModalLoad('edit-local-document/{{ $document->id }}')" uk-tooltip="Edit this file">
-							<span class="a-pencil-2" style="color: rgb(0, 193, 247);"></span>
-						</a>
-						&nbsp;|&nbsp;
-						@if($admin_access)
-						<a class="uk-link-muted " onclick="deleteFile({{ $document->id }});" uk-tooltip="Delete this file">
-							<span class="a-trash-4" style="color: #da328a;"></span>
-						</a>
-						&nbsp;|&nbsp;
-						@endif
+						
+						
 						<a href="download-local-document/{{ $document->id }}" target="_blank"  uk-tooltip="Download file." download>
 							<span class="a-lower"></span>
 						</a>
