@@ -23,8 +23,7 @@ $f = $finding;
 	<h2 style="page-break-inside: avoid; break-inside: avoid;">
 		<i class="{{ $f->icon() }}"></i> {{ $f->amenity->amenity_description }}  {{ $f->amenity_index ?? '' }}
 		@if($auditor_access)
-		<span>
-			@if($f->auditor_approved_resolution)
+			{{-- @if($f->auditor_approved_resolution)
 			<span id="finding-resolve-button" >
 				<button class="uk-button inspec-tools-findings-resolve uk-link" uk-tooltip="pos:top-right;title:RESOLVED ON {{ strtoupper(formatDate($f->auditor_last_approved_resolution_at)) }};"><span class="a-circle-checked"> </span> RESOLVED
 				</button>
@@ -34,8 +33,33 @@ $f = $finding;
 				<button class="uk-button inspec-tools-findings-resolve uk-link" onclick="resolveFindingAS({{ $f->id }})"><span class="a-circle"></span> RESOLVE
 				</button>
 			</span>
-			@endif
-		</span>
+			@endif --}}
+			<div uk-grid class="uk-text-small">
+				<div class="uk-width-1-5">
+					@if($f->auditor_approved_resolution == 1)
+					<span id="inspec-tools-finding-resolve-{{ $f->id }}">
+						<button class="uk-button uk-link uk-margin-small-left uk-width-1-1" uk-tooltip="pos:top-right;title:DATE" onclick="resolveFinding({{ $f->id }})"><i class="a-circle-cross"></i>&nbsp; DATE
+						</button>
+					</span>
+					@else
+					<span id="inspec-tools-finding-resolve-{{ $f->id }}">
+						<button class="uk-button uk-link uk-margin-small-left uk-width-1-1"> RESOLVED AT:</button>
+					</span>
+					@endif
+				</div>
+				<div class="uk-width-1-3">
+					<input id="resolved-date-finding-{{$f->id}}" class="uk-input " readonly type="text" placeholder="DATE" onchange="resolveFinding({{ $f->id }},$(this).val());"  >
+					@push('flatPickers')
+					$('#resolved-date-finding-{{$f->id}}').flatpickr('{dateFormat: "m-d-Y"}');
+					@if(null !== $f->auditor_last_approved_resolution_at)
+					$('#resolved-date-finding-{{$f->id}}').val('{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}');
+					@endIf
+					@endpush
+				</div>
+				<span id="resolved-text-{{ $f->id }}" class="uk-text-danger attention" style="font-size: 15px"></span>
+			</div>
+
+
 		@endif
 	</h2>
 	@if(!is_null($f->date_of_finding))
@@ -208,3 +232,47 @@ $f = $finding;
 </div>
 
 </div>
+<script type="text/javascript">
+	@stack('flatPickers')
+	function resolveFinding(findingid, dateResolved){
+		var resolveFindingId = findingid;
+		$.post('/findings/'+findingid+'/resolve', {
+			'_token' : '{{ csrf_token() }}',
+			'date' : dateResolved
+		}, function(data) {
+			if(data != 0){
+				console.log('Resolution saved for finding '+resolveFindingId);
+				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-1" onclick="resolveFinding(\''+resolveFindingId+'\');"><i class="a-circle-cross"></i>&nbsp; DATE</button>');
+				$('#resolved-date-finding-'+resolveFindingId).val(data);
+				//<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" onclick="resolveFinding(\''+resolveFindingId+'\',\'null\')"><span class="a-circle-cross">&nbsp;</span>CLEAR</button>
+			}else{
+				console.log('Resolution cleared for finding '+resolveFindingId);
+				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-1"> RESOLVED AT:</button>');
+				$('#resolved-date-finding-'+resolveFindingId).val('');
+			}
+			$('#resolved-text-'+resolveFindingId).html('<p>Don\'t Forget! You will need to refresh the document\'s tab for these changes to appear on the document.</p>');
+		});
+	}
+	function cancelFinding(findingid){
+		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3><h3>NOTE: Cancelled findings will not be displayed on a report. If you have cancelled a finding that was being displayed on a report, you will need to refresh that reports content for the change to be reflected.</h3></div>', {stack:2}).then(function() {
+
+			$.post('/findings/'+findingid+'/cancel', {
+				'_token' : '{{ csrf_token() }}'
+			}, function(data) {
+				if(data==0){
+					UIkit.modal.alert(data,{stack: true});
+				} else {
+					UIkit.notification('<span uk-icon="icon: check"></span> Finding Canceled', {pos:'top-right', timeout:1000, status:'success'});
+					$('#finding-modal-audit-stream-refresh').trigger('click');
+					$('#cancelled-finding-'+findingid).css("text-decoration","line-through");
+				}
+			} );
+
+
+		}, function () {
+			console.log('Rejected.')
+		});
+	}
+
+</script>
+
