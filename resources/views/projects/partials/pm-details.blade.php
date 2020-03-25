@@ -51,7 +51,7 @@
 // if ($selected_audit->update_cached_audit()) {
 // 	$selected_audit->refresh();
 // }
-
+if(in_array($selected_audit->step_id, $pmCanViewFindingsStepIds)){
 $fileCount = $selected_audit->file_findings_count;
 $correctedFileCount = $fileCount - $selected_audit->unresolved_file_findings_count;
 $nltCount = $selected_audit->nlt_findings_count;
@@ -59,8 +59,25 @@ $correctedNltCount = $nltCount - $selected_audit->unresolved_nlt_findings_count;
 
 $ltCount = $selected_audit->lt_findings_count;
 $correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
+}else{
 
+	$fileCount = "NA";
+	$correctedFileCount = "NA";
+	$nltCount = "NA";
+	$correctedNltCount = "NA";
 
+	$ltCount = "NA";
+	$correctedLtCount = "NA";
+}
+
+$canViewFI = in_array($selected_audit->step_id, $pmFileInspectionsOnlyStepIds);
+$canViewSI =  in_array($selected_audit->step_id, $pmSiteInspectionsOnlyStepIds);
+$canViewBoth =  in_array($selected_audit->step_id, $pmBothInspectionsOnlyStepIds);
+if($canViewBoth){
+	$canViewFI = true;
+	$canViewSI =  true;
+
+}
 ?>
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
 	<div class="uk-width-1-1 uk-padding-remove">

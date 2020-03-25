@@ -73,6 +73,7 @@ class PMAuditController extends Controller
 		$this->htc_group_id = 7;
 		View::share('htc_group_id', $this->htc_group_id);
 		ini_set('memory_limit', '8G');
+		$this->allitapc();
 	}
 
 	public function getPMProject($id = null, $audit_id = 0)
@@ -86,8 +87,8 @@ class PMAuditController extends Controller
 
 			$projectTabs = collect([
 				['title' => 'Audits', 'icon' => 'a-mobile-home', 'status' => '', 'badge' => '', 'action' => 'pm-project.details-with-audit'],
-				['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.audit-communications'],
-				['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'project.documents'],
+				//['title' => 'Communications', 'icon' => 'a-envelope-incoming', 'status' => '', 'badge' => '', 'action' => 'project.audit-communications'],
+				['title' => 'Documents', 'icon' => 'a-file-clock', 'status' => '', 'badge' => '', 'action' => 'pm-project.documents'],
 				// ['title' => 'Notes', 'icon' => 'a-file-text', 'status' => '', 'badge' => '', 'action' => 'project.notes'],
 				// ['title' => 'Comments', 'icon' => 'a-comment-text', 'status' => '', 'badge' => '', 'action' => 'project.comments'],
 				// ['title' => 'Photos', 'icon' => 'a-picture', 'status' => '', 'badge' => '', 'action' => 'project.photos'],
@@ -134,6 +135,8 @@ class PMAuditController extends Controller
 			// 	->orderBy('name', 'asc')
 			// 	->get();
 			$auditors = [];
+			//$pmCanViewFindingsStepIds = $this->pmCanViewFindingsStepIds;
+			//dd($pmCanViewFindingsStepIds);
 			return view('projects.partials.pm-details', compact('details', 'audits', 'project', 'selected_audit', 'auditors'));
 		} catch (\Exception $e) {
 			app('sentry')->captureException($e);

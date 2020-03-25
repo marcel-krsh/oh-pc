@@ -27,6 +27,8 @@ class Document extends Model
 		'site_ids' => 'array',
 	];
 
+	
+
 	public function getFindingIdsAttribute($value)
 	{
 		return json_decode($value, true);
@@ -100,6 +102,13 @@ class Document extends Model
 	public function audits()
 	{
 		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id');
+	}
+
+	public function pmCanSeeAudits()
+	{	
+		$allowedSteps = pmCanViewFindingsIds();
+		$allowedDocumentsOnAudits = $this->project->audits()->whereIn('step_id', $allowedSteps)->pluck('audit_id')->toArray();
+		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id')->whereIn('audit_id',$allowedDocumentsOnAudits);
 	}
 
 	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;

@@ -215,7 +215,7 @@ if ($currentGroup !== $category->parent_category_name) {
 							<li class="child-of-{{$category->parent_id}}" style="display: none;">
 								<input style="float: left; margin-top: 3px" name="category-id-checkbox" class="uk-radio document-category-selection" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio">
 								<label style="display: block; margin-left: 30px" for="category-id-{{ $category->id }}">
-									{{ $category->document_category_name }}
+									{{ strtoupper($category->document_category_name) }}
 								</label>
 							</li>
 							@endforeach
@@ -241,24 +241,24 @@ if ($currentGroup !== $category->parent_category_name) {
 			<select name="audit" id="upload-document-audit" class="uk-select filter-drops uk-width-1-1"><option value="reset">AUDIT (OPTIONAL)</option>
 				@forEach($allAudits as $uploadAudit)
 				<option value="{{$uploadAudit->audit_id}}">{{date('m/d/Y',strtotime($uploadAudit->inspection_schedule_date))}} AUDIT {{$uploadAudit->audit_id}} | FILE {{$uploadAudit->file_findings_count}} | NLT {{$uploadAudit->nlt_findings_count}} | LT {{$uploadAudit->lt_findings_count}} | {{$uploadAudit->step_status_text}} </option>
-				<option disabled>___________________________________________________________________</option>
+				<option disabled>___________________________________</option>
 				@endForEach
 			</select>
 			<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
 
 			<select name="building_unit" id="upload-document-building-unit"class="uk-select filter-drops uk-width-1-1" value=""><option value="reset">BUILDING / UNIT  (OPTIONAL)</option>
-				<option disabled>___________________________________________________________________</option>
+				<option disabled>___________________________________</option>
 				@forEach($allBuildings as $uploadBuilding)
-				<option disabled>|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||</option>
-				<option value="building-{{$uploadBuilding->id}}">BIN {{$uploadBuilding->building_name}} | @if($allFindings !== null) FINDINGS :: {{$allFindings->where('auditor_approved_resolution',NULL)->where('building_id',$uploadBuilding->id)->count()}} UNRESOLVED @else NO FINDINGS @endIf
+				<option disabled>|||||||||||||||||||||||||||||||||||||||||||</option>
+				<option value="building-{{$uploadBuilding->id}}">BIN {{$uploadBuilding->building_name}} | @if($allFindings !== null) FINDINGS :: {{$allFindings->where('auditor_approved_resolution',"<>",1)->where('building_id',$uploadBuilding->id)->count()}} UNRESOLVED @else NO FINDINGS @endIf
 				</option>
-				<option disabled>|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||</option>
+				<option disabled>|||||||||||||||||||||||||||||||||||||||||||</option>
 				@if($uploadBuilding->units != NULL && count($uploadBuilding->units))
 				@forEach($uploadBuilding->units->sortBy('unit_name') as $uploadUnit)
 
 				<option id="document-upload-unit-{{$uploadUnit->id}}-select" value="unit-{{$uploadUnit->id}}">UNIT {{$uploadUnit->unit_name}} | @if($allFindings !== null) FINDINGS :: {{$allFindings->where('auditor_approved_resolution','<>',1)->where('unit_id',$uploadUnit->id)->count()}} UNRESOLVED  @else NO FINDINGS @endIf
 				</option>
-				<option disabled>___________________________________________________________________</option>
+				<option disabled>___________________________________</option>
 				@endForEach
 
 				@endIf
@@ -315,7 +315,7 @@ if ($currentGroup !== $category->parent_category_name) {
 				</div>
 				<div class="uk-align-center uk-margin-top">
 					<div id="list-item-upload-step-2" class="noclick">
-						{{-- <div class="js-upload-noclick uk-placeholder"><center>Please select a category to upload a new document</center></div> --}}
+						
 						<div class="js-upload uk-placeholder uk-text-center">
 							<span class="a-higher"></span>
 							<span class="uk-text-middle"> Please upload your document by dropping it here or</span>

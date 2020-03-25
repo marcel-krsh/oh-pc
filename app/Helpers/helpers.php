@@ -17,9 +17,9 @@ function pmCanViewAuditIds()
 	$bothIds = SystemSetting::where('key', 'pm_can_see_all_inspections_with_step_id')->first();
 
 	// convert to arrays
-	$fileOnlyids = $fileOnlyids = explode(',', $fileOnlyids->value);
-	$siteOnlyids = $siteOnlyids = explode(',', $siteOnlyids->value);
-	$bothIds = $bothIds = explode(',', $bothIds->value);
+	$fileOnlyids =  explode(',', $fileOnlyids->value);
+	$siteOnlyids =  explode(',', $siteOnlyids->value);
+	$bothIds =  explode(',', $bothIds->value);
 
 	/// merge
 	$allIds = collect([]);
@@ -33,7 +33,7 @@ function pmCanViewFindingsIds()
 {
 	$canSeeFindingsIds = SystemSetting::where('key', 'pm_can_see_findings_with_audit_step')->first();
 	// convert to arrays
-	$canSeeFindingsIds = $canSeeFindingsIds = explode(',', $canSeeFindingsIds->value);
+	$canSeeFindingsIds = explode(',', $canSeeFindingsIds->value);
 	return $canSeeFindingsIds;
 }
 
@@ -41,22 +41,26 @@ function pmCanViewFileInspectionIds()
 {
 	$fileOnlyids = SystemSetting::where('key', 'pm_can_see_file_inspections_only_with_audit_step')->first();
 	// convert to arrays
-	$fileOnlyids = $fileOnlyids = explode(',', $fileOnlyids->value);
+	if($fileOnlyids != null){
+	$fileOnlyids = explode(',', $fileOnlyids->value);
 	//dd($fileOnlyids,$siteOnlyids,$bothIds,$allIds);
+	}else{
+		$fileOnlyids = [];
+	}
 	return $fileOnlyids;
 }
 
 function pmCanViewSiteInspectionIds()
 {
 	$siteOnlyids = SystemSetting::where('key', 'pm_can_see_site_inspections_only_with_audit_step')->first();
-	$siteOnlyids = $siteOnlyids = explode(',', $siteOnlyids->value);
+	$siteOnlyids = explode(',', $siteOnlyids->value);
 	return $siteOnlyids;
 }
 
 function pmCanViewBothInspectionIds()
 {
 	$bothIds = SystemSetting::where('key', 'pm_can_see_all_inspections_with_step_id')->first();
-	$bothIds = $bothIds = explode(',', $bothIds->value);
+	$bothIds = explode(',', $bothIds->value);
 	return $bothIds;
 }
 

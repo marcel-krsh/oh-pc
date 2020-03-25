@@ -20,6 +20,11 @@ class Controller extends BaseController
 	public $manager_access;
 	public $admin_access;
 	public $root_access;
+	public $pmCanViewFindingsStepIds;
+	public $pmCanViewAuditStepIds;
+	public $pmBothInspectionsOnlyStepIds;
+	public $pmSiteInspectionsOnlyStepIds;
+	public $pmFileInspectionsOnlyStepIds;
 
 	public function allitaPc()
 	{
