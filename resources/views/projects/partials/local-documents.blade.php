@@ -293,6 +293,13 @@
 												Mark as approved
 											</a>
 										</li>
+										@if($unresolved_findings > 0)
+										<li>
+											<a onclick="markApproved({{ $document->id }},{{ $document_category->id }},1);">
+												Mark as approved and resolve @if($unresolved_findings > 1)findings @else finding @endIf
+											</a>
+										</li>
+										@endIf
 										<li>
 											<a onclick="markNotApproved({{ $document->id }},{{ $document_category->id }});">
 												Mark as declined
@@ -443,29 +450,55 @@
 
 
 
-    function markApproved(id,catid){
+    function markApproved(id,catid, resolveFindings = 0){
 			var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-    	UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
-    		$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
-    			'id' : id,
-    			'catid' : catid,
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data != 1 ) {
-    				console.log("processing");
-    				UIkit.modal.alert(data);
-    			} else {
-    				dynamicModalClose();
-    			}
-    			if(window.currentDocumentsPage) {
-    				$('#local-documents').html(tempdiv);
-						$('#allita-documents').load(window.currentDocumentsPage);
-    			} else {
-    				documentsLocal('{{ $project->id }}');
-    			}
-    		}
-    		);
-    	});
+    	if(resolveFindings == 0){
+    		UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
+	    		$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
+	    			'id' : id,
+	    			'catid' : catid,
+	    			'resolve' : resolveFindings,
+	    			'_token' : '{{ csrf_token() }}'
+	    		}, function(data) {
+	    			if(data != 1 ) {
+	    				console.log("processing");
+	    				UIkit.modal.alert(data);
+	    			} else {
+	    				dynamicModalClose();
+	    			}
+	    			if(window.currentDocumentsPage) {
+	    				$('#local-documents').html(tempdiv);
+							$('#allita-documents').load(window.currentDocumentsPage);
+	    			} else {
+	    				documentsLocal('{{ $project->id }}');
+	    			}
+	    		}
+	    		);
+	    	});
+    	}else{
+	    	UIkit.modal.confirm("<h1>Are You Sure?</h1><p>This will approve this file and resolve all unresolved findings attached to it with the date you select below.</p> <div uk-grid class=\"uk-text-small uk-grid\"><div class=\"uk-width-1-5 uk-first-column\"><span id=\"inspec-tools-finding-resolve-8552\"><button class=\"uk-button uk-link uk-margin-small-left uk-width-1-1\" uk-tooltip=\"pos:top-right;title:DATE\" ><i class=\"a-circle-cross\"></i>&nbsp; DATE</button></span></div><div class=\"uk-width-1-3\"><input id=\"document-"+id+"-resolved-date\" class=\"uk-input flatpickr-input active\" readonly=\"readonly\" type=\"text\" placeholder=\"DATE\" ></div><span id=\"resolved-text-8552\" class=\"uk-text-danger attention\" style=\"font-size: 15px\"></span></div>").then(function() {
+	    		$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
+	    			'id' : id,
+	    			'catid' : catid,
+	    			'resolve' : $("#document-"+id+"-resolved-date").val(),
+	    			'_token' : '{{ csrf_token() }}'
+	    		}, function(data) {
+	    			if(data != 1 ) {
+	    				console.log("processing");
+	    				UIkit.modal.alert(data);
+	    			} else {
+	    				dynamicModalClose();
+	    			}
+	    			if(window.currentDocumentsPage) {
+	    				$('#local-documents').html(tempdiv);
+							$('#allita-documents').load(window.currentDocumentsPage);
+	    			} else {
+	    				documentsLocal('{{ $project->id }}');
+	    			}
+	    		}
+	    		);
+	    	});
+    	}
     }
 
     function markUnreviewed(id,catid){

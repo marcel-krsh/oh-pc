@@ -292,7 +292,16 @@
 						</ul>
 					</td>
 					<td style="padding-left: 10px">
-						BUILDINGS {{ count($buildings) }} | UNITS {{ count($units) }}
+						<div uk-grid class="uk-grid-collapse">
+							<div class="uk-1-2">
+							@if(count($buildings))
+									BUILDINGS {{ count($buildings) }} 
+									@forEach($buildings as $b)
+									<br />{{$b}}
+									@endForEach
+							@else 
+								NA @endIf 
+							</div>| @if(count($units)) UNITS {{ count($units) }} @else NA @endIf
 					</td>
 					<td style="padding-left: 10px">
 						@if(count($all_ids) > 0)
