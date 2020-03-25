@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Event;
+use App\Models\Document;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Finding extends Model
 {
+	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 	public $timestamps = true;
 	//protected $dateFormat = 'Y-m-d\TH:i:s.u';
@@ -28,6 +30,13 @@ class Finding extends Model
 	public function comments(): HasMany
 	{
 		return $this->hasMany(\App\Models\Comment::class, 'finding_id', 'id')->whereNULL('photo_id')->orderBy('id', 'asc');
+	}
+
+	public function all_documents()
+	{
+		return $communications = Document::whereJsonContains('finding_ids', "$this->id")
+			->get();
+		return $this->hasManyJson('App\Models\Document', 'finding_ids');
 	}
 
 	public function documents(): HasMany

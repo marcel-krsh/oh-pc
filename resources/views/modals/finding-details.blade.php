@@ -13,10 +13,19 @@
 $f = $finding;
 @endphp
 <div class="modal-report-dates">
-	<h2 class="uk-text-uppercase uk-text-emphasis">{{ $finding_type }} {{ $f->project->project_name }}</h2>
+	<h2 class="uk-text-uppercase uk-text-emphasis">{{ $finding_type }} @if($finding_type == 'SITE FINDING FOR:'){{ $f->project->project_name }} @endif @if($finding_type == 'BUILDING FINDING FOR BIN:'){{ $f->building->building_name }} @endif @if($finding_type == 'UNIT FINDING FOR UNIT:'){{ $f->unit->unit_name }} @endif </h2>
 	<strong>
 		<span> F|N #{{ $f->id }}: AUDIT: {{ $f->audit_id }}, <small style="text-transform: uppercase;">@if($f->project->address){{ $f->project->address->line_1 }} {{ $f->project->address->line_2 }} | {{ $f->project->address->city }}, {{ $f->project->address->state }} {{ $f->project->address->zip }}@endif </small>
-
+			<span class="use-hand-cursor" style="float: right;" aria-expanded="false"><i class="a-circle-plus  "></i> ADD RESPONSE</span>
+			<div uk-drop="mode: click; pos: bottom-right" style="width: 115px; background-color: #ffffff;  ">
+				<div class="uk-card uk-card-body uk-card-default uk-card-small">
+					<div class="uk-drop-grid uk-child-width-1-4" uk-grid>
+						@if($auditor_access)
+						<div class="icon-circle use-hand-cursor"  onclick="addChildItem({{ $f->id }}, 'comment')"><i class="a-comment-plus"></i></div>
+						@endif
+					</div>
+				</div>
+			</div>
 		</span>
 	</strong>
 	<hr class="dashed-hr uk-column-span uk-margin-bottom uk-margin-top">
@@ -235,8 +244,9 @@ $f = $finding;
 
 </div>
 <script type="text/javascript">
+	var findingDocumentIds = "{{ $documents->pluck('id')->toJson() }}";
 	@stack('flatPickers')
-	function resolveFinding(findingid, dateResolved){
+	function resolveFinding(findingid, dateResolved, documentId){
 		var resolveFindingId = findingid;
 		$.post('/findings/'+findingid+'/resolve', {
 			'_token' : '{{ csrf_token() }}',
@@ -253,6 +263,8 @@ $f = $finding;
 				$('#resolved-date-finding-'+resolveFindingId).val('');
 			}
 			$('#resolved-text-'+resolveFindingId).html('<p>Don\'t Forget! You will need to refresh the document\'s tab for these changes to appear on the document.</p>');
+			//refresh the findings of this doc
+			refreshFindingOfDocument();
 		});
 	}
 	function cancelFinding(findingid){
@@ -273,6 +285,16 @@ $f = $finding;
 		}, function () {
 			console.log('Rejected.')
 		});
+	}
+
+	function refreshFindingOfDocument() {
+		var allDocuments = JSON.parse(window.documentIds);
+		var thisDocuments = JSON.parse(findingDocumentIds);
+		var commonDocuments = _.intersection(allDocuments, thisDocuments);
+		//for these common documents, refresh
+		//document-findings-attention=id
+		//document-findings-id
+
 	}
 
 </script>
