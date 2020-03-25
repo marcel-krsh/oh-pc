@@ -59,6 +59,8 @@ class MakeDocumentRelationships extends Command
 					//dd($findingsToInsert, $request->comment, $request->categories, $request->buValue, $request->audit_id);
 					if (!is_array($doc->finding_ids)) {
 						$findingIds = json_decode($doc->finding_ids, true);
+					} else {
+						$findingIds = $doc->finding_ids;
 					}
 					$findingDetails = Finding::whereIn('id', $findingIds)->get();
 					// get unit ids from findings

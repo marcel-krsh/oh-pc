@@ -47,7 +47,11 @@ class TestingController extends Controller
 				if (!is_null($doc->finding_ids)) {
 					$exist = true;
 					//dd($findingsToInsert, $request->comment, $request->categories, $request->buValue, $request->audit_id);
-					$findingIds = json_decode($doc->finding_ids, true);
+					if (!is_array($doc->finding_ids)) {
+						$findingIds = json_decode($doc->finding_ids, true);
+					} else {
+						$findingIds = $doc->finding_ids;
+					}
 					$findingDetails = Finding::whereIn('id', $findingIds)->get();
 					// get unit ids from findings
 					$unitIds = $findingDetails->pluck('unit_id')->unique()->filter()->toArray();
@@ -80,9 +84,6 @@ class TestingController extends Controller
 				}
 				if (count($doc->communication_details) > 0) {
 					// $all_findings = !is_null($doc->finding_ids) ? array_merge($all_findings, json_decode($doc->finding_ids)) : $all_findings;
-					// if(!is_array($doc->unit_ids))
-					// 	dd($)
-
 					// $all_units = !is_null($doc->unit_ids) ? array_merge($all_units, $doc->unit_ids) : $all_units;
 					// $all_buildings = !is_null($doc->building_ids) ? array_merge($all_buildings, $doc->building_ids) : $all_buildings;
 					// $all_sites = !is_null($doc->site_ids) ? array_merge($all_sites, $doc->site_ids) : $all_sites;
@@ -145,7 +146,7 @@ class TestingController extends Controller
 					if (!empty($all_units)) {
 						$doc->unit_ids = (array_unique($all_units));
 					}
-					$doc->save();
+					// $doc->save();
 				}
 			}
 		});
