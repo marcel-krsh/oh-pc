@@ -4,33 +4,33 @@
         window.getContentForListId = 0;
     </script>
     <div class="uk-width-1-1" id="note-filters">
-	    <!-- Begin Tools and Filters --> 
+	    <!-- Begin Tools and Filters -->
 
         <div uk-grid class="uk-margin-top">
-	        
+
 	        <div class=" uk-width-1-1@s  uk-width-1-5@m">
 
-	            <input id="notes-search" name="notes-search" type="text" value="{{ Session::get('notes-search') }}" class="uk-width-1-1 uk-input" placeholder="Search Within Notes (press enter)">                                
+	            <input id="notes-search" name="notes-search" type="text" value="{{ Session::get('notes-search') }}" class="uk-width-1-1 uk-input" placeholder="Search Within Notes (press enter)">
 	        </div>
 
             <div class="uk-width-1-1@s uk-width-1-4@m" id="recipient-dropdown" style="vertical-align: top;">
 	            <select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="filterByOwner();">
 	                <option value="all" selected="">
-	                    FILTER BY AUTHOR 
+	                    FILTER BY AUTHOR
 	                </option>
 	                @foreach ($owners_array as $owner)
-	                <option value="staff-{{$owner['id']}}"><a class="uk-dropdown-close">{{$owner['name']}}</a></option>    
+	                <option value="staff-{{$owner['id']}}"><a class="uk-dropdown-close">{{$owner['name']}}</a></option>
 	                @endforeach
 	            </select>
-	            
+
 	        </div>
-       
+
 	        <div class="uk-width-1-1@s uk-width-1-5@m" style="vertical-align:top">
 	            <a class="uk-button uk-button-success green-button uk-width-1-1" onclick="dynamicModalLoad('new-note-entry/{{$project->id}}')">
-	                <span class="a-file-text"></span> 
+	                <span class="a-file-text"></span>
 	                <span>NEW NOTE</span>
-	            </a>    
-	        </div> 
+	            </a>
+	        </div>
         </div>
 	    <div class="uk-container uk-margin-top-large " id="note-list" uk-grid style="position: relative; margin-top:30px;">
 	        <!-- note list is loaded in place using loadCommuincations() -> printnotesList(); using the json input from notes/file-id.json where file-id is the file-id of the current file. -->
@@ -57,7 +57,7 @@
 
     <script>
     //loadNotes(window.currentDetailId);
-
+		window.project_detail_tab_4 = 1;
     // process search
     $(document).ready(function() {
         $('#notes-search').keydown(function (e) {
@@ -66,14 +66,14 @@
                 'notes-search' : $("#notes-search").val(),
                 '_token' : '{{ csrf_token() }}'
                 }, function(data) {
-                    if(data!=1){ 
+                    if(data!=1){
                         UIkit.modal.alert(data);
                     } else {
-                        $('#project-detail-tab-4').trigger("click");     
+                        $('#project-detail-tab-4').trigger("click");
                     }
             } );
             e.preventDefault();
-            return false; 
+            return false;
           }
         });
     });
@@ -88,10 +88,10 @@
 	    // filter grid items
 	    //myGrid.filter(textinput);
 	    filterElement(textinput, '.filter_element');
-	}   
+	}
 
     function filterElement(filterVal, filter_element){
-    	
+
         if (filterVal === 'all') {
          $(filter_element).show();
         }

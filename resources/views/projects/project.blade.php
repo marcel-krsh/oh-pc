@@ -33,6 +33,9 @@
 </div>
 
 <script>
+	@foreach($projectTabs as $projectTab)
+		window.project_detail_tab_{{$loop->iteration}}=0;
+	@endforeach
 $( document ).ready(function() {
 	window.currentProjectOpen = {{$projectId}};
 	// place tab's buttons on main footer

@@ -180,6 +180,7 @@
 </div>
 
 <script>
+	window.project_detail_tab_2 = 1;
 
 	function filterByOwnerProject(session = 1){
 		var myGrid = UIkit.grid($('#communication-list-project'), {

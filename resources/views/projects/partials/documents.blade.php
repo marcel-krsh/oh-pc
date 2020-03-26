@@ -4,7 +4,7 @@
 	<div class="uk-width-1-1@s uk-width-1-5@m " style="vertical-align:top">
 		<a class="uk-button uk-width-1-1" id="project-documents-button-1" onclick="documentsDocuware('{{ $project->id }}')">
 			<span class="a-file-shield"></span>
-			
+
 			<span>DOCUWARE PROJECT DOCS</span>
 		</a>
 	</div>
@@ -12,7 +12,7 @@
 	<div class="uk-width-1-1@s uk-width-1-5@m " style="vertical-align:top">
 		<a class="uk-button uk-width-1-1" id="project-documents-button-2" onclick="documentsLocal('{{ $project->id }}', '{{ $audit_id }}')">
 			<span class="a-file"></span>
-			
+
 			<span>PROJECT DOCUMENTS</span>
 		</a>
 	</div>
@@ -38,7 +38,7 @@
 
 
 <script>
-
+	window.project_detail_tab_3 = 1;
 	$( document ).ready(function() {
 		$('#project-documents-button-2').trigger("click");
 	});

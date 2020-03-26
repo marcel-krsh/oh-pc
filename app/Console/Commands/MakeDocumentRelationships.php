@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Unit;
 use App\Models\Finding;
 use App\Models\Document;
+use App\Models\DocumentAudit;
 use Illuminate\Console\Command;
 
 class MakeDocumentRelationships extends Command
@@ -46,7 +47,7 @@ class MakeDocumentRelationships extends Command
 		$progressBar->setProgressCharacter("\xf0\x9f\x8c\x80");
 		$chunk = 20;
 		$progress = $chunk;
-		$communication_documents = Document::with('communication_details')->chunk($chunk, function ($documents) use ($progressBar, $progress) {
+		$communication_documents = Document::with('communication_details', 'audits')->chunk($chunk, function ($documents) use ($progressBar, $progress) {
 			$progressBar->advance($progress);
 			foreach ($documents as $key => $doc) {
 				$all_findings = [];
@@ -157,6 +158,19 @@ class MakeDocumentRelationships extends Command
 						$doc->unit_ids = (array_unique($all_units));
 					}
 					$doc->save();
+				}
+				$document_findings = $doc->all_findings();
+				$audits_ids = ($doc->audits->pluck('id')->toArray());
+				$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
+				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$doc->audit_id]);
+				$all_ids = collect($all_ids)->unique()->filter()->toArray();
+				foreach ($all_ids as $key => $a_id) {
+					if (!DocumentAudit::where('audit_id', $a_id)->where('document_id')->first()) {
+						$doc_audit = new DocumentAudit;
+						$doc_audit->audit_id = $a_id;
+						$doc_audit->document_id = $doc->id;
+						$doc_audit->save();
+					}
 				}
 			}
 		});
