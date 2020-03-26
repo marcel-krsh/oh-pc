@@ -21,7 +21,6 @@ use App\Models\CachedAudit;
 use App\Models\FindingType;
 use Illuminate\Http\Request;
 use App\Models\DocumentAudit;
-use App\Models\SystemSetting;
 use App\Models\DocumentCategory;
 use App\Models\CommunicationDraft;
 use App\Models\LocalDocumentCategory;
@@ -227,17 +226,16 @@ class DocumentController extends Controller
 		$allFindings = $project->findings()->count();
 		$loadFindingsSeperately = 0;
 		$allAudits = $project->audits;
-		$allowedFindingsForAudits = $allAudits->whereIn('step_id',$this->pmCanViewFindingsStepIds)->pluck('audit_id')->toArray();
+		$allowedFindingsForAudits = $allAudits->whereIn('step_id', $this->pmCanViewFindingsStepIds)->pluck('audit_id')->toArray();
 		if ($allFindings > 100) {
-			$allFindings = $project->findings()->whereIn('audit_id',$allowedFindingsForAudits)->paginate(50);
+			$allFindings = $project->findings()->whereIn('audit_id', $allowedFindingsForAudits)->paginate(50);
 			$loadFindingsSeperately = 1;
 		} else {
 			// do not include findings for not allowed audits
 
-			$allFindings = $project->findings()->whereIn('audit_id',$allowedFindingsForAudits)->get();
+			$allFindings = $project->findings()->whereIn('audit_id', $allowedFindingsForAudits)->get();
 		}
 		$allUnits = [];
-		
 
 		return view('projects.partials.pm-document-uploader', compact('project', 'audit_id', 'searchTerm', 'audits', 'findings', 'resolved', 'unresolved', 'document_categories', 'allAudits', 'allFindings', 'allUnits', 'allBuildings', 'loadFindingsSeperately', 'showLinks'));
 	}
@@ -481,6 +479,28 @@ class DocumentController extends Controller
 		return view('projects.partials.local-documents', compact('project', 'documents', 'audit_id', 'categories', 'searchTerm', 'findings', 'resolved', 'unresolved', 'reviewed', 'unreviewed'));
 	}
 
+	public function getDocumentFindingsColumn($document_id)
+	{
+		$document = Document::where('id', $document_id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity')->first();
+		$document_findings = $document->all_findings();
+		$buildings = !is_null($document->building_ids) ? ($document->building_ids) : [];
+		$units = !is_null($document->unit_ids) ? ($document->unit_ids) : [];
+		// if(!is_array($units))
+		// dd($document);
+		$audits_ids = ($document->audits->pluck('id')->toArray());
+		$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
+		$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
+		$all_ids = collect($all_ids)->unique()->filter()->toArray();
+
+		$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
+		$building_findings = $document_findings->where('building_id', '<>', null)->where('unit_id', null);
+		$unit_findings = $document_findings->where('building_id', null)->where('unit_id', '<>', null);
+
+		$resolved_findings = count(collect($document_findings)->where('auditor_approved_resolution', 1));
+		$unresolved_findings = count($document_findings) - $resolved_findings;
+		return view('projects.partials.local-documents-findings', compact('document', 'all_ids', 'document_findings', 'unresolved_findings', 'resolved_findings', 'site_findings', 'building_findings', 'unit_findings'));
+	}
+
 	public function getPMProjectDocuments(Project $project, Request $request)
 	{
 		$audit_id = $request->audit_id;
@@ -499,8 +519,6 @@ class DocumentController extends Controller
 		/// the issue here is if a document is attached to a finding but the report for that audit has not been
 		/// released yet, we must not show those documents to the property mangement or owner until that audit's
 		/// report has been released... so we set a system setting pm_can_see_findings_with_audit_step with the statuses allowed.
-
-		
 
 		//dd($allowedDocumentsOnAudits);
 
@@ -589,8 +607,6 @@ class DocumentController extends Controller
 
 		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity')->orderBy('created_at', 'DESC');
 
-
-		
 		// return $documents_query->get();
 		if ($searchTerm != NULL) {
 			// apply search term to documents
@@ -727,18 +743,18 @@ class DocumentController extends Controller
 		// return $documents_query->pluck('id');
 
 		// filter to remove documents with findings that are not released yet
-			$documents_query = $documents_query->get();
-			$documents_query = $documents_query->map(function ($doc, $allowedDocumentsOnAudits) {
-				$criteria = $doc->pmCanSeeAudits;
-				$meets_criteria_count = count($criteria);
-				if ($meets_criteria_count) {
-					//dd($doc, $criteria, $allowedDocumentsOnAudits);
-					return $doc;
-				}
-			});
+		$documents_query = $documents_query->get();
+		$documents_query = $documents_query->map(function ($doc, $allowedDocumentsOnAudits) {
+			$criteria = $doc->pmCanSeeAudits;
+			$meets_criteria_count = count($criteria);
+			if ($meets_criteria_count) {
+				//dd($doc, $criteria, $allowedDocumentsOnAudits);
+				return $doc;
+			}
+		});
 
-			$documents_ids = $documents_query->filter()->pluck('id');
-			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		$documents_ids = $documents_query->filter()->pluck('id');
+		$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
 
 		$documents = $documents_query->paginate(20);
 		$documents_all = $documents_query->get();

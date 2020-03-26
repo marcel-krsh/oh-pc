@@ -1643,7 +1643,7 @@ class FindingController extends Controller
 	//     return "done";
 	// }
 
-	public function findingDetails($id, Request $request)
+	public function findingDetails($id, $document_id = null, Request $request)
 	{
 		$finding = Finding::with('comments', 'documents', 'project', 'unit', 'building', 'audit_plain', 'amenity', 'amenity_inspection', 'finding_type')->find($id);
 		$communications = Communication::whereJsonContains('finding_ids', "$finding->id")
@@ -1663,6 +1663,6 @@ class FindingController extends Controller
 		} elseif (is_null($finding->building_id) && !is_null($finding->unit_id)) {
 			$finding_type = 'UNIT FINDING FOR UNIT:';
 		}
-		return view('modals.finding-details', compact('finding', 'communications', 'finding_type', 'photos', 'documents'));
+		return view('modals.finding-details', compact('finding', 'communications', 'finding_type', 'photos', 'documents', 'document_id'));
 	}
 }

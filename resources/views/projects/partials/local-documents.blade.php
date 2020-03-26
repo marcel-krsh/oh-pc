@@ -263,13 +263,13 @@
 
 
 
-					 @endforeach @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach
+					@endforeach @foreach($document->assigned_categories as $category)category-{{ $category->id }} @endforeach
 
 
-					 @foreach($units as $unit)finding-{{ $unit }} @endforeach
+					@foreach($units as $unit)finding-{{ $unit }} @endforeach
 
 
-					 @foreach($buildings as $building)finding-{{ $building }} @endforeach">
+					@foreach($buildings as $building)finding-{{ $building }} @endforeach">
 					<td style="vertical-align: middle;"><span class="uk-margin-top uk-padding-left" uk-tooltip title="{{ $document->created_at->format('h:i a') }}">{{ date('m/d/Y', strtotime($document->created_at)) }}</span>
 					</td>
 					<td class="uk-width-1-2" style="vertical-align: middle;">
@@ -322,20 +322,8 @@
 					</td>
 					<td style="padding-left: 10px">
 						@if(count($all_ids) > 0)
-						<span  >@if(count($all_ids) > 1) Audits: {{ implode(', ',$all_ids) }} @elseIf(count($all_ids)) Audit: {{ implode(', ',$all_ids) }} @endIf</span> |
-						<span uk-tooltip="pos: right" title="@if(count($document_findings) > 0){{ implode(', ', $document_findings->pluck('id')->toArray()) }}@endif">
-							<span onclick="$('#document-{{ $document->id }}-findings').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW FINDING(S)" id="document-findings-attention={{ $document->id }}">
-								Total Findings: <span class="uk-badge finding-number {{ $unresolved_findings > 0 ? 'attention' : '' }} " uk-tooltip="" title="" aria-expanded="false"> {{ @count($document_findings) }}</span>
-							</span>
-						</span>
-
-						<div id="document-{{ $document->id }}-findings" style="display: none;">
-							{{-- @foreach($document_findings as $fin) --}}
-							<hr class="uk-margin-bottom" style="border: 1px solid #bbbbbb" />
-							<li id="document-findings-{{ $document->id }}">
-								@include('non_modal.finding-summary')
-							</li>
-							{{-- @endforeach --}}
+						<div class="document-findings-content-{{ $document->id }}">
+							@include('projects.partials.local-documents-findings')
 						</div>
 						@else
 						NA | NA
@@ -451,58 +439,58 @@
 
 
     function markApproved(id,catid, resolveFindings = 0){
-			var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+    	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
     	if(resolveFindings == 0){
     		UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
-	    		$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
-	    			'id' : id,
-	    			'catid' : catid,
-	    			'resolve' : resolveFindings,
-	    			'_token' : '{{ csrf_token() }}'
-	    		}, function(data) {
-	    			if(data != 1 ) {
-	    				console.log("processing");
-	    				UIkit.modal.alert(data);
-	    			} else {
-	    				dynamicModalClose();
-	    			}
-	    			if(window.currentDocumentsPage) {
-	    				$('#local-documents').html(tempdiv);
-							$('#allita-documents').load(window.currentDocumentsPage);
-	    			} else {
-	    				documentsLocal('{{ $project->id }}');
-	    			}
-	    		}
-	    		);
-	    	});
+    			$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
+    				'id' : id,
+    				'catid' : catid,
+    				'resolve' : resolveFindings,
+    				'_token' : '{{ csrf_token() }}'
+    			}, function(data) {
+    				if(data != 1 ) {
+    					console.log("processing");
+    					UIkit.modal.alert(data);
+    				} else {
+    					dynamicModalClose();
+    				}
+    				if(window.currentDocumentsPage) {
+    					$('#local-documents').html(tempdiv);
+    					$('#allita-documents').load(window.currentDocumentsPage);
+    				} else {
+    					documentsLocal('{{ $project->id }}');
+    				}
+    			}
+    			);
+    		});
     	}else{
-	    	UIkit.modal.confirm("<h1>Are You Sure?</h1><p>This will approve this file and resolve all unresolved findings attached to it with the date you select below.</p> <div uk-grid class=\"uk-text-small uk-grid\"><div class=\"uk-width-1-5 uk-first-column\"><span id=\"inspec-tools-finding-resolve-8552\"><button class=\"uk-button uk-link uk-margin-small-left uk-width-1-1\" uk-tooltip=\"pos:top-right;title:DATE\" ><i class=\"a-circle-cross\"></i>&nbsp; DATE</button></span></div><div class=\"uk-width-1-3\"><input id=\"document-"+id+"-resolved-date\" class=\"uk-input flatpickr-input active\" readonly=\"readonly\" type=\"text\" placeholder=\"DATE\" ></div><span id=\"resolved-text-8552\" class=\"uk-text-danger attention\" style=\"font-size: 15px\"></span></div>").then(function() {
-	    		$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
-	    			'id' : id,
-	    			'catid' : catid,
-	    			'resolve' : $("#document-"+id+"-resolved-date").val(),
-	    			'_token' : '{{ csrf_token() }}'
-	    		}, function(data) {
-	    			if(data != 1 ) {
-	    				console.log("processing");
-	    				UIkit.modal.alert(data);
-	    			} else {
-	    				dynamicModalClose();
-	    			}
-	    			if(window.currentDocumentsPage) {
-	    				$('#local-documents').html(tempdiv);
-							$('#allita-documents').load(window.currentDocumentsPage);
-	    			} else {
-	    				documentsLocal('{{ $project->id }}');
-	    			}
-	    		}
-	    		);
-	    	});
+    		UIkit.modal.confirm("<h1>Are You Sure?</h1><p>This will approve this file and resolve all unresolved findings attached to it with the date you select below.</p> <div uk-grid class=\"uk-text-small uk-grid\"><div class=\"uk-width-1-5 uk-first-column\"><span id=\"inspec-tools-finding-resolve-8552\"><button class=\"uk-button uk-link uk-margin-small-left uk-width-1-1\" uk-tooltip=\"pos:top-right;title:DATE\" ><i class=\"a-circle-cross\"></i>&nbsp; DATE</button></span></div><div class=\"uk-width-1-3\"><input id=\"document-"+id+"-resolved-date\" class=\"uk-input flatpickr-input active\" readonly=\"readonly\" type=\"text\" placeholder=\"DATE\" ></div><span id=\"resolved-text-8552\" class=\"uk-text-danger attention\" style=\"font-size: 15px\"></span></div>").then(function() {
+    			$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
+    				'id' : id,
+    				'catid' : catid,
+    				'resolve' : $("#document-"+id+"-resolved-date").val(),
+    				'_token' : '{{ csrf_token() }}'
+    			}, function(data) {
+    				if(data != 1 ) {
+    					console.log("processing");
+    					UIkit.modal.alert(data);
+    				} else {
+    					dynamicModalClose();
+    				}
+    				if(window.currentDocumentsPage) {
+    					$('#local-documents').html(tempdiv);
+    					$('#allita-documents').load(window.currentDocumentsPage);
+    				} else {
+    					documentsLocal('{{ $project->id }}');
+    				}
+    			}
+    			);
+    		});
     	}
     }
 
     function markUnreviewed(id,catid){
-			var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+    	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
     	UIkit.modal.confirm("Are you sure you want to clear the review on this file?").then(function() {
     		$.post('{{ URL::route("documents.local-clearReview", $project->id) }}', {
     			'id' : id,
@@ -517,7 +505,7 @@
     			}
     			if(window.currentDocumentsPage) {
     				$('#local-documents').html(tempdiv);
-						$('#allita-documents').load(window.currentDocumentsPage);
+    				$('#allita-documents').load(window.currentDocumentsPage);
     			} else {
     				documentsLocal('{{ $project->id }}');
     			}
@@ -527,7 +515,7 @@
     }
 
     function markNotApproved(id,catid){
-			var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+    	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
     	UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
     		$.post('{{ URL::route("documents.local-notapprove", $project->id) }}', {
     			'id' : id,
@@ -541,7 +529,7 @@
     			}
     			if(window.currentDocumentsPage) {
     				$('#local-documents').html(tempdiv);
-						$('#allita-documents').load(window.currentDocumentsPage);
+    				$('#allita-documents').load(window.currentDocumentsPage);
     			} else {
     				documentsLocal('{{ $project->id }}');
     			}
@@ -550,7 +538,7 @@
     }
 
     function deleteFile(id){
-			var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+    	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
     	UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
     		$.post('{{ URL::route("documents.local-deleteDocument", $project->id) }}', {
     			'id' : id,
@@ -562,7 +550,7 @@
     			}
     			if(window.currentDocumentsPage) {
     				$('#local-documents').html(tempdiv);
-						$('#allita-documents').load(window.currentDocumentsPage);
+    				$('#allita-documents').load(window.currentDocumentsPage);
     			} else {
     				documentsLocal('{{ $project->id }}');
     			}
@@ -666,8 +654,22 @@
 	}
 
 
-	function openFindingDetails(findingId) {
-		dynamicModalLoad('finding-details/'+findingId);
+	function openFindingDetails(findingId, documentId = 0) {
+		dynamicModalLoad('finding-details/'+findingId+'/'+documentId);
+	}
+
+	function updateContent(updateClassContent, url, documentId) {
+		var newContent = $('.'+updateClassContent);
+		$(newContent).load('/'+url, function(response) {
+			if (response == "error") {
+				var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+				UIkit.modal(msg, {center: true, bgclose: false, keyboard:false,  stack:true}).show();
+			} else {
+				$(newContent).html(response);
+				if(documentId > 0)
+				$('#document-'+documentId+'-findings').slideToggle();
+			}
+		});
 	}
 
 	@if(Auth::user()->auditor_access())

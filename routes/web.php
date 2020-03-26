@@ -298,11 +298,13 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/modals/edit-local-document/{document}', 'DocumentController@editLocalDocument')->name('document.local-edit');
 		Route::post('/modals/edit-local-document/{document}', 'DocumentController@saveEditedLocalDocument')->name('document.local-saveedit');
 
-		Route::get('modals/finding-details/{finding}', 'FindingController@findingDetails')->name('finding.show-details');
+		Route::get('modals/finding-details/{finding}/{document_id?}', 'FindingController@findingDetails')->name('finding.show-details');
 
 		Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
 		Route::post('/documents/audit/{audit}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
 		Route::post('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('documents.local-search');
+
+		Route::get('document/findings-update/{document_id}', 'DocumentController@getDocumentFindingsColumn')->name('document.findings-column');
 
 		//notes
 		Route::get('/projects/{project_id}/notes', 'NoteController@showTabFromProjectId')->name('project.notes');

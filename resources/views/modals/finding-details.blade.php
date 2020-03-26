@@ -244,7 +244,9 @@ $f = $finding;
 
 </div>
 <script type="text/javascript">
+
 	var findingDocumentIds = "{{ $documents->pluck('id')->toJson() }}";
+	window.from_document_findings_modal =  "{{ $f->id }}";
 	@stack('flatPickers')
 	function resolveFinding(findingid, dateResolved, documentId){
 		var resolveFindingId = findingid;
@@ -253,20 +255,21 @@ $f = $finding;
 			'date' : dateResolved
 		}, function(data) {
 			if(data != 0){
-				console.log('Resolution saved for finding '+resolveFindingId);
+				// console.log('Resolution saved for finding '+resolveFindingId);
 				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-1" onclick="resolveFinding(\''+resolveFindingId+'\');"><i class="a-circle-cross"></i>&nbsp; DATE</button>');
 				$('#resolved-date-finding-'+resolveFindingId).val(data);
 				//<button class="uk-button uk-link uk-margin-small-left uk-width-1-2" onclick="resolveFinding(\''+resolveFindingId+'\',\'null\')"><span class="a-circle-cross">&nbsp;</span>CLEAR</button>
 			}else{
-				console.log('Resolution cleared for finding '+resolveFindingId);
+				// console.log('Resolution cleared for finding '+resolveFindingId);
 				$('#inspec-tools-finding-resolve-'+resolveFindingId).html('<button class="uk-button uk-link uk-margin-small-left uk-width-1-1"> RESOLVED AT:</button>');
 				$('#resolved-date-finding-'+resolveFindingId).val('');
 			}
-			$('#resolved-text-'+resolveFindingId).html('<p>Don\'t Forget! You will need to refresh the document\'s tab for these changes to appear on the document.</p>');
+			// $('#resolved-text-'+resolveFindingId).html('<p>Don\'t Forget! You will need to refresh the document\'s tab for these changes to appear on the document.</p>');
 			//refresh the findings of this doc
 			refreshFindingOfDocument();
 		});
 	}
+
 	function cancelFinding(findingid){
 		UIkit.modal.confirm('<div class="uk-grid"><div class="uk-width-1-1"><h2>Cancel Finding #'+findingid+'</h2></div><div class="uk-width-1-1"><hr class="dashed-hr uk-margin-bottom"><h3>Are you sure you want to cancel this finding? All its comments/photos/documents/followups will remain and the cancelled finding will be displayed at the bottom of the list.</h3><h3>NOTE: Cancelled findings will not be displayed on a report. If you have cancelled a finding that was being displayed on a report, you will need to refresh that reports content for the change to be reflected.</h3></div>', {stack:2}).then(function() {
 			$.post('/findings/'+findingid+'/cancel', {
@@ -288,12 +291,19 @@ $f = $finding;
 	}
 
 	function refreshFindingOfDocument() {
-		var allDocuments = JSON.parse(window.documentIds);
-		var thisDocuments = JSON.parse(findingDocumentIds);
-		var commonDocuments = _.intersection(allDocuments, thisDocuments);
 		//for these common documents, refresh
 		//document-findings-attention=id
 		//document-findings-id
+		var allDocuments = JSON.parse(window.documentIds);
+		var thisDocuments = JSON.parse(findingDocumentIds);
+		var commonDocuments = _.intersection(allDocuments, thisDocuments);
+		commonDocuments.forEach(function(item){
+			if("{{ $document_id }}" == item)
+				updateContent('document-findings-content-'+item, 'document/findings-update/'+item, "{{ $document_id }}");
+			else
+				updateContent('document-findings-content-'+item, 'document/findings-update/'+item);
+		});
+		// $('#document-'+"{{ $document_id }}"+'-findings').slideToggle();
 
 	}
 
