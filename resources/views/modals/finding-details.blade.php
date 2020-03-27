@@ -297,11 +297,12 @@ $f = $finding;
 		var allDocuments = JSON.parse(window.documentIds);
 		var thisDocuments = JSON.parse(findingDocumentIds);
 		var commonDocuments = _.intersection(allDocuments, thisDocuments);
+		//document-findings-content-
 		commonDocuments.forEach(function(item){
 			if("{{ $document_id }}" == item)
-				updateContent('document-findings-content-'+item, 'document/findings-update/'+item, "{{ $document_id }}");
+				updateContent('document-row-'+item, 'document/findings-update/'+item, "{{ $document_id }}");
 			else
-				updateContent('document-findings-content-'+item, 'document/findings-update/'+item);
+				updateContent('document-row-'+item, 'document/findings-update/'+item);
 		});
 		// $('#document-'+"{{ $document_id }}"+'-findings').slideToggle();
 

@@ -36,7 +36,7 @@ class Finding extends Model
 	{
 		return $communications = Document::whereJsonContains('finding_ids', "$this->id")
 			->get();
-		return $this->hasManyJson('App\Models\Document', 'finding_ids');
+		// return $this->hasManyJson('App\Models\Document', 'finding_ids');
 	}
 
 	public function documents(): HasMany

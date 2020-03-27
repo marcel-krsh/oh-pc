@@ -32,9 +32,10 @@ class CommunicationController extends Controller
 {
 	use DocumentTrait;
 
-	public function __construct(){
-        $this->allitapc();
-    }
+	public function __construct()
+	{
+		$this->allitapc();
+	}
 
 	/**
 	 * Show the communication list for a specific project.
@@ -441,7 +442,7 @@ class CommunicationController extends Controller
 
 			if (null !== $report_id && Auth::user()->cannot('access_auditor') && $report_id != 0) {
 				$report = CrrReport::with('lead')->find($report_id);
-				
+
 				// if ('CAR' == $report->template()->template_name) {
 				$lead_id = $report->lead->id;
 				$recipients = User::where('users.id', $lead_id)
@@ -457,7 +458,7 @@ class CommunicationController extends Controller
 					$single_recipient = true;
 				}
 				// }
-			} else if(null !== $report_id && Auth::user()->cannot('access_auditor') && $report_id == 0) {
+			} else if (null !== $report_id && Auth::user()->cannot('access_auditor') && $report_id == 0) {
 				$lead_id = $audit->lead_user_id;
 				$recipients = User::where('users.id', $lead_id)
 					->leftJoin('people', 'people.id', 'users.person_id')
@@ -1360,6 +1361,7 @@ class CommunicationController extends Controller
 
 			//List view
 			// return session()->all();
+
 			if (!session()->has('communication_list')) {
 				session(['communication_list' => 1]);
 			}
@@ -1379,6 +1381,8 @@ class CommunicationController extends Controller
 							$query->where('user_id', '=', $current_user->id);
 						})
 						->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
+
+					// return $messages->get();
 				}
 			} else {
 				if (session('communication_sent') == 1) {
@@ -1421,7 +1425,6 @@ class CommunicationController extends Controller
 				$messages = $messages->merge($project_messages)->where('project_id', $project->id);
 			}
 		}
-
 		$owners_array = [];
 		$projects_array = [];
 
@@ -1434,6 +1437,26 @@ class CommunicationController extends Controller
 			$message_recipients = [];
 		}
 
+		if ($project) {
+			if (session()->has('filter-recipient-project')) {
+				$recipient_array = explode('-', session()->get('filter-recipient-project'));
+				$recipient_id = $recipient_array[1];
+				$messages = Communication::whereIn('id', $messages->pluck('id'))->whereNull('parent_id')
+					->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')->whereHas('message_recipients', function ($query) use ($recipient_id) {
+					$query->where('user_id', '=', $recipient_id);
+				})->get();
+			}
+		}
+
+		$messages_count = count($messages);
+		if (!empty($messages)) {
+			$messages = Communication::whereIn('id', $messages->pluck('id'))->whereNull('parent_id')
+				->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')->paginate(20);
+		} else {
+			$messages = Communication::whereIn('id', [])->whereNull('parent_id')
+				->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')->paginate(20);
+		}
+
 		//$owners_array = collect($owners_array)->sortBy('name')->toArray();
 		if ($page > 0) {
 			return response()->json($data);
@@ -1441,10 +1464,10 @@ class CommunicationController extends Controller
 			if ($project) {
 				// get the project
 				$project = Project::where('id', '=', $project->id)->first();
-
-				return view('projects.partials.communications', compact('data', 'messages', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit', 'projects_array', 'message_recipients'));
+				// return $message_recipients;
+				return view('projects.partials.communications', compact('data', 'messages', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit', 'projects_array', 'message_recipients', 'messages_count'));
 			} else {
-				return view('dashboard.communications', compact('data', 'messages', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array', 'message_recipients'));
+				return view('dashboard.communications', compact('data', 'messages', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array', 'message_recipients', 'messages_count'));
 			}
 		}
 	}
@@ -1670,8 +1693,8 @@ class CommunicationController extends Controller
 			$status = 3;
 			$data = ['subject' => 'Report has been declined for ' . $project->project_number . ' : ' . $project->project_name,
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
-			
-			if($recipients == null ){
+
+			if ($recipients == null) {
 				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>";
 			} else {
 				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
@@ -1702,7 +1725,7 @@ class CommunicationController extends Controller
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
 			$single_recipient = 1;
 
-			if($recipients == null){
+			if ($recipients == null) {
 				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>";
 			} else {
 				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
@@ -1733,7 +1756,7 @@ class CommunicationController extends Controller
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your report.'];
 			$single_recipient = 1;
 
-			if($recipients == null){
+			if ($recipients == null) {
 				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>";
 			} else {
 				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));
@@ -1764,7 +1787,7 @@ class CommunicationController extends Controller
 				'message' => 'Please go to the reports tab and click on report # ' . $report->id . ' to view your resolved report.'];
 			$single_recipient = 1;
 
-			if(count($recipients) < 1){
+			if (count($recipients) < 1) {
 				return "<h1>The current lead auditor for this audit is not an active user.</h1><h3>Please switch the lead auditor to an active user on the Audits tab by clicking on the lead's initials and selecting a different auditor. </h3> <p>PLEASE NOTE: This action can only be done by a manager or above.</p>";
 			} else {
 				return view('modals.report-send-notification', compact('audit', 'project', 'recipients', 'report_id', 'report', 'data', 'single_recipient', 'status'));

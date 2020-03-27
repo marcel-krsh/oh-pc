@@ -498,7 +498,7 @@ class DocumentController extends Controller
 
 		$resolved_findings = count(collect($document_findings)->where('auditor_approved_resolution', 1));
 		$unresolved_findings = count($document_findings) - $resolved_findings;
-		return view('projects.partials.local-documents-findings', compact('document', 'all_ids', 'document_findings', 'unresolved_findings', 'resolved_findings', 'site_findings', 'building_findings', 'unit_findings'));
+		return view('projects.partials.local-documents-row', compact('document', 'all_ids', 'document_findings', 'unresolved_findings', 'resolved_findings', 'site_findings', 'building_findings', 'unit_findings', 'buildings', 'units'));
 	}
 
 	public function getPMProjectDocuments(Project $project, Request $request)
@@ -972,6 +972,47 @@ class DocumentController extends Controller
 				'document_approver_id' => Auth::user()->id,
 			]);
 		}
+		return 1;
+	}
+
+	public function showApproveAndResolveLocalDocument($document_id)
+	{
+		$document = Document::where('id', $document_id)->first();
+		$document_findings = $document->all_findings();
+		$all_docs = [];
+		foreach ($document_findings as $key => $finding) {
+			//if not resolved, take those doc ids
+			if ($finding->auditor_approved_resolution != 1) {
+				$finding_docs = $finding->all_documents()->pluck('id')->toArray();
+				$all_docs = array_merge($all_docs, $finding_docs);
+			}
+		}
+		$documents = Document::whereIn('id', $all_docs)->get();
+		return view('modals.approve-document-findings', compact('document_id', 'documents'));
+	}
+
+	public function approveAndResolveLocalDocument($project = null, Request $request)
+	{
+		if (!$request->get('id') && !$request->get('catid')) {
+			return 'Something went wrong';
+		}
+		$catid = $request->get('catid');
+		$document = Document::where('id', $request->get('id'))->with('findings')->first();
+		// if already "notapproved", remove from notapproved
+		if (is_null($document->approved)) {
+			$document->update([
+				'approved' => 1,
+				'document_approver_id' => Auth::user()->id,
+			]);
+		}
+
+		//resolve all findings
+		$fc = new FindingController;
+		foreach ($document->findings as $key => $finding) {
+			$fc->resolveFinding($request, $finding->id);
+		}
+		// return $request->all();
+
 		return 1;
 	}
 
