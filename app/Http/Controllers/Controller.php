@@ -35,6 +35,7 @@ class Controller extends BaseController
 			//dd('My life as a user',$this->user);
 			if ($this->user != null) {
 				$this->user = $this->user->load('roles');
+				$this->user->full_name = $this->user->full_name();
 				View::share('current_user', $this->user);
 				$this->auditor_access = $this->access($this->user, 'auditor');
 				// $this->auditor_access = $this->user->auditor_access();

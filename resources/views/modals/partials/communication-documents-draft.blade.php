@@ -18,8 +18,8 @@
 					@if(get_class($document) == 'App\Models\SyncDocuware')
 					<input style="float: left; margin-top: 3px" name="docuware_documents[]" id="list-document-id-docuware-{{ $document->id }}" value="docuware-{{ $document->id }}" type="checkbox"  class="uk-checkbox" onClick="addDocuwareDocument(this.value,'{{ $document->document_class }} {{ $document->document_description }}')">
 					<label style="display: block; margin-left: 20px" for="docuware-document-id-{{ $document->id }}">
-						{{ucwords(strtolower($document->document_class))}} :
-						{{ucwords(strtolower($document->document_description))}}
+						{{ ucwords(strtolower($document->document_class)) }} :
+						{{ ucwords(strtolower($document->document_description)) }}
 						<span uk-tooltip title=" Created at: {{ date('m/d/Y', strtotime($document->created_at)) }} {{ $document->created_at->format('h:i a') }} <br>Extension: {{ $document->dw_extension }}">
 							<span class="a-info-circle"  style="color: #56b285;"></span>
 						</span>
@@ -33,96 +33,88 @@
 						</span>
 					</label>
 					@endif
-						{{-- <br />
-						<ul class="document-category-menu">
-							@foreach ($document->categoriesarray as $documentcategory_id => $documentcategory_name)
-							<li>
-								{{ $documentcategory_name }}
-							</li>
-							@endforeach
-						</ul> --}}
+				</li>
+				@endforeach
+			</ul>
+		</div>
+		<div class="uk-form-row">
+			<input type="text" style="width: 100%" id="document-filter" class="uk-input uk-width-1-1" placeholder="Filter Documents" >
+		</div>
+	</div>
+	@endif
+
+	@if($auditor_access)
+	<div class="uk-width-1-2@m uk-width-1-1@s">
+		@else
+		<div class="uk-width-1-1">
+			@endIf
+			<h4 class="uk-text-primary uk-text-uppercase">Upload new documents</h4>
+			<div class="communication-selector uk-scrollable-box" >
+				<ul class="uk-list document-category-menu">
+					<li class="recipient-list-item  ohfa limited partnership"><strong>Select Category</strong></li>
+					<hr class="recipient-list-item dashed-hr uk-margin-bottom">
+					@foreach ($document_categories as $category)
+					<li>
+						<input style="float: left; margin-top: 3px" name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio"  class="uk-radio">
+						<label style="display: block; margin-left: 20px; font-size: 13px" for="category-id-{{ $category->id }}">
+							{{ $category->parent->document_category_name }} : {{ $category->document_category_name }}
+						</label>
 					</li>
 					@endforeach
 				</ul>
 			</div>
 			<div class="uk-form-row">
-				<input type="text" style="width: 100%" id="document-filter" class="uk-input uk-width-1-1" placeholder="Filter Documents" >
+				<input class="uk-input uk-width-1-1" id="local-comment" type="text" name="local-comment" placeholder="Enter a brief note about this document" style="width:100%">
 			</div>
-		</div>
-		@endIf
-
-		@if($auditor_access)
-		<div class="uk-width-1-2@m uk-width-1-1@s">
-			@else
-			<div class="uk-width-1-1">
-				@endIf
-				<h4 class="uk-text-primary uk-text-uppercase">Upload new documents</h4>
-				<div class="communication-selector uk-scrollable-box" >
-					<ul class="uk-list document-category-menu">
-						<li class="recipient-list-item  ohfa limited partnership"><strong>Select Category</strong></li>
-						<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-						@foreach ($document_categories as $category)
-						<li>
-							<input style="float: left; margin-top: 3px" name="category-id-checkbox" id="category-id-{{ $category->id }}" value="{{ $category->id }}" type="radio"  class="uk-radio">
-							<label style="display: block; margin-left: 20px; font-size: 13px" for="category-id-{{ $category->id }}">
-								{{ $category->parent->document_category_name }} : {{ $category->document_category_name }}
-							</label>
-						</li>
-						@endforeach
-					</ul>
-				</div>
-				<div class="uk-form-row">
-					<input class="uk-input uk-width-1-1" id="local-comment" type="text" name="local-comment" placeholder="Enter a brief note about this document" style="width:100%">
-				</div>
-				<div class="uk-form-row" id="list-item-upload-box">
-					<div class="js-upload uk-placeholder uk-text-center">
-						<span class="a-higher"></span>
-						<span class="uk-text-middle"> Please upload your document by dropping it here or</span>
-						<div uk-form-custom>
-							<input type="file" multiple>
-							<span class="uk-link uk-text-primary">by browsing and selecting it here.</span>
-						</div>
+			<div class="uk-form-row" id="list-item-upload-box">
+				<div class="js-upload uk-placeholder uk-text-center">
+					<span class="a-higher"></span>
+					<span class="uk-text-middle"> Please upload your document by dropping it here or</span>
+					<div uk-form-custom>
+						<input type="file" multiple>
+						<span class="uk-link uk-text-primary">by browsing and selecting it here.</span>
 					</div>
-					<progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-					<script>
-						$(function(){
-							var bar = document.getElementById('js-progressbar');
-							settings    = {
-								url: '{{ URL::route("documents.local-upload-draft", $project->id) }}',
-								multiple: true,
-								allow : '*.(jpg|jpeg|gif|png|pdf|doc|docx|xls|xlsx)',
-								beforeSend: function () {
-								},
-								beforeAll: function (settings) {
-									var categoryArray = [];
-									$("input:radio[name=category-id-checkbox]:checked").each(function(){
-										categoryArray.push($(this).val());
-									});
-									var findingsArray = [];
-									$("input[name='findings[]']:checked").each(function (){
-						    		findingsArray.push(parseInt($(this).val()));
-						    	});
-									settings.params.categories = categoryArray;
-									settings.params.ohfa_file = 1;
-									settings.params.draft_id = "{{ $draft->id }}";
-									settings.params.audit_id = "{{ $audit_id }}";
-									settings.params.comment = $("input[name=local-comment]").val();
-									settings.params._token = '{{ csrf_token() }}';
-									settings.params.findings = findingsArray;
-									if(categoryArray.length > 0){
-										console.log('Categories selected: '+categoryArray);
-									} else{
-										UIkit.modal.alert('You must select at least one category.');
-										return false;
-									}
-								},
-								load: function () {
-								},
-								error: function () {
-								},
-								complete: function (response) {
-									var data = jQuery.parseJSON(response.response);
-									var documentids = data['document_ids'];
+				</div>
+				<progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
+				<script>
+					$(function(){
+						var bar = document.getElementById('js-progressbar');
+						settings    = {
+							url: '{{ URL::route("documents.local-upload-draft", $project->id) }}',
+							multiple: true,
+							allow : '*.(jpg|jpeg|gif|png|pdf|doc|docx|xls|xlsx)',
+							beforeSend: function () {
+							},
+							beforeAll: function (settings) {
+								var categoryArray = [];
+								$("input:radio[name=category-id-checkbox]:checked").each(function(){
+									categoryArray.push($(this).val());
+								});
+								var findingsArray = [];
+								$("input[name='findings[]']:checked").each(function (){
+									findingsArray.push(parseInt($(this).val()));
+								});
+								settings.params.categories = categoryArray;
+								settings.params.ohfa_file = 1;
+								settings.params.draft_id = "{{ $draft->id }}";
+								settings.params.audit_id = "{{ $audit_id }}";
+								settings.params.comment = $("input[name=local-comment]").val();
+								settings.params._token = '{{ csrf_token() }}';
+								settings.params.findings = findingsArray;
+								if(categoryArray.length > 0){
+									console.log('Categories selected: '+categoryArray);
+								} else{
+									UIkit.modal.alert('You must select at least one category.');
+									return false;
+								}
+							},
+							load: function () {
+							},
+							error: function () {
+							},
+							complete: function (response) {
+								var data = jQuery.parseJSON(response.response);
+								var documentids = data['document_ids'];
 									// debugger;
 									setTimeout(function () {
 										bar.setAttribute('hidden', 'hidden');
@@ -167,21 +159,21 @@
 			            		addLocalDocument(newid, docnameActual);
 			            	}
 			            });
-								},
-								loadStart: function (e) {
-									bar.removeAttribute('hidden');
-									bar.max = e.total;
-									bar.value = e.loaded;
-								},
-								progress: function (e) {
-									bar.max = e.total;
-									bar.value = e.loaded;
-								},
-								loadEnd: function (e) {
-									bar.max = e.total;
-									bar.value = e.loaded;
-								},
-								completeAll: function (response) {
+			          },
+			          loadStart: function (e) {
+			          	bar.removeAttribute('hidden');
+			          	bar.max = e.total;
+			          	bar.value = e.loaded;
+			          },
+			          progress: function (e) {
+			          	bar.max = e.total;
+			          	bar.value = e.loaded;
+			          },
+			          loadEnd: function (e) {
+			          	bar.max = e.total;
+			          	bar.value = e.loaded;
+			          },
+			          completeAll: function (response) {
 
 			          }
 			        };

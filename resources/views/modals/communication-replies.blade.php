@@ -220,8 +220,6 @@
 	    function submitNewCommunication() {
 	    	var form = $('#newOutboundEmailFormReplies');
 	    	var no_alert = 1;
-
-
 	    	$.post('{{ URL::route("communication.create") }}', {
 	    		'inputs' : form.serialize(),
 	    		'_token' : '{{ csrf_token() }}'
@@ -236,18 +234,19 @@
 								timeout: 5000
 							});
     				// UIkit.modal.alert('Your message has been saved.',{stack: true});
-    				@if(!$project || Auth::user()->cannot('access_auditor'))
-    				$('#detail-tab-2').trigger('click');
+    				@if(!$project || $auditor_access)
+    				// $('#detail-tab-2').trigger('click');
     				@endIf
     			}
-    		} );
+    		});
 	    	// debugger;
-	    	@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
+	    	@if($project && $auditor_access && $location == 'projects')
 	    		var id = {{ $project->id }};
 	    		// debugger;
 	    		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);
 	        //loadParcelSubTab('communications',id);
 	        @else
+	            				$('#detail-tab-2').trigger('click');
         //loadDashBoardSubTab('dashboard','communications');
         @endif
         dynamicModalClose();
@@ -256,10 +255,11 @@
 
     	// debugger;
 		// refresh communications tabs
-		@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
-		$('#project-detail-tab-2').trigger('click');
+		@if($project && $auditor_access && $location == 'projects')
+			updateCommunicationRow("{{ $message->id }}");
+			// $('#project-detail-tab-2').trigger('click');
 		@else
-		$('#detail-tab-2').trigger('click');
+			$('#detail-tab-2').trigger('click');
 		@endif
 
 		function communicationDocuments(projectId) {

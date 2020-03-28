@@ -1,4 +1,4 @@
-<div id="communications_tab">
+<div id="project_communications_tab">
 	<div uk-grid class="uk-margin-top" id="message-filters" data-uk-button-radio="">
 
 		<a id="filter-none" class="filter_link" data-filter="all" hidden>all</a>
@@ -60,7 +60,7 @@
 	<div class="uk-width-1-1 uk-margin-top uk-margin-left" id="communications-tab-pages-and-filters" >
 		{{ $messages->links() }}
 	</div>
-	<div id="communications-table">
+	<div id="project_communications-table">
 		@if(count($messages))
 		<div uk-grid class="uk-margin-top uk-visible@m">
 			<div class="uk-width-1-1">
@@ -85,124 +85,36 @@
 		<div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list-project" style="width: 98%">
 			@if(count($messages))
 			@foreach ($messages as $message)
-			<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endIf filter_element_project uk-width-1-1 communication-list-item @if($message->message_recipients) @foreach($message->message_recipients as $mr) staff-{{ $mr->id }} @endforeach @endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endIf" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }}@else{{ $message->id }}@endif/projects'); ">
-
-				<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
-					@if($message->owner->id == $current_user->id)
-					<div class="uk-width-1-5@m uk-width-1-2@s communication-item-tt-to-from uk-margin-small-bottom" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }}@else{{ $message->id }}@endif/projects')">
-						<div class="communication-item-date-time">
-							<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small><br>
-							<span>
-								FROM: Me<hr class="dashed-hr uk-margin-bottom uk-width-1-1">
-								@if(count($message->message_recipients))TO:
-								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id);?>
-								@if(count($recipients)>0)
-								@foreach($recipients as $recipient)
-								@if($recipient->pivot->seen != 1)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf {{ $recipient->full_name() }}@if($recipient->pivot->seen != 1)</strong>@endif{{ !$loop->last ? ', ': '' }}
-								@endforeach
-								@else
-								Me
-								@endIf
-								@endIf
-							</span>
-						</div>
-						@if($message->unseen > 0)
-						<div class="uk-label no-text-shadow user-badge-{{ Auth::user()->badge_color }}" uk-tooltip="pos:top-left;title:{{ $message->unseen }} unread messages">{{ $message->unseen }}</div>
-						@endif
-					</div>
-					@else
-					<div class="uk-width-1-5@m uk-width-3-6@s communication-item-tt-to-from uk-margin-small-bottom"  >
-						<div class="communication-item-date-time">
-							<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small>
-						</div>
-						FROM: {{ $message->owner->full_name() }}<hr class="dashed-hr uk-margin-bottom uk-width-1-1"> @if(count($message->message_recipients))TO:
-						@foreach ($message->message_recipients->where('id', '<>', $message->owner_id) as $recipient)
-						@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != '')
-						{{-- {{ dd($recipient) }} --}}
-						@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endIf
-							{{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}
-							@if($recipient->pivot->seen == null)</strong>@endIf
-							@elseif($recipient->id == $current_user->id)
-							Me{{ !$loop->last ? ', ': '' }}
-							@endIf
-							@endforeach
-							@endif
-							@if($message->unseen > 0)
-							<div class="uk-label no-text-shadow user-badge-{{ Auth::user()->badge_color }}" uk-tooltip="pos:top-left;title:{{ $message->unseen }} unread messages">{{ $message->unseen }}</div>
-							@endif
-						</div>
-						@endif
-						<div class="uk-width-1-5@s communication-type-and-who uk-hidden@m uk-text-right " >
-							<div class="uk-margin-right">
-								@if($message->audit_id && $message->audit && $message->audit->cached_audit)
-								<p style="margin-bottom:0">{{ $message->audit_id }} | {{ $message->project->project_number }} : {{ $message->project->project_name }}</p>
-								<p class="uk-visible@m" style="margin-top:0" >
-									<small>{{ $message->audit->cached_audit->address }},
-										{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->zip }}
-									</small>
-								</p>
-								@endif
-							</div>
-						</div>
-						<div class="uk-width-1-5@m communication-item-parcel uk-visible@m">
-							@if($message->audit_id && $message->audit && $message->audit->cached_audit)
-							<p style="margin-bottom:0"><a class="uk-link-muted">{{ $message->audit_id }} | {{ $message->project->project_number }} : {{ $message->project->project_name }}</a></p>
-							<p class="uk-visible@m" style="margin-top:0" uk-tooltip="pos:left" title="{{ $message->audit->cached_audit->title }}">
-								<small>{{ $message->audit->cached_audit->address }},
-									{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->cached_audit->zip }}
-								</small>
-							</p>
-							@endif
-						</div>
-						<div class="uk-width-3-5@m uk-width-1-1@s communication-item-excerpt " onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }}@else{{ $message->id }}@endif/projects')" >
-							@if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0)
-							<div uk-grid class="uk-grid-collapse">
-								<div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" >
-									@if($message->subject)<strong>{{ $message->subject }}</strong><hr /> @endif
-									{{ $message->message }}
-								</div>
-								<div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt uk-align-center" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }}@else{{ $message->id }}@endif/projects')" >
-									<div class="communication-item-attachment uk-margin-large-left">
-										<span uk-tooltip="pos:top-left;title:@foreach($message->local_documents as $document) {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} <br> @endforeach @foreach($message->docuware_documents as $document) {{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }} @endforeach">
-											<i class="a-paperclip-2"></i>
-										</span>
-									</div>
-								</div>
-							</div>
-							@else
-							@if($message->subject)<strong>{{ $message->subject }}</strong><br />@endif
-							{{ $message->message }}
-							@endif
-						</div>
-					</div>
-				</div>
-				@endforeach
-				@endif
+			<div id="communication-row-{{ $message->id }}" style="width: 100%">
+				@include('projects.partials.communication-row')
 			</div>
+			@endforeach
+			@endif
 		</div>
+	</div>
 
-		<div class="uk-width-1-1 uk-margin-top uk-margin-left" id="communications-tab-pages-and-filters" >
+		<div class="uk-width-1-1 uk-margin-top uk-margin-left" id="communications-tab-pages-and-filters-2" >
 			{{ $messages->links() }}
 		</div>
 		<div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
 			<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
 		</div>
-
+</div>
 		<script>
 			window.project_detail_tab_2 = 1;
 
 			$(document).ready(function(){
 				var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 				$('#communications-tab-pages-and-filters .page-link').click(function(){
-					$('#communications-table').html(tempdiv);
-					$('#communications_tab').load($(this).attr('href'));
-					window.currentDocumentsPage = $(this).attr('href');
+					$('#project_communications-table').html(tempdiv);
+					$('#project_communications_tab').load($(this).attr('href'));
+					// window.currentDocumentsPage = $(this).attr('href');
 					return false;
 				});
 
 				$('#communications-tab-pages-and-filters-2 .page-link').click(function(){
-					$('#local-documents').html(tempdiv);
-					$('#allita-documents').load($(this).attr('href'));
+					$('#project_communications-table').html(tempdiv);
+					$('#project_communications_tab').load($(this).attr('href'));
 					return false;
 				});
 			});
@@ -215,7 +127,7 @@
 				});
 				var textinput = $("#filter-by-owner-project").val();
 
-				@if(Auth::user()->isFromEntity(1))
+				@if($current_user->isFromEntity(1))
 				// $('#filter-by-program').prop('selectedIndex',0);
 				@endif
 				// filterElement(textinput, '.filter_element_project');
@@ -281,65 +193,80 @@
 			}
 
 
-	 // process search
-	 $(document).ready(function() {
-	 	$('.filter-attachments-button').click(function () {
-	 		if( $(this).hasClass('uk-button-success') ){
-	 			$(this).removeClass('uk-button-success');
-	 			$('#filter-none').trigger('click');
-	 		}else{
-	 			$(this).addClass('uk-button-success');
-	 			$('#filter-attachments').trigger('click');
-	 		}
-	 	});
+		 // process search
+		 $(document).ready(function() {
+		 	$('.filter-attachments-button').click(function () {
+		 		if( $(this).hasClass('uk-button-success') ){
+		 			$(this).removeClass('uk-button-success');
+		 			$('#filter-none').trigger('click');
+		 		}else{
+		 			$(this).addClass('uk-button-success');
+		 			$('#filter-attachments').trigger('click');
+		 		}
+		 	});
 
-	 	filterByOwnerProject(0);
-	 	$('#communications-project-search').keydown(function (e) {
-	 		if (e.keyCode == 13) {
-	 			searchMessages();
-	 			e.preventDefault();
-	 			return false;
-	 		}
-	 	});
+		 	filterByOwnerProject(0);
+		 	$('#communications-project-search').keydown(function (e) {
+		 		if (e.keyCode == 13) {
+		 			searchMessages();
+		 			e.preventDefault();
+		 			return false;
+		 		}
+		 	});
 
 
-	 	var $filteredElements = $('.filter_element_project');
-	 	$('.filter_link').click(function (e) {
-	 		e.preventDefault();
-            // get the category from the attribute
-            var filterVal = $(this).data('filter');
-            filterElement(filterVal, '.filter_element_project');
+		 	var $filteredElements = $('.filter_element_project');
+		 	$('.filter_link').click(function (e) {
+		 		e.preventDefault();
+	        // get the category from the attribute
+	        var filterVal = $(this).data('filter');
+	        filterElement(filterVal, '.filter_element_project');
 
-            // reset dropdowns
-            $('#filter-by-owner-project').prop('selectedIndex',0);
-            @if(Auth::user()->isFromEntity(1))
-            $('#filter-by-program').prop('selectedIndex',0);
-            @endif
-          });
+	        // reset dropdowns
+	        $('#filter-by-owner-project').prop('selectedIndex',0);
+	        @if($current_user->isFromEntity(1))
+	        $('#filter-by-program').prop('selectedIndex',0);
+	        @endif
+	      });
 
-	 });
-	</script>
+		 });
+		</script>
 
-	<script>
-		function dynamicModalLoadLocal(modalSource) {
-			var newmodalcontent = $('#dynamic-modal-content-communications');
-			$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
-			$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
-				if (status == "error") {
-					if(xhr.status == "401") {
-						var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
-					} else if( xhr.status == "500"){
-						var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
-					} else {
-						var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+		<script>
+			function dynamicModalLoadLocal(modalSource) {
+				var newmodalcontent = $('#dynamic-modal-content-communications');
+				$(newmodalcontent).html('<div style="height:500px;text-align:center;"><div uk-spinner style="margin: 10% 0;"></div></div>');
+				$(newmodalcontent).load('/modals/'+modalSource, function(response, status, xhr) {
+					if (status == "error") {
+						if(xhr.status == "401") {
+							var msg = "<h2>SERVER ERROR 401 :(</h2><p>Looks like your login session has expired. Please refresh your browser window to login again.</p>";
+						} else if( xhr.status == "500"){
+							var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+						} else {
+							var msg = "<h2>"+xhr.status + " " + xhr.statusText +"</h2><p>Sorry, but there was an error and it isn't one I was expecting. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.";
+						}
+						UIkit.modal.alert(msg);
 					}
-					UIkit.modal.alert(msg);
-				}
-			});
-			var modal = UIkit.modal('#dynamic-modal-communications', {
-				escClose: false,
-				bgClose: false
-			});
-			modal.show();
-		}
-	</script>
+				});
+				var modal = UIkit.modal('#dynamic-modal-communications', {
+					escClose: false,
+					bgClose: false
+				});
+				modal.show();
+			}
+
+			function updateCommunicationRow(communicationId){
+				var newContent = $('#communication-row-'+communicationId);
+				var tempdiv = '<div style="height:200px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+				$(newContent).html(tempdiv);
+				$(newContent).load("{{ url('communications/single-communication') }}/"+communicationId, function(response) {
+					if (response == "error") {
+						var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+						UIkit.modal(msg, {center: true, bgclose: false, keyboard:false,  stack:true}).show();
+					} else {
+						// debugger;
+						$(newContent).html(response);
+					}
+				});
+			}
+		</script>
