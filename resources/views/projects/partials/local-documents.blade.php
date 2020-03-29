@@ -208,10 +208,29 @@
 			</div>
 			<hr class="uk-width-1-1 uk-margin-top">
 			<div class="uk-width-1-1 uk-margin-top" id="documents-tab-pages-and-filters" >
-				{{ $documents->links() }} <div class="uk-badge uk-align-right uk-label uk-margin-top uk-margin-right" style="line-height: 19px">{{ $documents->total() }}  DOCUMENTS </div>
+				<div uk-grid class="uk-margin-top" data-uk-button-radio="">
+					<div class=" uk-width-1-1@s uk-width-3-5@m" id="recipient-dropdown" style="vertical-align: top;">
+						{{ $documents->links() }}
+					</div>
+					<div class=" uk-width-1-1@s uk-width-1-5@m" id="recipient-dropdown" style="vertical-align: top;">
+						<select id="all-documents-option" class="uk-select filter-drops uk-width-1-1" onchange="markAllDocumentsAs();">
+							<option value="" selected="">
+								ALL DOCUMENT OPTIONS
+							</option>
+							<option  value="1"><a class="uk-dropdown-close">Mark as approved</a></option>
+							<option  value="2"><a class="uk-dropdown-close">Mark as approved and resolve findings</a></option>
+							<option  value="3"><a class="uk-dropdown-close">Mark as declined</a></option>
+							<option  value="4"><a class="uk-dropdown-close">Clear view status</a></option>
+						</select>
+					</div>
+					<div class="uk-width-1-1@s uk-width-1-5@m">
+						<div class="uk-badge uk-align-right uk-label uk-margin-top uk-margin-right" style="line-height: 19px">{{ $documents->total() }}  DOCUMENTS </div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 
 <div id="document-uploader" class="documents-upload-panel" style="display: none;" uk-grid>
@@ -299,7 +318,7 @@
 				return false;
 			}
 		});
-
+		window.filteredDocumentIds = "{{ json_encode($document_ids) }}";
 		window.documentIds = "{{ $documents->pluck('id')->toJson() }}";
 	});
 
@@ -340,165 +359,142 @@
 		} );
 	}
 
-    // process search
-    $(document).ready(function() {
-    	$('#users-search').keydown(function (e) {
-    		if (e.keyCode == 13) {
-    			searchUsers();
-    			e.preventDefault();
-    			return false;
-    		}
-    	});
-    });
+  // process search
+  $(document).ready(function() {
+  	$('#users-search').keydown(function (e) {
+  		if (e.keyCode == 13) {
+  			searchUsers();
+  			e.preventDefault();
+  			return false;
+  		}
+  	});
+  });
 
 
 
-    function markApproved(id,catid, resolveFindings = 0){
-    	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-    	if(resolveFindings == 0){
-    		UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
-    			$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
-    				'id' : id,
-    				'catid' : catid,
-    				'resolve' : resolveFindings,
-    				'_token' : '{{ csrf_token() }}'
-    			}, function(data) {
-    				if(data != 1 ) {
-    					console.log("processing");
-    					UIkit.modal.alert(data);
-    				} else {
-    					dynamicModalClose();
-    				}
-    				if(window.currentDocumentsPage) {
-    					$('#local-documents').html(tempdiv);
-    					$('#allita-documents').load(window.currentDocumentsPage);
-    				} else {
+  function markApproved(id,catid, resolveFindings = 0){
+  	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+  	if(resolveFindings == 0){
+  		UIkit.modal.confirm("Are you sure you want to approve this file?").then(function() {
+  			$.post('{{ URL::route("documents.local-approve", $project->id) }}', {
+  				'id' : id,
+  				'catid' : catid,
+  				'resolve' : resolveFindings,
+  				'_token' : '{{ csrf_token() }}'
+  			}, function(data) {
+  				if(data != 1 ) {
+  					console.log("processing");
+  					UIkit.modal.alert(data);
+  				} else {
+  					dynamicModalClose();
+  				}
+  				if(window.currentDocumentsPage) {
+  					$('#local-documents').html(tempdiv);
+  					$('#allita-documents').load(window.currentDocumentsPage);
+  				} else {
     					// documentsLocal('{{ $project->id }}');
     					updateContent('document-row-'+id, 'document/findings-update/'+id);
     				}
     			}
     			);
-    		});
-    	}else{
-    		markApprovedAndResolved(id,catid, resolveFindings);
-    		// UIkit.modal.confirm("<h1>Are You Sure?</h1><p>This will approve this file and resolve all unresolved findings attached to it with the date you select below.</p> <div uk-grid class=\"uk-text-small uk-grid\"><div class=\"uk-width-1-5 uk-first-column\"><span id=\"inspec-tools-finding-resolve-8552\"><span class=\"uk-button uk-margin-small-left uk-width-1-1\" uk-tooltip=\"pos:top-right;title:DATE\" >RESOLVED AT:</span></span></div><div class=\"uk-width-1-3\"><input id=\"document-"+id+"-resolved-date\" class=\"uk-input flatpickr-input active\" readonly=\"readonly\" type=\"text\" placeholder=\"DATE\" ></div><span id=\"resolved-text-8552\" class=\"uk-text-danger attention\" style=\"font-size: 15px\"></span></div>").then(function() {
-    		// 	$.post('{{ URL::route("documents.approve-findings-resolve", $project->id) }}', {
-    		// 		'id' : id,
-    		// 		'catid' : catid,
-    		// 		'resolve' : $("#document-"+id+"-resolved-date").val(),
-    		// 		'_token' : '{{ csrf_token() }}'
-    		// 	}, function(data) {
-    		// 		if(data != 1 ) {
-    		// 			console.log("processing");
-    		// 			UIkit.modal.alert(data);
-    		// 		} else {
-    		// 			dynamicModalClose();
-    		// 		}
-    		// 		if(window.currentDocumentsPage) {
-    		// 			$('#local-documents').html(tempdiv);
-    		// 			$('#allita-documents').load(window.currentDocumentsPage);
-    		// 		} else {
-	    	// 			updateContent('document-row-'+id, 'document/findings-update/'+id);
-    		// 			// documentsLocal('{{ $project->id }}');
-    		// 		}
-    		// 	}
-    		// 	);
-    		// });
-    	}
-    }
+  		});
+  	}else{
+  		markApprovedAndResolved(id,catid, resolveFindings);
+  	}
+  }
 
 
 
-    function markUnreviewed(id,catid){
-    	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-    	UIkit.modal.confirm("Are you sure you want to clear the review on this file?").then(function() {
-    		$.post('{{ URL::route("documents.local-clearReview", $project->id) }}', {
-    			'id' : id,
-    			'catid' : catid,
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data != 1){
-    				console.log("processing");
-    				UIkit.modal.alert(data);
-    			} else {
-    				dynamicModalClose();
-    			}
-    			if(window.currentDocumentsPage) {
-    				$('#local-documents').html(tempdiv);
-    				$('#allita-documents').load(window.currentDocumentsPage);
-    			} else {
-    				updateContent('document-row-'+id, 'document/findings-update/'+id);
-    				// documentsLocal('{{ $project->id }}');
-    			}
-    		}
-    		);
-    	});
-    }
+  function markUnreviewed(id,catid){
+  	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+  	UIkit.modal.confirm("Are you sure you want to clear the review on this file?").then(function() {
+  		$.post('{{ URL::route("documents.local-clearReview", $project->id) }}', {
+  			'id' : id,
+  			'catid' : catid,
+  			'_token' : '{{ csrf_token() }}'
+  		}, function(data) {
+  			if(data != 1){
+  				console.log("processing");
+  				UIkit.modal.alert(data);
+  			} else {
+  				dynamicModalClose();
+  			}
+  			if(window.currentDocumentsPage) {
+  				$('#local-documents').html(tempdiv);
+  				$('#allita-documents').load(window.currentDocumentsPage);
+  			} else {
+  				updateContent('document-row-'+id, 'document/findings-update/'+id);
+  				// documentsLocal('{{ $project->id }}');
+  			}
+  		}
+  		);
+  	});
+  }
 
-    function markNotApproved(id,catid){
-    	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-    	UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
-    		$.post('{{ URL::route("documents.local-notapprove", $project->id) }}', {
-    			'id' : id,
-    			'catid' : catid,
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data != 1){
-    				UIkit.modal.alert(data);
-    			} else {
-    				dynamicModalClose();
-    			}
-    			if(window.currentDocumentsPage) {
-    				$('#local-documents').html(tempdiv);
-    				$('#allita-documents').load(window.currentDocumentsPage);
-    			} else {
-    				updateContent('document-row-'+id, 'document/findings-update/'+id);
-    				// documentsLocal('{{ $project->id }}');
-    			}
-    		});
-    	});
-    }
+  function markNotApproved(id,catid){
+  	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+  	UIkit.modal.confirm("Are you sure you want to decline this file?").then(function() {
+  		$.post('{{ URL::route("documents.local-notapprove", $project->id) }}', {
+  			'id' : id,
+  			'catid' : catid,
+  			'_token' : '{{ csrf_token() }}'
+  		}, function(data) {
+  			if(data != 1){
+  				UIkit.modal.alert(data);
+  			} else {
+  				dynamicModalClose();
+  			}
+  			if(window.currentDocumentsPage) {
+  				$('#local-documents').html(tempdiv);
+  				$('#allita-documents').load(window.currentDocumentsPage);
+  			} else {
+  				updateContent('document-row-'+id, 'document/findings-update/'+id);
+  				// documentsLocal('{{ $project->id }}');
+  			}
+  		});
+  	});
+  }
 
-    function deleteFile(id){
-    	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-    	UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
-    		$.post('{{ URL::route("documents.local-deleteDocument", $project->id) }}', {
-    			'id' : id,
-    			'_token' : '{{ csrf_token() }}'
-    		}, function(data) {
-    			if(data!= 1){
-    				UIkit.modal.alert(data);
-    			} else {
-    			}
-    			if(window.currentDocumentsPage) {
-    				$('#local-documents').html(tempdiv);
-    				$('#allita-documents').load(window.currentDocumentsPage);
-    			} else {
-    				documentsLocal('{{ $project->id }}');
-    			}
-    		});
-    	});
-    }
+  function deleteFile(id){
+  	var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+  	UIkit.modal.confirm("Are you sure you want to delete this file? This is permanent.").then(function() {
+  		$.post('{{ URL::route("documents.local-deleteDocument", $project->id) }}', {
+  			'id' : id,
+  			'_token' : '{{ csrf_token() }}'
+  		}, function(data) {
+  			if(data!= 1){
+  				UIkit.modal.alert(data);
+  			} else {
+  			}
+  			if(window.currentDocumentsPage) {
+  				$('#local-documents').html(tempdiv);
+  				$('#allita-documents').load(window.currentDocumentsPage);
+  			} else {
+  				documentsLocal('{{ $project->id }}');
+  			}
+  		});
+  	});
+  }
 
-    function filterByAudit(){
-    	console.log('ada');
-    	$(".all").hide();
-    	var myGrid = UIkit.grid($('#local-documents'), {
-    		controls: '#local-documents-filters',
-    		animation: false
-    	});
-    	var textinput = $("#document-filter-by-audit :selected").val();
-    	$("."+textinput).show();
-    }
+  function filterByAudit(){
+  	console.log('ada');
+  	$(".all").hide();
+  	var myGrid = UIkit.grid($('#local-documents'), {
+  		controls: '#local-documents-filters',
+  		animation: false
+  	});
+  	var textinput = $("#document-filter-by-audit :selected").val();
+  	$("."+textinput).show();
+  }
 
-    function filterElement(filterVal, filter_element){
-    	if (filterVal === 'all') {
-    		$(filter_element).show();
-    	} else {
-    		$(filter_element).hide().filter('.' + filterVal).show();
-    	}
-    	UIkit.update(event = 'update');
-    }
+  function filterElement(filterVal, filter_element){
+  	if (filterVal === 'all') {
+  		$(filter_element).show();
+  	} else {
+  		$(filter_element).hide().filter('.' + filterVal).show();
+  	}
+  	UIkit.update(event = 'update');
+  }
 
 	// function filterByAudit() {
 	// 	filters = getSelectedFilters();
@@ -621,6 +617,38 @@
 		});
 	}
 	@endif
+
+	function markAllDocumentsAs()
+	{
+		var selectedOption = $("#all-documents-option option:selected" ).val();
+		var selectedText = $("#all-documents-option option:selected" ).text();
+		if(selectedOption == 2) {
+			dynamicModalLoad('project-document-finding-approval/{{ $project->id }}');
+			return;
+		} else if(selectedOption == "") {
+			return;
+		}
+		UIkit.modal.confirm("Are you sure you want all the documents to "+selectedText+"?").then(function() {
+			var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+		// $('#local-documents').html(tempdiv);
+		$('#allita-documents').html(tempdiv);
+		$.post('{{ URL::route("documents.update-status", $project->id) }}', {
+			'project_id' : "{{ $project->id }}",
+			'document_ids': window.filteredDocumentIds,
+			'option' : selectedOption,
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			if(data != 1 ) {
+				console.log("processing");
+				UIkit.modal.alert(data);
+			} else {
+				dynamicModalClose();
+			}
+			documentsLocal('{{ $project->id }}');
+		}
+		);
+	});
+	}
 
 
 </script>

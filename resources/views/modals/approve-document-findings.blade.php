@@ -54,7 +54,7 @@
 			var thisDocuments = JSON.parse(findingAllDocumentIds);
 			var commonDocuments = _.intersection(allDocuments, thisDocuments);
 			//document-findings-content-
-			debugger;
+			// debugger;
 			commonDocuments.forEach(function(item){
 				if($('#document-'+item+'-findings').is(':hidden')) {
 					updateContent('document-row-'+item, 'document/findings-update/'+item);

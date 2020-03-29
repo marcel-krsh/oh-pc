@@ -302,10 +302,12 @@ Route::group(['middleware' => 'web'], function () {
 
 		Route::get('modals/finding-details/{finding}/{document_id?}', 'FindingController@findingDetails')->name('finding.show-details');
 		Route::get('modals/document-finding-approval/{document_id}', 'DocumentController@showApproveAndResolveLocalDocument')->name('dpcument.document-finding-approval');
+		Route::get('modals/project-document-finding-approval/{project_id}', 'DocumentController@markAllDocumentsApproveAndResulved')->name('dpcument.project-document-finding-approval');
 
 		Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
 		Route::post('/documents/audit/{audit}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
 		Route::post('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('documents.local-search');
+		Route::post('documents/update-status/{project_id}', 'DocumentController@UpdateAllDocumentsStatus')->name('documents.update-status');
 
 		Route::get('document/findings-update/{document_id}', 'DocumentController@getDocumentFindingsColumn')->name('document.findings-column');
 

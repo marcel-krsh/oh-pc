@@ -468,6 +468,7 @@ class DocumentController extends Controller
 		$documents = $documents_query->paginate(20);
 		$documents_all = $documents_query->get();
 		$documents_count = $documents_query->count();
+		$document_ids = $documents_all->pluck('id')->toArray();
 		// $new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
 		// $old_audits = $documents_all->pluck('audit')->flatten()->unique('id');
 		// $audits = $new_audits->merge($old_audits)->filter()->unique('id'); //removes null records too
@@ -476,7 +477,7 @@ class DocumentController extends Controller
 		// $all_finding_ids = [];
 		// return $documents;
 
-		return view('projects.partials.local-documents', compact('project', 'documents', 'audit_id', 'categories', 'searchTerm', 'findings', 'resolved', 'unresolved', 'reviewed', 'unreviewed'));
+		return view('projects.partials.local-documents', compact('project', 'documents', 'audit_id', 'categories', 'searchTerm', 'findings', 'resolved', 'unresolved', 'reviewed', 'unreviewed', 'document_ids'));
 	}
 
 	public function getDocumentFindingsColumn($document_id)
@@ -999,10 +1000,16 @@ class DocumentController extends Controller
 		$catid = $request->get('catid');
 		$document = Document::where('id', $request->get('id'))->with('findings')->first();
 		// if already "notapproved", remove from notapproved
+		if (!is_null($document->notapproved)) {
+			$document->update([
+				'notapproved' => null,
+				'document_decliner_id' => $this->user->id,
+			]);
+		}
 		if (is_null($document->approved)) {
 			$document->update([
 				'approved' => 1,
-				'document_approver_id' => Auth::user()->id,
+				'document_approver_id' => $this->user->id,
 			]);
 		}
 
@@ -1012,6 +1019,94 @@ class DocumentController extends Controller
 			$fc->resolveFinding($request, $finding->id);
 		}
 		// return $request->all();
+
+		return 1;
+	}
+
+	public function markAllDocumentsApproveAndResulved($project_id)
+	{
+		return view('modals.approve-all-documents-findings', compact('project_id'));
+	}
+
+	public function UpdateAllDocumentsStatus($project_id, Request $request)
+	{
+		$document_ids = json_decode($request->document_ids);
+		if (empty($document_ids)) {
+			return 'No documents found matching the search criteria';
+		}
+		$documents = Document::where('project_id', $project_id)->whereIn('id', $document_ids)->with('findings.finding_type', 'findings.amenity')->get();
+		if ($request->option == 1) {
+			//Mark all documents as approved
+			foreach ($documents as $key => $document) {
+				if (!is_null($document->notapproved)) {
+					$document->update([
+						'notapproved' => null,
+						'document_decliner_id' => $this->user->id,
+					]);
+				}
+				if (is_null($document->approved)) {
+					$document->update([
+						'approved' => 1,
+						'document_approver_id' => $this->user->id,
+					]);
+				}
+			}
+		} elseif ($request->option == 2) {
+			//Mark as approved and resolve findings
+			$fc = new FindingController;
+			foreach ($documents as $key => $document) {
+				if (!is_null($document->notapproved)) {
+					$document->update([
+						'notapproved' => null,
+						'document_decliner_id' => $this->user->id,
+					]);
+				}
+				if (is_null($document->approved)) {
+					$document->update([
+						'approved' => 1,
+						'document_approver_id' => $this->user->id,
+					]);
+				}
+
+				//resolve all findings
+				foreach ($document->findings as $key => $finding) {
+					$fc->resolveFinding($request, $finding->id);
+				}
+			}
+		} elseif ($request->option == 3) {
+			//Mark as declined
+			foreach ($documents as $key => $document) {
+				if (!is_null($document->approved)) {
+					$document->update([
+						'approved' => null,
+						'document_approver_id' => $this->user->id,
+					]);
+				}
+				// if not already notapproved  --confused yet? :), add to notapproved array
+				if (is_null($document->notapproved)) {
+					$document->update([
+						'notapproved' => 1,
+						'document_decliner_id' => $this->user->id,
+					]);
+				}
+			}
+		} elseif ($request->option == 4) {
+			//Clear view status
+			foreach ($documents as $key => $document) {
+				if (!is_null($document->approved)) {
+					$document->update([
+						'approved' => null,
+						'document_approver_id' => $this->user->id,
+					]);
+				}
+				if (!is_null($document->notapproved)) {
+					$document->update([
+						'notapproved' => null,
+						'document_decliner_id' => $this->user->id,
+					]);
+				}
+			}
+		}
 
 		return 1;
 	}
