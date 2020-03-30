@@ -3,6 +3,16 @@
 
 <style>
 	/*for toggler*/
+	.document-building-list, .document-unit-list {
+		display: inline-block;
+		width: 45%;
+		vertical-align: text-top;
+	}
+	.document-building-list {
+		margin-right: 10px;
+		border-right: 1px solid black;
+	}
+
 	#allita-documents .switch {
 		position: relative;
 		display: inline-block;
@@ -241,11 +251,11 @@
 		<table class="uk-table uk-table-condensed gray-link-table" id="">
 			<thead>
 				<tr class="uk-text-small" style="background-color:#555;">
-					<th class="white-text" style="padding-left: 10px;" width="100"> STORED</th>
-					<th class="white-text" width="700"><span class="uk-margin-small-left">CATEGORY | SUBCATEGORY</span></th>
-					<th class="white-text" width="200"><span class="uk-margin-small-left">BUILDINGS | UNITS</span></th>
-					<th class="white-text" width="350">AUDITS | FINDINGS</th>
-					<th width="200" class="white-text">ACTIONS</th>
+					<th class="white-text" style="padding-left: 10px;" width="5%"> STORED</th>
+					<th class="white-text" width="30%"><span class="uk-margin-small-left">CATEGORY | SUBCATEGORY</span></th>
+					<th class="white-text" width="30%"><span class="uk-margin-small-left">BUILDINGS | UNITS</span></th>
+					<th class="white-text" width="30%">AUDITS | FINDINGS</th>
+					<th width="5%" class="white-text">ACTIONS</th>
 				</tr>
 			</thead>
 			<tbody id="sent-document-list" style="font-size: 13px">
@@ -254,8 +264,9 @@
 				$document_findings = $document->all_findings();
 				$buildings = !is_null($document->building_ids) ? ($document->building_ids) : [];
 				$units = !is_null($document->unit_ids) ? ($document->unit_ids) : [];
-				// if(!is_array($units))
-				// dd($document);
+				$unitCollection = !is_null($document->units) ? ($document->units) : collect([]);
+				$buildingCollection = !is_null($document->buildings) ? ($document->buildings) : collect([]);
+				
 				$audits_ids = ($document->audits->pluck('id')->toArray());
 				$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
 				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
@@ -269,11 +280,6 @@
 				$resolved_findings = count(collect($document_findings)->where('auditor_approved_resolution', 1));
 				$unresolved_findings = count($document_findings) - $resolved_findings;
 
-				// dd(count($site_findings));
-				// $x = $unit_findings->where('unit.building_id', 24961);
-				// $thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file'));
-				// $thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
-				// dd($document_audits);
 
 				@endphp
 				<tr class="document-row-{{ $document->id }} all @foreach ($document->audits as $audit)audit-{{ $audit->id }} @endforeach

@@ -1,11 +1,23 @@
 <div class="uk-margin-large-top" uk-grid>
 <div id="project-details-selections" class="uk-width-1-1">
 		<?php
-			$siteInspections = $audit->audit->project_amenity_inspections()->paginate(12);
+			if($canViewSiteInspections) {
+				$siteInspections = $audit->audit->project_amenity_inspections()->paginate(12);
+			} else {
+				$siteInspections = collect([]);
+			}
+			if($canViewSiteInspections && $canViewFileInspections){
+				// get building_ids for both
+				$allowedUnitInspections = $audit->audit->unit_inspections()->where('is_site_visit',1)->orWhere('is_file_audit','1')->pluck('unit_id')->toArray();
+			}else if($canViewSiteInspections){
+				$allowedUnitInspections = $audit->audit->unit_inspections()->where('is_site_visit',1)->pluck('unit_id')->toArray();
+			}else if($canViewFileInspections){
+				$allowedUnitInspections = $audit->audit->unit_inspections()->where('is_file_audit',1)->pluck('unit_id')->toArray();
+			}
 			$buildingInspections = $audit->audit->building_inspections()->paginate(12);
 			$allBuildingInspections = $audit->audit->building_inspections;
-			$unitInspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
-			$allUnitInspections = $audit->audit->unit_inspections;
+			$unitInspections = $audit->audit->unit_inspections()->whereIn('unit_id',$allowedUnitInspections)->groupBy('unit_id')->paginate(12);
+			$allUnitInspections = $audit->audit->unit_inspections()->whereIn('unit_id',$allowedUnitInspections)->get();
 			
 			$pdtDetails = $details;
 			$pdtFindings = $audit->audit->findings->where('cancelled_at',NULL);
@@ -31,7 +43,7 @@
 		?>
 		@include('crr_parts.crr_inspections_header') 
 		
-		@if(count($siteInspections))
+		@if(count($siteInspections) && $canViewSiteInspections)
 			<?php
 			  $inspections = $siteInspections;
 			?>

@@ -3,7 +3,12 @@
 	<?php
 	$currentBuilding = $i->building_id;
 	$findingCount = 'findings' . $currentBuilding;
-	$thisBuildingValues = collect($inspections)->where('building_id', $i->building_id)->sortByDesc('is_site_visit');
+	if($canViewSiteInspections){
+		$thisBuildingValues = collect($inspections)->where('building_id', $i->building_id)->sortByDesc('is_site_visit');
+	
+	}else{
+		$thisBuildingValues = collect([]);
+	}
 	if ($dpView) {
 		$thisBuildingUnfinishedInspections = collect($inspections)->where('building_id', $i->building_id)->where('complete', 0)->sortByDesc('is_site_visit');
 		// $building_auditors = $type->auditors($audit->audit_id);
@@ -17,7 +22,12 @@
 			$building_auditors = $combined_auditors->pluck('user')->unique();
 		}
 	}
-	$findingCount = collect($findings);
+	if($canViewFindings){
+		$findingCount = collect($findings);
+	
+	}else{
+		$findingCount = collect([]);
+	}
 	$findingCount = $findingCount->filter(function ($item) use ($currentBuilding) {
 		if ($item->building && $item->building->id == $currentBuilding) {
 			return $item;
@@ -28,12 +38,23 @@
 	});
 	$hasFindings = 0;
 	// dd($currentBuilding,$findingCount);
-	$thisBuildingSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file'));
-	$thisBuildingResolvedSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1));
-	$thisBuildingUnresolvedSiteFindings = $thisBuildingSiteFindings - $thisBuildingResolvedSiteFindings;
-	$thisBuildingFileFindings = count($findingCount->where('finding_type.type', '==', 'file'));
-	$thisBuildingResolvedFileFindings = count($findingCount->where('finding_type.type', '==', 'file')->where('auditor_approved_resolution', 1));
-	$thisBuildingUnresolvedFileFindings = $thisBuildingFileFindings - $thisBuildingResolvedFileFindings;
+	if($canViewFindings){
+		$thisBuildingSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file'));
+		$thisBuildingResolvedSiteFindings = count($findingCount->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1));
+		$thisBuildingUnresolvedSiteFindings = $thisBuildingSiteFindings - $thisBuildingResolvedSiteFindings;
+		$thisBuildingFileFindings = count($findingCount->where('finding_type.type', '==', 'file'));
+		$thisBuildingResolvedFileFindings = count($findingCount->where('finding_type.type', '==', 'file')->where('auditor_approved_resolution', 1));
+		$thisBuildingUnresolvedFileFindings = $thisBuildingFileFindings - $thisBuildingResolvedFileFindings;
+
+	} else {
+		$thisBuildingSiteFindings = 0;
+		$thisBuildingResolvedSiteFindings = 0;
+		$thisBuildingUnresolvedSiteFindings = 0;
+		$thisBuildingFileFindings = 0;
+		$thisBuildingResolvedFileFindings = 0;
+		$thisBuildingUnresolvedFileFindings = 0;
+	}
+	
 
 	if ($thisBuildingSiteFindings || $thisBuildingFileFindings) {
 		$hasFindings = 1;
@@ -56,16 +77,22 @@
 			@if($hasFindings && property_exists($i, 'latest_resolution') && $i->latest_resolution)
 			<br /> <i class="a-checkbox-checked" uk-tooltip title ="ALL ITEMS CORRECTED"></i> {{ date('m/d/Y',strtotime($i->latest_resolution)) }}
 			@elseIf(($hasFindings && property_exists($i,'latest_resolution')) || ($dpView && !count($thisBuildingUnfinishedInspections) && $hasFindings && $i->latest_resolution == null))
+			@if($canViewFindings)
 			<br /> <span class="attention" style="color:red; display: inline-block;margin-top: 5px;"><i class="a-multiply"></i> UNCORRECTED </span>
+			@else
+			 <span class="" style="display: inline-block;margin-top: 5px;"><i class="a-circle"></i> INSPECTION PENDING </span>
+			@endIf
 			@if($dpView)
 			<br/> <small><i class="a-circle-checked"></i> INSPECTION COMPLETE</small>
 			@endIf
-			@elseif($dpView && count($thisBuildingUnfinishedInspections) && ($selected_audit->step_id > 59 || count($selected_audit->audit->findings)))
+			@elseif($dpView && count($thisBuildingUnfinishedInspections) && ($canViewFindings) || count($selected_audit->audit->findings) && $canViewFindings))
 			<br /> <small><i class="a-circle"></i> INSPECTION IN PROGRESS</small>
-			@elseif($dpView && !count($thisBuildingUnfinishedInspections) && !$hasFindings)
+			@elseif($dpView && !count($thisBuildingUnfinishedInspections) && !$hasFindings && $canViewFindings)
 			<br /><small><i class="a-circle-checked"></i> INSPECTION COMPLETE </small>
-			@elseif($dpView && !count($thisBuildingUnfinishedInspections) && $hasFindings)
+			@elseif($dpView && !count($thisBuildingUnfinishedInspections) && $hasFindings && $canViewFindings)
 			<br /><small ><i class="a-circle"></i> INSPECTION INCOMPLETE </small>
+			@else
+			<br /><small ><i class="a-circle"></i> INSPECTION PENDING</small>
 			@endIf
 
 			@if($dpView)
@@ -91,8 +118,12 @@
 			{{ $i->building_name }}
 		</div> --}}
 		<div style="float: right;">
-			<i class="a-mobile uk-text-large uk-margin-small-right" ></i> @if($thisBuildingSiteFindings > 0) <span class="uk-badge finding-number on-phone @if($thisBuildingUnresolvedSiteFindings > 0) attention @endIf" uk-tooltip title="{{ $thisBuildingSiteFindings }} @if($thisBuildingSiteFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedSiteFindings > 0) WITH {{ $thisBuildingUnresolvedSiteFindings }} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{ $thisBuildingSiteFindings }}</span> @else<i class="a-circle-checked on-phone no-findings"></i>@endif
-			<i class="a-folder uk-text-large @if($auditor_access)@if(!$print)use-hand-cursor @endif @endif" ></i> @if($thisBuildingFileFindings > 0) <span class="uk-badge finding-number on-folder @if($thisBuildingUnresolvedFileFindings > 0) attention @endIf" uk-tooltip title="{{ $thisBuildingFileFindings }} @if($thisBuildingFileFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedFileFindings > 0) WITH {{ $thisBuildingUnresolvedFileFindings }} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{ $thisBuildingFileFindings }}</span> @else<i class="a-circle-checked on-folder no-findings"></i>@endIf
+			@if($canViewSiteInspections)
+			<i class="a-mobile uk-text-large uk-margin-small-right" ></i> @if($thisBuildingSiteFindings > 0 && $canViewFindings) <span class="uk-badge finding-number on-phone @if($thisBuildingUnresolvedSiteFindings > 0) attention @endIf" uk-tooltip title="{{ $thisBuildingSiteFindings }} @if($thisBuildingSiteFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedSiteFindings > 0) WITH {{ $thisBuildingUnresolvedSiteFindings }} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{ $thisBuildingSiteFindings }}</span> @elseif($canViewFindings)<i class="a-circle-checked on-phone no-findings"></i> @else <span class="uk-badge finding-number on-phone" >NA</span> @endif
+			@endIf
+			@if($canViewFileInspections)
+			<i class="a-folder uk-text-large @if($auditor_access)@if(!$print)use-hand-cursor @endif @endif" ></i> @if($thisBuildingFileFindings > 0 && $canViewFindings) <span class="uk-badge finding-number on-folder @if($thisBuildingUnresolvedFileFindings > 0) attention @endIf" uk-tooltip title="{{ $thisBuildingFileFindings }} @if($thisBuildingFileFindings > 1) FINDINGS @else FINDING @endIf @if($thisBuildingUnresolvedFileFindings > 0) WITH {{ $thisBuildingUnresolvedFileFindings }} PENDING RESOLUTION @else FULLY RESOLVED @endIf">{{ $thisBuildingFileFindings }}</span> @elseif($canViewFindings)<i class="a-circle-checked on-folder no-findings"></i> @else <span class="uk-badge finding-number on-folder">NA</span>@endIf
+			@endIf
 
 		</div>
 		<hr class="dashed-hr uk-margin-small-bottom">

@@ -118,19 +118,46 @@ if (isset($detailsPage)) {
 		// $currentUnit = 0;
 
 		// $inspections = collect($inspections);
-		$inspections = $inspections->sortBy('unit_name');
-		$allUnitInspections = $allUnitInspections->sortBy('unit_name');
+		if($inspections != null){
+			$inspections = $inspections->sortBy('unit_name');
+		}
+		
+		if($allUnitInspections !== null){
+			$allUnitInspections = $allUnitInspections->sortBy('unit_name');
+		}
 		//dd($inspections);
-		$fileInspections = count(collect($allUnitInspections)->where('is_site_visit', 0)->groupBy('unit_id'));
-		$siteInspections = count(collect($allUnitInspections)->where('is_site_visit', 1)->groupBy('unit_id'));
-		$homeSiteInspections = count(collect($allUnitInspections)->where('group', 'HOME')->where('is_site_visit', 1)->groupBy('unit_id'));
-		$homeFileInspections = count(collect($allUnitInspections)->whereIn('group', 'HOME')->where('is_site_visit', 0)->groupBy('unit_id'));
+		if( $canViewFileInspections){
+			$fileInspections = count(collect($allUnitInspections)->where('is_site_visit', 0)->groupBy('unit_id'));
+			$homeFileInspections = count(collect($allUnitInspections)->whereIn('group', 'HOME')->where('is_site_visit', 0)->groupBy('unit_id'));
+			$ohtfFileInspections = count(collect($allUnitInspections)->whereIn('group', 'OHTF')->where('is_site_visit', 0)->groupBy('unit_id'));
+			$nhtfFileInspections = count(collect($allUnitInspections)->whereIn('group', 'NHTF')->where('is_site_visit', 0)->groupBy('unit_id'));
+		} else {
+			$fileInspections = 0;
+			$homeFileInspections = 0;
+			$ohtfFileInspections = 0;
+			$nhtfFileInspections = 0;
+		}
 
-		$ohtfSiteInspections = count(collect($allUnitInspections)->where('group', 'OHTF')->where('is_site_visit', 1)->groupBy('unit_id'));
-		$ohtfFileInspections = count(collect($allUnitInspections)->whereIn('group', 'OHTF')->where('is_site_visit', 0)->groupBy('unit_id'));
+		if( $canViewSiteInspections){
+			$siteInspections = count(collect($allUnitInspections)->where('is_site_visit', 1)->groupBy('unit_id'));
+			$homeSiteInspections = count(collect($allUnitInspections)->where('group', 'HOME')->where('is_site_visit', 1)->groupBy('unit_id'));
+			$ohtfSiteInspections = count(collect($allUnitInspections)->where('group', 'OHTF')->where('is_site_visit', 1)->groupBy('unit_id'));
+			$nhtfSiteInspections = count(collect($allUnitInspections)->where('group', 'NHTF')->where('is_site_visit', 1)->groupBy('unit_id'));
+		} else {
+			$siteInspections = 0;
+			$homeSiteInspections = 0;
+			$ohtfSiteInspections = 0;
+			$nhtfSiteInspections = 0;
+		}
+		
 
-		$nhtfSiteInspections = count(collect($allUnitInspections)->where('group', 'NHTF')->where('is_site_visit', 1)->groupBy('unit_id'));
-		$nhtfFileInspections = count(collect($allUnitInspections)->whereIn('group', 'NHTF')->where('is_site_visit', 0)->groupBy('unit_id'));
+		
+
+		
+		
+
+		
+		
 		?>
 
 		<small>

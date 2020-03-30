@@ -25,6 +25,7 @@ class Controller extends BaseController
 	public $pmBothInspectionsOnlyStepIds;
 	public $pmSiteInspectionsOnlyStepIds;
 	public $pmFileInspectionsOnlyStepIds;
+	public $current_user;
 
 	public function allitaPc()
 	{
@@ -36,6 +37,7 @@ class Controller extends BaseController
 			if ($this->user != null) {
 				$this->user = $this->user->load('roles');
 				$this->user->full_name = $this->user->full_name();
+				$this->current_user = $this->user;
 				View::share('current_user', $this->user);
 				$this->auditor_access = $this->access($this->user, 'auditor');
 				// $this->auditor_access = $this->user->auditor_access();

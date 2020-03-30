@@ -46,7 +46,8 @@
 	</ul>
 </td>
 <td style="padding-left: 10px">
-	BUILDINGS {{ count($buildings) }} | UNITS {{ count($units) }}
+	<div class="document-building-list"><strong>BUILDINGS {{ count($buildings) }}</strong>
+		@forEach($buildingCollection as $docBin) <br /> {{$docBin->building_name}} @endForEach</div><div class="document-unit-list"> <strong>UNITS {{ count($units) }}</strong> @forEach($unitCollection as $docUnit) <br /> {{$docUnit->unit_name}} @endForEach</div>
 </td>
 <td style="padding-left: 10px">
 	@if(count($all_ids) > 0)

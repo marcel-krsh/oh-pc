@@ -3,6 +3,16 @@
 
 <style>
 	/*for toggler*/
+	.document-building-list, .document-unit-list {
+		display: inline-block;
+		width: 45%;
+		vertical-align: text-top;
+	}
+	.document-building-list {
+		margin-right: 10px;
+		border-right: 1px solid black;
+	}
+
 	#allita-documents .switch {
 		position: relative;
 		display: inline-block;
@@ -222,11 +232,11 @@
 		<table class="uk-table uk-table-condensed gray-link-table" id="">
 			<thead>
 				<tr class="uk-text-small" style="background-color:#555;">
-					<th class="white-text" style="padding-left: 10px;" width="100"> STORED</th>
-					<th class="white-text" width="700"><span class="uk-margin-small-left">CATEGORY | SUBCATEGORY</span></th>
-					<th class="white-text" width="200"><span class="uk-margin-small-left">BUILDINGS | UNITS</span></th>
-					<th class="white-text" width="350">AUDITS | FINDINGS</th>
-					<th width="200" class="white-text">ACTIONS</th>
+					<th class="white-text" style="padding-left: 10px;" width="5%"> STORED</th>
+					<th class="white-text" width="30%"><span class="uk-margin-small-left">CATEGORY | SUBCATEGORY</span></th>
+					<th class="white-text" width="30%"><span class="uk-margin-small-left">BUILDINGS | UNITS</span></th>
+					<th class="white-text" width="30%">AUDITS | FINDINGS</th>
+					<th width="5%" class="white-text">ACTIONS</th>
 				</tr>
 			</thead>
 			<tbody id="sent-document-list" style="font-size: 13px">
@@ -242,6 +252,9 @@
 				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
 				$all_ids = collect($all_ids)->unique()->filter()->toArray();
 				// $document_audits = $audits->whereIn('id', $all_ids);
+				$unitCollection = !is_null($document->units) ? ($document->units) : collect([]);
+				$buildingCollection = !is_null($document->buildings) ? ($document->buildings) : collect([]);
+				
 
 				$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
 				$building_findings = $document_findings->where('building_id', '<>', null)->where('unit_id', null);
@@ -292,16 +305,8 @@
 						</ul>
 					</td>
 					<td style="padding-left: 10px">
-						<div uk-grid class="uk-grid-collapse">
-							<div class="uk-1-2">
-							@if(count($buildings))
-									BUILDINGS {{ count($buildings) }} 
-									@forEach($buildings as $b)
-									<br />{{$b}}
-									@endForEach
-							@else 
-								NA @endIf 
-							</div>| @if(count($units)) UNITS {{ count($units) }} @else NA @endIf
+						<div class="document-building-list"><strong>BUILDINGS {{ count($buildings) }}</strong>
+		@forEach($buildingCollection as $docBin) <br /> {{$docBin->building_name}} @endForEach</div><div class="document-unit-list"> <strong>UNITS {{ count($units) }}</strong> @forEach($unitCollection as $docUnit) <br /> {{$docUnit->unit_name}} @endForEach</div>
 					</td>
 					<td style="padding-left: 10px">
 						@if(count($all_ids) > 0)

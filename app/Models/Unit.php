@@ -49,6 +49,15 @@ class Unit extends Model
 		return $this->hasMany(\App\Models\HouseholdEvent::class, 'unit_id', 'id');
 	}
 
+	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+	
+	public function documents(): HasMany
+	{
+
+
+		return $this->hasMany(\App\Models\Document::class, 'unit_ids', 'id');
+	}
+
 	public function is_market_rate(): int
 	{
 		if ($this->unit_identity_id == 22) {
