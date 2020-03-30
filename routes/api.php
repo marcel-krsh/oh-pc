@@ -1002,9 +1002,9 @@ Route::get('/users/verify_user', function (Request $request) {
                         
                             $data = [];
                             $user = User::find($user_id);
-                            $files = $request->file('photo');
+                            $file = $request->file('photo');
 
-                            foreach ($files as $file) {
+                            //foreach ($files as $file) {
                                 $selected_audit = $audit;
 
                                 $folderpath = 'photos/project_' . $audit->project->project_number . '/audit_' . $selected_audit->audit_id . '/';
@@ -1035,7 +1035,7 @@ Route::get('/users/verify_user', function (Request $request) {
                                     'id' => $photo->id,
                                     'filename' => $filename,
                                 ];
-                            }
+                            //}
                             return json_encode($data);
                         
 
