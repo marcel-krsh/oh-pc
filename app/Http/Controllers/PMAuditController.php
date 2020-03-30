@@ -2548,7 +2548,7 @@ class PMAuditController extends Controller
 		// }
 		// check if user can see that audit TBD
 		//
-		$audit = $audit->audit_id;
+		//$audit = $audit->audit_id;
 
 		// start by checking each cached_building and make sure there is a clear link to amenity_inspection records if this is a building-level amenity
 		// return CachedBuilding::first();
