@@ -1021,6 +1021,10 @@ Route::get('/users/verify_user', function (Request $request) {
                                 ]);
                                 $photo->save();
 
+                                if($comment_id != NULL && $comment_id != 0){
+                                    $photoComment = Comment::where('id',$comment_id)->update(['photo_id'=>$photo->id]);
+
+                                }
                                 // Sanitize filename and append document id to make it unique
                                 $filename = snake_case(strtolower($filename)) . '_' . $photo->id . '.' . $file_extension;
                                 $filepath = $folderpath . $filename;
