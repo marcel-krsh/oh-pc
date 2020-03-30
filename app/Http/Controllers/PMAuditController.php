@@ -2532,20 +2532,20 @@ class PMAuditController extends Controller
 	}
 	public function pmBuildingsFromAudit($audit, Request $request)
 	{
-		$audit = CachedAudit::where('audit_id',$audit)->first();
+		//$audit = CachedAudit::where('audit_id',$audit)->first();
 		$target = $request->get('target');
 		$context = $request->get('context');
-		$canViewFindings = in_array($audit->step_id, $this->pmCanViewFindingsStepIds);
-		if(in_array($audit->step_id,  $this->pmSiteInspectionsOnlyStepIds) || in_array($audit->step_id,  $this->pmBothInspectionsOnlyStepIds)){
-			$canViewSiteInspections = 1;
-		} else {
-			$canViewSiteInspections = 0;
-		}
-		if(in_array($audit->step_id,  $this->pmFileInspectionsOnlyStepIds) || in_array($audit->step_id,  $this->pmBothInspectionsOnlyStepIds)){
-			$canViewFileInspections = 1;
-		} else {
-			$canViewFileInspections = 0;
-		}
+		// $canViewFindings = in_array($audit->step_id, $this->pmCanViewFindingsStepIds);
+		// if(in_array($audit->step_id,  $this->pmSiteInspectionsOnlyStepIds) || in_array($audit->step_id,  $this->pmBothInspectionsOnlyStepIds)){
+		// 	$canViewSiteInspections = 1;
+		// } else {
+		// 	$canViewSiteInspections = 0;
+		// }
+		// if(in_array($audit->step_id,  $this->pmFileInspectionsOnlyStepIds) || in_array($audit->step_id,  $this->pmBothInspectionsOnlyStepIds)){
+		// 	$canViewFileInspections = 1;
+		// } else {
+		// 	$canViewFileInspections = 0;
+		// }
 		// check if user can see that audit TBD
 		//
 		$audit = $audit->audit_id;
@@ -2644,7 +2644,7 @@ class PMAuditController extends Controller
 		$amenities_query = AmenityInspection::where('audit_id', $audit)->with('amenity', 'user', 'building.units');
 		$amenities = $amenities_query->get();
 
-		return view('dashboard.partials.pm_audit_buildings', compact('audit', 'target', 'buildings', 'context', 'amenities','canViewFileInspections','canViewSiteInspections','canViewFindings'));
+		return view('dashboard.partials.pm_audit_buildings', compact('audit', 'target', 'buildings', 'context', 'amenities'));
 	}
 
 	public function getPMBuildingDetailsInfo(Request $request, $id, $type, $audit)
