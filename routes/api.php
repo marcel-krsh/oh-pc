@@ -3,9 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Parcel;
-use App\Program;
 use App\DispositionType;
-use App\SiteVisits;
 use App\ReimbursementInvoice;
 use App\ParcelsToReimbursementInvoice;
 use App\Disposition;
@@ -14,7 +12,7 @@ use App\Document;
 use App\DocumentCategory;
 use App\Helpers\GeoData;
 use App\Http\Controllers;
-use App\Photo;
+//use App\Photo;
 use App\Correction;
 use App\State;
 use App\County;
@@ -45,6 +43,16 @@ use App\Models\AmenityInspection;
 use App\Models\Finding;
 use App\Models\Comment;
 use App\Models\FindingType;
+use App\Models\AmenityHud;
+use App\Models\HudFindingType;
+use App\Models\Followup;
+use App\Models\SiteVisits;
+use App\Models\UnitInspection;
+use App\Models\BuildingInspection;
+use App\Models\UnitProgram;
+use App\Models\Program;
+use App\Models\Unit;
+use App\Models\Photo;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,7 +104,7 @@ Route::get('/users/verify_user', function (Request $request) {
         } else {
             return response("0", 200);
         }
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         throw $e;
     }
 });
@@ -114,7 +122,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     Auth::logout();
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     });
@@ -149,7 +157,7 @@ Route::get('/users/verify_user', function (Request $request) {
             } else {
                 return response("1", 200);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     });
@@ -161,7 +169,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
         try {
             return response($request->getPathInfo(), 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     });
@@ -345,7 +353,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return "Please use the query string id or program_id to return filtered Parcel results";
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -354,7 +362,7 @@ Route::get('/users/verify_user', function (Request $request) {
             try {
                 $programs = Program::get(["id","program_name"]);
                 return response()->json($programs);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -363,7 +371,7 @@ Route::get('/users/verify_user', function (Request $request) {
             try {
                 $dispositions = DispositionType::where("active", "1")->get(["id","disposition_type_name"]);
                 return response()->json($dispositions);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -373,7 +381,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 $parcel_id = $request->query("parcel_id");
                 $rows = SiteVisits::where("parcel_id", $parcel_id)->get();
                 return response()->json($rows);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -383,7 +391,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 $invoice_id = ParcelsToReimbursementInvoice::select("id")->where("parcel_id", "1065")->first()->id;
                 $invoice = ReimbursementInvoice::where("id", $invoice_id)->first()->transactions()->select("date_cleared")->orderBy("date_cleared", "DESC")->get();
                 return response()->json($invoice);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -430,7 +438,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -465,7 +473,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -483,7 +491,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -501,7 +509,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -532,7 +540,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     $reply = $visit;
                 }
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -599,7 +607,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -619,7 +627,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -672,7 +680,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -693,7 +701,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -730,7 +738,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     // Error
                     exit('Requested file does not exist on our server! '.$fullpath);
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -740,7 +748,7 @@ Route::get('/users/verify_user', function (Request $request) {
             try {
                 $categories = DocumentCategory::where("active", "1")->get(["id","document_category_name"]);
                 return response()->json($categories);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -883,7 +891,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     return response('No Parcel');
                 }
                 //}
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -902,7 +910,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -910,10 +918,7 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_photo', function (Request $request) {
 
             try {
-                $parcel_id = $request->query("parcel_system_id");
                 $document_id = $request->query("photo_id");
-
-                $parcel = Parcel::where('id', $parcel_id)->first();
                 $photo = Photo::where('id', $document_id)->first();
 
 
@@ -939,7 +944,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     // Error
                     exit('Requested file does not exist on our server! '.$fullpath);
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1038,7 +1043,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     return response('No Parcel');
                 }
                 //}
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1075,7 +1080,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     return response('No Parcel');
                 }
                 //}
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1121,7 +1126,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     return response('No Parcel');
                 }
                 //}
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1161,7 +1166,7 @@ Route::get('/users/verify_user', function (Request $request) {
                     return response('No Parcel');
                 }
                 //}
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1186,7 +1191,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1205,7 +1210,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1224,7 +1229,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1253,7 +1258,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1285,7 +1290,7 @@ Route::get('/users/verify_user', function (Request $request) {
                 }
 
                 return response()->json($reply);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1299,7 +1304,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
                     $results = CachedAmenity::where('updated_at', '>', $lastEdited)->get();
                 else
@@ -1313,7 +1318,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1322,11 +1327,11 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = CachedAudit::where('updated_at', '>', $lastEdited)->get();
+                    $results = CachedAudit::where('step_id','>=','55')->where('step_id','<=','65')->where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = CachedAudit::get();
+                    $results = CachedAudit::where('step_id','>=','55')->where('step_id','<=','65')->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1336,7 +1341,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1345,11 +1350,12 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
+                $auditsIdForApp = CachedAudit::where('step_id','>=','55')->where('step_id','<=','65')->select('audit_id')->get();
                 if($lastEdited != null)
-                    $results = CachedBuilding::where('updated_at', '>', $lastEdited)->get();
+                    $results = CachedBuilding::whereIn('audit_id',$auditsIdForApp)->where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = CachedBuilding::get();
+                    $results = CachedBuilding::whereIn('audit_id',$auditsIdForApp)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1359,7 +1365,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1367,12 +1373,13 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_cached_units', function (Request $request) {
 
             try {
-
-                $lastEdited = $request->query("last_edited");
+            
+                $lastEdited = $request->query("updated_at");
+                $auditsIdForApp = CachedAudit::where('step_id','>=','55')->where('step_id','<=','65')->select('audit_id')->get();
                 if($lastEdited != null)
-                    $results = CachedUnit::where('updated_at', '>', $lastEdited)->get();
+                    $results = CachedUnit::whereIn('audit_id',$auditsIdForApp)->where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = CachedUnit::get();
+                    $results = CachedUnit::whereIn('audit_id',$auditsIdForApp)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1382,7 +1389,31 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
+                throw $e;
+            }
+        });
+
+        Route::get('/get_units', function (Request $request) {
+
+            try {
+            
+                $lastEdited = $request->query("updated_at");
+                $auditsIdForApp = CachedAudit::where('step_id','>=','55')->where('step_id','<=','65')->select('audit_id')->get();
+                if($lastEdited != null)
+                    $results = Unit::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = Unit::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1393,9 +1424,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $cached_audits = CachedAudit::select('audit_id')->get();
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = Audit::whereIn('id', $cached_audits)->where('last_edited', '>', $lastEdited)->get();
+                    $results = Audit::whereIn('id', $cached_audits)->where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = Audit::whereIn('id', $cached_audits)->get();
 
@@ -1407,7 +1438,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1417,9 +1448,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = Building::where('last_edited', '>', $lastEdited)->get();
+                    $results = Building::where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = Building::get();
 
@@ -1431,7 +1462,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1441,11 +1472,19 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = User::where('last_edited', '>', $lastEdited)->get();
+                    $results = User::where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = User::get();
+
+                    
+                foreach ($results as $user) {
+                    if(pin != null)
+                    {
+                        $user->pin = decrypt($user->pin); 
+                    }
+                }
 
                 if ($results) {
                     $reply = $results;
@@ -1455,7 +1494,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1467,9 +1506,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $auditors = AuditAuditor::select('user_id')->get();
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = User::whereIn('id', $auditors)->where('last_edited', '>', $lastEdited)->get();
+                    $results = User::whereIn('id', $auditors)->where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = User::whereIn('id', $auditors)->get();
 
@@ -1481,7 +1520,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1496,9 +1535,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $people_ids = User::whereIn('id', $auditors)->select('person_id')->get();
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = People::where('last_edited', '>', $lastEdited)->whereIn('id', $people_ids)->get();
+                    $results = People::where('updated_at', '>', $lastEdited)->whereIn('id', $people_ids)->get();
                 else
                     $results = People::whereIn('id', $people_ids)->get();
 
@@ -1510,7 +1549,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1526,9 +1565,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 $phone_number_ids = People::whereIn('id', $people_ids)->select('default_phone_number_key')->get();
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = PhoneNumbers::where('last_edited', '>', $lastEdited)->whereIn('phone_number_key', $phone_number_ids)->get();
+                    $results = PhoneNumbers::where('updated_at', '>', $lastEdited)->whereIn('phone_number_key', $phone_number_ids)->get();
                 else
                     $results = PhoneNumbers::whereIn('phone_number_key', $phone_number_ids)->get();
 
@@ -1540,7 +1579,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1549,7 +1588,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
                     $results = AuditAuditor::where('updated_at', '>', $lastEdited)->get();
                 else
@@ -1563,7 +1602,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1571,8 +1610,7 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_amenities', function (Request $request) {
 
             try {
-
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
                     $results = Amenity::where('updated_at', '>', $lastEdited)->get();
                 else
@@ -1586,7 +1624,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1596,17 +1634,13 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
             
-                $user_key = $request->query("user_key");
-                
-                $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
+                $lastEdited = $request->query("updated_at");
+                $project_ids = CachedAudit::select('project_id')->get();
 
-                $projects = CachedAudit::whereIn('audit_id', $audit_ids)->select('project_key')->get();
-
-                $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = ProjectAmenity::whereIn('project_key', $projects)->where('last_edited', '>', $lastEdited)->get();
+                    $results = ProjectAmenity::whereIn('project_id',$project_ids)->where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = ProjectAmenity::whereIn('project_key', $projects)->get();
+                    $results = ProjectAmenity::whereIn('project_id',$project_ids)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1616,7 +1650,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1626,20 +1660,14 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_unit_amenities', function (Request $request) {
 
             try {
-                //set_time_limit(300);
-                
-                $user_key = $request->query("user_key");
-                
-                $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
-
-                $units = CachedUnit::whereIn('audit_id', $audit_ids)->select('unit_id')->get();
                                 
-                $lastEdited = $request->query("last_edited");
-
+                $lastEdited = $request->query("updated_at");
+                $units = CachedUnit::select('unit_id')->get();
+                
                 if($lastEdited != null)
-                    $results = UnitAmenity::whereIn('unit_id', $units)->where('last_edited', '>', $lastEdited)->get();
+                    $results = UnitAmenity::whereIn('unit_id',$units)->where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = UnitAmenity::whereIn('unit_id', $units)->get();
+                    $results = UnitAmenity::whereIn('unit_id',$units)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1649,7 +1677,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1658,18 +1686,14 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::get('/get_building_amenities', function (Request $request) {
 
             try {
-                          
-                $user_key = $request->query("user_key");
-                
-                $audit_ids = AuditAuditor::where("user_key",$user_key)->select('audit_id')->get();
 
-                $buildings = CachedBuilding::where('building_key','!=',null)->whereIn('audit_id', $audit_ids)->select('building_key')->get();
+                $lastEdited = $request->query("updated_at");
+                $building_ids = CachedBuilding::select('building_id')->get();
 
-                $lastEdited = $request->query("last_edited");
                 if($lastEdited != null)
-                    $results = BuildingAmenity::whereIn('building_key', $buildings)->where('last_edited', '>', $lastEdited)->get();
+                    $results = BuildingAmenity::whereIn('building_id',$building_ids)->where('updated_at', '>', $lastEdited)->get();
                 else
-                    $results = BuildingAmenity::whereIn('building_key', $buildings)->get();
+                    $results = BuildingAmenity::whereIn('building_id',$building_ids)->get();
 
                 if ($results) {
                     $reply = $results;
@@ -1679,7 +1703,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1689,9 +1713,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = OrderingAmenity::where('last_edited', '>', $lastEdited)->get();
+                    $results = OrderingAmenity::where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = OrderingAmenity::get();
 
@@ -1703,7 +1727,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1713,9 +1737,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = OrderingBuilding::where('last_edited', '>', $lastEdited)->get();
+                    $results = OrderingBuilding::where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = OrderingBuilding::get();
 
@@ -1727,7 +1751,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1737,9 +1761,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = OrderingUnit::where('last_edited', '>', $lastEdited)->get();
+                    $results = OrderingUnit::where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = OrderingUnit::get();
 
@@ -1751,7 +1775,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1760,9 +1784,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = AmenityInspection::where('last_edited', '>', $lastEdited)->get();
+                    $results = AmenityInspection::where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = AmenityInspection::get();
 
@@ -1774,7 +1798,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1783,9 +1807,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = FindingType::where('last_edited', '>', $lastEdited)->get();
+                    $results = FindingType::where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = FindingType::get();
 
@@ -1797,7 +1821,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1806,9 +1830,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = Comment::where('last_edited', '>', $lastEdited)->get();
+                    $results = Comment::where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = Comment::get();
 
@@ -1820,7 +1844,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
@@ -1829,9 +1853,9 @@ Route::get('/users/verify_user', function (Request $request) {
 
             try {
 
-                $lastEdited = $request->query("last_edited");
+                $lastEdited = $request->query("updated_at");
                 if($lastEdited != null)
-                    $results = Finding::where('last_edited', '>', $lastEdited)->get();
+                    $results = Finding::where('updated_at', '>', $lastEdited)->get();
                 else
                     $results = Finding::get();
 
@@ -1843,9 +1867,779 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 return response()->json($reply);
             }
-			catch (\Exception $e) {
+            catch (Exception $e) {
                 throw $e;
             }
         });
+
+        Route::get('/set_pin', function (Request $request) {
+
+            try {
+            
+                $pin = $request->query("pin");
+                
+                $user_id = Auth::user()->id;
+
+                $user = User::where('id',$user_id)->first();
+                $user->pin = encrypt($pin);
+                $user->save();
+                $result = '1';
+
+                if ($result) {
+                    $reply = $result;
+                } else {
+                    $reply = null;
+                }
+
+                return response($reply);
+            }
+            catch (Exception $e) {
+                throw $e;
+            }
+        });
+        
+        
+        Route::get('/get_amenity_huds', function (Request $request) {
+
+            try {
+
+                $results = AmenityHud::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+            catch (Exception $e) {
+                throw $e;
+            }
+        });
+        
+
+        
+        Route::get('/get_hud_finding_types', function (Request $request) {
+
+            try {
+
+                $results = HudFindingType::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+            catch (Exception $e) {
+                throw $e;
+            }
+        });
+        
+        Route::get('/get_followups', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("updated_at");
+                if($lastEdited != null)
+                    $results = Followup::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = Followup::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+            catch (Exception $e) {
+                throw $e;
+            }
+        });
+        
+        Route::get('/get_unit_inspections', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("updated_at");
+                if($lastEdited != null)
+                    $results = UnitInspection::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = UnitInspection::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+            catch (Exception $e) {
+                throw $e;
+            }
+        });
+        
+        Route::get('/get_building_inspections', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("updated_at");
+                if($lastEdited != null)
+                    $results = BuildingInspection::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = BuildingInspection::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+            catch (Exception $e) {
+                throw $e;
+            }
+        });
+        
+        Route::get('/get_unit_programs', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("updated_at");
+                if($lastEdited != null)
+                    $results = UnitProgram::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = UnitProgram::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+            catch (Exception $e) {
+                throw $e;
+            }
+        });
+        
+        Route::get('/get_programs', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("updated_at");
+                if($lastEdited != null)
+                    $results = Program::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = Program::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+            catch (Exception $e) {
+                throw $e;
+            }
+        });
+        
+        
+        Route::get('/get_units', function (Request $request) {
+
+            try {
+
+                $lastEdited = $request->query("updated_at");
+                if($lastEdited != null)
+                    $results = Unit::where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = Unit::get();
+
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            }
+            catch (Exception $e) {
+                throw $e;
+            }
+
+        });
+        
+        Route::post('/add-finding', function (Request $request){
+            $inputs = $request->input('inputs');
+            parse_str($inputs, $inputs);
+
+            // make sure we have what we need
+            $error = '';
+            if ($inputs['finding_type_id'] == '') {
+                $error .= '<p>I am having trouble with the finding type you selected. Please refresh your page and try again.</p>';
+            }
+            if ($inputs['amenity_inspection_id'] == '') {
+                $error .= '<p>I am having trouble with the amenity you selected. Please refresh your page and try again.</p>';
+            }
+            if ($inputs['level'] == '') {
+                $error .= '<p>Please select a level.</p>';
+            }
+
+            if ($error != '') {
+
+                return $error;
+
+            } else {
+                // passed initial error checking - lets get the data
+                $findingType = FindingType::find($inputs['finding_type_id']);
+                $amenityInspection = AmenityInspection::find($inputs['amenity_inspection_id']);
+
+                $date = Carbon::createFromFormat('Y-m-d', $inputs['date'])->format('Y-m-d H:i:s');
+
+                $cached_audit = CachedAudit::where('audit_id', '=', $amenityInspection->audit_id)->first();
+                $project = $cached_audit->project;
+
+                $owner_organization_id = $project->owner()['organization_id'];
+                $pm_organization_id = $project->pm()['organization_id'];
+
+                // Check to make sure that we got that data
+                if (is_null($findingType)) {
+                    $error .= '<p>I was not able to identify the finding type you selected. This is not your fault! </p><p>Please notify your admin that you tried to add finding type id ' . $input['finding_type_id'] . ' and it gave you this error:<br /> FindingController: Error #79<p>';
+                }
+                if (is_null($amenityInspection)) {
+                    $error .= '<p>I was not able to identify the amenity you selected. It is possible it was deleted while you were working on it by another user.</p><p>Please refresh your screen by closing the inpsection and reopening it. If you still see the amenity there, still try clicking on it to add a finding again, as it may be been deleted and re-added with a new identifier.</p><p>If that does not work, please notify your admin that you tried to add a finding to amenity inspection id ' . $input['amenity_inspection_id'] . ' and it gave you this error:<br /> FindingController: Error #82<p>';
+                }
+
+                if ($error != '') {
+                    return $error;
+                } else {
+                    // we have the goods - let's store this bad boy!
+                    $errors = ''; // tracking errors to return to user.
+                    $finding = new Finding([
+                        'date_of_finding' => $date,
+                        'owner_organization_id' => $owner_organization_id,
+                        'pm_organization_id' => $pm_organization_id,
+                        'user_id' => Auth::user()->id,
+                        'audit_id' => $amenityInspection->audit_id,
+                        'project_id' => $project->id,
+                        'building_id' => $amenityInspection->building_id,
+                        'unit_id' => $amenityInspection->unit_id,
+                        'finding_type_id' => $findingType->id,
+                        'amenity_id' => $amenityInspection->amenity_id,
+                        'amenity_inspection_id' => $amenityInspection->id,
+                        'weight' => $findingType->nominal_item_weight,
+                        'criticality' => $findingType->criticality,
+                        'level' => $inputs['level'],
+                        'site' => $findingType->site,
+                        'building_system' => $findingType->building_system,
+                        'building_exterior' => $findingType->building_exterior,
+                        'common_area' => $findingType->common_area,
+                        'allita_type' => $findingType->allita_type,
+                        'finding_status_id' => 1,
+                    ]);
+                    $finding->save();
+
+                    // save comment if there is one:
+                    if (strlen($inputs['comment']) > 0) {
+                        // there was text entered - create the comment and attach it to the finding
+                        $newcomment = new Comment([
+                            'user_id' => Auth::user()->id,
+                            'audit_id' => $amenityInspection->audit_id,
+                            'finding_id' => $finding->id,
+                            'comment' => $inputs['comment'],
+                            'recorded_date' => $date,
+                        ]);
+                        $newcomment->save();
+
+                    }
+                    // put in default follow-ups
+                    if (count($findingType->default_follow_ups)) {
+                        $errors = '';
+                        foreach ($findingType->default_follow_ups as $fu) {
+                            // set assignee
+                            switch ($fu->assignment) {
+                                case 'pm':
+                                    $assigned_user_id = "???"; # code...
+                                    break;
+
+                                case 'lead':
+                                    $assigned_user_id = "???";
+                                    break;
+
+                                case 'user':
+                                    $assigned_user_id = Auth::user()->id;
+                                    break;
+
+                                default:
+                                    $error .= '<p>Sorry, the default follow-up with id ' . $fu->id . ' could not be created because the default asigned user was not defined.</p> <p>FindingController Error #143</p>';
+                                    break;
+                            }
+                            // set due date
+                            $today = new DateTime(date("Y-m-d H:i:s", time()));
+                            $due = $today->modify("+ {$fu->quantity} {$fu->duration}");
+
+                            // reply photo doc doc_categories <--- reference to columns in table
+
+                            if ($error == '') {
+                                Followup::insert([
+                                    'created_by_user_id' => Auth::user()->id,
+                                    'assigned_to_user' => $assigned_user_id,
+                                    'date_due' => $due,
+                                    'finding_id' => $finding->id,
+                                    'project_id' => $amenityInspection->project_id,
+                                    'audit_id' => $amenityInspection->audit_id,
+                                    'comment_type' => $fu->reply,
+                                    'document_type' => $fu->doc,
+                                    'document_categories' => $fu->doc_categories,
+                                    'photo_type' => $fu->photo,
+                                    'description' => $fu->description,
+                                ]);
+                            } else {
+                                $errors .= $error;
+                                $error = ''; // reset this so it can do all folow-ups even if this one is bad.
+                            }
+                        }
+
+                    }
+                    if ($errors == '') {
+                        // no errors
+                        return $finding->id;
+                    } else {
+                        return '<h2>I added the finding but...</h2>
+                            <p>One or more of the default follow-ups had erors- please see below and send this information to your admin.</p>
+                            ' . $errors;
+                    }
+                }
+            }
+        });
+
+        
+        Route::post('/edit-finding', function (Request $request){
+            
+            $inputs = $request->input('inputs');
+            parse_str($inputs, $inputs);
+
+            $error = '';
+            if ($inputs['finding_type_id'] == '') {
+                $error .= '<p>I am having trouble with the finding type you selected. Please refresh your page and try again.</p>';
+            }
+            if ($inputs['level'] == '') {
+                $error .= '<p>Please select a level.</p>';
+            }
+
+            if ($error != '') {
+
+                return $error;
+
+            } else {
+
+                $findingType = FindingType::find($inputs['finding_type_id']);
+                $date = Carbon::createFromFormat('F j, Y', $inputs['date'])->format('Y-m-d H:i:s');
+
+                $finding = Finding::where('id', '=', $inputs['finding_id'])->first();
+                $finding->date_of_finding = $date;
+                $finding->finding_type_id = $findingType->id;
+                $finding->level = $inputs['level'];
+                $finding->save();
+
+                return 1;
+
+            }
+
+        });
+
+        
+        Route::post('/save-reply-finding', function (Request $request){
+            $inputs = $request->input('inputs');
+            parse_str($inputs, $inputs);
+
+            $date = Carbon::now()->format('Y-m-d H:i:s');
+            $fromtype = $inputs['fromtype'];
+
+            if ($fromtype == 'finding') {
+                $from = Finding::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->id;
+            } elseif ($fromtype == 'comment') {
+                $from = Comment::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->finding_id;
+            } elseif ($fromtype == 'photo') {
+                $from = Photo::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->finding_id;
+            } elseif ($fromtype == 'document') { 
+                $from = Document::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->finding_id;
+            } elseif ($fromtype == 'followup') {
+                $from = Followup::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->finding_id;
+            }
+
+            if ($inputs['type'] == 'comment') {
+                if (strlen($inputs['comment']) > 0) {
+                    $newcomment = new Comment([
+                        'user_id' => Auth::user()->id,
+                        'audit_id' => $from->audit_id,
+                        'finding_id' => $finding_id,
+                        'comment' => $inputs['comment'],
+                        'recorded_date' => $date,
+                    ]);
+
+                    if ($fromtype == 'comment') {
+                        $newcomment->comment_id = $from->id;
+                    } elseif ($fromtype == 'photo') {
+                        $newcomment->photo_id = $from->id;
+                    } elseif ($fromtype == 'document') {
+                        $newcomment->document_id = $from->id;
+                    } elseif ($fromtype == 'followup') {
+                        $newcomment->followup_id = $from->id;
+                    }
+
+                    $newcomment->save();
+                }
+                return 1;
+
+            } elseif ($inputs['type'] == 'photo') {
+                if(array_key_exists('local_photos', $inputs)){
+                    $local_photos = $inputs['local_photos'];
+                }else{
+                    $local_photos = null;
+                }
+
+                // foreach local document, save finding_id and followup_id
+                if($local_photos){
+                    if($fromtype == 'followup'){ 
+                        foreach($local_photos as $local_photo_id){
+                            Photo::where('id', '=', $local_photo_id)->update([
+                                'followup_id' => $from->id,
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }elseif($fromtype == 'finding'){ 
+                        foreach($local_photos as $local_photo_id){
+                            Photo::where('id', '=', $local_photo_id)->update([
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }
+                }
+                return 1;
+
+            } elseif ($inputs['type'] == 'followup') {
+
+                $due = $inputs['due'];
+                $duration = $inputs['duration'];
+                // due date
+                $due_date = Carbon\Carbon::now();
+                if($duration == "hours"){
+                    $due_date->addHours($due);
+                }elseif($duration == "days"){
+                    $due_date->addDays($due);
+                }elseif($duration == "weeks"){
+                    $due_date->addWeeks($due);
+                }elseif($duration == "months"){
+                    $due_date->addMonths($due);
+                }
+
+                if($inputs['assignee']){
+                    $assignee = $inputs['assignee'];
+                }else{
+                    $assignee = null;
+                }
+                $description = $inputs['description'];
+                $comment = (array_key_exists('comment', $inputs)) ? 1 : 0;
+                $photo = (array_key_exists('photo', $inputs)) ? 1 : 0;
+                $doc = (array_key_exists('doc', $inputs)) ? 1 : 0;
+                
+                if(array_key_exists('categories', $inputs)){
+                    $categories = $inputs['categories'];
+                }else{
+                    $categories = null;
+                }
+
+                Followup::create([
+                    'created_by_user_id' => Auth::user()->id,
+                    'assigned_to_user_id' => $assignee,
+                    'date_due' => $due_date,
+                    'finding_id' => $finding_id,
+                    'project_id' => $from->project_id,
+                    'audit_id' => $from->audit_id,
+                    'comment_type' => $comment,
+                    'document_type' => $doc,
+                    'document_categories' => json_encode($categories),
+                    'photo_type' => $photo,
+                    'description' => $description
+                ]);
+                return 1;
+            } elseif ($inputs['type'] == 'document') {
+
+                if(array_key_exists('local_documents', $inputs)){
+                    $local_documents = $inputs['local_documents'];
+                }else{
+                    $local_documents = null;
+                }
+
+                // foreach local document, save finding_id and followup_id
+                if($local_documents){
+                    if($fromtype == 'followup'){ 
+                        foreach($local_documents as $local_document_id){
+                            Document::where('id', '=', $local_document_id)->update([
+                                'followup_id' => $from->id,
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }elseif($fromtype == 'finding'){ 
+                        foreach($local_documents as $local_document_id){
+                            Document::where('id', '=', $local_document_id)->update([
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }
+                }
+                return 1;
+
+            }
+        });
+
+        Route::post('/findings/reply', function (Request $request){
+            $inputs = $request->input('inputs');
+            parse_str($inputs, $inputs);
+
+            $date = Carbon::now()->format('Y-m-d H:i:s');
+            $fromtype = $inputs['fromtype'];
+
+            if ($fromtype == 'finding') {
+                $from = Finding::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->id;
+            } elseif ($fromtype == 'comment') {
+                $from = Comment::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->finding_id;
+            } elseif ($fromtype == 'photo') {
+                $from = Photo::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->finding_id;
+            } elseif ($fromtype == 'document') { 
+                $from = Document::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->finding_id;
+            } elseif ($fromtype == 'followup') {
+                $from = Followup::where('id', '=', $inputs['id'])->first();
+                $finding_id = $from->finding_id;
+            }
+
+            if ($inputs['type'] == 'comment') {
+                if (strlen($inputs['comment']) > 0) {
+                    $newcomment = new Comment([
+                        'user_id' => Auth::user()->id,
+                        'audit_id' => $from->audit_id,
+                        'finding_id' => $finding_id,
+                        'comment' => $inputs['comment'],
+                        'recorded_date' => $date,
+                    ]);
+
+                    if ($fromtype == 'comment') {
+                        $newcomment->comment_id = $from->id;
+                    } elseif ($fromtype == 'photo') {
+                        $newcomment->photo_id = $from->id;
+                    } elseif ($fromtype == 'document') {
+                        $newcomment->document_id = $from->id;
+                    } elseif ($fromtype == 'followup') {
+                        $newcomment->followup_id = $from->id;
+                    }
+
+                    $newcomment->save();
+                }
+                return 1;
+
+            } elseif ($inputs['type'] == 'photo') {
+                if(array_key_exists('local_photos', $inputs)){
+                    $local_photos = $inputs['local_photos'];
+                }else{
+                    $local_photos = null;
+                }
+
+                // foreach local document, save finding_id and followup_id
+                if($local_photos){
+                    if($fromtype == 'followup'){ 
+                        foreach($local_photos as $local_photo_id){
+                            Photo::where('id', '=', $local_photo_id)->update([
+                                'followup_id' => $from->id,
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }elseif($fromtype == 'finding'){ 
+                        foreach($local_photos as $local_photo_id){
+                            Photo::where('id', '=', $local_photo_id)->update([
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }
+                }
+                return 1;
+
+            } elseif ($inputs['type'] == 'followup') {
+
+                $due = $inputs['due'];
+                $duration = $inputs['duration'];
+                // due date
+                $due_date = Carbon\Carbon::now();
+                if($duration == "hours"){
+                    $due_date->addHours($due);
+                }elseif($duration == "days"){
+                    $due_date->addDays($due);
+                }elseif($duration == "weeks"){
+                    $due_date->addWeeks($due);
+                }elseif($duration == "months"){
+                    $due_date->addMonths($due);
+                }
+
+                if($inputs['assignee']){
+                    $assignee = $inputs['assignee'];
+                }else{
+                    $assignee = null;
+                }
+                $description = $inputs['description'];
+                $comment = (array_key_exists('comment', $inputs)) ? 1 : 0;
+                $photo = (array_key_exists('photo', $inputs)) ? 1 : 0;
+                $doc = (array_key_exists('doc', $inputs)) ? 1 : 0;
+                
+                if(array_key_exists('categories', $inputs)){
+                    $categories = $inputs['categories'];
+                }else{
+                    $categories = null;
+                }
+
+                Followup::create([
+                    'created_by_user_id' => Auth::user()->id,
+                    'assigned_to_user_id' => $assignee,
+                    'date_due' => $due_date,
+                    'finding_id' => $finding_id,
+                    'project_id' => $from->project_id,
+                    'audit_id' => $from->audit_id,
+                    'comment_type' => $comment,
+                    'document_type' => $doc,
+                    'document_categories' => json_encode($categories),
+                    'photo_type' => $photo,
+                    'description' => $description
+                ]);
+                return 1;
+            } elseif ($inputs['type'] == 'document') {
+
+                if(array_key_exists('local_documents', $inputs)){
+                    $local_documents = $inputs['local_documents'];
+                }else{
+                    $local_documents = null;
+                }
+
+                // foreach local document, save finding_id and followup_id
+                if($local_documents){
+                    if($fromtype == 'followup'){ 
+                        foreach($local_documents as $local_document_id){
+                            Document::where('id', '=', $local_document_id)->update([
+                                'followup_id' => $from->id,
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }elseif($fromtype == 'finding'){ 
+                        foreach($local_documents as $local_document_id){
+                            Document::where('id', '=', $local_document_id)->update([
+                                'finding_id' => $finding_id
+                            ]);
+                        }
+                        
+                    }
+                }
+                return 1;
+
+            }
+        });
+
+        Route::post('/findings/{findingid}/cancel', function (Request $request, $findingid){
+                $finding = Finding::where('id', '=', $findingid)->first();
+                $date = Carbon\Carbon::now()->format('Y-m-d H:i:s');
+
+                $finding->cancelled_at = $date;
+                $finding->save();
+
+                return 1;
+            });
+
+            Route::post('/findings/{findingid}/restore', function (Request $request, $findingid){
+                $finding = Finding::where('id', '=', $findingid)->first();
+
+                $finding->cancelled_at = null;
+                $finding->save();
+
+                return 1;
+            });
+        
+        Route::post('/findings/{findingid}/resolve', function(Request $request, $findingid){
+            $finding = Finding::where('id', $findingid)->first();
+
+            $now = Carbon\Carbon::now()->format('Y-m-d H:i:s');
+
+            if ($finding->auditor_approved_resolution != 1) {
+                // resolve all followups
+                if (count($finding->followups)) {
+                    foreach ($finding->followups as $followup) {
+                        $followup->resolve($now);
+                    }
+                }
+
+                $finding->auditor_approved_resolution = 1;
+                $finding->auditor_last_approved_resolution_at = $now;
+                $finding->save();
+            } else {
+                // unresolve
+                $finding->auditor_approved_resolution = 0;
+                $finding->auditor_last_approved_resolution_at = null;
+                $finding->save();
+            }
+
+            if ($finding->auditor_last_approved_resolution_at !== null) {
+                return formatDate($finding->auditor_last_approved_resolution_at);
+            } else {
+                return 0;
+            }
+            });
+            
+        Route::get('/get_photos', function (Request $request) {
+
+            try {
+            
+                $lastEdited = $request->query("updated_at");
+                $project_ids = CachedBuilding::select('project_id')->get();
+
+                if($lastEdited != null)
+                    $results = Photo::whereIn('project_id',$project_ids)->where('deleted', '0')->where('updated_at', '>', $lastEdited)->get();
+                else
+                    $results = Photo::whereIn('project_id',$project_ids)->where('deleted', '0')->get();
+                    
+                if ($results) {
+                    $reply = $results;
+                } else {
+                    $reply = null;
+                }
+
+                return response()->json($reply);
+            } catch (Exception $e) {
+                throw $e;
+            }
+        });
+
+
 
     });

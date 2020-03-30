@@ -43,6 +43,7 @@ use App\Models\CommunicationRecipient;
 ini_set('max_execution_time', 600);
 class PagesController extends Controller
 {
+<<<<<<< HEAD
     public function __construct(){
         $this->allitapc();
     }
@@ -135,6 +136,103 @@ class PagesController extends Controller
                 $entityTypeValue = Auth::user()->entity_id;
             }
             $stats = DB::select(DB::raw("
+=======
+	public function __construct()
+	{
+		if (env('APP_ENV') == 'local') {
+			Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
+		}
+	}
+
+	public function changeLog(Request $request)
+	{
+		if (!Auth::check()) {
+			return redirect()->to('login');
+		} else {
+			return view('pages.change-log');
+		}
+	}
+
+	public function codes(Request $request)
+	{
+		if ($request->get('code')) {
+			$codeId = intval($request->get('code'));
+		} else {
+			$codeId = null;
+		}
+		$codes = FindingType::get();
+		return view('crr.reac-codes', compact('codeId', 'codes'));
+	}
+
+	public function resetTokens()
+	{
+		// SystemSetting::where('key','pcapi_access_token')->delete();
+		// SystemSetting::where('key','pcapi_access_token_expires')->delete();
+		// SystemSetting::where('key','pcapi_refresh_token')->delete();
+		// $newTokens = SystemSetting::get();
+		// dd($newTokens);
+	}
+
+	public function imageGen($image)
+	{
+		$img = Image::canvas(800, 800, '#ccc');
+		$img->text($image, 400, 400, function ($font) {
+			$font->file(base_path('storage/fonts/SourceSansPro-Light.ttf'));
+			$font->size(80);
+			$font->color('#fdf6e3');
+			$font->align('center');
+			$font->valign('center');
+			$font->angle(45);
+		});
+
+		return $img->response('jpg');
+	}
+
+	public function export()
+	{
+		if (Auth::user()->entity_type == 'hfa') {
+			$requestor = Auth::user();
+
+			// Save report request in database
+			$new_report = new Report([
+				'type' => "export_parcels",
+				'folder' => null,
+				'filename' => null,
+				'pending_request' => 1,
+				'user_id' => $requestor->id,
+			]);
+			$new_report->save();
+
+			$job = new ParcelsExportJob($requestor, $new_report->id);
+			dispatch($job);
+
+			return Redirect::route('reports.listparcels')->with('systemMessage', 'Your export is being processed. An email will be sent when the file is ready to download.');
+			//return redirect()->back()->with('systemMessage','Parcels export is being processed. An email will be sent when the file is ready to download.');
+		} else {
+			return "<script>alert('Sorry, you do not have permission to do this');</script>";
+		}
+	}
+
+	public function login()
+	{
+		return view('auth.login');
+	}
+
+	public function stats()
+	{
+		if (Gate::allows('view-all-parcels')) {
+			$tuser = Auth::user();
+			// $lc    = new LogConverter('user', 'viewstats');
+			// $lc->setDesc($tuser->email . ' Viewed stats')->setFrom($tuser)->setTo($tuser)->save();
+			if (Auth::user()->entity_type == "hfa") {
+				$entityTypeOperator = "like";
+				$entityTypeValue = "'%%'";
+			} else {
+				$entityTypeOperator = "=";
+				$entityTypeValue = Auth::user()->entity_id;
+			}
+			$stats = DB::select(DB::raw("
+>>>>>>> phase_ii_master
                 SELECT p.program_name,
                p.id as program_id,
                p.entity_id,
