@@ -583,6 +583,65 @@ class CommunicationController extends Controller
 		return [1];
 	}
 
+	public function filterMainCommunicationFilters(Request $request)
+	{
+		if ($request->has('filter_recipient')) {
+			if ($request->filter_recipient != 'all') {
+				Session::put('filter-recipient', $request->filter_recipient);
+			} else {
+				Session::forget('filter-recipient');
+			}
+		}
+		if ($request->has('filter_attachment')) {
+			if ($request->filter_attachment) {
+				Session::put('filter-attachment', 1);
+			} else {
+				Session::forget('filter-attachment');
+			}
+		}
+		if ($request->has('filter_search')) {
+			if ($request->filter_search != '') {
+				Session::put('filter-search', $request->filter_search);
+			} else {
+				Session::forget('filter-search');
+			}
+		}
+		if ($request->has('filter_project')) {
+			if ($request->filter_project != 'all') {
+				Session::put('filter-project', $request->filter_project);
+			} else {
+				Session::forget('filter-project');
+			}
+		}
+		return 1;
+	}
+
+	public function filterProjectCommunicationFilters(Request $request)
+	{
+		if ($request->has('filter_recipient')) {
+			if ($request->filter_recipient != 'all') {
+				Session::put('filter-recipient-project', $request->filter_recipient);
+			} else {
+				Session::forget('filter-recipient-project');
+			}
+		}
+		if ($request->has('filter_attachment')) {
+			if ($request->filter_attachment) {
+				Session::put('project-filter-attachment', 1);
+			} else {
+				Session::forget('project-filter-attachment');
+			}
+		}
+		if ($request->has('filter_search')) {
+			if ($request->filter_search != '') {
+				Session::put('communications-search', $request->filter_search);
+			} else {
+				Session::forget('communications-search');
+			}
+		}
+		return 1;
+	}
+
 	public function showDraftMessages($page = 0, Request $request)
 	{
 		$number_per_page = 100;
@@ -1222,6 +1281,8 @@ class CommunicationController extends Controller
 				break;
 		}
 
+		// return session()->all();
+
 		return [1];
 	}
 
@@ -1235,11 +1296,11 @@ class CommunicationController extends Controller
 		return $this->communicationsTab($page, $project, $audit);
 	}
 
-	public function communicationsTab($page = 0, $project = 0, $audit = 0)
+	public function communicationsTabOld($page = 0, $project = 0, $audit = 0)
 	{
 		$number_per_page = 100;
 		$skip = $number_per_page * $page;
-		$current_user = $this->user;
+		$current_user = Auth::user();
 		$ohfa_id = SystemSetting::get('ohfa_organization_id');
 		//return $project;
 		//Search (in session)
@@ -1338,6 +1399,390 @@ class CommunicationController extends Controller
 
 			//List view
 			// return session()->all();
+			if (session('communication_list') == 1) {
+				if (session('communication_sent') == 1) {
+					$messages = Communication::where(function ($query) use ($current_user) {
+						$query->where('owner_id', '=', $current_user->id);
+					})
+						->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
+				} else {
+					//return session()->all();
+					$messages = Communication::where(function ($query) use ($current_user) {
+						$query->where('owner_id', '=', $current_user->id);
+						$query->whereHas('replies');
+					})
+						->orWhereHas('recipients', function ($query) use ($current_user) {
+							$query->where('user_id', '=', $current_user->id);
+						})
+						->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
+				}
+			} else {
+				if (session('communication_sent') == 1) {
+					$messages = Communication::where(function ($query) use ($current_user) {
+						$query->where('owner_id', '=', $current_user->id);
+					})
+						->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
+					if (session('communication_list') == 1) {
+						$messages->whereNull('parent_id');
+					}
+				} else {
+					$messages = Communication::where(function ($query) use ($current_user, $project) {
+						$query->where('owner_id', '=', $current_user->id);
+						if (!$project) {
+							$query->whereHas('replies');
+						}
+					})
+						->orWhereHas('recipients', function ($query) use ($current_user) {
+							$query->where('user_id', '=', $current_user->id);
+						})
+						->whereNull('parent_id')
+						->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
+					//$messages = $messages->whereHas('replies');
+				}
+			}
+			// if (session('communication_sent') == 1) {
+			//     // sent
+			//     $messages = Communication::where(function ($query) use ($current_user) {
+			//         $query->where('owner_id', '=', $current_user->id);
+			//     })->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit')
+			//         ->orderBy('created_at', 'desc');
+			// } elseif (session('communication_list') == 1) {
+			//     $messages = Communication::where(function ($query) use ($current_user) {
+			//         $query->where('owner_id', '=', $current_user->id);
+			//     })
+			//         ->with('owner');
+			//     //->orderBy('created_at', 'desc')
+			//     //->simplePaginate(100);
+			// } else {
+			//     $messages = Communication::with('docuware_documents', 'local_documents', 'owner', 'project', 'audit')
+			//         ->where(function ($query) use ($current_user, $user_eval, $user_spec) {
+			//             $query->where(function ($query) use ($current_user) {
+			//                 $query->where('owner_id', '=', $current_user->id);
+			//                 $query->whereHas('replies');
+			//             });
+			//             $query->orWhereHas('recipients', function ($query) use ($current_user, $user_eval, $user_spec) {
+			//                 $query->where('user_id', "$user_eval", $user_spec);
+			//             });
+			//         })->whereNull('parent_id');
+
+			// }
+
+			$messages = $messages
+				->orderBy('created_at', 'desc')
+				->skip($skip)->take($number_per_page)
+				->get();
+			if ($project) {
+				// $audit    = $project->selected_audit();
+
+				// $messages = $messages->where('project_id', $project->id)
+				// //->where('audit_id', $audit->id); //Changed by Div, 20190526
+				//   ->where('audit_id', $audit->audit_id);
+				$project_messages = Communication::where('project_id', $project->id)->whereNull('parent_id')
+					->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')
+					->get();
+				$messages = $messages->merge($project_messages)->where('project_id', $project->id);
+			}
+
+			//return $messages->pluck('project_id');
+			//$messages = $messages->reverse();
+			// return $messages->first()->message_recipients->first()->pivot->seen;
+		}
+
+		// return $messages;
+
+		$owners_array = [];
+		$projects_array = [];
+
+		$data = [];
+		// if ($messages) {
+		//     foreach ($messages as $message) {
+		//         // create initials
+		//         $words = explode(" ", $message->owner->name);
+		//         $initials = "";
+		//         foreach ($words as $w) {
+		//             if (is_array($w)) {
+		//                 $initials .= $w[0];
+		//             }
+		//         }
+		//         $message->initials = $initials;
+
+		//         // create associative arrays for initials and names
+		//         if (!array_key_exists($message->owner->id, $owners_array)) {
+		//             $owners_array[$message->owner->id]['initials'] = $initials;
+		//             $owners_array[$message->owner->id]['name'] = $message->owner->name;
+		//             $owners_array[$message->owner->id]['color'] = $message->owner->badge_color;
+		//             $owners_array[$message->owner->id]['id'] = $message->owner->id;
+		//         }
+
+		//         // get recipients details
+		//         // could be a better query... TBD
+		//         $recipients_array = [];
+		//         foreach ($message->recipients as $recipient) {
+		//             $recipients_array[$recipient->id] = User::find($recipient->user_id);
+		//         }
+		//         $message->recipient_details = $recipients_array;
+
+		//         $recipients = $message->owner->name;
+		//         foreach ($message->recipients as $recipient) {
+		//             $recipients_array[$recipient->id] = User::find($recipient->user_id);
+		//         }
+
+		//         if (count($message->recipient_details)) {
+		//             foreach ($recipients_array as $recipient) {
+		//                 if ($recipient != $current_user && $message->owner != $recipient && $recipient->name != '') {
+		//                     $recipients = $recipients . ", " . $recipient->name;
+		//                 } elseif ($recipient == $current_user) {
+		//                     $recipients = $recipients . ", me";
+		//                 }
+		//             }
+		//         }
+
+		//         $message->summary = strlen($message->message) > 200 ? substr($message->message, 0, 200) . "..." : $message->message;
+
+		//         // in case of a search result with replies, the parent message isn't listed
+		//         // if there is parent_id then use it, otherwise use id
+		//         if ($message->parent_id) {
+		//             // $message->replies = Communication::where('parent_id', $message->parent_id)
+		//             // ->orWhere('id', $message->parent_id)
+		//             // ->count();
+
+		//             $message_id_array = Communication::where('id', $message->parent_id)
+		//                 ->orWhere('parent_id', $message->parent_id)
+		//                 ->pluck('id')->toArray();
+		//         } else {
+		//             // $message->replies = Communication::where('parent_id', $message->id)
+		//             // ->orWhere('id', $message->id)
+		//             // ->count();
+
+		//             $message_id_array = Communication::where('id', $message->id)
+		//                 ->orWhere('parent_id', $message->id)
+		//                 ->pluck('id')->toArray();
+		//         }
+
+		//         $message->unseen = CommunicationRecipient::whereIn('communication_id', $message_id_array)
+		//             ->where('user_id', $current_user->id)
+		//             ->where('seen', 0)
+		//             ->count();
+
+		//         if ($message->unseen) {
+		//             $unseen = $message->unseen;
+		//             $communication_unread_class = 'communication-unread';
+		//         } else {
+		//             $unseen = 0;
+		//             $communication_unread_class = '';
+		//         }
+
+		//         // combine all documents from main message and its replies
+		//         $all_docs = [];
+		//         if ($message->documents) {
+		//             foreach ($message->documents as $message_document) {
+		//                 $all_docs[] = $message_document;
+		//             }
+		//         }
+		//         if ($message->replies) {
+		//             foreach ($message->replies as $message_reply) {
+		//                 if ($message_reply->documents) {
+		//                     foreach ($message_reply->documents as $message_reply_document) {
+		//                         $all_docs[] = $message_reply_document;
+		//                     }
+		//                 }
+		//             }
+		//         }
+		//         $message->all_docs = $all_docs;
+
+		//         $created = date("m/d/y", strtotime($message->created_at)) . " " . date('h:i a', strtotime($message->created_at));
+		//         $created_right = date("m/d/y", strtotime($message->created_at)) . "<br />" . date('h:i a', strtotime($message->created_at));
+
+		//         if (count($message->documents)) {
+		//             $hasattachment = 'attachment-true';
+		//         } else {
+		//             $hasattachment = 'attachment';
+		//         }
+
+		//         if ($message->audit) {
+		//             if (Auth::user()->isFromOrganization($ohfa_id)) {
+		//                 $organization_name = $message->audit->organization->organization_name;
+		//             } else {
+		//                 $organization_name = '';
+		//             }
+
+		//             $organization_address = $message->audit->address . ', ' . $message->audit->city . ', ';
+		//             if ($message->audit->state) {
+		//                 $organization_address = $organization_address . $message->audit->state;
+		//             }
+		//             $organization_address = $organization_address . ' ' . $message->audit->zip;
+
+		//             // if($message->audit->county){
+		//             //     $organization_address = $organization_address. '<br />'.$message->audit->county->county_name;
+		//             // }
+		//         } else {
+		//             $organization_address = '';
+		//             $organization_name = '';
+		//         }
+
+		//         $filenames = '';
+		//         if ($message->all_docs && count($message->all_docs)) {
+		//             foreach ($message->all_docs as $document) {
+		//                 $filenames = $filenames . $document->document->filename . ' ';
+		//             }
+		//         }
+
+		//         if ($message->audit) {
+		//             $program_id = $message->audit->program_id;
+		//         } else {
+		//             $program_id = '';
+		//         }
+
+		//         $data[] = [
+		//             'userId' => '',
+		//             'socketId' => '',
+		//             'id' => $message->id,
+		//             'is_reply' => 0,
+		//             'parentId' => $message->parent_id,
+		//             'staffId' => 'staff-' . $message->owner->id,
+		//             'programId' => 'program-' . $program_id,
+		//             'hasAttachment' => $attachment_class,
+		//             'communicationId' => 'communication-' . $message->id,
+		//             'communicationUnread' => $communication_unread_class,
+		//             'createdDate' => $created,
+		//             'createdDateRight' => $created_right,
+		//             'recipients' => $recipients,
+		//             'userBadgeColor' => 'user-badge-' . Auth::user()->badge_color,
+		//             'tooltip' => 'pos:top-left;title:' . $unseen . ' unread messages',
+		//             'unseen' => $unseen,
+		//             'auditId' => $message->audit_id,
+		//             'tooltipOrganization' => 'pos:left;title:' . $organization_name,
+		//             'organizationAddress' => $organization_address,
+		//             'tooltipFilenames' => 'pos:top-left;title:' . $filenames,
+		//             'subject' => $message->subject,
+		//             'summary' => $message->summary,
+		//         ];
+		//     }
+		// }
+		// return $messages->last()->message_recipients;
+		if (count($messages) > 0) {
+			$owners_array = $messages->pluck('owner')->unique();
+			$projects_array = $messages->pluck('project')->filter()->unique();
+			$message_recipients = $messages->pluck('message_recipients')->flatten()->unique('id');
+		} else {
+			$message_recipients = [];
+		}
+		return $messages->count();
+		// $messages_count = count($messages);
+		// if (!empty($messages)) {
+		// 	$messages = Communication::whereIn('id', $messages->pluck('id'))->whereNull('parent_id')
+		// 		->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->paginate(20);
+		// } else {
+		// 	$messages = Communication::whereIn('id', [])->whereNull('parent_id')
+		// 		->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->paginate(20);
+		// }
+
+		//$owners_array = collect($owners_array)->sortBy('name')->toArray();
+		if ($page > 0) {
+			return response()->json($data);
+		} else {
+			if ($project) {
+				// get the project
+				$project = Project::where('id', '=', $project->id)->first();
+
+				return view('projects.partials.communications', compact('data', 'messages', 'owners', 'owners_array', 'current_user', 'ohfa_id', 'project', 'audit', 'projects_array', 'message_recipients'));
+			} else {
+				return view('dashboard.communications', compact('data', 'messages', 'owners_array', 'current_user', 'ohfa_id', 'project', 'projects_array', 'message_recipients'));
+			}
+		}
+	}
+
+	public function communicationsTab($page = 0, $project = 0, $audit = 0)
+	{
+		// return session()->all();
+		$number_per_page = 100;
+		$skip = $number_per_page * $page;
+		$current_user = $this->user;
+		$ohfa_id = SystemSetting::get('ohfa_organization_id');
+		if (Session::has('communications-search') && Session::get('communications-search') != '') {
+			//this is not being used - Div 2020-03-29
+			$search = Session::get('communications-search');
+			if ($project) {
+				$search_messages = Communication::with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')
+					->where(function ($query) use ($search, $project) {
+						$query->where('message', 'LIKE', '%' . $search . '%');
+						$query->orWhereHas('audit', function ($query) use ($search) {
+							$query->where('id', 'LIKE', '%' . $search . '%');
+						});
+					})
+					->where('project_id', $project->id)
+					->whereNull('parent_id');
+			} else {
+				$search_messages = Communication::with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')
+					->where(function ($query) use ($search, $project) {
+						$query->where('message', 'LIKE', '%' . $search . '%');
+						$query->orWhereHas('audit', function ($query) use ($search) {
+							$query->where('id', 'LIKE', '%' . $search . '%');
+						});
+					})
+					->where(function ($query) use ($current_user) {
+						$query->where('owner_id', '=', $current_user->id);
+						$query->orWhereHas('recipients', function ($query) use ($current_user) {
+							$query->where('user_id', '=', $current_user->id);
+						});
+					});
+			}
+
+			if ($audit) {
+				$search_messages = $search_messages->where('audit_id', $audit);
+			}
+
+			$search_messages = $search_messages->with('owner')
+				->with('recipients')
+				->where(function ($query) {
+					if ($query->has('recipients')) {
+						$query->orderBy('recipients.id');
+					} else {
+						$query->orderBy('id');
+					}
+				})
+			//->orderBy('created_at', 'desc')
+				->pluck('id')->toArray();
+
+			$all_messages = Communication::where(function ($query) use ($search_messages) {
+				$query->whereIn('parent_id', $search_messages)
+					->orWhereIn('id', $search_messages);
+			})
+				->with('owner')
+				->with('recipients')
+				->orderBy('created_at', 'desc')
+				->get();
+
+			if (count($all_messages)) {
+				// now that we have all the messages ordered we need to only keep parents
+				$parents_array = [];
+				foreach ($all_messages as $all_message) {
+					if (null === $all_message->parent_id) {
+						if (!in_array($all_message->id, $parents_array)) {
+							$parents_array[] = $all_message->id;
+						}
+					} else {
+						if (!in_array($all_message->parent_id, $parents_array)) {
+							$parents_array[] = $all_message->parent_id;
+						}
+					}
+				}
+				$orderMessageByIdProvided = implode(',', array_fill(0, count($parents_array), '?'));
+				$messages = Communication::whereIn('id', $parents_array)
+					->orderByRaw("field(id,{$orderMessageByIdProvided})", $parents_array)
+					->skip($skip)->take($number_per_page)->get();
+			} else {
+				$messages = [];
+			}
+		} else {
+			if ($project) {
+				//on project tab - show all messages from all users
+				$user_eval = '>';
+				$user_spec = '0';
+			} else {
+				$user_eval = '=';
+				$user_spec = Auth::user()->id;
+			}
 
 			if (!session()->has('communication_list')) {
 				session(['communication_list' => 1]);
@@ -1358,8 +1803,6 @@ class CommunicationController extends Controller
 							$query->where('user_id', '=', $current_user->id);
 						})
 						->with('owner', 'project', 'message_recipients');
-
-					// return $messages->get();
 				}
 			} else {
 				if (session('communication_sent') == 1) {
@@ -1392,11 +1835,6 @@ class CommunicationController extends Controller
 				->get();
 
 			if ($project) {
-				// $audit    = $project->selected_audit();
-
-				// $messages = $messages->where('project_id', $project->id)
-				// //->where('audit_id', $audit->id); //Changed by Div, 20190526
-				//   ->where('audit_id', $audit->audit_id);
 				$project_messages = Communication::where('project_id', $project->id)->whereNull('parent_id')
 					->with('owner', 'project', 'message_recipients')
 					->get();
@@ -1415,27 +1853,105 @@ class CommunicationController extends Controller
 			$message_recipients = [];
 		}
 
-		if ($project) {
-			if (session()->has('filter-recipient-project')) {
-				$recipient_array = explode('-', session()->get('filter-recipient-project'));
-				$recipient_id = $recipient_array[1];
+		$messages_count = count($messages);
+
+		if (!empty($messages)) {
+			if ($project) {
+				if (session()->has('project-filter-attachment')) {
+					$messages = Communication::whereIn('id', $messages->pluck('id'))->with('local_documents')->whereHas('local_documents', function ($query) {
+						$query->where('documents.id', '>', 0);
+					})->get();
+				}
+				if (session()->has('filter-recipient-project')) {
+					$recipient_array = explode('-', session()->get('filter-recipient-project'));
+					$recipient_id = $recipient_array[1];
+					$messages = Communication::whereIn('id', $messages->pluck('id'))->whereNull('parent_id')
+						->with('owner', 'project', 'message_recipients')->whereHas('message_recipients', function ($query) use ($recipient_id) {
+						$query->where('user_id', '=', $recipient_id);
+					})->get();
+				}
+			} else {
+				if (session('communication_list') == 1) {
+					$messages = Communication::whereIn('id', $messages->pluck('id'))->where(function ($query) use ($current_user) {
+						$query->where('owner_id', '=', $current_user->id);
+						$query->whereHas('replies');
+					})
+						->orWhereHas('recipients', function ($query) use ($current_user) {
+							$query->where('user_id', '=', $current_user->id);
+						})
+						->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients');
+				} else {
+					$messages = Communication::whereIn('id', $messages->pluck('id'))->with('owner', 'project')->whereNull('parent_id');
+				}
+				//consider all filters here
+				if (session()->has('filter-recipient')) {
+					$recipient_array = explode('-', session()->get('filter-recipient'));
+					$recipient_id = $recipient_array[1];
+					$messages = $messages->with('message_recipients')->whereHas('message_recipients', function ($query) use ($recipient_id) {
+						$query->where('user_id', '=', $recipient_id);
+					});
+				}
+				if (session()->has('filter-attachment')) {
+					$messages = $messages->with('local_documents')->whereHas('local_documents', function ($query) {
+						$query->where('documents.id', '>', 0);
+					});
+				}
+				if (session()->has('filter-project')) {
+					$project_array = explode('-', session()->get('filter-project'));
+					$selected_project_id = $project_array[1];
+					$messages = $messages->whereHas('project', function ($query) use ($selected_project_id) {
+						$query->where('id', $selected_project_id);
+					});
+				}
+				if (session()->has('filter-search')) {
+					$search = session('filter-search');
+					$current_user = $this->user;
+					$messages = $messages->get();
+					if (!empty($messages)) {
+						$messages = Communication::whereIn('id', $messages->pluck('id'))->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')
+							->where(function ($query) use ($search, $project) {
+								$query->where('message', 'LIKE', '%' . $search . '%');
+								$query->orWhereHas('audit', function ($query) use ($search) {
+									$query->where('id', 'LIKE', '%' . $search . '%');
+								});
+							})
+							->where(function ($query) use ($current_user) {
+								$query->where('owner_id', '=', $current_user->id);
+								$query->orWhereHas('recipients', function ($query) use ($current_user) {
+									$query->where('user_id', '=', $current_user->id);
+								});
+							});
+					}
+				}
+				$messages_count = count($messages->get());
+
+				$messages = $messages->paginate(20);
+			}
+
+			if (session('communication_list') == 1 && !$project) {
+				// $messages = Communication::whereIn('id', $messages->pluck('id'))->where(function ($query) use ($current_user) {
+				// 	$query->where('owner_id', '=', $current_user->id);
+				// 	$query->whereHas('replies');
+				// })
+				// 	->orWhereHas('recipients', function ($query) use ($current_user) {
+				// 		$query->where('user_id', '=', $current_user->id);
+				// 	})
+				// 	->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')->paginate(20);
+				// $messages = Communication::whereIn('id', $messages->pluck('id'))->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->paginate(20);
+			} else {
+				$messages_count = count($messages);
 				$messages = Communication::whereIn('id', $messages->pluck('id'))->whereNull('parent_id')
-					->with('owner', 'project', 'message_recipients')->whereHas('message_recipients', function ($query) use ($recipient_id) {
-					$query->where('user_id', '=', $recipient_id);
-				})->get();
+					->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->paginate(20);
 			}
 		}
 
-		$messages_count = count($messages);
-		if (!empty($messages)) {
-			$messages = Communication::whereIn('id', $messages->pluck('id'))->whereNull('parent_id')
-				->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->paginate(20);
-		} else {
+		if (empty($messages)) {
 			$messages = Communication::whereIn('id', [])->whereNull('parent_id')
 				->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->paginate(20);
 		}
 
-		//$owners_array = collect($owners_array)->sortBy('name')->toArray();
+		// return $messages->count();
+
 		if ($page > 0) {
 			return response()->json($data);
 		} else {

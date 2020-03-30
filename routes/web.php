@@ -550,6 +550,8 @@ Route::group(['middleware' => 'web'], function () {
 		Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
 		Route::post('/communications/filter-recipient', 'CommunicationController@filterCommunicationReceipient')->name('communications.filter-recipient');
 		Route::post('/communications/filter-recipient-project', 'CommunicationController@filterCommunicationReceipientProject')->name('communications.filter-recipient-project');
+		Route::post('/communications/main-filters', 'CommunicationController@filterMainCommunicationFilters')->name('communications.main-filters');
+		Route::post('/communications/project-filters', 'CommunicationController@filterProjectCommunicationFilters')->name('communications.project-filters');
 
 		Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
 		Route::get('/view_message/{message}', 'CommunicationController@goToMessage');

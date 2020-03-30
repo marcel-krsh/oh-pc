@@ -773,14 +773,15 @@ class DocumentController extends Controller
 
 	public function localUpload(Project $project, Request $request)
 	{
-		if (app('env') == 'local') {
-			app('debugbar')->disable();
-		}
+		// if (app('env') == 'local') {
+		// 	app('debugbar')->disable();
+		// }
 		// return $request->all();
 		if (!$request->has('categories') || is_null($request->categories)) {
 			return 'You must select at least one category!';
 		}
 		$audit_ids = [];
+		$selected[0] = '';
 		if ($request->has('findings') && $request->findings != '') {
 			/// we will ignore the selected audit and get it from the findings
 
@@ -804,6 +805,16 @@ class DocumentController extends Controller
 			$findingIds = array_map('strval', $findingIds);
 			$siteIds = array_map('strval', $siteIds);
 			$buildingIds = array_map('strval', $buildingIds);
+		} else {
+			//check if units and buildings are selected
+			if ($request->has('buValue') && $request->buValue != '') {
+				$selected = explode('-', $request->buValue);
+				if ($selected[0] == 'unit') {
+					$unitIds = [$selected[1]];
+				} elseif ($selected[0] == 'building') {
+					$buildingIds = [$selected[1]];
+				}
+			}
 		}
 
 		// return [$findingIds, $unitIds, $buildingIds, $siteIds];
@@ -845,6 +856,14 @@ class DocumentController extends Controller
 					}
 					if (!empty($unitIds)) {
 						$document->unit_ids = ($unitIds);
+					}
+				} elseif ($selected[0] != '') {
+					if ($selected[0] == 'unit') {
+						$unitBuildingIds = Unit::whereIn('id', $unitIds)->pluck('building_id')->unique()->filter()->toArray();
+						$document->unit_ids = ($unitIds);
+						$document->building_ids = array_map('strval', $unitBuildingIds);
+					} elseif ($selected[0] == 'building') {
+						$document->building_ids = ($buildingIds);
 					}
 				}
 				$document->save();
@@ -1663,9 +1682,9 @@ class DocumentController extends Controller
 
 	public function localUploadDraft(Project $project, Request $request)
 	{
-		if (app('env') == 'local') {
-			app('debugbar')->disable();
-		}
+		// if (app('env') == 'local') {
+		// 	app('debugbar')->disable();
+		// }
 		$communication_draft = CommunicationDraft::find($request->draft_id);
 		if (!$communication_draft) {
 			return 'No associated communication draft was found, try again by closing communication modal or contact admin.';

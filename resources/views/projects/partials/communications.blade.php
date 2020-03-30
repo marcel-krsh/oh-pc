@@ -3,29 +3,11 @@
 
 		<a id="filter-none" class="filter_link" data-filter="all" hidden>all</a>
 		<a id="filter-attachments" class="filter_link" data-filter="attachment-true" hidden>attachments</a>
-		{{-- Total of 6 groups
-		* Group 1
-		* 	View inbox
-		* 	View sent messages
-		* Group 2
-		* 	Show results with attachments
-		* 	Show Conversation list view
-		* Group 3
-		* 	Search within message or Audit? Input text field
-		* Group 4
-		* 	Filter by recepient
-		* Group 5
-		* 	Filter by project
-		* Group 6
-		* 	New Message
-		*
-		--}}
 
-		{{-- Group 2, Attachments and conversation list view --}}
 
 		<div class=" uk-width-1-1@s uk-width-2-5@m">
 			<div uk-grid>
-				<button class="uk-button-large uk-button-default filter-attachments-button uk-width-1-6" uk-tooltip="pos:top-left;title:Show results with attachments">
+				<button id="project-communication-document-button" class="uk-button-large uk-button-default filter-attachments-button uk-width-1-6 {{ session('project-filter-attachment') ? 'uk-button-success' : '' }}" uk-tooltip="pos:top-left;title:Show results with attachments" onclick="filterProjectCommunications('attachment')">
 					<i class="a-paperclip-2"></i>
 				</button>
 				<input id="communications-project-search" name="communications-project-search" type="text" value="{{ Session::get('communications-search') }}" class="uk-width-5-6 uk-input" placeholder="Search Messages Or Audit ID (press enter)">
@@ -33,7 +15,7 @@
 		</div>
 
 		<div class="uk-width-1-1@s uk-width-1-5@m" id="recipient-dropdown" style="vertical-align: top;">
-			<select id="filter-by-owner-project" class="uk-select filter-drops uk-width-1-1" onchange="filterByOwnerProject();">
+			<select id="filter-by-owner-project" class="uk-select filter-drops uk-width-1-1" onchange="filterProjectCommunications();">
 				<option value="all" selected="">
 					FILTER BY RECIPIENT
 				</option>
@@ -91,92 +73,62 @@
 			@endforeach
 			@endif
 		</div>
-	</div>
-
 		<div class="uk-width-1-1 uk-margin-top uk-margin-left" id="communications-tab-pages-and-filters-2" >
 			{{ $messages->links() }}
 		</div>
-		<div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
-			<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
-		</div>
-</div>
-		<script>
-			window.project_detail_tab_2 = 1;
+	</div>
 
-			$(document).ready(function(){
-				var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
-				$('#communications-tab-pages-and-filters .page-link').click(function(){
-					$('#project_communications-table').html(tempdiv);
-					$('#project_communications_tab').load($(this).attr('href'));
+
+	<div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
+		<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
+	</div>
+</div>
+<script>
+	window.project_detail_tab_2 = 1;
+
+	$(document).ready(function(){
+		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+		$('#communications-tab-pages-and-filters .page-link').click(function(){
+			$('#project_communications-table').html(tempdiv);
+			$('#project_communications_tab').load($(this).attr('href'));
 					// window.currentDocumentsPage = $(this).attr('href');
 					return false;
 				});
 
-				$('#communications-tab-pages-and-filters-2 .page-link').click(function(){
-					$('#project_communications-table').html(tempdiv);
-					$('#project_communications_tab').load($(this).attr('href'));
-					return false;
-				});
-			});
+		$('#communications-tab-pages-and-filters-2 .page-link').click(function(){
+			$('#project_communications-table').html(tempdiv);
+			$('#project_communications_tab').load($(this).attr('href'));
+			return false;
+		});
+	});
 
-			function filterByOwnerProject(session = 1){
-				// debugger;
-				var myGrid = UIkit.grid($('#communication-list-project'), {
-					controls: '#message-filters',
-					animation: false
-				});
-				var textinput = $("#filter-by-owner-project").val();
+	function filterProjectCommunications(from = '') {
+		if(from == 'attachment' && !$("#project-communication-document-button").hasClass("uk-button-success")) {
+			var filterAttachment = 1;
+		} else if(from != 'attachment' && $("#project-communication-document-button").hasClass("uk-button-success")) {
+			var filterAttachment = 1;
+		} else {
+			var filterAttachment = 0;
+		}
+		var filterBySearch = $("#communications-project-search").val();
+		var filterByReceipient = $("#filter-by-owner-project").val();
+		var myGrid = UIkit.grid($('#communication-list'), {
+			controls: '#message-filters',
+			animation: false
+		});
 
-				@if($current_user->isFromEntity(1))
-				// $('#filter-by-program').prop('selectedIndex',0);
-				@endif
-				// filterElement(textinput, '.filter_element_project');
-				if(session == 1) {
-					$.post('{{ URL::route("communications.filter-recipient-project") }}', {
-						'filter_recipient_project' : $("#filter-by-owner-project").val(),
-						'_token' : '{{ csrf_token() }}'
-					}, function(data) {
-						if(data[0]!='1'){
-							UIkit.modal.alert(data);
-						}
-						searchMessages();
-					});
-				}
-
+		$.post('{{ URL::route("communications.project-filters") }}', {
+			'filter_recipient' : filterByReceipient,
+			'filter_attachment' : filterAttachment,
+			'filter_search' : filterBySearch,
+			'_token' : '{{ csrf_token() }}'
+		}, function(data) {
+			if(data[0]!='1'){
+				UIkit.modal.alert(data);
 			}
-
-			function filterElement(filterVal, filter_element_project){
-				if (filterVal === 'all') {
-					$(filter_element_project).show();
-				}
-				else {
-					$(filter_element_project).hide().filter('.' + filterVal).show();
-				}
-				UIkit.update(event = 'update');
-			}
-
-			function filterByProgram(){
-				var myGrid = UIkit.grid($('#communication-list-project'), {
-					controls: '#message-filters',
-					animation: false
-				});
-				var textinput = $("#filter-by-program").val();
-				$('#filter-by-owner-project').prop('selectedIndex',0);
-				filterElement(textinput, '.filter_element_project');
-			}
-
-			function searchMessages(){
-				$.post('{{ URL::route("communications.search") }}', {
-					'communications-search' : $("#communications-project-search").val(),
-					'_token' : '{{ csrf_token() }}'
-				}, function(data) {
-					if(data[0]!='1'){
-						UIkit.modal.alert(data);
-					} else {
-						$('#project-detail-tab-2').trigger('click');
-					}
-				} );
-			}
+			$('#project-detail-tab-2').trigger('click');
+		});
+	}
 
 
 			function closeOpenMessage(){
@@ -195,20 +147,12 @@
 
 		 // process search
 		 $(document).ready(function() {
-		 	$('.filter-attachments-button').click(function () {
-		 		if( $(this).hasClass('uk-button-success') ){
-		 			$(this).removeClass('uk-button-success');
-		 			$('#filter-none').trigger('click');
-		 		}else{
-		 			$(this).addClass('uk-button-success');
-		 			$('#filter-attachments').trigger('click');
-		 		}
-		 	});
 
-		 	filterByOwnerProject(0);
+		 	// filterByOwnerProject(0);
 		 	$('#communications-project-search').keydown(function (e) {
 		 		if (e.keyCode == 13) {
-		 			searchMessages();
+		 			filterProjectCommunications();
+		 			// searchMessages();
 		 			e.preventDefault();
 		 			return false;
 		 		}
@@ -216,18 +160,6 @@
 
 
 		 	var $filteredElements = $('.filter_element_project');
-		 	$('.filter_link').click(function (e) {
-		 		e.preventDefault();
-	        // get the category from the attribute
-	        var filterVal = $(this).data('filter');
-	        filterElement(filterVal, '.filter_element_project');
-
-	        // reset dropdowns
-	        $('#filter-by-owner-project').prop('selectedIndex',0);
-	        @if($current_user->isFromEntity(1))
-	        $('#filter-by-program').prop('selectedIndex',0);
-	        @endif
-	      });
 
 		 });
 		</script>

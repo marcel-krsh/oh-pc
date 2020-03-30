@@ -246,7 +246,7 @@
 	    		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);
 	        //loadParcelSubTab('communications',id);
 	        @else
-	            				$('#detail-tab-2').trigger('click');
+  					$('#detail-tab-2').trigger('click');
         //loadDashBoardSubTab('dashboard','communications');
         @endif
         dynamicModalClose();
@@ -259,7 +259,8 @@
 			updateCommunicationRow("{{ $message->id }}");
 			// $('#project-detail-tab-2').trigger('click');
 		@else
-			$('#detail-tab-2').trigger('click');
+			updateMainCommunicationRow("{{ $message->id }}");
+			// $('#detail-tab-2').trigger('click');
 		@endif
 
 		function communicationDocuments(projectId) {

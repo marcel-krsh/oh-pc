@@ -19,7 +19,7 @@
 		* Group 6
 		* 	New Message
 		*
-		 --}}
+		--}}
 		<div uk-grid class="uk-grid-collapse uk-visible@m uk-width-1-5@m">
 			{{-- Group 1, Inbox and Sent message --}}
 			<div class="uk-button-group uk-margin-medium-left">
@@ -45,15 +45,15 @@
 		{{-- Group 2, Attachments and conversation list view --}}
 		<div class=" uk-width-1-1@s uk-width-1-5@m">
 			<div uk-grid>
-				<button class="uk-button-large uk-button-default filter-attachments-button uk-width-1-5" uk-tooltip="pos:top-left;title:Show results with attachments">
+				<button id="main-communication-document-button" class="uk-button-large uk-button-default filter-attachments-button uk-width-1-5 {{ session('filter-attachment') ? 'uk-button-success' : '' }}" uk-tooltip="pos:top-left;title:Show results with attachments" onclick="filterMainCommunications('attachment')">
 					<i class="a-paperclip-2"></i>
 				</button>
-				<input id="communications-search" name="communications-search" type="text" value="{{ Session::get('communications-search') }}" class="uk-width-4-5 uk-input" placeholder="Search Messages Or Audit ID (press enter)">
+				<input id="communications-search" name="communications-search" type="text" value="{{ Session::get('filter-search') }}" class="uk-width-4-5 uk-input" placeholder="Search Messages Or Audit ID (press enter)">
 			</div>
 		</div>
 
 		<div class="uk-width-1-1@s uk-width-1-5@m" id="recipient-dropdown" style="vertical-align: top;">
-			<select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="filterByOwner();">
+			<select id="filter-by-owner" class="uk-select filter-drops uk-width-1-1" onchange="filterMainCommunications();">
 				<option value="all" selected="">
 					FILTER BY RECIPIENT
 				</option>
@@ -65,12 +65,12 @@
 
 		@if(count($projects_array) > 0)
 		<div class="uk-width-1-1@s uk-width-1-5@m" style="vertical-align: top;">
-			<select id="filter-by-program" class="uk-select filter-drops uk-width-1-1" onchange="filterByProgram();">
+			<select id="filter-by-program" class="uk-select filter-drops uk-width-1-1" onchange="filterMainCommunications();">
 				<option value="all" selected="">
 					FILTER BY PROJECT
 				</option>
 				@foreach ($projects_array as $projects)
-				<option value="program-{{ $projects->id }}"><a  class="uk-dropdown-close">{{ $projects->project_name }}</a></option>
+				<option {{ (session()->has('filter-project') && session()->get('filter-project') == 'program-' . $projects->id) ? 'selected=selected' : ''  }} value="program-{{ $projects->id }}"><a  class="uk-dropdown-close">{{ $projects->project_name }}</a></option>
 				@endforeach
 			</select>
 		</div>
@@ -81,147 +81,79 @@
 				<span>NEW MESSAGE</span>
 			</a>
 		</div>
-		<div class="uk-width-1-1 uk-margin-remove uk-text-right">
-
-				@php
-				$unreadCount = 0;
-				foreach ($messages as $urc) {
-					if ($urc->recipients->where('user_id', Auth::User()->id)->where('seen', null)->count()) {
-						$unreadCount++;
-					}
+		<hr class="uk-width-1-1 uk-margin-top">
+		<div class="uk-width-2-3 uk-margin-top" id="main-communications-tab-pages-and-filters" >
+			{{ $messages->links() }}
+		</div>
+		<div class="uk-width-1-3  uk-text-right">
+			@php
+			$unreadCount = 0;
+			foreach ($messages as $urc) {
+				if ($urc->recipients->where('user_id', $current_user->id)->where('seen', null)->count()) {
+					$unreadCount++;
 				}
-				@endphp
-
-				<div class="uk-align-right uk-label  uk-margin-top ">{{ $unreadCount }} UNREAD MESSAGES </div>
+			}
+			@endphp
+			<div class="uk-align-right uk-label  uk-margin-top ">{{ $unreadCount }} UNREAD MESSAGES </div>
 		</div>
 	</div>
-</div>
-
-@if(count($messages))
-<div uk-grid class="uk-margin-top uk-visible@m">
-	<div class="uk-width-1-1">
-		<div uk-grid>
-			<div class=" uk-width-1-5@m uk-width-1-1@s">
-				<div class="uk-margin-small-left"><small><strong>RECIPIENTS</strong></small></div>
-			</div>
-			<div class="uk-width-1-5@m uk-width-1-1@s">
-				<div class="uk-margin-small-left"><small><strong>AUDIT | PROJECT</strong></small></div>
-			</div>
-			<div class="uk-width-2-5@m uk-width-1-1@s">
-				<div class="uk-margin-small-left"><small><strong>SUMMARY</strong></small></div>
-			</div>
-			<div class="uk-width-1-5@m uk-width-1-1@s uk-text-right">
-				<div class="uk-margin-right"><small><strong>DOCUMENTS</strong></small></div>
+	<div id="main_communications-table">
+		@if(count($messages))
+		<div uk-grid class="uk-margin-top uk-visible@m">
+			<div class="uk-width-1-1">
+				<div uk-grid>
+					<div class=" uk-width-1-5@m uk-width-1-1@s">
+						<div class="uk-margin-small-left"><small><strong>RECIPIENTS</strong></small></div>
+					</div>
+					<div class="uk-width-1-5@m uk-width-1-1@s">
+						<div class="uk-margin-small-left"><small><strong>AUDIT | PROJECT</strong></small></div>
+					</div>
+					<div class="uk-width-2-5@m uk-width-1-1@s">
+						<div class="uk-margin-small-left"><small><strong>SUMMARY</strong></small></div>
+					</div>
+					<div class="uk-width-1-5@m uk-width-1-1@s uk-text-right">
+						<div class="uk-margin-right"><small><strong>DOCUMENTS</strong></small></div>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-@endif
+		@endif
 
-<div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list" style="width: 98%">
-	@if(count($messages))
-	@foreach ($messages as $message)
-	<div class="@if($message->recipients->where('owner_id','<>',$current_user->id)->where('user_id',Auth::User()->id)->where('seen','<>',null)->count())user_comms_read @endif filter_element uk-width-1-1 communication-list-item @if($message->message_recipients) @foreach($message->message_recipients as $mr) staff-{{ $mr->id }} @endforeach @endif @if($message->project)program-{{ $message->project->id }}@endif  @if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1; @if($message->recipients->where('user_id',Auth::User()->id)->where('seen',null)->count()) font-weight: bold; @endif" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif'); ">
-		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
-
-			@if($message->owner->id == $current_user->id)
-			<div class="uk-width-1-5@m uk-width-1-2@s communication-item-tt-to-from uk-margin-small-bottom" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')">
-				<div class="communication-item-date-time">
-					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small><br>
-					<span>
-						FROM: Me<hr class="dashed-hr uk-margin-bottom uk-width-1-1">
-							@if(count($message->message_recipients))TO:
-								<?php $recipients = $message->message_recipients->where('id', '<>', $current_user->id);?>
-								@if(count($recipients)>0)
-									@foreach($recipients as $recipient)
-										@if($recipient->pivot->seen != 1)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endif
-											{{ $recipient->full_name() }}@if($recipient->pivot->seen != 1)</strong>@endif{{ !$loop->last ? ', ': '' }}
-									@endforeach
-								@else
-									Me
-								@endif
-							@endif
-					</span>
-				</div>
-				@if($message->unseen > 0)
-				<div class="uk-label no-text-shadow user-badge-{{ Auth::user()->badge_color }}" uk-tooltip="pos:top-left;title:{{ $message->unseen }} unread messages">{{ $message->unseen }}</div>
-				@endif
+		<div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list" style="width: 98%">
+			@if(count($messages))
+			@foreach ($messages as $message)
+			<div id="main-communication-row-{{ $message->id }}" style="width: 100%">
+				@include('projects.partials.main-communication-row')
 			</div>
-			@else
-			<div class="uk-width-1-5@m uk-width-3-6@s communication-item-tt-to-from uk-margin-small-bottom" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
-				<div class="communication-item-date-time">
-					<small>{{ date("m/d/y", strtotime($message->created_at)) }} {{ date('h:i a', strtotime($message->created_at)) }}</small>
-				</div>
-				FROM: {{ $message->owner->full_name() }}<hr class="dashed-hr uk-margin-bottom uk-width-1-1"> @if(count($message->message_recipients))TO:
-					@foreach ($message->message_recipients->where('id', '<>', $message->owner_id) as $recipient)
-						@if($recipient->id != $current_user->id && $message->owner != $recipient && $recipient->name != '')
-					{{-- {{ dd($recipient) }} --}}
-							@if($recipient->pivot->seen == null)<strong uk-tooltip title="HAS NOT READ THIS MESSAGE">@endif
-								{{ $recipient->full_name() }}{{ !$loop->last ? ', ': '' }}
-							@if($recipient->pivot->seen == null)</strong>@endif
-						@elseif($recipient->id == $current_user->id)
-							Me{{ !$loop->last ? ', ': '' }}
-						@endif
-					@endforeach
-				@endif
-				@if($message->unseen > 0)
-				<div class="uk-label no-text-shadow user-badge-{{ Auth::user()->badge_color }}" uk-tooltip="pos:top-left;title:{{ $message->unseen }} unread messages">{{ $message->unseen }}</div>
-				@endif
-			</div>
+			@endforeach
 			@endif
-
-			<div class="uk-width-1-5@s communication-type-and-who uk-hidden@m uk-text-right " >
-				<div class="uk-margin-right">
-					@if($message->audit_id && $message->audit && $message->audit->cached_audit)
-					<p style="margin-bottom:0">{{ $message->audit_id }} | {{ $message->project->project_number }} : {{ $message->project->project_name }}</p>
-					<p class="uk-visible@m" style="margin-top:0" >
-						<small>{{ $message->audit->cached_audit->address }},
-							{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->cached_audit->zip }}
-						</small>
-					</p>
-					@endif
-				</div>
-			</div>
-			<div class="uk-width-1-5@m communication-item-parcel uk-visible@m">
-				@if($message->audit_id && $message->audit && $message->audit->cached_audit)
-				<p style="margin-bottom:0"><a class="uk-link-muted">{{ $message->audit_id }} | {{ $message->project->project_number }} : {{ $message->project->project_name }}</a></p>
-				<p class="uk-visible@m" style="margin-top:0"   >
-					<small>{{ $message->audit->cached_audit->address }},
-						{{ $message->audit->cached_audit->city }}, @if($message->audit->cached_audit->state){{ $message->audit->cached_audit->state }} @endif {{ $message->audit->cached_audit->zip }}
-					</small>
-				</p>
-				@endif
-			</div>
-			<div class="uk-width-3-5@m uk-width-1-1@s communication-item-excerpt " onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
-				@if(count($message->local_documents) > 0 || count($message->docuware_documents) > 0)
-				<div uk-grid class="uk-grid-collapse">
-					<div class="uk-width-5-6@m uk-width-1-1@s communication-item-excerpt" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
-						@if($message->subject){{ $message->subject }}:<hr class="dashed-hr" /> @endif
-						{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endif
-					</div>
-					<div class="uk-width-1-6@m uk-width-1-1@s communication-item-excerpt uk-align-center" onclick="dynamicModalLoad('communication/0/replies/@if($message->parent_id){{ $message->parent_id }} @else{{ $message->id }} @endif')" >
-						<div class="communication-item-attachment uk-margin-large-left">
-							<span uk-tooltip="pos:top-left;title:@foreach($message->local_documents as $document) {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} <br> @endforeach @foreach($message->docuware_documents as $document) {{ ucwords(strtolower($document->document_class)) }} : {{ ucwords(strtolower($document->document_description)) }} @endforeach">
-								<i class="a-paperclip-2"></i>
-							</span>
-						</div>
-					</div>
-				</div>
-				@else
-				@if($message->subject){{ $message->subject }}<hr class="dashed-hr" />@endif
-				{!! str_replace('<br /><br />', '</p><p>',nl2br(substr($message->message,0,100))) !!} @if(strlen($message->message) > 100)...@endif
-				@endif
-			</div>
+		</div>
+		<div class="uk-width-1-1 uk-margin-top uk-margin-left" id="main-communications-tab-pages-and-filters-2" >
+			{{ $messages->links() }}
 		</div>
 	</div>
-	@endforeach
-	@endif
-</div>
-<div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
-	<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
+	<div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
+		<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
+	</div>
 </div>
 
 <script>
+
+	$(document).ready(function(){
+		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+		$('#main-communications-tab-pages-and-filters .page-link').click(function(){
+			$('#main_communications-table').html(tempdiv);
+			$('#communications_tab').load($(this).attr('href'));
+			// window.currentDocumentsPage = $(this).attr('href');
+			return false;
+		});
+
+		$('#main-communications-tab-pages-and-filters-2 .page-link').click(function(){
+			$('#main_communications-table').html(tempdiv);
+			$('#communications_tab').load($(this).attr('href'));
+			return false;
+		});
+	});
 
 	function switchInbox(){
 		var trigger = 'communication_inbox';
@@ -256,75 +188,9 @@
 		});
 	}
 
-	function filterByOwner(session = 1){
-		var myGrid = UIkit.grid($('#communication-list'), {
-			controls: '#message-filters',
-			animation: false
-		});
-		var textinput = $("#filter-by-owner").val();
-
-		@if(Auth::user()->isFromEntity(1))
-		$('#filter-by-program').prop('selectedIndex',0);
-		@endif
-		filterElement(textinput, '.filter_element');
-		if(session == 1) {
-			$.post('{{ URL::route("communications.filter-recipient") }}', {
-				'filter_recipient' : $("#filter-by-owner").val(),
-				'_token' : '{{ csrf_token() }}'
-			}, function(data) {
-				if(data[0]!='1'){
-					UIkit.modal.alert(data);
-				}
-			});
-		}
-	}
-
-	function filterElement(filterVal, filter_element){
-		if (filterVal === 'all') {
-			$(filter_element).show();
-		}
-		else {
-			$(filter_element).hide().filter('.' + filterVal).show();
-		}
-		UIkit.update(event = 'update');
-	}
-
-	function filterByProgram(){
-		var myGrid = UIkit.grid($('#communication-list'), {
-			controls: '#message-filters',
-			animation: false
-		});
-		var textinput = $("#filter-by-program").val();
-		$('#filter-by-owner').prop('selectedIndex',0);
-		filterElement(textinput, '.filter_element');
-	}
-
-	function searchMessages(){
-		$.post('{{ URL::route("communications.search") }}', {
-			'communications-search' : $("#communications-search").val(),
-			'_token' : '{{ csrf_token() }}'
-		}, function(data) {
-			if(data[0]!='1'){
-				UIkit.modal.alert(data);
-			} else {
-				$('#detail-tab-2').trigger('click');
-			}
-		});
-	}
 
 	function showDraftMessages(){
 		loadTab("{{ URL::route('communications.show-draft-messages') }}", '2','','','',1);
-
-		// $.post('{{ URL::route("communications.show-drafts") }}', {
-		// 	'_token' : '{{ csrf_token() }}'
-		// }, function(data) {
-		// 	if(data[0]!='1'){
-		// 		UIkit.modal.alert(data);
-		// 	} else {
-		// 		$('#detail-tab-2').trigger('click');
-		// 	}
-		// });
-
 	}
 
 
@@ -353,46 +219,61 @@
 			$('.user_comms_read').slideUp();
 		}
 	}
-	 // process search
-	 $(document).ready(function() {
-	 	$('.filter-attachments-button').click(function () {
-	 		if( $(this).hasClass('uk-button-success') ){
-	 			$(this).removeClass('uk-button-success');
-	 			$('#filter-none').trigger('click');
-	 		}else{
-	 			$(this).addClass('uk-button-success');
-	 			$('#filter-attachments').trigger('click');
-	 		}
+
+
+
+
+	 function filterMainCommunications(from = ''){
+	 	// debugger;
+	 	if(from == 'attachment' && !$("#main-communication-document-button").hasClass("uk-button-success")) {
+		 	var filterAttachment = 1;
+	 	} else if(from != 'attachment' && $("#main-communication-document-button").hasClass("uk-button-success")) {
+			var filterAttachment = 1;
+	 	} else {
+	 		var filterAttachment = 0;
+	 	}
+	 	var filterBySearch = $("#communications-search").val();
+	 	var filterByReceipient = $("#filter-by-owner").val();
+	 	var filterByProject = $("#filter-by-program").val();
+	 	var myGrid = UIkit.grid($('#communication-list'), {
+	 		controls: '#message-filters',
+	 		animation: false
 	 	});
 
-	 	filterByOwner(0);
-	 	$('#communications-search').keydown(function (e) {
-	 		if (e.keyCode == 13) {
-	 			searchMessages();
-	 			e.preventDefault();
-	 			return false;
+	 	$.post('{{ URL::route("communications.main-filters") }}', {
+	 		'filter_recipient' : filterByReceipient,
+	 		'filter_attachment' : filterAttachment,
+	 		'filter_search' : filterBySearch,
+	 		'filter_project' : filterByProject,
+	 		'_token' : '{{ csrf_token() }}'
+	 	}, function(data) {
+	 		if(data[0]!='1'){
+	 			UIkit.modal.alert(data);
 	 		}
+	 		$('#detail-tab-2').trigger('click');
 	 	});
+	 }
 
-	 	var $filteredElements = $('.filter_element');
-	 	$('.filter_link').click(function (e) {
+	 $('#communications-search').keydown(function (e) {
+	 	if (e.keyCode == 13) {
+	 		filterMainCommunications();
 	 		e.preventDefault();
-            // get the category from the attribute
-            var filterVal = $(this).data('filter');
-            filterElement(filterVal, '.filter_element');
-
-            // reset dropdowns
-            $('#filter-by-owner').prop('selectedIndex',0);
-            @if(Auth::user()->isFromEntity(1))
-            $('#filter-by-program').prop('selectedIndex',0);
-            @endif
-          });
-	 	// reset view based on previous selection
-	 	if(window.user_comms_read == 1){
-	 		console.log('Hiding Read Messages');
-			$('#user-comm-read-toggle').addClass('uk-button-success');
-			$('.user_comms_read').hide();
-		}
-
+	 		return false;
+	 	}
 	 });
-	</script>
+
+
+	 	function updateMainCommunicationRow(communicationId){
+	 		var newContent = $('#main-communication-row-'+communicationId);
+	 		var tempdiv = '<div style="height:200px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+	 		$(newContent).html(tempdiv);
+	 		$(newContent).load("{{ url('communications/single-communication') }}/"+communicationId, function(response) {
+	 			if (response == "error") {
+	 				var msg = "<h2>SERVER ERROR 500 :(</h2><p>I ran into trouble processing your request - the server says it had an error.</p><p>It looks like everything else is working though. Please contact support and let them know how you came to this page and what you clicked on to trigger this message.</p>";
+	 				UIkit.modal(msg, {center: true, bgclose: false, keyboard:false,  stack:true}).show();
+	 			} else {
+						$(newContent).html(response);
+					}
+				});
+	 	}
+	 </script>
