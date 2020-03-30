@@ -952,13 +952,13 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::post('/upload_photo', function (Request $request) {
             try {
                 $uid =  $request->get('uid');
-                $parcel_id =  $request->get('parcel_id');
+                $audit_id =  $request->get('audit_id');
                 $recorded_date =  $request->get('recorded_date');
-                $site_visit_id =  $request->get('site_visit_id');
+                $finding_id =  $request->get('finding_id');
                 $notes =  $request->get('notes');
                 $latitude =  $request->get('latitude');
                 $longitude =  $request->get('longitude');
-                $correction_id =  $request->get('correction_id');
+                //$correction_id =  $request->get('correction_id');
                 $comment_id =  $request->get('comment_id');
                 $deleted =  $request->get('deleted');
                 $user_id =  $request->get('user_id');
@@ -967,82 +967,86 @@ Route::get('/users/verify_user', function (Request $request) {
 
                 //if($user)
                 //{
-                $parcel = Parcel::where("id", $parcel_id)->first();
+                $audit = CachedAudit::where("audit_id", $audit_id)->first();
 
-                if ($parcel) {
+                if ($audit) {
                     if ($request->hasFile('photo')) {
-                        $file = $request->file('photo');
+                        //$file = $request->file('photo');
 
-                        $photo_id = '';
+                        //$photo_id = '';
 
 
                         //$user = Auth::user();
 
                         // Create filepath
-                        $folderpath = 'photos/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
+                        // $folderpath = 'photos/entity_'. $parcel->entity_id . '/program_' . $parcel->program_id . '/parcel_' . $parcel->id . '/';
 
-                        // sanitize filename
-                        $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
-                        $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
-                        $original_ext =  $file->getClientOriginalExtension();
+                        // // sanitize filename
+                        // $characters = [' ','�','`',"'",'~','"','\'','\\','/'];
+                        // $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
+                        // $original_ext =  $file->getClientOriginalExtension();
 
                         // Create a record in photos table
-                        $photo = new Photo([
-                        'uid' => $uid,
-                        'user_id' => $user_id,
-                        'parcel_id' => $parcel->id,
-                        'recorded_date' =>  $recorded_date,
-                        'site_visit_id' =>  $site_visit_id,
-                        'notes' =>  $notes,
-                        'latitude' =>  $latitude ,
-                        'longitude' =>  $longitude,
-                        'deleted' =>  false
-                        ]);
+                        // $photo = new Photo([
+                        // 'uid' => $uid,
+                        // 'user_id' => $user_id,
+                        // 'parcel_id' => $parcel->id,
+                        // 'recorded_date' =>  $recorded_date,
+                        // 'site_visit_id' =>  $site_visit_id,
+                        // 'notes' =>  $notes,
+                        // 'latitude' =>  $latitude ,
+                        // 'longitude' =>  $longitude,
+                        // 'deleted' =>  false
+                        // ]);
 
-                        if ($comment_id == '') {
-                            $photo->comment_id =  null;
-                        } else {
-                            $photo->comment_id =  $comment_id;
-                        }
-                        if ($correction_id == '') {
-                            $photo->correction_id =  null;
-                        } else {
-                            $photo->correction_id =  $correction_id;
-                        }
+                        
+                            $data = [];
+                            $user = User::find($user_id);
+                            $files = $request->file('photo');
 
-                        $photo->save();
+                            foreach ($files as $file) {
+                                $selected_audit = $audit;
 
-                        $photo_id = $photo->id;
+                                $folderpath = 'photos/project_' . $audit->project->project_number . '/audit_' . $selected_audit->audit_id . '/';
+                                $characters = [' ', '´', '`', "'", '~', '"', '\'', '\\', '/'];
+                                $original_filename = str_replace($characters, '_', $file->getClientOriginalName());
+                                $file_extension = $file->getClientOriginalExtension();
+                                $filename = pathinfo($original_filename, PATHINFO_FILENAME);
+                                $photo = new Photo([
+                                    'user_id' => $user->id,
+                                    'project_id' => $project->id,
+                                    'audit_id' => $selected_audit->id,
+                                    'notes' => $request->comment,
+                                    'finding_id' => $request->finding_id,
+                                ]);
+                                $photo->save();
 
-                        $filename = $uid . '.' . $original_ext;
-                        $filepath = $folderpath . $filename;
+                                // Sanitize filename and append document id to make it unique
+                                $filename = snake_case(strtolower($filename)) . '_' . $photo->id . '.' . $file_extension;
+                                $filepath = $folderpath . $filename;
+                                $photo->update([
+                                    'file_path' => $filepath,
+                                    'filename' => $filename,
+                                ]);
 
-                        $photo->file_path = $filepath;
-                        $photo->filename = $filename;
-                        $photo->update();
+                                // store original file
+                                Storage::put($filepath, File::get($file));
+                                $data[] = [
+                                    'id' => $photo->id,
+                                    'filename' => $filename,
+                                ];
+                            }
+                            return json_encode($data);
+                        
 
-                        //$photo->update([
-                        //    'file_path' => $filepath,
-                        //    'filename' =>  $filename
-                        //]);
-
-                        Storage::put($filepath, File::get($file));
-
-                        $data = [];
-                        $data['photo_id'] = $photo_id;
-                        $data['filename'] = $filename;
-                        $data['filepath'] = $filepath;
-                        $data['comment_id'] = $comment_id;
-                        $data['correction_id'] = $correction_id;
-
-                        return response()->json($data);
+                        
                     } else {
                         return response($request->all());
                     }
                 } else {
-                    return response('No Parcel');
+                    return response('No Audit');
                 }
-                //}
+                
             } catch (Exception $e) {
                 throw $e;
             }
