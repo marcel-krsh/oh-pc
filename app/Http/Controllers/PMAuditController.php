@@ -2532,6 +2532,7 @@ class PMAuditController extends Controller
 	}
 	public function pmBuildingsFromAudit($audit, Request $request)
 	{
+		$audit = CachedAudit::where('audit_id',$audit)->first();
 		$target = $request->get('target');
 		$context = $request->get('context');
 		$canViewFindings = in_array($audit->step_id, $this->pmCanViewFindingsStepIds);
@@ -2547,6 +2548,7 @@ class PMAuditController extends Controller
 		}
 		// check if user can see that audit TBD
 		//
+		$audit = $audit->audit_id;
 
 		// start by checking each cached_building and make sure there is a clear link to amenity_inspection records if this is a building-level amenity
 		// return CachedBuilding::first();
