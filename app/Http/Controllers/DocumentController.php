@@ -486,6 +486,9 @@ class DocumentController extends Controller
 		$document_findings = $document->all_findings();
 		$buildings = !is_null($document->building_ids) ? ($document->building_ids) : [];
 		$units = !is_null($document->unit_ids) ? ($document->unit_ids) : [];
+		$unitCollection = !is_null($document->units) ? ($document->units) : collect([]);
+		$buildingCollection = !is_null($document->buildings) ? ($document->buildings) : collect([]);
+
 		// if(!is_array($units))
 		// dd($document);
 		$audits_ids = ($document->audits->pluck('id')->toArray());
@@ -499,7 +502,7 @@ class DocumentController extends Controller
 
 		$resolved_findings = count(collect($document_findings)->where('auditor_approved_resolution', 1));
 		$unresolved_findings = count($document_findings) - $resolved_findings;
-		return view('projects.partials.local-documents-row', compact('document', 'all_ids', 'document_findings', 'unresolved_findings', 'resolved_findings', 'site_findings', 'building_findings', 'unit_findings', 'buildings', 'units'));
+		return view('projects.partials.local-documents-row', compact('document', 'all_ids', 'document_findings', 'unresolved_findings', 'resolved_findings', 'site_findings', 'building_findings', 'unit_findings', 'buildings', 'units', 'unitCollection', 'buildingCollection'));
 	}
 
 	public function getPMProjectDocuments(Project $project, Request $request)
