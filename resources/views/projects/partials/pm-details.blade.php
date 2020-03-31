@@ -95,7 +95,7 @@ if($canViewBoth){
 							{{$selected_audit->lead_json->initials}}
 						</span>
 
-						
+
 
 					</div>
 					<div class="uk-width-3-5" style="padding-left:1.2em">
@@ -139,7 +139,7 @@ if($canViewBoth){
 								<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 
 									<div class="uk-width-1-3">
-										
+
 										<?php
 												$carIcon = $selected_audit->car_icon;
 												$ehsIcon = $selected_audit->ehs_icon;
@@ -152,7 +152,7 @@ if($canViewBoth){
 												$_8823Status = $selected_audit->_8823_status_text;
 											  ?>
 											  @if($carIcon)
-											  <a class="uk-link-mute" href="/report/{{$carId}}" target="report-{{$carId}}" uk-tooltip="title:VIEW CAR {{$carId}} : {{strtoupper($carStatus)}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a> 
+											  <a class="uk-link-mute" href="/report/{{$carId}}" target="report-{{$carId}}" uk-tooltip="title:VIEW CAR {{$carId}} : {{strtoupper($carStatus)}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a>
 											  <br /><small>CAR #{{$carId}}</small>
 
 											  @else
@@ -160,10 +160,10 @@ if($canViewBoth){
 											  @endIf
 											</div><div class="uk-width-1-3">
 												@if(($ehsIcon))
-												
+
 											  		<a class="uk-link-mute" href="/report/{{$ehsId}}" target="report-{{$ehsId}}" uk-tooltip="title:{{$ehsStatus}}"><i class="{{$ehsIcon}}" style="font-size: 30px;" ></i></a>
 
-											  
+
 											 		 <br /><small>EHS #{{$ehsId}}</small></a>
 											  @else
 											  <i class="a-file-fail" uk-tooltip="title:EHS UNAVAILABLE" ></i><br /><small>EHS</small>
@@ -172,10 +172,10 @@ if($canViewBoth){
 											<div class="uk-width-1-3">
 												@if(env('APP_ENV') != 'production')
 												@if(($_8823Icon))
-												
+
 											  <a class="uk-link-mute" href="/report/{{$_8823Id}}" target="report-{{$_8823Id}}" uk-tooltip="title:{{$_8823Status}}" ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
 
-											  
+
 											  <br /><small>8823 #{{$_8823Id}}</small></a>
 											  @else
 											   <i class="a-file-fail" uk-tooltip="title:8823 UNAVAILABLE" ></i><br /><small>8823</small>
@@ -211,7 +211,7 @@ if($canViewBoth){
 
 										</div>
 									</div>
-									<div class="uk-width-1-5 iconpadding  pd-findings-column uk-text-center" onclick="dynamicModalLoad('audits/{{$selected_audit->audit_id}}/updateStep?details_refresh=1',0,0,0);">
+									<div class="uk-width-1-5 iconpadding  pd-findings-column uk-text-center" onclick="gotoDocumentUploader()" {{-- onclick="dynamicModalLoad('audits/{{$selected_audit->audit_id}}/updateStep?details_refresh=1',0,0,0);" --}}>
 
 										<i class="a-file-up use-hand-cursor" uk-tooltip title="UPLOAD DOCUMENTS" ></i><br />
 										<small>UPLOAD</small>
@@ -235,9 +235,9 @@ if($canViewBoth){
 				</div>
 				<div class="uk-width-1-3">
 					<div class="audit-info" style="width: 80%;float: left;">
-						
+
 					</div>
-					
+
 				</div>
 			</div>
 		</div>
@@ -261,7 +261,7 @@ if($canViewBoth){
 				{{-- <div class="uk-width-1-4">
 					<button id="project-details-button-1" class="uk-button uk-link " onclick="pmProjectDetailsInfo({{$project->id}}, 'compliance', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-circle-checked"></i> COMPLIANCE</button>
 				</div> --}}
-				{{-- 
+				{{--
 				@if(!is_null($selected_audit->inspection_schedule_date))
 				<div class="uk-width-1-4">
 					<button id="project-details-button-2" class="uk-button uk-link" onclick="pmProjectDetailsInfo({{$project->id}}, 'assignment', {{$selected_audit->audit_id}}, this);" type="button"><i class="a-calendar-person"></i> SCHEDULE</button>
@@ -379,11 +379,11 @@ if($canViewBoth){
 
     }
 
-    
 
-    
 
-		
+
+
+
 
 		$.fn.scrollView = function () {
 			return this.each(function () {
@@ -433,5 +433,13 @@ if($canViewBoth){
 			}, 1000);
 		}
 
-		
+		function gotoDocumentUploader(building = '', unit = '') {
+				window.fromAudit = 1;
+				window.fromBuilding = building;
+				window.fromUnit = unit;
+				$('#project-detail-tab-2').trigger('click');
+				$('#project-documents-button-3').trigger('click');
+		}
+
+
 	</script>

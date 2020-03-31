@@ -8,11 +8,11 @@ if (isset($detailsPage)) {
 @if(!is_null($inspections))
 	<div uk-grid class="uk-margin-bottom pm-building">
 
-		
+
 		<div class="uk-width-1-1 crr-blocks" style="page-break-inside: avoid;">
 			<div id="containerIntro" style="display: flex;">
-				<h2 class="uk-width-1-1@s uk-width-1-5@m">{{ count($allBuildingInspections) }} @if(count($inspections) > 1 || count($inspections) < 1) Buildings @else Building @endIf @if($dpView) Selected: @else Audited: @endIf </h2> 
-				<div class="uk-width-1-2" style="padding-left: 10px;"> 
+				<h2 class="uk-width-1-1@s uk-width-1-5@m">{{ count($allBuildingInspections) }} @if(count($inspections) > 1 || count($inspections) < 1) Buildings @else Building @endIf @if($dpView) Selected: @else Audited: @endIf </h2>
+				<div class="uk-width-1-2" style="padding-left: 10px;">
 			    	{{ $inspections->links() }}
 			    </div>
 			     <div uk-grid class="uk-grid" style="width: 350px;">
@@ -28,10 +28,10 @@ if (isset($detailsPage)) {
 			 	<div class="uk-width-1-1@s uk-width-1-5@m" style="padding-left: 10px;">
 					<label class="switch">
 					  	<input type="checkbox" onchange="pmGetUnCorrectedBuilding(this);" id="uncorrected_checkbox" {{ (session()->has('is_uncorrected') && session()->get('is_uncorrected') == 'true') ? 'checked' : ''  }} >
-					  	<span class="slider round"></span> 
+					  	<span class="slider round"></span>
 					</label> <span class="attention" style="display: inline-block;position: absolute;margin-left: 5px;"> PENDING RESOLUTIONS </span>
 				</div>
-				
+
 			</div>
 			<style>
 				/*for toggler*/
@@ -42,7 +42,7 @@ if (isset($detailsPage)) {
 				  height: 26px;
 				}
 
-				#containerIntro .switch input { 
+				#containerIntro .switch input {
 				  opacity: 0;
 				  width: 0;
 				  height: 0;
@@ -217,13 +217,13 @@ if (isset($detailsPage)) {
 		</div>
 	</div>
 	<hr class="dashed-hr uk-margin-large-bottom">
-			
+
 @else
 	<hr class="dashed-hr">
 	<h3>NO {{ strtoupper($inspections_type) }} INSPECTIONS COMPLETED YET</h3>
 	<hr class="dashed-hr uk-margin-large-bottom">
 @endIf
-		
+
 <script>
-	
+
 </script>
