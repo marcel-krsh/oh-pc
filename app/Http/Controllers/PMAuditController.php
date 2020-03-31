@@ -333,7 +333,7 @@ class PMAuditController extends Controller
 		// types: compliance, assignment, findings, followups, reports, documents, comments, photos
 		// project: project_id?
 		$project = Project::where('id', '=', $id)->first();
-		$audit = CachedAudit::with('auditors', 'audit', 'lead_auditor')->where('audit_id', $audit)->first();
+		$audit = CachedAudit::with('auditors', 'audit.amenity_inspections.user', 'lead_auditor')->where('audit_id', $audit)->first();
 		if($audit == null){
 			return "<h1>Unable to load requested audit - please make sure with your auditor it has been made available to you.</h1>";
 		}
@@ -495,13 +495,13 @@ class PMAuditController extends Controller
 								}else{
 									$selected_units_site = 0;
 								}
-								
+
 								if($canViewFileInspections){
 									$selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_file_audit', '=', 1)->count();
 								}else{
 									$selected_units_file = 0;
 								}
-								
+
 
 								$building_name = '';
 
@@ -515,7 +515,7 @@ class PMAuditController extends Controller
 								}else{
 									$inspected_units_site = 0;
 								}
-								
+
 								if($canViewFileInspections){
 									$inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
 									->where('group_id', '=', $program['group'])
@@ -526,7 +526,7 @@ class PMAuditController extends Controller
 								}else{
 									$inspected_units_file = 0;
 								}
-								
+
 							}
 						} else {
 							if($canViewSiteInspections){
@@ -553,13 +553,13 @@ class PMAuditController extends Controller
 								$selected_units_file = 0;
 								$inspected_units_file = 0;
 							}
-							
+
 
 							$building_name = '';
 
-							
 
-							
+
+
 						}
 
 						$needed_units_site = max($program['required_units'] - $selected_units_site, 0);
@@ -866,7 +866,7 @@ class PMAuditController extends Controller
 							break;
 						case 'building':
 							$allBuildingInspections = $audit->audit->building_inspections;
-				
+
 							$selected_audit = $audit;
 							if(session()->has('type_id') && session()->has('is_uncorrected')){
 								$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
@@ -883,7 +883,7 @@ class PMAuditController extends Controller
 							else{
 								$inspections = $audit->audit->building_inspections()->paginate(12);
 							}
-							
+
 							return view('crr_parts.pm_crr_inspections_building', compact('inspections','allBuildingInspections','dpView','findings','print','report','selected_audit','detailsPage'));
 							break;
 						case 'unit':
@@ -899,7 +899,7 @@ class PMAuditController extends Controller
 								$allUnitInspections1 = $audit->audit->unit_inspections()->groupBy('unit_id')->get();
 								// echo count($allUnitInspections);exit;
 								$unitUnresolvedId = $audit->audit->unitUnResolved($allUnitInspections1, $findings);
-								
+
 								$inspections = $audit->audit->unit_inspections()->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
 							}
 							else if(session()->has('type_id')){
@@ -907,13 +907,13 @@ class PMAuditController extends Controller
 							}else{
 								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
 							}
-							
+
 							return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit'));
 							break;
 						default:
 					}
 				}
-				
+
 				Session::forget('type_id');
 				Session::forget('name');
 				Session::forget('is_uncorrected');
@@ -1174,7 +1174,7 @@ class PMAuditController extends Controller
 		return $calendar;
 	}
 
-	
+
 
 	public function getPMProjectDetailsAssignmentSchedule($project, $dateid)
 	{
@@ -1288,7 +1288,7 @@ class PMAuditController extends Controller
 		return view('projects.partials.details-assignment-schedule', compact('data'));
 	}
 
-	
+
 
 	public function getPMProjectStream($project = null)
 	{
@@ -2408,7 +2408,7 @@ class PMAuditController extends Controller
 		return view('projects.partials.details-assignment-auditor-calendar', compact('data'));
 	}
 
-	
+
 
 	public function pm_reload_auditors($audit_id, $unit_id, $building_id)
 	{
@@ -2452,7 +2452,7 @@ class PMAuditController extends Controller
 		return ['unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors];
 	}
 
-	
+
 
 	public function pmAjaxAuditRequiredUnits(Request $request)
 	{
@@ -2685,7 +2685,7 @@ class PMAuditController extends Controller
 
 		// dd($request->all());
 
-		
+
 		// types:building, unit
 		// project: project_id?
 		// type_id: building or unit id
@@ -2699,7 +2699,7 @@ class PMAuditController extends Controller
 
 		$canViewFindings = 0;
 		$findings = !is_null($document->buildings) ? ($document->buildings) : collect([]);
-		if($audit != null && in_array($audit->step_id, $this->pmCanViewFindingsStepIds)){		
+		if($audit != null && in_array($audit->step_id, $this->pmCanViewFindingsStepIds)){
 			$findings = $audit->audit->findings->where('cancelled_at',NULL);
 			$canViewFindings = 1;
 		}else{
@@ -2721,11 +2721,11 @@ class PMAuditController extends Controller
 		//dd($canViewFindings,in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds), in_array($audit->step_id, $this->pmSiteInspectionsOnlyStepIds));
 
 		switch ($type) {
-			
+
 			case 'building':
 
 				$allBuildingInspections = $audit->audit->building_inspections;
-				
+
 				$selected_audit = $audit;
 				if(session()->has('type_id') && session()->has('is_uncorrected')){
 					$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
@@ -2747,8 +2747,8 @@ class PMAuditController extends Controller
 				else{
 					$inspections = $audit->audit->building_inspections()->paginate(12);
 				}
-				
-				
+
+
 				return view('crr_parts.pm_crr_inspections_building', compact('inspections','allBuildingInspections','dpView','findings','print','report','selected_audit','detailsPage','canViewSiteInspections','canViewFindings','canViewFileInspections'));
 				break;
 			case 'unit':
@@ -2767,7 +2767,7 @@ class PMAuditController extends Controller
 					$allUnitInspections1 = $audit->audit->unit_inspections()->groupBy('unit_id')->get();
 					// echo count($allUnitInspections);exit;
 					$unitUnresolvedId = $audit->audit->unitUnResolved($allUnitInspections1, $findings);
-					
+
 					$inspections = $audit->audit->unit_inspections()->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
 				}
 				else if(session()->has('type_id')){
@@ -2775,12 +2775,12 @@ class PMAuditController extends Controller
 				}else{
 					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
 				}
-				
+
 				return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit','canViewSiteInspections','canViewFindings','canViewFileInspections'));
 				break;
 			default:
 		}
 	}
 
-	
+
 }

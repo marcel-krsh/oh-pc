@@ -30,7 +30,14 @@
 <script>
 
 	$( document ).ready(function() {
-		$('#project-documents-button-2').trigger("click");
+		if(window.fromAudit == 1) {
+			window.fromAudit = 0;
+			// window.fromBuilding = building;
+			// 	window.fromUnit = unit;
+			$('#project-documents-button-3').trigger("click");
+		} else {
+			$('#project-documents-button-2').trigger("click");
+		}
 	});
 
 	function documentsLocal(project_id, audit_id = null, filter = null) {

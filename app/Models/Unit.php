@@ -50,12 +50,19 @@ class Unit extends Model
 	}
 
 	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
-	
+
 	public function documents(): HasMany
 	{
-
-
 		return $this->hasMany(\App\Models\Document::class, 'unit_ids', 'id');
+	}
+
+	public function all_documents()
+	{
+		return $communications = \App\Models\Document::with('audits')->whereJsonContains('unit_ids', "$this->id")->whereHas('audits', function ($query) {
+				$query->where('audit.id', $this->audit_id);
+			})
+			->get();
+		// return $this->hasManyJson('App\Models\Document', 'finding_ids');
 	}
 
 	public function is_market_rate(): int

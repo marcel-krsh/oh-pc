@@ -5,7 +5,7 @@
 	$findingCount = 'findings' . $currentBuilding;
 	if($canViewSiteInspections){
 		$thisBuildingValues = collect($inspections)->where('building_id', $i->building_id)->sortByDesc('is_site_visit');
-	
+
 	}else{
 		$thisBuildingValues = collect([]);
 	}
@@ -24,7 +24,7 @@
 	}
 	if($canViewFindings){
 		$findingCount = collect($findings);
-	
+
 	}else{
 		$findingCount = collect([]);
 	}
@@ -54,7 +54,7 @@
 		$thisBuildingResolvedFileFindings = 0;
 		$thisBuildingUnresolvedFileFindings = 0;
 	}
-	
+
 
 	if ($thisBuildingSiteFindings || $thisBuildingFileFindings) {
 		$hasFindings = 1;

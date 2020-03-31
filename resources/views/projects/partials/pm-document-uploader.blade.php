@@ -295,10 +295,6 @@ if ($currentGroup !== $category->parent_category_name) {
 			</div>
 		</div>
 
-
-
-
-
 	</div>
 </div>
 </div>
@@ -315,7 +311,7 @@ if ($currentGroup !== $category->parent_category_name) {
 				</div>
 				<div class="uk-align-center uk-margin-top">
 					<div id="list-item-upload-step-2" class="noclick">
-						
+
 						<div class="js-upload uk-placeholder uk-text-center">
 							<span class="a-higher"></span>
 							<span class="uk-text-middle"> Please upload your document by dropping it here or</span>
@@ -395,6 +391,7 @@ if ($currentGroup !== $category->parent_category_name) {
 												bar.value = e.loaded;
 											},
 											completeAll: function (response) {
+												// debugger;
 												var data = jQuery.parseJSON(response.response);
 												var documentids = data['document_ids'];
 												setTimeout(function () {
@@ -435,10 +432,26 @@ if ($currentGroup !== $category->parent_category_name) {
 
 	<script type="text/javascript">
 
+		$( document ).ready(function() {
+			if(window.fromBuilding || window.fromUnit) {
+				if(window.fromBuilding) {
+					// $('#upload-document-building-unit [value=3]').attr('selected', 'true');
+					$('#upload-document-building-unit').val('building-'+window.fromBuilding);
+					window.fromBuilding = 0;
+				} else if(window.fromUnit) {
+					// debugger;
+					$('#upload-document-building-unit').val('unit-'+window.fromUnit);
+					window.fromUnit = 0;
+					$('html, body').animate({
+						scrollTop: 200
+					}, 1000);
+				}
+			}
+		});
+
 		$('.document-category-selection').on('click', function(){
 			$('.document-upload-step-2').slideUp();
 			$('.document-upload-step-2-selection').slideDown();
-
 		});
 
 

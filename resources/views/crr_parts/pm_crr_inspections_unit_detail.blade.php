@@ -1,12 +1,12 @@
-<?php 
+<?php
 
-	$siteVisited = [];
-	$fileVisited = [];
-	$nameOutput = [];
-	$loops = 0;
+$siteVisited = [];
+$fileVisited = [];
+$nameOutput = [];
+$loops = 0;
 
-	$currentUnit = 0;
-	//dd($allUnitInspections->where('is_file_audit',1)->groupBy('unit_id'));
+$currentUnit = 0;
+//dd($allUnitInspections->where('is_file_audit',1)->groupBy('unit_id'));
 ?>
 
 @forEach($inspections as $i)
@@ -16,34 +16,34 @@
 
 			@if(!in_array($i->unit_id, $nameOutput))
 				<?php
-				$currentUnit = $i->unit_id;
-				//$thisUnitValues = collect($inspections)->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
-				$thisUnitValues = $allUnitInspections->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
+$currentUnit = $i->unit_id;
+//$thisUnitValues = collect($inspections)->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
+$thisUnitValues = $allUnitInspections->where('unit_id', $i->unit_id)->sortByDesc('is_site_visit');
 
-				//dd($inspections->where('unit_id', $i->unit_id)->where('is_file_audit','1')->count());
-				$thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('cancelled_at',NULL));
-				//$thisUnitUnresolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
-				//$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
-				//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
-				$thisUnitResolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('auditor_approved_resolution', 1)->where('cancelled_at',NULL));
-				$thisUnitUnresolvedFileFindings = $thisUnitFileFindings - $thisUnitResolvedFileFindings;
-				$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('cancelled_at',NULL));
-				//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
-				$thisUnitResolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1)->where('cancelled_at',NULL));
-				$thisUnitUnresolvedSiteFindings = $thisUnitSiteFindings - $thisUnitResolvedSiteFindings;
-				$isHome = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'HOME')->where('cancelled_at',NULL));
-				$isOhtf = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'OHTF')->where('cancelled_at',NULL));
-				$isNhtf = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'NHTF')->where('cancelled_at',NULL));
+//dd($inspections->where('unit_id', $i->unit_id)->where('is_file_audit','1')->count());
+$thisUnitFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('cancelled_at', NULL));
+//$thisUnitUnresolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
+//$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file'));
+//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
+$thisUnitResolvedFileFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', 'file')->where('auditor_approved_resolution', 1)->where('cancelled_at', NULL));
+$thisUnitUnresolvedFileFindings = $thisUnitFileFindings - $thisUnitResolvedFileFindings;
+$thisUnitSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('cancelled_at', NULL));
+//$thisUnitUnresolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('finding_type.auditor_last_approved_at', '=', null));
+$thisUnitResolvedSiteFindings = count(collect($findings)->where('unit_id', $i->unit_id)->where('finding_type.type', '!=', 'file')->where('auditor_approved_resolution', 1)->where('cancelled_at', NULL));
+$thisUnitUnresolvedSiteFindings = $thisUnitSiteFindings - $thisUnitResolvedSiteFindings;
+$isHome = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'HOME')->where('cancelled_at', NULL));
+$isOhtf = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'OHTF')->where('cancelled_at', NULL));
+$isNhtf = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->where('is_file_audit', 1)->where('group', 'NHTF')->where('cancelled_at', NULL));
 
-				//if ($thisBuildingSiteFindings || $thisBuildingFileFindings) {
-				//	$hasFindings = 1;
-				//}
+//if ($thisBuildingSiteFindings || $thisBuildingFileFindings) {
+//	$hasFindings = 1;
+//}
 
-				?>
+?>
 				<div  class="unit-name"  >
-					
+
 					<strong>Unit {{ $i->unit_name }} <?php $nameOutput[] = $i->unit_id;?></strong>  <small>IN</small> {{ $i->building->building_name }} :
-					
+
 					@if($i->unit->bedroomCount())
 					<br />Bedrooms: <strong>{{ $i->unit->bedroomCount() }}</strong>
 					@else
@@ -55,7 +55,7 @@
 					@endIf
 
 
-					
+
 				</div>
 
 			@endIf
@@ -80,16 +80,18 @@
 				@if($isHome || $isOhtf || $isNhtf) <i class="a-home-2 home-folder"></i> @endIf
 				<?php $fileVisited[] = $g->unit_id;?>
 				@if($canViewFileInspections)
-					<?php //dd($g->documents); ?>
-					@if($g->documents )
-						 <span class="a-file"></span> {{count($g->documents)}}<br />
-						 <span class="a-file-plus"></span> UPLOAD DOCUMENT
+					<?php
+					$g_documents = ($g->all_documents());
+					?>
+					@if(count($g_documents))
+						 <span class="a-file"></span> {{count($g_documents)}}<br />
+						<span class="use-hand-cursor" onclick="gotoDocumentUploader('',{{ $g->unit_id }})"><span class="a-file-plus"></span> UPLOAD DOCUMENT</span>
 					@endIf
 				@endIf
 				@else
 				<?php $noShow = 1;?>
 				@endIf
-				
+
 				@endForEach
 				@if(!in_array($g->unit_id, $fileVisited) && $canViewFileInspections)
 				<span style="color:#cecece"><i class="a-folder uk-text-large"></i> <i class="a-circle-minus on-folder"></i></span>

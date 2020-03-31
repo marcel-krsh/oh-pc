@@ -18,7 +18,7 @@
 			$allBuildingInspections = $audit->audit->building_inspections;
 			$unitInspections = $audit->audit->unit_inspections()->whereIn('unit_id',$allowedUnitInspections)->groupBy('unit_id')->paginate(12);
 			$allUnitInspections = $audit->audit->unit_inspections()->whereIn('unit_id',$allowedUnitInspections)->get();
-			
+
 			$pdtDetails = $details;
 			$pdtFindings = $audit->audit->findings->where('cancelled_at',NULL);
 			$pieceData = [];
@@ -39,15 +39,15 @@
 				$projectDetails = $pdtDetails;
 				$findings = $pdtFindings;
 			}
-			
+
 		?>
-		@include('crr_parts.crr_inspections_header') 
-		
+		@include('crr_parts.crr_inspections_header')
+
 		@if(count($siteInspections) && $canViewSiteInspections)
 			<?php
 			  $inspections = $siteInspections;
 			?>
-			<div id="site" data-project-id="@if(isset($projectDetails)){{ $projectDetails->project_id }}@endIf" data-audit-id="@if(isset($selected_audit)){{ $selected_audit->audit_id }}@endIf"> 
+			<div id="site" data-project-id="@if(isset($projectDetails)){{ $projectDetails->project_id }}@endIf" data-audit-id="@if(isset($selected_audit)){{ $selected_audit->audit_id }}@endIf">
 				@include('crr_parts.pm_crr_inspections_site', [$inspections_type = 'site',$detailsPage = 1])
 			</div>
 		@endif
@@ -55,18 +55,17 @@
 			<?php
 			  $inspections = $buildingInspections;
 			?>
-			
-			<div id="building" data-project-id="@if(isset($projectDetails)){{ $projectDetails->project_id }}@endIf" data-audit-id="@if(isset($selected_audit)){{ $selected_audit->audit_id }}@endIf"> 
+
+			<div id="building" data-project-id="@if(isset($projectDetails)){{ $projectDetails->project_id }}@endIf" data-audit-id="@if(isset($selected_audit)){{ $selected_audit->audit_id }}@endIf">
 				@include('crr_parts.pm_crr_inspections_building', [$inspections_type = 'building',$detailsPage = 1])
 			</div>
-					
+
 		@endif
 		@if(count($unitInspections))
 			<?php
-				//dd($unitInspections);
 			  $inspections = $unitInspections;
 			?>
-			<div id="unit" data-project-id="@if(isset($projectDetails)){{ $projectDetails->project_id }}@endIf" data-audit-id="@if(isset($selected_audit)){{ $selected_audit->audit_id }}@endIf"> 
+			<div id="unit" data-project-id="@if(isset($projectDetails)){{ $projectDetails->project_id }}@endIf" data-audit-id="@if(isset($selected_audit)){{ $selected_audit->audit_id }}@endIf">
 				@include('crr_parts.pm_crr_inspections_unit', [$inspections_type = 'unit',$detailsPage = 1])
 			</div>
 		@endif
