@@ -1059,23 +1059,28 @@ Route::get('/users/verify_user', function (Request $request) {
         Route::post('/add_comment', function (Request $request) {
             try {
                 $uid =  $request->input('uid');
-                $parcel_id =  $request->input('parcel_id');
+                //$parcel_id =  $request->input('parcel_id');
                 $recorded_date =  $request->input('recorded_date');
-                $site_visit_id =  $request->input('site_visit_id');
+                //$site_visit_id =  $request->input('site_visit_id');
                 $notes =  $request->input('comment');
                 $deleted =  $request->input('deleted');
                 $user_id =  $request->input('user_id');
+                $finding_id = $request->input('finding_id');
+                $audit_id = $request->input('audit_id');
+                $project_id = $request->input('project_id');
 
-                $parcel = Parcel::where("id", $parcel_id)->first();
+                $audit = CachedAudit::where("audit_id", $audit_id)->first();
 
-                if ($parcel) {
+                if ($audit) {
                     // Create a record in documents table
                     $comment = new Comment([
                     'uid' => $uid,
                     'user_id' => $user_id,
-                    'parcel_id' => $parcel->id,
+                    'audit_id' => $audit->audit_id,
+                    'finding_id' => $finding_id,
+                    'project_id' => $project_id,
                     'recorded_date' =>  $recorded_date,
-                    'site_visit_id' =>  $site_visit_id,
+                    //'site_visit_id' =>  $site_visit_id,
                     'comment' =>  $notes,
                     'deleted' =>  false
                     ]);
