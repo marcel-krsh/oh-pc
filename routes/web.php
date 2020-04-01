@@ -12,6 +12,9 @@
  */
 //Route::get('/reset_tokens','PagesController@resetTokens');
 Route::get('test-all', 'Helper\TestingController@getTestAll');
+
+Route::get('developer/test', 'Helper\DatafixController@test');
+
 Route::get('developer/last-edited-date-to-decade-ago/{table}', 'Helper\DatafixController@changeSyncTableLastEditedDateBackDecade');
 Route::post('developer/last-edited-date-to-decade-ago', 'Helper\DatafixController@changeSyncTableLastEditedDateBackDecadeSave');
 Route::get('unified_login', function () {
@@ -486,7 +489,6 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/pm-projects/{id}/details', 'PMAuditController@getPMProjectDetails')->name('pm-project.details');
 		Route::get('/pm-projects/{id}/details/{type}/{audit}/{return_raw?}', 'PMAuditController@getPMProjectDetailsInfo')->name('pm-project.details.info');
 		Route::get('/pm-projects/{id}/audit-details/{audit_id?}', 'PMAuditController@getPMProjectDetails')->name('pm-project.details-with-audit');
-		Route::get('/pm-projects/{id}/details/{type}/{audit}/{return_raw?}', 'PMAuditController@getPMProjectDetailsInfo')->name('pm-project.details.info');
 		Route::get('pm-dashboard/audits/{audit}/buildings', 'PMAuditController@pmBuildingsFromAudit')->name('pm-audit.buildings');
 		Route::post('/pm-projects/{id}/building-details/{type}/{audit}', 'PMAuditController@getPMBuildingDetailsInfo')->name('building.details.info');
 		Route::get('/pm-projects/{project}/local-documents/{audit_id?}', 'DocumentController@getPMProjectLocalDocuments')->name('project.pm-local-documents');

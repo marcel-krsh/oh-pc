@@ -748,6 +748,7 @@ class DocumentController extends Controller
 
 		// filter to remove documents with findings that are not released yet
 		$documents_query = $documents_query->get();
+
 		$documents_query = $documents_query->map(function ($doc, $allowedDocumentsOnAudits) {
 			$criteria = $doc->pmCanSeeAudits;
 			$meets_criteria_count = count($criteria);

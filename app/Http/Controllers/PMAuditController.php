@@ -908,7 +908,7 @@ class PMAuditController extends Controller
 								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
 							}
 
-							return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit'));
+							return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit', 'canViewFileInspections', 'canViewSiteInspections', 'canViewFindings'));
 							break;
 						default:
 					}
