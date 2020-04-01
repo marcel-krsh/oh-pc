@@ -110,7 +110,9 @@ class Document extends Model
 	{
 		$allowedSteps = pmCanViewFindingsIds();
 		$allowedDocumentsOnAudits = $this->project->audits()->whereIn('step_id', $allowedSteps)->pluck('audit_id')->toArray();
-		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id')->whereIn('audit_id', $allowedDocumentsOnAudits);
+		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id');
+
+		// ->whereIn('audit_id', $allowedDocumentsOnAudits);
 	}
 
 	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;

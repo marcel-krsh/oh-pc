@@ -609,7 +609,7 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
-		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity')->orderBy('created_at', 'DESC');
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits.cached_audit', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity', 'findings.audit.cached_audit', 'project')->orderBy('created_at', 'DESC');
 
 		// return $documents_query->get();
 		if ($searchTerm != NULL) {
@@ -744,19 +744,100 @@ class DocumentController extends Controller
 			$documents_ids = $documents_query->filter()->pluck('id');
 			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
 		}
+
+		// 		Fix display of documents so they show documents not attached to a finding and on an audit that can be displayed (this is so they can track which documents they have uploaded for which unit)
+		// • Document display parameters when a auditor can see a document:
+		// • If audit is visible (pmCanViewAudit) can view documents uploaded for audit that are uploaded by contacts on the project - if they are not attached to a finding
+		// • If can view findings for the audit: pm can view same as above including those attached to findings for that audit.
+
+		$pmCanViewAudits = pmCanViewAuditIds();
+		$pmCanViewFindingsIds = pmCanViewFindingsIds();
+		$documents_query = $documents_query->get();
+
+		// foreach ($documents_query as $key => $doc) {
+		// 	if (!is_null($doc->finding_ids)) {
+		// 		$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
+		// 		$audits_linked = $linked_findings->pluck('audit')->filter();
+		// 		if (count($audits_linked)) {
+		// 			$cached_audits_linked = $audits_linked->pluck('cached_audit');
+		// 			if (count($cached_audits_linked)) {
+		// 				$finding_steps = $cached_audits_linked->pluck('step_id')->toArray();
+		// 				$findings_acces = array_intersect($pmCanViewFindingsIds, $finding_steps);
+		// 				if (count($findings_acces)) {
+		// 					return $doc;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// return 12;
+
+		$documents_query = $documents_query->map(function ($doc) use ($pmCanViewAudits, $pmCanViewFindingsIds) {
+			if (count($doc->audits) && count($doc->audits->pluck('cached_audit'))) {
+				$doc_audits_steps = $doc->audits->pluck('cached_audit')->pluck('step_id')->toArray();
+				if (!is_null($doc_audits_steps)) {
+					$audit_access = array_intersect($pmCanViewAudits, $doc_audits_steps);
+					if (count($audit_access)) {
+						return $doc;
+					}
+				}
+			}
+			if (!is_null($doc->finding_ids)) {
+				$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
+				$audits_linked = $linked_findings->pluck('audit')->filter();
+				if (count($audits_linked)) {
+					$cached_audits_linked = $audits_linked->pluck('cached_audit');
+				}
+			}
+			//document findings->audit->cached_audit->step_id
+
+			if (!is_null($doc->finding_ids)) {
+				$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
+				$audits_linked = $linked_findings->pluck('audit')->filter();
+				if (count($audits_linked)) {
+					$cached_audits_linked = $audits_linked->pluck('cached_audit');
+					if (count($cached_audits_linked)) {
+						$finding_steps = $cached_audits_linked->pluck('step_id')->toArray();
+						$findings_acces = array_intersect($pmCanViewFindingsIds, $finding_steps);
+						if (count($findings_acces)) {
+							return $doc;
+						}
+					}
+				}
+			}
+		});
+
+		$documents_query = $documents_query->filter();
+
 		// return $documents_query->pluck('id');
 
 		// filter to remove documents with findings that are not released yet
-		$documents_query = $documents_query->get();
+		// $documents_query = $documents_query->get();
+		// return pmCanViewFindingsIds();
 
-		$documents_query = $documents_query->map(function ($doc, $allowedDocumentsOnAudits) {
-			$criteria = $doc->pmCanSeeAudits;
-			$meets_criteria_count = count($criteria);
-			if ($meets_criteria_count) {
-				//dd($doc, $criteria, $allowedDocumentsOnAudits);
-				return $doc;
-			}
-		});
+		// $allowedSteps = pmCanViewFindingsIds();
+		// $allowedDocumentsOnAudits = $this->project->audits()->whereIn('step_id', $allowedSteps)->pluck('audit_id')->toArray();
+		// return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id')->whereIn('audit_id', $allowedDocumentsOnAudits);
+
+		// $allowedSteps = pmCanViewFindingsIds();
+		// $documents_query = $documents_query->map(function ($doc) use ($allowedSteps) {
+		// 	$allowedDocumentsOnAudits = $doc->project->audits()->whereIn('step_id', $allowedSteps)->pluck('audit_id')->toArray();
+		// 	$criteria = $doc->audits->whereIn('audit_id', $allowedDocumentsOnAudits);
+		// 	$meets_criteria_count = count($criteria);
+		// 	if ($meets_criteria_count) {
+		// 		//dd($doc, $criteria, $allowedDocumentsOnAudits);
+		// 		return $doc;
+		// 	}
+		// });
+
+		// $documents_query = $documents_query->map(function ($doc, $allowedDocumentsOnAudits) {
+		// 	$criteria = $doc->pmCanSeeAudits;
+		// 	$meets_criteria_count = count($criteria);
+		// 	if ($meets_criteria_count) {
+		// 		//dd($doc, $criteria, $allowedDocumentsOnAudits);
+		// 		return $doc;
+		// 	}
+		// });
 
 		$documents_ids = $documents_query->filter()->pluck('id');
 		$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
