@@ -51,15 +51,15 @@
 // if ($selected_audit->update_cached_audit()) {
 // 	$selected_audit->refresh();
 // }
-if(in_array($selected_audit->step_id, $pmCanViewFindingsStepIds)){
-$fileCount = $selected_audit->file_findings_count;
-$correctedFileCount = $fileCount - $selected_audit->unresolved_file_findings_count;
-$nltCount = $selected_audit->nlt_findings_count;
-$correctedNltCount = $nltCount - $selected_audit->unresolved_nlt_findings_count;
+if (in_array($selected_audit->step_id, $pmCanViewFindingsStepIds)) {
+	$fileCount = $selected_audit->file_findings_count;
+	$correctedFileCount = $fileCount - $selected_audit->unresolved_file_findings_count;
+	$nltCount = $selected_audit->nlt_findings_count;
+	$correctedNltCount = $nltCount - $selected_audit->unresolved_nlt_findings_count;
 
-$ltCount = $selected_audit->lt_findings_count;
-$correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
-}else{
+	$ltCount = $selected_audit->lt_findings_count;
+	$correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
+} else {
 
 	$fileCount = "NA";
 	$correctedFileCount = "NA";
@@ -71,12 +71,11 @@ $correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
 }
 
 $canViewFI = in_array($selected_audit->step_id, $pmFileInspectionsOnlyStepIds);
-$canViewSI =  in_array($selected_audit->step_id, $pmSiteInspectionsOnlyStepIds);
-$canViewBoth =  in_array($selected_audit->step_id, $pmBothInspectionsOnlyStepIds);
-if($canViewBoth){
+$canViewSI = in_array($selected_audit->step_id, $pmSiteInspectionsOnlyStepIds);
+$canViewBoth = in_array($selected_audit->step_id, $pmBothInspectionsOnlyStepIds);
+if ($canViewBoth) {
 	$canViewFI = true;
-	$canViewSI =  true;
-
+	$canViewSI = true;
 }
 ?>
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
@@ -141,16 +140,16 @@ if($canViewBoth){
 									<div class="uk-width-1-3">
 
 										<?php
-												$carIcon = $selected_audit->car_icon;
-												$ehsIcon = $selected_audit->ehs_icon;
-												$_8823Icon = $selected_audit->_8823_icon;
-												$carId = $selected_audit->car_id;
-												$ehsId = $selected_audit->ehs_id;
-												$_8823Id = $selected_audit->_8823_id;
-												$carStatus = $selected_audit->car_status_text;
-												$ehsStatus = $selected_audit->ehs_status_text;
-												$_8823Status = $selected_audit->_8823_status_text;
-											  ?>
+											$carIcon = $selected_audit->car_icon;
+											$ehsIcon = $selected_audit->ehs_icon;
+											$_8823Icon = $selected_audit->_8823_icon;
+											$carId = $selected_audit->car_id;
+											$ehsId = $selected_audit->ehs_id;
+											$_8823Id = $selected_audit->_8823_id;
+											$carStatus = $selected_audit->car_status_text;
+											$ehsStatus = $selected_audit->ehs_status_text;
+											$_8823Status = $selected_audit->_8823_status_text;
+										?>
 											  @if($carIcon)
 											  <a class="uk-link-mute" href="/report/{{$carId}}" target="report-{{$carId}}" uk-tooltip="title:VIEW CAR {{$carId}} : {{strtoupper($carStatus)}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a>
 											  <br /><small>CAR #{{$carId}}</small>

@@ -750,38 +750,40 @@ class DocumentController extends Controller
 		// • If audit is visible (pmCanViewAudit) can view documents uploaded for audit that are uploaded by contacts on the project - if they are not attached to a finding
 		// • If can view findings for the audit: pm can view same as above including those attached to findings for that audit.
 
-		$pmCanViewAudits = pmCanViewAuditIds();
+		// $pmCanViewAudits = pmCanViewAuditIds();
 		$pmCanViewFindingsIds = pmCanViewFindingsIds();
-		$documents_query = $documents_query->get();
+		// $documents_query = $documents_query->get();
 
-		// foreach ($documents_query as $key => $doc) {
-		// 	if (!is_null($doc->finding_ids)) {
-		// 		$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
-		// 		$audits_linked = $linked_findings->pluck('audit')->filter();
-		// 		if (count($audits_linked)) {
-		// 			$cached_audits_linked = $audits_linked->pluck('cached_audit');
-		// 			if (count($cached_audits_linked)) {
-		// 				$finding_steps = $cached_audits_linked->pluck('step_id')->toArray();
-		// 				$findings_acces = array_intersect($pmCanViewFindingsIds, $finding_steps);
-		// 				if (count($findings_acces)) {
-		// 					return $doc;
-		// 				}
+		// $documents_query = $documents_query->map(function ($doc) use ($pmCanViewAudits, $pmCanViewFindingsIds) {
+		// 	if (count($doc->audits) && count($doc->audits->pluck('cached_audit'))) {
+		// 		$doc_audits_steps = $doc->audits->pluck('cached_audit')->pluck('step_id')->toArray();
+		// 		if (!is_null($doc_audits_steps)) {
+		// 			$audit_access = array_intersect($pmCanViewAudits, $doc_audits_steps);
+		// 			if (count($audit_access)) {
+		// 				return $doc;
 		// 			}
 		// 		}
 		// 	}
-		// }
-		// return 12;
 
-		$documents_query = $documents_query->map(function ($doc) use ($pmCanViewAudits, $pmCanViewFindingsIds) {
+		// in_array($selected_audit->step_id, $pmCanViewFindingsStepIds);
+
+		$pmCanViewFindingsStepIds = $this->pmCanViewFindingsStepIds;
+		$documents_query = $documents_query->get();
+
+		$documents_query = $documents_query->map(function ($doc) use ($pmCanViewFindingsStepIds, $pmCanViewFindingsIds) {
+
 			if (count($doc->audits) && count($doc->audits->pluck('cached_audit'))) {
 				$doc_audits_steps = $doc->audits->pluck('cached_audit')->pluck('step_id')->toArray();
 				if (!is_null($doc_audits_steps)) {
-					$audit_access = array_intersect($pmCanViewAudits, $doc_audits_steps);
+					$audit_access = array_intersect($pmCanViewFindingsStepIds, $doc_audits_steps);
 					if (count($audit_access)) {
 						return $doc;
 					}
 				}
+			} else {
+				return $doc;
 			}
+
 			if (!is_null($doc->finding_ids)) {
 				$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
 				$audits_linked = $linked_findings->pluck('audit')->filter();
