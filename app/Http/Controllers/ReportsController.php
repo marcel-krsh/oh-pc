@@ -832,6 +832,7 @@ class ReportsController extends Controller
 			$current_user = Auth::user();
 			$auditor_access = $current_user->auditor_access();
 			$manager_access = $current_user->manager_access();
+			$admin_access = $current_user->admin_access();
 			// check if logged in user has access to this report if they are not an auditor:
 			$loadReport = 0;
 			if (Auth::user()->cannot('access_auditor')) {
@@ -886,10 +887,12 @@ class ReportsController extends Controller
 					//return dd(collect($x)[48]);
 					// echo 12;
 					// return 12;
+					//
+					// return $report;
 					if ($request->get('print') != 1) {
-						return view('crr.crr', compact('versions_count', 'report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access'));
+						return view('crr.crr', compact('versions_count', 'report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access', 'admin_access'));
 					} else {
-						return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access'));
+						return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access', 'admin_access'));
 					}
 				}
 			} else {
