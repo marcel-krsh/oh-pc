@@ -13,7 +13,7 @@ $thisProjectHtml = '';
  		</div>
  	</div>
  	<hr>
- 	{{ $users->links() }} <a onClick="dynamicModalLoad('createuser');" class="uk-badge uk-margin-top uk-badge-success"><i class="a-circle-plus"></i> CREATE USER</a> <a href="#userbottom" id="user-scroll-to-top" class="uk-badge uk-overlay-background uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a> @if( Session::get('users-search')) &nbsp;&nbsp; <a onclick="$('#users-search').val(''); searchUsers();" class="uk-badge uk-overlay-background uk-margin-top" uk-tooltip title="CLICK TO CLEAR SEARCH"><i class="a-circle-cross"></i> {{ strtoupper(Session::get('users-search')) }} &nbsp;</a> @endIf
+ 	<span class="users-admin-tab"> {{ $users->links() }}</span> <a onClick="dynamicModalLoad('createuser');" class="uk-badge uk-margin-top uk-badge-success"><i class="a-circle-plus"></i> CREATE USER</a> <a href="#userbottom" id="user-scroll-to-top" class="uk-badge uk-overlay-background uk-margin-top"><i class="a-circle-down"></i> BOTTOM OF LIST</a> @if( Session::get('users-search')) &nbsp;&nbsp; <a onclick="$('#users-search').val(''); searchUsers();" class="uk-badge uk-overlay-background uk-margin-top" uk-tooltip title="CLICK TO CLEAR SEARCH"><i class="a-circle-cross"></i> {{ strtoupper(Session::get('users-search')) }} &nbsp;</a> @endIf
  	<table class="uk-table uk-table-hover uk-table-striped uk-overflow-container small-table-text" >
  		<thead >
  			<th>
@@ -42,7 +42,7 @@ $thisProjectHtml = '';
  			@foreach($users as $user)
  			<tr class="{{ !$user->active ? 'uk-text-muted' : '' }}">
  				<td><small>{{$user->id}}</small></td>
- 				<td>@can('access_root')<span uk-tooltip title="USER_ID: {{$user->id}} USER_KEY: {{$user->devco_key}}">@endCan{{ $user->first_name }} {{ $user->last_name }}@can('access_root')</span>@endCan <br /><small>
+ 				<td>@if($root_access)<span uk-tooltip title="USER_ID: {{$user->id}} USER_KEY: {{$user->devco_key}}">@endIf{{ $user->first_name }} {{ $user->last_name }}@if($root_access)</span>@endIf <br /><small>
  					@if($user->role)ROLE:{{strtoupper($user->role->role->role_name)}}@else NO ACCESS @endIf</small>
  					@php
 							$devco_projects = $user->person->projects;
@@ -116,13 +116,13 @@ $thisProjectHtml = '';
 		</tbody>
 	</table>
 	<a name="userbottom"></a>
-	{{ $users->links() }}
+	<span class="users-admin-tab"> {{ $users->links() }}</span>
 	<a href="#usertop" id="user-scroll-to-top" class="uk-badge uk-badge-success uk-margin-top"><i class="a-circle-up"></i> BACK TO TOP OF LIST</a>
 </div>
 <script>
 	$(document).ready(function(){
    // your on click function here
-   $('.page-link').click(function(){
+   $('.users-admin-tab .page-link').click(function(){
    	$('#users-content').load($(this).attr('href'));
    	return false;
    });

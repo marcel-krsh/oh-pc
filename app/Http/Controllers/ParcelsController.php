@@ -25,10 +25,8 @@ ini_set('max_execution_time', 600);
 
 class ParcelsController extends Controller
 {
-    public function __construct()
-    {
-        // $this->middleware('auth');
-        //Auth::onceUsingId(5);
+     public function __construct(){
+        $this->allitapc();
     }
    
     public function payRetainage(Retainage $retainage, Request $request)

@@ -24,15 +24,15 @@ use App\Models\ProjectContactRole;
 
 class ProjectContactsController extends Controller
 {
-	public function __construct(Request $request)
+	public function __construct()
 	{
-		// $this->middleware('auth');
+		$this->allitapc();
 	}
 
 	public function contacts($project)
 	{
 		// return         $last_record = EmailAddress::whereNotNull('email_address_key')->orderBy('id', 'DESC')->first();
-		// return $project;
+		// return $this->user;
 		$project_user_ids = $this->projectUserIds($project);
 		$allita_user_ids = $this->allitaUserIds($project);
 		$projectUserPersonIds = $this->projectUserPersonIds($project);

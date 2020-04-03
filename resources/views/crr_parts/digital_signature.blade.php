@@ -7,7 +7,7 @@
 		<p>Signed: {{date('m/d/Y g:h a', strtotime($report->date_signed))}} By {{$report->signed_by}}</p>
 	</div>
 
-	@can('access_auditor')<button onClick="jsFunctionToDelete"><i class="a-trash-can"></i> DELETE SIGNATURE </button>@endCan
+	@if($auditor_access)<button onClick="jsFunctionToDelete"><i class="a-trash-can"></i> DELETE SIGNATURE </button>@endIf
 </div>
 @else
 

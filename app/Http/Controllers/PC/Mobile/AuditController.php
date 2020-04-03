@@ -52,6 +52,7 @@ class AuditController extends Controller
             // 6281 holly
             // 6346 Robin (Abigail)
         }
+      $this->allitapc();
       $this->htc_group_id = 7;
       View::share ('htc_group_id', $this->htc_group_id );
     }

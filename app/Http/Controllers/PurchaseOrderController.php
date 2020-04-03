@@ -20,6 +20,12 @@ use App\Models\ParcelsToPurchaseOrder;
 
 class PurchaseOrderController extends Controller
 {
+    
+
+    public function __construct(){
+        $this->allitapc();
+    }
+
     public function getParcelsFromPurchaseOrderId(ReimbursementPurchaseOrders $po)
     {
         // get parcel ids associated with the request

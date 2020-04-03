@@ -27,7 +27,9 @@ use Storage;
 
 class SyncController extends Controller
 {
-    
+    public function __construct(){
+        $this->allitapc();
+    }
     public function testapi(Request $request) {
         
        //////////////////////////////////////////////////

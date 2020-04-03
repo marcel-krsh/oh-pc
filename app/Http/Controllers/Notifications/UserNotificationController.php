@@ -24,6 +24,7 @@ class UserNotificationController extends Controller
       //Auth::onceUsingId(286); // TEST BRIAN
       //Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
     }
+    $this->allitapc();
   }
 
   public function postNotificationPreference(Request $request)

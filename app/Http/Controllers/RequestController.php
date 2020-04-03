@@ -20,6 +20,10 @@ use App\Models\ParcelsToReimbursementRequest;
 
 class RequestController extends Controller
 {
+    public function __construct(){
+        $this->allitapc();
+    }
+
     public function getParcelsFromRequestId(ReimbursementRequest $r)
     {
         // get parcel ids associated with the request

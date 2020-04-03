@@ -1326,11 +1326,11 @@
 									@if($isApproved_hfa)
 										@can('hfa-release-disposition')
 										<button class="uk-button uk-button-success uk-width-1-1@m " type="button" onclick="processStep('disposition-approve');" id="create-invoice"><span class="a-file-left"></span> Create&thinsp;&thinsp;&thinsp;/&thinsp;Add to a Disposition Invoice</button>
-										@endcan
+										@endIf
 									@else
 										@can('hfa-release-disposition')
 										<button class="uk-button uk-button-default uk-width-1-1@m" type="button" id="create-invoice" uk-tooltip="Please Approve the Disposition First" onclick="UIkit.modal.alert('OOPSIE! Please approve the disposition first.');"><span class="a-file-left"></span> Create&thinsp;&thinsp;&thinsp;/&thinsp;Adjustments to a Disposition Invoice</button>
-										@endcan
+										@endIf
 									@endif
 
 								</div>
@@ -1408,7 +1408,7 @@
 							@endif
 
 						@endif
-					@endcan
+					@endIf
 
 					@can('hfa-review-disposition')
 					<div class="uk-panel uk-panel-divider">
@@ -1447,7 +1447,7 @@
 
 						</div>
 					</div>
-					@endcan
+					@endIf
 
 				</div>
 			</form>

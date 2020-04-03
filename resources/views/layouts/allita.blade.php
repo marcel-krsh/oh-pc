@@ -4,15 +4,15 @@
 $allowPageLoad = false;
 
 if (Auth::check()) {
-  if (Auth::user()->active == 1) {
-    $allowPageLoad = true;
-  }
+	if (Auth::user()->active == 1) {
+		$allowPageLoad = true;
+	}
 } else {
-  /// user is not logged in -- the auth middleware will protect against that access.
-  $allowPageLoad = true;
+	/// user is not logged in -- the auth middleware will protect against that access.
+	$allowPageLoad = true;
 }
 if ($allowPageLoad) {
-  ?>
+	?>
 	<!DOCTYPE html>
 	<html lang="en" dir="ltr" id="parentHTML" class="no-js">
 	<head>
@@ -21,11 +21,11 @@ if ($allowPageLoad) {
 		<meta name="csrf-token" content="{{ csrf_token() }}">
 
 		<title>
-			@can('access_auditor')
+			@if($auditor_access)
 			Allita Program Compliance
 			@else
-			Dev|Co Inspection
-			@endCan
+			OHFA Inspect
+			@endIf
 		</title>
 
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -159,67 +159,6 @@ if ($allowPageLoad) {
 			left:0;
 			background: #000;
 		}
-
-		/*for toggler*/
-		#containerIntro .switch {
-		  position: relative;
-		  display: inline-block;
-		  width: 60px;
-		  height: 34px;
-		}
-
-		#containerIntro .switch input { 
-		  opacity: 0;
-		  width: 0;
-		  height: 0;
-		}
-
-		#containerIntro .slider {
-		  position: absolute;
-		  cursor: pointer;
-		  top: 0;
-		  left: 0;
-		  right: 0;
-		  bottom: 0;
-		  background-color: #ccc;
-		  -webkit-transition: .4s;
-		  transition: .4s;
-		}
-
-		#containerIntro .slider:before {
-		  position: absolute;
-		  content: "";
-		  height: 26px;
-		  width: 26px;
-		  left: 4px;
-		  bottom: 4px;
-		  background-color: white;
-		  -webkit-transition: .4s;
-		  transition: .4s;
-		}
-
-		#containerIntro input:checked + .slider {
-		  background-color: #2196F3;
-		}
-
-		#containerIntro input:focus + .slider {
-		  box-shadow: 0 0 1px #2196F3;
-		}
-
-		#containerIntro input:checked + .slider:before {
-		  -webkit-transform: translateX(26px);
-		  -ms-transform: translateX(26px);
-		  transform: translateX(26px);
-		}
-
-		/* Rounded sliders */
-		#containerIntro .slider.round {
-		  border-radius: 34px;
-		}
-
-		#containerIntro .slider.round:before {
-		  border-radius: 50%;
-		}
 	</style>
 	<?php /* session(['disablePacer'=>0]); */?>
 	@endif
@@ -231,8 +170,8 @@ if ($allowPageLoad) {
 			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences',0,0,1);
 		}
 		window.Laravel = <?php echo json_encode([
-    'csrfToken' => csrf_token(),
-  ]); ?>
+		'csrfToken' => csrf_token(),
+	]); ?>
 		</script>
 
 		<script src="/js/jquery.js{{ asset_version() }}"></script>
@@ -289,17 +228,17 @@ if ($allowPageLoad) {
 	<div id="phone" class="uk-visible-touch uk-hidden@s">
 		<div id="phone-app" class="uk-container uk-padding-small uk-align-center" >
 			<div class="uk-padding-small" style="background-color:#3c3c3c; margin-bottom: 100px; z-index: 980;" uk-sticky="width-element: #phone; show-on-up: true">
-				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h3 style="margin-bottom: 0px"><i class="a-menu uk-text-muted uk-contrast" style="color:white !important; font-weight: bolder; margin-right:5px; font-size: 20px;"></i> Dev|Co Mobile Inspection Launcher</h3></a>
+				<a class="uk-contrast" uk-toggle="target: #offcanvas-phone"><h3 style="margin-bottom: 0px"><i class="a-menu uk-text-muted uk-contrast" style="color:white !important; font-weight: bolder; margin-right:5px; font-size: 20px;"></i> OHFA Mobile Inspection Launcher</h3></a>
 			</div>
 			<div class="uk-container">
 
 				<div id="mobile-content" uk-grid style="height: 1600px; padding:20px !important">
-					@can('access_auditor')
+					@if($auditor_access)
 					<i onclick="window.location.href='/mobile/audits'" class="a-mobile-home uk-contrast uk-align-center use-hand-cursor" style="font-size: 116px; padding-right: 13px; padding-bottom: 16px;border-radius: 27px;border: 10px solid;padding-top: 16px;" ></i>
 					<div onclick="window.location.href='/mobile/audits'" class="uk-button uk-padding-small-top uk-margin-top uk-width-1-1"><strong>LAUNCH MOBILE INSPECTION</strong></div>
 					@else
 						<h2 class="uk-contrast">Sorry, we do not currently support access on this device for property managers and owners.</h2>
-					@endCan
+					@endIf
 				</div>
 				<script type="text/javascript">
 					isMobile = function(){
@@ -319,7 +258,7 @@ if ($allowPageLoad) {
 
 			<button class="uk-offcanvas-close" type="button" uk-close></button>
 
-			@can('access_auditor')
+			@if($auditor_access)
 			<h3 style="font-weight: bolder;">Using Your Phone Instead?</h3>
 
 			<p style="font-weight: bolder;">Click the launch button to open the mobile version of the site optimized for your phone. The features are limited in this version and will be added to over time.</p>
@@ -327,7 +266,7 @@ if ($allowPageLoad) {
 			<h3 style="font-weight: bolder;">Using Your Phone?</h3>
 
 			<p style="font-weight: bolder;">Please tell your contact about how you would like to be able to utilize your phone to review and resolve your items.</p>
-			@endCan
+			@endIf
 		</div>
 	</div>
 
@@ -341,9 +280,8 @@ if ($allowPageLoad) {
 				<div id="main-tabs" uk-sticky style="max-width: 1519px; ">
 					<div uk-grid>
 						<div class="uk-width-1-1">
-							<img id="apcsv-logo" src="/images/devco_logo.png" alt="DEV|CO Inspection powered by Allita PC" >
-
-							@can('access_auditor')
+							
+							@if($auditor_access)
 							<div class="menu-search uk-margin-large-left uk-padding-bottom" style="display: inline-block; position: relative;top:-5px;" class="uk-margin-large-left">
 								<div class="uk-autocomplete quick-lookup-box uk-inline">
 									<span class="uk-form-icon a-magnify-2"></span>
@@ -352,12 +290,12 @@ if ($allowPageLoad) {
 							</div>
 							@else
 							<div style="width: 20px; display: inline-block;"></div>
-							@endCan
+							@endIf
 
 							<div id="top-tabs-container" style="display: inline-block; overflow: visible; padding-top:15px; min-height: 26px;">
 
 								<ul id="top-tabs" uk-switcher="connect: .maintabs; swiping:false; animation: uk-animation-fade;" class="uk-tab uk-visible@m" style="background-color: transparent;">
-									@can('access_auditor')
+									@if($auditor_access)
 									<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.audits') }}','1','','','',1);}">
 										<a href="" style="">
 											<span class="list-tab-text">
@@ -366,12 +304,21 @@ if ($allowPageLoad) {
 											</span>
 										</a>
 									</li>
-									@endCan
-									@can('access_pm')
-									<li id="detail-tab-2" class="detail-tab-2" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
+									@else
+										<li id="detail-tab-1" class="detail-tab-1" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-1').hasClass('uk-active')  || window.auditsLoaded != 1){loadTab('{{ route('dashboard.pmaudits') }}','1','','','',1);}">
+											<a href="" style="">
+												<span class="list-tab-text">
+
+													<i class="a-mobile-home"></i> MY AUDITS
+												</span>
+											</a>
+										</li>
+									@endIf
+									@if($pm_access)
+									<li id="detail-tab-2" class="detail-tab-2 " uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-2').hasClass('uk-active') || window.comunicationsLoaded != 1){loadTab('{{ route('communication.tab') }}', '2','','','',1);}">
 										<a href="">
 											<span class="list-tab-text">
-												<i class="a-envelope-3"></i> COMMUNICATIONS
+												<i class="a-envelope-3"></i> MY COMMUNICATIONS
 											</span>
 										</a>
 									</li>
@@ -380,12 +327,12 @@ if ($allowPageLoad) {
 										<a href=""><span class="list-tab-text"><i class="a-file-chart-3"></i> <span class="list-tab-text">  REPORTS</span></a>
 									</li>
 
-									@can('access_admin')
+									@if($admin_access)
 									<li id="detail-tab-5" class="detail-tab-5" uk-scrollspy="cls:uk-animation-slide-bottom; delay: 1000" onClick="if($('#detail-tab-5').hasClass('uk-active')  || window.adminLoaded != 1){loadTab('{{ route('dashboard.admin') }}', '5','','','',1);}" >
 										<a href=""><span class="list-tab-text">ADMIN</span></a>
 									</li>
-									@endcan
-								@endcan
+									@endIf
+								@endIf
 								</ul>
 
 							</div>
@@ -400,7 +347,7 @@ if ($allowPageLoad) {
 										<a href="https://devco.ohiohome.org/AuthorityOnline/" style="font-weight: 400">DEV|CO Compliance</a>
 									</div>
 									<div class="apcsv-menu-item">
-										<a href="/" style="font-weight: 400">DEV|CO Inspection</a>
+										<a href="/" style="font-weight: 400">OHFA Inspect</a>
 									</div>
 									@if(Auth::user()->allowed_tablet && Auth::user()->auditor_access())
 									<div class="apcsv-menu-item uk-hidden-notouch">
@@ -414,11 +361,11 @@ if ($allowPageLoad) {
 				</div>
 
 				<ul id="tabs" class="maintabs uk-switcher" >
-					@can('access_auditor')<li>
+					@if($pm_access)<li>
 						<div id="detail-tab-1-content"></div>
 					</li>
-					@endCan
-					@can('access_pm')
+					@endIf
+					@if($pm_access)
 					<li>
 						<div id="detail-tab-2-content"></div>
 					</li>
@@ -426,7 +373,7 @@ if ($allowPageLoad) {
 					<li>
 						<div id="detail-tab-3-content" style=" margin-top: 70px;"></div>
 					</li>
-					@endCan
+					@endIf
 					@if(Auth::user()->admin_access())
 					<li>
 						<div id="detail-tab-5-content" style="padding-top:20px;"></div>
@@ -496,12 +443,12 @@ if ($allowPageLoad) {
 				@if(Auth::check() && Auth::user()->auditor_access())
 				Allita Program Compliance
 				@else
-				Dev|Co Inspect
+				OHFA Inspect
 				@endif
 				&copy; 2018<?php if (date('Y', time()) != '2018') {
-    echo " — " . date('Y', time());
-  }
-  ?>: @include('git-version::version-comment')</a> </p>
+		echo " — " . date('Y', time());
+	}
+	?></a> </p>
 			</div>
 			<div id="footer-content" class="uk-width-1-3">
 				<div id="footer-actions-tpl"  class="uk-text-right"></div>
@@ -633,13 +580,13 @@ if ($allowPageLoad) {
 
 		// Click on initial tab to load it:
 		setTimeout(function(){
-			@can('access_auditor')
+			@if($auditor_access)
 				// auditor default
 				$('#detail-tab-1').trigger("click");
 			@else
 				// property default
-				$('#detail-tab-2').trigger("click");
-			@endCan
+				$('#detail-tab-1').trigger("click");
+			@endIf
 		},100);
 
 		window.currentSite='allita_pc';
@@ -676,7 +623,7 @@ if ($allowPageLoad) {
 </html>
 
 <?php } else {
-  /// show for inactive users ?>
+	/// show for inactive users ?>
 
 <!DOCTYPE html>
 <html lang="en" dir="ltr" id="parentHTML" class="no-js">
@@ -697,8 +644,8 @@ if ($allowPageLoad) {
 
 	<script>
 		window.Laravel = <?php echo json_encode([
-    'csrfToken' => csrf_token(),
-  ]); ?>
+		'csrfToken' => csrf_token(),
+	]); ?>
 		</script>
 		@if(session('disablePacer') != 1)
 		<script data-pace-options='{ "restartOnRequestAfter": false }' src="/js/pace.js{{ asset_version() }}">{{session('disablePacer')}}</script>

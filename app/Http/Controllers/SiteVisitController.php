@@ -22,6 +22,10 @@ use Carbon;
 class SiteVisitController extends Controller
 {
     //
+     public function __construct(){
+        $this->allitapc();
+    }
+    
     public function index()
     {
         if (Auth::user() && Auth::user()->canManageUsers()) {

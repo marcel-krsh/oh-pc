@@ -69,6 +69,9 @@
 	            UIkit.notification('<span uk-icon="icon: check"></span> Comment Saved', {pos:'top-right', timeout:1000, status:'success'});
 	            $('#finding-modal-audit-stream-refresh').trigger('click');
 
+	            if(window.from_document_findings_modal > 0) {
+	            	openFindingDetails(window.from_document_findings_modal);
+	            }
             }
         } );
 	}

@@ -14,6 +14,45 @@
 	.audit-list-report-holder {
 		height: 54px;
 	}
+	.finding-number {
+	    font-size: 9px;
+	    background: #666;
+	    padding: 0px 4px 0px;
+	    border: 0px;
+	    min-width: 13px;
+	    max-height: 13px;
+	    line-height: 1.5;
+	}
+	.finding-number {
+	    font-size: 9px;
+	    background: #666;
+	    
+	    border: 0px;
+	    min-width: 13px;
+	    max-height: 13px;
+	    line-height: 1.5;
+	}
+	.on-folder {
+	    position: relative;
+	    left: -4px;
+	    top: -16.5px;
+	    font-size: 9px;
+	    font-weight: bolder;
+	}
+	.on-boo-boo {
+	    position: relative;
+	    left: -4px;
+	    top: -16.5px;
+	    font-size: 9px;
+	    font-weight: bolder;
+	}
+	.on-death {
+	    position: relative;
+	    left: -4px;
+	    top: -16.5px;
+	    font-size: 9px;
+	    font-weight: bolder;
+	}
 </style>
 <template class="uk-hidden" id="inspection-left-template">
 	<div class="inspection-menu">

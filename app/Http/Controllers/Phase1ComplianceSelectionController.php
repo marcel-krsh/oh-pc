@@ -77,7 +77,7 @@ class Phase1ComplianceSelection extends Controller
 
         // $test = DB::table('jobs')->where('payload', 'like', '%ComplianceProjectionJob%')->first();
         // if (!is_null($test)) {
-
+            $this->allitapc();
             $this->audit = null;
             $this->projection = null;
             $this->project = null;
@@ -112,7 +112,9 @@ class Phase1ComplianceSelection extends Controller
             $this->program_nhtf_ids = null;
             $this->program_811_ids = null;
             $this->program_medicaid_ids = null;
-                
+            
+            
+
        //}
 
 

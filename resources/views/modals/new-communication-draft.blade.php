@@ -52,7 +52,7 @@ session(['old_communication_modal' => $random]);
 			<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 			<div uk-grid class="uk-grid-collapse">
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px; display: inline-block;"><i uk-icon="user"></i></div> &nbsp;FROM:</div>
-				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{ Auth::user()->full_name() }}</div>
+				<div class="uk-width-4-5 " style="border-bottom:1px #111 dashed; padding:18px; padding-left:27px;">{{ $current_user->full_name }}</div>
 				<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
 				@if($single_recipient)
 				<?php $recipient = $recipients->first()->first();?>
@@ -268,14 +268,14 @@ session(['old_communication_modal' => $random]);
     				UIkit.modal.alert(data,{stack: true});
 		        // dynamicModalCommunicationClose();
     			} else {
-    				@if(!$project || Auth::user()->cannot('access_auditor'))
+    				@if(!$project || !$auditor_access)
     				$('#detail-tab-2').trigger('click');
     				@endif
     				UIkit.modal.alert('Your message has been saved.',{stack: true});
     			}
     		});
 
-    		@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
+    		@if($project && !$auditor_access && $location == 'projects')
     		var id = {{ $project->id }};
     		loadTab('/projects/'+{{ $project->id }}+'/communications/', '2', 0, 0, 'project-', 1);
         @endif

@@ -22,6 +22,10 @@ use DB;
 
 class MAParcelsController extends Controller
 {
+    public function __construct(){
+        $this->allitapc();
+    }
+
     public function parcelCreate(Form $form, $id = null)
     {
         $stateIds = State::pluck('id')->toArray();

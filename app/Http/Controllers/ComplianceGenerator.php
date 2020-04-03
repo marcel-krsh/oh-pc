@@ -27,6 +27,9 @@ use App\Models\CachedBuilding;
 
 class ComplianceGenerator extends Controller
 {
+    public function __construct(){
+        $this->allitapc();
+    }
     /**
      * Create a new job instance.
      *

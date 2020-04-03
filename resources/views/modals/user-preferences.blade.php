@@ -87,7 +87,7 @@
 					@if($current_user->id == $data['summary']['id'])
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<hr />
-						<h3 class="uk-margin-small-top uk-visible@m">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>@can('access_root')
+						<h3 class="uk-margin-small-top uk-visible@m">Set Availability <i class="a-calendar-pencil use-hand-cursor" style="vertical-align: middle; padding-left: 10px;" onclick="expandModal(this);"></i></h3>@if($root_access)
 						<div class="uk-grid-small uk-margin-remove" uk-grid>
 							<div class="uk-width-1-3 uk-padding-remove">
 								<label class="uk-text-small">Max Hours per Day</label>
@@ -206,7 +206,7 @@
 						@endif
 						@endif
 					</div>
-					@endcan
+					@endIf
 
 					<div class="uk-width-1-1 uk-margin-small-top uk-padding-remove-left">
 						<form class="uk-form">

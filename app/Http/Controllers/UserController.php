@@ -20,21 +20,9 @@ use App\Models\UserNotificationPreferences;
 
 class UserController extends Controller
 {
-	public function __construct()
-	{
-		// $this->middleware('auth');
-		if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-			//Auth::onceUsingId(286); // TEST BRIAN
-			//Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-		}
-		$this->middleware(function ($request, $next) {
-			$this->current_user = Auth::user();
-			$this->auditor_access = $this->current_user->auditor_access();
-			View::share('auditor_access', $this->auditor_access);
-			View::share('current_user', $this->current_user);
-			return $next($request);
-		});
-	}
+	public function __construct(){
+        $this->allitapc();
+    }
 
 	public function saveAuditorAddress(Request $request, $user)
 	{

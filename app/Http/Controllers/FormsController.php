@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 class FormsController extends Controller
 {
 
+     public function __construct(){
+        $this->allitapc();
+    }
 
     /**
      * FormsController constructor.

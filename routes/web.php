@@ -12,8 +12,12 @@
  */
 //Route::get('/reset_tokens','PagesController@resetTokens');
 Route::get('test-all', 'Helper\TestingController@getTestAll');
+
+Route::get('developer/test', 'Helper\DatafixController@test');
+
 Route::get('developer/last-edited-date-to-decade-ago/{table}', 'Helper\DatafixController@changeSyncTableLastEditedDateBackDecade');
 Route::post('developer/last-edited-date-to-decade-ago', 'Helper\DatafixController@changeSyncTableLastEditedDateBackDecadeSave');
+Route::get('developer/reports-history-fix-punctuation-and-space', 'Helper\DatafixController@fixReportsHistoryPunctuationAndSpace');
 Route::get('unified_login', function () {
 	//session(['brian'=>'test']);
 	return redirect('/');
@@ -289,16 +293,27 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/projects/{project}/documents', 'DocumentController@getProjectDocuments')->name('project.documents');
 		Route::get('/projects/{project}/docuware-documents', 'DocumentController@getProjectDocuwareDocuments')->name('project.docuware-documents');
 		Route::get('/projects/{project}/local-documents/{audit_id?}', 'DocumentController@getProjectLocalDocuments')->name('project.local-documents');
+		Route::get('/projects/{project}/upload-document-findings-list/{audit_id?}', 'DocumentController@getProjectUploadFindingsList')->name('documents.upload-finding-list');
+		Route::post('/projects/{project}/upload-document-findings-list/{audit_id?}', 'DocumentController@getProjectUploadFindingsList')->name('documents.upload-finding-filter');
+		Route::get('/projects/{project}/document-upload/{audit_id?}', 'DocumentController@projectLocalDocumentUpload')->name('project.local-document-upload');
 		Route::post('/documents/project/{project}/local-approve', 'DocumentController@approveLocalDocument')->name('documents.local-approve');
 		Route::post('/documents/project/{project}/local-notapprove', 'DocumentController@notApproveLocalDocument')->name('documents.local-notapprove');
 		Route::post('/documents/project/{project}/local-clearReview', 'DocumentController@clearLocalReview')->name('documents.local-clearReview');
 		Route::get('/modals/edit-local-document/{document}', 'DocumentController@editLocalDocument')->name('document.local-edit');
 		Route::post('/modals/edit-local-document/{document}', 'DocumentController@saveEditedLocalDocument')->name('document.local-saveedit');
 
-		Route::get('modals/finding-details/{finding}', 'FindingController@findingDetails')->name('finding.show-details');
+		Route::post('/documents/approve-findings-resolve/{document_id}', 'DocumentController@approveAndResolveLocalDocument')->name('documents.approve-findings-resolve');
+
+		Route::get('modals/finding-details/{finding}/{document_id?}', 'FindingController@findingDetails')->name('finding.show-details');
+		Route::get('modals/document-finding-approval/{document_id}', 'DocumentController@showApproveAndResolveLocalDocument')->name('dpcument.document-finding-approval');
+		Route::get('modals/project-document-finding-approval/{project_id}', 'DocumentController@markAllDocumentsApproveAndResulved')->name('dpcument.project-document-finding-approval');
 
 		Route::post('/documents/project/{project}/local-deletedocument', 'DocumentController@deleteLocalDocument')->name('documents.local-deleteDocument');
 		Route::post('/documents/audit/{audit}/deletedocument', 'DocumentController@deleteDocument')->name('documents.deleteDocument');
+		Route::post('/projects/{project}/local-documents', 'DocumentController@getProjectLocalDocuments')->name('documents.local-search');
+		Route::post('documents/update-status/{project_id}', 'DocumentController@UpdateAllDocumentsStatus')->name('documents.update-status');
+
+		Route::get('document/findings-update/{document_id}', 'DocumentController@getDocumentFindingsColumn')->name('document.findings-column');
 
 		//notes
 		Route::get('/projects/{project_id}/notes', 'NoteController@showTabFromProjectId')->name('project.notes');
@@ -467,7 +482,25 @@ Route::group(['middleware' => 'web'], function () {
 	//===============================================================================================================//
 
 	Route::group(['prefix' => '', 'middleware' => 'can:access_pm'], function () {
+		//project details
+		Route::get('/pm-projects/view/{id}/{audit_id?}', 'PMAuditController@getPMProject')->name('pm-project-view');
+		Route::get('/pm-projects/view/{id}/{audit_id}/title', 'PMAuditController@getPMProjectTitle')->name('pm-project.title-with-audit');
+		Route::get('/pm-projects/{id}', 'PMAuditController@getPMProject')->name('pm-project');
+		Route::get('/pm-projects/{id}/title', 'PMAuditController@getPMProjectTitle')->name('pm-project.title');
+		Route::get('/pm-projects/{id}/details', 'PMAuditController@getPMProjectDetails')->name('pm-project.details');
+		Route::get('/pm-projects/{id}/details/{type}/{audit}/{return_raw?}', 'PMAuditController@getPMProjectDetailsInfo')->name('pm-project.details.info');
+		Route::get('/pm-projects/{id}/audit-details/{audit_id?}', 'PMAuditController@getPMProjectDetails')->name('pm-project.details-with-audit');
+		Route::get('pm-dashboard/audits/{audit}/buildings', 'PMAuditController@pmBuildingsFromAudit')->name('pm-audit.buildings');
+		Route::post('/pm-projects/{id}/building-details/{type}/{audit}', 'PMAuditController@getPMBuildingDetailsInfo')->name('building.details.info');
+		Route::get('/pm-projects/{project}/local-documents/{audit_id?}', 'DocumentController@getPMProjectLocalDocuments')->name('project.pm-local-documents');
 
+		//session controls
+		Route::get('/pmsession/filters/{type}/{value?}', 'DataController@pmRemoveSession')->name('pmsession.setfilter');
+
+		Route::post('/pmsession/{name?}/{value?}', 'DataController@pmSetSession');
+		Route::post('/pmsession-new/{name?}/{value?}', 'DataController@pmSetSessionNew')->name('pmsession.auditfilters');
+
+		Route::get('dashboard/pmaudits', 'DashboardController@pmAudits')->name('dashboard.pmaudits');
 		Route::get('/modals/auditors/{id}/preferences', 'UserController@preferences')->name('auditor.preferences');
 		Route::get('/modals/auditors/{id}/preferences-view', 'UserController@preferencesView')->name('auditor.preferences-view');
 
@@ -480,7 +513,11 @@ Route::group(['middleware' => 'web'], function () {
 		Route::post('/communications/project/{project?}', 'CommunicationController@searchCommunications')->name('communications.search');
 
 		//allita documents!
+		Route::get('/pm-projects/{project}/documents', 'DocumentController@getPMProjectDocuments')->name('pm-project.documents');
+		Route::post('/pm-projects/{project}/local-documents', 'DocumentController@getPMProjectLocalDocuments')->name('pm-documents.local-search');
 
+		Route::get('/pm-projects/{project}/document-upload/{audit_id?}', 'DocumentController@projectPMLocalDocumentUpload')->name('project.local-document-upload');
+		Route::post('/pm-projects/{project}/upload-document-findings-list/{audit_id?}', 'DocumentController@getProjectUploadFindingsList')->name('pm-documents.upload-finding-filter');
 		Route::post('/documents/project/{project}/upload', 'DocumentController@localUpload')->name('documents.local-upload');
 		Route::get('/download-local-document/{document}', 'DocumentController@downloadLocalDocument')->name('document.local-download');
 		Route::post('/documents/audit/{audit}/upload', 'DocumentController@upload')->name('documents.upload');
@@ -516,6 +553,8 @@ Route::group(['middleware' => 'web'], function () {
 		Route::post('/communications/audit/{audit?}', 'CommunicationController@searchCommunications')->name('communications.search');
 		Route::post('/communications/filter-recipient', 'CommunicationController@filterCommunicationReceipient')->name('communications.filter-recipient');
 		Route::post('/communications/filter-recipient-project', 'CommunicationController@filterCommunicationReceipientProject')->name('communications.filter-recipient-project');
+		Route::post('/communications/main-filters', 'CommunicationController@filterMainCommunicationFilters')->name('communications.main-filters');
+		Route::post('/communications/project-filters', 'CommunicationController@filterProjectCommunicationFilters')->name('communications.project-filters');
 
 		Route::get('/communications/unseen', 'CommunicationController@getUnseenMessages');
 		Route::get('/view_message/{message}', 'CommunicationController@goToMessage');
@@ -524,6 +563,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::get('/projects/{project}/communications/{page?}', 'CommunicationController@communicationsFromProjectTab')->name('project.communications');
 		Route::get('/projects/{project}/audit-communications/{audit}/{page?}', 'CommunicationController@auditCommunicationsFromProjectTab')->name('project.audit-communications');
 		Route::get('/projects/{project_id}/reply-communications/documents', 'CommunicationController@getCommunicationDocuments')->name('project.communication.documents');
+		Route::get('/communications/single-communication/{message_id}', 'CommunicationController@getSingleCommunication');
 
 		Route::post('/commmunication-draft/{draft_id}/delete', 'CommunicationController@deleteDraftSave')->name('communication.delete-draft-save');
 		Route::post('/documents/{project}/documentinfo-draft', 'DocumentController@localUploadDraft')->name('documents.local-upload-draft');
