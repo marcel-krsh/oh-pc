@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Helper;
 use DB;
 use Validator;
 use Carbon\Carbon;
+use App\Models\CrrReport;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use App\Models\SyncOrganization;
@@ -227,9 +228,34 @@ class DatafixController extends Controller
 		return $this->extraCheckErrors($validator);
 	}
 
-	public function extraCheckErrors($validator)
+	public function fixReportsHistoryPunctuationAndSpace()
+	{
+		ini_set('max_execution_time', 300);
+		$reports = CrrReport::whereNotNull('report_history')->select('id', 'report_history')->get();
+
+		$replace = ['ResolvedRemoved', 'PMRemoved', 'Draft Notified', 'Notified to'];
+		$replace_with = ['Resolved. Removed', 'PM. Removed', 'Draft. Notified', 'Notification sent to'];
+		foreach ($reports as $key => $report) {
+			$history = $report->report_history;
+			$new_history = [];
+			// if (!is_null($history['report_history'])) {
+			$old_history = $history;
+			foreach ($old_history as $key1 => $hist_item) {
+				$note = $hist_item['note']; //replace here
+				$new_note = str_replace($replace, $replace_with, $note);
+				$new_history[$key1] = $hist_item;
+				$new_history[$key1]['note'] = $new_note;
+			}
+			$report->report_history = ($new_history);
+			$report->save();
+			// }
+		}
+		return 'Done';
+	}
+
+	protected function extraCheckErrors($validator)
 	{
 		$validator->getMessageBag()->add('error', 'Something went wrong. Check your code!!');
 		return response()->json(['errors' => $validator->errors()->all()]);
 	}
-};
+}

@@ -17,6 +17,7 @@ Route::get('developer/test', 'Helper\DatafixController@test');
 
 Route::get('developer/last-edited-date-to-decade-ago/{table}', 'Helper\DatafixController@changeSyncTableLastEditedDateBackDecade');
 Route::post('developer/last-edited-date-to-decade-ago', 'Helper\DatafixController@changeSyncTableLastEditedDateBackDecadeSave');
+Route::get('developer/reports-history-fix-punctuation-and-space', 'Helper\DatafixController@fixReportsHistoryPunctuationAndSpace');
 Route::get('unified_login', function () {
 	//session(['brian'=>'test']);
 	return redirect('/');
