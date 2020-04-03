@@ -1258,7 +1258,7 @@ margin-top:10px;
 #mainfooter {
     position: fixed;
     bottom: 0;
-    height: 80px;
+    height: 50px;
     width: 100%;
     background-color: rgba(45, 42, 43, 0.85);
 }

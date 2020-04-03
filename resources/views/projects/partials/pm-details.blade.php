@@ -6,6 +6,13 @@
 		font-size: 0.95rem;
 		font-weight: bolder;
 	}
+	.on-file-pd {
+		position: relative;
+		left: 2px;
+		top: -6px;
+		font-size: 0.95rem;
+		font-weight: bolder;
+	}
 
 	.finding-number-pd {
 		font-size: 15px;
@@ -51,15 +58,15 @@
 // if ($selected_audit->update_cached_audit()) {
 // 	$selected_audit->refresh();
 // }
-if(in_array($selected_audit->step_id, $pmCanViewFindingsStepIds)){
-$fileCount = $selected_audit->file_findings_count;
-$correctedFileCount = $fileCount - $selected_audit->unresolved_file_findings_count;
-$nltCount = $selected_audit->nlt_findings_count;
-$correctedNltCount = $nltCount - $selected_audit->unresolved_nlt_findings_count;
+if (in_array($selected_audit->step_id, $pmCanViewFindingsStepIds)) {
+	$fileCount = $selected_audit->file_findings_count;
+	$correctedFileCount = $fileCount - $selected_audit->unresolved_file_findings_count;
+	$nltCount = $selected_audit->nlt_findings_count;
+	$correctedNltCount = $nltCount - $selected_audit->unresolved_nlt_findings_count;
 
-$ltCount = $selected_audit->lt_findings_count;
-$correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
-}else{
+	$ltCount = $selected_audit->lt_findings_count;
+	$correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
+} else {
 
 	$fileCount = "NA";
 	$correctedFileCount = "NA";
@@ -71,12 +78,11 @@ $correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
 }
 
 $canViewFI = in_array($selected_audit->step_id, $pmFileInspectionsOnlyStepIds);
-$canViewSI =  in_array($selected_audit->step_id, $pmSiteInspectionsOnlyStepIds);
-$canViewBoth =  in_array($selected_audit->step_id, $pmBothInspectionsOnlyStepIds);
-if($canViewBoth){
+$canViewSI = in_array($selected_audit->step_id, $pmSiteInspectionsOnlyStepIds);
+$canViewBoth = in_array($selected_audit->step_id, $pmBothInspectionsOnlyStepIds);
+if ($canViewBoth) {
 	$canViewFI = true;
-	$canViewSI =  true;
-
+	$canViewSI = true;
 }
 ?>
 <div id="project-details-main" class="uk-overflow-auto" uk-grid>
@@ -141,17 +147,18 @@ if($canViewBoth){
 									<div class="uk-width-1-3">
 
 										<?php
-												$carIcon = $selected_audit->car_icon;
-												$ehsIcon = $selected_audit->ehs_icon;
-												$_8823Icon = $selected_audit->_8823_icon;
-												$carId = $selected_audit->car_id;
-												$ehsId = $selected_audit->ehs_id;
-												$_8823Id = $selected_audit->_8823_id;
-												$carStatus = $selected_audit->car_status_text;
-												$ehsStatus = $selected_audit->ehs_status_text;
-												$_8823Status = $selected_audit->_8823_status_text;
-											  ?>
-											  @if($carIcon)
+
+											$carIcon = $selected_audit->car_icon;
+											$ehsIcon = $selected_audit->ehs_icon;
+											$_8823Icon = $selected_audit->_8823_icon;
+											$carId = $selected_audit->car_id;
+											$ehsId = $selected_audit->ehs_id;
+											$_8823Id = $selected_audit->_8823_id;
+											$carStatus = $selected_audit->car_status_text;
+											$ehsStatus = $selected_audit->ehs_status_text;
+											$_8823Status = $selected_audit->_8823_status_text;
+										?>
+											  @if($carIcon && $fileCount != "NA")
 											  <a class="uk-link-mute" href="/report/{{$carId}}" target="report-{{$carId}}" uk-tooltip="title:VIEW CAR {{$carId}} : {{strtoupper($carStatus)}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a>
 											  <br /><small>CAR #{{$carId}}</small>
 
@@ -159,7 +166,7 @@ if($canViewBoth){
 											  <i class="a-file-fail" uk-tooltip="title:CAR UNAVAILABLE"></i><br /><small>CAR</small>
 											  @endIf
 											</div><div class="uk-width-1-3">
-												@if(($ehsIcon))
+												@if(($ehsIcon) && $fileCount != "NA")
 
 											  		<a class="uk-link-mute" href="/report/{{$ehsId}}" target="report-{{$ehsId}}" uk-tooltip="title:{{$ehsStatus}}"><i class="{{$ehsIcon}}" style="font-size: 30px;" ></i></a>
 
@@ -171,7 +178,7 @@ if($canViewBoth){
 											</div>
 											<div class="uk-width-1-3">
 												@if(env('APP_ENV') != 'production')
-												@if(($_8823Icon))
+												@if(($_8823Icon) && $fileCount != "NA")
 
 											  <a class="uk-link-mute" href="/report/{{$_8823Id}}" target="report-{{$_8823Id}}" uk-tooltip="title:{{$_8823Status}}" ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
 
@@ -295,56 +302,10 @@ if($canViewBoth){
 	</div>
 
 	<script>
-		var chartColors = {
-			required: '#191818',
-			selected: '#0099d5',
-			needed: '#d31373',
-			inspected: '#21a26e',
-			tobeinspected: '#e0e0df'
-		};
-		Chart.defaults.global.legend.display = false;
-		Chart.defaults.global.tooltips.enabled = true;
-
-		// THIS SCRIPT MUST BE UPDATED WITH NEW VALUES AFTER A NEW FUNDING SUBMISSION HAS BEEN MADE  - to make this simple - this tab is reloaded on form submission of new payment/ payment edits //
-		var summaryOptions = {
-			//Boolean - Whether we should show a stroke on each segment
-			segmentShowStroke : false,
-			legendPosition : 'bottom',
-
-			"cutoutPercentage":40,
-			"legend" : {
-				"display" : false
-			},
-			"responsive" : true,
-			"maintainAspectRatio" : false,
-
-      //String - The colour of each segment stroke
-      segmentStrokeColor : "#fff",
-
-      //Number - The width of each segment stroke
-      segmentStrokeWidth : 0,
-
-      //The percentage of the chart that we cut out of the middle.
-      // cutoutPercentage : 67,
-
-      easing: "linear",
-
-      duration: 100000,
-
-      tooltips: {
-      	enabled: true,
-      	mode: 'single',
-      	callbacks: {
-      		label: function(tooltipItem, data) {
-      			var label = data.labels[tooltipItem.index];
-      			var datasetLabel = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-      			return label + ': ' + addCommas(datasetLabel) + ' units' ;
-      		}
-      	}
-      }
+		
 
 
-    }
+   
     function addCommas(nStr)
     {
     	nStr += '';
@@ -385,13 +346,13 @@ if($canViewBoth){
 
 
 
-		$.fn.scrollView = function () {
-			return this.each(function () {
-				$('html, body').animate({
-					scrollTop: $(this).offset().top-80
-				}, 1000);
-			});
-		}
+		// $.fn.scrollView = function () {
+		// 	return this.each(function () {
+		// 		$('html, body').animate({
+		// 			scrollTop: $(this).offset().top-80
+		// 		}, 1000);
+		// 	});
+		// }
 
 
 		$(document ).ready(function() {
@@ -411,35 +372,60 @@ if($canViewBoth){
 		});
 
 
-		function openSchedule() {
-			$('#project-details-button-2').trigger('click');
-			$('html, body').animate({
-				scrollTop: 400
-			}, 1000);
-		}
+		// function openSchedule() {
+		// 	$('#project-details-button-2').trigger('click');
+		// 	$('html, body').animate({
+		// 		scrollTop: 400
+		// 	}, 1000);
+		// }
 
-		function openCommunication() {
+		// function openCommunication() {
+		// 	$('#project-detail-tab-2').trigger('click');
+		// }
+
+		function openDocuments(search = '') {
+			if(search != ''){
+				window.documentSearch = search;
+			}
 			$('#project-detail-tab-2').trigger('click');
+			$('#project-documents-button-3').trigger("click");
+			if(!$('#project-documents-button-2').hasClass('active')){
+				$('#project-documents-button-2').trigger('click');
+				$('#local-documents-search').val(window.documentSearch);
+				window.documentSearch = '';
+				searchDocuments();
+			}else if($('#project-documents-button-2').hasClass('active')){
+				$('#local-documents-search').val(window.documentSearch);
+				window.documentSearch = '';
+				searchDocuments();
+			}
+			// console.log('openDocuments Scrolling');
+			// $('html, body').delay(100).animate({
+			// 					scrollTop: 0
+			// 				}, 1000);
 		}
 
-		function openDocuments() {
-			$('#project-detail-tab-3').trigger('click');
-		}
+		// function openCompliance() {
+		// 	$('#project-details-button-1').trigger('click');
+		// 	$('html, body').animate({
+		// 		scrollTop: 400
+		// 	}, 1000);
+		// }
 
-		function openCompliance() {
-			$('#project-details-button-1').trigger('click');
-			$('html, body').animate({
-				scrollTop: 400
-			}, 1000);
-		}
-
-		function gotoDocumentUploader(building = '', unit = '') {
+		function gotoDocumentUploader(building = '', unit = '', audit = '', finding = '') {
 				window.fromAudit = 1;
+				window.forAudit = audit;
+				window.filterFindings = finding;
 				window.fromBuilding = building;
 				window.fromUnit = unit;
+				console.log('documentUploader b:'+building+' u:'+unit+' a:'+audit+' f:'+finding);
 				$('#project-detail-tab-2').trigger('click');
-				$('#project-documents-button-3').trigger('click');
+				$('#project-documents-button-3').trigger("click");
+				if($('#project-documents-button-3').hasClass('active')){
+					checkToDoUploads();
+				}
+				
 		}
-
+		window.project_detail_tab_1_loaded = 1;
 
 	</script>

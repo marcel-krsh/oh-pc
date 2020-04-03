@@ -1,11 +1,11 @@
 <div id="project" class="uk-no-margin-top">
-	<div id="project-top" uk-grid>
+	<div id="project-top" uk-grid uk-sticky="offset: 55">
 		<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 			<nav class="tab-sub-nav" uk-navbar="" style="border:none">
 				<div class="uk-navbar-left" style="overflow-x: auto; overflow-y: hidden; width:100%;">
 					<ul id="project-top-tabs" class="uk-navbar-nav" uk-switcher="connect: #project-main">
 						@foreach($projectTabs as $projectTab)
-						<li id="project-detail-tab-{{$loop->iteration}}" class="project-detail-tab-{{$loop->iteration}} uk-margin-small-left {{$projectTab['status']}}" onclick="if($('#project-detail-tab-{{$loop->iteration}}').hasClass('uk-active') || window.project_detail_tab_{{$loop->iteration}} != '1'){loadTab('{{ route($projectTab['action'], ['id' => $projectId, 'audit_id' => $audit_id, 'project' => $projectId, 'audit' => $audit_id, 'project_id' => $projectId]) }}', '{{$loop->iteration}}', 0, 0, 'project-',1);window.tab_{{$loop->iteration}}=1;}" aria-expanded="false"><a><i class="{{$projectTab['icon']}}"></i> <span>{{$projectTab['title']}}</span></a></li>
+						<li id="project-detail-tab-{{$loop->iteration}}" class="project-detail-tab-{{$loop->iteration}} uk-margin-small-left {{$projectTab['status']}}" onclick="if($('#project-detail-tab-{{$loop->iteration}}').hasClass('uk-active') || window.project_detail_tab_{{$loop->iteration}}_loaded != '1'){loadTab('{{ route($projectTab['action'], ['id' => $projectId, 'audit_id' => $audit_id, 'project' => $projectId, 'audit' => $audit_id, 'project_id' => $projectId]) }}', '{{$loop->iteration}}', 0, 0, 'project-',1);window.tab_{{$loop->iteration}}=1;}" aria-expanded="false"><a><i class="{{$projectTab['icon']}}"></i> <span>{{$projectTab['title']}}</span></a></li>
 						@endforeach
 						<li><a><i class="a-clipboard"></i> {{$project->project_name}} Project Details</a></li>
 					</ul>
@@ -48,4 +48,14 @@ $( document ).ready(function() {
 		$('#project-detail-tab-1').trigger("click");
 	}
 });
+window.project_detail_tab_1_loaded = 0;
+window.project_detail_tab_2_loaded = 0;
+window.project_detail_tab_3_loaded = 0;
+window.project_detail_tab_4_loaded = 0;
+window.fromAudit = 0;
+window.forAudit = 0;
+window.filterFindings = "";
+window.fromBuilding = "";
+window.fromUnit = "";
+window.documentSearch = '';
 </script>

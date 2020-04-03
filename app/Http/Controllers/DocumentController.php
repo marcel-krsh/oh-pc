@@ -526,6 +526,10 @@ class DocumentController extends Controller
 
 		//dd($allowedDocumentsOnAudits);
 
+		// audits allowed to view findings
+		$allowedAuditIdsConnectedToFindings = CachedAudit::where('project_id',$project->id)->whereIn('step_id',$this->pmCanViewFindingsStepIds)->pluck('audit_id')->toArray();
+		$pmCanViewAuditStepIds = $this->pmCanViewAuditStepIds;
+		
 		/// SEARCH TERM
 		if ($request->has('local-search')) {
 			if ($request->get('local-search') == "") {
@@ -609,6 +613,8 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
+		
+
 		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits.cached_audit', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity', 'findings.audit.cached_audit', 'project')->orderBy('created_at', 'DESC');
 
 		// return $documents_query->get();
@@ -626,8 +632,8 @@ class DocumentController extends Controller
 			// 	Document Comments - OK
 			$searchCategoryIds = DocumentCategory::where('document_category_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			$searchFindingTypeIds = FindingType::where('name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
-			$searchFindingId = Finding::where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
-			$searchAuditId = Audit::where('id', intval($searchTerm))->pluck('id')->toArray();
+			$searchFindingId = Finding::whereIn('audit_id',$allowedAuditIdsConnectedToFindings)->where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
+			$searchAuditId = CachedAudit::whereIn('step_id', $pmCanViewAuditStepIds)->where('audit_id', intval($searchTerm))->pluck('audit_id')->toArray();
 			$searchBuildingId = Building::where('building_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			$searchUnitId = Unit::where('unit_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			$searchAmenitiesIds = Amenity::where('amenity_description', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
@@ -675,7 +681,9 @@ class DocumentController extends Controller
 				foreach ($doc->audits as $key => $audit) {
 					if (in_array($audit->id, $searchAuditId)) {
 						return $doc;
+
 					}
+
 				}
 				//Document comment
 				if (in_array($doc->id, $searchDocumentCommentId)) {
@@ -703,11 +711,11 @@ class DocumentController extends Controller
 		if ($unresolved == 0) {
 			// filter to show unresolved
 			$documents_query = $documents_query->get();
-			$documents_query = $documents_query->map(function ($doc) {
+			$documents_query = $documents_query->map(function ($doc) use ($allowedAuditIdsConnectedToFindings){
 				$total = count($doc->findings);
-				$criteria = $doc->findings->where('auditor_approved_resolution', 1);
+				$criteria = $doc->findings->where('auditor_approved_resolution', 1)->whereIn('audit_id',$allowedAuditIdsConnectedToFindings);
 				$meets_criteria_count = count($criteria);
-				if ($total == $meets_criteria_count) {
+				if ($total == $meets_criteria_count && $total != 0) {
 					return $doc;
 				}
 			});
@@ -722,24 +730,14 @@ class DocumentController extends Controller
 			// 	$query->where('auditor_approved_resolution', '<>', 1);
 			// 	// $query->orWhereNull('auditor_approved_resolution');
 			// });
-			$documents_query = $documents_query->map(function ($doc) use ($unresolved) {
+			$documents_query = $documents_query->map(function ($doc) use ($unresolved,$allowedAuditIdsConnectedToFindings) {
 				$total = count($doc->findings);
-				$criteria = $doc->findings->where('auditor_approved_resolution', '<>', 1);
+				$criteria = $doc->findings->where('auditor_approved_resolution', '<>', 1)->whereIn('audit_id',$allowedAuditIdsConnectedToFindings);
 				$meets_criteria_count = count($criteria);
-				if ($total == $meets_criteria_count) {
+				if ($total == $meets_criteria_count && $total != 0) {
 					return $doc;
 				}
-				// foreach ($doc->findings as $key => $finding) {
-				// 	if ($finding->auditor_approved_resolution != 1 || is_null($finding->auditor_approved_resolution)) {
-				// 		if ($unresolved == 0) {
-				// 			if ($finding->auditor_approved_resolution == 1) {
-				// 				return $doc;
-				// 			}
-				// 		} else {
-				// 			return $doc;
-				// 		}
-				// 	}
-				// }
+				
 			});
 			$documents_ids = $documents_query->filter()->pluck('id');
 			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
@@ -750,61 +748,62 @@ class DocumentController extends Controller
 		// • If audit is visible (pmCanViewAudit) can view documents uploaded for audit that are uploaded by contacts on the project - if they are not attached to a finding
 		// • If can view findings for the audit: pm can view same as above including those attached to findings for that audit.
 
-		$pmCanViewAudits = pmCanViewAuditIds();
+		// $pmCanViewAudits = pmCanViewAuditIds();
 		$pmCanViewFindingsIds = pmCanViewFindingsIds();
-		$documents_query = $documents_query->get();
+		// $documents_query = $documents_query->get();
 
-		// foreach ($documents_query as $key => $doc) {
-		// 	if (!is_null($doc->finding_ids)) {
-		// 		$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
-		// 		$audits_linked = $linked_findings->pluck('audit')->filter();
-		// 		if (count($audits_linked)) {
-		// 			$cached_audits_linked = $audits_linked->pluck('cached_audit');
-		// 			if (count($cached_audits_linked)) {
-		// 				$finding_steps = $cached_audits_linked->pluck('step_id')->toArray();
-		// 				$findings_acces = array_intersect($pmCanViewFindingsIds, $finding_steps);
-		// 				if (count($findings_acces)) {
-		// 					return $doc;
-		// 				}
+		// $documents_query = $documents_query->map(function ($doc) use ($pmCanViewAudits, $pmCanViewFindingsIds) {
+		// 	if (count($doc->audits) && count($doc->audits->pluck('cached_audit'))) {
+		// 		$doc_audits_steps = $doc->audits->pluck('cached_audit')->pluck('step_id')->toArray();
+		// 		if (!is_null($doc_audits_steps)) {
+		// 			$audit_access = array_intersect($pmCanViewAudits, $doc_audits_steps);
+		// 			if (count($audit_access)) {
+		// 				return $doc;
 		// 			}
 		// 		}
 		// 	}
-		// }
-		// return 12;
 
-		$documents_query = $documents_query->map(function ($doc) use ($pmCanViewAudits, $pmCanViewFindingsIds) {
+		// in_array($selected_audit->step_id, $pmCanViewFindingsStepIds);
+
+		$documents_query = $documents_query->get();
+
+		$documents_query = $documents_query->map(function ($doc) use ($pmCanViewAuditStepIds) {
+
 			if (count($doc->audits) && count($doc->audits->pluck('cached_audit'))) {
 				$doc_audits_steps = $doc->audits->pluck('cached_audit')->pluck('step_id')->toArray();
 				if (!is_null($doc_audits_steps)) {
-					$audit_access = array_intersect($pmCanViewAudits, $doc_audits_steps);
+					$audit_access = array_intersect($pmCanViewAuditStepIds, $doc_audits_steps);
 					if (count($audit_access)) {
 						return $doc;
 					}
 				}
+			} else {
+				return $doc;
 			}
-			if (!is_null($doc->finding_ids)) {
-				$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
-				$audits_linked = $linked_findings->pluck('audit')->filter();
-				if (count($audits_linked)) {
-					$cached_audits_linked = $audits_linked->pluck('cached_audit');
-				}
-			}
-			//document findings->audit->cached_audit->step_id
 
-			if (!is_null($doc->finding_ids)) {
-				$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
-				$audits_linked = $linked_findings->pluck('audit')->filter();
-				if (count($audits_linked)) {
-					$cached_audits_linked = $audits_linked->pluck('cached_audit');
-					if (count($cached_audits_linked)) {
-						$finding_steps = $cached_audits_linked->pluck('step_id')->toArray();
-						$findings_acces = array_intersect($pmCanViewFindingsIds, $finding_steps);
-						if (count($findings_acces)) {
-							return $doc;
-						}
-					}
-				}
-			}
+			// if (!is_null($doc->finding_ids)) {
+			// 	$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
+			// 	$audits_linked = $linked_findings->pluck('audit')->filter();
+			// 	if (count($audits_linked)) {
+			// 		$cached_audits_linked = $audits_linked->pluck('cached_audit');
+			// 	}
+			// }
+			// //document findings->audit->cached_audit->step_id
+
+			// if (!is_null($doc->finding_ids)) {
+			// 	$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
+			// 	$audits_linked = $linked_findings->pluck('audit')->filter();
+			// 	if (count($audits_linked)) {
+			// 		$cached_audits_linked = $audits_linked->pluck('cached_audit');
+			// 		if (count($cached_audits_linked)) {
+			// 			$finding_steps = $cached_audits_linked->pluck('step_id')->toArray();
+			// 			$findings_acces = array_intersect($pmCanViewFindingsIds, $finding_steps);
+			// 			if (count($findings_acces)) {
+			// 				return $doc;
+			// 			}
+			// 		}
+			// 	}
+			// }
 		});
 
 		$documents_query = $documents_query->filter();
@@ -838,6 +837,17 @@ class DocumentController extends Controller
 		// 		return $doc;
 		// 	}
 		// });
+		$documents_query = $documents_query->map(function ($doc) use ($allowedAuditIdsConnectedToFindings) {
+			//must hide those that are attached to findings
+				$total = count($doc->findings);
+				$criteria = $doc->findings->whereIn('audit_id',$allowedAuditIdsConnectedToFindings);
+				$criteria2 = $doc->findings;
+				$meets_criteria_count = count($criteria);
+				if ($total == $meets_criteria_count || $criteria2 == NULL) {
+					return $doc;
+				}
+				
+			});
 
 		$documents_ids = $documents_query->filter()->pluck('id');
 		$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');

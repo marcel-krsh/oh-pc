@@ -350,6 +350,7 @@
 
 
 <script type="text/javascript">
+	window.projectDocumentsLoaded = 1;
 
 	$(document).ready(function(){
 		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
@@ -372,6 +373,11 @@
 				return false;
 			}
 		});
+		if(window.documentSearch != ''){
+			$('#local-documents-search').val(window.documentSearch);
+			window.documentSearch = '';
+			searchDocuments();
+		}
 	});
 
 	function searchDocuments(){

@@ -6,49 +6,32 @@ use Auth;
 use View;
 use Carbon;
 use Session;
-use App\Models\Job;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\Audit;
 use App\Models\Group;
-use App\Models\Amenity;
-use App\Models\Comment;
 use App\Models\Finding;
 use App\Models\Program;
 use App\Models\Project;
 use App\Models\Building;
 use App\Models\CrrReport;
-use App\Models\GuideStep;
 use App\Models\UserEmail;
-use App\Models\CachedUnit;
 use App\Models\CachedAudit;
-use App\Models\ScheduleDay;
-use App\Models\UnitAmenity;
 use App\Models\UnitProgram;
 use Illuminate\Support\Arr;
 use App\Models\AuditAuditor;
 use App\Models\Availability;
-use App\Models\OrderingUnit;
-use App\Models\ProgramGroup;
 use App\Models\ReportAccess;
 use App\Models\ScheduleTime;
 use Illuminate\Http\Request;
-use App\Models\CachedComment;
-use App\Models\GuideProgress;
 use App\Models\SystemSetting;
 use App\Models\UserAddresses;
 use App\Models\CachedBuilding;
-use App\Models\ProjectAmenity;
 use App\Models\UnitInspection;
-use App\Models\BuildingAmenity;
 use App\Models\CrrApprovalType;
-use App\Models\OrderingAmenity;
 use App\Models\UserPhoneNumber;
-use App\Models\CachedInspection;
-use App\Models\OrderingBuilding;
 use App\Models\UserOrganization;
 use App\Models\AmenityInspection;
-use App\Models\BuildingInspection;
 use App\Http\Controllers\Controller;
 
 class PMAuditController extends Controller
@@ -162,7 +145,6 @@ class PMAuditController extends Controller
 
 		return '<i class="a-mobile-repeat"></i><i class="' . $step_icon . '"></i> <span class="list-tab-text"> PROJECT ' . $project_number . '</span>';
 	}
-
 
 	public function getPMProjectDetailsAjax(Request $request)
 	{
@@ -334,19 +316,19 @@ class PMAuditController extends Controller
 		// project: project_id?
 		$project = Project::where('id', '=', $id)->first();
 		$audit = CachedAudit::with('auditors', 'audit.amenity_inspections.user', 'lead_auditor')->where('audit_id', $audit)->first();
-		if($audit == null){
+		if ($audit == null) {
 			return "<h1>Unable to load requested audit - please make sure with your auditor it has been made available to you.</h1>";
 		}
 		//dd($project->selected_audit());
 		$current_user = $this->current_user;
 		$manager_access = 0;
 		$canViewFindings = in_array($audit->step_id, $this->pmCanViewFindingsStepIds);
-		if(in_array($audit->step_id,  $this->pmSiteInspectionsOnlyStepIds) || in_array($audit->step_id,  $this->pmBothInspectionsOnlyStepIds)){
+		if (in_array($audit->step_id, $this->pmSiteInspectionsOnlyStepIds) || in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds)) {
 			$canViewSiteInspections = 1;
 		} else {
 			$canViewSiteInspections = 0;
 		}
-		if(in_array($audit->step_id,  $this->pmFileInspectionsOnlyStepIds) || in_array($audit->step_id,  $this->pmBothInspectionsOnlyStepIds)){
+		if (in_array($audit->step_id, $this->pmFileInspectionsOnlyStepIds) || in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds)) {
 			$canViewFileInspections = 1;
 		} else {
 			$canViewFileInspections = 0;
@@ -358,9 +340,9 @@ class PMAuditController extends Controller
 			case 'compliance':
 				// get the compliance summary for this audit
 				//
-				$audit = $audit->audit->whereIn('step_id',$this->$pmCanViewAuditStepIds)->first();
+				$audit = $audit->audit->whereIn('step_id', $this->$pmCanViewAuditStepIds)->first();
 
-				if($audit == NULL){
+				if ($audit == NULL) {
 					return "<h1>SORRY - YOU DO NOT HAVE ACCESS TO THIS AUDIT CURRENTLY</h1>";
 				}
 				$selection_summary = json_decode($audit->selection_summary, 1);
@@ -427,8 +409,6 @@ class PMAuditController extends Controller
 				$summary_unit_ids = [];
 				$all_program_keys = [];
 
-
-
 				// create stats for each group
 				// we may have multiple buildings for a group (group 1 or HTC group 7...)
 				if (null !== $selection_summary) {
@@ -440,7 +420,7 @@ class PMAuditController extends Controller
 						// are we working with a building?
 						if (array_key_exists('building_key', $program)) {
 							if ('' != $program['building_key']) {
-								if($canViewSiteInspections){
+								if ($canViewSiteInspections) {
 									$selected_units_site = UnitInspection::where('group_id', '=', $program['group'])
 										->where('building_key', '=', $program['building_key'])
 										->where('audit_id', '=', $audit->id)
@@ -450,13 +430,13 @@ class PMAuditController extends Controller
 									$selected_units_site = 0;
 								}
 
-								if($canViewFileInspections){
+								if ($canViewFileInspections) {
 									$selected_units_file = UnitInspection::where('group_id', '=', $program['group'])
 										->where('building_key', '=', $program['building_key'])
 										->where('audit_id', '=', $audit->id)
 										->where('is_file_audit', '=', 1)
 										->count();
-								}else{
+								} else {
 									$selected_units_file = 0;
 								}
 
@@ -466,7 +446,7 @@ class PMAuditController extends Controller
 								} else {
 									$building_name = '';
 								}
-								if($canViewSiteInspections){
+								if ($canViewSiteInspections) {
 									$inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
 										->where('group_id', '=', $program['group'])
 										->where('building_key', '=', $program['building_key'])
@@ -474,11 +454,11 @@ class PMAuditController extends Controller
 										->where('complete', '!=', null)
 										->get()
 										->count();
-								}else{
+								} else {
 									$inspected_units_site = 0;
 								}
 
-								if($canViewFileInspections){
+								if ($canViewFileInspections) {
 									$inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
 										->where('group_id', '=', $program['group'])
 										->where('building_key', '=', $program['building_key'])
@@ -486,80 +466,73 @@ class PMAuditController extends Controller
 										->where('complete', '!=', null)
 										->get()
 										->count();
-									}else{
-										$inspected_units_file = 0;
-									}
+								} else {
+									$inspected_units_file = 0;
+								}
 							} else {
-								if($canViewSiteInspections){
+								if ($canViewSiteInspections) {
 									$selected_units_site = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_site_visit', '=', 1)->count();
-								}else{
+								} else {
 									$selected_units_site = 0;
 								}
 
-								if($canViewFileInspections){
+								if ($canViewFileInspections) {
 									$selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_file_audit', '=', 1)->count();
-								}else{
+								} else {
 									$selected_units_file = 0;
 								}
 
-
 								$building_name = '';
 
-								if($canViewSiteInspections){
+								if ($canViewSiteInspections) {
 									$inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
+										->where('group_id', '=', $program['group'])
+										->where('is_site_visit', '=', 1)
+										->where('complete', '!=', null)
+										->get()
+										->count();
+								} else {
+									$inspected_units_site = 0;
+								}
+
+								if ($canViewFileInspections) {
+									$inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
+										->where('group_id', '=', $program['group'])
+										->where('is_file_audit', '=', 1)
+										->where('complete', '!=', null)
+										->get()
+										->count();
+								} else {
+									$inspected_units_file = 0;
+								}
+							}
+						} else {
+							if ($canViewSiteInspections) {
+								$selected_units_site = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_site_visit', '=', 1)->count();
+								$inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
 									->where('group_id', '=', $program['group'])
 									->where('is_site_visit', '=', 1)
 									->where('complete', '!=', null)
 									->get()
 									->count();
-								}else{
-									$inspected_units_site = 0;
-								}
-
-								if($canViewFileInspections){
-									$inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
+							} else {
+								$selected_units_site = 0;
+								$inspected_units_site = 0;
+							}
+							if ($canViewFileInspections) {
+								$selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_file_audit', '=', 1)->count();
+								$inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
 									->where('group_id', '=', $program['group'])
 									->where('is_file_audit', '=', 1)
 									->where('complete', '!=', null)
 									->get()
 									->count();
-								}else{
-									$inspected_units_file = 0;
-								}
-
-							}
-						} else {
-							if($canViewSiteInspections){
-								$selected_units_site = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_site_visit', '=', 1)->count();
-								$inspected_units_site = UnitInspection::where('audit_id', '=', $audit->id)
-								->where('group_id', '=', $program['group'])
-								->where('is_site_visit', '=', 1)
-								->where('complete', '!=', null)
-								->get()
-								->count();
-							}else{
-								$selected_units_site = 0;
-								$inspected_units_site = 0;
-							}
-							if($canViewFileInspections){
-								$selected_units_file = UnitInspection::where('group_id', '=', $program['group'])->where('audit_id', '=', $audit->id)->where('is_file_audit', '=', 1)->count();
-								$inspected_units_file = UnitInspection::where('audit_id', '=', $audit->id)
-								->where('group_id', '=', $program['group'])
-								->where('is_file_audit', '=', 1)
-								->where('complete', '!=', null)
-								->get()
-								->count();
 							} else {
 								$selected_units_file = 0;
 								$inspected_units_file = 0;
 							}
 
-
 							$building_name = '';
-
-
-
-
 						}
 
 						$needed_units_site = max($program['required_units'] - $selected_units_site, 0);
@@ -853,62 +826,56 @@ class PMAuditController extends Controller
 				// return_raw: site, building, unit
 				if ($return_raw) {
 					$dpView = 1;
-					$findings = $audit->audit->findings->where('cancelled_at',NULL);
+					$findings = $audit->audit->findings->where('cancelled_at', NULL);
 					$print = null;
 					$report = $audit;
 					$detailsPage = 1;
 
 					switch ($return_raw) {
-
 						case 'site':
 							$inspections = $audit->audit->project_amenity_inspections()->paginate(12);
-							return view('crr_parts.pm_crr_inspections_site', compact('inspections','dpView','findings','print','report','detailsPage'));
+							return view('crr_parts.pm_crr_inspections_site', compact('inspections', 'dpView', 'findings', 'print', 'report', 'detailsPage'));
 							break;
 						case 'building':
 							$allBuildingInspections = $audit->audit->building_inspections;
 
 							$selected_audit = $audit;
-							if(session()->has('type_id') && session()->has('is_uncorrected')){
+							if (session()->has('type_id') && session()->has('is_uncorrected')) {
 								$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
 								$result = array_intersect($bulidingUnresolved, $type_id);
-								$inspections = $audit->audit->building_inspections()->whereIn('building_id',$result)->paginate(12);
-							}
-							else if(session()->has('is_uncorrected')){
+								$inspections = $audit->audit->building_inspections()->whereIn('building_id', $result)->paginate(12);
+							} else if (session()->has('is_uncorrected')) {
 								$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
-								$inspections = $audit->audit->building_inspections()->whereIn('building_id',$bulidingUnresolved)->paginate(12);
-							}
-							else if(session()->has('type_id')){
-								$inspections = $audit->audit->building_inspections()->whereIn('building_id',session()->has('type_id'))->paginate(12);
-							}
-							else{
+								$inspections = $audit->audit->building_inspections()->whereIn('building_id', $bulidingUnresolved)->paginate(12);
+							} else if (session()->has('type_id')) {
+								$inspections = $audit->audit->building_inspections()->whereIn('building_id', session()->has('type_id'))->paginate(12);
+							} else {
 								$inspections = $audit->audit->building_inspections()->paginate(12);
 							}
 
-							return view('crr_parts.pm_crr_inspections_building', compact('inspections','allBuildingInspections','dpView','findings','print','report','selected_audit','detailsPage'));
+							return view('crr_parts.pm_crr_inspections_building', compact('inspections', 'allBuildingInspections', 'dpView', 'findings', 'print', 'report', 'selected_audit', 'detailsPage', 'canViewFileInspections', 'canViewSiteInspections', 'canViewFindings'));
 							break;
 						case 'unit':
 							$allUnitInspections = $audit->audit->unit_inspections;
-							if(session()->has('type_id') && session()->has('is_uncorrected')){
+							if (session()->has('type_id') && session()->has('is_uncorrected')) {
 								$allBuildingInspections = $audit->audit->building_inspections;
 								$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
 								$result = array_intersect($bulidingUnresolved, $type_id);
 								$unitUnresolvedId = $audit->audit->unitUnResolved($allUnitInspections, $findings);
-								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$result)->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
-							}
-							else if(session()->has('is_uncorrected')){
+								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id', $result)->whereIn('unit_id', $unitUnresolvedId)->paginate(12);
+							} else if (session()->has('is_uncorrected')) {
 								$allUnitInspections1 = $audit->audit->unit_inspections()->groupBy('unit_id')->get();
 								// echo count($allUnitInspections);exit;
 								$unitUnresolvedId = $audit->audit->unitUnResolved($allUnitInspections1, $findings);
 
-								$inspections = $audit->audit->unit_inspections()->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
-							}
-							else if(session()->has('type_id')){
-								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',session()->get('type_id'))->paginate(12);
-							}else{
+								$inspections = $audit->audit->unit_inspections()->whereIn('unit_id', $unitUnresolvedId)->paginate(12);
+							} else if (session()->has('type_id')) {
+								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id', session()->get('type_id'))->paginate(12);
+							} else {
 								$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
 							}
 
-							return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit', 'canViewFileInspections', 'canViewSiteInspections', 'canViewFindings'));
+							return view('crr_parts.pm_crr_inspections_unit', compact('inspections', 'allUnitInspections', 'dpView', 'print', 'report', 'findings', 'detailsPage', 'audit', 'canViewFileInspections', 'canViewSiteInspections', 'canViewFindings'));
 							break;
 						default:
 					}
@@ -918,7 +885,7 @@ class PMAuditController extends Controller
 				Session::forget('name');
 				Session::forget('is_uncorrected');
 
-				return view('projects.partials.pm-details-selections', compact('audit', 'details','canViewFileInspections','canViewSiteInspections','canViewFindings'));
+				return view('projects.partials.pm-details-selections', compact('audit', 'details', 'canViewFileInspections', 'canViewSiteInspections', 'canViewFindings'));
 				break;
 			default:
 		}
@@ -1174,8 +1141,6 @@ class PMAuditController extends Controller
 		return $calendar;
 	}
 
-
-
 	public function getPMProjectDetailsAssignmentSchedule($project, $dateid)
 	{
 		$data = collect([
@@ -1287,8 +1252,6 @@ class PMAuditController extends Controller
 
 		return view('projects.partials.details-assignment-schedule', compact('data'));
 	}
-
-
 
 	public function getPMProjectStream($project = null)
 	{
@@ -2408,8 +2371,6 @@ class PMAuditController extends Controller
 		return view('projects.partials.details-assignment-auditor-calendar', compact('data'));
 	}
 
-
-
 	public function pm_reload_auditors($audit_id, $unit_id, $building_id)
 	{
 		if (null != $unit_id && null != $building_id && 'null' != $unit_id && 'null' != $building_id) {
@@ -2451,8 +2412,6 @@ class PMAuditController extends Controller
 
 		return ['unit_auditors' => $unit_auditors, 'building_auditors' => $building_auditors];
 	}
-
-
 
 	public function pmAjaxAuditRequiredUnits(Request $request)
 	{
@@ -2530,6 +2489,7 @@ class PMAuditController extends Controller
 			return 0;
 		}
 	}
+
 	public function pmBuildingsFromAudit($audit, Request $request)
 	{
 		//$audit = CachedAudit::where('audit_id',$audit)->first();
@@ -2649,48 +2609,48 @@ class PMAuditController extends Controller
 
 	public function getPMBuildingDetailsInfo(Request $request, $id, $type, $audit)
 	{
+		$audit = CachedAudit::where('audit_id',$audit)->first();
 		$type_id = $request->post('type_id');
 		$name = $request->post('name');
 		$is_uncorrected = $request->post('is_uncorrected');
 		$canViewFindings = in_array($audit->step_id, $this->pmCanViewFindingsStepIds);
-		if(in_array($audit->step_id,  $this->pmSiteInspectionsOnlyStepIds) || in_array($audit->step_id,  $this->pmBothInspectionsOnlyStepIds)){
+		if (in_array($audit->step_id, $this->pmSiteInspectionsOnlyStepIds) || in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds)) {
 			$canViewSiteInspections = 1;
 		} else {
 			$canViewSiteInspections = 0;
 		}
-		if(in_array($audit->step_id,  $this->pmFileInspectionsOnlyStepIds) || in_array($audit->step_id,  $this->pmBothInspectionsOnlyStepIds)){
+		if (in_array($audit->step_id, $this->pmFileInspectionsOnlyStepIds) || in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds)) {
 			$canViewFileInspections = 1;
 		} else {
 			$canViewFileInspections = 0;
 		}
-		if($type == 'all'){
+		if ($type == 'all') {
 			Session::forget('type_id');
 			Session::forget('name');
 			Session::forget('is_uncorrected');
 			return 1;
 		}
 
-	 	if (!empty($type_id)){
-	 		Session::put('type_id', $type_id);
-	 		Session::put('name', $name);
-		}else{
+		if (!empty($type_id)) {
+			Session::put('type_id', $type_id);
+			Session::put('name', $name);
+		} else {
 			Session::forget('type_id');
 			Session::forget('name');
 		}
 		if ($is_uncorrected == 'true') {
 			Session::put('is_uncorrected', $is_uncorrected);
-		}else{
+		} else {
 			Session::forget('is_uncorrected');
 		}
 
 		// dd($request->all());
 
-
 		// types:building, unit
 		// project: project_id?
 		// type_id: building or unit id
 		$project = Project::where('id', '=', $id)->first();
-		$audit = CachedAudit::with('auditors', 'audit', 'lead_auditor')->where('audit_id', $audit)->whereIn('step_id',$this->$pmCanViewAuditStepIds)->first();
+		
 		$current_user = Auth::user();
 		$manager_access = 0;
 		$details = $project->details();
@@ -2698,11 +2658,11 @@ class PMAuditController extends Controller
 		$dpView = 1;
 
 		$canViewFindings = 0;
-		$findings = !is_null($document->buildings) ? ($document->buildings) : collect([]);
-		if($audit != null && in_array($audit->step_id, $this->pmCanViewFindingsStepIds)){
-			$findings = $audit->audit->findings->where('cancelled_at',NULL);
+		//$findings = !is_null($document->buildings) ? ($document->buildings) : collect([]);
+		if ($audit != null && in_array($audit->step_id, $this->pmCanViewFindingsStepIds)) {
+			$findings = $audit->audit->findings->where('cancelled_at', NULL);
 			$canViewFindings = 1;
-		}else{
+		} else {
 			$findings = collect([]);
 		}
 		$print = null;
@@ -2711,49 +2671,42 @@ class PMAuditController extends Controller
 		$buildingIds = [];
 		$unitIds = [];
 		//Allowed Unit and Building Ids for site inspections
-		if($canViewFindings || ($audit != null && in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds) || $audit != null && in_array($audit->step_id, $this->pmSiteInspectionsOnlyStepIds))) {
+		// if ($canViewFindings || ($audit != null && in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds) || $audit != null && in_array($audit->step_id, $this->pmSiteInspectionsOnlyStepIds))) {
+		// 	$building_ids = $audit->audit->unit_inspections->unit->pluck('building_id')->toArray();
 
-			$building_ids = $audit->audit->unit_inspections->unit->pluck('building_id')->toArray();
-
-			//dd($building_ids);
-		}
+		// 	//dd($building_ids);
+		// }
 
 		//dd($canViewFindings,in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds), in_array($audit->step_id, $this->pmSiteInspectionsOnlyStepIds));
 
 		switch ($type) {
-
 			case 'building':
-
 				$allBuildingInspections = $audit->audit->building_inspections;
 
 				$selected_audit = $audit;
-				if(session()->has('type_id') && session()->has('is_uncorrected')){
+				if (session()->has('type_id') && session()->has('is_uncorrected')) {
 					$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
 					$result = array_intersect($bulidingUnresolved, $type_id);
 					// print_r($type_id);
 					// print_r($bulidingUnresolved);
 					// print_r($result);
-					$inspections = $audit->audit->building_inspections()->whereIn('building_id',$result)->paginate(12);
-				}
-				else if(session()->has('is_uncorrected')){
+					$inspections = $audit->audit->building_inspections()->whereIn('building_id', $result)->paginate(12);
+				} else if (session()->has('is_uncorrected')) {
 					$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
 					// print_r($bulidingUnresolved);
 
-					$inspections = $audit->audit->building_inspections()->whereIn('building_id',$bulidingUnresolved)->paginate(12);
-				}
-				else if(session()->has('type_id')){
-					$inspections = $audit->audit->building_inspections()->whereIn('building_id',$type_id)->paginate(12);
-				}
-				else{
+					$inspections = $audit->audit->building_inspections()->whereIn('building_id', $bulidingUnresolved)->paginate(12);
+				} else if (session()->has('type_id')) {
+					$inspections = $audit->audit->building_inspections()->whereIn('building_id', $type_id)->paginate(12);
+				} else {
 					$inspections = $audit->audit->building_inspections()->paginate(12);
 				}
 
-
-				return view('crr_parts.pm_crr_inspections_building', compact('inspections','allBuildingInspections','dpView','findings','print','report','selected_audit','detailsPage','canViewSiteInspections','canViewFindings','canViewFileInspections'));
+				return view('crr_parts.pm_crr_inspections_building', compact('inspections', 'allBuildingInspections', 'dpView', 'findings', 'print', 'report', 'selected_audit', 'detailsPage', 'canViewSiteInspections', 'canViewFindings', 'canViewFileInspections'));
 				break;
 			case 'unit':
 				$allUnitInspections = $audit->audit->unit_inspections;
-				if(session()->has('type_id') && session()->has('is_uncorrected')){
+				if (session()->has('type_id') && session()->has('is_uncorrected')) {
 					$allBuildingInspections = $audit->audit->building_inspections;
 					$bulidingUnresolved = $audit->audit->buildingUnResolved($allBuildingInspections, $findings);
 					$result = array_intersect($bulidingUnresolved, $type_id);
@@ -2761,26 +2714,22 @@ class PMAuditController extends Controller
 					// print_r($type_id);
 					// print_r($bulidingUnresolved);
 					// print_r($result);
-					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$result)->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
-				}
-				else if(session()->has('is_uncorrected')){
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id', $result)->whereIn('unit_id', $unitUnresolvedId)->paginate(12);
+				} else if (session()->has('is_uncorrected')) {
 					$allUnitInspections1 = $audit->audit->unit_inspections()->groupBy('unit_id')->get();
 					// echo count($allUnitInspections);exit;
 					$unitUnresolvedId = $audit->audit->unitUnResolved($allUnitInspections1, $findings);
 
-					$inspections = $audit->audit->unit_inspections()->whereIn('unit_id',$unitUnresolvedId)->paginate(12);
-				}
-				else if(session()->has('type_id')){
-					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id',$type_id)->paginate(12);
-				}else{
+					$inspections = $audit->audit->unit_inspections()->whereIn('unit_id', $unitUnresolvedId)->paginate(12);
+				} else if (session()->has('type_id')) {
+					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->whereIn('building_id', $type_id)->paginate(12);
+				} else {
 					$inspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
 				}
 
-				return view('crr_parts.pm_crr_inspections_unit', compact('inspections','allUnitInspections','dpView','print','report','findings','detailsPage','audit','canViewSiteInspections','canViewFindings','canViewFileInspections'));
+				return view('crr_parts.pm_crr_inspections_unit', compact('inspections', 'allUnitInspections', 'dpView', 'print', 'report', 'findings', 'detailsPage', 'audit', 'canViewSiteInspections', 'canViewFindings', 'canViewFileInspections'));
 				break;
 			default:
 		}
 	}
-
-
 }
