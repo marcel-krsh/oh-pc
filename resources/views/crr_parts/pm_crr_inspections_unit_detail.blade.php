@@ -66,7 +66,8 @@ $isNhtf = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->whe
 				@if(!in_array($g->unit_id, $siteVisited))
 
 
-				<i class="a-mobile uk-text-large uk-margin-small-right" ></i> @if($thisUnitSiteFindings > 0 && $canViewFindings) <span class="uk-badge finding-number on-phone @if($thisUnitUnresolvedSiteFindings > 0) attention @endIf" uk-tooltip title="{{ $thisUnitSiteFindings }} FINDINGS @if($thisUnitUnresolvedSiteFindings > 0) WITH {{ $thisUnitUnresolvedSiteFindings }} PENDING RESOLUTION @ELSE FULLY RESOLVED @endIf ">{{ $thisUnitSiteFindings }}</span> @elseif($canViewFindings)<i class="a-circle-checked on-phone no-findings"></i> @else <span class="uk-badge finding-number on-phone ">NA</span> @endIf <?php $siteVisited[] = $g->unit_id;?>
+				<i class="a-mobile uk-text-large uk-margin-small-right" ></i> @if($thisUnitSiteFindings > 0 && $canViewFindings) <span class="uk-badge finding-number on-phone @if($thisUnitUnresolvedSiteFindings > 0) attention @endIf" uk-tooltip title="{{ $thisUnitSiteFindings }} FINDINGS @if($thisUnitUnresolvedSiteFindings > 0) WITH {{ $thisUnitUnresolvedSiteFindings }} PENDING RESOLUTION @ELSE FULLY RESOLVED @endIf ">{{ $thisUnitSiteFindings }}</span> @elseif($canViewFindings)<i class="a-circle-checked on-phone no-findings"></i> @else <span class="uk-badge finding-number on-phone ">NA</span> @endIf 
+				<?php $siteVisited[] = $g->unit_id;?>
 				@else
 				<?php $noShow = 1;?>
 				@endIf
@@ -78,16 +79,8 @@ $isNhtf = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->whe
 					@endIf
 				<i class="a-folder uk-text-large @if($auditor_access)@if(!$print)use-hand-cursor @endif @endif" @if($auditor_access)@if(!$print) onclick="openFindings(this, {{ $report->audit->id }}, null, {{ $g->unit_id }}, 'file',null,'0');" @endif @endif></i> @if($thisUnitFileFindings > 0 && $canViewFindings) <span class="uk-badge finding-number on-folder @if($thisUnitUnresolvedFileFindings > 0) attention @endIf" uk-tooltip title="{{ $thisUnitFileFindings }} FINDINGS @if($thisUnitUnresolvedFileFindings > 0) WITH {{ $thisUnitUnresolvedFileFindings }} PENDING RESOLUTION @ELSE FULLY RESOLVED @endIf ">{{ $thisUnitFileFindings }}</span> @elseif($canViewFindings)<i class="a-circle-checked on-folder no-findings"></i> @else <span class="uk-badge finding-number on-folder">NA</span> @endIf
 				@if($isHome || $isOhtf || $isNhtf) <i class="a-home-2 home-folder"></i> @endIf
-				<?php $fileVisited[] = $g->unit_id;?>
-				@if($canViewFileInspections)
-					<?php
-					$g_documents = ($g->all_documents());
-					?>
-					@if(count($g_documents))
-						 <span class="a-file"></span> {{count($g_documents)}}<br />
-						<span class="use-hand-cursor" onclick="gotoDocumentUploader('',{{ $g->unit_id }})"><span class="a-file-plus"></span> UPLOAD DOCUMENT</span>
-					@endIf
-				@endIf
+				<?php $fileVisited[] = $g->unit_id; ?>
+				
 				@else
 				<?php $noShow = 1;?>
 				@endIf
@@ -96,6 +89,60 @@ $isNhtf = count(collect($allUnitInspections)->where('unit_id', $i->unit_id)->whe
 				@if(!in_array($g->unit_id, $fileVisited) && $canViewFileInspections)
 				<span style="color:#cecece"><i class="a-folder uk-text-large"></i> <i class="a-circle-minus on-folder"></i></span>
 
+				@endIf
+				@if($canViewFileInspections)
+					<?php
+
+					if($canViewFindings){
+						$g_documents = $g->all_documents();
+
+					}else{
+						$g_documents = $g->all_documents();
+						$g_documents = $g_documents->filter(function ($doc){
+							
+							if (count($doc->findings) < 1) {
+								return $doc;
+								
+							}
+						});
+
+					}
+					$unresolvedFlash = 0;
+
+					$toolTip = "";
+
+					if(count($g_documents)){
+						forEach($g_documents as $gc){
+							foreach ($gc->assigned_categories as $document_category)
+							$toolTip .= strtoupper($gc->user->full_name())."'S ";
+							$toolTip .= strtoupper($document_category->parent->document_category_name)." : ".strtoupper($document_category->document_category_name);
+							if($gc->findings){
+								$toolTip .= ' Findings: ';
+								forEach($gc->findings as $gcFinding){
+									$toolTip .= '#'.$gcFinding->id.' ';
+								}
+							}
+							$toolTip .= ($gc->notapproved == 1) ? " (DECLINED)" : "";
+							$toolTip .= ($gc->approved == 1) ? " (APPROVED)" : "";
+							$toolTip .= ($gc->approved != 1 && $gc->notapproved != 1) ? "(PENDING)" : "";
+							$toolTip .= '<hr />';
+						}
+						
+					}
+
+					?>
+					<span onclick="openDocuments('{{ $i->unit_name }}')" class="use-hand-cursor a-file"></span><span class="use-hand-cursor uk-badge finding-number on-file-pd" onclick="openDocuments('{{ $i->unit_name }}')" @if($toolTip != "") uk-tooltip title="{{$toolTip}}" @endIf>
+					@if(count($g_documents))
+						 {{count($g_documents)}}
+					@else
+						0
+					@endIf
+					</span><br />
+						<span class="use-hand-cursor" onclick="gotoDocumentUploader('',{{ $g->unit_id }},{{$report->audit->id}},'')"><span class="a-file-plus"></span><small> FILE DOCUMENT</small></span>
+						@if($thisUnitUnresolvedFileFindings || $thisUnitUnresolvedSiteFindings )
+						<br /><span class="use-hand-cursor" onclick="gotoDocumentUploader('',{{ $g->unit_id }},{{$report->audit->id}},1)"><span class="a-file-plus"></span><small> FINDING RESOLUTION</small></span>
+						@endIf
+					
 				@endIf
 
 			</div>

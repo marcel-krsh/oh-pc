@@ -16,6 +16,8 @@ class BuildingInspection extends Model
     return $this->hasMany(\App\Models\BuildingAmenity::class, 'building_id', 'building_id');
   }
 
+  use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+
   public function documents(): HasMany
   {
     return $this->hasMany(\App\Models\Document::class, 'building_id', 'building_id')->where('audit_id',$this->audit_id);
@@ -29,6 +31,11 @@ class BuildingInspection extends Model
   public function order_building()
   {
     return $this->hasOne(\App\Models\OrderingBuilding::class, 'building_id', 'building_id')->orderBy('id', 'desc');
+  }
+
+  public function all_documents()
+  {
+    return $documents = \App\Models\Document::with('audits')->whereJsonContains('building_ids', "$this->building_id")->get();
   }
 
   //

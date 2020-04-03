@@ -236,11 +236,11 @@ if ($currentGroup !== $category->parent_category_name) {
 			</div>
 		</h2>
 		<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
-		<div class="document-upload-step-2"><h3 class="uk-align-center gray-text">PLEASE SELECT A DOCUMENT CATEGORY FIRST</h3></div>
-		<div class="document-upload-step-2-selection" style="display: none;">
+		<div class="document-upload-step-2 document-upload-step-2-only "><h3 class="uk-align-center gray-text">PLEASE SELECT A DOCUMENT CATEGORY FIRST</h3></div>
+		<div class="document-upload-step-2-selection document-upload-step-2-selection-only" style="display: none;">
 			<select name="audit" id="upload-document-audit" class="uk-select filter-drops uk-width-1-1"><option value="reset">AUDIT (OPTIONAL)</option>
 				@forEach($allAudits as $uploadAudit)
-				<option value="{{$uploadAudit->audit_id}}">{{date('m/d/Y',strtotime($uploadAudit->inspection_schedule_date))}} AUDIT {{$uploadAudit->audit_id}} | FILE {{$uploadAudit->file_findings_count}} | NLT {{$uploadAudit->nlt_findings_count}} | LT {{$uploadAudit->lt_findings_count}} | {{$uploadAudit->step_status_text}} </option>
+				<option value="{{$uploadAudit->audit_id}}">{{date('m/d/Y',strtotime($uploadAudit->inspection_schedule_date))}} | AUDIT: {{$uploadAudit->audit_id}} | AUDITOR: {{strtoupper($uploadAudit->lead_json->name)}} </option>
 				<option disabled>___________________________________</option>
 				@endForEach
 			</select>
@@ -249,14 +249,14 @@ if ($currentGroup !== $category->parent_category_name) {
 			<select name="building_unit" id="upload-document-building-unit"class="uk-select filter-drops uk-width-1-1" value=""><option value="reset">BUILDING / UNIT  (OPTIONAL)</option>
 				<option disabled>___________________________________</option>
 				@forEach($allBuildings as $uploadBuilding)
-				<option disabled>|||||||||||||||||||||||||||||||||||||||||||</option>
-				<option value="building-{{$uploadBuilding->id}}">BIN {{$uploadBuilding->building_name}} | @if($allFindings !== null) FINDINGS :: {{$allFindings->where('auditor_approved_resolution',"<>",1)->where('building_id',$uploadBuilding->id)->count()}} UNRESOLVED @else NO FINDINGS @endIf
+				<option value="building-{{$uploadBuilding->id}}">BIN {{$uploadBuilding->building_name}} @ {{$uploadBuilding->address->line_1}} {{$uploadBuilding->address->line_2}}
 				</option>
-				<option disabled>|||||||||||||||||||||||||||||||||||||||||||</option>
+				<option disabled>___________________________________</option>
+				
 				@if($uploadBuilding->units != NULL && count($uploadBuilding->units))
 				@forEach($uploadBuilding->units->sortBy('unit_name') as $uploadUnit)
 
-				<option id="document-upload-unit-{{$uploadUnit->id}}-select" value="unit-{{$uploadUnit->id}}">UNIT {{$uploadUnit->unit_name}} | @if($allFindings !== null) FINDINGS :: {{$allFindings->where('auditor_approved_resolution','<>',1)->where('unit_id',$uploadUnit->id)->count()}} UNRESOLVED  @else NO FINDINGS @endIf
+				<option id="document-upload-unit-{{$uploadUnit->id}}-select" value="unit-{{$uploadUnit->id}}"> • UNIT {{$uploadUnit->unit_name}}
 				</option>
 				<option disabled>___________________________________</option>
 				@endForEach
@@ -266,21 +266,21 @@ if ($currentGroup !== $category->parent_category_name) {
 
 
 			</select>
-			<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
-			<select name="unresolved" id="upload-document-resolution" class="uk-select filter-drops uk-width-1-1" value="">
+			<hr class="dashed-hr uk-width-1-1 uk-margin-bottom doc-upload-findings-selection">
+			<select name="unresolved" id="upload-document-resolution" class="uk-select filter-drops uk-width-1-1 doc-upload-findings-selection" value="">
 				<option value="reset">FINDING STATUS (OPTIONAL)</option>
 				<option value="on">ONLY UNRESOLVED</option>
 				<option value="off">ONLY RESOLVED</option>
 				<option value="both">BOTH RESOLVED &amp; UNRESOLVED</option>
 			</select>
 			<hr class="dashed-hr uk-width-1-1 uk-margin-bottom">
-			<a class="uk-button uk-button-success uk-button-small uk-width-1-1 uk-link-mute"  onclick="filterUploaderFindings();" style="">
+			<a class="uk-button uk-button-success uk-button-small uk-width-1-1 uk-link-mute doc-upload-findings-selection"  onclick="filterUploaderFindings();" style="">
 				<span>VIEW MATCHING FINDINGS</span>
 			</a>
-			<hr />
+			<hr class="doc-upload-findings-selection" />
 
 			<div uk-grid  style="border:none; border-bottom: 1px dashed gray;height:510px; border-radius: 0px;overflow-x: hidden; max-height: 452px; min-height: 452px; padding-top: 10px;">
-				<div class="uk-width-1-1 uk-margin-small-bottom">
+				<div class="uk-width-1-1 uk-margin-small-bottom doc-upload-findings-selection">
 					<ul id="document-upload-findings-list" class="uk-list document-category-menu"  style="font-size: 13px">
 
 
@@ -431,21 +431,48 @@ if ($currentGroup !== $category->parent_category_name) {
 	</div>
 
 	<script type="text/javascript">
-
+		window.projectDocumentUploadLoaded = 1;
 		$( document ).ready(function() {
 			if(window.fromBuilding || window.fromUnit) {
 				if(window.fromBuilding) {
 					// $('#upload-document-building-unit [value=3]').attr('selected', 'true');
 					$('#upload-document-building-unit').val('building-'+window.fromBuilding);
 					window.fromBuilding = 0;
+					$('html, body').animate({
+						scrollTop: 0
+					}, 1000);
 				} else if(window.fromUnit) {
 					// debugger;
 					$('#upload-document-building-unit').val('unit-'+window.fromUnit);
 					window.fromUnit = 0;
 					$('html, body').animate({
-						scrollTop: 200
+						scrollTop: 0
 					}, 1000);
 				}
+				if(window.forAudit) {
+					$('#upload-document-audit').val(window.forAudit);
+					window.forAudit = 0;
+				}
+				if(window.filterFindings){
+					$('#upload-document-resolution').val('on');
+					filterUploaderFindings();
+					$('.document-upload-step-2-selection-only').slideDown();
+					@if(session('display_upload_resolution_select_notice') != 1)
+					UIkit.modal.alert('<h1>Please Select A Category & Choose Findings</h1><h3>I selected the audit and unit/building for you, and filtered to show matching unresolved findings. However, please specify the category in step 1, and choose which findings you want associated with your document in step 2.</h3><hr /><p>This message only displays once per login.');
+					<?php session(['display_upload_resolution_select_notice' => 1]); ?>
+					@endIf
+				}else{
+					// this is not for findings - so hide them
+					$('.doc-upload-findings-selection').hide();
+					$('.document-upload-step-2-only').hide();
+					$('.document-upload-step-2-selection-only').slideDown();
+					@if(session('display_upload_select_notice') != 1)
+					UIkit.modal.alert('<h1>Please Select A Category</h1><h3>I selected the audit and unit/building for you. However, you will need to please specify the category in step 1.</h3><hr /><p>This message only displays once per login.');
+					<?php session(['display_upload_select_notice' => 1]); ?>
+					@endIf
+
+				}
+				
 			}
 		});
 

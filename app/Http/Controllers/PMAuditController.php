@@ -2609,6 +2609,7 @@ class PMAuditController extends Controller
 
 	public function getPMBuildingDetailsInfo(Request $request, $id, $type, $audit)
 	{
+		$audit = CachedAudit::where('audit_id',$audit)->first();
 		$type_id = $request->post('type_id');
 		$name = $request->post('name');
 		$is_uncorrected = $request->post('is_uncorrected');
@@ -2649,7 +2650,7 @@ class PMAuditController extends Controller
 		// project: project_id?
 		// type_id: building or unit id
 		$project = Project::where('id', '=', $id)->first();
-		$audit = CachedAudit::with('auditors', 'audit', 'lead_auditor')->where('audit_id', $audit)->whereIn('step_id', $this->$pmCanViewAuditStepIds)->first();
+		
 		$current_user = Auth::user();
 		$manager_access = 0;
 		$details = $project->details();
@@ -2657,7 +2658,7 @@ class PMAuditController extends Controller
 		$dpView = 1;
 
 		$canViewFindings = 0;
-		$findings = !is_null($document->buildings) ? ($document->buildings) : collect([]);
+		//$findings = !is_null($document->buildings) ? ($document->buildings) : collect([]);
 		if ($audit != null && in_array($audit->step_id, $this->pmCanViewFindingsStepIds)) {
 			$findings = $audit->audit->findings->where('cancelled_at', NULL);
 			$canViewFindings = 1;
@@ -2670,11 +2671,11 @@ class PMAuditController extends Controller
 		$buildingIds = [];
 		$unitIds = [];
 		//Allowed Unit and Building Ids for site inspections
-		if ($canViewFindings || ($audit != null && in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds) || $audit != null && in_array($audit->step_id, $this->pmSiteInspectionsOnlyStepIds))) {
-			$building_ids = $audit->audit->unit_inspections->unit->pluck('building_id')->toArray();
+		// if ($canViewFindings || ($audit != null && in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds) || $audit != null && in_array($audit->step_id, $this->pmSiteInspectionsOnlyStepIds))) {
+		// 	$building_ids = $audit->audit->unit_inspections->unit->pluck('building_id')->toArray();
 
-			//dd($building_ids);
-		}
+		// 	//dd($building_ids);
+		// }
 
 		//dd($canViewFindings,in_array($audit->step_id, $this->pmBothInspectionsOnlyStepIds), in_array($audit->step_id, $this->pmSiteInspectionsOnlyStepIds));
 
