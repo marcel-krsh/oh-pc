@@ -330,7 +330,11 @@ class CachedAudit extends Model
 							$output = 1;
 						}
 						if (null !== $ud->finding_ids) {
-							$message .= "FOR FINDINGS: " . str_replace('"', '', str_replace(']', '', str_replace('[', '', $ud->finding_ids)));
+							if (is_array($ud->finding_ids)) {
+								$message .= "FOR FINDINGS: " . implode(', ', $ud->finding_ids);
+							} else {
+								$message .= "FOR FINDINGS: " . str_replace('"', '', str_replace(']', '', str_replace('[', '', $ud->finding_ids)));
+							}
 							$output = 1;
 						}
 						if ($output) {
