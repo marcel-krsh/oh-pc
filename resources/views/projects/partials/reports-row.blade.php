@@ -77,53 +77,50 @@
 	@can('access_auditor')
 	<td><i @if($report->report_history) class="a-person-clock uk-link"  uk-toggle="target: #project-report-{{$report->id}}-history;" @else class="a-clock-not" @endIf></i></td>
 	@endCan
-	@can('access_auditor')<td>
-		<?php
-//ACTION OPTIONS BASED ON STATUS AND USER ROLE
-?>
+	@can('access_auditor')
+	<td>
 		@can('access_auditor')
 		@if($report->crr_approval_type_id !== 8)
 		<select id="crr-report-action-{{$report->id}}" onchange="reportAction({{$report->id}},this.value, {{ $report->project->id }});" style="width: 184px;">
 			<option value="0">ACTION</option>
 			@if($report->crr_approval_type_id != 9)
+				@if(!($report->crr_approval_type_id >= 5))
 				<option value="1">DRAFT</option>
 				@if($report->requires_approval)
 				<option value="2">SEND TO MANAGER REVIEW</option>
 				@endif
-				@can('access_manager')
-					@if($report->requires_approval)
-					<option value="3">DECLINE</option>
-					<option value="4">APPROVE WITH CHANGES</option>
-					<option value="5">APPROVE</option>
-					@endif
-				@endcan
-				@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
+				@if($manager_access)
+				@if($report->requires_approval)
+				<option value="3">DECLINE</option>
+				<option value="4">APPROVE WITH CHANGES</option>
+				<option value="5">APPROVE</option>
+				@endif
+				@endif
+				@endif
+				@if( ($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || $manager_access)
 				<option value="6">SEND TO PROPERTY CONTACT</option>
 				<option value="7">PROPERTY VIEWED IN PERSON</option>
-				<option value="9">ALL ITEMS RESOLVED</option>
+				<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
 				@endif
+
 			@else
-				@can('admin_access')
-				@if(($report->requires_approval == 1 && $report->crr_approval_type_id > 3) || $report->requires_approval == 0 || Auth::user()->can('access_manager'))
+				@if( $admin_access)
 				<option value="6">SEND TO PROPERTY CONTACT</option>
 				<option value="7">PROPERTY VIEWED IN PERSON</option>
-				<option value="9">ALL ITEMS RESOLVED</option>
+				<option class="uk-nav-divider" style="border-bottom: solid 5px red" value="9">ALL ITEMS RESOLVED</option>
 				@endif
-				@endcan
 			@endif
       {{-- @if(!$report->audit->is_archived() || Auth::user()->can('access_manager'))
       <option value="8">REFRESH DYNAMIC DATA</option>
       @endIf --}}
       {{-- Commented above code to have refresh reports only from rports page and link in reports -Div 20190610 --}}
-
     </select>
     @else
     <div style="margin-left: auto; margin-righ:auto;" uk-spinner></div>
-    @endIf
-    @endCan
-
+    @endif
+    @endcan
   </td>
-  @endCan
+  @endcan
   @can('access_admin')
   <td><i class="a-trash use-hand-cursor" onclick="deleteThisReport{{$report->id}}();"></i></td>
   @endCan

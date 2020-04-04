@@ -481,7 +481,7 @@ class ReportsController extends Controller
 				return 1;
 			}
 		} elseif ($request->get('rows_only')) {
-			return view('dashboard.partials.reports-row', compact('reports', 'prefix', 'current_user', 'auditor_access', 'manager_access', 'admin_access'));
+			// return view('dashboard.partials.reports-row', compact('reports', 'prefix', 'current_user', 'auditor_access', 'manager_access', 'admin_access'));
 		} else {
 			return view('dashboard.reports', compact('reports', 'project', 'hfa_users_array', 'crrApprovalTypes', 'projects_array', 'crr_types_array', 'messages', 'newest', 'prefix', 'current_user', 'auditor_access', 'admin_access', 'manager_access'));
 		}
