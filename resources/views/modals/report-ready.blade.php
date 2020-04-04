@@ -202,7 +202,7 @@
     }
 
     function submitNewCommunication() {
-    	debugger;
+    	// debugger;
     	var form = $('#newOutboundEmailFormReady');
     	var no_alert = 1;
     	var recipients_array = [];

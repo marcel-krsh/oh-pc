@@ -61,6 +61,11 @@ class SendNotificationsHourly extends Command
 					$data[$key]['type'][$noti_key]['heading'] = $notification->data['heading'];
 					$data[$key]['type'][$noti_key]['link'] = $notification->data['base_url'] . $token;
 					$data[$key]['type'][$noti_key]['message'] = $notification->data['message'];
+					if (array_key_exists('project_details', $notification->data)) {
+						$data[$key]['type'][$noti_key]['project_details'] = $notification->data['project_details'];
+					} else {
+						$data[$key]['type'][$noti_key]['project_details'] = '';
+					}
 					$data[$key]['type'][$noti_key]['from'] = $notification->from_user->name;
 					$data[$key]['type'][$noti_key]['time'] = $notification->created_at;
 					$notification->token = $token;
