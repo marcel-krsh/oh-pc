@@ -1,4 +1,4 @@
-<?php // place holder 
+<?php // place holder
 $data = null;
 $findingStream = null;
 ?>
@@ -15,4 +15,5 @@ $findingStream = null;
 <div id="project-tab-findings" class="uk-margin-top"  >
 @include('audit_stream.audit_stream');
 
+<script>window.project_detail_tab_5 = 1;</script>
 </div>

@@ -27,10 +27,9 @@ use App\Models\CrrSectionOrder;
 
 class ReportsController extends Controller
 {
-	public function __construct(Request $request)
-	{
-		// $this->middleware('auth');
-	}
+	 public function __construct(){
+        $this->allitapc();
+    }
 
 	public function reportHistory(CrrReport $report, $data)
 	{
@@ -104,7 +103,7 @@ class ReportsController extends Controller
 					$names = $names . ', ' . $receipent->full_name();
 				}
 			}
-			$notified_text = ' Notified to ' . $names . '.';
+			$notified_text = ' Notification sent to ' . $names . '.';
 		}
 		$status = 1;
 		if (Auth::user()->can('access_auditor')) {
@@ -199,7 +198,6 @@ class ReportsController extends Controller
 				case 9:
 					// All items resolved ...
 					if (Auth::user()->can('access_auditor')) {
-						$note = Auth::user()->name . ' updated the status to ' . $report->status_name() . '. ';
 						if (!is_null($report->manager_id)) {
 							$report->update(['crr_approval_type_id' => 9]);
 							$note .= 'Removed prior status, and refreshed report to reflect the change.';
@@ -207,6 +205,7 @@ class ReportsController extends Controller
 						} else {
 							$report->update(['crr_approval_type_id' => 9]);
 						}
+						$note = Auth::user()->name . ' updated the status to ' . $report->status_name() . '. ';
 					} else {
 						$note = 'Attempted change to All Items Resolved but something went wrong.';
 						$status = 0;
@@ -832,6 +831,7 @@ class ReportsController extends Controller
 			$current_user = Auth::user();
 			$auditor_access = $current_user->auditor_access();
 			$manager_access = $current_user->manager_access();
+			$admin_access = $current_user->admin_access();
 			// check if logged in user has access to this report if they are not an auditor:
 			$loadReport = 0;
 			if (Auth::user()->cannot('access_auditor')) {
@@ -886,10 +886,12 @@ class ReportsController extends Controller
 					//return dd(collect($x)[48]);
 					// echo 12;
 					// return 12;
+					//
+					// return $report;
 					if ($request->get('print') != 1) {
-						return view('crr.crr', compact('versions_count', 'report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access'));
+						return view('crr.crr', compact('versions_count', 'report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access', 'admin_access'));
 					} else {
-						return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access'));
+						return view('crr.crr_print', compact('report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access', 'admin_access'));
 					}
 				}
 			} else {

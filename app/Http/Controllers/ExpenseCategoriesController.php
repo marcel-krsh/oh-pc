@@ -18,9 +18,8 @@ use App\Models\InvoiceItem;
 ini_set('max_execution_time', 600);
 class ExpenseCategoriesController extends Controller
 {
-    public function __construct(Request $request)
-    {
-        // $this->middleware('auth');
+    public function __construct(){
+        $this->allitapc();
     }
 
     /**

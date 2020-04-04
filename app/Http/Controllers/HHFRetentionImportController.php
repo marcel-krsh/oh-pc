@@ -32,9 +32,8 @@ use App\LogConverter;
 
 class HHFRetentionImportController extends Controller
 {
-    public function __construct(Request $request)
-    {
-        // $this->middleware('auth');
+     public function __construct(){
+        $this->allitapc();
     }
     
     // Required fields for form

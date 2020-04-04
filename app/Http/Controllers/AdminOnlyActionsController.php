@@ -8,6 +8,9 @@ use App\Models\CrrReport;
 
 class AdminOnlyActionsController extends Controller
 {
+	public function __construct(){
+        $this->allitapc();
+    }
     //
     public function deleteAllitaAudit(Audit $audit){
     	if(\Auth::user()->can('access_admin')){

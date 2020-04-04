@@ -23,13 +23,13 @@
 			<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;TO: </div>
 			<div class="uk-width-4-5 "  id="recipients-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 				@if(!is_null($audit))
-				@cannot('access_auditor')
+				@if(!$auditor_access)
 
 				@else
 				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
 				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class='recipient-name'></span>
 				</div>
-				@endCannot
+				@endif
 				@else
 				<div id="add-recipients-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showRecipients()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD RECIPIENT</div><div id="done-adding-recipients-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showRecipients()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING RECIPIENTS</div>
 				<div id='recipient-template' class="uk-button uk-button-small uk-margin-small-right uk-margin-small-bottom uk-margin-small-top" style="padding-top: 2px; display:none;"><i uk-icon="icon: cross-circle; ratio: .7"></i> &nbsp;<input name="" id="update-me" value="" type="checkbox" checked class="uk-checkbox recipient-selector"><span class=
@@ -68,7 +68,7 @@
 				<script>
             // CLONE RECIPIENTS
             @if($audit)
-            @cannot('access_auditor')
+            @if(!$auditor_access)
               // add the user selection
               var recipientClone = $('#recipient-template').clone();
               recipientClone.attr("id", "recipient-id-{{$audit->lead_user_id}}-holder");
@@ -112,7 +112,7 @@
               	$("#list-recipient-id-"+id).prop("checked",false)
               }
 
-              @endCannot
+              @endif
               @else
               function addRecipient(formValue,name){
               //alert(formValue+' '+name);

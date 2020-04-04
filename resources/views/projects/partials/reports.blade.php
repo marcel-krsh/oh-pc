@@ -1,9 +1,9 @@
 <?php
 if (!isset($hfa_users_array)) {$hfa_users_array = null;}
-$crrStatusSelection  = 'all';
+$crrStatusSelection = 'all';
 $crrProjectSelection = 'all';
-$crrLeadSelection    = 'all';
-$crrTypeSelection    = 'all';
+$crrLeadSelection = 'all';
+$crrTypeSelection = 'all';
 
 ?>
 
@@ -29,7 +29,7 @@ $crrTypeSelection    = 'all';
                     </select>
             </div>
 
-            @can('access_auditor')
+            @if($auditor_access)
                 <div class="uk-width-1-5" style="vertical-align: top;">
                     <select id="filter-by-program" class="uk-select filter-drops uk-width-1-1" onchange="loadTab('/projects/{{$id}}/reports?crr_report_lead_id='+this.value, '6','','','project-',1);">
                         <option value="all" selected="">
@@ -66,7 +66,7 @@ $crrTypeSelection    = 'all';
 
                 </div>
 
-            @endCan
+            @endIf
 
         </div>
 
@@ -78,14 +78,14 @@ $crrTypeSelection    = 'all';
 
         <div class="uk-width-1-1">
             <div class="uk-align-right uk-label  uk-margin-top uk-margin-right">{{$reports->total()}} @if($reports->total() == 1) REPORT @else REPORTS @endif</div>
-            @can('access_auditor')
+            @if($auditor_access)
             <div id="crr-filter-mine" class="uk-button uk-text-right@s uk-margin-right" style="background-color:#1B9A56">
             <a class="uk-contrast" onclick="dynamicModalLoad('new-report?project_id={{$id}}')">
                     <span class="a-file-plus"></span>
                     <span>NEW REPORT</span>
                 </a>
             </div>
-            @endCan
+            @endIf
             @if(session($prefix.'crrp_search') && session($prefix.'crrp_search') !== 'all')
                 <div id="crr-filter-mine" class="uk-badge uk-text-right@s badge-filter">
                     <a onClick="loadTab('/projects/{{$id}}/reports?search=all', '6','','','project-',1);" class="uk-dark uk-light"><i class="a-circle-cross"></i> <span>REPORT #:{{ session($prefix.'crrp_search') }}</span></a>
@@ -145,40 +145,40 @@ $crrTypeSelection    = 'all';
                     @endphp
                     <th ><strong>REPORT
                             <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                                <a href="JavaScript:void(0);" data-sorting="id" class="<?= ($report_order_by == 'id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                                <a href="JavaScript:void(0);" data-sorting="id" class="<?=($report_order_by == 'id') ? $class : 'sort-neutral'?> sortingcolumn uk-margin-small-top"></a>
                             </span>
                         </strong>
                     </th>
                     <th ><strong> PROJECT</strong>
                         <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                                <a href="JavaScript:void(0);" data-sorting="project_id" class="<?= ($report_order_by == 'project_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                                <a href="JavaScript:void(0);" data-sorting="project_id" class="<?=($report_order_by == 'project_id') ? $class : 'sort-neutral'?> sortingcolumn uk-margin-small-top"></a>
                         </span>
                     </th>
 
                     <th  width="100px">
                         <strong>AUDIT</strong>
                         <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                                <a href="JavaScript:void(0);" data-sorting="audit_id" class="<?= ($report_order_by == 'audit_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                                <a href="JavaScript:void(0);" data-sorting="audit_id" class="<?=($report_order_by == 'audit_id') ? $class : 'sort-neutral'?> sortingcolumn uk-margin-small-top"></a>
                         </span>
                     </th>
 
-                    @can('access_auditor') <th ><strong>LEAD</strong>
+                    @if($auditor_access) <th ><strong>LEAD</strong>
                     <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                            <a href="JavaScript:void(0);" data-sorting="lead_id" class="<?= ($report_order_by == 'lead_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                            <a href="JavaScript:void(0);" data-sorting="lead_id" class="<?=($report_order_by == 'lead_id') ? $class : 'sort-neutral'?> sortingcolumn uk-margin-small-top"></a>
                     </span>
                     </th>
 
-                    @endCan
+                    @endIf
 
                     <th ><strong>TYPE</strong>
                         <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                                <a href="JavaScript:void(0);" data-sorting="from_template_id" class="<?= ($report_order_by == 'from_template_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                                <a href="JavaScript:void(0);" data-sorting="from_template_id" class="<?=($report_order_by == 'from_template_id') ? $class : 'sort-neutral'?> sortingcolumn uk-margin-small-top"></a>
                         </span>
                     </th>
 
                     <th width="120px"><strong>STATUS</strong>
                         <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                                <a href="JavaScript:void(0);" data-sorting="crr_approval_type_id" class="<?= ($report_order_by == 'crr_approval_type_id')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                                <a href="JavaScript:void(0);" data-sorting="crr_approval_type_id" class="<?=($report_order_by == 'crr_approval_type_id') ? $class : 'sort-neutral'?> sortingcolumn uk-margin-small-top"></a>
                         </span>
                     </th>
 
@@ -186,22 +186,22 @@ $crrTypeSelection    = 'all';
 
                     <th width="120px"><strong>CREATED</strong>
                         <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                                <a href="JavaScript:void(0);" data-sorting="created_at" class="<?= ($report_order_by == 'created_at')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                                <a href="JavaScript:void(0);" data-sorting="created_at" class="<?=($report_order_by == 'created_at') ? $class : 'sort-neutral'?> sortingcolumn uk-margin-small-top"></a>
                         </span>
                     </th>
 
                     <th width="120px"><strong>LAST EDITED</strong>
                         <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                                <a href="JavaScript:void(0);" data-sorting="updated_at" class="<?= ($report_order_by == 'updated_at')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                                <a href="JavaScript:void(0);" data-sorting="updated_at" class="<?=($report_order_by == 'updated_at') ? $class : 'sort-neutral'?> sortingcolumn uk-margin-small-top"></a>
                         </span>
                     </th>
 
                     <th width="120px"><strong>DUE DATE</strong>
                         <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
-                                <a href="JavaScript:void(0);" data-sorting="response_due_date" class="<?= ($report_order_by == 'response_due_date')? $class : 'sort-neutral' ?> sortingcolumn uk-margin-small-top"></a>
+                                <a href="JavaScript:void(0);" data-sorting="response_due_date" class="<?=($report_order_by == 'response_due_date') ? $class : 'sort-neutral'?> sortingcolumn uk-margin-small-top"></a>
                         </span>
                     </th>
-                    @can('access_auditor')
+                    @if($auditor_access)
                         <th width="40px" uk-tooltip title="Report History"><i class="a-person-clock"></i>
                             <span class="uk-width-1-1 uk-padding-remove-top uk-margin-remove-top uk-grid-margin uk-first-column" aria-expanded="false">
                                     <a href="JavaScript:void(0);" class="sort-neutral1 sortingcolumn uk-margin-small-top"></a>
@@ -212,10 +212,10 @@ $crrTypeSelection    = 'all';
                                 <a href="JavaScript:void(0);" class="sort-neutral1 sortingcolumn uk-margin-small-top"></a>
                             </span>
                         </th>
-                    @endCan
-                    @can('access_admin')
+                    @endIf
+                    @if($admin_access)
                     <td><i class="a-trash"></i></td>
-                    @endCan
+                    @endIf
 
             </thead>
 
@@ -224,6 +224,7 @@ $crrTypeSelection    = 'all';
         </table>
         {{$reports->links()}}
         <script>
+
             var project_id = {{$id}};
 
         $(document).ready(function(){
@@ -266,7 +267,7 @@ $crrTypeSelection    = 'all';
                 }
                 });
             });
-            @can('access_auditor')
+            @if($auditor_access)
 
             function updateStatus(report_id, action) {
                     $.get('/project/'+window.currentProjectOpen+'/reports', {
@@ -318,7 +319,7 @@ $crrTypeSelection    = 'all';
                 $('#crr-report-row-'+reportId).slideUp();
 
             }
-            @endCan
+            @endIf
             @if(count($messages))
                 @forEach($messages as $message)
                     UIkit.notification({
@@ -359,6 +360,7 @@ $crrTypeSelection    = 'all';
 @endif
 </div>
 <script>
+	window.project_detail_tab_6 = 1;
 	function openUserPreferencesView(userId = null){
 		if(userId == null)
 			dynamicModalLoad('auditors/{{Auth::user()->id}}/preferences-view',0,0,1);

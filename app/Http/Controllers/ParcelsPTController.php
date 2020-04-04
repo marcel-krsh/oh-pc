@@ -40,15 +40,8 @@ use App\Models\ProgramRule;
 
 class ParcelsPTController extends Controller
 {
-    public function __construct()
-    {
-        // $this->middleware('auth');
-        //Auth::onceUsingId(6); //hkingsborough@cocic.org
-        //Auth::onceUsingId(9); //bwhitney@cuyahogalandbank.org
-        //Auth::onceUsingId(62); //bwhitney@cuyahogalandbank.org
-
-        //Auth::onceUsingId(2); //Holly
-        //Auth::onceUsingId(59); //ataylor@cocic.org
+     public function __construct(){
+        $this->allitapc();
     }
 
     public function breakouts(Parcel $parcel, Request $request, $format = null)

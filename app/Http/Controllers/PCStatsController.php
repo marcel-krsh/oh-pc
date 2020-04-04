@@ -16,6 +16,10 @@ use Illuminate\Http\Request;
 class PCStatsController extends Controller
 {
 	//
+	 public function __construct(){
+        $this->allitapc();
+    }
+    
 	public function showStats(Request $request)
 	{
 		$thirtyDaysAgo = date('Y-m-d 23:59:59', str_to_time('31 days ago'));

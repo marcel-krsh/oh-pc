@@ -11,9 +11,8 @@ use Illuminate\Http\Request;
 
 class NoticeController extends Controller
 {
-    public function __construct(Request $request)
-    {
-        // $this->middleware('auth');
+    public function __construct(){
+        $this->allitapc();
     }
 
     /**

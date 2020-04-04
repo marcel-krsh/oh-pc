@@ -34,6 +34,11 @@ class Project extends Model
 		return $this->hasMany(\App\Models\CachedAudit::class, 'project_key', 'project_key')->orderBy('id', 'desc');
 	}
 
+	public function findings(): HasMany
+	{
+		return $this->hasMany(\App\Models\Finding::class, 'project_id', 'id')->whereNull('cancelled_at')->orderBy('audit_id', 'desc')->orderBy('created_at','asc');
+	}
+
 	public function audits_plain(): HasMany
 	{
 		return $this->hasMany(\App\Models\CachedAudit::class, 'project_key', 'project_key')->orderBy('id', 'desc')

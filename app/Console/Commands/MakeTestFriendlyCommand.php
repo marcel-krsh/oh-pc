@@ -81,12 +81,12 @@ class MakeTestFriendlyCommand extends Command
 					$userNewEmail = substr($user->person->first_name, 0, 1) . str_replace(' ', '', str_replace('(', '', str_replace(')', '', $user->person->last_name))) . $user->id . $email;
 					//$this->line($i.' User: '.$user->email.' new login email address: '.$userNewEmail.PHP_EOL);
 					if ($userNewEmail !== 0) {
-						User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt('password1234'), 'name' => $user->person->first_name . ' ' . $user->person->last_name]);
+						User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt($password), 'name' => $user->person->first_name . ' ' . $user->person->last_name]);
 					}
 				} else {
 					$userNewEmail = str_replace(' ', '', str_replace('(', '', str_replace(')', '', $user->name))) . $user->id . $email;
 					if ($userNewEmail !== 0) {
-						User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt('password1234'), 'name' => $user->name]);
+						User::where('id', $user->id)->update(['email' => $userNewEmail, 'password' => bcrypt($password), 'name' => $user->name]);
 					}
 				}
 

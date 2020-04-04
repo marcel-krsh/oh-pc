@@ -7,11 +7,18 @@ use File;
 use View;
 use Storage;
 use Carbon\Carbon;
+use App\Models\Unit;
 use App\Models\User;
+use App\Models\Audit;
 use App\Models\Photo;
+use App\Models\People;
+use App\Models\Amenity;
 use App\Models\Finding;
 use App\Models\Project;
+use App\Models\Building;
 use App\Models\Document;
+use App\Models\CachedAudit;
+use App\Models\FindingType;
 use Illuminate\Http\Request;
 use App\Models\DocumentAudit;
 use App\Models\DocumentCategory;
@@ -25,15 +32,7 @@ class DocumentController extends Controller
 
 	public function __construct(Request $request)
 	{
-		$this->middleware(function ($request, $next) {
-			$this->user = Auth::user();
-			$this->auditor_access = $this->user->auditor_access();
-			$this->admin_access = $this->user->admin_access();
-			View::share('auditor_access', $this->auditor_access);
-			View::share('admin_access', $this->admin_access);
-			View::share('current_user', $this->user);
-			return $next($request);
-		});
+		$this->allitapc();
 	}
 
 	/**
@@ -58,87 +57,855 @@ class DocumentController extends Controller
 		return view('projects.partials.documents', compact('project', 'audit_id'));
 	}
 
+	public function getProjectUploadFindingsList(Project $project, Request $request)
+	{
+		$showLinks = 1;
+		//SHOW HIDE RESOLVED / UNRESOLVED
+		if ($request->has('document-upload-unresolved')) {
+			//dd($request->get('document-upload-unresolved'));
+			if ($request->get('document-upload-unresolved') == 'on') {
+				$unresolved = 1;
+				session(['document-upload-documents-unresolved' => 1]);
+			} else if ($request->get('document-upload-unresolved') == 'off') {
+				$unresolved = 2;
+				session(['document-upload-documents-unresolved' => 2]);
+			} else if ($request->get('document-upload-unresolved') == 'both') {
+				$unresolved = 3; // both
+				session(['document-upload-documents-unresolved' => 3]);
+			} else if ($request->get('document-upload-unresolved') == 'reset') {
+				$unresolved = 3; // both
+				$request->session()->forget('document-upload-documents-unresolved');
+			}
+		} else if (session('document-upload-documents-unresolved') > 0) {
+			$unresolved = session('document-upload-documents-unresolved');
+		} else {
+			$unresolved = 3;
+		}
+
+		if ($request->has('document-upload-building-unit') && $request->get('document-upload-building-unit') != "") {
+			//dd($request->get('document-upload-unresolved'));
+			if (substr($request->get('document-upload-building-unit'), 0, 9) == "building-") {
+				$isBuilding = 1;
+				$buSearchValue = intval(str_replace('building-', '', $request->get('document-upload-building-unit')));
+				session(['document-upload-findings-filter-is-building' => $isBuilding]);
+				session(['document-upload-findings-filter-search-value' => $buSearchValue]);
+			} else if (substr($request->get('document-upload-building-unit'), 0, 5) == "unit-") {
+				$isBuilding = 2;
+				$buSearchValue = intval(str_replace('unit-', '', $request->get('document-upload-building-unit')));
+				session(['document-upload-findings-filter-is-building' => $isBuilding]);
+				session(['document-upload-findings-filter-search-value' => $buSearchValue]);
+			} else if ($request->get('document-upload-building-unit') == 'reset') {
+				$isBuilding = NULL;
+				$buSearchValue = NULL;
+				$request->session()->forget('document-upload-findings-filter-is-building');
+				$request->session()->forget('document-upload-findings-filter-search-value');
+			}
+		} else if (session('document-upload-findings-filter-search-value') > 0) {
+			$isBuilding = session('document-upload-findings-filter-is-building');
+			$buSearchValue = session('document-upload-findings-filter-search-value');
+		} else {
+			$isBuilding = NULL;
+			$buSearchValue = NULL;
+		}
+
+		if ($request->has('document-upload-audit')) {
+			//dd($request->get('document-upload-unresolved'));
+			if ($request->get('document-upload-audit') == "reset") {
+				$audit_id = NULL;
+				$request->session()->forget('document-upload-findings-filter-audit');
+			} else {
+				$audit_id = $request->get('document-upload-audit');
+				session(['document-upload-findings-filter-audit' => $audit_id]);
+			}
+		} else if (session('document-upload-findings-filter-audit') > 0) {
+			$audit_id = session('document-upload-findings-filter-audit');
+		} else {
+			$audit_id = NULL;
+		}
+
+		//Check the Step Update of the audit
+		//'66','Pending Property Resolution'
+		//'67','Archive audit'
+		//'68','Audit Score'
+		if ($this->auditor_access) {
+			$considered_audits = CachedAudit::where('project_id', $project->id)->pluck('audit_id');
+		} else {
+			$considered_audits = CachedAudit::where('project_id', $project->id)->whereIn('step_id', [66, 67, 68])->pluck('audit_id');
+		}
+
+		$useOrWhere = 'where';
+		$allFindings = Finding::whereNull('cancelled_at')->where('project_id', $project->id)->whereIn('audit_id', $considered_audits);
+		if ($isBuilding != NULL) {
+			if ($isBuilding == 1) {
+				$allFindings = $allFindings->where('building_id', $buSearchValue);
+			} else {
+				$allFindings = $allFindings->where('unit_id', $buSearchValue);
+			}
+			$useOrWhere = 'orWhere';
+		}
+		if ($unresolved == 1) {
+			// filter to show unresolved
+			$allFindings = $allFindings->where('auditor_approved_resolution', '<>', 1);
+			$useOrWhere = 'orWhere';
+		}
+		if ($unresolved == 2) {
+			// filter to show unresolved
+			$allFindings = $allFindings->where('auditor_approved_resolution', 1);
+			$useOrWhere = 'orWhere';
+		}
+
+		if ($audit_id) {
+			// filter to show unresolved
+			$allFindings = $allFindings->where('audit_id', $audit_id);
+			$useOrWhere = 'orWhere';
+		}
+
+		$allFindings = $allFindings->paginate(100);
+
+		//dd($allFindings);
+
+		return view('projects.partials.findings-list-for-uploader', compact('project', 'audit_id', 'unresolved', 'allFindings', 'showLinks', 'isBuilding', 'buSearchValue'));
+	}
+
+	public function projectLocalDocumentUpload(Project $project, $audit_id = null, Request $request)
+	{
+		$showLinks = 0;
+		$resolved = 1;
+		$unresolved = 1;
+		$searchTerm = NULL;
+		$audits = collect([]);
+		$findings = collect([]);
+		$document_categories = DocumentCategory::select('parent.document_category_name as parent_category_name', 'document_categories.*')->join('document_categories as parent', 'document_categories.parent_id', '=', 'parent.id')
+			->where('document_categories.parent_id', '<>', 0)
+			->where('document_categories.active', 1)
+			->orderBy('parent.document_category_name')
+			->orderBy('document_categories.document_category_name')
+			->get();
+
+		//dd($document_categories);
+
+		//$allUnits = $project->units()->orderBy('unit_name')->get();
+		$allBuildings = $project->buildings()->with('units')->orderBy('building_name')->get();
+		//dd($allUnits);
+		// return $allFindings = $project->load('findings');
+		$allFindings = $project->findings()->count();
+		$loadFindingsSeperately = 0;
+		if ($allFindings > 100) {
+			$allFindings = collect([]); //$project->findings()->paginate(50);
+			$loadFindingsSeperately = 1;
+		} else {
+			$allFindings = $project->findings()->get();
+		}
+		$allUnits = [];
+		$allAudits = $project->audits;
+
+		return view('projects.partials.document-uploader', compact('project', 'audit_id', 'searchTerm', 'audits', 'findings', 'resolved', 'unresolved', 'document_categories', 'allAudits', 'allFindings', 'allUnits', 'allBuildings', 'loadFindingsSeperately', 'showLinks'));
+	}
+
+	public function projectPMLocalDocumentUpload(Project $project, $audit_id = null, Request $request)
+	{
+		$showLinks = 0;
+		$resolved = 1;
+		$unresolved = 1;
+		$searchTerm = NULL;
+		$audits = collect([]);
+		$findings = collect([]);
+		$document_categories = DocumentCategory::select('parent.document_category_name as parent_category_name', 'document_categories.*')->join('document_categories as parent', 'document_categories.parent_id', '=', 'parent.id')
+			->where('document_categories.parent_id', '<>', 0)
+			->where('document_categories.active', 1)
+			->where('document_categories.show_pm', 1)
+			->orderBy('parent.document_category_name')
+			->orderBy('document_categories.document_category_name')
+			->get();
+
+		//dd($document_categories);
+
+		//$allUnits = $project->units()->orderBy('unit_name')->get();
+		$allBuildings = $project->buildings()->with('units')->orderBy('building_name')->get();
+		//dd($allUnits);
+		$allFindings = $project->findings()->count();
+		$loadFindingsSeperately = 0;
+		$allAudits = $project->audits;
+		$allowedFindingsForAudits = $allAudits->whereIn('step_id', $this->pmCanViewFindingsStepIds)->pluck('audit_id')->toArray();
+		if ($allFindings > 100) {
+			$allFindings = $project->findings()->whereIn('audit_id', $allowedFindingsForAudits)->paginate(50);
+			$loadFindingsSeperately = 1;
+		} else {
+			// do not include findings for not allowed audits
+
+			$allFindings = $project->findings()->whereIn('audit_id', $allowedFindingsForAudits)->get();
+		}
+		$allUnits = [];
+
+		return view('projects.partials.pm-document-uploader', compact('project', 'audit_id', 'searchTerm', 'audits', 'findings', 'resolved', 'unresolved', 'document_categories', 'allAudits', 'allFindings', 'allUnits', 'allBuildings', 'loadFindingsSeperately', 'showLinks'));
+	}
+
 	public function getProjectLocalDocuments(Project $project, $audit_id = null, Request $request)
 	{
 		// ini_set('max_execution_time', 300);
 		//check if filters exist
 		// return $request->all();
-		$filter['filter_audit_id'] = "";
-		$filter['filter_finding_id'] = "";
-		$filter['filter_category_id'] = "";
 
-		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'finding', 'communications.communication', 'audits', 'audit', 'user')->orderBy('created_at', 'DESC');
-		$documents = $documents_query->get(); //->paginate(20);
-		$documents_all = $documents_query->get();
-		$documents_count = $documents_query->count();
-		$new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
-		$old_audits = $documents_all->pluck('audit')->flatten()->unique('id');
-		$audits = $new_audits->merge($old_audits)->filter()->unique('id'); //removes null records too
-		$categories = $documents_all->pluck('assigned_categories')->flatten()->unique('id');
+		/// SEARCH TERM
+		if ($request->has('local-search')) {
+			if ($request->get('local-search') == "") {
+				// reset the search
+				$searchTerm = NULL;
+				session(['local-documents-search-term' => NULL]);
+			} else {
+				$searchTerm = $request->get('local-search');
+				session(['local-documents-search-term' => $request->get('local-search')]);
+			}
+		} else if (session()->has('local-documents-search-term') && session('local-documents-search-term') != NULL) {
+			$searchTerm = session('local-documents-search-term');
+		} else {
+			$searchTerm = NULL;
+		}
+
+		//SHOW HIDE RESOLVED / UNRESOLVED
+		if ($request->has('local-unresolved')) {
+			//dd($request->get('local-unresolved'));
+			if ($request->get('local-unresolved') == 'on') {
+				$unresolved = 1;
+				session(['local-documents-unresolved' => 1]);
+			} else {
+				$unresolved = 0;
+				session(['local-documents-unresolved' => 0]);
+			}
+		} else if (session()->has('local-documents-unresolved') && session('local-documents-unresolved') == 0) {
+			$unresolved = session('local-documents-unresolved');
+		} else {
+			$unresolved = 1;
+		}
+
+		if ($request->has('local-resolved')) {
+			if ($request->get('local-resolved') == 'on') {
+				$resolved = 1;
+				session(['local-documents-resolved' => 1]);
+			} else {
+				$resolved = 0;
+				session(['local-documents-resolved' => 0]);
+			}
+		} else if (session()->has('local-documents-resolved') && session('local-documents-resolved') == 0) {
+			$resolved = session('local-documents-resolved');
+		} else {
+			$resolved = 1;
+		}
+
+		//SHOW HIDE REVIEWED / UNREVIEWED
+		if ($request->has('local-unreviewed')) {
+			//dd($request->get('local-unreviewed'));
+			if ($request->get('local-unreviewed') == 'on') {
+				$unreviewed = 1;
+				session(['local-documents-unreviewed' => 1]);
+			} else {
+				$unreviewed = 0;
+				session(['local-documents-unreviewed' => 0]);
+			}
+		} else if (session()->has('local-documents-unreviewed') && session('local-documents-unreviewed') == 0) {
+			$unreviewed = session('local-documents-unreviewed');
+		} else {
+			$unreviewed = 1;
+		}
+
+		if ($request->has('local-reviewed')) {
+			if ($request->get('local-reviewed') == 'on') {
+				$reviewed = 1;
+				session(['local-documents-reviewed' => 1]);
+			} else {
+				$reviewed = 0;
+				session(['local-documents-reviewed' => 0]);
+			}
+		} else if (session()->has('local-documents-reviewed') && session('local-documents-reviewed') == 0) {
+			$reviewed = session('local-documents-reviewed');
+		} else {
+			$reviewed = 1;
+		}
+
+		$documents_all = [];
+		///
+
 		$findings = collect([]);
 		$all_finding_ids = [];
+		$allUnits = $project->units()->orderBy('unit_name')->get();
+
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity')->orderBy('created_at', 'DESC');
+		// return $documents_query->get();
+		if ($searchTerm != NULL) {
+			// apply search term to documents
+			// The Query Searches:
+			// 	Document Categories - OK
+			// 	Finding Types - OK
+			// 	Building Names - OK
+			// 	Unit Names - OK
+			// 	Amenity Names - amenity_description
+			// 	First and Last Names of Uploaders - OK
+			// 	Audit Numbers - OK
+			// 	Finding Number - OK
+			// 	Document Comments - OK
+			$searchCategoryIds = DocumentCategory::where('document_category_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchFindingTypeIds = FindingType::where('name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchFindingId = Finding::where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
+			$searchAuditId = Audit::where('id', intval($searchTerm))->pluck('id')->toArray();
+			$searchBuildingId = Building::where('building_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchUnitId = Unit::where('unit_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchAmenitiesIds = Amenity::where('amenity_description', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			//dd($searchAuditId,$searchFindingId,$searchFindingTypeIds,$searchCategoryIds );
+			$searchDocumentCommentId = Document::where('project_id', $project->id)->where('comment', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+
+			$documents_query = $documents_query->get();
+			$uploader_ids = $documents_query->pluck('user.person.id');
+			// return $searchTerm;
+			$searchUserId = People::whereIn('id', $uploader_ids)->with('user')->where(function ($query) use ($searchTerm) {
+				$query->where('first_name', 'like', '%' . $searchTerm . '%');
+				$query->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+			})->get()->pluck('user.id')->toArray();
+
+			$documents_query = $documents_query->map(function ($doc) use ($searchCategoryIds, $searchFindingTypeIds, $searchFindingId, $searchAuditId, $searchUserId, $searchTerm, $searchDocumentCommentId, $searchBuildingId, $searchUnitId, $searchAmenitiesIds) {
+				//document categories
+				foreach ($doc->assigned_categories as $key => $cat) {
+					if (in_array($cat->id, $searchCategoryIds) || in_array($cat->parent->id, $searchCategoryIds)) {
+						return $doc;
+					}
+				}
+				//Finding number or finding types or amenities
+				foreach ($doc->findings as $key => $finding) {
+					if (in_array($finding->id, $searchFindingId) || in_array($finding->finding_type->id, $searchFindingTypeIds) || in_array($finding->amenity->id, $searchAmenitiesIds)) {
+						return $doc;
+					}
+				}
+				// Buildings
+				foreach ($doc->buildings as $key => $building) {
+					if (in_array($building->id, $searchBuildingId)) {
+						return $doc;
+					}
+				}
+				//Unit
+				foreach ($doc->units as $key => $unit) {
+					if (in_array($unit->id, $searchUnitId)) {
+						return $doc;
+					}
+				}
+				//First and Last Names of Uploaders
+				if (!empty($searchUserId) && in_array($doc->user_id, $searchUserId)) {
+					return $doc;
+				}
+				//Audit Numbers
+				foreach ($doc->audits as $key => $audit) {
+					if (in_array($audit->id, $searchAuditId)) {
+						return $doc;
+					}
+				}
+				//Document comment
+				if (in_array($doc->id, $searchDocumentCommentId)) {
+					return $doc;
+				}
+			});
+
+			$documents_ids = $documents_query->filter()->pluck('id');
+			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		}
+
+		// return $documents_query->count();
+		if ($unreviewed == 0) {
+			// filter to show unreviewed
+			$documents_query = $documents_query->where(function ($query) {
+				$query->where('notapproved', 1);
+				$query->orWhere('approved', 1);
+			});
+		}
+		if ($reviewed == 0) {
+			// filter to show reviewed
+			$documents_query = $documents_query->whereNull('notapproved')->whereNull('approved');
+		}
+
+		if ($unresolved == 0) {
+			// filter to show unresolved
+			$documents_query = $documents_query->get();
+			$documents_query = $documents_query->map(function ($doc) {
+				$total = count($doc->findings);
+				$criteria = $doc->findings->where('auditor_approved_resolution', 1);
+				$meets_criteria_count = count($criteria);
+				if ($total == $meets_criteria_count) {
+					return $doc;
+				}
+			});
+			$documents_ids = $documents_query->filter()->pluck('id');
+			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		}
+
+		if ($resolved == 0) {
+			$documents_query = $documents_query->get();
+			// filter to show resolved
+			// $documents_query = $documents_query->whereHas('findings', function ($query) use ($request) {
+			// 	$query->where('auditor_approved_resolution', '<>', 1);
+			// 	// $query->orWhereNull('auditor_approved_resolution');
+			// });
+			$documents_query = $documents_query->map(function ($doc) use ($unresolved) {
+				$total = count($doc->findings);
+				$criteria = $doc->findings->where('auditor_approved_resolution', '<>', 1);
+				$meets_criteria_count = count($criteria);
+				if ($total == $meets_criteria_count) {
+					return $doc;
+				}
+				// foreach ($doc->findings as $key => $finding) {
+				// 	if ($finding->auditor_approved_resolution != 1 || is_null($finding->auditor_approved_resolution)) {
+				// 		if ($unresolved == 0) {
+				// 			if ($finding->auditor_approved_resolution == 1) {
+				// 				return $doc;
+				// 			}
+				// 		} else {
+				// 			return $doc;
+				// 		}
+				// 	}
+				// }
+			});
+			$documents_ids = $documents_query->filter()->pluck('id');
+			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		}
+		// return $documents_query->pluck('id');
+
+		$documents = $documents_query->paginate(20);
+		$documents_all = $documents_query->get();
+		$documents_count = $documents_query->count();
+		$document_ids = $documents_all->pluck('id')->toArray();
+		// $new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
+		// $old_audits = $documents_all->pluck('audit')->flatten()->unique('id');
+		// $audits = $new_audits->merge($old_audits)->filter()->unique('id'); //removes null records too
+		$categories = $documents_all->pluck('assigned_categories')->flatten()->unique('id');
+		// $findings = collect([]);
+		// $all_finding_ids = [];
 		// return $documents;
 
-		foreach ($documents as $key => $document) {
-			$finding_ids = [];
-			$doc_finding_ids = [];
-			foreach ($document->communications as $key => $communication) {
-				$finding_ids = $communication->communication ? $communication->communication->finding_ids : null;
-				if (!is_null($finding_ids)) {
-					$finding_ids = json_decode($finding_ids);
-					$doc_finding_ids = array_merge($doc_finding_ids, $finding_ids);
-					// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
-					// $doc_findings = Finding::whereIn('id', $finding_ids)->get();
-					// $findings = $findings->merge($doc_findings);
+		return view('projects.partials.local-documents', compact('project', 'documents', 'audit_id', 'categories', 'searchTerm', 'findings', 'resolved', 'unresolved', 'reviewed', 'unreviewed', 'document_ids'));
+	}
+
+	public function getDocumentFindingsColumn($document_id)
+	{
+		$document = Document::where('id', $document_id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity')->first();
+		$document_findings = $document->all_findings();
+		$buildings = !is_null($document->building_ids) ? ($document->building_ids) : [];
+		$units = !is_null($document->unit_ids) ? ($document->unit_ids) : [];
+		$unitCollection = !is_null($document->units) ? ($document->units) : collect([]);
+		$buildingCollection = !is_null($document->buildings) ? ($document->buildings) : collect([]);
+
+		// if(!is_array($units))
+		// dd($document);
+		$audits_ids = ($document->audits->pluck('id')->toArray());
+		$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
+		$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
+		$all_ids = collect($all_ids)->unique()->filter()->toArray();
+
+		$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
+		$building_findings = $document_findings->where('building_id', '<>', null)->where('unit_id', null);
+		$unit_findings = $document_findings->where('building_id', null)->where('unit_id', '<>', null);
+
+		$resolved_findings = count(collect($document_findings)->where('auditor_approved_resolution', 1));
+		$unresolved_findings = count($document_findings) - $resolved_findings;
+		return view('projects.partials.local-documents-row', compact('document', 'all_ids', 'document_findings', 'unresolved_findings', 'resolved_findings', 'site_findings', 'building_findings', 'unit_findings', 'buildings', 'units', 'unitCollection', 'buildingCollection'));
+	}
+
+	public function getPMProjectDocuments(Project $project, Request $request)
+	{
+		$audit_id = $request->audit_id;
+		return view('projects.partials.pm-documents', compact('project', 'audit_id'));
+	}
+
+	public function getPMProjectLocalDocuments(Project $project, $audit_id = null, Request $request)
+	{
+		$current_user = $this->user;
+		// ini_set('max_execution_time', 300);
+		//check if filters exist
+		// return $request->all();
+		/// SEARCH TERM
+
+		/// determine what findings/docs can be shown
+		/// the issue here is if a document is attached to a finding but the report for that audit has not been
+		/// released yet, we must not show those documents to the property mangement or owner until that audit's
+		/// report has been released... so we set a system setting pm_can_see_findings_with_audit_step with the statuses allowed.
+
+		//dd($allowedDocumentsOnAudits);
+
+		/// SEARCH TERM
+		if ($request->has('local-search')) {
+			if ($request->get('local-search') == "") {
+				// reset the search
+				$searchTerm = NULL;
+				session(['local-documents-search-term' => NULL]);
+			} else {
+				$searchTerm = $request->get('local-search');
+				session(['local-documents-search-term' => $request->get('local-search')]);
+			}
+		} else if (session()->has('local-documents-search-term') && session('local-documents-search-term') != NULL) {
+			$searchTerm = session('local-documents-search-term');
+		} else {
+			$searchTerm = NULL;
+		}
+
+		//SHOW HIDE RESOLVED / UNRESOLVED
+		if ($request->has('local-unresolved')) {
+			//dd($request->get('local-unresolved'));
+			if ($request->get('local-unresolved') == 'on') {
+				$unresolved = 1;
+				session(['local-documents-unresolved' => 1]);
+			} else {
+				$unresolved = 0;
+				session(['local-documents-unresolved' => 0]);
+			}
+		} else if (session()->has('local-documents-unresolved') && session('local-documents-unresolved') == 0) {
+			$unresolved = session('local-documents-unresolved');
+		} else {
+			$unresolved = 1;
+		}
+
+		if ($request->has('local-resolved')) {
+			if ($request->get('local-resolved') == 'on') {
+				$resolved = 1;
+				session(['local-documents-resolved' => 1]);
+			} else {
+				$resolved = 0;
+				session(['local-documents-resolved' => 0]);
+			}
+		} else if (session()->has('local-documents-resolved') && session('local-documents-resolved') == 0) {
+			$resolved = session('local-documents-resolved');
+		} else {
+			$resolved = 1;
+		}
+
+		//SHOW HIDE REVIEWED / UNREVIEWED
+		if ($request->has('local-unreviewed')) {
+			//dd($request->get('local-unreviewed'));
+			if ($request->get('local-unreviewed') == 'on') {
+				$unreviewed = 1;
+				session(['local-documents-unreviewed' => 1]);
+			} else {
+				$unreviewed = 0;
+				session(['local-documents-unreviewed' => 0]);
+			}
+		} else if (session()->has('local-documents-unreviewed') && session('local-documents-unreviewed') == 0) {
+			$unreviewed = session('local-documents-unreviewed');
+		} else {
+			$unreviewed = 1;
+		}
+
+		if ($request->has('local-reviewed')) {
+			if ($request->get('local-reviewed') == 'on') {
+				$reviewed = 1;
+				session(['local-documents-reviewed' => 1]);
+			} else {
+				$reviewed = 0;
+				session(['local-documents-reviewed' => 0]);
+			}
+		} else if (session()->has('local-documents-reviewed') && session('local-documents-reviewed') == 0) {
+			$reviewed = session('local-documents-reviewed');
+		} else {
+			$reviewed = 1;
+		}
+
+		$documents_all = [];
+		///
+
+		$findings = collect([]);
+		$all_finding_ids = [];
+		$allUnits = $project->units()->orderBy('unit_name')->get();
+
+		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits.cached_audit', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity', 'findings.audit.cached_audit', 'project')->orderBy('created_at', 'DESC');
+
+		// return $documents_query->get();
+		if ($searchTerm != NULL) {
+			// apply search term to documents
+			// The Query Searches:
+			// 	Document Categories - OK
+			// 	Finding Types - OK
+			// 	Building Names - OK
+			// 	Unit Names - OK
+			// 	Amenity Names - amenity_description
+			// 	First and Last Names of Uploaders - OK
+			// 	Audit Numbers - OK
+			// 	Finding Number - OK
+			// 	Document Comments - OK
+			$searchCategoryIds = DocumentCategory::where('document_category_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchFindingTypeIds = FindingType::where('name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchFindingId = Finding::where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
+			$searchAuditId = Audit::where('id', intval($searchTerm))->pluck('id')->toArray();
+			$searchBuildingId = Building::where('building_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchUnitId = Unit::where('unit_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			$searchAmenitiesIds = Amenity::where('amenity_description', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+			//dd($searchAuditId,$searchFindingId,$searchFindingTypeIds,$searchCategoryIds );
+			$searchDocumentCommentId = Document::where('project_id', $project->id)->where('comment', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
+
+			$documents_query = $documents_query->get();
+			$uploader_ids = $documents_query->pluck('user.person.id');
+			// return $searchTerm;
+			$searchUserId = People::whereIn('id', $uploader_ids)->with('user')->where(function ($query) use ($searchTerm) {
+				$query->where('first_name', 'like', '%' . $searchTerm . '%');
+				$query->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+			})->get()->pluck('user.id')->toArray();
+
+			$documents_query = $documents_query->map(function ($doc) use ($searchCategoryIds, $searchFindingTypeIds, $searchFindingId, $searchAuditId, $searchUserId, $searchTerm, $searchDocumentCommentId, $searchBuildingId, $searchUnitId, $searchAmenitiesIds) {
+				//document categories
+				foreach ($doc->assigned_categories as $key => $cat) {
+					if (in_array($cat->id, $searchCategoryIds) || in_array($cat->parent->id, $searchCategoryIds)) {
+						return $doc;
+					}
+				}
+				//Finding number or finding types or amenities
+				foreach ($doc->findings as $key => $finding) {
+					if (in_array($finding->id, $searchFindingId) || in_array($finding->finding_type->id, $searchFindingTypeIds) || in_array($finding->amenity->id, $searchAmenitiesIds)) {
+						return $doc;
+					}
+				}
+				// Buildings
+				foreach ($doc->buildings as $key => $building) {
+					if (in_array($building->id, $searchBuildingId)) {
+						return $doc;
+					}
+				}
+				//Unit
+				foreach ($doc->units as $key => $unit) {
+					if (in_array($unit->id, $searchUnitId)) {
+						return $doc;
+					}
+				}
+				//First and Last Names of Uploaders
+				if (!empty($searchUserId) && in_array($doc->user_id, $searchUserId)) {
+					return $doc;
+				}
+				//Audit Numbers
+				foreach ($doc->audits as $key => $audit) {
+					if (in_array($audit->id, $searchAuditId)) {
+						return $doc;
+					}
+				}
+				//Document comment
+				if (in_array($doc->id, $searchDocumentCommentId)) {
+					return $doc;
+				}
+			});
+
+			$documents_ids = $documents_query->filter()->pluck('id');
+			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		}
+
+		// return $documents_query->count();
+		if ($unreviewed == 0) {
+			// filter to show unreviewed
+			$documents_query = $documents_query->where(function ($query) {
+				$query->where('notapproved', 1);
+				$query->orWhere('approved', 1);
+			});
+		}
+		if ($reviewed == 0) {
+			// filter to show reviewed
+			$documents_query = $documents_query->whereNull('notapproved')->whereNull('approved');
+		}
+
+		if ($unresolved == 0) {
+			// filter to show unresolved
+			$documents_query = $documents_query->get();
+			$documents_query = $documents_query->map(function ($doc) {
+				$total = count($doc->findings);
+				$criteria = $doc->findings->where('auditor_approved_resolution', 1);
+				$meets_criteria_count = count($criteria);
+				if ($total == $meets_criteria_count) {
+					return $doc;
+				}
+			});
+			$documents_ids = $documents_query->filter()->pluck('id');
+			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		}
+
+		if ($resolved == 0) {
+			$documents_query = $documents_query->get();
+			// filter to show resolved
+			// $documents_query = $documents_query->whereHas('findings', function ($query) use ($request) {
+			// 	$query->where('auditor_approved_resolution', '<>', 1);
+			// 	// $query->orWhereNull('auditor_approved_resolution');
+			// });
+			$documents_query = $documents_query->map(function ($doc) use ($unresolved) {
+				$total = count($doc->findings);
+				$criteria = $doc->findings->where('auditor_approved_resolution', '<>', 1);
+				$meets_criteria_count = count($criteria);
+				if ($total == $meets_criteria_count) {
+					return $doc;
+				}
+				// foreach ($doc->findings as $key => $finding) {
+				// 	if ($finding->auditor_approved_resolution != 1 || is_null($finding->auditor_approved_resolution)) {
+				// 		if ($unresolved == 0) {
+				// 			if ($finding->auditor_approved_resolution == 1) {
+				// 				return $doc;
+				// 			}
+				// 		} else {
+				// 			return $doc;
+				// 		}
+				// 	}
+				// }
+			});
+			$documents_ids = $documents_query->filter()->pluck('id');
+			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+		}
+
+		// 		Fix display of documents so they show documents not attached to a finding and on an audit that can be displayed (this is so they can track which documents they have uploaded for which unit)
+		// • Document display parameters when a auditor can see a document:
+		// • If audit is visible (pmCanViewAudit) can view documents uploaded for audit that are uploaded by contacts on the project - if they are not attached to a finding
+		// • If can view findings for the audit: pm can view same as above including those attached to findings for that audit.
+
+		$pmCanViewAudits = pmCanViewAuditIds();
+		$pmCanViewFindingsIds = pmCanViewFindingsIds();
+		$documents_query = $documents_query->get();
+
+		// foreach ($documents_query as $key => $doc) {
+		// 	if (!is_null($doc->finding_ids)) {
+		// 		$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
+		// 		$audits_linked = $linked_findings->pluck('audit')->filter();
+		// 		if (count($audits_linked)) {
+		// 			$cached_audits_linked = $audits_linked->pluck('cached_audit');
+		// 			if (count($cached_audits_linked)) {
+		// 				$finding_steps = $cached_audits_linked->pluck('step_id')->toArray();
+		// 				$findings_acces = array_intersect($pmCanViewFindingsIds, $finding_steps);
+		// 				if (count($findings_acces)) {
+		// 					return $doc;
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
+		// return 12;
+
+		$documents_query = $documents_query->map(function ($doc) use ($pmCanViewAudits, $pmCanViewFindingsIds) {
+			if (count($doc->audits) && count($doc->audits->pluck('cached_audit'))) {
+				$doc_audits_steps = $doc->audits->pluck('cached_audit')->pluck('step_id')->toArray();
+				if (!is_null($doc_audits_steps)) {
+					$audit_access = array_intersect($pmCanViewAudits, $doc_audits_steps);
+					if (count($audit_access)) {
+						return $doc;
+					}
 				}
 			}
-			if (!empty($doc_finding_ids)) {
-				$all_finding_ids = array_merge($all_finding_ids, $doc_finding_ids);
-				$document->has_findings = 1;
-				$document->finding_ids = $doc_finding_ids;
-			} else {
-				$document->has_findings = 0;
-				$document->finding_ids = [];
+			if (!is_null($doc->finding_ids)) {
+				$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
+				$audits_linked = $linked_findings->pluck('audit')->filter();
+				if (count($audits_linked)) {
+					$cached_audits_linked = $audits_linked->pluck('cached_audit');
+				}
 			}
-			// return $document;
-		}
+			//document findings->audit->cached_audit->step_id
 
-		$findings = Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type')->whereIn('id', $all_finding_ids)->get();
-		$findings = $findings->unique('id');
-		$findings_audits = $findings->pluck('audit_plain')->flatten()->unique('id');
-		$audits = $audits->merge($findings_audits)->filter()->unique('id'); //removes null records too
+			if (!is_null($doc->finding_ids)) {
+				$linked_findings = Finding::whereIn('id', $doc->finding_ids)->with('audit.cached_audit')->get();
+				$audits_linked = $linked_findings->pluck('audit')->filter();
+				if (count($audits_linked)) {
+					$cached_audits_linked = $audits_linked->pluck('cached_audit');
+					if (count($cached_audits_linked)) {
+						$finding_steps = $cached_audits_linked->pluck('step_id')->toArray();
+						$findings_acces = array_intersect($pmCanViewFindingsIds, $finding_steps);
+						if (count($findings_acces)) {
+							return $doc;
+						}
+					}
+				}
+			}
+		});
 
-		$filtered_documents = $documents;
-		if ($request->filter_audit_id) {
-			$filter['filter_audit_id'] = $request->filter_audit_id;
-		}
-		if ($request->filter_finding_id) {
-			$filter['filter_finding_id'] = $request->filter_finding_id;
-		}
-		if ($request->filter_category_id) {
-			$filter['filter_category_id'] = $request->filter_category_id;
-		}
+		$documents_query = $documents_query->filter();
 
-		// return $filter;
-		// return $documents->first()->findings();
-		$document_categories = DocumentCategory::with('parent')
-			->where('parent_id', '<>', 0)
-			->active()
-			->orderBy('parent_id')
-			->orderBy('document_category_name')
-			->get();
-		return view('projects.partials.local-documents', compact('project', 'documents', 'document_categories', 'audit_id', 'audits', 'findings', 'categories', 'filter', 'documents_count'));
+		// return $documents_query->pluck('id');
+
+		// filter to remove documents with findings that are not released yet
+		// $documents_query = $documents_query->get();
+		// return pmCanViewFindingsIds();
+
+		// $allowedSteps = pmCanViewFindingsIds();
+		// $allowedDocumentsOnAudits = $this->project->audits()->whereIn('step_id', $allowedSteps)->pluck('audit_id')->toArray();
+		// return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id')->whereIn('audit_id', $allowedDocumentsOnAudits);
+
+		// $allowedSteps = pmCanViewFindingsIds();
+		// $documents_query = $documents_query->map(function ($doc) use ($allowedSteps) {
+		// 	$allowedDocumentsOnAudits = $doc->project->audits()->whereIn('step_id', $allowedSteps)->pluck('audit_id')->toArray();
+		// 	$criteria = $doc->audits->whereIn('audit_id', $allowedDocumentsOnAudits);
+		// 	$meets_criteria_count = count($criteria);
+		// 	if ($meets_criteria_count) {
+		// 		//dd($doc, $criteria, $allowedDocumentsOnAudits);
+		// 		return $doc;
+		// 	}
+		// });
+
+		// $documents_query = $documents_query->map(function ($doc, $allowedDocumentsOnAudits) {
+		// 	$criteria = $doc->pmCanSeeAudits;
+		// 	$meets_criteria_count = count($criteria);
+		// 	if ($meets_criteria_count) {
+		// 		//dd($doc, $criteria, $allowedDocumentsOnAudits);
+		// 		return $doc;
+		// 	}
+		// });
+
+		$documents_ids = $documents_query->filter()->pluck('id');
+		$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
+
+		$documents = $documents_query->paginate(20);
+		$documents_all = $documents_query->get();
+		$documents_count = $documents_query->count();
+		// $new_audits = $documents_all->pluck('audits')->flatten()->unique('id');
+		// $old_audits = $documents_all->pluck('audit')->flatten()->unique('id');
+		// $audits = $new_audits->merge($old_audits)->filter()->unique('id'); //removes null records too
+		$categories = $documents_all->pluck('assigned_categories')->flatten()->unique('id');
+		// $findings = collect([]);
+		// $all_finding_ids = [];
+		// return $documents;
+
+		return view('projects.partials.pm-local-documents', compact('project', 'documents', 'audit_id', 'categories', 'searchTerm', 'findings', 'resolved', 'unresolved', 'reviewed', 'unreviewed'));
 	}
 
 	public function localUpload(Project $project, Request $request)
 	{
-		if (app('env') == 'local') {
-			app('debugbar')->disable();
-		}
+		// if (app('env') == 'local') {
+		// 	app('debugbar')->disable();
+		// }
 		// return $request->all();
 		if (!$request->has('categories') || is_null($request->categories)) {
 			return 'You must select at least one category!';
 		}
+		$audit_ids = [];
+		$selected[0] = '';
+		if ($request->has('findings') && $request->findings != '') {
+			/// we will ignore the selected audit and get it from the findings
+
+			$findingIds = explode(',', $request->findings);
+			//dd($findingsToInsert, $request->comment, $request->categories, $request->buValue, $request->audit_id);
+			$findingDetails = Finding::whereIn('id', $findingIds)->get();
+			// get unit ids from findings
+			$unitIds = $findingDetails->pluck('unit_id')->unique()->filter()->toArray();
+			// get the building ids of the units
+			$unitBuildingIds = Unit::whereIn('id', $unitIds)->pluck('building_id')->unique()->filter();
+			// get the building ids from the findings
+			$findingBuildingIds = $findingDetails->pluck('building_id')->unique()->filter();
+			// merge them togeter merging duplicates
+			$buildingIds = $unitBuildingIds->merge($findingBuildingIds)->unique()->toArray();
+			// get site ids from findings
+			$siteIds = $findingDetails->where('site', 1)->pluck('amenity_id')->unique()->toArray();
+			$unitIds = array_values($unitIds);
+
+			$audit_ids = $findingDetails->pluck('audit_id')->unique()->toArray();
+			$unitIds = array_map('strval', $unitIds);
+			$findingIds = array_map('strval', $findingIds);
+			$siteIds = array_map('strval', $siteIds);
+			$buildingIds = array_map('strval', $buildingIds);
+		} else {
+			//check if units and buildings are selected
+			if ($request->has('buValue') && $request->buValue != '') {
+				$selected = explode('-', $request->buValue);
+				if ($selected[0] == 'unit') {
+					$unitIds = [$selected[1]];
+				} elseif ($selected[0] == 'building') {
+					$buildingIds = [$selected[1]];
+				}
+			}
+		}
+
+		// return [$findingIds, $unitIds, $buildingIds, $siteIds];
+		// dd(is_array($buildingIds));
+
+		// return $request->findings;
 		if ($request->hasFile('files')) {
 			$data = [];
 			$user = Auth::user();
@@ -162,12 +929,43 @@ class DocumentController extends Controller
 					'project_id' => $project->id,
 					'comment' => $request->comment,
 				]);
+				if ($request->has('findings') && $request->findings != '') {
+					if (!empty($findingIds)) {
+						$document->finding_ids = json_encode($findingIds);
+					}
+					if (!empty($siteIds)) {
+						$document->site_ids = ($siteIds);
+					}
+					if (!empty($buildingIds)) {
+						$document->building_ids = ($buildingIds);
+					}
+					if (!empty($unitIds)) {
+						$document->unit_ids = ($unitIds);
+					}
+				} elseif ($selected[0] != '') {
+					if ($selected[0] == 'unit') {
+						$unitBuildingIds = Unit::whereIn('id', $unitIds)->pluck('building_id')->unique()->filter()->toArray();
+						$document->unit_ids = ($unitIds);
+						$document->building_ids = array_map('strval', $unitBuildingIds);
+					} elseif ($selected[0] == 'building') {
+						$document->building_ids = ($buildingIds);
+					}
+				}
 				$document->save();
-				if (!is_null($audit_id)) {
+				// return $document;
+				if (!is_null($audit_id) && $audit_id != 'reset') {
 					$doc_audit = new DocumentAudit;
 					$doc_audit->audit_id = $audit_id;
 					$doc_audit->document_id = $document->id;
 					$doc_audit->save();
+				}
+				foreach ($audit_ids as $key => $a_id) {
+					if (!DocumentAudit::where('audit_id', $a_id)->where('document_id')->first()) {
+						$doc_audit = new DocumentAudit;
+						$doc_audit->audit_id = $a_id;
+						$doc_audit->document_id = $document->id;
+						$doc_audit->save();
+					}
 				}
 				//Parent
 				$document_categories = new LocalDocumentCategory;
@@ -279,6 +1077,141 @@ class DocumentController extends Controller
 				'document_approver_id' => Auth::user()->id,
 			]);
 		}
+		return 1;
+	}
+
+	public function showApproveAndResolveLocalDocument($document_id)
+	{
+		$document = Document::where('id', $document_id)->first();
+		$document_findings = $document->all_findings();
+		$all_docs = [];
+		foreach ($document_findings as $key => $finding) {
+			//if not resolved, take those doc ids
+			if ($finding->auditor_approved_resolution != 1) {
+				$finding_docs = $finding->all_documents()->pluck('id')->toArray();
+				$all_docs = array_merge($all_docs, $finding_docs);
+			}
+		}
+		$documents = Document::whereIn('id', $all_docs)->get();
+		return view('modals.approve-document-findings', compact('document_id', 'documents'));
+	}
+
+	public function approveAndResolveLocalDocument($project = null, Request $request)
+	{
+		if (!$request->get('id') && !$request->get('catid')) {
+			return 'Something went wrong';
+		}
+		$catid = $request->get('catid');
+		$document = Document::where('id', $request->get('id'))->with('findings')->first();
+		// if already "notapproved", remove from notapproved
+		if (!is_null($document->notapproved)) {
+			$document->update([
+				'notapproved' => null,
+				'document_decliner_id' => $this->user->id,
+			]);
+		}
+		if (is_null($document->approved)) {
+			$document->update([
+				'approved' => 1,
+				'document_approver_id' => $this->user->id,
+			]);
+		}
+
+		//resolve all findings
+		$fc = new FindingController;
+		foreach ($document->findings as $key => $finding) {
+			$fc->resolveFinding($request, $finding->id);
+		}
+		// return $request->all();
+
+		return 1;
+	}
+
+	public function markAllDocumentsApproveAndResulved($project_id)
+	{
+		return view('modals.approve-all-documents-findings', compact('project_id'));
+	}
+
+	public function UpdateAllDocumentsStatus($project_id, Request $request)
+	{
+		$document_ids = json_decode($request->document_ids);
+		if (empty($document_ids)) {
+			return 'No documents found matching the search criteria';
+		}
+		$documents = Document::where('project_id', $project_id)->whereIn('id', $document_ids)->with('findings.finding_type', 'findings.amenity')->get();
+		if ($request->option == 1) {
+			//Mark all documents as approved
+			foreach ($documents as $key => $document) {
+				if (!is_null($document->notapproved)) {
+					$document->update([
+						'notapproved' => null,
+						'document_decliner_id' => $this->user->id,
+					]);
+				}
+				if (is_null($document->approved)) {
+					$document->update([
+						'approved' => 1,
+						'document_approver_id' => $this->user->id,
+					]);
+				}
+			}
+		} elseif ($request->option == 2) {
+			//Mark as approved and resolve findings
+			$fc = new FindingController;
+			foreach ($documents as $key => $document) {
+				if (!is_null($document->notapproved)) {
+					$document->update([
+						'notapproved' => null,
+						'document_decliner_id' => $this->user->id,
+					]);
+				}
+				if (is_null($document->approved)) {
+					$document->update([
+						'approved' => 1,
+						'document_approver_id' => $this->user->id,
+					]);
+				}
+
+				//resolve all findings
+				foreach ($document->findings as $key => $finding) {
+					$fc->resolveFinding($request, $finding->id);
+				}
+			}
+		} elseif ($request->option == 3) {
+			//Mark as declined
+			foreach ($documents as $key => $document) {
+				if (!is_null($document->approved)) {
+					$document->update([
+						'approved' => null,
+						'document_approver_id' => $this->user->id,
+					]);
+				}
+				// if not already notapproved  --confused yet? :), add to notapproved array
+				if (is_null($document->notapproved)) {
+					$document->update([
+						'notapproved' => 1,
+						'document_decliner_id' => $this->user->id,
+					]);
+				}
+			}
+		} elseif ($request->option == 4) {
+			//Clear view status
+			foreach ($documents as $key => $document) {
+				if (!is_null($document->approved)) {
+					$document->update([
+						'approved' => null,
+						'document_approver_id' => $this->user->id,
+					]);
+				}
+				if (!is_null($document->notapproved)) {
+					$document->update([
+						'notapproved' => null,
+						'document_decliner_id' => $this->user->id,
+					]);
+				}
+			}
+		}
+
 		return 1;
 	}
 
@@ -446,10 +1379,14 @@ class DocumentController extends Controller
 
 	public function getProjectDocuwareDocuments(Project $project, Request $request)
 	{
-		$documents = $this->projectDocuwareDocumets($project);
-		$document_categories = DocumentCategory::where('parent_id', '<>', 0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
+		if (env('APP_DEBUG_NO_DEVCO')) {
+			return "<div uk-grid><div class='uk-width-1-1'><hr><h2>SORRY!</h2><p>Docuware is only accessible on an approved server and by approved users. Please contact your admin for help.</p></div></div>";
+		} else {
+			$documents = $this->projectDocuwareDocumets($project);
+			$document_categories = DocumentCategory::where('parent_id', '<>', 0)->orderBy('parent_id')->orderBy('document_category_name')->get()->all();
 
-		return view('projects.partials.docuware-documents', compact('project', 'documents', 'document_categories'));
+			return view('projects.partials.docuware-documents', compact('project', 'documents', 'document_categories'));
+		}
 	}
 
 	public function showTabFromParcelId(Parcel $parcel, Request $request)
@@ -830,9 +1767,9 @@ class DocumentController extends Controller
 
 	public function localUploadDraft(Project $project, Request $request)
 	{
-		if (app('env') == 'local') {
-			app('debugbar')->disable();
-		}
+		// if (app('env') == 'local') {
+		// 	app('debugbar')->disable();
+		// }
 		$communication_draft = CommunicationDraft::find($request->draft_id);
 		if (!$communication_draft) {
 			return 'No associated communication draft was found, try again by closing communication modal or contact admin.';
@@ -842,6 +1779,28 @@ class DocumentController extends Controller
 		if (!$request->has('categories') || is_null($request->categories)) {
 			return 'You must select at least one category!';
 		}
+		if ($request->has('findings') && $request->findings != '') {
+			/// we will ignore the selected audit and get it from the findings
+			$findingIds = explode(',', $request->findings);
+			//dd($findingsToInsert, $request->comment, $request->categories, $request->buValue, $request->audit_id);
+			$findingDetails = Finding::whereIn('id', $findingIds)->get();
+			// get unit ids from findings
+			$unitIds = $findingDetails->pluck('unit_id')->unique()->filter()->toArray();
+			// get the building ids of the units
+			$unitBuildingIds = Unit::whereIn('id', $unitIds)->pluck('building_id')->unique()->filter();
+			// get the building ids from the findings
+			$findingBuildingIds = $findingDetails->pluck('building_id')->unique()->filter();
+			// merge them togeter merging duplicates
+			$buildingIds = $unitBuildingIds->merge($findingBuildingIds)->unique()->toArray();
+			// get site ids from findings
+			$siteIds = $findingDetails->where('site', 1)->pluck('amenity_id')->unique()->toArray();
+			$unitIds = array_values($unitIds);
+			// dd($findingIds, $unitIds, $buildingIds, $siteIds);
+			$unitIds = array_map('strval', $unitIds);
+			$siteIds = array_map('strval', $siteIds);
+			$buildingIds = array_map('strval', $buildingIds);
+		}
+		// return $findingIds;
 		$audit_id = $request->audit_id;
 		if ($request->hasFile('files')) {
 			$data = [];
@@ -865,6 +1824,20 @@ class DocumentController extends Controller
 					'project_id' => $project->id,
 					'comment' => $request->comment,
 				]);
+				if ($request->has('findings') && $request->findings != '') {
+					if (!empty($findingIds)) {
+						$document->finding_ids = json_encode($findingIds, true);
+					}
+					if (!empty($siteIds)) {
+						$document->site_ids = ($siteIds);
+					}
+					if (!empty($buildingIds)) {
+						$document->building_ids = ($buildingIds);
+					}
+					if (!empty($unitIds)) {
+						$document->unit_ids = ($unitIds);
+					}
+				}
 				$document->save();
 				if (!is_null($audit_id)) {
 					$doc_audit = new DocumentAudit;

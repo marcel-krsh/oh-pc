@@ -11,9 +11,8 @@ use App\Models\User;
 
 class rules extends Controller
 {
-    public function __construct(Request $request)
-    {
-        // $this->middleware('auth');
+     public function __construct(){
+        $this->allitapc();
     }
 
     public function edit(ProgramRule $rule, Request $request)

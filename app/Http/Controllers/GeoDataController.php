@@ -6,6 +6,10 @@ use App\Models\Helpers\GeoData;
 
 class GeoDataController extends Controller
 {
+    public function __construct(){
+        $this->allitapc();
+    }
+
     public function test()
     {
         $gd = new GeoData;

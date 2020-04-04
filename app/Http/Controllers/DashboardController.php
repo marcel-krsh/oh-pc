@@ -10,7 +10,9 @@ use App\Models\User;
 use App\Models\Report;
 use App\Models\GuideStep;
 use App\Models\CachedAudit;
+use App\Models\ReportAccess;
 use Illuminate\Http\Request;
+use App\Models\ProjectContactRole;
 use App\Http\Controllers\Controller;
 use App\Models\CommunicationRecipient;
 
@@ -18,33 +20,8 @@ class DashboardController extends Controller
 {
 	public function __construct()
 	{
-		$this->middleware('allita.auth');
-		// if (env('APP_DEBUG_NO_DEVCO') == 'true') {
-		//   //Auth::onceUsingId(1); // TEST BRIAN
-		//   //Auth::onceUsingId(286); // TEST BRIAN
-		//   Auth::onceUsingId(env('USER_ID_IMPERSONATION'));
-
-		//   // this is normally setup upon login
-		//   $current_user = Auth::user();
-		//   if (null === $current_user->socket_id) {
-		//     // create a socket id and store in user table
-		//     $token                   = str_random(10);
-		//     $current_user->socket_id = $token;
-		//     $current_user->save();
-		//   }
-		// $this->middleware(function ($request, $next) {
-		//     $current_user = Auth::user();
-		//   $auditor_access = Auth::user()->auditor_access();
-		//   view::share('current_user');
-		//   view::share('auditor_access');
-
-		//   return $next($request);
-		// });
-
-		// view()->composer('*', function ($view) {
-		//     $view->with('current_user', auth()->user());
-		//     $view->with('auditor_access', auth()->user()->auditor_access());
-		// });
+		$this->allitapc();
+		
 	}
 
 	public function login()
@@ -1126,6 +1103,503 @@ class DashboardController extends Controller
 			return response()->json($data);
 		} else {
 			return view('dashboard.audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditBuildingFilterInspection', 'auditors', 'audits', 'sort_by', 'sort_order', 'steps', 'current_user', 'auditor_access', 'report_config'));
+		}
+	}
+
+	public function pmAudits(Request $request, $page = 0)
+	{
+		ini_set('max_execution_time', 1800); //3 minutes
+		
+
+		//dd($this->user);
+
+		// TEST EVENT
+		// $testaudit = Audit::where('development_key','=', 247660)->where('monitoring_status_type_key', '=', 4)->orderBy('start_date','desc')->first();
+		// Event::fire('audit.created', $testaudit);
+		// session()->flush();
+		// $request will contain filters
+		// $auditFilterMineOnly
+		// $auditFilterMineOnly
+		// return $request->all();
+		// return session()->all();
+		$filter = $request->get('filter');
+		$filter_id = $request->get('filterId');
+		// return session()->all();
+		if (session()->has('audit-sort-by')) {
+			$sort_by = session('audit-sort-by');
+
+			if (session()->has('audit-sort-order') && session('audit-sort-order') != 'undefined') {
+				$sort_order = session('audit-sort-order');
+			} else {
+				session(['audit-sort-order', 0]);
+				$sort_order = 0;
+			}
+		} else {
+			session(['audit-sort-by', 'audit-sort-project']);
+			$sort_by = 'audit-sort-project';
+
+			session(['audit-sort-order', 1]);
+			$sort_order = 1;
+		}
+
+		switch ($sort_by) {
+			case "audit-sort-lead":
+				$sort_by_field = 'lead';
+				break;
+			case "audit-sort-project":
+				$sort_by_field = 'project_ref';
+				break;
+			case "audit-sort-project-name":
+				$sort_by_field = 'title';
+				break;
+			case "audit-sort-pm":
+				$sort_by_field = 'pm';
+				break;
+			case "audit-sort-address":
+				$sort_by_field = 'address';
+				break;
+			case "audit-sort-city":
+				$sort_by_field = 'city';
+				break;
+			case "audit-sort-state":
+				$sort_by_field = 'state';
+				break;
+			case "audit-sort-zip":
+				$sort_by_field = 'zip';
+				break;
+			case "audit-sort-scheduled-date":
+				$sort_by_field = 'inspection_schedule_date';
+				break;
+			case "audit-sort-assigned-areas":
+				$sort_by_field = 'total_items';
+				break;
+			case "audit-sort-total-areas":
+				$sort_by_field = 'inspectable_items';
+				break;
+			case "audit-sort-compliance-status":
+				$sort_by_field = 'audit_compliance_status';
+				break;
+			case "audit-sort-followup-date":
+				$sort_by_field = 'followup_date';
+				break;
+			case "audit-sort-finding-file":
+				$sort_by_field = 'file_audit_status';
+				break;
+			case "audit-sort-finding-nlt":
+				$sort_by_field = 'nlt_audit_status';
+				break;
+			case "audit-sort-finding-lt":
+				$sort_by_field = 'lt_audit_status';
+				break;
+			case "audit-sort-finding-sd":
+				$sort_by_field = 'smoke_audit_status';
+				break;
+			case "audit-sort-status-auditor":
+				$sort_by_field = 'auditor_status';
+				break;
+			case "audit-sort-status-message":
+				$sort_by_field = 'message';
+				break;
+			case "audit-sort-status-document":
+				$sort_by_field = 'document';
+				break;
+			case "audit-sort-status-history":
+				$sort_by_field = 'history_status';
+				break;
+			case "audit-sort-next-task":
+				$sort_by_field = 'step_status';
+				break;
+			default:
+				$sort_by_field = 'id';
+		}
+
+		if ($sort_order) {
+			$sort_order_query = "asc";
+		} else {
+			$sort_order_query = "desc";
+		}
+		$myProjects = ProjectContactRole::where('person_id', Auth::user()->person_id)->pluck('project_id')->toArray();
+		$myProjects2 = ReportAccess::where('user_id', Auth::user()->id)->pluck('project_id')->toArray();
+		$myProjects = array_merge($myProjects, $myProjects2);
+
+		//dd($myProjects);
+		$audits = CachedAudit::with('auditors')
+			->whereIn('project_id', $myProjects);
+		//->whereIn('project_id',$myProjects2);
+		if ($request->get('my_audits') && $request->get('my_audits') == 1) {
+			session(['audit-my-audits' => 1]);
+		} elseif ($request->get('my_audits') && $request->get('my_audits') == 0) {
+			session(['audit-my-audits' => 0]);
+		}
+
+		if (!session()->has('first_load')) {
+			// my default we load only their audits.
+			session(['first_load' => 1]);
+			session(['audit-my-audits' => 1]);
+		}
+		if (session()->has('audit-my-audits') && session('audit-my-audits') == 100000) {
+			$auditFilterMineOnly = 1;
+			$current_person_id = Auth::user()->person_id;
+
+			$audits = $audits->where(function ($query) use ($current_person_id) {
+				$query->whereHas('contacts', function ($query2) use ($current_person_id) {
+					$query2->where('person_id', '=', $current_person_id);
+				});
+			});
+		} else {
+			$auditFilterMineOnly = 0;
+		}
+
+		if (session()->has('filter-search-project')) {
+			$auditFilterProjectId = session('filter-search-project');
+			$audits = $audits->where(function ($query) use ($auditFilterProjectId) {
+				$query->where('audit_id', 'like', '%' . $auditFilterProjectId . '%')
+					->orWhere('project_ref', 'like', '%' . $auditFilterProjectId . '%');
+			});
+		} else {
+			$auditFilterProjectId = '';
+		}
+
+		if (session()->has('filter-search-pm')) {
+			$auditFilterProjectName = session('filter-search-pm');
+			$audits = $audits->where(function ($query) use ($auditFilterProjectName) {
+				$query->where('title', 'like', '%' . $auditFilterProjectName . '%')
+					->orWhere('pm', 'like', '%' . $auditFilterProjectName . '%');
+			});
+		} else {
+			$auditFilterProjectName = 0;
+		}
+		// $audits->where(function ($query) {
+		//   $query->orWhereNotNull('file_findings_count')->orWhere('file_findings_count', '>', 0)->orWhere('unresolved_file_findings_count', 0)->orWhere('unresolved_file_findings_count', '>', 0);
+		// });
+
+		if (session()->has('file-audit-status-h') || session()->has('file-audit-status-r') || session()->has('file-audit-status-ar') || session()->has('file-audit-status-nf')) {
+			$audits->where(function ($query) {
+				if (session()->has('file-audit-status-h') && session('file-audit-status-h') == 1) {
+					$query->orWhereNotNull('file_findings_count')->orWhere('file_findings_count', '>', 0);
+				}
+				if (session()->has('file-audit-status-r') && session('file-audit-status-r') == 1) {
+					$query->orWhere(function ($subquery) {
+						$subquery->whereNotNull('file_findings_count')->where('file_findings_count', '>', 0)->where('unresolved_file_findings_count', 0);
+					});
+				}
+				if (session()->has('file-audit-status-ar') && session('file-audit-status-ar') == 1) {
+					$query->orWhere('unresolved_file_findings_count', '>', 0);
+				}
+				if (session()->has('file-audit-status-nf') && session('file-audit-status-nf') == 1) {
+					$query->orWhere(function ($subquery) {
+						$subquery->whereNull('file_findings_count')->orWhere('file_findings_count', 0);
+					});
+				}
+			});
+		}
+
+		if (session()->has('nlt-audit-status-h') || session()->has('nlt-audit-status-r') || session()->has('nlt-audit-status-ar') || session()->has('nlt-audit-status-nf')) {
+			$audits->where(function ($query) {
+				if (session()->has('nlt-audit-status-h') && session('nlt-audit-status-h') == 1) {
+					$query->orWhereNotNull('nlt_findings_count')->orWhere('nlt_findings_count', '>', 0);
+				}
+				if (session()->has('nlt-audit-status-r') && session('nlt-audit-status-r') == 1) {
+					$query->orWhere(function ($subquery) {
+						$subquery->whereNotNull('nlt_findings_count')->where('nlt_findings_count', '>', 0)->where('unresolved_nlt_findings_count', 0);
+					});
+				}
+				if (session()->has('nlt-audit-status-ar') && session('nlt-audit-status-ar') == 1) {
+					$query->orWhere('unresolved_nlt_findings_count', '>', 0);
+				}
+				if (session()->has('nlt-audit-status-nf') && session('nlt-audit-status-nf') == 1) {
+					$query->orWhere(function ($subquery) {
+						$subquery->whereNull('nlt_findings_count')->orWhere('nlt_findings_count', 0);
+					});
+				}
+			});
+		}
+		// return $audits->get();
+
+		if (session()->has('lt-audit-status-h') || session()->has('lt-audit-status-r') || session()->has('lt-audit-status-ar') || session()->has('lt-audit-status-nf')) {
+			$audits->where(function ($query) {
+				if (session()->has('lt-audit-status-h') && session('lt-audit-status-h') == 1) {
+					$query->orWhereNotNull('lt_findings_count')->orWhere('lt_findings_count', '>', 0);
+				}
+				if (session()->has('lt-audit-status-r') && session('lt-audit-status-r') == 1) {
+					$query->orWhere(function ($subquery) {
+						$subquery->whereNotNull('lt_findings_count')->where('lt_findings_count', '>', 0)->where('unresolved_lt_findings_count', 0);
+					});
+				}
+				if (session()->has('lt-audit-status-ar') && session('lt-audit-status-ar') == 1) {
+					$query->orWhere('unresolved_lt_findings_count', '>', 0);
+				}
+				if (session()->has('lt-audit-status-nf') && session('lt-audit-status-nf') == 1) {
+					$query->orWhere(function ($subquery) {
+						$subquery->whereNull('lt_findings_count')->orWhere('lt_findings_count', 0);
+					});
+				}
+			});
+		}
+
+		if (session()->has('filter-search-address') && session('filter-search-address') != '') {
+			$auditFilterAddress = session('filter-search-address');
+			$audits = $audits->where(function ($query) use ($auditFilterAddress) {
+				$query->where('address', 'like', '%' . $auditFilterAddress . '%')
+					->orWhere('city', 'like', '%' . $auditFilterAddress . '%')
+					->orWhere('state', 'like', '%' . $auditFilterAddress . '%')
+					->orWhere('zip', 'like', '%' . $auditFilterAddress . '%');
+			});
+		} else {
+			$auditFilterAddress = '';
+		}
+
+		if (session()->has('compliance-status-all') && session('compliance-status-all') != 0) {
+			$auditFilterComplianceRR = 0;
+			$auditFilterComplianceNC = 0;
+			$auditFilterComplianceC = 0;
+		} else {
+			$auditFilterComplianceRR = session('compliance-status-rr');
+			$auditFilterComplianceNC = session('compliance-status-nc');
+			$auditFilterComplianceC = session('compliance-status-c');
+
+			$audits = $audits->where(function ($query) use ($auditFilterComplianceRR, $auditFilterComplianceNC, $auditFilterComplianceC) {
+				if (session()->has('compliance-status-rr') && session('compliance-status-rr') != 0) {
+					$query->OrWhere('audit_compliance_status_text', '=', 'UNITS REQUIRE REVIEW');
+				}
+				if (session()->has('compliance-status-nc') && session('compliance-status-nc') != 0) {
+					$query->OrWhere('audit_compliance_status_text', '=', 'AUDIT NOT COMPLIANT');
+				}
+				if (session()->has('compliance-status-c') && session('compliance-status-c') != 0) {
+					$query->OrWhere('audit_compliance_status_text', '=', 'AUDIT COMPLIANT');
+				}
+			});
+		}
+
+		// if (session('schedule_assignment_unassigned') == 1) {
+		//   $audits = $audits->whereHas('inspection_items', function ($query) {
+		//     $query->whereNull('auditor_id');
+		//   });
+		// }
+
+		// if (session('schedule_assignment_not_enough') == 1) {
+		//   $audits = $audits->whereDate('estimated_time_needed', '>', 0);
+		// }
+
+		// if (session('schedule_assignment_too_many') == 1) {
+		//   $audits = $audits->whereDate('estimated_time_needed', '=', 0)->orWhereNull('estimated_time_needed');
+		// }
+
+		if (session()->has('schedule_assignment_unassigned') || session()->has('schedule_assignment_not_enough') || session()->has('schedule_assignment_no_estimated')) {
+			$audits->where(function ($query) {
+				if (session()->has('schedule_assignment_unassigned') && session('schedule_assignment_unassigned') == 1) {
+					$query->orWhere('auditor_status_icon', 'a-avatar-fail');
+				}
+				if (session()->has('schedule_assignment_not_enough') && session('schedule_assignment_not_enough') == 1) {
+					$query->orWhere('auditor_status_icon', 'a-clock-not');
+				}
+				if (session()->has('schedule_assignment_no_estimated') && session('schedule_assignment_no_estimated') == 1) {
+					$query->orWhere('auditor_status_icon', 'a-clock-5');
+				}
+			});
+		}
+
+		if (session()->has('documents_reviewd') || session()->has('documents_reviewd') || session()->has('documents_not_found')) {
+			$audits->where(function ($query) {
+				if (session()->has('documents_reviewd') && session('documents_reviewd') == 1) {
+					$query->orWhere('document_status_icon', 'a-file-approve');
+				}
+				if (session()->has('documents_needs_review') && session('documents_needs_review') == 1) {
+					$query->orWhere('document_status_icon', 'a-file-mail attention');
+				}
+				if (session()->has('documents_not_found') && session('documents_not_found') == 1) {
+					$query->orWhere('document_status_icon', 'a-file-question');
+				}
+			});
+		}
+
+		if (session()->has('messages_unread') || session()->has('messages_not_available') || session()->has('messages_all_read')) {
+			$audits->where(function ($query) {
+				if (session()->has('messages_unread') && session('messages_unread') == 1) {
+					$query->orWhere('message_status_icon', 'a-envelope-4 attention');
+				}
+				if (session()->has('messages_not_available') && session('messages_not_available') == 1) {
+					$query->orWhere('message_status_icon', 'a-envelope-4 gray-text');
+				}
+				if (session()->has('messages_all_read') && session('messages_all_read') == 1) {
+					$query->orWhere('message_status_icon', 'a-envelope-4');
+				}
+			});
+		}
+
+		// return $daterange    = session('daterange');
+		//    $date_array = explode(" to ", $daterange);
+		//    if (count($date_array) != 2) {
+		//      // make it work for a single day
+		//      $date_array[0] = $daterange;
+		//      $date_array[1] = $date_array[0];
+		//    }
+		//    $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+		//    $enddate   = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
+		//       $query->orWhereBetween('inspection_schedule_date', [$startdate, $enddate]);
+		//       return 21;
+
+		if (session()->has('schedule_no_date') || session()->has('schedule_date')) {
+			$audits->where(function ($query) {
+				if (session('schedule_date') == 1 && session('daterange') != '') {
+					$daterange = session('daterange');
+					$date_array = explode(" to ", $daterange);
+					if (count($date_array) != 2) {
+						// make it work for a single day
+						$date_array[0] = $daterange;
+						$date_array[1] = $date_array[0];
+					}
+					$startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+					$enddate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
+					$query->orWhereBetween('inspection_schedule_date', [$startdate, $enddate]);
+				}
+				if (session()->has('schedule_no_date') && session('schedule_no_date') == 1) {
+					$query->orWhereNull('inspection_schedule_date');
+				}
+			});
+		}
+
+		// if(session()->has('schedule_date') && session('schedule_date') == 1 && session('daterange') != '') {
+		//   $daterange    = session('daterange');
+		//  $date_array = explode(" to ", $daterange);
+		//  if (count($date_array) != 2) {
+		//    // make it work for a single day
+		//    $date_array[0] = $daterange;
+		//    $date_array[1] = $date_array[0];
+		//  }
+
+		//  $startdate = Carbon\Carbon::createFromFormat('F j, Y', $date_array[0]);
+		//  $enddate   = Carbon\Carbon::createFromFormat('F j, Y', $date_array[1]);
+		//  $audits->whereBetween('inspection_schedule_date', [$startdate, $enddate]);
+		// }
+		// return $audits->get();
+
+		// if (session()->has('documents_reviewd') && session('documents_reviewd') == 1) {
+		//   $audits->where('document_status_icon', 'a-file-approve');
+		// }
+		// if (session()->has('documents_needs_review') && session('documents_needs_review') == 1) {
+		//   $audits->where('document_status_icon', 'a-file-mail attention');
+		// }
+		// return $audits->get();
+
+		if (session()->has('assignment-auditor') && is_array(session('assignment-auditor'))) {
+			//$audits = $audits->whereIn('lead', session('assignment-auditor'));
+			$audits = $audits->where(function ($query) {
+				$query->whereIn('lead', session('assignment-auditor'));
+				$query->orWhereHas('auditors', function ($query2) {
+					$query2->whereIn('user_id', session('assignment-auditor'));
+				});
+			});
+		}
+
+		// return $audits->with('auditors')->get();
+		// return $audits->whereNotNull('car_status')->get();
+
+		// load to list steps filtering and check for session variables
+		$steps = GuideStep::where('guide_step_type_id', '=', 1)->orderBy('order', 'asc')->get();
+		$audits->where(function ($query) use ($steps) {
+			foreach ($steps as $key => $step) {
+				if (session()->has($step->session_name) && session($step->session_name) == 1) {
+					$query->orWhere('step_id', $step->id);
+				}
+			}
+		});
+
+		$report_config = config('allita.reports');
+		if (session('car-report-selection-all') != 1) {
+			$audits->where(function ($query) use ($report_config) {
+				foreach ($report_config['pm_car_status'] as $key => $value) {
+					if (session()->has($key) && session($key) == 1) {
+						$query->orWhere('car_approval_type_id', $report_config['pm_car_approval_type'][$key]);
+					}
+				}
+			});
+		}
+		if (session('ehs-report-selection-all') != 1) {
+			$audits->where(function ($query) use ($report_config) {
+				foreach ($report_config['pm_ehs_status'] as $key => $value) {
+					if (session()->has($key) && session($key) == 1) {
+						$query->orWhere('ehs_approval_type_id', $report_config['pm_ehs_approval_type'][$key]);
+					}
+				}
+			});
+		}
+		if (session('8823-report-selection-all') != 1) {
+			$audits->where(function ($query) use ($report_config) {
+				foreach ($report_config['pm_8823_status'] as $key => $value) {
+					if (session()->has($key) && session($key) == 1) {
+						$query->orWhere('_8823_approval_type_id', $report_config['pm_8823_approval_type'][$key]);
+					}
+				}
+			});
+		}
+
+		$audits = $audits->with('audit.findings', 'audit.unique_unit_inspections')->orderBy($sort_by_field, $sort_order_query)->get()
+			->map(function ($audit) {
+				if ('CLICK TO SCHEDULE AUDIT' == $audit->inspection_schedule_text) {
+					$audit->inspection_schedule_text = 'SCHEDULED AUDITS/TOTAL AUDITS';
+				}
+
+				return $audit;
+			});
+		if (session()->has('total_building_inspection_amount') && session('total_building_inspection_amount') > 0) {
+			$total_building_inspection_amount = session('total_building_inspection_amount');
+
+			if (session('total_building_inspection_filter') != 1) {
+				$auditBuildingFilterInspection = "MORE THAN OR EQUAL TO " . $total_building_inspection_amount . " INSPECTABLE BUILDINGS";
+				$audits = $audits->where('total_buildings', '>=', $total_building_inspection_amount);
+			} else {
+
+				$auditBuildingFilterInspection = "LESS THAN OR EQUAL TO " . $total_building_inspection_amount . " INSPECTABLE BUILDINGS";
+				$audits = $audits->where('total_buildings', '<=', $total_building_inspection_amount);
+			}
+		} else {
+			session(['total_building_inspection_amount' => 0]);
+			session(['total_building_inspection_filter' => 0]);
+			$auditBuildingFilterInspection = "";
+		}
+
+		if (session()->has('total_inspection_amount') && session('total_inspection_amount') > 0) {
+			$total_inspection_amount = session('total_inspection_amount');
+
+			if (session('total_inspection_filter') != 1) {
+				$auditFilterInspection = "MORE THAN OR EQUAL TO " . $total_inspection_amount . " INSPECTABLE UNITS";
+				$audits = $audits->where('total_units', '>=', $total_inspection_amount);
+			} else {
+
+				$auditFilterInspection = "LESS THAN OR EQUAL TO " . $total_inspection_amount . " INSPECTABLE UNITS";
+				$audits = $audits->where('total_units', '<=', $total_inspection_amount);
+			}
+		} else {
+			session(['total_inspection_amount' => 0]);
+			session(['total_inspection_filter' => 0]);
+			$auditFilterInspection = "";
+		}
+
+		// do not show audits being rerun
+		$audits = $audits->where('rerun_compliance', '<>', 1);
+		// $audits = $audits->take(5);
+		// foreach ($audits as $key => $value) {
+		//   $value->update_cached_audit();
+		// }
+		$data = [];
+
+		$audits_to_remove = []; // ids of audits to remove after filtering by auditor
+		$auditors_array = [];
+		$auditor_ids = []; // to prevent duplicates when building the auditors list
+
+		$auditors = User::join('users_roles', 'user_id', 'id')->select('users.id', 'users.name')->where('users.active', 1)->where('role_id', '>', 1)->where('role_id', '<', 4)->orderBy('name')->get()->all();
+
+		$current_user = Auth::user();
+		$auditor_access = Auth::user()->auditor_access();
+		// return $audits;
+		if ($page == -100) {
+			return $audits->pluck('id');
+		}
+		if ($page > 0) {
+			return response()->json($data);
+		} else {
+			return view('dashboard.pm-audits', compact('data', 'filter', 'auditFilterMineOnly', 'auditFilterProjectId', 'auditFilterProjectName', 'auditFilterAddress', 'auditFilterComplianceRR', 'auditFilterComplianceNC', 'auditFilterComplianceC', 'auditFilterInspection', 'auditBuildingFilterInspection', 'auditors', 'audits', 'sort_by', 'sort_order', 'steps', 'current_user', 'auditor_access', 'report_config'));
 		}
 	}
 

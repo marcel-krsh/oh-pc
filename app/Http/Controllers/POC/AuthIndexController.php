@@ -7,6 +7,9 @@ use App\Services\AuthService;
 
 class AuthIndexController extends Controller
 {
+    public function __construct(){
+        $this->allitapc();
+    }
 
     public function index()
     {

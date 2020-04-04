@@ -652,6 +652,11 @@ class CachedAudit extends Model
 		return $this->hasMany(\App\Models\AuditAuditor::class, 'audit_id', 'audit_id');
 	}
 
+	public function contacts(): HasMany
+	{
+		return $this->hasMany(\App\Models\ProjectContactRole::class, 'project_id', 'project_id');
+	}
+
 	public function lead_auditor(): HasOne
 	{
 		return $this->hasOne(\App\Models\User::class, 'id', 'lead');

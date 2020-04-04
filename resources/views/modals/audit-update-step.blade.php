@@ -16,10 +16,10 @@
 										@foreach($steps as $step)
 										<option value="{{ $step->id }}" @if($audit->step_id == $step->id) selected @endif>{{ $step->name }}</option>
 										@endforeach
-										@can('access_admin')
+										@if($admin_access)
 
 										<option value="delete">DELETE THIS AUDIT</option>
-										@endCan
+										@endIf
 									</select>
 						        </div>
 							</div>
@@ -38,7 +38,7 @@
 		event.preventDefault();
 
 		console.log('saving step');
-		@can('access_admin')
+		@if($admin_access)
 		if($('#audit-step').val() == 'delete'){
 			UIkit.modal.confirm('<h1>Are You Sure?</h1><p>Are you sure you want to delete audit #{{ $audit->audit_id }}?</p> <p>This cannot be undone! The monitoring record will remain, only the Allita specific items will be deleted, including communications, findings, reports, documents, notes... ANYTHING that is associated with this audit id will be deleted.</p>').then(function() {
 			    $.get("/tabs/audit/delete/{{ $audit->audit_id }}", {
@@ -87,7 +87,7 @@
 		            	//loadTab('{{ route('dashboard.audits') }}','1','','','',1);
 		    }
         } );
-		@endCan
+		@endIf
 	}
 
 </script>

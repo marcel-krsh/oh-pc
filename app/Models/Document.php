@@ -15,13 +15,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Document extends Model
 {
+
 	protected $table = 'documents';
 
 	protected $guarded = ['id'];
 
 	protected $casts = [
 		'findings_ids' => 'array',
+		'unit_ids' => 'array',
+		'building_ids' => 'array',
+		'site_ids' => 'array',
 	];
+
+	public function getFindingIdsAttribute($value)
+	{
+		if (!is_array($value)) {
+			return json_decode($value, true);
+		} else {
+			return $value;
+		}
+	}
 
 	public function finding(): HasOne
 	{
@@ -83,25 +96,65 @@ class Document extends Model
 		return $this->hasManyThrough('App\Models\Communication', '\App\Models\CommunicationDocument', 'document_id', 'id', 'id', 'communication_id');
 	}
 
+	// public function audits()
+	// {
+	// 	return $this->hasMany('App\Models\DocumentAudit', 'document_id');
+	// }
+
 	public function audits()
 	{
 		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id');
 	}
 
+	public function pmCanSeeAudits()
+	{
+		$allowedSteps = pmCanViewFindingsIds();
+		$allowedDocumentsOnAudits = $this->project->audits()->whereIn('step_id', $allowedSteps)->pluck('audit_id')->toArray();
+		return $this->hasManyThrough('App\Models\Audit', 'App\Models\DocumentAudit', 'document_id', 'id', 'id', 'audit_id');
+
+		// ->whereIn('audit_id', $allowedDocumentsOnAudits);
+	}
+
+	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
+
+	public function units()
+	{
+		return $this->belongsToJson('App\Models\Unit', 'unit_ids');
+	}
+
+	public function buildings()
+	{
+		return $this->belongsToJson('App\Models\Building', 'building_ids');
+	}
+
 	public function findings()
 	{
-		$communications = \App\Models\CommunicationDocument::where('document_id', '=', $this->id)->with('communication')->get();
-		foreach ($communications as $key => $communication) {
-			$finding_ids = $communication->communication->finding_ids;
-			if (!is_null($finding_ids)) {
-				$finding_ids = json_decode($finding_ids);
-				return \App\Models\Finding::whereIn('id', $finding_ids)->get();
-			} else {
-				return null;
-			}
-		}
-		return null;
+		return $this->belongsToJson('App\Models\Finding', 'finding_ids');
 	}
+
+	public function all_findings()
+	{
+		if (!is_null($this->finding_ids)) {
+			return \App\Models\Finding::with('audit_plain', 'building.address', 'unit.building.address', 'project.address', 'finding_type', 'amenity')->whereIn('id', ($this->finding_ids))->get();
+		} else {
+			return \App\Models\Finding::where('id', 0)->get();
+		}
+	}
+
+	// public function findings()
+	// {
+	// 	$communications = \App\Models\CommunicationDocument::where('document_id', '=', $this->id)->with('communication')->get();
+	// 	foreach ($communications as $key => $communication) {
+	// 		$finding_ids = $communication->communication->finding_ids;
+	// 		if (!is_null($finding_ids)) {
+	// 			$finding_ids = json_decode($finding_ids);
+	// 			return \App\Models\Finding::whereIn('id', $finding_ids)->get();
+	// 		} else {
+	// 			return null;
+	// 		}
+	// 	}
+	// 	return null;
+	// }
 
 	public function document_categories()
 	{

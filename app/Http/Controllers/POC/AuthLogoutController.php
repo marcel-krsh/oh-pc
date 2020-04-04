@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 
 class AuthLogoutController extends Controller
 {
+	public function __construct(){
+        $this->allitapc();
+    }
 
     public function destroy()
     {

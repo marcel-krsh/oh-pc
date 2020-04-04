@@ -7,7 +7,7 @@
 			$unitInspections = $audit->audit->unit_inspections()->groupBy('unit_id')->paginate(12);
 			$allUnitInspections = $audit->audit->unit_inspections;
 			$pdtDetails = $details;
-			$pdtFindings = $audit->audit->findings;
+			$pdtFindings = $audit->audit->findings->where('cancelled_at',NULL);
 			$pieceData = [];
 			$print = null;
 			$report = $audit;
@@ -57,5 +57,6 @@
 				@include('crr_parts.crr_inspections_unit', [$inspections_type = 'unit',$detailsPage = 1])
 			</div>
 		@endif
+		<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 </div>
 </div>

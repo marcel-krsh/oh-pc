@@ -14,6 +14,9 @@ use Event;
 
 class AdminfixController extends Controller
 {
+	public function __construct(){
+        $this->allitapc();
+    }
 	/**
 	 * Created to fix the non-triggered notifications from 12-01-2019 to NOW. Recommended to run once
 	 * @return [type] [description]

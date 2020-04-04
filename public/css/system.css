@@ -824,7 +824,7 @@ z-index:1051;
 	
 }
 .dark-button {
-	border-radius: 0px;
+	border-radius: 8px;
 	background-color: #c6c8ca;
 	font-size:12px;
 	line-height: 30px;
@@ -1261,7 +1261,7 @@ a.blue-link {
 }
 
 .button-gray {
-	border-radius:0px;
+	border-radius:8px;
 	background-color:#8A8A8A;
 	font-size:11px;
 	color:white;	
