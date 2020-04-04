@@ -3833,7 +3833,7 @@ class AuditController extends Controller
 			->where('active', '=', 1)
 			->orderBy('name', 'asc')
 			->get();
-		return count($auditors);
+		// return count($auditors);
 		return view('modals.project-assignment-add-auditor', compact('day', 'auditor', 'audit', 'auditors'));
 	}
 
