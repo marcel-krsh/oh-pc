@@ -3831,11 +3831,12 @@ class AuditController extends Controller
 		$auditors = User::whereHas('roles', function ($query) {
 			$query->where('role_id', '=', 2);
 			$query->orWhere('role_id', '=', 3);
+			$query->orWhere('role_id', '=', 4);
 		})
 			->where('active', '=', 1)
 			->orderBy('name', 'asc')
 			->get();
-
+		// return count($auditors);
 		return view('modals.project-assignment-add-auditor', compact('day', 'auditor', 'audit', 'auditors'));
 	}
 
