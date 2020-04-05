@@ -34,7 +34,7 @@ class CommunicationReceipientEvent
 	{
 		// Log::info('communication recepient');
 		try {
-			$cr_details = CommunicationRecipient::with('communication.project''communication.owner', 'user.notification_preference', 'user.person')->find($cr->id);
+			$cr_details = CommunicationRecipient::with('communication.project', 'communication.owner', 'user.notification_preference', 'user.person')->find($cr->id);
 			//insert data into notifications_triggered table
 			//based on type ID set the model and model_ID, should be set in session
 			if ($cr_details->communication && ($cr_details->communication->owner_id != $cr_details->user_id)) {
@@ -113,7 +113,7 @@ class CommunicationReceipientEvent
 			$data['base_url'] = secure_url('notifications/view-message', $user->id) . "/" . $model_id . "?t=";
 		}
 		if ($communication->project) {
-			$data['project_details'] = $communication->project_number . ' : ' . $communication->project_name;
+			$data['project_details'] = $communication->project->project_number . ' - ' . $communication->project->project_name;
 		} else {
 			$data['project_details'] = '';
 		}

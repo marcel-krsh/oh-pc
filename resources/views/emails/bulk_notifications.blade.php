@@ -107,7 +107,7 @@ $style = [
 											@foreach($alert['type'] as $messages)
 											<tr>
 												<a href="{{ $messages['link'] }}" style="{{ $style['header-3'] }}" target="_blank"> {{ $messages['heading'] }}</a>
-												@if(array_key_exists('project_details', $messages) $messages['project_details'] != '')
+												@if(array_key_exists('project_details', $messages) &&  $messages['project_details'] != '')
 														<p style="{{ $style['paragraph-text'] }}">Project: {{ $messages['project_details'] }} </p>
 												@endif
 												{{-- <p style="{{ $style['paragraph-text'] }}">Message: {{ $messages['message'] }} </p> --}}

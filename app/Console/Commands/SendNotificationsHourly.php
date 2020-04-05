@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Log;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Jobs\SendNotificationEmail;
@@ -49,6 +50,8 @@ class SendNotificationsHourly extends Command
 			->active()
 			->get()
 			->groupBy('to_id');
+		Log::info($hourley_notifications);
+
 		foreach ($hourley_notifications as $hourley_notification) {
 			$user = $hourley_notification->first()->to_user;
 			$user_notifications = $hourley_notification->sortBy('updated_at')->groupBy('type_id');
