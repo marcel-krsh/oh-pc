@@ -1,5 +1,5 @@
 <div id="project" class="uk-no-margin-top">
-	<div id="project-top" uk-grid>
+	<div id="project-top" uk-grid uk-sticky="offset: 55">
 		<div class="uk-margin-remove-top uk-width-1-1" uk-grid>
 			<nav class="tab-sub-nav" uk-navbar="" style="border:none">
 				<div class="uk-navbar-left" style="overflow-x: auto; overflow-y: hidden; width:100%;">
@@ -28,9 +28,7 @@
 	</ul>
 </div>
 
-<div id="footer-actions-project" hidden>
-		<a href="#top" id="smoothscrollLink" uk-scroll="{offset: 90}" class="uk-button uk-button-default"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
-</div>
+
 
 <script>
 	@foreach($projectTabs as $projectTab)
