@@ -40,45 +40,6 @@ if (isset($pdtDetails)) {
 	$projectDetails = $pdtDetails;
 	$findings = $pdtFindings;
 }
-
-===  ===  =
-$allowedUnitInspections = [];
-
-if ($canViewSiteInspections && $canViewFileInspections) {
-	// get building_ids for both
-	$allowedUnitInspections = $audit->audit->unit_inspections()->where('is_site_visit', 1)->orWhere('is_file_audit', '1')->pluck('unit_id')->toArray();
-} else if ($canViewSiteInspections) {
-	$allowedUnitInspections = $audit->audit->unit_inspections()->where('is_site_visit', 1)->pluck('unit_id')->toArray();
-} else if ($canViewFileInspections) {
-	$allowedUnitInspections = $audit->audit->unit_inspections()->where('is_file_audit', 1)->pluck('unit_id')->toArray();
-}
-$buildingInspections = $audit->audit->building_inspections()->paginate(12);
-$allBuildingInspections = $audit->audit->building_inspections;
-$unitInspections = $audit->audit->unit_inspections()->whereIn('unit_id', $allowedUnitInspections)->groupBy('unit_id')->paginate(12);
-$allUnitInspections = $audit->audit->unit_inspections()->whereIn('unit_id', $allowedUnitInspections)->get();
-
-$pdtDetails = $details;
-$pdtFindings = $audit->audit->findings->where('cancelled_at', NULL);
-$pieceData = [];
-$print = null;
-$report = $audit;
-$selected_audit = $audit;
-
-$projectDetails = null;
-$findings = null;
-$dpView = null;
-if (array_key_exists(4, $pieceData)) {
-	$projectDetails = $pieceData[4];
-}
-if (array_key_exists(5, $pieceData)) {
-	$findings = $pieceData[5];
-}
-if (isset($pdtDetails)) {
-	$projectDetails = $pdtDetails;
-	$findings = $pdtFindings;
-}
-
->>  >>  >>  > issue_ALLITA - PC - OHIO - 90;
 ?>
 		@include('crr_parts.crr_inspections_header')
 
