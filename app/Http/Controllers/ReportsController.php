@@ -27,9 +27,10 @@ use App\Models\CrrSectionOrder;
 
 class ReportsController extends Controller
 {
-	 public function __construct(){
-        $this->allitapc();
-    }
+	public function __construct()
+	{
+		$this->allitapc();
+	}
 
 	public function reportHistory(CrrReport $report, $data)
 	{
@@ -886,8 +887,8 @@ class ReportsController extends Controller
 					//return dd(collect($x)[48]);
 					// echo 12;
 					// return 12;
-					//
-					// return $report;
+					// return $version;
+					// return url()->full();
 					if ($request->get('print') != 1) {
 						return view('crr.crr', compact('versions_count', 'report', 'data', 'version', 'print', 'users', 'current_user', 'oneColumn', 'auditor_access', 'manager_access', 'admin_access'));
 					} else {
