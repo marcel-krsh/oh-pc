@@ -860,8 +860,8 @@ class ReportsController extends Controller
 					return '<meta http-equiv="refresh" content="0;url=/report/' . $report->id . '" />';
 				} else {
 					$data = json_decode($report->crr_data);
+					$data = collect($data);
 					$versions_count = count($data);
-					// return count($data);
 					$version = $report->version;
 					if ($request->get('version')) {
 						$version = intval($request->get('version'));
