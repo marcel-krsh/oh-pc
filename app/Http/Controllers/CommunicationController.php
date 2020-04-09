@@ -182,8 +182,12 @@ class CommunicationController extends Controller
 			$draft = new CommunicationDraft;
 			$draft->project_id = $project_id;
 			$draft->audit_id = $audit_id;
-			$draft->report_id = $report_id;
-			$draft->finding_id = $finding_id;
+			if (is_numeric($report_id)) {
+				$draft->report_id = $report_id;
+			}
+			if (is_numeric($finding_id)) {
+				$draft->finding_id = $finding_id;
+			}
 			$draft->owner_id = Auth::user()->id;
 			$draft->save();
 			return $draft;
@@ -214,14 +218,13 @@ class CommunicationController extends Controller
 			$draft->message = array_key_exists('messageBody', $forminputs) ? $forminputs['messageBody'] : '';
 			// $draft->message = $forminputs['messageBody'];
 			if (array_key_exists('findings', $forminputs)) {
-				$draft->finding_ids = json_encode($forminputs['findings']);
+				$draft->finding_ids = ($forminputs['findings']);
 			}
 			if (array_key_exists('recipients', $forminputs)) {
-				$draft->recipients = json_encode($forminputs['recipients']);
+				$draft->recipients = (array_unique($forminputs['recipients']));
 			}
-
 			if (!empty($document_data)) {
-				$draft->selected_documents = json_encode($document_data);
+				$draft->selected_documents = ($document_data);
 			}
 			$draft->save();
 			return 1;
@@ -262,7 +265,15 @@ class CommunicationController extends Controller
 		if ($save_draft == 1) {
 			$draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
 		} elseif ($save_draft == 2) {
-			$draft = CommunicationDraft::find($draft_id);
+			$draft = CommunicationDraft::with('project', 'audit')->find($draft_id);
+			$draft_receipients = User::whereIn('users.id', $draft->recipients)
+				->leftJoin('people', 'people.id', 'users.person_id')
+				->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+				->join('users_roles', 'users_roles.user_id', 'users.id')
+				->select('users.*', 'last_name', 'first_name', 'organization_name', 'role_id')
+				->where('active', 1)
+				->orderBy('last_name', 'asc')
+				->get();
 		} else {
 			$draft = null;
 		}
@@ -298,7 +309,6 @@ class CommunicationController extends Controller
 
 		if (null !== $project_id) {
 			$project = Project::with('project_users')->where('id', '=', intval($project_id))->first();
-
 			if (!is_null($project)) {
 				$audit_details = $project->selected_audit();
 				if (is_null($audit) && !is_null($audit_details)) {
@@ -483,7 +493,7 @@ class CommunicationController extends Controller
 			if ($save_draft == 1) {
 				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location', 'draft_receipients'));
 			}
 			return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 		} else {
@@ -540,7 +550,7 @@ class CommunicationController extends Controller
 			if ($save_draft == 1) {
 				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location', 'draft_receipients'));
 			}
 			return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_recipient', 'finding', 'findings', 'all_findings', 'draft', 'location'));
 		}

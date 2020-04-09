@@ -26,11 +26,12 @@ class CommunicationDraft extends Model
 		'finding_ids',
 	];
 
-	use \Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
-
 	protected $casts = [
 		'communication_id' => 'json',
 		'findings_ids' => 'array',
+		'recipients' => 'array',
+		'documents' => 'array',
+		'selected_documents' => 'array',
 	];
 
 	/**
@@ -68,7 +69,7 @@ class CommunicationDraft extends Model
 	{
 		$document_json = $this->documents;
 		if (!is_null($document_json)) {
-			$document_array = json_decode($this->documents, true);
+			$document_array = ($this->documents);
 			$document_ids = [];
 			foreach ($document_ids as $key => $document_id) {
 				array_push($document_ids, $document_id[0]);
@@ -86,7 +87,7 @@ class CommunicationDraft extends Model
 	{
 		$document_json = $this->selected_documents;
 		if (!is_null($document_json)) {
-			$document_array = json_decode($this->selected_documents, true);
+			$document_array = ($this->selected_documents);
 			$document_ids = [];
 			foreach ($document_array as $key => $document_id) {
 				array_push($document_ids, $document_id[0]);

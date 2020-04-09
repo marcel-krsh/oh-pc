@@ -9,7 +9,6 @@
 			escClose: false,
 			bgClose: false
 		});
-
 	});
 </script>
 @else
@@ -102,29 +101,16 @@ session(['old_communication_modal' => $random]);
 							</li>
 							@endforeach
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-							{{--  @if($currentOrg != $recipient->organization_name)
-							<li class="recipient-list-item @if(count($recipients_from_hfa) > 0 || $currentOrg != '') uk-margin-large-top @endif {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->organization_name }}</strong></li>
-							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-							@php $currentOrg = $recipient->organization_name; @endphp
-							@endIf
-							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-								<input name="" id="list-recipient-id-draft-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientDraft(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
-								<label for="recipient-id-draft-{{ $recipient->id }}">
-									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
-								</label>
-							</li>
-							--}}
+
 							@endforeach
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 						</ul>
 					</div>
-					{{-- <div class="uk-form-row">
-						<input style="width: 100%" type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
-					</div> --}}
 					<script>
             // CLONE RECIPIENTS
             function addRecipientDraft(formValue,name){
               //alert(formValue+' '+name);
+              debugger;
               if($("#list-recipient-id-draft-"+formValue).is(':checked')){
               	var recipientClone = $('#recipient-template-draft').clone();
               	recipientClone.attr("id", "recipient-id-draft-"+formValue+"-holder");
@@ -333,38 +319,17 @@ session(['old_communication_modal' => $random]);
   	function dynamicModalCommunicationClose() {
   		UIkit.modal('#dynamic-modal').hide();
   	}
-  </script>
-  <script>
-  	// function updateCommunicationDraft() {
-  	// 	if(window.communicationActive) {
-  	// 		var form = $('#newOutboundEmailFormDraft');
-  	// 		var no_alert = 1;
-  	// 		var recipients_array = [];
-  	// 		$("input[name='recipientsdraft[]']:checked").each(function (){
-  	// 			recipients_array.push(parseInt($(this).val()));
-  	// 		});
-  	// 		$.post('{{ URL::route("communication.update-draft", $draft->id) }}', {
-  	// 			'inputs' : form.serialize(),
-  	// 			'_token' : '{{ csrf_token() }}'
-  	// 		}, function(data) {
-  	// 			if(data==1){
-  	// 				console.log( "updated draft!" );
-  	// 			} else {
-  	// 				console.log( "updated NOT draft!" );
-  	// 			}
-  	// 		});
-  	// 	}
-  	// }
+
+  	$(document).ready(function() {
+    	debugger;
+    	$('#list-recipient-id-draft-5876').trigger('click');
 
 
+    	@foreach($draft_receipients as $df)
 
-  	// $( document ).ready(function() {
-  	// 	window.communicationActive = 1;
-  	// 	console.log( "update sraft!" );
-  	// 	window.setInterval(function(){
-  	// 		updateCommunicationDraft();
-  	// 	}, 5000);
-
-  	// });
+    		// $('#list-recipient-id-draft-'+{{ $df->id }}).trigger('click');
+    		{{-- addRecipientDraft({{ $df->id }},'{{ ucwords($df->first_name) }} {{ ucwords($df->last_name) }}'); --}}
+    	@endforeach
+		});
   </script>
 </div>
