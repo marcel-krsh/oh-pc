@@ -4,7 +4,6 @@
 		<a id="filter-none" class="filter_link" data-filter="all" hidden>all</a>
 		<a id="filter-attachments" class="filter_link" data-filter="attachment-true" hidden>attachments</a>
 
-
 		<div class=" uk-width-1-1@s uk-width-2-5@m">
 			<div uk-grid>
 				<button id="project-communication-document-button" class="uk-button-large uk-button-default filter-attachments-button uk-width-1-6 {{ session('project-filter-attachment') ? 'uk-button-success' : '' }}" uk-tooltip="pos:top-left;title:Show results with attachments" onclick="filterProjectCommunications('attachment')">
@@ -89,16 +88,21 @@
 	$(document).ready(function(){
 		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 		$('#communications-tab-pages-and-filters .page-link').click(function(){
-			$('#project_communications-table').html(tempdiv);
-			$('#project_communications_tab').load($(this).attr('href'));
-					// window.currentDocumentsPage = $(this).attr('href');
-					return false;
-				});
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#project_communications-table').html(tempdiv);
+				$('#project_communications_tab').load($(this).attr('href'));
+				return false;
+			}
+		});
 
 		$('#communications-tab-pages-and-filters-2 .page-link').click(function(){
-			$('#project_communications-table').html(tempdiv);
-			$('#project_communications_tab').load($(this).attr('href'));
-			return false;
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#project_communications-table').html(tempdiv);
+				$('#project_communications_tab').load($(this).attr('href'));
+				return false;
+			}
 		});
 	});
 
@@ -131,18 +135,18 @@
 	}
 
 
-			function closeOpenMessage(){
-				$('.communication-list-item').removeClass('communication-open');
-				$('.communication-details').addClass('uk-hidden');
-				$('.communication-summary').removeClass('uk-hidden');
-			}
+	function closeOpenMessage(){
+		$('.communication-list-item').removeClass('communication-open');
+		$('.communication-details').addClass('uk-hidden');
+		$('.communication-summary').removeClass('uk-hidden');
+	}
 
-			function openMessage(communicationId){
-				closeOpenMessage();
-				$("#communication-"+communicationId).addClass('communication-open');
-				$("#communication-"+communicationId+"-details").removeClass('uk-hidden');
-				$("#communication-"+communicationId+"-summary").addClass('uk-hidden');
-			}
+	function openMessage(communicationId){
+		closeOpenMessage();
+		$("#communication-"+communicationId).addClass('communication-open');
+		$("#communication-"+communicationId+"-details").removeClass('uk-hidden');
+		$("#communication-"+communicationId+"-summary").addClass('uk-hidden');
+	}
 
 
 		 // process search

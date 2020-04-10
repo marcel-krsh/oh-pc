@@ -254,7 +254,7 @@
 				// $document_audits = $audits->whereIn('id', $all_ids);
 				$unitCollection = !is_null($document->units) ? ($document->units) : collect([]);
 				$buildingCollection = !is_null($document->buildings) ? ($document->buildings) : collect([]);
-				
+
 
 				$site_findings = $document_findings->where('building_id', null)->where('unit_id', null);
 				$building_findings = $document_findings->where('building_id', '<>', null)->where('unit_id', null);
@@ -298,7 +298,7 @@
 									<span style="float: left;margin-top:8px;margin-left: 5px" id="sent-id-{{ $document->id }}category-id-1-not-received-icon" class="{{ ($document->notapproved == 1) ? "a-circle-cross alert" : "a-checkbox" }} {{ ($document->approved == 1) ? " minus-received-yes received-yes" : "received-no" }}"></span>
 									<span style="display: block; margin-left: 55px;margin-top:2px">{{ $document_category->parent->document_category_name }} : {{ $document_category->document_category_name }} </span>
 								</span>
-								
+
 								@if($document->comment) <div style="display: block; margin-left:35.25px;"><i class="a-comment"></i> "{{ $document->comment }}" </div>@endif
 							</li>
 							@endforeach
@@ -330,8 +330,8 @@
 						@endIf
 					</td>
 					<td>
-						
-						
+
+
 						<a href="download-local-document/{{ $document->id }}" target="_blank"  uk-tooltip="Download file." download>
 							<span class="a-lower"></span>
 						</a>
@@ -355,16 +355,22 @@
 	$(document).ready(function(){
 		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 		$('#documents-tab-pages-and-filters .page-link').click(function(){
-			$('#local-documents').html(tempdiv);
-			$('#allita-documents').load($(this).attr('href'));
-			window.currentDocumentsPage = $(this).attr('href');
-			return false;
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#local-documents').html(tempdiv);
+				$('#allita-documents').load($(this).attr('href'));
+				window.currentDocumentsPage = $(this).attr('href');
+				return false;
+			}
 		});
 
 		$('#documents-tab-pages-and-filters-2 .page-link').click(function(){
-			$('#local-documents').html(tempdiv);
-			$('#allita-documents').load($(this).attr('href'));
-			return false;
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#local-documents').html(tempdiv);
+				$('#allita-documents').load($(this).attr('href'));
+				return false;
+			}
 		});
 		$('#local-documents-search').keydown(function (e) {
 			if (e.keyCode == 13) {
@@ -417,7 +423,7 @@
 		} );
 	}
 
-  
+
 
     function filterByAudit(){
     	console.log('ada');
@@ -449,6 +455,6 @@
 		dynamicModalLoad('finding-details/'+findingId);
 	}
 
-	
+
 
 </script>

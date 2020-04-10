@@ -266,7 +266,7 @@
 				$units = !is_null($document->unit_ids) ? ($document->unit_ids) : [];
 				$unitCollection = !is_null($document->units) ? ($document->units) : collect([]);
 				$buildingCollection = !is_null($document->buildings) ? ($document->buildings) : collect([]);
-				
+
 				$audits_ids = ($document->audits->pluck('id')->toArray());
 				$document_finding_audit_ids = $document_findings->pluck('audit_id')->toArray();
 				$all_ids = array_merge($audits_ids, $document_finding_audit_ids, [$document->audit_id]);
@@ -306,16 +306,22 @@
 	$(document).ready(function(){
 		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 		$('#documents-tab-pages-and-filters .page-link').click(function(){
-			$('#local-documents').html(tempdiv);
-			$('#allita-documents').load($(this).attr('href'));
-			window.currentDocumentsPage = $(this).attr('href');
-			return false;
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#local-documents').html(tempdiv);
+				$('#allita-documents').load($(this).attr('href'));
+				window.currentDocumentsPage = $(this).attr('href');
+				return false;
+			}
 		});
 
 		$('#documents-tab-pages-and-filters-2 .page-link').click(function(){
-			$('#local-documents').html(tempdiv);
-			$('#allita-documents').load($(this).attr('href'));
-			return false;
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#local-documents').html(tempdiv);
+				$('#allita-documents').load($(this).attr('href'));
+				return false;
+			}
 		});
 		$('#local-documents-search').keydown(function (e) {
 			if (e.keyCode == 13) {
