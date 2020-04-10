@@ -1,6 +1,6 @@
-   @extends('layouts.simplerAllita')
+@extends('layouts.simplerAllita')
 @section('head')
-<title>Allita PC Change Log</title>
+<title>Contacts to Project</title>
 
 
 @stop
@@ -83,23 +83,23 @@ ul.leaders li {
 
 
 
-			<?php $row = 0; ?>
+			<?php $row = 0;?>
             <div id="main-report-view" class="" style=" min-width: auto; padding:0px; background-color: currentColor;">
-            	
+
             	<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
             		<h1>Contacts to Project</h1>
             		<hr class="uk-width-1-1">
             		<p>This list is output based on projects, contacts associated with those projects, and then a list of other projects those cotacts are on. The id numbers will be crucial to knowing who is a duplicate or a repeated user. Organization affiliation listed are those where they are the primary contact for that organization.</p>
             		<hr class="uk-width-1-1">
-            		
-            		
+
+
             		<table class="uk-table uk-striped">
             			<thead>
             				<tr>
             				<th style="width: 150px">
             					Project Id
             				</th>
-            				
+
             				<th>
             					Project Number
             				</th>
@@ -110,7 +110,7 @@ ul.leaders li {
             				<th>
             					Contacts (People)
             				</th>
-            				
+
             				</tr>
             			</thead>
             			<tbody>
@@ -126,17 +126,18 @@ ul.leaders li {
             						{{$project->project_name}}
             					</td>
             					<td>
+            						{{-- {{ dd($project->contactRoles->pluck('person')) }} --}}
             						@forEach($project->contactRoles as $contact)
-            							{{$contact->person_id}} | {{$contact->person->first_name}} {{$contact->person->last_name}} | {{$contact->projectRole->role_name}} | User: @if($contact->person->user) {{$contact->person->user->id}} {{$contact->person->user->email}} @else NA @endIf @if($contact->person->email) | Contact Assigned Email: {{$contact->person->email->email_address}} @endIf | @if(count($contact->person->organizations) > 0) Associated Organizations: @forEach($contact->person->organizations as $org) @if($org) {{$org->organization_name}} <br />@endIf @endForEach @else No Organizations @endIf <hr />
+            							{{$contact->person_id}} | @if($contact->person) {{$contact->person->first_name}} {{$contact->person->last_name}} | {{$contact->projectRole->role_name}} | User: @if($contact->person->user) {{$contact->person->user->id}} {{$contact->person->user->email}} @else NA @endIf @if($contact->person->email) | Contact Assigned Email: {{$contact->person->email->email_address}} @endIf | @if(count($contact->person->organizations) > 0) Associated Organizations: @forEach($contact->person->organizations as $org) @if($org) {{$org->organization_name}} <br />@endIf @endForEach @else No Organizations @endIf @endif<hr />
             						@endForEach
             					</td>
             				</tr>
             				@endForEach
-		            				
+
 	            	 	</tbody>
             		</table>
             	</div>
-            	
+
             </div>
 
 
