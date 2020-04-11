@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use Log;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Jobs\SendNotificationEmail;
@@ -45,12 +44,12 @@ class SendNotificationsHourly extends Command
 		$to = Carbon::now()->addMinutes(10);
 		$from = Carbon::now()->subMinutes(10);
 		$config = config('allita.notification');
-		$hourley_notifications = NotificationsTriggered::with('communication')->whereBetween('deliver_time', [$from, $to])
+		$hourley_notifications = NotificationsTriggered::with('communication')
 			->with('to_user.person', 'from_user')
 			->active()
 			->get()
 			->groupBy('to_id');
-		Log::info($hourley_notifications);
+		// Log::info($hourley_notifications);
 
 		foreach ($hourley_notifications as $hourley_notification) {
 			$user = $hourley_notification->first()->to_user;
@@ -78,7 +77,7 @@ class SendNotificationsHourly extends Command
 				//}
 			}
 			$email_notification = new EmailBulkNotification($data, $user);
-			$queued_job = dispatch(new SendNotificationEmail($user, $email_notification));
+			$queued_job = dispatch(new SendNotificationEmail($user, $email_notification))->onQueue('notifications');
 		}
 	}
 }
