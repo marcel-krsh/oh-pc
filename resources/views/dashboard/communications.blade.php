@@ -142,16 +142,22 @@
 	$(document).ready(function(){
 		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
 		$('#main-communications-tab-pages-and-filters .page-link').click(function(){
-			$('#main_communications-table').html(tempdiv);
-			$('#communications_tab').load($(this).attr('href'));
-			// window.currentDocumentsPage = $(this).attr('href');
-			return false;
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#main_communications-table').html(tempdiv);
+				$('#communications_tab').load($(this).attr('href'));
+				// window.currentDocumentsPage = $(this).attr('href');
+				return false;
+			}
 		});
 
 		$('#main-communications-tab-pages-and-filters-2 .page-link').click(function(){
-			$('#main_communications-table').html(tempdiv);
-			$('#communications_tab').load($(this).attr('href'));
-			return false;
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#main_communications-table').html(tempdiv);
+				$('#communications_tab').load($(this).attr('href'));
+				return false;
+			}
 		});
 	});
 
