@@ -49,7 +49,7 @@ class User extends Authenticatable
 		'availability_max_driving',
 		'default_address_id',
 		'allowed_tablet',
-		'pin'
+		'pin',
 	];
 
 	protected static $logAttributes = [

@@ -83,7 +83,6 @@
 	<div class="filter_element uk-width-1-1 communication-list-item @if($message->project)program-{{ $message->project->id }}@endif  @if(!is_null($message->documents)) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;" >
 		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
 
-
 			{{-- project --}}
 			<div class="uk-width-1-5@m communication-item-parcel uk-visible@m" onclick="dynamicModalLoad('communication/open-draft/{{ $message->id }}'); ">
 				@if($message->audit_id && $message->audit && $message->audit->cached_audit)
@@ -95,7 +94,6 @@
 				</p>
 				@endif
 			</div>
-
 
 			{{-- Summary --}}
 			<div class="uk-width-2-5@m communication-item-parcel uk-visible@m">
@@ -128,7 +126,6 @@
 				</div>
 				@endif
 			</div>
-
 		</div>
 	</div>
 
@@ -194,7 +191,6 @@
 		loadTab("{{ URL::route('communications.show-draft-messages') }}", '2','','','',1);
 	}
 
-
 	function closeOpenMessage(){
 		$('.communication-list-item').removeClass('communication-open');
 		$('.communication-details').addClass('uk-hidden');
@@ -248,16 +244,16 @@
 	 	var $filteredElements = $('.filter_element');
 	 	$('.filter_link').click(function (e) {
 	 		e.preventDefault();
-            // get the category from the attribute
-            var filterVal = $(this).data('filter');
-            filterElement(filterVal, '.filter_element');
+        // get the category from the attribute
+        var filterVal = $(this).data('filter');
+        filterElement(filterVal, '.filter_element');
 
-            // reset dropdowns
-            $('#filter-by-owner').prop('selectedIndex',0);
-            @if(Auth::user()->isFromEntity(1))
-            $('#filter-by-program').prop('selectedIndex',0);
-            @endif
-          });
+        // reset dropdowns
+        $('#filter-by-owner').prop('selectedIndex',0);
+        @if(Auth::user()->isFromEntity(1))
+        $('#filter-by-program').prop('selectedIndex',0);
+        @endif
+      });
 	 	// reset view based on previous selection
 	 	if(window.user_comms_read == 1){
 	 		console.log('Hiding Read Messages');
