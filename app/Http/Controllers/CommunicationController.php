@@ -298,7 +298,6 @@ class CommunicationController extends Controller
 
 		if (null !== $project_id) {
 			$project = Project::with('project_users')->where('id', '=', intval($project_id))->first();
-
 			if (!is_null($project)) {
 				$audit_details = $project->selected_audit();
 				if (is_null($audit) && !is_null($audit_details)) {
@@ -336,15 +335,16 @@ class CommunicationController extends Controller
 				->with('assigned_categories.parent')
 				->orderBy('created_at', 'desc')
 				->get();
-			if ($this->pm_access) {
+
+			if ($this->auditor_access) {
 				$document_categories = DocumentCategory::where('parent_id', '<>', 0)
-					->where('document_category_name', 'WORK ORDER')
 					->active()
 					->orderby('document_category_name', 'asc')
 					->with('parent')
 					->get();
 			} else {
 				$document_categories = DocumentCategory::where('parent_id', '<>', 0)
+					->where('document_category_name', 'WORK ORDER')
 					->active()
 					->orderby('document_category_name', 'asc')
 					->with('parent')
