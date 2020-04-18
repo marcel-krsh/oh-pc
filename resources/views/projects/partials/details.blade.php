@@ -438,10 +438,7 @@ $_8823ApprovalTypeId = $selected_audit->_8823_approval_type_id;
     		'_token' : '{{ csrf_token() }}'
     	}, function(data) {
     		loadTab('{{ route('project.details', $selected_audit->project_id) }}', '1', 0, 0, 'project-',1);
-
-    	} );
-
-
+    	});
     }
 
     function refresh_details(id, auditId) {
