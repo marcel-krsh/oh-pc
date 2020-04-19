@@ -2472,7 +2472,7 @@ Route::get('/users/verify_user', function (Request $request) {
 
                     $newcomment->save();
                 }
-                return 1;
+                return $newcomment->id;
 
             } elseif ($inputs['type'] == 'photo') {
                 if(array_key_exists('local_photos', $inputs)){
