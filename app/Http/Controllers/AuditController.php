@@ -1725,15 +1725,6 @@ class AuditController extends Controller
 			$details_new->manager_zip = $default_address->address->zip;
 			$details_new->save();
 		}
-		// Cached audit pm update
-		// if ($cached_audit) {
-		// 	$cached_audit->pm = $details_new->manager_poc;
-		// 	$cached_audit->address = $details_new->manager_address;
-		// 	$cached_audit->state = $details_new->manager_state;
-		// 	$cached_audit->zip = $details_new->manager_zip;
-		// 	$cached_audit->city = $details_new->manager_city;
-		// 	$cached_audit->save();
-		// }
 
 		$default_org = UserOrganization::with('user', 'organization')->where('project_id', $id)->where('default', 1)->first();
 		if ($default_org) {
@@ -1824,24 +1815,36 @@ class AuditController extends Controller
 			$details_new->save();
 		}
 
+		$last_audit = $project->lastAudit();
+		if ($last_audit) {
+			$last_audit_completed_date = $last_audit->completed_date;
+		} else {
+			$last_audit_completed_date = null;
+		}
+		$details_new->last_audit_completed = $last_audit_completed_date;
+		if ($project->complianceContacts()->first()) {
+			$next_inspection = $project->complianceContacts()->first()->next_inspection;
+		} else {
+			$next_inspection = null;
+		}
+		$details_new->next_audit_due = $next_inspection;
+		$details_new->total_building = $project->total_building_count;
+		$details_new->total_units = $project->total_unit_count;
+		// number of units with unit_identity_key == 6
+		$market_rate = $project->market_rate_units()->count();
+		// subsidized units are units with programs
+		$subsidized = $project->program_units_total();
+		$details_new->market_rate = $market_rate;
+		$details_new->subsidized = $subsidized;
+		$programs = [];
+		foreach ($project->programs as $program) {
+			$count = $program->total_unit_count;
+			$programs[] = ["name" => $program->program->program_name, "units" => $count, "program_id" => $program->program_id];
+		}
+		$details_new->programs = json_encode($programs);
+		$details_new->save();
+
 		$details = $details_new;
-
-		// $details_new-> =
-
-		//         'manager_name' => $this->pm()['organization'],
-		//         'manager_poc' => $this->pm()['name'],
-		//         'manager_phone' => $this->pm()['phone'],
-		//         'manager_fax' => $this->pm()['fax'],
-		//         'manager_email' => $this->pm()['email'],
-		//         'manager_address' => $this->pm()['line_1'],
-		//         'manager_address2' => $this->pm()['line_2'],
-		//         'manager_city' => $this->pm()['city'],
-		//         'manager_state' => $this->pm()['state'],
-		//         'manager_zip' => $this->pm()['zip']
-		// $details_new = ProjectDetail::where('project_id', '=', $id)
-		//              ->where('audit_id', '=', $audit_id)
-		//              ->orderBy('id', 'desc')
-		//              ->first();
 		$returnHTML = view('projects.partials.details-project-details')->with('details', $details)->render();
 
 		return response()->json(['success' => true, 'html' => $returnHTML]);

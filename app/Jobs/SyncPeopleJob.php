@@ -30,6 +30,8 @@ class SyncPeopleJob implements ShouldQueue
 
 	public $tries = 5;
 
+	public $timeout = 600;
+
 	/**
 	 * Execute the job.
 	 *
