@@ -79,7 +79,7 @@ session(['old_communication_modal' => $random]);
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 							@foreach ($recipients_from_hfa as $recipient_from_hfa)
 							<li class="recipient-list-item ohfa {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient_from_hfa->organization_name))))) }} {{ strtolower($recipient_from_hfa->first_name) }} {{ strtolower($recipient_from_hfa->last_name) }}">
-								<input name="" id="list-recipient-id-draft-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientDraft(this.value,'{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}')">
+								<input name="" id="list-recipient-id-draft-open-{{ $recipient_from_hfa->id }}" value="{{ $recipient_from_hfa->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientDraft(this.value,'{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }}')">
 								<label for="recipient-id-draft-{{ $recipient_from_hfa->id }}">
 									{{ ucwords($recipient_from_hfa->first_name) }} {{ ucwords($recipient_from_hfa->last_name) }} | {{ $recipient_from_hfa->email }}
 								</label>
@@ -94,7 +94,7 @@ session(['old_communication_modal' => $random]);
 
 							@foreach($orgs as $recipient)
 							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-								<input name="" id="list-recipient-id-draft-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientDraft(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
+								<input name="" id="list-recipient-id-draft-open-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientDraft(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
 								<label for="recipient-id-draft-{{ $recipient->id }}">
 									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }} | {{ $recipient->email }}
 								</label>
@@ -110,8 +110,7 @@ session(['old_communication_modal' => $random]);
             // CLONE RECIPIENTS
             function addRecipientDraft(formValue,name){
               //alert(formValue+' '+name);
-              debugger;
-              if($("#list-recipient-id-draft-"+formValue).is(':checked')){
+              if($("#list-recipient-id-draft-open-"+formValue).is(':checked')){
               	var recipientClone = $('#recipient-template-draft').clone();
               	recipientClone.attr("id", "recipient-id-draft-"+formValue+"-holder");
               	recipientClone.prependTo('#recipients-box-draft');
@@ -127,35 +126,24 @@ session(['old_communication_modal' => $random]);
               	$("#recipient-id-draft-"+formValue+"-holder").slideUp();
               	$("#recipient-id-draft-"+formValue+"-holder").remove();
               }
+              return true;
             }
             function removeRecipient(id){
             	$("#recipient-id-draft-"+id+"-holder").slideUp();
             	$("#recipient-id-draft-"+id+"-holder").remove();
-            	$("#list-recipient-id-draft-"+id).prop("checked",false)
+            	$("#list-recipient-id-draft-open-"+id).prop("checked",false)
             }
           </script>
           <!-- END RECIPIENT LISTING -->
         </div>
         @endif
-        @if(null !== $findings && count($findings)>0 && ($all_findings > 0 || !empty($all_findings)))
-        <div class="uk-width-1-5 " style="padding:18px;">
-        	<div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;FINDINGS:
-        </div>
-        <div class="uk-width-4-5 "  id="findings-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-        	@foreach(json_decode($all_findings) as $finding_id)
-        	Finding-{{ $finding_id }}{{ $loop->last ? '':', ' }}
-        	@endforeach
-        </div>
+
+        @if(null !== $findings && count($findings)>0 && (!is_null($all_selected_findings)))
+        	@include('modals.partials.communication-findings')
         @endif
 
-        @if(!is_null($draft->documents))
-        <div class="uk-width-1-5 " style="padding:18px;">
-        	<div style="width:25px;display: inline-block;"><i uk-icon="a-paperclip-2" class=""></i></div> &nbsp;DOCUMENTS:
-        </div>
-        <div class="uk-width-4-5 "  id="findings-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
-        	@foreach($draft->getSelectedDocuments() as $document) {{ $document->assigned_categories->first()->document_category_name }} : {{ ucwords(strtolower($document->filename)) }} <br>
-        	@endforeach
-        </div>
+        @if(!is_null($project))
+        	@include('modals.partials.communication-documents-draft')
         @endif
 
         <div class="uk-width-1-5 " style="padding:18px;padding-top:27px;"><div style="width:25px;display: inline-block;">&nbsp;</div> &nbsp;SUBJECT:</div>
@@ -292,7 +280,6 @@ session(['old_communication_modal' => $random]);
     	}
     	$('#findings_based_subject').attr('value', subject);
     	$('textarea#message-body').val(message);
-    	// debugger;
     	@endIf
     }
   </script>
@@ -320,16 +307,38 @@ session(['old_communication_modal' => $random]);
   		UIkit.modal('#dynamic-modal').hide();
   	}
 
-  	$(document).ready(function() {
-    	debugger;
-    	$('#list-recipient-id-draft-5876').trigger('click');
-
-
-    	@foreach($draft_receipients as $df)
-
-    		// $('#list-recipient-id-draft-'+{{ $df->id }}).trigger('click');
-    		{{-- addRecipientDraft({{ $df->id }},'{{ ucwords($df->first_name) }} {{ ucwords($df->last_name) }}'); --}}
-    	@endforeach
+  	$(document).ready( function () {
+  		@if(!is_null($draft_receipients))
+  		@foreach($draft_receipients as $df)
+	  		$("#list-recipient-id-draft-open-"+{{ $df->id }}).prop("checked", true);
+			  addRecipientDraft({{ $df->id }},'{{ ucwords($df->first_name) }} {{ ucwords($df->last_name) }}');
+		  @endforeach
+		  @endif
+		  @foreach($draft->getSelectedDocuments() as $document)
+		  	$("#list-document-id-local-"+{{ $document->id }}).prop("checked", true);
+			  addLocalDocument("{{ 'local-' . $document->id }}",'{{ $document->assigned_categories->first()->parent->document_category_name }} : {{ ucwords(strtolower($document->assigned_categories->first()->document_category_name)) }}');
+		  @endforeach
+		  @if(!is_null($all_selected_findings))
+		  @foreach(json_decode($all_selected_findings) as $f)
+		  	$("#list-finding-id-"+{{ $f->id }}).prop("checked", true);
+		  	@if($f->finding_type->type == 'nlt')
+					@php
+						$f_icon = '<i class="a-booboo"></i>';
+					@endphp
+				@endif
+				@if($f->finding_type->type == 'lt')
+					@php
+						$f_icon = '<i class="a-skull"></i>';
+					@endphp
+				@endif
+				@if($f->finding_type->type == 'file')
+					@php
+						$f_icon = '<i class="a-folder"></i>';
+					@endphp
+				@endif
+		  	addFinding('{{ $f->id }}','{!! $f_icon !!}Finding-{{ $f->id }}')
+		  @endforeach
+		  @endif
 		});
   </script>
 </div>

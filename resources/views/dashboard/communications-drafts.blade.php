@@ -3,23 +3,6 @@
 
 		<a id="filter-none" class="filter_link" data-filter="all" hidden>all</a>
 		<a id="filter-attachments" class="filter_link" data-filter="attachment-true" hidden>attachments</a>
-		{{-- Total of 6 groups
-		* Group 1
-		* 	View inbox
-		* 	View sent messages
-		* Group 2
-		* 	Show results with attachments
-		* 	Show Conversation list view
-		* Group 3
-		* 	Search within message or Audit? Input text field
-		* Group 4
-		* 	Filter by recepient
-		* Group 5
-		* 	Filter by project
-		* Group 6
-		* 	New Message
-		*
-		--}}
 		<div uk-grid class="uk-grid-collapse uk-visible@m uk-width-1-5@m">
 			{{-- Group 1, Inbox and Sent message --}}
 			<div class="uk-button-group uk-margin-medium-left">
@@ -39,7 +22,6 @@
 					<i class="a-paper-plane"></i>
 				</button>
 			</div>
-
 		</div>
 
 		{{-- Group 2, Attachments and conversation list view --}}
@@ -50,8 +32,19 @@
 				</button>
 			</div>
 		</div>
+
+		<hr class="uk-width-1-1 uk-margin-top">
+		<div class="uk-width-2-3 uk-margin-top" id="draft-communications-tab-pages-and-filters">
+			{{ $messages->links() }}
+		</div>
+		<div class="uk-width-1-3  uk-text-right">
+			<div class="uk-align-right uk-label  uk-margin-top ">{{ $total_drafts }} DRAFT MESSAGES </div>
+		</div>
 	</div>
+
+
 </div>
+
 
 @if(count($messages))
 <div uk-grid class="uk-margin-top uk-visible@m">
@@ -128,7 +121,6 @@
 			</div>
 		</div>
 	</div>
-
 	@endforeach
 
 	@else
@@ -137,11 +129,37 @@
 	</div>
 	@endif
 </div>
+
+<div class="uk-width-1-1 uk-margin-top uk-margin-left" id="draft-communications-tab-pages-and-filters-2">
+	{{ $messages->links() }}
+</div>
+
 <div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
 	<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
 </div>
 
 <script>
+
+	$(document).ready(function(){
+		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+		$('#draft-communications-tab-pages-and-filters .page-link').click(function(){
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#main_communications-table').html(tempdiv);
+				$('#communications_tab').load($(this).attr('href'));
+				return false;
+			}
+		});
+
+		$('#draft-communications-tab-pages-and-filters-2 .page-link').click(function(){
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#main_communications-table').html(tempdiv);
+				$('#communications_tab').load($(this).attr('href'));
+				return false;
+			}
+		});
+	});
 
 	function switchInbox(){
 		var trigger = 'communication_inbox';

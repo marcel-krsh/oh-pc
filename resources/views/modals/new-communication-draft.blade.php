@@ -336,30 +336,59 @@ session(['old_communication_modal' => $random]);
   			var form = $('#newOutboundEmailForm');
 	    	var no_alert = 1;
 	    	var recipients_array = [];
+	    	var findings_array = [];
+	    	var trigger = false;
 	    	$("input[name='recipients[]']:checked").each(function (){
 	    		recipients_array.push(parseInt($(this).val()));
 	    	});
-  			$.post('{{ URL::route("communication.update-draft", $draft->id) }}', {
-  				'inputs' : form.serialize(),
-  				'_token' : '{{ csrf_token() }}'
-  			}, function(data) {
-  				if(data==1){
-  					console.log( "updated draft!" );
-  				} else {
-  					console.log( "updated NOT draft!" );
-  				}
-  			});
+	    	$("input[name='findings[]']:checked").each(function (){
+	    		findings_array.push(parseInt($(this).val()));
+	    	});
+	    	if(recipients_array.length > 0 || findings_array.length > 0) {
+	    		trigger = true;
+	    	}
+
+	    	var inputs = form.serializeArray();
+	    	var error = '';
+	    	$.each( inputs,function(index, value) {
+	    		if(value['name'] == 'subject') {
+	    			if(value['value'] != ""){
+				    		trigger = true;
+			    	}
+	    		}
+	    		if(value['name'] == 'messageBody') {
+	    			if(value['value'] != ""){
+			    		trigger = true;
+			    	}
+	    		}
+	    	});
+
+	    	if(trigger) {
+	  			$.post('{{ URL::route("communication.update-draft", $draft->id) }}', {
+	  				'inputs' : form.serialize(),
+	  				'_token' : '{{ csrf_token() }}'
+	  			}, function(data) {
+	  				if(data==1){
+	  					console.log( "updated draft!" );
+	  				} else {
+	  					console.log( "updated NOT draft!" );
+	  				}
+	  			});
+		  		console.log( "updated draft!" );
+  			}
   		}
   	}
 
-
-
-  	$( document ).ready(function() {
+  	$(document).ready(function() {
+  		var tries = 1;
   		window.communicationActive = 1;
-  		console.log( "update draft!" );
   		window.setInterval(function(){
-  			updateCommunicationDraft();
-  		}, 30000);
+  			tries = tries + 1;
+  			if(tries < 30 && window.communicationActive) {
+	  			console.log('triggered.')
+  				updateCommunicationDraft();
+  			}
+  		}, 10000);
   	});
   </script>
 </div>

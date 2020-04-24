@@ -115,7 +115,6 @@
 							complete: function (response) {
 								var data = jQuery.parseJSON(response.response);
 								var documentids = data['document_ids'];
-									// debugger;
 									setTimeout(function () {
 										bar.setAttribute('hidden', 'hidden');
 									}, 250);
@@ -226,6 +225,7 @@
         	$("#document-id-"+formValue+"-holder").slideUp();
         	$("#document-id-"+formValue+"-holder").remove();
         }
+        return true;
       }
 
       function removeLocalDocument(id){
