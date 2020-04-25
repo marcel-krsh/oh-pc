@@ -44,7 +44,7 @@ class SendNotificationsHourly extends Command
 		$to = Carbon::now()->addMinutes(10);
 		$from = Carbon::now()->subMinutes(10);
 		$config = config('allita.notification');
-		$hourley_notifications = NotificationsTriggered::with('communication')
+		$hourley_notifications = NotificationsTriggered::with('communication')->whereBetween('deliver_time', [$from, $to])
 			->with('to_user.person', 'from_user')
 			->active()
 			->get()
