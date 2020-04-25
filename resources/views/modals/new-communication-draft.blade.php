@@ -103,25 +103,10 @@ session(['old_communication_modal' => $random]);
 							</li>
 							@endforeach
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-							{{--  @if($currentOrg != $recipient->organization_name)
-							<li class="recipient-list-item @if(count($recipients_from_hfa) > 0 || $currentOrg != '') uk-margin-large-top @endif {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->organization_name }}</strong></li>
-							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-							@php $currentOrg = $recipient->organization_name; @endphp
-							@endIf
-							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-								<input name="" id="list-recipient-id-pro-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientPro(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
-								<label for="recipient-id-pro-{{ $recipient->id }}">
-									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
-								</label>
-							</li>
-							--}}
 							@endforeach
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 						</ul>
 					</div>
-					{{-- <div class="uk-form-row">
-						<input style="width: 100%" type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
-					</div> --}}
 					<script>
             // CLONE RECIPIENTS
             function addRecipientPro(formValue,name){
@@ -142,12 +127,14 @@ session(['old_communication_modal' => $random]);
         					$("#recipient-id-pro-"+formValue+"-holder").slideUp();
         					$("#recipient-id-pro-"+formValue+"-holder").remove();
         				}
+			  				updateCommunicationDraft();
 
             }
             function removeRecipient(id){
             	$("#recipient-id-pro-"+id+"-holder").slideUp();
             	$("#recipient-id-pro-"+id+"-holder").remove();
             	$("#list-recipient-id-pro-"+id).prop("checked",false)
+            	updateCommunicationDraft();
             }
           </script>
           <!-- END RECIPIENT LISTING -->

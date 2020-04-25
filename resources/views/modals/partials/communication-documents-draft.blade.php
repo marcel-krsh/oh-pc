@@ -225,6 +225,7 @@
         	$("#document-id-"+formValue+"-holder").slideUp();
         	$("#document-id-"+formValue+"-holder").remove();
         }
+        updateCommunicationDraft();
         return true;
       }
 
@@ -232,6 +233,7 @@
       	$("#document-id-"+id+"-holder").slideUp();
       	$("#document-id-"+id+"-holder").remove();
       	$("#list-document-id-"+id).prop("checked",false)
+      	updateCommunicationDraft();
       }
     </script>
 

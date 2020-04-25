@@ -43,13 +43,10 @@
 	</div>
 
 
-</div>
-
-
-@if(count($messages))
-<div uk-grid class="uk-margin-top uk-visible@m">
-	<div class="uk-width-1-1">
-		<div uk-grid>
+	@if(count($messages))
+	<div uk-grid class="uk-margin-top uk-visible@m">
+		<div class="uk-width-1-1">
+			<div uk-grid>
 			{{-- <div class=" uk-width-1-5@m uk-width-1-1@s">
 				<div class="uk-margin-small-left"><small><strong>RECIPIENTS</strong></small></div>
 			</div> --}}
@@ -67,10 +64,10 @@
 			</div>
 		</div>
 	</div>
-</div>
-@endif
+	</div>
+	@endif
 
-<div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list" style="width: 98%">
+<div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="draft-communiations-table" style="width: 98%">
 	@if(count($messages))
 	@foreach ($messages as $message)
 	<div class="filter_element uk-width-1-1 communication-list-item @if($message->project)program-{{ $message->project->id }}@endif  @if(!is_null($message->documents)) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;" >
@@ -138,6 +135,7 @@
 	<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
 </div>
 
+</div>
 <script>
 
 	$(document).ready(function(){
@@ -145,7 +143,7 @@
 		$('#draft-communications-tab-pages-and-filters .page-link').click(function(){
 			var url = $(this).attr('href');
 			if(!(url == '' || url == undefined)) {
-				$('#main_communications-table').html(tempdiv);
+				$('#draft-communiations-table').html(tempdiv);
 				$('#communications_tab').load($(this).attr('href'));
 				return false;
 			}
@@ -154,7 +152,7 @@
 		$('#draft-communications-tab-pages-and-filters-2 .page-link').click(function(){
 			var url = $(this).attr('href');
 			if(!(url == '' || url == undefined)) {
-				$('#main_communications-table').html(tempdiv);
+				$('#draft-communiations-table').html(tempdiv);
 				$('#communications_tab').load($(this).attr('href'));
 				return false;
 			}
@@ -248,15 +246,6 @@
 
 
 	 	// @if (session()->has('dynamicModalLoad') && session('dynamicModalLoad') != '' )
-	 	// var dynamicModalLoadid = '';
-	 	// $.get( "/session/dynamicModalLoad", function( data ) {
-	 	// 	dynamicModalLoadid = data;
-	 	// 	console.log('Loading Message Id: '+dynamicModalLoadid);
-
-	 	// 	if(dynamicModalLoadid != ''){
-	 	// 		dynamicModalLoad("communication/0/replies/"+dynamicModalLoadid);
-	 	// 	}
-	 	// });
 	 	// @endif
 
 	 	var $filteredElements = $('.filter_element');
