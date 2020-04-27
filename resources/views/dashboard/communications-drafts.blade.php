@@ -3,23 +3,6 @@
 
 		<a id="filter-none" class="filter_link" data-filter="all" hidden>all</a>
 		<a id="filter-attachments" class="filter_link" data-filter="attachment-true" hidden>attachments</a>
-		{{-- Total of 6 groups
-		* Group 1
-		* 	View inbox
-		* 	View sent messages
-		* Group 2
-		* 	Show results with attachments
-		* 	Show Conversation list view
-		* Group 3
-		* 	Search within message or Audit? Input text field
-		* Group 4
-		* 	Filter by recepient
-		* Group 5
-		* 	Filter by project
-		* Group 6
-		* 	New Message
-		*
-		--}}
 		<div uk-grid class="uk-grid-collapse uk-visible@m uk-width-1-5@m">
 			{{-- Group 1, Inbox and Sent message --}}
 			<div class="uk-button-group uk-margin-medium-left">
@@ -39,7 +22,6 @@
 					<i class="a-paper-plane"></i>
 				</button>
 			</div>
-
 		</div>
 
 		{{-- Group 2, Attachments and conversation list view --}}
@@ -50,13 +32,21 @@
 				</button>
 			</div>
 		</div>
-	</div>
-</div>
 
-@if(count($messages))
-<div uk-grid class="uk-margin-top uk-visible@m">
-	<div class="uk-width-1-1">
-		<div uk-grid>
+		<hr class="uk-width-1-1 uk-margin-top">
+		<div class="uk-width-2-3 uk-margin-top" id="draft-communications-tab-pages-and-filters">
+			{{ $messages->links() }}
+		</div>
+		<div class="uk-width-1-3  uk-text-right">
+			<div class="uk-align-right uk-label  uk-margin-top ">{{ $total_drafts }} DRAFT MESSAGES </div>
+		</div>
+	</div>
+
+
+	@if(count($messages))
+	<div uk-grid class="uk-margin-top uk-visible@m">
+		<div class="uk-width-1-1">
+			<div uk-grid>
 			{{-- <div class=" uk-width-1-5@m uk-width-1-1@s">
 				<div class="uk-margin-small-left"><small><strong>RECIPIENTS</strong></small></div>
 			</div> --}}
@@ -74,15 +64,14 @@
 			</div>
 		</div>
 	</div>
-</div>
-@endif
+	</div>
+	@endif
 
-<div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="communication-list" style="width: 98%">
+<div uk-grid class="uk-container uk-grid-collapse uk-margin-top uk-container-center" id="draft-communiations-table" style="width: 98%">
 	@if(count($messages))
 	@foreach ($messages as $message)
 	<div class="filter_element uk-width-1-1 communication-list-item @if($message->project)program-{{ $message->project->id }}@endif  @if(!is_null($message->documents)) attachment-true @endif" uk-filter="outbound-phone" id="communication-{{ $message->id }}" data-grid-prepared="true" style="position: absolute; box-sizing: border-box; top: 0px; left: 0px; opacity: 1;" >
 		<div uk-grid class="communication-summary @if($message->unseen) communication-unread @endif">
-
 
 			{{-- project --}}
 			<div class="uk-width-1-5@m communication-item-parcel uk-visible@m" onclick="dynamicModalLoad('communication/open-draft/{{ $message->id }}'); ">
@@ -95,7 +84,6 @@
 				</p>
 				@endif
 			</div>
-
 
 			{{-- Summary --}}
 			<div class="uk-width-2-5@m communication-item-parcel uk-visible@m">
@@ -128,10 +116,8 @@
 				</div>
 				@endif
 			</div>
-
 		</div>
 	</div>
-
 	@endforeach
 
 	@else
@@ -140,11 +126,38 @@
 	</div>
 	@endif
 </div>
+
+<div class="uk-width-1-1 uk-margin-top uk-margin-left" id="draft-communications-tab-pages-and-filters-2">
+	{{ $messages->links() }}
+</div>
+
 <div id="list-tab-bottom-bar" class="uk-flex-middle"  style="height:50px;">
 	<a  href="#top" uk-scroll="{offset: 90}" class="uk-button uk-button-default uk-button-small uk-align-right uk-margin-top uk-margin-right" style="margin-right:302px !important"><span class="a-arrow-small-up uk-text-small uk-vertical-align-middle"></span> SCROLL TO TOP</a>
 </div>
 
+</div>
 <script>
+
+	$(document).ready(function(){
+		var tempdiv = '<div style="height:100px;text-align:center;"><div uk-spinner style="margin: 20px 0;"></div></div>';
+		$('#draft-communications-tab-pages-and-filters .page-link').click(function(){
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#draft-communiations-table').html(tempdiv);
+				$('#communications_tab').load($(this).attr('href'));
+				return false;
+			}
+		});
+
+		$('#draft-communications-tab-pages-and-filters-2 .page-link').click(function(){
+			var url = $(this).attr('href');
+			if(!(url == '' || url == undefined)) {
+				$('#draft-communiations-table').html(tempdiv);
+				$('#communications_tab').load($(this).attr('href'));
+				return false;
+			}
+		});
+	});
 
 	function switchInbox(){
 		var trigger = 'communication_inbox';
@@ -194,7 +207,6 @@
 		loadTab("{{ URL::route('communications.show-draft-messages') }}", '2','','','',1);
 	}
 
-
 	function closeOpenMessage(){
 		$('.communication-list-item').removeClass('communication-open');
 		$('.communication-details').addClass('uk-hidden');
@@ -234,30 +246,21 @@
 
 
 	 	// @if (session()->has('dynamicModalLoad') && session('dynamicModalLoad') != '' )
-	 	// var dynamicModalLoadid = '';
-	 	// $.get( "/session/dynamicModalLoad", function( data ) {
-	 	// 	dynamicModalLoadid = data;
-	 	// 	console.log('Loading Message Id: '+dynamicModalLoadid);
-
-	 	// 	if(dynamicModalLoadid != ''){
-	 	// 		dynamicModalLoad("communication/0/replies/"+dynamicModalLoadid);
-	 	// 	}
-	 	// });
 	 	// @endif
 
 	 	var $filteredElements = $('.filter_element');
 	 	$('.filter_link').click(function (e) {
 	 		e.preventDefault();
-            // get the category from the attribute
-            var filterVal = $(this).data('filter');
-            filterElement(filterVal, '.filter_element');
+        // get the category from the attribute
+        var filterVal = $(this).data('filter');
+        filterElement(filterVal, '.filter_element');
 
-            // reset dropdowns
-            $('#filter-by-owner').prop('selectedIndex',0);
-            @if(Auth::user()->isFromEntity(1))
-            $('#filter-by-program').prop('selectedIndex',0);
-            @endif
-          });
+        // reset dropdowns
+        $('#filter-by-owner').prop('selectedIndex',0);
+        @if(Auth::user()->isFromEntity(1))
+        $('#filter-by-program').prop('selectedIndex',0);
+        @endif
+      });
 	 	// reset view based on previous selection
 	 	if(window.user_comms_read == 1){
 	 		console.log('Hiding Read Messages');

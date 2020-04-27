@@ -2,7 +2,7 @@
 	$selected_icon = null;
 @endphp
 <link rel="stylesheet" href="/css/communications-tab.css{{ asset_version() }}">
-<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;FINDINGS: {{ $all_findings }} </div>
+<div class="uk-width-1-5 " style="padding:18px;"><div style="width:25px;display: inline-block;"><i uk-icon="users" class=""></i></div> &nbsp;FINDINGS: {{-- {{ $all_findings }} --}} </div>
 
 <div class="uk-width-4-5 "  id="findings-box" style="border-bottom:1px #111 dashed;padding:18px; padding-left:25px;">
 <div id="add-findings-button" class="uk-button uk-button-small" style="padding-top: 2px;" onClick="showFindings()"><i uk-icon="icon: plus-circle; ratio: .7"></i> &nbsp;ADD FINDING</div><div id="done-adding-findings-button" class="uk-button uk-button-success uk-button-small" style="padding-top: 2px; display: none;" onClick="showFindings()"><i class="a-circle-cross"></i> &nbsp;DONE ADDING FINDINGS</div>
@@ -99,6 +99,7 @@
     	$("#finding-id-"+formValue+"-holder").remove();
     }
     updateMessage();
+    return true;
   }
 
   function removeFinding(id){
@@ -134,10 +135,12 @@
 			@else
 				$selected_icon = '';
 			@endif
-    setTimeout(function() {
-    		addFinding('{{ $all_findings }}','{{ $selected_icon }}Finding-{{ $all_findings }}');
-        // $("list-finding-id-{{ $all_findings }}").trigger('click');
-    },2);
+			@if(is_numeric($all_findings))
+	    setTimeout(function() {
+	    		addFinding('{{ $all_findings }}','{{ $selected_icon }}Finding-{{ $all_findings }}');
+	        // $("list-finding-id-{{ $all_findings }}").trigger('click');
+	    },2);
+	    @endif
 });
 
 </script>

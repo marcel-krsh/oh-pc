@@ -182,8 +182,12 @@ class CommunicationController extends Controller
 			$draft = new CommunicationDraft;
 			$draft->project_id = $project_id;
 			$draft->audit_id = $audit_id;
-			$draft->report_id = $report_id;
-			$draft->finding_id = $finding_id;
+			if (is_numeric($report_id)) {
+				$draft->report_id = $report_id;
+			}
+			if (is_numeric($finding_id)) {
+				$draft->finding_id = $finding_id;
+			}
 			$draft->owner_id = Auth::user()->id;
 			$draft->save();
 			return $draft;
@@ -214,14 +218,13 @@ class CommunicationController extends Controller
 			$draft->message = array_key_exists('messageBody', $forminputs) ? $forminputs['messageBody'] : '';
 			// $draft->message = $forminputs['messageBody'];
 			if (array_key_exists('findings', $forminputs)) {
-				$draft->finding_ids = json_encode($forminputs['findings']);
+				$draft->finding_ids = ($forminputs['findings']);
 			}
 			if (array_key_exists('recipients', $forminputs)) {
-				$draft->recipients = json_encode($forminputs['recipients']);
+				$draft->recipients = (array_unique($forminputs['recipients']));
 			}
-
 			if (!empty($document_data)) {
-				$draft->selected_documents = json_encode($document_data);
+				$draft->selected_documents = ($document_data);
 			}
 			$draft->save();
 			return 1;
@@ -255,33 +258,31 @@ class CommunicationController extends Controller
 
 	public function newCommunicationEntry($project_id = null, $audit_id = null, $report_id = null, $finding_id = null, $all_findings = 0, $save_draft = 0, $draft_id = 0, $location = '')
 	{
-
-		//44608/7155/null/null/null/1
-		// return $project_id;
-		// new-outbound-email-entry/44608/7155/7/9037/9037/1 - Reports
 		if ($save_draft == 1) {
 			$draft = $this->createCommunicationDraft($project_id, $audit_id, $report_id, $finding_id, $all_findings);
 		} elseif ($save_draft == 2) {
-			$draft = CommunicationDraft::find($draft_id);
+			$draft = CommunicationDraft::with('project', 'audit')->find($draft_id);
+			if (!is_null($draft->recipients)) {
+				$draft_receipients = User::whereIn('users.id', $draft->recipients)
+					->leftJoin('people', 'people.id', 'users.person_id')
+					->leftJoin('organizations', 'organizations.id', 'users.organization_id')
+					->join('users_roles', 'users_roles.user_id', 'users.id')
+					->select('users.*', 'last_name', 'first_name', 'organization_name', 'role_id')
+					->where('active', 1)
+					->orderBy('last_name', 'asc')
+					->get();
+			} else {
+				$draft_receipients = null;
+			}
 		} else {
 			$draft = null;
 		}
-
-		//dd($project_id,$audit_id,$report_id,$finding_id,$all_findings);
 		$ohfa_id = SystemSetting::get('ohfa_organization_id');
-		// $ohfa = Organization::where('organization_name', 'OHFA Limited Partnership')->first();
-		// if($ohfa) {
-		//   $ohfa_id = $ohfa->id;
-		// } else {
-		//   $ohfa_id = null;
-		// }
-		// return $ohfa_id;
 		$single_recipient = false;
 
 		$current_user = $this->user;
 
 		if (null !== $audit_id) {
-			// $audit = Audit::where('id', intval($audit_id))->first();
 			$audit = Audit::find((int) $audit_id);
 		} else {
 			$audit = null;
@@ -294,7 +295,12 @@ class CommunicationController extends Controller
 			$finding = null;
 			$findings = null;
 		}
-		//dd($finding,$findings);
+		$all_findings_array = json_decode($all_findings);
+		if (is_array($all_findings_array)) {
+			$all_selected_findings = Finding::with('finding_type')->whereIn('id', $all_findings_array)->get();
+		} else {
+			$all_selected_findings = null;
+		}
 
 		if (null !== $project_id) {
 			$project = Project::with('project_users')->where('id', '=', intval($project_id))->first();
@@ -360,28 +366,28 @@ class CommunicationController extends Controller
 			// category keys for name reference ['id' => 'name']
 			$document_categories_key = [];
 
-			if (count($documents)) {
-				// create an associative array to simplify category references for each document
-				foreach ($documents as $document) {
-					$categories = []; // store the new associative array cat id, cat name
-					if ($document->categories) {
-						$categories_decoded = json_decode($document->categories, true); // cats used by the doc
-						$categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
-					} else {
-						$categories_decoded = [];
-					}
-					foreach ($document_categories as $document_category) {
-						$document_categories_key[$document_category->id] = $document_category->document_category_name;
-						// sub key for each document's categories for quick reference
-						if (in_array($document_category->id, $categories_decoded)) {
-							$categories[$document_category->id] = $document_category->document_category_name;
-						}
-					}
-					$document->categoriesarray = $categories;
-				}
-			} else {
-				$documents = [];
-			}
+			// if (count($documents)) {
+			// 	// create an associative array to simplify category references for each document
+			// 	foreach ($documents as $document) {
+			// 		$categories = []; // store the new associative array cat id, cat name
+			// 		if ($document->categories) {
+			// 			$categories_decoded = json_decode($document->categories, true); // cats used by the doc
+			// 			$categories_used = array_merge($categories_used, $categories_decoded); // merge document categories
+			// 		} else {
+			// 			$categories_decoded = [];
+			// 		}
+			// 		foreach ($document_categories as $document_category) {
+			// 			$document_categories_key[$document_category->id] = $document_category->document_category_name;
+			// 			// sub key for each document's categories for quick reference
+			// 			if (in_array($document_category->id, $categories_decoded)) {
+			// 				$categories[$document_category->id] = $document_category->document_category_name;
+			// 			}
+			// 		}
+			// 		$document->categoriesarray = $categories;
+			// 	}
+			// } else {
+			// 	$documents = [];
+			// }
 
 			/// If they are the PM - make it so they can only message the Lead on the current audit
 			if (!$this->auditor_access && !is_null($audit_id)) {
@@ -483,7 +489,7 @@ class CommunicationController extends Controller
 			if ($save_draft == 1) {
 				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location', 'draft_receipients', 'all_selected_findings'));
 			}
 			return view('modals.new-communication', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 		} else {
@@ -540,7 +546,7 @@ class CommunicationController extends Controller
 			if ($save_draft == 1) {
 				return view('modals.new-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
 			} elseif ($save_draft == 2) {
-				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location'));
+				return view('modals.open-communication-draft', compact('audit', 'project', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'audit_id', 'audit', 'finding_id', 'finding', 'findings', 'single_recipient', 'all_findings', 'draft', 'location', 'draft_receipients'));
 			}
 			return view('modals.new-communication', compact('audit', 'documents', 'document_categories', 'recipients', 'recipients_from_hfa', 'ohfa_id', 'project', 'single_recipient', 'finding', 'findings', 'all_findings', 'draft', 'location'));
 		}
@@ -647,11 +653,9 @@ class CommunicationController extends Controller
 		$number_per_page = 100;
 		$skip = $number_per_page * $page;
 		$current_user = Auth::user();
-
-		$messages = CommunicationDraft::where('owner_id', $current_user->id)->skip($skip)->take($number_per_page)->get();
-		// $msg = $messages->where('id', 5)->first();
-		// return $msg->getSelectedDocuments();
-		return view('dashboard.communications-drafts', compact('messages', 'current_user'));
+		$total_drafts = CommunicationDraft::where('owner_id', $current_user->id)->orderBy('updated_at', 'DESC')->count();
+		$messages = CommunicationDraft::where('owner_id', $current_user->id)->orderBy('updated_at', 'DESC')->paginate(20);
+		return view('dashboard.communications-drafts', compact('messages', 'current_user', 'total_drafts'));
 	}
 
 	public function communicationsFromProjectIdJson(Project $project)
@@ -1694,7 +1698,6 @@ class CommunicationController extends Controller
 
 	public function communicationsTab($page = 0, $project = 0, $audit = 0)
 	{
-		// return session()->all();
 		$number_per_page = 100;
 		$skip = $number_per_page * $page;
 		$current_user = $this->user;
@@ -1929,15 +1932,6 @@ class CommunicationController extends Controller
 			}
 
 			if (session('communication_list') == 1 && !$project) {
-				// $messages = Communication::whereIn('id', $messages->pluck('id'))->where(function ($query) use ($current_user) {
-				// 	$query->where('owner_id', '=', $current_user->id);
-				// 	$query->whereHas('replies');
-				// })
-				// 	->orWhereHas('recipients', function ($query) use ($current_user) {
-				// 		$query->where('user_id', '=', $current_user->id);
-				// 	})
-				// 	->with('docuware_documents', 'local_documents', 'owner', 'project', 'audit.cached_audit', 'message_recipients')->paginate(20);
-				// $messages = Communication::whereIn('id', $messages->pluck('id'))->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->paginate(20);
 			} else {
 				$messages_count = count($messages);
 				$messages = Communication::whereIn('id', $messages->pluck('id'))->whereNull('parent_id')
@@ -1971,9 +1965,6 @@ class CommunicationController extends Controller
 		$draft = CommunicationDraft::with('project', 'audit')->find($draft_id);
 		if ($draft) {
 			return $this->newCommunicationEntry($draft->project_id, $draft->audit_id, $draft->report_id, $draft->finding_id, $draft->finding_ids, 2, $draft_id);
-
-			$current_user = Auth::user();
-			return view('dashboard.communications-drafts', compact('draft'));
 		} else {
 			return 'No message was found with the information provided, please contact admin';
 		}

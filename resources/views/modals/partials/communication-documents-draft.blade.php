@@ -115,7 +115,6 @@
 							complete: function (response) {
 								var data = jQuery.parseJSON(response.response);
 								var documentids = data['document_ids'];
-									// debugger;
 									setTimeout(function () {
 										bar.setAttribute('hidden', 'hidden');
 									}, 250);
@@ -226,12 +225,15 @@
         	$("#document-id-"+formValue+"-holder").slideUp();
         	$("#document-id-"+formValue+"-holder").remove();
         }
+        updateCommunicationDraft();
+        return true;
       }
 
       function removeLocalDocument(id){
       	$("#document-id-"+id+"-holder").slideUp();
       	$("#document-id-"+id+"-holder").remove();
       	$("#list-document-id-"+id).prop("checked",false)
+      	updateCommunicationDraft();
       }
     </script>
 

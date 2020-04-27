@@ -103,25 +103,10 @@ session(['old_communication_modal' => $random]);
 							</li>
 							@endforeach
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-							{{--  @if($currentOrg != $recipient->organization_name)
-							<li class="recipient-list-item @if(count($recipients_from_hfa) > 0 || $currentOrg != '') uk-margin-large-top @endif {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }}"><strong>{{ $recipient->organization_name }}</strong></li>
-							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
-							@php $currentOrg = $recipient->organization_name; @endphp
-							@endIf
-							<li class="recipient-list-item {{ strtolower(str_replace('&','',str_replace('.','',str_replace(',','',str_replace('/','',$recipient->organization_name))))) }} {{ strtolower($recipient->first_name) }} {{ strtolower($recipient->last_name) }}">
-								<input name="" id="list-recipient-id-pro-{{ $recipient->id }}" value="{{ $recipient->id }}" type="checkbox" class="uk-checkbox" onClick="addRecipientPro(this.value,'{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}')">
-								<label for="recipient-id-pro-{{ $recipient->id }}">
-									{{ ucwords($recipient->first_name) }} {{ ucwords($recipient->last_name) }}
-								</label>
-							</li>
-							--}}
 							@endforeach
 							<hr class="recipient-list-item dashed-hr uk-margin-bottom">
 						</ul>
 					</div>
-					{{-- <div class="uk-form-row">
-						<input style="width: 100%" type="text" id="recipient-filter" class="uk-input uk-width-1-1" placeholder="Filter Recipients">
-					</div> --}}
 					<script>
             // CLONE RECIPIENTS
             function addRecipientPro(formValue,name){
@@ -142,12 +127,14 @@ session(['old_communication_modal' => $random]);
         					$("#recipient-id-pro-"+formValue+"-holder").slideUp();
         					$("#recipient-id-pro-"+formValue+"-holder").remove();
         				}
+			  				updateCommunicationDraft();
 
             }
             function removeRecipient(id){
             	$("#recipient-id-pro-"+id+"-holder").slideUp();
             	$("#recipient-id-pro-"+id+"-holder").remove();
             	$("#list-recipient-id-pro-"+id).prop("checked",false)
+            	updateCommunicationDraft();
             }
           </script>
           <!-- END RECIPIENT LISTING -->
@@ -336,30 +323,59 @@ session(['old_communication_modal' => $random]);
   			var form = $('#newOutboundEmailForm');
 	    	var no_alert = 1;
 	    	var recipients_array = [];
+	    	var findings_array = [];
+	    	var trigger = false;
 	    	$("input[name='recipients[]']:checked").each(function (){
 	    		recipients_array.push(parseInt($(this).val()));
 	    	});
-  			$.post('{{ URL::route("communication.update-draft", $draft->id) }}', {
-  				'inputs' : form.serialize(),
-  				'_token' : '{{ csrf_token() }}'
-  			}, function(data) {
-  				if(data==1){
-  					console.log( "updated draft!" );
-  				} else {
-  					console.log( "updated NOT draft!" );
-  				}
-  			});
+	    	$("input[name='findings[]']:checked").each(function (){
+	    		findings_array.push(parseInt($(this).val()));
+	    	});
+	    	if(recipients_array.length > 0 || findings_array.length > 0) {
+	    		trigger = true;
+	    	}
+
+	    	var inputs = form.serializeArray();
+	    	var error = '';
+	    	$.each( inputs,function(index, value) {
+	    		if(value['name'] == 'subject') {
+	    			if(value['value'] != ""){
+				    		trigger = true;
+			    	}
+	    		}
+	    		if(value['name'] == 'messageBody') {
+	    			if(value['value'] != ""){
+			    		trigger = true;
+			    	}
+	    		}
+	    	});
+
+	    	if(trigger) {
+	  			$.post('{{ URL::route("communication.update-draft", $draft->id) }}', {
+	  				'inputs' : form.serialize(),
+	  				'_token' : '{{ csrf_token() }}'
+	  			}, function(data) {
+	  				if(data==1){
+	  					console.log( "updated draft!" );
+	  				} else {
+	  					console.log( "updated NOT draft!" );
+	  				}
+	  			});
+		  		console.log( "updated draft!" );
+  			}
   		}
   	}
 
-
-
-  	$( document ).ready(function() {
+  	$(document).ready(function() {
+  		var tries = 1;
   		window.communicationActive = 1;
-  		console.log( "update draft!" );
   		window.setInterval(function(){
-  			updateCommunicationDraft();
-  		}, 30000);
+  			tries = tries + 1;
+  			if(tries < 30 && window.communicationActive) {
+	  			console.log('triggered.')
+  				updateCommunicationDraft();
+  			}
+  		}, 10000);
   	});
   </script>
 </div>

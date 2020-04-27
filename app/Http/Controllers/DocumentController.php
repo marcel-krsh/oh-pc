@@ -527,9 +527,9 @@ class DocumentController extends Controller
 		//dd($allowedDocumentsOnAudits);
 
 		// audits allowed to view findings
-		$allowedAuditIdsConnectedToFindings = CachedAudit::where('project_id',$project->id)->whereIn('step_id',$this->pmCanViewFindingsStepIds)->pluck('audit_id')->toArray();
+		$allowedAuditIdsConnectedToFindings = CachedAudit::where('project_id', $project->id)->whereIn('step_id', $this->pmCanViewFindingsStepIds)->pluck('audit_id')->toArray();
 		$pmCanViewAuditStepIds = $this->pmCanViewAuditStepIds;
-		
+
 		/// SEARCH TERM
 		if ($request->has('local-search')) {
 			if ($request->get('local-search') == "") {
@@ -613,8 +613,6 @@ class DocumentController extends Controller
 		$all_finding_ids = [];
 		$allUnits = $project->units()->orderBy('unit_name')->get();
 
-		
-
 		$documents_query = Document::where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits.cached_audit', 'audit', 'user.person', 'buildings', 'units', 'findings.finding_type', 'findings.amenity', 'findings.audit.cached_audit', 'project')->orderBy('created_at', 'DESC');
 
 		// return $documents_query->get();
@@ -632,7 +630,7 @@ class DocumentController extends Controller
 			// 	Document Comments - OK
 			$searchCategoryIds = DocumentCategory::where('document_category_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			$searchFindingTypeIds = FindingType::where('name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
-			$searchFindingId = Finding::whereIn('audit_id',$allowedAuditIdsConnectedToFindings)->where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
+			$searchFindingId = Finding::whereIn('audit_id', $allowedAuditIdsConnectedToFindings)->where('id', intval($searchTerm))->where('project_id', $project->id)->pluck('id')->toArray();
 			$searchAuditId = CachedAudit::whereIn('step_id', $pmCanViewAuditStepIds)->where('audit_id', intval($searchTerm))->pluck('audit_id')->toArray();
 			$searchBuildingId = Building::where('building_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
 			$searchUnitId = Unit::where('unit_name', 'like', '%' . $searchTerm . '%')->pluck('id')->toArray();
@@ -681,9 +679,7 @@ class DocumentController extends Controller
 				foreach ($doc->audits as $key => $audit) {
 					if (in_array($audit->id, $searchAuditId)) {
 						return $doc;
-
 					}
-
 				}
 				//Document comment
 				if (in_array($doc->id, $searchDocumentCommentId)) {
@@ -711,9 +707,9 @@ class DocumentController extends Controller
 		if ($unresolved == 0) {
 			// filter to show unresolved
 			$documents_query = $documents_query->get();
-			$documents_query = $documents_query->map(function ($doc) use ($allowedAuditIdsConnectedToFindings){
+			$documents_query = $documents_query->map(function ($doc) use ($allowedAuditIdsConnectedToFindings) {
 				$total = count($doc->findings);
-				$criteria = $doc->findings->where('auditor_approved_resolution', 1)->whereIn('audit_id',$allowedAuditIdsConnectedToFindings);
+				$criteria = $doc->findings->where('auditor_approved_resolution', 1)->whereIn('audit_id', $allowedAuditIdsConnectedToFindings);
 				$meets_criteria_count = count($criteria);
 				if ($total == $meets_criteria_count && $total != 0) {
 					return $doc;
@@ -730,14 +726,13 @@ class DocumentController extends Controller
 			// 	$query->where('auditor_approved_resolution', '<>', 1);
 			// 	// $query->orWhereNull('auditor_approved_resolution');
 			// });
-			$documents_query = $documents_query->map(function ($doc) use ($unresolved,$allowedAuditIdsConnectedToFindings) {
+			$documents_query = $documents_query->map(function ($doc) use ($unresolved, $allowedAuditIdsConnectedToFindings) {
 				$total = count($doc->findings);
-				$criteria = $doc->findings->where('auditor_approved_resolution', '<>', 1)->whereIn('audit_id',$allowedAuditIdsConnectedToFindings);
+				$criteria = $doc->findings->where('auditor_approved_resolution', '<>', 1)->whereIn('audit_id', $allowedAuditIdsConnectedToFindings);
 				$meets_criteria_count = count($criteria);
 				if ($total == $meets_criteria_count && $total != 0) {
 					return $doc;
 				}
-				
 			});
 			$documents_ids = $documents_query->filter()->pluck('id');
 			$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
@@ -839,15 +834,14 @@ class DocumentController extends Controller
 		// });
 		$documents_query = $documents_query->map(function ($doc) use ($allowedAuditIdsConnectedToFindings) {
 			//must hide those that are attached to findings
-				$total = count($doc->findings);
-				$criteria = $doc->findings->whereIn('audit_id',$allowedAuditIdsConnectedToFindings);
-				$criteria2 = $doc->findings;
-				$meets_criteria_count = count($criteria);
-				if ($total == $meets_criteria_count || $criteria2 == NULL) {
-					return $doc;
-				}
-				
-			});
+			$total = count($doc->findings);
+			$criteria = $doc->findings->whereIn('audit_id', $allowedAuditIdsConnectedToFindings);
+			$criteria2 = $doc->findings;
+			$meets_criteria_count = count($criteria);
+			if ($total == $meets_criteria_count || $criteria2 == NULL) {
+				return $doc;
+			}
+		});
 
 		$documents_ids = $documents_query->filter()->pluck('id');
 		$documents_query = Document::whereIn('id', $documents_ids)->where('project_id', $project->id)->with('assigned_categories.parent', 'communications.communication', 'audits', 'audit', 'user', 'buildings', 'units', 'findings')->orderBy('created_at', 'DESC');
@@ -1891,9 +1885,9 @@ class DocumentController extends Controller
 			if (!is_null($communication_draft->documents)) {
 				$docs = json_decode($communication_draft->documents, true);
 				$docs = array_merge([$data], $docs);
-				$communication_draft->documents = json_encode($docs);
+				$communication_draft->documents = ($docs);
 			} else {
-				$communication_draft->documents = json_encode([$data]);
+				$communication_draft->documents = ([$data]);
 			}
 			$communication_draft->save();
 			return json_encode($data);
