@@ -42,7 +42,7 @@ class EmailBulkNotification extends Mailable
 		$owner = $this->owner;
 		$user = $this->user;
 		$data = $this->data;
-		$greeting = "Hello " . $user->person ? $user->person->first_name : $user->name . ',';
+		$greeting = "Hello " . ($user->person && $user->person != null) ? $user->person->first_name : $user->name . ',';
 		$action_text = "";
 		$action_url = '';
 		$level = "success";
