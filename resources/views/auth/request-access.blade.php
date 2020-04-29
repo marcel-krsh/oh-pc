@@ -7,9 +7,12 @@
 		<form id="requestAccessForm" class="uk-panel uk-panel-box uk-form" role="verificationForm" method="POST" action="{{ url('/request-access') }}">
 			{{ csrf_field() }}
 			<input type="hidden" name="user_id" id="user_id" value="{{ $user_id }}">
-			<div class="uk-form-row" uk-scrollspy="target:.uk-button;cls:uk-animation-slide-top-small;" id="request_access">
+			{{-- <div class="uk-form-row" uk-scrollspy="target:.uk-button;cls:uk-animation-slide-top-small;" id="request_access">
 				<a id="submit_request" class="uk-width-1-1 uk-button uk-button-primary uk-button-large" onclick="submitRequestAccess()"><span uk-icon="save"></span>Request Access</a>
-			</div>
+			</div> --}}
+			<p class="uk-width-1-1"></span>Please contact the DevCo help desk to request access at
+				<a href="https://devco.ohiohome.org/devcoinquiries/">https://devco.ohiohome.org/devcoinquiries/</a>
+			</p>
 			<p style="display: none" id="success_message" class="uk-width-1-1 uk-button uk-button uk-button-large"></span>Access Request Submitted</p>
 			<p style="display: none" id="error_message" class="uk-width-1-1 uk-button uk-button uk-button-large uk-text-danger"></span>Something went wrong</p>
 		</form>
