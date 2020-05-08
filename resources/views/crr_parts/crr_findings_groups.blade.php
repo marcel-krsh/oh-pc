@@ -6,6 +6,9 @@
 			background-color: none;
 			border: none;
 		}
+		.flatpickr-input {
+			width: 90%;
+		}
 	</style>
 	@php
 	$findingHeader = "";
@@ -143,13 +146,33 @@
 						<span style="position: relative; top: 9px;">RESOLVED AT:</span>
 						@endif
 					</div>
-					<div  class="@if($oneColumn  && !$print) uk-margin-top @else uk-width-1-2 uk-margin-remove @endIf">
-						<input id="resolved-date-finding-{{$f->id}}" class="uk-input " style="width:100%;" readonly type="text" placeholder="DATE" onchange="resolveFinding({{ $f->id }},$(this).val());"  >
+					{{-- {{ dd(date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))) }} --}}
+					<div  class="@if($oneColumn  && !$print) uk-margin-top @else uk-width-1-2 uk-margin-remove uk-padding-remove @endIf">
+						<input id="resolved-date-finding-{{$f->id}}" class="uk-input " style="width:100%;" readonly type="text" placeholder="DATE" onchange="resolveFinding({{ $f->id }},$(this).val());" {{-- @if($f->auditor_approved_resolution == 1) value="{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}" @endif --}} >
 
 						@push('flatPickers')
-						$('#resolved-date-finding-{{$f->id}}').flatpickr('{dateFormat: "m-d-Y"}');
 						@if(null !== $f->auditor_last_approved_resolution_at)
-						$('#resolved-date-finding-{{$f->id}}').val('{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}');
+						{{-- $('#resolved-date-finding-{{$f->id}}').val('{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}'); --}}
+						$('#resolved-date-finding-{{$f->id}}').flatpickr({
+							dateFormat: "Y-m-d",
+							defaultDate: "{{date('Y-m-d',strtotime($f->auditor_last_approved_resolution_at))}}",
+						});
+												{{-- $('#resolved-date-finding-{{$f->id}}').flatpickr('{weekNumbers: true,}'); --}}
+
+							{{-- flatpickr("#selectday-resolved-date-finding-{{$f->id}}", {
+								weekNumbers: true,
+								defaultDate:"today",
+								altFormat: "F j, Y",
+								dateFormat: "m-d-Y",
+								value: "{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}",
+								"locale": {
+                  "firstDayOfWeek": 1 // start week on Monday
+                }
+              }); --}}
+						@else
+						$('#resolved-date-finding-{{$f->id}}').flatpickr('{dateFormat: "m-d-Y"}');
+						{{-- @if(null !== $f->auditor_last_approved_resolution_at)
+						$('#resolved-date-finding-{{$f->id}}').val('{{date('m-d-Y',strtotime($f->auditor_last_approved_resolution_at))}}'); --}}
 						@endIf
 						@endpush
 
