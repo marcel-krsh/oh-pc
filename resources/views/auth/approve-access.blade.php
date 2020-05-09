@@ -1,7 +1,7 @@
 @extends('layouts.plain-allita')
 @section('content')
 <div class="uk-vertical-align uk-text-center">
-	<h3>Access to Program Compliace Inspection</h3>
+	<h3>Access to Program Compliance Inspection</h3>
 	<h5>Approve the access request To: {{ $user->name }}</h5>
 	<div class="uk-vertical-align-middle login-panel" id="login-panel">
 		<form id="requestAccessForm" class="uk-panel uk-panel-box uk-form" role="verificationForm" method="POST" action="{{ url('user/approve-access', $user->id) }}">
