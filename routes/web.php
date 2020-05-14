@@ -391,7 +391,7 @@ Route::group(['middleware' => 'web'], function () {
 		Route::post('audit/swap-auditor/{cahced_audit_id}', 'AuditController@swapAuditorToAudit')->name('auditor.swapAuditor');
 
 		// ADMIN
-		Route::group(['prefix' => 'modals/admin'], function () {
+		Route::group(['prefix' => 'modals/admin', 'middleware' => 'can:access_admin'], function () {
 			Route::get('boilerplate/create/{id?}', 'AdminToolController@boilerplateCreate');
 			Route::get('program/create/{id?}', 'AdminToolController@programCreate');
 			Route::get('document_category/create/{id?}', 'AdminToolController@documentCategoryCreate');
