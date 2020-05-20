@@ -132,7 +132,7 @@ if ($canViewBoth) {
 										</div>
 									</div>
 									<div class="uk-width-1-2 uk-padding-remove">
-										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_buildings}} @if($selected_audit->total_buildings > 1 || $selected_audit->total_buildings) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{$selected_audit->total_buildings}}</div>
+										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_buildings}} @if($selected_audit->total_buildings > 1 || $selected_audit->total_buildings < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{$selected_audit->total_buildings}}</div>
 										<hr class="uk-width-1-1" style="margin-bottom: 8px; margin-top: 0px" >
 										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_units}} @if($selected_audit->total_units > 1 || $selected_audit->total_units < 1) UNITS @else UNIT @endIf"><i class="a-buildings-2" style="font-size: 25px;"></i> : {{$selected_audit->total_units}}</div>
 
@@ -148,16 +148,16 @@ if ($canViewBoth) {
 
 										<?php
 
-											$carIcon = $selected_audit->car_icon;
-											$ehsIcon = $selected_audit->ehs_icon;
-											$_8823Icon = $selected_audit->_8823_icon;
-											$carId = $selected_audit->car_id;
-											$ehsId = $selected_audit->ehs_id;
-											$_8823Id = $selected_audit->_8823_id;
-											$carStatus = $selected_audit->car_status_text;
-											$ehsStatus = $selected_audit->ehs_status_text;
-											$_8823Status = $selected_audit->_8823_status_text;
-										?>
+$carIcon = $selected_audit->car_icon;
+$ehsIcon = $selected_audit->ehs_icon;
+$_8823Icon = $selected_audit->_8823_icon;
+$carId = $selected_audit->car_id;
+$ehsId = $selected_audit->ehs_id;
+$_8823Id = $selected_audit->_8823_id;
+$carStatus = $selected_audit->car_status_text;
+$ehsStatus = $selected_audit->ehs_status_text;
+$_8823Status = $selected_audit->_8823_status_text;
+?>
 											  @if($carIcon && $fileCount != "NA")
 											  <a class="uk-link-mute" href="/report/{{$carId}}" target="report-{{$carId}}" uk-tooltip="title:VIEW CAR {{$carId}} : {{strtoupper($carStatus)}}"><i class="{{$carIcon}}" style="font-size: 30px;"></i></a>
 											  <br /><small>CAR #{{$carId}}</small>
@@ -166,7 +166,7 @@ if ($canViewBoth) {
 											  <i class="a-file-fail" uk-tooltip="title:CAR UNAVAILABLE"></i><br /><small>CAR</small>
 											  @endIf
 											</div><div class="uk-width-1-3">
-												@if(($ehsIcon) && $fileCount != "NA")
+												@if( ($ehsIcon) && $fileCount != "NA")
 
 											  		<a class="uk-link-mute" href="/report/{{$ehsId}}" target="report-{{$ehsId}}" uk-tooltip="title:{{$ehsStatus}}"><i class="{{$ehsIcon}}" style="font-size: 30px;" ></i></a>
 
@@ -178,7 +178,7 @@ if ($canViewBoth) {
 											</div>
 											<div class="uk-width-1-3">
 												@if(env('APP_ENV') != 'production')
-												@if(($_8823Icon) && $fileCount != "NA")
+												@if( ($_8823Icon) && $fileCount != "NA")
 
 											  <a class="uk-link-mute" href="/report/{{$_8823Id}}" target="report-{{$_8823Id}}" uk-tooltip="title:{{$_8823Status}}" ><i class="{{$_8823Icon}}" style="font-size: 30px;"></i></a>
 
@@ -302,10 +302,10 @@ if ($canViewBoth) {
 	</div>
 
 	<script>
-		
 
 
-   
+
+
     function addCommas(nStr)
     {
     	nStr += '';
@@ -424,7 +424,7 @@ if ($canViewBoth) {
 				if($('#project-documents-button-3').hasClass('active')){
 					checkToDoUploads();
 				}
-				
+
 		}
 		window.project_detail_tab_1_loaded = 1;
 

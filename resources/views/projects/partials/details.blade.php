@@ -124,7 +124,7 @@ $correctedLtCount = $fileCount - $selected_audit->unresolved_lt_findings_count;
 										</div>
 									</div>
 									<div class="uk-width-1-2 uk-padding-remove">
-										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_buildings}} @if($selected_audit->total_buildings > 1 || $selected_audit->total_buildings) < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{$selected_audit->total_buildings}}</div>
+										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_buildings}} @if($selected_audit->total_buildings > 1 || $selected_audit->total_buildings < 1) BUILDINGS @else BUILDING @endIf" style="margin-top: 8px;"><i class="a-buildings" style="font-size: 25px;"></i> : {{$selected_audit->total_buildings}}</div>
 										<hr class="uk-width-1-1" style="margin-bottom: 8px; margin-top: 0px" >
 										<div class="uk-width-1-1" uk-tooltip title="INSPECTING {{$selected_audit->total_units}} @if($selected_audit->total_units > 1 || $selected_audit->total_units < 1) UNITS @else UNIT @endIf"><i class="a-buildings-2" style="font-size: 25px;"></i> : {{$selected_audit->total_units}}</div>
 
@@ -267,7 +267,7 @@ $_8823ApprovalTypeId = $selected_audit->_8823_approval_type_id;
 										<div class="uk-text-center hasdivider uk-margin-small-top" uk-grid>
 
 											<div class="uk-width-1-4 pd-findings-column">
-												<i onclick="openCompliance()" class="{{$selected_audit->audit_compliance_icon}} {{$selected_audit->audit_compliance_status}} use-hand-cursor"  uk-tooltip="title:{{$selected_audit->audit_compliance_status_text}};"></i> @if(!$selected_audit->file_findings_count || !$selected_audit->lt_findings_count || !$selected_audit->nlt_findings_count))<i class="use-hand-cursor a-rotate-left" uk-tooltip title="CLICK TO RERUN AUDIT SELECTION"></i>@endIf
+												<i onclick="openCompliance()" class="{{$selected_audit->audit_compliance_icon}} {{$selected_audit->audit_compliance_status}} use-hand-cursor"  uk-tooltip="title:{{$selected_audit->audit_compliance_status_text}};"></i> @if(!$selected_audit->file_findings_count || !$selected_audit->lt_findings_count || !$selected_audit->nlt_findings_count)<i class="use-hand-cursor a-rotate-left" uk-tooltip title="CLICK TO RERUN AUDIT SELECTION"></i> @endif
 											</div>
 											<div class="uk-width-1-4 pd-findings-column">
 												<i class="{{$selected_audit->auditor_status_icon}}" uk-tooltip="title:{{$selected_audit->auditor_status_text}}"></i>
