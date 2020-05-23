@@ -1939,13 +1939,13 @@ class CommunicationController extends Controller
 			} else {
 				$messages_count = count($messages);
 				$messages = Communication::whereIn('id', $messages->pluck('id'))->whereNull('parent_id')
-					->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->paginate(20);
+					->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->orderBy('updated_at', 'DESC')->paginate(20);
 			}
 		}
 
 		if (empty($messages)) {
 			$messages = Communication::whereIn('id', [])->whereNull('parent_id')
-				->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->paginate(20);
+				->with('docuware_documents', 'local_documents.assigned_categories', 'owner.person', 'project', 'audit.cached_audit', 'message_recipients.person', 'recipients')->orderBy('updated_at', 'DESC')->paginate(20);
 		}
 
 		// return $messages->count();
