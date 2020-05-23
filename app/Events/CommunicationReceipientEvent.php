@@ -87,6 +87,13 @@ class CommunicationReceipientEvent
 						$nt->deliver_time = notificationDeliverTime($np->deliver_time);
 						$nt->data = $this->buildData($communication, $owner, $user, $type_id, $model_id);
 						$nt->save();
+					} else {
+						$nt->deliver_time = closestNextHour();
+						$nt->sent_at = $nt->deliver_time;
+						$nt->sent_count = 1;
+						$nt->data = $this->buildData($communication, $owner, $user, $type_id, $model_id);
+						// Log::info($nt);
+						$nt->save();
 					}
 				} else {
 					// If user has hourly or no notification preference, notifications are sent every hour

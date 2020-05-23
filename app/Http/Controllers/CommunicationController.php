@@ -1107,6 +1107,9 @@ class CommunicationController extends Controller
 						$recipient->save();
 					}
 				} else {
+					if (isset($forminputs['recipientsmain'])) {
+						$forminputs['recipients'] = $forminputs['recipientsmain'];
+					}
 					if (isset($forminputs['recipients'])) {
 						$message_recipients_array = array_unique($forminputs['recipients']);
 						foreach ($message_recipients_array as $recipient_id) {
@@ -1874,7 +1877,7 @@ class CommunicationController extends Controller
 					})->get();
 				}
 			} else {
-				if (session('communication_list') == 1) {
+				if (session('communication_list') == 1 && session('communication_sent') != 1) {
 					$messages = Communication::whereIn('id', $messages->pluck('id'))->where(function ($query) use ($current_user) {
 						$query->where('owner_id', '=', $current_user->id);
 						$query->whereHas('replies');
@@ -1926,6 +1929,7 @@ class CommunicationController extends Controller
 							});
 					}
 				}
+				$messages = $messages->orderBy('updated_at', 'DESC');
 				$messages_count = count($messages->get());
 
 				$messages = $messages->paginate(20);
