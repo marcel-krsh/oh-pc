@@ -38,7 +38,6 @@ function decimalHours($time)
 				<th>
 					manager_name
 				</th>
-
 				<th>
 					user_name
 				</th>
@@ -59,6 +58,9 @@ function decimalHours($time)
 			@endphp
 			@forEach($projects as $project)
 			@forEach($project->contactRoles as $contact)
+			@php
+				$details = $project->details();
+			@endphp
 			<tr>
 				<td>
 					{{ $project->id }}
@@ -66,8 +68,12 @@ function decimalHours($time)
 				<td>
 					{{ $project->project_name }}
 				</td>
-				<td></td>
-				<td></td>
+				<td>
+					{{ $details->owner_name }}
+				</td>
+				<td>
+					{{ $details->manager_name }}
+				</td>
 				<td>
 					@if($contact->person) {{ $contact->person->first_name }} {{ $contact->person->last_name }} @else NA @endif
 				</td>
