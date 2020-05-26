@@ -245,7 +245,10 @@
     				@endIf
     				UIkit.modal.alert('Your message has been saved.',{stack: true});
     			}
-    		} );
+    		}).fail(function(response) {
+				    var msg = "<h2>SERVER ERROR 500 :(</h2><p>This action has timed out due to not receiving a response from the server. Please try again. </p>";
+				    UIkit.modal.alert(msg);
+				});
 
     		@if($project && Auth::user()->can('access_auditor') && $location == 'projects')
     		var id = {{ $project->id }};

@@ -111,6 +111,8 @@
 							load: function () {
 							},
 							error: function () {
+								var msg = "<h2>SERVER ERROR 500 :(</h2><p>This action has timed out due to not receiving a response from the server. Please try again. </p>";
+						    UIkit.modal.alert(msg);
 							},
 							complete: function (response) {
 								var data = jQuery.parseJSON(response.response);
@@ -157,7 +159,10 @@
 			            		}
 			            		addLocalDocument(newid, docnameActual);
 			            	}
-			            });
+			            }).fail(function(response) {
+									    var msg = "<h2>SERVER ERROR 500 :(</h2><p>This action has timed out due to not receiving a response from the server. Please try again. </p>";
+									    UIkit.modal.alert(msg);
+									});
 			          },
 			          loadStart: function (e) {
 			          	bar.removeAttribute('hidden');

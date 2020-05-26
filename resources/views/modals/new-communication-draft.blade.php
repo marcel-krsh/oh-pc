@@ -213,6 +213,7 @@ session(['old_communication_modal' => $random]);
     }
 
     function {{ $submit_name }}() {
+    	// debugger;
     	var form = $('#newOutboundEmailForm');
     	var no_alert = 1;
     	var recipients_array = [];
@@ -252,15 +253,20 @@ session(['old_communication_modal' => $random]);
     			'_token' : '{{ csrf_token() }}'
     		}, function(data) {
     			if(data!=1){
+    				// debugger;
     				UIkit.modal.alert(data,{stack: true});
 		        // dynamicModalCommunicationClose();
     			} else {
+    				// debugger;
     				@if(!$project || !$auditor_access)
     				$('#detail-tab-2').trigger('click');
     				@endif
     				UIkit.modal.alert('Your message has been saved.',{stack: true});
     			}
-    		});
+    		}).fail(function(response) {
+				    var msg = "<h2>SERVER ERROR 500 :(</h2><p>This action has timed out due to not receiving a response from the server. Please try again. </p>";
+				    UIkit.modal.alert(msg);
+				});
 
     		@if($project && !$auditor_access && $location == 'projects')
     		var id = {{ $project->id }};
