@@ -72,11 +72,11 @@ $thisProjectHtml = '';
 							@if(count($all_projects) > 0)
 							<hr class="uk-width-1-1 dashed-hr uk-margin-bottom">
 							<small>
-								<span onclick="$('#user-{{ $user->id }}-projects').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW PROJECT(S)"><i class="a-info-circle"></i>
+								<span onclick="$('#user-{{ $user->id }}-projects-show').slideToggle();" class="use-hand-cursor" uk-tooltip title="CLICK TO VIEW PROJECT(S)"><i class="a-info-circle"></i>
 									Total Projects: {{ count($all_projects) }}
 								</span>
 							</small>
-							<div id="user-{{ $user->id }}-projects" style="display: none;">
+							<div id="user-{{ $user->id }}-projects-show" style="display: none;">
 								<small><ul>
 									@forEach($all_projects as $p)
 									<li @if($p->id == $project->id) style="font-weight:bold" @endIf>
