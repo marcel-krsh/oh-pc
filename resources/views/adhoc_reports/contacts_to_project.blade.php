@@ -75,6 +75,32 @@ ul.leaders li {
     padding-bottom: 9px;
     padding-top: 7px;
 }
+
+.contact-badge {
+	    /* display: inline-block; */
+     padding: 0px 5px 0px;
+     background: #005186;
+    font-size: 10px;
+    font-weight: bold;
+    /* line-height: inherit; */
+    /* color: #ffffff; */
+    /* text-align: center; */
+    /* vertical-align: middle; */
+    /* text-transform: none; */
+    /* border: 1px solid rgba(0, 0, 0, 0.06); */
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+
+    box-sizing: border-box;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    border-radius: 500px;
+    vertical-align: middle;
+    color: #fff;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
 </style>
 
 
@@ -87,7 +113,8 @@ ul.leaders li {
             <div id="main-report-view" class="" style=" min-width: auto; padding:0px; background-color: currentColor;">
 
             	<div class="uk-shadow uk-card uk-card-default uk-card-body uk-align-center crr-sections" style="">
-            		<h1>Contacts to Project</h1>
+            		<h1>Contacts to Project <div class="uk-button-success green-button contact-badge uk-text-right@s uk-margin-right uk-margin-top" style="float:right;">&nbsp;<a href="{{ url('contacts_to_project_export') }}" class="uk-dark uk-light" uk-tooltip="title:Export All Contacts To Project; pos: top-right;" title="" aria-expanded="false"><span class="a-lower"></span> EXPORT</a>&nbsp;</div>
+            		</h1>
             		<hr class="uk-width-1-1">
             		<p>This list is output based on projects, contacts associated with those projects, and then a list of other projects those cotacts are on. The id numbers will be crucial to knowing who is a duplicate or a repeated user. Organization affiliation listed are those where they are the primary contact for that organization.</p>
             		<hr class="uk-width-1-1">
