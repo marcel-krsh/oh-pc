@@ -268,6 +268,11 @@ class ReportsController extends Controller
 				$data['notified_receipients'] = null;
 			}
 			$messages[] = $this->reportAction($report, $data);
+			if ($report) {
+				return json_encode($report);
+			} else {
+				return 1;
+			}
 			//dd($messages);
 		}
 

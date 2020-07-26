@@ -226,7 +226,8 @@
     			'check' : 1
     		}).done(function (data2) {
     			var data = jQuery.parseJSON(data2);
-    			if(data['data'][0]['crr_approval_type_id'] == action) {
+    			// if(data['data'][0]['crr_approval_type_id'] == action) {
+    			if(data['crr_approval_type_id'] == action) {
     				$.post('{{ URL::route("communication.create") }}', {
     					'inputs' : form.serialize(),
     					'_token' : '{{ csrf_token() }}'
