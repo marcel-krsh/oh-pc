@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Helper;
 //
 use DB;
 use Log;
+use Exception;
+use Carbon\Carbon;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\People;
@@ -13,6 +15,7 @@ use App\Models\Finding;
 use GuzzleHttp\Promise;
 use App\Models\Document;
 use App\Models\SyncPeople;
+use Illuminate\Http\Request;
 use App\Models\DocumentAudit;
 use App\Models\ProjectContactRole;
 use App\Http\Controllers\Controller;
@@ -26,6 +29,16 @@ class TestingController extends Controller
 		$this->allitapc();
 	}
 
+	public function postReportIssue(Request $request)
+	{
+		$note = 'Communication not triggered for the report ' . $request->id . ' for the action ' . $request->action;
+		$note = $note . '. Happened at ' . Carbon::now() . ' for user ID = ' . $this->user->id;
+		throw new Exception($note);
+	}
+
+	/**
+	 * Below code is for developers only, just testing
+	 */
 	public function getTestAll()
 	{
 		ini_set('max_execution_time', 180);

@@ -262,6 +262,12 @@ if ($single_recipient) {
 						});
       			dynamicModalClose();
         	} else {
+        		$.post('{{ URL::route("sentry.report-issue") }}', {
+    					'id' : report_id,
+		    			'action' : action,
+    					'_token' : '{{ csrf_token() }}'
+    				}, function(data) {
+		    		});
         		UIkit.modal.alert('Report was not updated and notification was not sent',{stack: true});
         		dynamicModalClose();
         	}

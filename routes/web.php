@@ -1040,3 +1040,5 @@ Route::group(['prefix' => 'poc', 'namespace' => 'POC'], function () {
 Route::get('/debug-sentry', function () {
 	throw new Exception('My first Sentry error!');
 });
+
+Route::post('sentry/report-issue', 'Helper\TestingController@postReportIssue')->name('sentry.report-issue');
