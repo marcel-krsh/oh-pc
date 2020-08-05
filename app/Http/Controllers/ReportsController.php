@@ -268,6 +268,7 @@ class ReportsController extends Controller
 				$data['notified_receipients'] = null;
 			}
 			$messages[] = $this->reportAction($report, $data);
+			$report = CrrReport::find($request->get('id'));
 			if ($report) {
 				return json_encode($report);
 			} else {
